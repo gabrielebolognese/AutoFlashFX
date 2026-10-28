@@ -69,7 +69,7 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
 render; `M14_SECTIONS="1 3"` are the quick sections, about 3 minutes). Sections: 1 the meter, the calibration and the
 tokens; 2 the library (frame-match with the life checks, the catalog, no tween outside pc-motion.js, lint, check, the
 gallery); 3 icon-3d with WebGL and with its fallback, the canvas layers for three seeds; 4 the golden reel again; 5 the
-em dash scan. Recorded runs: build/M14/tmp/test-m14-s245.log and test-m14-s25.log.
+em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed, 37 minutes).
 
 ## Test output, in short
 
@@ -85,8 +85,9 @@ em dash scan. Recorded runs: build/M14/tmp/test-m14-s245.log and test-m14-s25.lo
   percent outside and move under 20 px per second.
 - Section 4: the golden builds, checks and renders in 112 s; every energy measure better than before, the moving
   share doubled (13.0 to 27.0).
-- The totals are in the logs named above (the first run of sections 2, 4, 5 passed 35 of 39 before the last fit and
-  caption fixes; the rerun of 2 and 5 is the one that counts).
+- The full run: 71 passed, 0 failed (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1).
+  Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
+  all fixed before the full run.
 - Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the
   last component touches and again after); the others are listed in build/progress.md with their counts.
 
