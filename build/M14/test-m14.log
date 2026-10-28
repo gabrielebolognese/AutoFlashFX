@@ -38,8 +38,8 @@ PASS  the sandbox tokens validate
 PASS  the sandbox tokens verify against the sources
 
 == 2. the library on pc-motion.js: frame-match, the life checks, the energy of each component ==
-thumb-grid: pass (9/9 checks, strip r=0.984, moving 5.4%, longest still 3.97 s)
-window-card: pass (9/9 checks, strip r=0.956, moving 21.5%, longest still 3.1 s)
+thumb-grid: pass (9/9 checks, strip r=0.974, moving 6.2%, longest still 3.93 s)
+window-card: pass (9/9 checks, strip r=0.965, moving 96.2%, longest still 0.03 s)
 frame-match: 28 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
 PASS  frame-match passes every component (the style's numbers, the strips, the life checks)
 covered ok
@@ -107,14 +107,14 @@ PASS  the edge layer moves at most 20 px per second, the ambient layer slower
 == 4. the golden reel rendered again with the new library (same plan) ==
 project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (24 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png)
 hyperframes check: ok
-render: 145.2 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+render: 252.6 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
 contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
 PASS  render-golden builds, checks, renders and probes clean with the new library
 PASS  the plan did not change (the same plan, the new library)
 PASS  npx hyperframes check passed on the golden project
-energy golden.mp4: 1244 frames, 41.47 s: moving share 27.0% (FAIL, at least 41%), middle band 29.4% (FAIL, at least 46%), pixels changing 1.42% (FAIL, at least 3.3%), still stretches 30.0% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
+energy golden.mp4: 1244 frames, 41.47 s: moving share 28.2% (FAIL, at least 41%), middle band 29.8% (FAIL, at least 46%), pixels changing 1.6% (FAIL, at least 3.3%), still stretches 29.9% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
 before {'moving_share_pct': 13.0, 'middle_moving_share_pct': 12.0, 'pixels_changing_pct': 1.0, 'still_share_pct': 49.5, 'longest_still_s': 2.8}
-after {'moving_share_pct': 27.0, 'middle_moving_share_pct': 29.4, 'pixels_changing_pct': 1.42, 'still_share_pct': 30.0, 'longest_still_s': 2.43}
+after {'moving_share_pct': 28.2, 'middle_moving_share_pct': 29.8, 'pixels_changing_pct': 1.6, 'still_share_pct': 29.9, 'longest_still_s': 2.43}
 every-measure ok
 doubled ok
 PASS  the re-rendered golden measures higher than before on every energy measure
