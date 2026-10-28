@@ -29,6 +29,8 @@ BUILD_MODEL="${BUILD_MODEL:-fable}";            BUILD_EFFORT="${BUILD_EFFORT:-ma
 FIX_MODEL="${FIX_MODEL:-fable}";                FIX_EFFORT="${FIX_EFFORT:-max}"
 REVIEW_MODEL="${REVIEW_MODEL:-opus}";           REVIEW_EFFORT="${REVIEW_EFFORT:-medium}"
 LIMIT_MODEL="${LIMIT_MODEL:-opus}";             LIMIT_EFFORT="${LIMIT_EFFORT:-high}"   # coding while Fable is at its limit
+FALLBACK="${FALLBACK:-1}"                       # 1: Fable batches pass --fallback-model $LIMIT_MODEL, so Claude Code
+                                                #    itself switches to Opus inside the session when Fable is unavailable
 PROBE_MODEL="${PROBE_MODEL:-haiku}"
 MAX_REVIEWS="${MAX_REVIEWS:-2}"                 # reviews per milestone; after the last one the build moves on
 FINAL_FIX="${FINAL_FIX:-1}"                     # 1: a fix batch after the last rejected review, 0: move on at once
@@ -165,13 +167,17 @@ start_activity() {  # start_activity STREAM.jsonl OFFSET: prints what Claude is 
   ACT_STOP="$1.stop"; rm -f "$ACT_STOP"
   (
     PYTHONIOENCODING=utf-8 "$PY" -u - "$1" "$2" "$ACT_STOP" "$ACTIVITY" <<'EOF' |
-import json, os, sys, time
+import json, os, re, sys, time
 path, pos, stop, mode = sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4]
 cwd = os.getcwd().replace("\\", "/").rstrip("/")
 bases = [cwd]
 if len(cwd) > 2 and cwd[1] == ":":
     bases.append("/" + cwd[0].lower() + cwd[2:])
 usage = {}
+model_seen = [None, False]   # the session's model, and whether a model change was already reported
+
+def short(m):  # claude-fable-5-1 -> fable
+    return re.sub(r"^claude-|-[0-9][-0-9.]*$", "", str(m or "?"))
 
 def out(tag, msg):
     msg = " ".join(str(msg).split())
@@ -234,7 +240,16 @@ def handle(raw):
     sub = "(subagent) " if o.get("parent_tool_use_id") else ""
     if t == "system" and o.get("subtype") == "init":
         out("CLAUDE", "session started (%s, Claude Code %s)" % (o.get("model", "?"), o.get("claude_code_version", "?")))
+        if o.get("model"):
+            model_seen[0] = o.get("model")
     elif t == "assistant":
+        m = (o.get("message") or {}).get("model")
+        if m and m != "<synthetic>" and not o.get("parent_tool_use_id"):
+            if model_seen[0] is None:
+                model_seen[0] = m
+            elif m != model_seen[0] and not model_seen[1]:
+                model_seen[1] = True
+                out("LIMIT", "%s not available: Claude Code switched this session to %s and carries on" % (short(model_seen[0]), short(m)))
         for c in (o.get("message") or {}).get("content") or []:
             if not isinstance(c, dict):
                 continue
@@ -247,15 +262,17 @@ def handle(raw):
         info = o.get("rate_limit_info") or {}
         wins = info.get("unifiedWindows") or {}
         parts, show = [], info.get("status") not in (None, "allowed")
-        for key, label in (("five_hour", "5-hour window"), ("seven_day", "weekly")):
+        # seven_day_overage_included shows up only in Fable sessions: it is Fable's own weekly limit
+        for key, label in (("five_hour", "5-hour window"), ("seven_day", "weekly"),
+                           ("seven_day_overage_included", "fable weekly")):
             w = wins.get(key)
             if not isinstance(w, dict) or w.get("utilization") is None:
                 continue
             pct = int(round(float(w["utilization"]) * 100))
-            if key not in usage or pct // 10 != usage[key] // 10 or w.get("status") != "allowed":
+            if key not in usage or pct // 10 != usage[key] // 10 or w.get("status") not in ("allowed", "allowed_warning"):
                 show = True
             usage[key] = pct
-            parts.append("%s %d%% (resets %s)" % (label, pct, when(w.get("resetsAt"), key == "seven_day")))
+            parts.append("%s %d%% (resets %s)" % (label, pct, when(w.get("resetsAt"), key != "five_hour")))
         if show and parts:
             out("USAGE", ("LIMIT STATUS %s: " % info.get("status") if info.get("status") not in (None, "allowed") else "usage: ") + ", ".join(parts))
     elif t == "result":
@@ -439,13 +456,18 @@ coding_model() {  # coding_model MODEL EFFORT -> prints "model effort": Opus sta
   if [ "$1" = "fable" ] && fable_limited; then echo "$LIMIT_MODEL $LIMIT_EFFORT"; else echo "$1 $2"; fi
 }
 
-# switch_from_fable EPOCH_OR_EMPTY: Fable hit its limit; remember until when, so coding uses Opus meanwhile
+# switch_from_fable EPOCH_OR_EMPTY [inside]: Fable hit its limit; remember until when, so coding uses Opus meanwhile.
+# "inside": Claude Code already moved the running session to Opus (--fallback-model); only the next batches change.
 switch_from_fable() {
   local until="$1" when
   [ -z "$until" ] && until=$(( $(now_epoch) + 3600 ))   # no reset time found: try Fable again in an hour
   FABLE_UNTIL=$(( until + LIMIT_MARGIN )); save_state
   when=$(date -d "@$(( FABLE_UNTIL - VOFF ))" '+%a %H:%M' 2>/dev/null || echo "?")
-  say LIMIT "fable usage limit hit: switching to $LIMIT_MODEL ($LIMIT_EFFORT effort) for coding until $when, then back to fable"
+  if [ "${2:-}" = "inside" ]; then
+    say LIMIT "fable unavailable: Claude Code finished this batch on $LIMIT_MODEL in the same session; the next batches code on $LIMIT_MODEL ($LIMIT_EFFORT effort) until $when, then back to fable"
+  else
+    say LIMIT "fable usage limit hit: switching to $LIMIT_MODEL ($LIMIT_EFFORT effort) for coding until $when, then back to fable"
+  fi
   printf '%s fable limit, coding on %s until %s\n' "$(date '+%F %T')" "$LIMIT_MODEL" "$when" >> "$BUILD_DIR/limits.log"
 }
 
@@ -457,6 +479,9 @@ call_claude() {  # call_claude MODEL EFFORT PROMPT_FILE OUT_BASE -> 0 when the r
     local args=(-p "$prompt" --model "$model" "${PERM_FLAGS[@]}")
     if [ "$STREAM" = "1" ]; then args+=(--output-format stream-json --verbose); else args+=(--output-format json); fi
     [ -n "$effort" ] && args+=(--effort "$effort")
+    if [ "$FALLBACK" = "1" ] && [ "$model" = "fable" ] && [ -n "$LIMIT_MODEL" ] && [ "$LIMIT_MODEL" != "fable" ]; then
+      args+=(--fallback-model "$LIMIT_MODEL")   # Claude Code moves the session to Opus when Fable is unavailable
+    fi
     [ -n "$sid" ] && args+=(--resume "$sid")
     if [ "$STREAM" = "1" ]; then
       local off
@@ -474,9 +499,38 @@ call_claude() {  # call_claude MODEL EFFORT PROMPT_FILE OUT_BASE -> 0 when the r
     parse_json "$out.json" > "$out.meta"   # sequential: the result file is complete before we read it
     CALL_SID=$(sed -n '1p' "$out.meta"); local is_err; is_err=$(sed -n '2p' "$out.meta")
     CALL_TXT="$out.txt"
-    if [ "$rc" -eq 0 ] && [ "$is_err" != "true" ] && [ -s "$out.txt" ]; then return 0; fi
+    # what this attempt's stream says: the main session's models, and a rejected usage limit with its reset time
+    local seg_models="" rej="" rej_epoch=""
+    if [ "$STREAM" = "1" ]; then
+      seg_models=$(tail -c +"$((off + 1))" "$out.stream.jsonl" 2>/dev/null | grep -E '"type": ?"assistant"' \
+        | grep -vE '"parent_tool_use_id": ?"' | grep -oE '"model": ?"claude-[a-z]+' | sed 's/.*claude-//' \
+        | sort -u | tr '\n' ' ')
+      rej=$(tail -c +"$((off + 1))" "$out.stream.jsonl" 2>/dev/null | grep -E '"type": ?"rate_limit_event"' \
+        | grep -E '"status": ?"rejected"' | tail -1)
+      [ -n "$rej" ] && rej_epoch=$(printf '%s' "$rej" | grep -oE '"resetsAt": ?[0-9]+' | head -1 | grep -oE '[0-9]+')
+    fi
+    # Claude Code moved a Fable session to Opus by itself (--fallback-model): the next batches start on Opus
+    if [ "$model" = "fable" ] && [[ " $seg_models " == *" $LIMIT_MODEL "* ]] && ! fable_limited; then
+      switch_from_fable "$rej_epoch" inside
+    fi
+    if [ "$rc" -eq 0 ] && [ "$is_err" != "true" ] && [ -s "$out.txt" ]; then
+      # a short answer with no result line that reads like a usage limit is a limit, not a finished batch
+      local short_lim=1
+      if [ "$(wc -c < "$out.txt" | tr -d ' ')" -lt 400 ] \
+         && ! grep -qE "MILESTONE_RESULT|REVIEW_VERDICT|FIX_RESULT|PLAN_RESULT" "$out.txt"; then
+        parse_reset_epoch "$(cat "$out.txt")" >/dev/null; short_lim=$?
+      fi
+      [ "$short_lim" -eq 1 ] && return 0
+    fi
     all="$(cat "$out.json" "$out.err" 2>/dev/null)"
     epoch=$(parse_reset_epoch "$all"); lim=$?
+    if [ "$lim" -eq 1 ] && [ -n "$rej" ]; then   # the stream reported a rejected usage limit
+      if [ -n "$rej_epoch" ]; then epoch="$rej_epoch"; lim=0; else lim=2; fi
+    fi
+    if [ "$lim" -eq 1 ] && [ "$model" = "fable" ] \
+       && printf '%s' "$all" | grep -qiE 'reached your .*limit|rate_limit_error|\b429\b|not available|unavailable'; then
+      lim=2   # on Fable, an unfamiliar limit message still means: carry on with Opus
+    fi
     if [ "$lim" -ne 1 ] && [ "$model" = "fable" ] && [ -n "$LIMIT_MODEL" ] && [ "$LIMIT_MODEL" != "fable" ]; then
       # Fable is at its limit: carry on with Opus in a fresh session that picks up the work from the files
       if [ "$lim" -eq 0 ]; then switch_from_fable "$epoch"; else switch_from_fable ""; fi
@@ -933,6 +987,7 @@ fi
 check_claude
 say START "build runner: ${#MS_IDS[@]} batches (M0 to M13), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
 say START "coding: $BUILD_MODEL ($BUILD_EFFORT), $LIMIT_MODEL ($LIMIT_EFFORT) while $BUILD_MODEL is at its limit. Reviews: $REVIEW_MODEL ($REVIEW_EFFORT), lenient, at most $MAX_REVIEWS per milestone, then it moves on. Log: $LOG"
+[ "$FALLBACK" = "1" ] && say START "fable batches run with --fallback-model $LIMIT_MODEL: when fable runs out mid-batch, Claude Code carries on with $LIMIT_MODEL in the same session"
 fable_limited && say NOTE "fable is still at its usage limit until $(date -d "@$(( FABLE_UNTIL - VOFF ))" '+%a %H:%M' 2>/dev/null): coding on $LIMIT_MODEL until then"
 start_ticker
 
