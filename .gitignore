@@ -62,6 +62,7 @@ build/*.log
 build/limits.log
 build/*/batches/
 build/check.*
+build/PAUSE
 voicetests/
 
 # The golden reel: the render and the per-run reports are rebuilt by render-golden; the project's fonts and vendor

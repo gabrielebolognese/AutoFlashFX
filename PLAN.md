@@ -706,58 +706,184 @@ Acceptance test: `bash pipeline/tests/test-m16.sh`
   by at most 20%.
 - Runtime: 2 to 4 hours (one real reel, renders).
 
-## M17 Editable project export (spec S15)
+## M17 Control check (spec 12, 14.13; the channels plan of section 14 starts here)
 
-Depends on: M16 (the motion and caption components the project mirrors), M12 (the export, the final composition,
-cues.json, words.json), M13 (the hardened runner loop), M9 (the motion-lib components to annotate), the editor repo at /c/Users/there/OneDrive/Desktop/editor (config.json
-`editor.repo`; read only) and its stable copy next to it (`editor.stable_dir`, created by editor-stable.sh), Node 22
-and the Puppeteer harness of M11. S15 and every spec line marked (M17) are built and reviewed here only.
+Depends on: M16 (the motion milestones M14 to M16 are done: the control check inventories the folder as they left it),
+and the rest of M0 to M13. No behavior change: nothing the runner uses is changed.
+
+Creates (new files only under build/M17/ and pipeline/tests/):
+- build/M17/inventory.md and inventory.tsv: every top-level item and every file, whatever its git state, with its size;
+  the big data folders (runs/, exports/, logs/, library/voice/, styles/*/refs/, styles/*/analysis/, styles/sfx/ audio,
+  render outputs) also summed per folder; the machine's state (a video runner alive, the ideas queued, unfinished runs,
+  the exports present, free disk, OneDrive sync).
+- `pipeline/tests/refindex.py` and build/M17/refindex.tsv: every occurrence of a path that moves, of the export names
+  and of the config keys that move (14.4), with its kind and planned change; the counts of old paths inside ignored
+  data, in every path form.
+- `pipeline/tests/make-manifest.py` (the rules of 14.13, deterministic) and build/M17/move-manifest.tsv (every move of
+  M18 and M19 in order, the export renames included); build/M17/config-keys.tsv.
+- `pipeline/tests/check-manifest.py` (old paths exist, no collisions, every new path inside channels/<id>/ or
+  exports/ or staying, every inventory file covered exactly once or engine, the totals add up; `--after` checks a
+  migrated folder).
+- `pipeline/tests/run-fake.sh` and build/M17/baseline/: every fake-only test's result, preflight and doctor --quick,
+  and the dummy fingerprint (`REELS_DUMMY=all bash run.sh --once` in a temp copy: the run and export trees by name).
+- build/M17/risks.md (every BLOCKER and NOTE) and build/M17/report.md (what moves where, the 10 riskiest moves, the
+  BLOCKERs, the baseline, M18's size, what I must do before M18).
+
+Acceptance test:
+- `python pipeline/tests/check-manifest.py` passes.
+- `python pipeline/tests/make-manifest.py` and `python pipeline/tests/refindex.py`, each run twice, give identical
+  files.
+- `bash pipeline/tests/run-fake.sh` records every result in build/M17/baseline/ (a test that already failed is a known
+  failure, recorded, not fixed). The baseline rule from here on: no test that passed in the baseline fails.
+- `git diff --name-only <MS_START_SHA>..HEAD`, leaving out autofix commits and the two runner-written files, lists only
+  files under build/ and pipeline/tests/ and CLAUDE.md, PLAN.md, DECISIONS.md.
+- BLOCKED only when the manifest cannot place a file or a check fails that only I can fix; a running video runner goes
+  into report.md and HUMAN_TODO.
+- Runtime: 1 to 2 hours (the fake-only tests in a temp copy). The build then pauses before M18 (build/PAUSE).
+
+## M18 Channels (spec 14.3, 14.4, 14.5 without the canary, 14.6, the M18 moves of 14.13)
+
+Depends on: M17 (the manifest, the refindex, the baseline); no video runner alive when the moves start.
 
 Creates:
-- `pipeline/stages/s15-project/` (run.sh, CONTRACT.md, schema files): the capture (`capture.mjs`: Puppeteer seeks
-  every frame of the final composition, reads the `data-ed-layer` tree, border quads through `DOM.getBoxModel`,
-  `getScreenCTM()` with `getBBox()` for SVG, opacity products, look signatures and clipped screenshots for canvas,
-  video and animated SVG; writes `15-project/layers.json`), the mapping to native, sprite, overlay or plate by the
-  manifest (keyframe reduction within 0.25 px, 0.1 degree, 0.002 scale and 0.004 opacity, eases from the manifest,
-  hold keys for jumps; groups as compound, parented or flattened; native text only with an available font and
-  supported fill, stroke, shadow and background; captions native or baked plus the hidden caption track; `fallbackOf`
-  stand-ins when the manifest allows), sprite, overlay (VP9 alpha WebM, PNG sequence or animated WebP with the 33,
-  33, 34 ms frame rule, split by the texture budget) and plate rendering, the audio clips from vo.wav and cues.json
-  with the master gain folded in (48 kHz WAV), the writer (project.json at the manifest's schemaVersion, media/,
-  fonts/ with fonts.json version 2, layers.json, FALLBACKS.md, OPEN.txt; readable names, label colors, bins,
-  markers, `meta.generator`), the S15 validator (every rule of the editor's validate.ts and every field of
-  types.ts), the parity check (editor CLI render and compare when the manifest has them) and the layout check
-  (sprites, overlays and plates composited in the harness, SSIM at least 0.95 per scene; native text measured with
-  Canvas2D within 2 px), the 25-minute cap and the minimal project or FAILED.md on failure.
+- `pipeline/lib/paths.sh` and `paths.py` (every path to channel data, refusing another channel's folder); channel.json,
+  its schema and the config merge (config.sh, config.py); channels/flashfx/channel.json with the keys moved from
+  config.json; the review safety keys and protect.py for every channel.
+- `run.sh --channel` and REELS_CHANNEL; per-channel locks, logs, history and status; `add-idea.sh --channel`;
+  preflight, runner-status and doctor per channel.
+- `pipeline/bin/migrate-channels` (`--dry-run`, the rehearsal fixture, the undo script); the new .gitignore (14.3) and
+  the snapshot of the runner-written files, committed before the first move; the regenerated manifest and its M18 lines
+  run on the real folder (git mv for tracked files, renames for untracked and ignored data, the rewrites);
+  manifest-diff.md.
+- The no_emdash skip path moved to channels/*/library/hooks.txt; `pipeline/tests/test-isolation.sh` part 1 with its
+  allowlist; CLAUDE.md's folder map and rules. Not here: the export names (M19), format.json (M20).
+
+Acceptance test: `bash pipeline/tests/test-m18.sh`
+- `bash pipeline/tests/run-fake.sh` meets the baseline rule (the allowed test edits listed in the report).
+- On the rehearsal fixture: the dry run lists every M18 line, the run verifies, the undo restores an identical tree
+  (checksums), a second run verifies, a run killed halfway is undone at the next start.
+- The real migration: the dry run and manifest-diff.md saved in build/M18/; the verification passes (checksums, only
+  renames in git status, `git check-ignore` for every formerly ignored file, no old path in the rewritten files);
+  `python pipeline/tests/check-manifest.py --after`, `bash pipeline/bin/preflight --channel flashfx` and
+  `bash pipeline/bin/doctor --quick` pass.
+- `REELS_DUMMY=all bash run.sh --channel flashfx --once` in a temp REELS_ROOT gives the baseline's run tree inside
+  channels/flashfx/runs/.
+- An unfinished fixture run resumes at the same stage; a fake model edit of channels/flashfx/library/hooks.txt is
+  refused and the file restored; run.sh without a channel exits 2 and lists the channels; an unknown id exits 2; a
+  second runner of the same channel refuses; two fixture channels' dummy runners run at the same time.
+- `bash pipeline/tests/test-isolation.sh` part 1 passes.
+- Runtime: 2 to 4 hours.
+
+## M19 Exports and channels side by side (spec 8, 14.5's canary, 14.6, 14.7's new-channel, the M19 moves of 14.13)
+
+Depends on: M18.
+
+Creates:
+- The export names and numbering of section 8 (exports/<id>-N/, <id>-N files, N per channel in build order); the M19
+  lines of the regenerated manifest (old exports/N/, their captions files, history lines) through migrate-channels with
+  the rehearsal, verification and undo.
+- `pipeline/platforms/instagram-reels/` (today's export behind the platform interface) and
+  `pipeline/platforms/youtube-shorts/` (platform.json, input.schema.json, the exporter prompt for the caption, the
+  description and the pinned comment, the checks of section 8, one rewrite, NEEDS REVIEW, descriptions.jsonl);
+  `pipeline/schemas/platform.schema.json`.
+- `heavy.sh` around every heavy step, the shared limit file, the daily quota, the editor lock (used from M21),
+  logs/engine.log, runner-status and doctor for every channel, `pipeline/bin/new-channel` with the
+  problem-solution-reel template, test-isolation.sh part 2.
+
+Acceptance test: `bash pipeline/tests/test-m19.sh`
+- Dummy exports give exports/<id>-1/ and exports/<id>-2/ with the right names; a second channel's first export is
+  <id2>-1 in the same exports/; after deleting exports/<id>-2/ the next is <id>-3 (from history).
+- The export migration on the rehearsal fixture, the undo, again; then on the real folder with verification: every old
+  exports/N/ is exports/flashfx-N/ with renamed files and updated HOOKS, RUN and EDITOR lines; history lines updated.
+- The youtube-shorts exporter on 6 fixture inputs passes every check; the planted faults (an 1100-character
+  description, 5 hashtags, a 400-character paragraph, no list, a copied description) fail and get rewritten; no
+  caption over caption_max.
+- The heavy lock never overlaps two heavy steps (one WAIT line per wait); a limit hit by one channel makes the other
+  wait for the same reset without a model call; daily_quota 1 makes the second dummy idea wait (fast clock).
+- new-channel creates a channel preflight lists as incomplete, which runs in dummy mode once filled in.
+- `bash pipeline/tests/test-isolation.sh` (both parts) passes; run-fake.sh meets the baseline rule; the dummy
+  fingerprint with the new names is saved in build/M19/fingerprint/.
+- Runtime: 1 to 3 hours.
+
+## M20 Formats and the timeline (spec 14.7, 14.8, the format keys of 14.4)
+
+Depends on: M19 (build/M19/fingerprint/).
+
+Creates:
+- `pipeline/formats/problem-solution-reel/format.json` (today's stages and order, session A as a session group, the
+  reopen routes of the gate, the angle loop and the review, the format keys from config.json) and the runner reading
+  it; `pipeline/schemas/format.schema.json` and `timeline.schema.json`.
+- The timeline stage after 13-render; `pipeline/lib/timeline/` (check.py, render_ffmpeg.py); the footage-dummy test
+  format with 3 fixture clips; the problem-solution-reel template folder; the required channel files in preflight.
+- FlashFX-only text of the shared stages (12-review's prompt, pipeline/lib/review/) moved into problem-solution-reel's
+  prompt overrides and config, and those allowlist entries removed (14.12).
+
+Acceptance test: `bash pipeline/tests/test-m20.sh`
+- The dummy fingerprint of flashfx equals build/M19/fingerprint/, plus the timeline/ folder.
+- timeline.json of the golden reel (or the test idea's run) validates, lasts as long as final.mp4 within 1 frame, and
+  check.py finds every word, cue and composition layer; a copied finished real FlashFX run folder gets a timeline with
+  no check failure.
+- The footage-dummy channel runs end to end with its 3 clips: the export lasts as long as its timeline within 1 frame,
+  and its captions appear where the timeline says.
+- A format.json with a stage removed or moved changes the runner's order in dummy mode, with no code change.
+- test-isolation.sh part 1 finds no FlashFX name in a shared stage; run-fake.sh meets the baseline rule.
+- Runtime: 1 to 2 hours.
+
+## M21 Editable project export (spec S15, 14.9)
+
+Depends on: M20 (timeline.json and the formats: S15 reads timeline.json, 14.9), M16 (the motion and caption components
+the project mirrors), M12 (the export, the final composition, cues.json, words.json), M13 (the hardened runner loop),
+M9 (the motion library to annotate), the editor repo at /c/Users/there/OneDrive/Desktop/editor (config.json
+`editor.repo`; read only) and its stable copy next to it (`editor.stable_dir`, created by editor-stable.sh), Node 22
+and the Puppeteer harness of M11. S15, 14.9 and every spec line marked (M21) are built and reviewed here only.
+
+Creates:
+- `pipeline/stages/s15-project/` (run.sh, CONTRACT.md, schema files), reading timeline.json (14.9) for the layers, the
+  words, the cues and the markers: the capture (`capture.mjs`: Puppeteer seeks every frame of the final composition,
+  reads the `data-ed-layer` tree, border quads through `DOM.getBoxModel`, `getScreenCTM()` with `getBBox()` for SVG,
+  opacity products, look signatures and clipped screenshots for canvas, video and animated SVG; writes
+  `15-project/layers.json`), the mapping to native, sprite, overlay or plate by the manifest (keyframe reduction within
+  0.25 px, 0.1 degree, 0.002 scale and 0.004 opacity, eases from the manifest, hold keys for jumps; groups as compound,
+  parented or flattened; native text only with an available font and supported fill, stroke, shadow and background;
+  captions native or baked plus the hidden caption track; `fallbackOf` stand-ins when the manifest allows), sprite,
+  overlay (VP9 alpha WebM, PNG sequence or animated WebP with the 33, 33, 34 ms frame rule, split by the texture
+  budget) and plate rendering, the audio clips from vo.wav and cues.json with the master gain folded in (48 kHz WAV),
+  the writer (project.json at the manifest's schemaVersion, media/, fonts/ with fonts.json version 2, layers.json,
+  FALLBACKS.md, OPEN.txt; readable names, label colors, bins, markers, `meta.generator`), the S15 validator (every rule
+  of the editor's validate.ts and every field of types.ts), the parity check (editor CLI render and compare when the
+  manifest has them) and the layout check (sprites, overlays and plates composited in the harness, SSIM at least 0.95
+  per scene; native text measured with Canvas2D within 2 px), the 25-minute cap and the minimal project or FAILED.md on
+  failure.
 - `pipeline/stages/s15-project/baseline-capabilities.json` (the editor v1.1.0 manifest of spec S15, verbatim) and
   `CAPABILITIES.md` (every manifest key S15 knows: mapped or not, and which reel elements use it).
-- `pipeline/bin/editor-stable.sh`: clone `editor.repo` into `editor.stable_dir` on first use; advance at most once an
-  hour to the newest `batch-NN: review` commit whose docs/PROGRESS.md has `in_progress_batch: none` and an accepted
-  last review for its `last_completed_batch` (detached checkout, `npm ci` when package-lock.json changed,
-  `npm run build`, `npm run build:cli` when present; back to the previous commit on failure, with the reason logged);
-  the server (`npx vite preview --port 5310 --strictPort`).
-- `pipeline/bin/rebuild-project.sh N`: rebuilds exports/N/project/ from its run folder with the current manifest,
-  keeping an edited project aside as project.edited-<date>/.
+- `pipeline/bin/editor-stable.sh`, under the global editor lock: clone `editor.repo` into `editor.stable_dir` on first
+  use; advance at most once an hour to the newest `batch-NN: review` commit whose docs/PROGRESS.md has
+  `in_progress_batch: none` and an accepted last review for its `last_completed_batch` (detached checkout, `npm ci`
+  when package-lock.json changed, `npm run build`, `npm run build:cli` when present; back to the previous commit on
+  failure, with the reason logged); the server (`npx vite preview --port 5310 --strictPort`).
+- `pipeline/bin/rebuild-project.sh <id>-N`: rebuilds exports/<id>-N/project/ from its run folder with the current
+  manifest, keeping an edited project aside as project.edited-<date>/.
 - `run.sh` and `pipeline/lib/runner.sh`, between ideas only: advance the stable copy, keep its server on port 5310
   running (restart after an advance), and the capability upgrade of spec S15 step 8 (a builder session, a reviewer
   session, at most 2 fix rounds, commit `s15: editor capabilities <keys>` or a full revert recorded in
-  logs/editor-upgrade.json with a 24-hour retry rule; the upgrade shown in logs/status.txt).
-- S14's export calls S15 after assembling `runs/<id>/export/` and before the move; the EDITOR section in
-  Ncaptions.txt; logs/editor-gaps.md (one line per missing manifest key, with a running count, the reel elements and
-  the latest reel, sorted by count); logs/editor-capabilities.json.
-- Editor annotations (`data-ed-layer`, `data-ed-name`, `data-ed-kind`) on every motion-lib component and in the
-  builder's rules for new candidates, without changing how anything looks.
+  logs/editor-upgrade.json with a 24-hour retry rule; the upgrade shown in the status line).
+- s15-project as the last stage of problem-solution-reel and of footage-dummy (format.json), after the export is
+  assembled and before the move; the EDITOR section in the captions file; the per-channel logs/editor-gaps.md (one line
+  per missing manifest key, with a running count, the elements and the latest video, sorted by count) and the root
+  roll-up; logs/editor-capabilities.json.
+- Editor annotations (`data-ed-layer`, `data-ed-name`, `data-ed-kind`) on every component of
+  channels/flashfx/motion-lib/ and in the builder's rules for new candidates, without changing how anything looks.
 - cues.json gains the trim in and out points, the fade-out and the final gain of each sound (S11's sound unchanged).
 - config.json `editor` block: repo, stable_dir, port 5310, url, projects_root, project true, cap_minutes 25,
   parity_ssim 0.97.
 - Mappings for §21.7 and §21.8 of the editor's docs/PLAN_V1_2.md, used only when the manifest announces them; skipped
   when that file is not in the editor repo (it was not on 2026-11-02), and the capability upgrade adds them later.
-- Tests: `pipeline/tests/test-m14.sh`, `pipeline/tests/manifest-plus.json` (the baseline plus the Batch 58 and 59
+- Tests: `pipeline/tests/test-m21.sh`, `pipeline/tests/manifest-plus.json` (the baseline plus the Batch 58 and 59
   keys of the editor plan), a golden project JSON, a scratch git repo with fake `batch-NN: review` commits.
 
-Acceptance test: `bash pipeline/tests/test-m14.sh`
-- The golden reel (or the test idea) gives exports/K/project/ that passes validation (the editor CLI when the manifest
-  has cli.validate, otherwise the S15 validator), with FALLBACKS.md, OPEN.txt and the EDITOR section.
+Acceptance test: `bash pipeline/tests/test-m21.sh`
+- The golden reel (or the test idea) gives exports/flashfx-K/project/ that passes validation (the editor CLI when the
+  manifest has cli.validate, otherwise the S15 validator), with FALLBACKS.md, OPEN.txt and the EDITOR section.
 - With the baseline manifest: the background, the voice and every sound effect are native clips at the right times;
   every text whose style the baseline supports is a native text clip; the captions are baked, plus the hidden native
   caption track; the layout check passes.
@@ -767,18 +893,97 @@ Acceptance test: `bash pipeline/tests/test-m14.sh`
   editor's frame rule.
 - The stable copy, in the scratch repo: it advances only to a `batch-NN: review` commit whose batch is accepted, a
   failing build puts it back on the previous commit, and the server answers on port 5310.
-- The project lasts as long as N.mp4 within 1 frame, and its mix is within 0.5 LU of N.mp4.
-- A forced failure still exports N.mp4, with the minimal project and NEEDS REVIEW.
+- The project lasts as long as flashfx-K.mp4 within 1 frame, and its mix is within 0.5 LU of it.
+- A forced failure still exports flashfx-K.mp4, with the minimal project and NEEDS REVIEW.
 - rebuild-project.sh rebuilds a project and keeps an edited one aside.
 - In the runner's fast test mode, a changed manifest between two dummy ideas triggers exactly one capability upgrade
-  (dummy sessions) with its status line; a failed upgrade is not retried for the same manifest.
+  (dummy sessions) with its status line, also with two channels' runners alive; a failed upgrade is not retried for
+  the same manifest.
+- The footage-dummy channel's project passes validation, with its clips as native video clips and a native caption
+  track.
 - S15 takes at most 15 minutes for a 60-second reel on this laptop (the time goes in build/progress.md).
 - Runtime: 1 to 2 hours (renders, the capture of every frame).
+
+## M22 Life of Gabry: the story (spec 14.10 up to the voice, section 8's youtube-shorts export)
+
+Depends on: M21 (every engine piece the channel uses: channels, platforms, formats, timeline, the project exporter).
+
+Creates:
+- channels/lifeofgabry/ through new-channel: channel.json (youtube-shorts, scenario-story, en, lengths 45 to 75,
+  daily_quota 0, the export settings, enabled false until M24), library/profile/account.md and voice.md (drafts with
+  [FILL IN] and HUMAN_TODO), library/hooks.txt (a draft seed of 40 story hook templates), library/character/gabry.md,
+  library/voice/engine.txt (am_puck, one voice for the third-person narrator and Gabry's rare lines) and
+  pronunciations.txt, ideas.txt with 3 test premises (one per kind); the reference videos and the sound pack copied
+  from channel.json sources.refs and sources.sfx when set.
+- `pipeline/formats/scenario-story/` (format.json, prompts, rubric, template, the export_input adapter) with the stages
+  story-premise, story-facts, story-expansion, story-gate, story-hooks (with S6's judge), story-beats, story-script (the
+  speaker of each line marked), then 08-voiceover, story-build in placeholder mode, 13-render, timeline, the
+  youtube-shorts exporter and s15-project; the new voice's measured pace in this channel's config voice.wpm;
+  test-isolation.sh part 2 with a scenario-story fixture as channel B, plus the real-names check of 14.5.
+
+Acceptance test: `bash pipeline/tests/test-m22.sh` (in a temp REELS_ROOT holding a copy of channels/lifeofgabry/)
+- The 3 test premises (real models) each give the premise, the beats, a 45 to 75 second script at the measured pace,
+  words.json, a placeholder render and an export folder <id>-N whose captions file passes every youtube-shorts check,
+  and a project that passes validation.
+- The gate drops one fixture premise per reason (not visual, respect, a false fact, a duplicate); every number of the
+  timeline premise traces to a sourced fact.
+- The scripts are narrated in the third person; every line carries its speaker; Gabry's own lines are at most 8 words
+  and at most about 10% of a script (none is fine).
+- The same premise exported twice gets two descriptions that pass the difference rule; test-isolation.sh passes, the
+  real-names check included; FlashFX's run-fake.sh meets the baseline rule.
+- Runtime: 2 to 4 hours (three real stories with placeholder visuals).
+
+## M23 Life of Gabry: the look (spec 14.10, Gabry and Look)
+
+Depends on: M22, and my reference videos in channels/lifeofgabry/styles/gabry-2d/refs/ (or a folder named in
+channel.json sources.refs). Without them M23 ends BLOCKED with the HUMAN_TODO line: no default bible.
+
+Creates:
+- The style bible channels/lifeofgabry/styles/gabry-2d/ from my references only (analyze_refs.py, build-tokens),
+  nothing taken from FlashFX's style, motion library or section 5's Motion and energy rules.
+- Gabry's rig and the gabry component (model sheet, parts, expressions, mouth shapes, poses, cycles, idle motion, the
+  costumes caveman, astronaut, suit and pajamas): an original, recognizable cartoon.
+- The 2D library in channels/lifeofgabry/motion-lib/ (backgrounds, props, effects, text, transitions, camera, other
+  characters; catalog.json, gallery, frame-match notes, S15's editor annotations); story-shots and the full story-build
+  (jump captions: at most 3 words on screen, a long word alone, hard cuts; lip sync on Gabry's own lines only); the shot
+  plan validator; this channel's golden video.
+
+Acceptance test: `bash pipeline/tests/test-m23.sh`
+- The model sheet renders, and every pose and expression frame-matches it (exact token colors, head to body ratio
+  within 3 percent); the walk and run cycles loop without a jump.
+- On a fixture words.json with one Gabry line, the mouth shapes change within 2 frames of that line's word starts and
+  rest during the narration; a fixture script's captions never show more than 3 words, show a long word alone and
+  change by hard cuts.
+- Every library item renders in the gallery with no console error; backgrounds and effects frame-match the references.
+- The golden video renders at 1080x1920 with Gabry in at least half of the frames, a new visual event at least every 3
+  seconds and all text inside the safe zones; a shot plan with an unknown item reopens story-shots.
+- Runtime: 4 to 8 hours (the biggest Life of Gabry piece: the rig and the library).
+
+## M24 Life of Gabry: end to end (spec 14.10, the sound and the review)
+
+Depends on: M23, and the sound pack in channels/lifeofgabry/styles/sfx/ (without audio files M24 ends BLOCKED with the
+HUMAN_TODO line).
+
+Creates:
+- This channel's sound map (build-sfx-map on channels/lifeofgabry/styles/sfx/, this format's cue types); the
+  scenario-story rubric in 12-review; the full stage list of 14.10; channel.json enabled true at the end.
+
+Acceptance test: `bash pipeline/tests/test-m24.sh`
+- In the real folder, the 3 test premises back to back, unattended (`bash run.sh --channel lifeofgabry --once`):
+  exports/lifeofgabry-1 to lifeofgabry-3, each with a project that passes validation, while a dummy runner of a fixture
+  channel shares this folder's .locks/: no overlap of heavy steps, no cross-channel path in either path trace; the
+  real flashfx channel, its ideas and its history untouched.
+- Every captions file passes the youtube-shorts checks, the 3 descriptions pass the difference rule, and the
+  real-names check of 14.5 holds on every prompt recorded during the 3 runs.
+- The review rejects a planted off-model frame, a 4-second span with no visual event and a missing loop, each sent back
+  to its owner stage; build/M24/report.md lists per video the length, the review rounds and scores, the time per stage
+  and what NEEDS REVIEW said.
+- Runtime: 3 to 6 hours (three real videos).
 
 ## Dependency graph
 
 ```
-M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13 -> M14 -> M15 -> M16 -> M17
+M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13 -> M14 -> M15 -> M16 -> M17 -> M18 -> M19 -> M20 -> M21 -> M22 -> M23 -> M24
                     \-> M8 ------------------------/
                     \-> M9 (needs M7 fixtures) ---/
 ```
@@ -801,3 +1006,16 @@ M8 could run any time after M3, M9 any time after M7; the runner builds them in 
 - HyperFrames moves fast (0.8.x): the version is pinned in package.json and upgraded only by hand.
 - Style conflicts: style.md version 2 (no tracker, bare captions) wins over the spec's examples that mention a
   tracker; the plan schema keeps an optional tracker field for other styles.
+- The moves of the channels plan (M18, M19): nothing moves that is not in the move manifest M17 writes (14.13); the
+  manifest is regenerated right before the moves and its difference written down; migrate-channels runs a dry run,
+  rehearses on a fixture (migrate, undo, migrate), verifies every file by checksum or count and size after the real
+  run, and undoes itself and stops the build when anything is off.
+- The video runner during M18 to M21: M18 refuses to move anything while a video runner is alive (it ends BLOCKED with
+  the reason); from M18 on it starts with `bash run.sh --channel flashfx`; safest is to keep it stopped until M21 is
+  approved. During M22 to M24 it may run, but a shared stage the build edits mid-run can make one run fail (the
+  runner's fixer usually repairs it).
+- Two channels on one CPU-only laptop and one Claude account: heavy steps (voice, transcription, renders) take turns
+  through heavy.sh, a usage limit hit by one channel pauses every channel until the same reset (the shared limit file),
+  and each channel has a daily quota.
+- Isolation: every channel path goes through the paths module, which refuses another channel's folder; the canary test
+  and the real-names check (14.5) prove that no prompt or file read of one channel contains another's content.
