@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 480, "w": 900, "h": 0, "from": "bottom", "distance": 930, "frames": 14, "tilt": 3.9, "end_tilt": 0, "title": "The frontend-design skill", "body": "Plans 4 to 6 hex colors, reviews the layout, then codes.", "image": "", "image_h": 520, "enter_at": 0.2, "mascot": "film", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 480, "w": 900, "h": 0, "from": "bottom", "distance": 930, "frames": 14, "tilt": 3.9, "end_tilt": 0, "title": "The frontend-design skill", "body": "Plans 4 to 6 hex colors, reviews the layout, then codes.", "image": "", "image_h": 520, "enter_at": 0.2, "mascot": "film", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* fly-in (vocabulary.md 16, Fly-in from a parked spot): a big entrance for a hero card or window: travels 414 to
        930 px over 11 to 16 frames, expo-out (each frame's step 0.64 to 0.69 of the previous), the start tilt of 2.4 to
-       3.9 degrees easing to 0 (hero cards straight: open question 10, v02), no overshoot. */
+       3.9 degrees easing to 0 (hero cards straight: open question 10, v02), no overshoot. E2 adds the zoom from a close
+       start and the parallax rotation; then the inertia and the hold of E1 (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #fi { padding: 48px 52px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; }
     #fi-image { width: 100%; overflow: hidden; border-radius: 18px; display: none; background: var(--c-surface-chrome); }
@@ -62,29 +68,31 @@ window.__pcEvents = [];
     <div id="fi-mascot" class="pc-mascot pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 480, w: 900, h: 0, from: "bottom", distance: 930, frames: 14, tilt: 3.9, end_tilt: 0, title: "", body: "", image: "", image_h: 520,
-        enter_at: 0, mascot: "", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter_at: 0, mascot: "", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var card = document.getElementById("fi");
       PC.place(card, v);
+      var parts = [];
       var t = document.getElementById("fi-title"), b = document.getElementById("fi-body");
-      if (v.title) t.textContent = v.title; else t.style.display = "none";
-      if (v.body) b.textContent = v.body; else b.style.display = "none";
-      if (v.image) { document.getElementById("fi-img").src = v.image; var w = document.getElementById("fi-image"); w.style.height = v.image_h + "px"; w.style.display = "block"; }
+      if (v.title) { t.textContent = v.title; parts.push(t); } else t.style.display = "none";
+      if (v.body) { b.textContent = v.body; parts.push(b); } else b.style.display = "none";
+      if (v.image) { document.getElementById("fi-img").src = v.image; var w = document.getElementById("fi-image"); w.style.height = v.image_h + "px"; w.style.display = "block"; parts.unshift(w); }
+      PCM.depth(card, parts);
       var dx = 0, dy = 0;
       if (v.from === "bottom") dy = v.distance; else if (v.from === "half-bottom") dy = Math.round(v.distance / 2);
       else if (v.from === "left") dx = -v.distance; else dx = v.distance;
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.flyIn(tl, card, v.enter_at, { dx: dx, dy: dy, tilt: v.tilt, endTilt: v.end_tilt, frames: v.frames });
+      var exit = { type: v.exit, at: v.exit_at };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: { kind: "fly-in", dx: dx, dy: dy, tilt: v.tilt, endTilt: v.end_tilt, frames: v.frames, axis: dx ? "y" : "x" }, hold: v.hold, exit: exit });
       if (v.mascot) {
         var m = document.getElementById("fi-mascot");
         m.innerHTML = PC.mascotSVG(v.mascot, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
         m.style.display = "block"; m.style.left = (v.x + v.w - 47) + "px"; m.style.top = (v.y - 32) + "px";
-        PC.mascotEnter(tl, m, landAt);
-        PC.exit(tl, m, v.exit_at, v.exit);
+        PCM.mascotEnter(tl, m, life.land, { hold: v.hold, exit: exit, until: life.until, seed: PC.hash(v.title + v.mascot) });
       }
-      PC.exit(tl, card, v.exit_at, v.exit);
       window.__timelines["fly-in"] = tl;
       tl.seek(0);
     })();

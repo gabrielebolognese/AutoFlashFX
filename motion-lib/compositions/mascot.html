@@ -7,6 +7,7 @@
   {"id":"frames","type":"number","label":"Entrance frames","default":4},
   {"id":"scale","type":"number","label":"Scale (1 = 85 x 58 px)","default":1},
   {"id":"flip","type":"boolean","label":"Face left","default":false},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -16,7 +17,8 @@
   <style>
     /* mascot (vocabulary.md 4): the recurring pixel creature, about 85 x 58 px, body in the mascot color, one prop. It
        perches on a corner of the scene's main element (the plan places it at x, y overlapping the edge) and enters 4
-       frames after the card lands, rising from below over 4 frames (v02); on the end card it walks or hops. */
+       frames after the card lands, rising from below over 4 frames (v02); on the end card it walks or hops. It idles in
+       every scene it is in (a bob, a blink, a wiggle of its prop; E7) on top of E1's hold (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #ms-wrap { transform-origin: 50% 100%; }
     #ms-wrap.flip svg { transform: scaleX(-1); }
@@ -25,34 +27,19 @@
     <div id="ms-wrap" class="pc-mascot pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 880, y: 520, prop: "clapper", move: "rise", enter_at: 0, frames: 4, scale: 1, flip: false, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 880, y: 520, prop: "clapper", move: "rise", enter_at: 0, frames: 4, scale: 1, flip: false, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var m = document.getElementById("ms-wrap");
       m.innerHTML = PC.mascotSVG(v.prop, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
       PC.place(m, { x: v.x, y: v.y });
       if (v.scale !== 1) { m.style.width = (85 * v.scale) + "px"; m.style.height = (58 * v.scale) + "px"; }
       if (v.flip) m.classList.add("flip");
       var tl = gsap.timeline({ paused: true });
-      var at = v.enter_at;
-      if (v.move === "pop") {
-        PC.pop(tl, m, at, { overshoot: 0.16, frames: Math.max(3, v.frames), from: 0.4 });
-      } else if (v.move === "hop") {
-        // hop 72 up and back over 11 frames, 5 up and 6 down (v09)
-        tl.fromTo(m, { opacity: 0 }, { opacity: 1, duration: PC.f(2), ease: "none" }, at);
-        tl.fromTo(m, { y: 0 }, { y: -72, duration: PC.f(5), ease: "power2.out" }, at);
-        tl.to(m, { y: 0, duration: PC.f(6), ease: "power2.in" }, at + PC.f(5));
-        PC.event("mascot", at, { el: "ms-wrap", move: "hop" });
-      } else if (v.move === "walk") {
-        tl.fromTo(m, { x: -260, opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-        tl.to(m, { x: 0, duration: PC.f(14), ease: "power2.out" }, at);
-        tl.to(m, { y: -5, duration: PC.f(3), ease: "power1.inOut", yoyo: true, repeat: 3 }, at);
-        PC.event("mascot", at, { el: "ms-wrap", move: "walk" });
-      } else {
-        tl.fromTo(m, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(v.frames), ease: "power2.out" }, at);
-        PC.event("mascot", at, { el: "ms-wrap", move: "rise" });
-      }
-      PC.exit(tl, m, v.exit_at, v.exit);
+      var exit = { type: v.exit, at: v.exit_at };
+      var life = PCM.mascotMove(tl, m, v.move, v.enter_at, { frames: v.frames, hold: v.hold, exit: exit });
+      PCM.idle(tl, m, v.enter_at, life.until - v.enter_at, { seed: PC.hash(v.prop) });
       window.__timelines["mascot"] = tl;
       tl.seek(0);
     })();

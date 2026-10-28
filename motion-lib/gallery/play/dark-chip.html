@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 1180, "text": "In 2 days", "accent_word": "2 days", "icon": "clock", "enter_at": 0.3, "pop_frames": 3, "exit": "none", "exit_at": -1, "tilt": 0};
+<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 1180, "text": "In 2 days", "accent_word": "2 days", "icon": "clock", "enter_at": 0.3, "pop_frames": 3, "hold": "normal", "exit": "none", "exit_at": -1, "tilt": 0};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,18 +38,20 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
   
   
+  
 <link rel="stylesheet" href="assets/tokens.css">
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* dark-chip (vocabulary.md 5, Dark chip or tag): a short fact or label attached to a card, ink-chip fill, white
-       text with one accent word, 55 tall; pops in over 3 frames (v01 corner chip). */
+       text with one accent word, 55 tall; pops in over 3 frames (v01 corner chip), with E2's parallax rotation on the
+       pop, then the inertia and the hold of E1 (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #chip-icon { display: none; width: 26px; height: 26px; }
     #chip-icon svg { width: 100%; height: 100%; display: block; }
@@ -57,9 +63,10 @@ window.__pcEvents = [];
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 120, y: 1180, text: "In 2 days", accent_word: "2 days", icon: "none", enter_at: 0, pop_frames: 3, exit: "none", exit_at: -1, tilt: 0 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 120, y: 1180, text: "In 2 days", accent_word: "2 days", icon: "none", enter_at: 0, pop_frames: 3, hold: "normal", exit: "none", exit_at: -1, tilt: 0 }, window.__hyperframes.getVariables());
       var chip = document.getElementById("chip");
       PC.place(chip, v);
       if (v.tilt) chip.style.rotate = v.tilt + "deg";
@@ -80,8 +87,7 @@ window.__pcEvents = [];
       if (icons[v.icon]) { var ic = document.getElementById("chip-icon"); ic.innerHTML = icons[v.icon]; ic.style.display = "inline-block"; }
 
       var tl = gsap.timeline({ paused: true });
-      PC.pop(tl, chip, v.enter_at, { overshoot: 0.02, frames: v.pop_frames, from: 0.5 });
-      PC.exit(tl, chip, v.exit_at, v.exit);
+      PCM.life(tl, chip, { at: v.enter_at, main: { kind: "pop", overshoot: 0.02, frames: v.pop_frames, from: 0.5, axis: "x" }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
       window.__timelines["dark-chip"] = tl;
       tl.seek(0);
     })();

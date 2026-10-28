@@ -60,6 +60,18 @@ if want 1; then
   sandbox_init
   mkdir -p "$SANDBOX/styles/paper-cards"
   cp "$REPO_DIR"/styles/paper-cards/style.md "$REPO_DIR"/styles/paper-cards/tweaks.md "$SANDBOX/styles/paper-cards/"
+  # the scenario below starts from the six version 2 lines as proposals (the user accepted them on 2026-11-07, M14)
+  python - "$SANDBOX/styles/paper-cards/tweaks.md" <<'EOF'
+import re, sys
+p = sys.argv[1]; s = open(p, encoding="utf-8").read()
+for title in ("Caption position", "Right side, captions", "Hook header", "Length", "Accent-filled cards", "3D"):
+    # the proposal is the last bullet with that title (Length and 3D also have an earlier decision bullet)
+    hits = list(re.finditer(r"^- \*\*" + re.escape(title) + r":\*\*", s, flags=re.M))
+    if hits:
+        m = hits[-1]
+        s = s[:m.start()] + "- PROPOSED **" + title + ":**" + s[m.end():]
+open(p, "w", encoding="utf-8", newline="\n").write(s)
+EOF
   SD="$SANDBOX_M/styles/paper-cards"; OUT="$SANDBOX_M/tokens.json"; CSS="$SANDBOX_M/tokens.css"
   out="$(bash pipeline/bin/build-tokens --style-dir "$SD" --out "$OUT" --css "$CSS" 2>&1)"; rc=$?
   assert_rc 0 $rc "build-tokens builds in the sandbox"

@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"type": "fall", "x": 90, "y": 560, "w": 900, "title": "Before", "body": "Rounded cards, one radius, the same grey shadow.", "next_title": "After", "next_body": "One typeface with a point of view, and real color.", "exit_at": 0.8, "fall_frames": 10, "fall_tilt": 2, "push_frames": 6, "gap_frames": 2, "in_frames": 12, "blur_frames": 4};
+<script>window.__timelines = {}; window.__hfVars = {"type": "fall", "x": 90, "y": 560, "w": 900, "title": "Before", "body": "Rounded cards, one radius, the same grey shadow.", "next_title": "After", "next_body": "One typeface with a point of view, and real color.", "exit_at": 0.8, "fall_frames": 10, "fall_tilt": 2, "push_frames": 6, "gap_frames": 2, "in_frames": 12, "blur_frames": 4, "hold": "normal"};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -47,7 +52,8 @@ window.__pcEvents = [];
     /* exit-move (vocabulary.md 21, Exit fall or push; open question 3): clears a scene with motion instead of a cut.
        Fall off the bottom over 10 frames, ease-in, tilting about 2 degrees (v07, v08); push 6 frames out to the left,
        ease-in, 2 empty frames, then the next card enters over 12 frames expo-out (v03); or the look refs' fade with
-       blur over 4 frames. The next card rises at once after a fall (v07). The scene change is the transition sound. */
+       blur over 4 frames. The next card rises at once after a fall (v07). The scene change is the transition sound.
+       Both cards live through E1's phases (pc-motion.js): the leaving card holds until its exit. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     .xm-card { padding: 48px 52px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; }
   </style>
@@ -56,31 +62,30 @@ window.__pcEvents = [];
     <div id="xm-next" class="pc-card pc-el xm-card" style="display: none"><div id="xm-next-title" class="pc-title"></div><div id="xm-next-body" class="pc-body"></div></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ type: "fall", x: 90, y: 560, w: 900, title: "", body: "", next_title: "", next_body: "", exit_at: 0.8, fall_frames: 10, fall_tilt: 2, push_frames: 6,
-        gap_frames: 2, in_frames: 12, blur_frames: 4 }, window.__hyperframes.getVariables());
+        gap_frames: 2, in_frames: 12, blur_frames: 4, hold: "normal" }, window.__hyperframes.getVariables());
       var leaving = document.getElementById("xm-leaving"), next = document.getElementById("xm-next");
       PC.place(leaving, { x: v.x, y: v.y, w: v.w }); PC.place(next, { x: v.x, y: v.y, w: v.w });
       document.getElementById("xm-title").textContent = v.title; document.getElementById("xm-body").textContent = v.body;
       var tl = gsap.timeline({ paused: true });
       tl.set(leaving, { opacity: 1 }, 0);
-      var gone;
-      if (v.type === "push") gone = PC.exit(tl, leaving, v.exit_at, "push", { frames: v.push_frames });
-      else if (v.type === "fade-blur") gone = PC.exit(tl, leaving, v.exit_at, "fade-blur", { frames: v.blur_frames });
-      else gone = PC.exit(tl, leaving, v.exit_at, "fall", { frames: v.fall_frames, tilt: v.fall_tilt });
+      var frames = v.type === "push" ? v.push_frames : v.type === "fade-blur" ? v.blur_frames : v.fall_frames;
+      var life = PCM.life(tl, leaving, { at: 0, main: { kind: "none" }, hold: v.hold, inertia: { move: 0, scale: 0, rotate: 0 }, exit: { type: v.type, at: v.exit_at, frames: frames } });
+      var gone = life.exitEnd;
       PC.event("scene_change", v.exit_at, { type: v.type, end: gone });
       if (v.next_title || v.next_body) {
         next.style.display = "flex";
         document.getElementById("xm-next-title").textContent = v.next_title; document.getElementById("xm-next-body").textContent = v.next_body;
         if (v.type === "push") {
           var at = gone + PC.f(v.gap_frames);
-          tl.fromTo(next, { x: 1200, opacity: 1 }, { x: 0, duration: PC.f(v.in_frames), ease: "expo.out" }, at);
-          PC.event("enter", at, { el: "xm-next", move: "push-in" });
+          PCM.life(tl, next, { at: at, main: { kind: "fly-in", dx: 1200, dy: 0, tilt: 0, frames: v.in_frames, axis: "y" }, hold: v.hold });
         } else if (v.type === "fade-blur") {
-          PC.enter(tl, next, gone, { rise: 38 });
+          PCM.life(tl, next, { at: gone, main: { kind: "rise", rise: 38 }, hold: v.hold });
         } else {
-          PC.enter(tl, next, v.exit_at, { rise: 38 });  // the next card rises at once (v07)
+          PCM.life(tl, next, { at: v.exit_at, main: { kind: "rise", rise: 38 }, hold: v.hold });  // the next card rises at once (v07)
         }
       }
       window.__timelines["exit-move"] = tl;

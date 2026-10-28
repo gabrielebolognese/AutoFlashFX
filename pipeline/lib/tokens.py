@@ -24,11 +24,12 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 import re
 import sys
 
-TOKENS_VERSION = 1
+TOKENS_VERSION = 2  # M14: motion.grammar and energy
 STYLE_NAME = "paper-cards"
 
 # Keys whose values are not style numbers from the source files: hashes, dates, font metrics measured from the
@@ -38,6 +39,10 @@ EXEMPT = {
     "fonts.*.cap_ratio", "fonts.*.file", "fonts.*.license", "fonts.*.family", "fonts.*.weight", "fonts.*.style",
     "beat_map", "style_beat_map",
     "components",
+    # M14: the motion grammar's values come from BUILD_SPEC.md section 5 (Motion and energy rules), the energy targets
+    # from the calibration on the reference videos (styles/<style>/analysis/energy.json) or the spec; neither is a
+    # number of style.md or tweaks.md (DECISIONS.md M14)
+    "motion.grammar", "energy",
 }
 
 
@@ -119,6 +124,126 @@ def proposed_block(tweaks: str, title: str) -> str:
     return (with_proposal or blocks or [""])[-1]
 
 
+# ----------------------------------------------------------------------------------------------- M14: motion grammar and energy
+
+# The Motion and energy rules of BUILD_SPEC.md section 5 (E1, E2, E5 to E8), as values. They hold for every style; the
+# style supplies the look through the other tokens. pc-motion.js reads them from tokens.css (--m-*).
+GRAMMAR = {
+    "main": {"min_s": 0.3, "max_s": 0.6, "frames": 15, "ease": "power3.inOut", "zoom_from": 0.85, "zoom_from_small": 0.92, "zoom_from_close": 1.15,
+             "rotate_from_deg": 12, "rotate_from_range_deg": [8, 15], "rotate_to_deg": 1, "rotate_to_range_deg": [0, 2], "rotate_lag_frames": 3,
+             "rotate_lag_range_frames": [2, 4], "move_short_px": 24, "perspective_px": 1400, "perspective_range_px": [1200, 1600],
+             "note": "the opacity and position frames of the main animation stay the style's measured enters (motion.enter, motion.pop)"},
+    "inertia": {"seconds": 3, "range_s": [2, 4], "ease": "power3.out", "move_px": 16, "scale": 0.04, "scale_example": [1.0, 1.04], "rotate_deg": 2,
+                "note": "a decelerating cubic ease-out on top of the hold's constant speed, so the speed never reaches zero"},
+    "hold": {"default": "normal",
+             "calm": {"drift_px_s": 2, "rotate_deg_s": 0.2, "scale_pct_s": 0.2},
+             "normal": {"drift_px_s": 4, "rotate_deg_s": 0.4, "scale_pct_s": 0.35},
+             "lively": {"drift_px_s": 8, "rotate_deg_s": 0.6, "scale_pct_s": 0.5},
+             "drift_range_px_s": [2, 8], "rotate_range_deg_s": [0.2, 0.6], "scale_range_pct_s": [0.2, 0.5]},
+    "exit": {"min_s": 0.2, "max_s": 0.4, "ease": "power2.in", "note": "the style's exits (transitions.*) stay the reference"},
+    "static_max_s": 0.5,
+    "horizon_s": 90,
+    "edges": {"outside_share": [0.3, 0.7], "max_speed_px_s": 20, "count": 6, "inside_max_px": 180, "no_text": True},
+    "ambient": {"count": 16, "max_speed_px_s": 10, "twinkle_s": [2, 4], "kinds": ["star", "dot", "cloud"]},
+    "camera": {"rotate_deg_s": 0.3, "perspective_px": 1400, "depth_step_px": 24},
+    "content": {"scroll_px_s": 24, "scroll_scale": 1.25, "note": "a screenshot inside a window card scrolls slowly (content motion, E1: the content itself keeps moving)"},
+    "mascot_idle": {"bob_px": 3, "blink_every_s": [2.6, 3.8], "prop_wiggle_deg": 6},
+    "captions": {"fonts": ["grotesk", "serif-italic", "handwritten", "kicker"], "emphasis_size_ratio": [1.25, 1.5], "anchor_size_ratio": [2, 3],
+                 "min_fonts_in_group": 3, "group_words": [2, 6], "word_rise_px": [8, 16], "word_rotate_deg": [2, 4], "group_rise_px": [20, 40],
+                 "group_rotate_deg": [3, 6], "note": "E3, built in M15"},
+    "text_budget": {"max_chars_on_screen": 100, "note": "E4, built in M15; the minimum text size is the caption font size"},
+    "composition": {"hero_width_share": [0.7, 0.85], "min_layers_per_scene": 2, "empty_hero_max_s": 1, "camera_every_scenes": 3, "transition_type_max": 3,
+                    "hook_moving_by_frame": 4, "note": "E8, built in M16"},
+}
+
+# The energy targets of E0 when the style has no calibration file (BUILD_SPEC.md, paper-cards)
+ENERGY_SPEC_TARGETS = {"moving_share_pct": 42, "middle_moving_share_pct": 46, "pixels_changing_pct": 3.3, "still_share_pct": 15, "longest_still_s": 2}
+ENERGY_LABELS = {"moving_share_pct": "moving share", "middle_moving_share_pct": "middle band", "pixels_changing_pct": "pixels changing",
+                 "still_share_pct": "still stretches", "longest_still_s": "longest still"}
+
+
+def text_zones(zones: dict, canvas: dict) -> dict:
+    """The zones the edge and ambient layers must stay out of (E5, E7): the caption band, the hook header, the end card's
+    text, as boxes at 1080x1920, derived from the zones."""
+    cap = zones["caption"]
+    margin = zones["margin_x"]
+    ec = zones["end_card"]
+    return {
+        "caption": {"x": cap["x0"] - 30, "y": cap["center_y"] - 180, "w": (cap["x1"] - cap["x0"]) + 60, "h": 260},
+        "hook": {"x": margin + 30, "y": zones["kicker_top"] - 20, "w": canvas["width"] - 2 * (margin + 30), "h": 470},
+        "endcard": {"x": ec["x"] + 95, "y": ec["top"], "w": 680, "h": 640},
+    }
+
+
+def grammar_tokens(zones: dict, canvas: dict, type_scale: dict) -> dict:
+    g = json.loads(json.dumps(GRAMMAR))
+    g["text_zones"] = text_zones(zones, canvas)
+    g["text_budget"]["min_text_px"] = type_scale["caption"]["font_px"]
+    g["captions"]["caption_px"] = type_scale["caption"]["font_px"]
+    return g
+
+
+def energy_override(tweaks: str) -> dict:
+    """An `- **Energy:** ...` line in tweaks.md overrides the targets: `moving 45`, `middle 50`, `pixels 3.5`, `still 12`,
+    `longest 1.5` (any subset, any order, a percent sign or s allowed)."""
+    m = re.search(r"^- \*\*Energy:\*\*(.*)$", tweaks, re.M)
+    if not m:
+        return {}
+    line = m.group(1)
+    out = {}
+    pats = {"moving_share_pct": r"moving(?: share)?\s+(\d+(?:\.\d+)?)", "middle_moving_share_pct": r"middle(?: band)?\s+(\d+(?:\.\d+)?)",
+            "pixels_changing_pct": r"pixels?(?: changing)?\s+(\d+(?:\.\d+)?)", "still_share_pct": r"still(?: stretches)?\s+(\d+(?:\.\d+)?)",
+            "longest_still_s": r"longest(?: still)?\s+(\d+(?:\.\d+)?)"}
+    for key, pat in pats.items():
+        mm = re.search(pat, line, re.I)
+        if mm:
+            out[key] = num(mm.group(1))
+    return out
+
+
+def energy_targets_from_medians(look: dict) -> dict:
+    """The lower bounds (moving share, middle band, pixels changing) at 70 percent of the look references' median; the
+    upper bounds (still stretches, the longest still) at the median rounded up to the next 5 percent and 0.5 s."""
+    out = dict(ENERGY_SPEC_TARGETS)
+    if look.get("moving_share_pct") is not None:
+        out["moving_share_pct"] = int(round(look["moving_share_pct"] * 0.7))
+    if look.get("middle_moving_share_pct") is not None:
+        out["middle_moving_share_pct"] = int(round(look["middle_moving_share_pct"] * 0.7))
+    if look.get("pixels_changing_pct") is not None:
+        out["pixels_changing_pct"] = round(look["pixels_changing_pct"] * 0.7, 1)
+    if look.get("still_share_pct") is not None:
+        out["still_share_pct"] = int(math.ceil(look["still_share_pct"] / 5.0 - 1e-9) * 5)
+    if look.get("longest_still_s") is not None:
+        out["longest_still_s"] = round(math.ceil(look["longest_still_s"] / 0.5 - 1e-9) * 0.5, 1)
+    return out
+
+
+def energy_tokens(energy_json: dict | None, tweaks: str) -> dict:
+    """tokens.json `energy`: the targets (the calibration's, the spec's, then tweaks.md's Energy line), the thresholds of
+    the meter and where the numbers came from."""
+    if energy_json and isinstance(energy_json.get("medians"), dict) and energy_json["medians"].get("look"):
+        look = energy_json["medians"]["look"]
+        targets = energy_targets_from_medians(look)
+        calibration = {"source": "analysis/energy.json", "run": energy_json.get("run"), "look_medians": look, "motion_medians": energy_json["medians"].get("motion"),
+                       "videos": sorted(energy_json.get("videos", {}).keys())}
+    else:
+        targets = dict(ENERGY_SPEC_TARGETS)
+        calibration = {"source": "spec", "note": "no styles/<style>/analysis/energy.json: the targets of BUILD_SPEC.md E0 for paper-cards"}
+    override = energy_override(tweaks)
+    targets.update(override)
+    return {
+        "targets": targets,
+        "directions": {"moving_share_pct": "min", "middle_moving_share_pct": "min", "pixels_changing_pct": "min", "still_share_pct": "max", "longest_still_s": "max"},
+        "labels": ENERGY_LABELS,
+        "override": override,
+        "override_format": "a line `- **Energy:** moving 45, middle 50, pixels 3.5, still 12, longest 1.5` in tweaks.md (any subset)",
+        "calibration": calibration,
+        "meter": {"fps": 30, "size": [108, 192], "frozen_max": 0.05, "subtle_max": 0.6, "medium_max": 4, "pixel_change_min": 8, "still_is": "below medium (frozen or subtle)",
+                  "still_stretch_s": 1, "command": "python pipeline/lib/review energy <video> [--plan merged.json]"},
+        "target_rule": "lower bounds at 70 percent of the look references' median; upper bounds at the median rounded up to 5 percent and 0.5 s",
+    }
+
+
 # ----------------------------------------------------------------------------------------------- the build
 
 def color_table(style: str) -> dict:
@@ -150,7 +275,7 @@ def beat_table(style: str) -> list[dict]:
 # works, data, options) and the script by function; recorded in DECISIONS.md M9. "any" lists what every beat may
 # use (the canvas, the captions, the mascot and the moves).
 BEAT_TYPES = {
-    "hook": ["headline", "window-card", "logo-tile", "hero-3d", "card", "fly-in", "stat-number"],
+    "hook": ["headline", "window-card", "logo-tile", "hero-3d", "icon-3d", "card", "fly-in", "stat-number"],
     "stake": ["card", "dark-chip", "light-chip", "window-card", "strike-through", "handwritten-callout", "thumb-grid"],
     "number": ["stat-number", "chart-card", "progress-bar", "dark-chip", "card", "light-chip"],
     "tool": ["window-card", "logo-tile", "card", "light-chip", "dark-chip", "thumb-grid", "camera-move"],
@@ -161,7 +286,7 @@ BEAT_TYPES = {
     "before-after": ["strike-through", "table-card", "thumb-grid", "card", "chart-card", "light-chip", "window-card"],
     "pain-payoff": ["card", "check-badge", "strike-through", "dark-chip", "light-chip", "window-card"],
     "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip"],
-    "ask": ["end-card", "dm-card", "speech-bubble"],
+    "ask": ["end-card", "dm-card", "speech-bubble", "icon-3d"],
     "any": ["paper-canvas", "caption-line", "mascot", "pop", "exit-move", "fly-in", "camera-move"],
 }
 
@@ -197,7 +322,7 @@ def flatten(text: str) -> str:
     return re.sub(r"\n[ \t]+(?=\S)", " ", text)
 
 
-def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None) -> dict:
+def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None, energy_json: dict | None = None) -> dict:
     style, tweaks = flatten(style_raw), flatten(tweaks_raw)
     in_force = tweaks_state(tweaks)
     colors = color_table(style)
@@ -428,6 +553,9 @@ def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None) -> dict
                 "lockup_on_dark": "lockup-gradient-on-dark.png"},
     }
 
+    motion["grammar"] = grammar_tokens(zones, canvas, type_scale)
+    energy = energy_tokens(energy_json, tweaks)
+
     open_questions = {
         "1": f"caption center y {caption_y}: tweaks.md Caption box line in force" + ("" if not in_force["caption_position"] else " (the accepted proposal)"),
         "2": f"caption line at most {caption_max_w}px wide (x {caption_x0} to {caption_x1}): tweaks.md Right side line in force",
@@ -451,7 +579,7 @@ def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None) -> dict
         "style_version": 2,
         "tokens_version": TOKENS_VERSION,
         "generated": dt.date.today().isoformat(),
-        "sources": {"style.md": sha1(style_raw), "tweaks.md": sha1(tweaks_raw)},
+        "sources": {"style.md": sha1(style_raw), "tweaks.md": sha1(tweaks_raw), "energy.json": energy_hash(energy_json)},
         "in_force": in_force,
         "canvas": canvas,
         "colors": colors,
@@ -464,6 +592,7 @@ def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None) -> dict
         "pacing": pacing,
         "limits": limits,
         "branding": branding,
+        "energy": energy,
         "tracker": {"enabled": False},
         "honesty_labels": {"enabled": True, "look": "light chip", "texts": {"mock": "illustrative", "sourced": "real"}},
         "doodles": False,
@@ -528,9 +657,45 @@ def css_text(tokens: dict) -> str:
         f"  --end-card-x: {z['end_card']['x']}px;",
         f"  --end-card-top: {z['end_card']['top']}px;",
         f"  --end-card-tilt: {z['end_card']['tilt_deg']}deg;",
-        "}",
-        "",
     ]
+    g = tokens["motion"].get("grammar") or {}
+    if g:
+        m, i, h = g["main"], g["inertia"], g["hold"]
+        lines += [
+            "  /* the motion grammar (BUILD_SPEC.md section 5, Motion and energy rules; tokens.json motion.grammar): read by pc-motion.js */",
+            f"  --m-perspective: {m['perspective_px']};",
+            f"  --m-main-frames: {m['frames']};",
+            f"  --m-zoom-from: {m['zoom_from']};",
+            f"  --m-zoom-from-small: {m['zoom_from_small']};",
+            f"  --m-zoom-from-close: {m['zoom_from_close']};",
+            f"  --m-rotate-from: {m['rotate_from_deg']};",
+            f"  --m-rotate-to: {m['rotate_to_deg']};",
+            f"  --m-rotate-lag: {m['rotate_lag_frames']};",
+            f"  --m-move-short: {m['move_short_px']};",
+            f"  --m-inertia-s: {i['seconds']};",
+            f"  --m-inertia-move: {i['move_px']};",
+            f"  --m-inertia-scale: {i['scale']};",
+            f"  --m-inertia-rotate: {i['rotate_deg']};",
+        ]
+        for level in ("calm", "normal", "lively"):
+            lines += [f"  --m-hold-{level}-drift: {h[level]['drift_px_s']};", f"  --m-hold-{level}-rotate: {h[level]['rotate_deg_s']};", f"  --m-hold-{level}-scale: {h[level]['scale_pct_s']};"]
+        lines += [
+            f"  --m-horizon-s: {g['horizon_s']};",
+            f"  --m-static-max-s: {g['static_max_s']};",
+            f"  --m-edge-max-speed: {g['edges']['max_speed_px_s']};",
+            f"  --m-edge-outside-min: {g['edges']['outside_share'][0]};",
+            f"  --m-edge-outside-max: {g['edges']['outside_share'][1]};",
+            f"  --m-edge-count: {g['edges']['count']};",
+            f"  --m-ambient-max-speed: {g['ambient']['max_speed_px_s']};",
+            f"  --m-ambient-count: {g['ambient']['count']};",
+            f"  --m-camera-deg-s: {g['camera']['rotate_deg_s']};",
+            f"  --m-depth-step: {g['camera']['depth_step_px']};",
+            f"  --m-scroll-px-s: {g.get('content', {}).get('scroll_px_s', 24)};",
+            f"  --m-scroll-scale: {g.get('content', {}).get('scroll_scale', 1.25)};",
+        ]
+        for name, zb in g.get("text_zones", {}).items():
+            lines.append(f"  --m-zone-{name}: {zb['x']:g} {zb['y']:g} {zb['w']:g} {zb['h']:g};")
+    lines += ["}", ""]
     return "\n".join(lines)
 
 
@@ -601,7 +766,26 @@ def load_sources(style_dir: str) -> tuple[str, str]:
     return read(style_path), read(tweaks_path)
 
 
-def current(tokens_path: str, style: str, tweaks: str) -> tuple[bool, str]:
+def energy_json_path(style_dir: str) -> str:
+    return os.path.join(style_dir, "analysis", "energy.json")
+
+
+def load_energy_json(style_dir: str) -> dict | None:
+    p = energy_json_path(style_dir)
+    if not os.path.isfile(p):
+        return None
+    try:
+        with open(p, encoding="utf-8-sig") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def energy_hash(energy_json: dict | None) -> str:
+    return sha1(json.dumps(energy_json.get("medians", {}), sort_keys=True)) if energy_json else ""
+
+
+def current(tokens_path: str, style: str, tweaks: str, energy_json: dict | None = None) -> tuple[bool, str]:
     if not os.path.isfile(tokens_path):
         return False, "tokens.json is missing"
     try:
@@ -616,6 +800,8 @@ def current(tokens_path: str, style: str, tweaks: str) -> tuple[bool, str]:
         return False, "style.md changed"
     if src.get("tweaks.md") != sha1(tweaks):
         return False, "tweaks.md changed"
+    if (src.get("energy.json") or "") != energy_hash(energy_json):
+        return False, "the energy calibration changed"
     return True, "unchanged"
 
 
@@ -638,12 +824,13 @@ def write_text(path: str, text: str) -> None:
 
 def cmd_build(a) -> int:
     style, tweaks = load_sources(a.style_dir)
-    ok, reason = current(a.out, style, tweaks)
+    energy_json = load_energy_json(a.style_dir)
+    ok, reason = current(a.out, style, tweaks, energy_json)
     css_missing = bool(a.css) and not os.path.isfile(a.css)
     if ok and not a.force and not css_missing:
         print(json.dumps({"rebuilt": False, "reason": reason, "out": a.out}))
         return 0
-    tokens = build_tokens(style, tweaks, a.fonts_dir)
+    tokens = build_tokens(style, tweaks, a.fonts_dir, energy_json)
     problems = verify_tokens(tokens, style, tweaks)
     if problems:
         for p in problems:
@@ -664,7 +851,7 @@ def cmd_build(a) -> int:
 
 def cmd_check(a) -> int:
     style, tweaks = load_sources(a.style_dir)
-    ok, reason = current(a.tokens, style, tweaks)
+    ok, reason = current(a.tokens, style, tweaks, load_energy_json(a.style_dir))
     print(("tokens.json is current" if ok else "tokens.json needs a rebuild") + f" ({reason})")
     return 0 if ok else 1
 

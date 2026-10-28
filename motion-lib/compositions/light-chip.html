@@ -5,6 +5,7 @@
          {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
          {"id":"fade_frames","type":"number","label":"Fade frames","default":4},
          {"id":"drift","type":"number","label":"Drift distance (px)","default":10},
+         {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
          {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
          {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
        ]'>
@@ -13,23 +14,23 @@
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* light-chip (vocabulary.md 6, Light pill or chip): a label inside or above a card, surface fill, ink text, 67 tall;
-       fades in over 4 frames with a small drift (v03 label pill). */
+       fades in over 4 frames with a small drift (v03 label pill), with a small zoom and a parallax rotation on top (E2),
+       then the inertia and the hold of E1 (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
   </style>
   <div id="root" data-composition-id="light-chip" data-width="1080" data-height="1920">
     <div id="lchip" class="pc-light-chip pc-el"><span id="lchip-text"></span></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 120, y: 500, text: "video AI", enter_at: 0, fade_frames: 4, drift: 10, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 120, y: 500, text: "video AI", enter_at: 0, fade_frames: 4, drift: 10, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var chip = document.getElementById("lchip");
       PC.place(chip, v);
       document.getElementById("lchip-text").textContent = v.text;
       var tl = gsap.timeline({ paused: true });
-      tl.fromTo(chip, { opacity: 0, y: v.drift }, { opacity: 1, y: 0, duration: PC.f(v.fade_frames), ease: "power2.out" }, v.enter_at);
-      PC.event("enter", v.enter_at, { el: "lchip" });
-      PC.exit(tl, chip, v.exit_at, v.exit);
+      PCM.life(tl, chip, { at: v.enter_at, main: { kind: "fade", frames: v.fade_frames, rise: v.drift, ease: "power2.out", axis: "x" }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
       window.__timelines["light-chip"] = tl;
       tl.seek(0);
     })();

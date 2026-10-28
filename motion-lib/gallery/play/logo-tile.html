@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 366, "y": 700, "size": 160, "shape": "tile", "image": "assets/brand/mark/mark-gradient.png", "image_pad": 30, "second_image": "assets/brand/mark/mark-black.png", "overshoot": 0.13, "frames": 14, "enter_at": 0.2, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 366, "y": 700, "size": 160, "shape": "tile", "image": "assets/brand/mark/mark-gradient.png", "image_pad": 30, "second_image": "assets/brand/mark/mark-black.png", "overshoot": 0.13, "frames": 14, "enter_at": 0.2, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -48,7 +53,8 @@ window.__pcEvents = [];
        circle badge (v01) holding the logo as an image file with its aspect ratio locked (BRAND.md: never redrawn,
        recolored or stretched; the tile keeps the style's shadow, the logo gets none). Pops with 13 percent overshoot
        over 14 frames (v08); a second tile slides in from the left over 9 frames with a 6 px overshoot (v08). With no
-       image the tile shows the style's neutral icon in accent. */
+       image the tile shows the style's neutral icon in accent. Both tiles live through E1's phases (pc-motion.js); the
+       tile turns, never the logo inside it (the logo keeps its drawn shape: tweaks.md Branding). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     .lt { position: absolute; box-sizing: border-box; }
     .lt img { display: block; width: 100%; height: 100%; object-fit: contain; }
@@ -59,9 +65,10 @@ window.__pcEvents = [];
     <div id="lt-second" class="lt pc-el" style="display: none"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 460, y: 700, size: 160, shape: "tile", image: "", image_pad: 30, second_image: "", overshoot: 0.13, frames: 14, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 460, y: 700, size: 160, shape: "tile", image: "", image_pad: 30, second_image: "", overshoot: 0.13, frames: 14, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var neutral = '<svg viewBox="0 0 24 24" fill="none" stroke="#DC6532" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/></svg>';
       function fill(el, image) {
         el.className = "lt pc-el " + (v.shape === "badge" ? "pc-logo-badge" : "pc-logo-tile");
@@ -72,18 +79,15 @@ window.__pcEvents = [];
       var main = document.getElementById("lt-main"), second = document.getElementById("lt-second");
       fill(main, v.image); PC.place(main, { x: v.x, y: v.y });
       var tl = gsap.timeline({ paused: true });
-      PC.pop(tl, main, v.enter_at, { overshoot: v.overshoot, frames: v.frames, from: 0.55 });
+      var exit = { type: v.exit, at: v.exit_at };
+      // a logo keeps its drawn shape: the tile turns only a little (a 6 degree parallax, not the full 12)
+      PCM.life(tl, main, { at: v.enter_at, main: { kind: "pop", overshoot: v.overshoot, frames: v.frames, from: 0.55, rotate: 6 }, hold: v.hold, exit: exit });
       if (v.second_image) {
         second.style.display = "flex"; fill(second, v.second_image);
         PC.place(second, { x: v.x + v.size + 28, y: v.y });
         var at = v.enter_at + PC.f(v.frames) + PC.f(3);
-        tl.fromTo(second, { x: -(v.size + 28), opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-        tl.to(second, { x: 6, duration: PC.f(7), ease: "power2.out" }, at);
-        tl.to(second, { x: 0, duration: PC.f(2), ease: "power1.inOut" }, at + PC.f(7));
-        PC.event("slide", at, { el: "lt-second" });
+        PCM.life(tl, second, { at: at, main: { kind: "slide", dx: -(v.size + 28), frames: 9, overshoot: 6, rotate: 6, rotateSign: -1 }, hold: v.hold, exit: exit });
       }
-      PC.exit(tl, main, v.exit_at, v.exit);
-      if (v.second_image) PC.exit(tl, second, v.exit_at, v.exit);
       window.__timelines["logo-tile"] = tl;
       tl.seek(0);
     })();

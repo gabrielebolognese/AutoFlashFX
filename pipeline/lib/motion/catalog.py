@@ -22,8 +22,8 @@ CUE_TYPES = ["transition_slow", "transition_fast", "attention", "hero_enter", "u
 # (enter_at 0); a string is a formula over the props. `cue` is the sound the event takes in S11 when the rules of
 # BUILD_SPEC.md S11 agree (null: a visual change with no sound of its own, an attention candidate).
 META = {
-    "paper-canvas": dict(item=None, name="Paper canvas", kind="canvas", z=0, demo={}, demo_duration=None, measure="#paper-root",
-                         does="The background of every reel: paper, a warm glow top left, a warm glow lower right, darker bottom corners, a dot grid. Static, mounted for the whole reel at z 0.",
+    "paper-canvas": dict(item=None, name="Paper canvas", kind="canvas", z=0, demo={"seed": 7, "duration": 90}, demo_duration=None, measure="#paper-edges",
+                         does="The background of every reel: paper, a warm glow top left, a warm glow lower right, darker bottom corners, a dot grid, and from M14 the life of Motion and energy rules E5 and E7: an edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside the left and right borders, at most 20 px per second, no text) and an ambient layer (stars, dots and small clouds drifting and twinkling), both seeded per reel (the seed and duration props) and kept out of every text zone. Mounted for the whole reel at z 0.",
                          events=[]),
     "card": dict(item=1, name="Card enter", kind="card", z=2, demo={"mascot": "star", "exit": "fade-blur", "exit_at": 2.6}, demo_duration=3, measure="#card-box",
                  does="A surface card with an optional title, body and image. The default move for anything new: opacity 0 to 1 over 5 frames, y +38 to 0 over 8 frames, expo.out.",
@@ -106,6 +106,9 @@ META = {
     "table-card": dict(item=24, name="Table card", kind="card", z=2, demo={}, demo_duration=3, measure="#tb",
                        does="A comparison: a surface card with a logo row (image files) and a small pill, label and value rows with hairline dividers, values right-aligned, good values in success. Enters over 7 frames with a 28 px rise; rows follow 3 frames apart.",
                        events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "row", "frame": "4 + 3 x i", "cue": None}]),
+    "icon-3d": dict(item=None, name="3D icon (Three.js, CSS-extruded fallback)", kind="3d", z=2, fallback="css", demo={"enter_at": 0.2, "icon": "bolt"}, demo_duration=4, measure="#i3-stage",
+                    does="A low-poly 3D icon turning slowly at the center of a scene (Motion and energy rules E6): a Three.js extrusion of an SVG path (bolt, star, play, check, cursor, heart) or a primitive (a rounded slab, a torus, a low-poly sphere) in a palette color, drawn from the hf-seek time on the WebGL backend of motion-lib/webgl.json, with a CSS-extruded fallback (the SVG in 8 to 16 depth layers under a turning stage) when WebGL is missing or mode is css. Needs the clip_start prop (its data-start). Never a logo. The style allows 3D objects in the hook and the end card (tweaks.md 3D).",
+                    events=[{"event": "enter", "frame": "enter_at x 30", "cue": "hook_hit", "note": "when it is the hook's set piece"}, {"event": "land", "frame": "enter_at x 30 + 12", "cue": None}]),
     "hero-3d": dict(item=None, name="3D hero object (Three.js)", kind="3d", z=2, demo={"enter_at": 0.2, "label": "the skill file"}, demo_duration=4, measure="#h3-canvas",
                     does="The one 3D component (hook and end card only, at most 2 objects): a low-poly card, box or icosahedron turning under a warm key light, drawn from the hf-seek time, with a soft contact shadow; scales in with a back-out over 12 frames. Needs the clip_start prop (its data-start). Without WebGL it shows a flat card and reports data-webgl=0.",
                     events=[{"event": "enter", "frame": "enter_at x 30", "cue": "hook_hit", "note": "when it is the hook's set piece"}, {"event": "land", "frame": "enter_at x 30 + 12", "cue": None}]),
@@ -148,7 +151,9 @@ def build(lib: str, tokens: dict, previous: dict | None) -> dict:
                 "still": f"gallery/stills/{cid}.png", "z": meta["z"], "measure": meta["measure"],
                 "props": props, "beat_types": beat_types_for(tokens, cid), "sound_events": meta["events"],
                 "demo": meta["demo"], "demo_duration": meta["demo_duration"],
+                "fallback": meta.get("fallback"),
                 "frame_match": prev_by_id.get(cid, {}).get("frame_match") or {"result": "not run"},
+                "energy": prev_by_id.get(cid, {}).get("energy"),
             }
             comps.append(entry)
     comps.sort(key=lambda c: (c["item"] is None, c["item"] or 0, c["id"]))
@@ -156,7 +161,8 @@ def build(lib: str, tokens: dict, previous: dict | None) -> dict:
         "style": tokens.get("style", "paper-cards"), "generated": dt.date.today().isoformat(), "fps": common.FPS,
         "canvas": {"width": 1080, "height": 1920},
         "placement": "Every component is a full-frame 1080x1920 layer mounted as a HyperFrames sub-composition (data-composition-src) with its props as data-variable-values; x, y and w props place the element; the host order and z-index give the stacking; the canvas is mounted first for the whole reel, the caption line once over the body beats.",
-        "conventions": {"times": "props in seconds local to the clip (enter_at, exit_at); hero-3d also needs clip_start = its data-start",
+        "conventions": {"times": "props in seconds local to the clip (enter_at, exit_at); hero-3d and icon-3d also need clip_start = its data-start",
+                        "hold": "every element component has hold (calm, normal, lively): the steady motion after its entrance (Motion and energy rules E1); the canvas takes seed and duration",
                         "images": "image props take a path relative to the project (assets/brand/... from library/brand per brand.json, assets/research/... from the run's research assets); aspect ratio locked, never redrawn",
                         "exit": "every element component has exit (none, fade-blur, fall, push, cut) and exit_at: the scene change of 9c",
                         "honesty": "card-like components take honesty (none, mock, sourced) and show the light chip of tokens.json honesty_labels",
@@ -194,7 +200,7 @@ def check(lib: str, tokens: dict, cat: dict) -> list[str]:
                 problems.append(f"{cid}: unknown cue type {cue}")
         if not c.get("beat_types"):
             problems.append(f"{cid}: no beat type allows it (tokens.json beat_map)")
-        if cid != "paper-canvas" and not comp["registers"]:
+        if not comp["registers"]:
             problems.append(f"{cid}: the file never registers window.__timelines[\"{cid}\"]")
     for item in range(1, 25):
         if not any(c.get("item") == item for c in listed.values()):

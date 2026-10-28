@@ -8,6 +8,7 @@
   {"id":"overshoot","type":"number","label":"Overshoot (0.02 pills and cards, 0.13 to 0.16 icons and badges)","default":0.02},
   {"id":"frames","type":"number","label":"Pop frames (3 to 15)","default":7},
   {"id":"enter_at","type":"number","label":"Pop at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the pop)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -17,7 +18,8 @@
   <style>
     /* pop (vocabulary.md 8): brings small things in with a little spring: badges, logo tiles, keyword pills, small chips.
        Scale from about 0.5 to a peak, then back to 1 (back-out); opacity reaches 1 in the first 4 frames. Icons and
-       badges overshoot 13 to 16 percent, pills and cards 1 to 3 percent, over 3 to 15 frames. */
+       badges overshoot 13 to 16 percent, pills and cards 1 to 3 percent, over 3 to 15 frames. The pop is the main
+       animation of E1; a parallax rotation rides on it (E2), then the inertia and the hold (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #pop-el.badge { border-radius: 50%; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
     #pop-el.tile { border-radius: 36px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
@@ -27,9 +29,10 @@
     <div id="pop-el" class="pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 440, y: 820, kind: "pill", text: "LINK", icon: "star", size: 160, overshoot: 0.02, frames: 7, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 440, y: 820, kind: "pill", text: "LINK", icon: "star", size: 160, overshoot: 0.02, frames: 7, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var el = document.getElementById("pop-el");
       var icons = {
         star: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5 5.9 21l1.5-6.8L2.2 9.5l6.9-.7z"/></svg>',
@@ -43,8 +46,7 @@
       else { el.className = "pc-el " + v.kind; el.style.width = v.size + "px"; el.style.height = v.size + "px"; el.innerHTML = icons[v.icon] || icons.star; }
       PC.place(el, { x: v.x, y: v.y });
       var tl = gsap.timeline({ paused: true });
-      PC.pop(tl, el, v.enter_at, { overshoot: v.overshoot, frames: v.frames, from: 0.5 });
-      PC.exit(tl, el, v.exit_at, v.exit);
+      PCM.life(tl, el, { at: v.enter_at, main: { kind: "pop", overshoot: v.overshoot, frames: v.frames, from: 0.5 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
       window.__timelines["pop"] = tl;
       tl.seek(0);
     })();

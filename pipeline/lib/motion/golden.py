@@ -166,6 +166,13 @@ def apply_transitions(plan: dict, cat: dict) -> None:
             props["exit_at"] = round(max(0.0, exit_at), 3)
 
 
+def canvas_seed(plan: dict) -> int:
+    """A stable seed per reel for the canvas layers (M14): from the idea id, else from the plan's duration."""
+    import hashlib
+    key = str(plan.get("idea_id") or plan.get("duration_ms") or "reel")
+    return int(hashlib.sha1(key.encode("utf-8")).hexdigest()[:6], 16) % 1000000 + 1
+
+
 def reset_dir(path: str) -> None:
     """Empty a folder, surviving OneDrive and Windows handles: retry, then fall back to clearing what can be cleared."""
     import time
@@ -187,7 +194,7 @@ def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, a
     shutil.copytree(os.path.join(lib, "compositions"), os.path.join(project, "compositions"), dirs_exist_ok=True)
     for name in ("fonts", "vendor"):
         shutil.copytree(os.path.join(lib, "assets", name), os.path.join(project, "assets", name), dirs_exist_ok=True)
-    for name in ("paper-cards.css", "paper-cards.js", "tokens.css"):
+    for name in ("paper-cards.css", "paper-cards.js", "pc-motion.js", "tokens.css"):
         shutil.copy2(os.path.join(lib, "assets", name), os.path.join(project, "assets", name))
     shutil.copy2(os.path.join(lib, "hyperframes.json"), os.path.join(project, "hyperframes.json"))
     common.write_json(os.path.join(project, "meta.json"), {"id": meta_id or ("golden-" + plan.get("idea_id", "reel")), "name": title or ("golden reel " + plan.get("idea_id", ""))})
@@ -201,8 +208,9 @@ def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, a
     dur_s = plan["duration_ms"] / 1000
     hosts = []
     canvas_file = by_id["paper-canvas"]["file"]
+    canvas_props = {"seed": canvas_seed(plan), "duration": round(dur_s + 1, 3)}  # M14: the edge and ambient layers, seeded per reel
     hosts.append(f'      <div id="paper-canvas" class="clip" data-composition-id="paper-canvas" data-composition-src="{canvas_file}" data-start="0" data-duration="{dur_s:.3f}" '
-                 f'data-track-index="0" data-width="1080" data-height="1920" data-no-timeline data-scene="all" style="z-index: 0"></div>')
+                 f'data-track-index="0" data-width="1080" data-height="1920" data-scene="all" style="z-index: 0" data-variable-values=\'{attr_json(canvas_props)}\'></div>')
     events_hint = []
     for s in plan["scenes"]:
         for comp in s["components"]:
@@ -210,7 +218,7 @@ def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, a
             props = resolve_props(dict(comp["props"]), project, brand_dir, brand_index, assets_dir, used)
             start = comp["start_ms"] / 1000
             dur = (comp["end_ms"] - comp["start_ms"]) / 1000
-            if comp["component"] == "hero-3d":
+            if comp["component"] in ("hero-3d", "icon-3d"):
                 props["clip_start"] = round(start, 3)
             z = comp.get("z", c.get("z", 2))
             hosts.append(f'      <div id="{comp["id"]}" class="clip" data-composition-id="{comp["id"]}" data-composition-src="{c["file"]}" data-start="{start:.3f}" data-duration="{dur:.3f}" '

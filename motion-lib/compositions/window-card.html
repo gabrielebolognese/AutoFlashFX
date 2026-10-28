@@ -12,6 +12,8 @@
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"mascot","type":"string","label":"Mascot prop on the top-right corner (empty = none)","default":""},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"scroll_px_s","type":"number","label":"The screenshot scrolls inside the window at this speed (px per second; 0 = still)","default":24},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,10 +22,13 @@
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* window-card (vocabulary.md 10): shows the tool or a site: a card with a surface-chrome title bar and 3 traffic-light
-       dots, the content a real screenshot (research assets) or text lines. Enters with the card move (1) or a fly-in (16). */
+       dots, the content a real screenshot (research assets) or text lines. Enters with the card move (1) or a fly-in (16),
+       combined with E2's zoom and parallax rotation, then the inertia and the hold of E1 (pc-motion.js). The screenshot
+       inside scrolls slowly (24 px per second by default, scroll_px_s), enlarged a quarter so it has room: the content
+       itself keeps moving, as in the references' window cards (E1, E8). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #wc { overflow: hidden; display: flex; flex-direction: column; }
-    #wc-body { flex: 1 1 auto; min-height: 0; position: relative; background: var(--c-surface); }
+    #wc-body { flex: 1 1 auto; min-height: 0; position: relative; background: var(--c-surface); overflow: hidden; }
     #wc.dark #wc-body { background: #1C1511; }
     #wc-img { display: none; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
     #wc-img.contain { object-fit: contain; }
@@ -39,10 +44,11 @@
     <div id="wc-mascot" class="pc-mascot pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 420, w: 900, h: 760, title: "", kind: "light", image: "", image_fit: "cover-top", lines_json: [], enter: "rise", enter_at: 0,
-        mascot: "", honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        mascot: "", honesty: "none", scroll_px_s: 24, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wc = document.getElementById("wc"), chrome = document.getElementById("wc-chrome"), img = document.getElementById("wc-img"), lines = document.getElementById("wc-lines");
       PC.place(wc, v);
       document.getElementById("wc-title").textContent = v.title;
@@ -51,18 +57,19 @@
       else { lines.style.display = "block"; lines.textContent = (Array.isArray(v.lines_json) ? v.lines_json : []).join("\n"); }
       PC.honesty(wc, v.honesty, { top: 88, right: 24 });
       var tl = gsap.timeline({ paused: true });
-      var landAt = v.enter_at;
-      if (v.enter === "rise") landAt = PC.enter(tl, wc, v.enter_at, { rise: 38 });
-      else if (v.enter === "fly-in") landAt = PC.flyIn(tl, wc, v.enter_at, { dy: 870, tilt: 2.4, frames: 16 });
-      else tl.set(wc, { opacity: 1 }, 0);
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, wc, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      // the screenshot scrolls slowly inside the window (the page reads on: content motion, E1)
+      if (v.image && v.image_fit !== "contain" && v.scroll_px_s > 0) {
+        PCM.scroll(tl, img, life.land, life.until - life.land, { speed: v.scroll_px_s, height: v.h - 72 });
+      }
       if (v.mascot) {
         var m = document.getElementById("wc-mascot");
         m.innerHTML = PC.mascotSVG(v.mascot, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
         m.style.display = "block"; m.style.left = (v.x + v.w - 47) + "px"; m.style.top = (v.y - 32) + "px";
-        PC.mascotEnter(tl, m, landAt);
-        PC.exit(tl, m, v.exit_at, v.exit);
+        PCM.mascotEnter(tl, m, life.land, { hold: v.hold, exit: exit, until: life.until, seed: PC.hash(v.title + v.mascot) });
       }
-      PC.exit(tl, wc, v.exit_at, v.exit);
       window.__timelines["window-card"] = tl;
       tl.seek(0);
     })();

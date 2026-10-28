@@ -449,7 +449,7 @@ def footprint(component: str, props: dict, toks: dict) -> dict | None:
         size = _num(p, "size", 160)
         ww = size * (2.25 if p.get("second_image") else 1)
         return {"x": x, "y": y, "w": ww, "h": size, "text_boxes": []}
-    if component == "hero-3d":
+    if component in ("hero-3d", "icon-3d"):
         tb2 = [{"x": x, "y": y + h + 10, "w": w, "h": 50, "prop": "label"}] if p.get("label") else []
         return {"x": x, "y": y, "w": w if w > 0 else 600, "h": (h if h > 0 else 600) + (60 if p.get("label") else 0), "text_boxes": tb2}
     if component == "pop":
@@ -483,7 +483,7 @@ def footprint(component: str, props: dict, toks: dict) -> dict | None:
 
 def enter_frames(component: str, props: dict) -> float:
     """How many frames after its start a component has landed (its first visible change is at frame 0)."""
-    if component == "hero-3d":
+    if component in ("hero-3d", "icon-3d"):
         return _num(props, "enter_frames", 12)
     if component in ("card", "window-card", "fly-in") and props.get("enter") == "fly-in":
         return 14

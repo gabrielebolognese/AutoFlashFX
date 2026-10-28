@@ -395,8 +395,8 @@ def compose_animations(answer: dict, inp: common.Inputs, toks: dict, cat: dict, 
                 if not props.get("words_json"):
                     props["words_json"] = [{"w": w["word"], "t": round(max(0.0, (int(w["start_ms"]) - start) / 1000), 3)} for w in tl.beat_words(beat)]
                 props.setdefault("kicker_at", 0.05)
-            if cid == "hero-3d":
-                props.pop("clip_start", None)
+            if cid in ("hero-3d", "icon-3d"):
+                props.pop("clip_start", None)  # the compiler sets it from the clip's start
             role = c.get("role") if c.get("role") in ROLES else ("hero" if k == 1 else "support")
             honesty = props.get("honesty") if props.get("honesty") in ("mock", "sourced") else None
             comps.append({"id": iid, "component": cid, "start_ms": int(start), "end_ms": int(en), "props": props, "z": comp.get("z", 2), "role": role,

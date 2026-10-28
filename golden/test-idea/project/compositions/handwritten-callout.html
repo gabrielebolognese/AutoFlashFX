@@ -7,6 +7,7 @@
   {"id":"text_frames","type":"number","label":"Text fade frames","default":6},
   {"id":"draw_frames","type":"number","label":"Arrow draw frames","default":8},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -16,7 +17,8 @@
   <style>
     /* handwritten-callout (vocabulary.md 22): a hand-drawn aside with an arrow pointing at something, in the script
        color and the handwritten face (lines 69 px apart, font about 58). Its motion was not measured: the text fades
-       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. */
+       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. Text and arrow then drift
+       together (E1, pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #hc-wrap { display: flex; flex-direction: column; align-items: flex-start; }
     #hc-text { white-space: pre; }
@@ -30,9 +32,10 @@
     <svg id="hc-arrow" class="pc-el" width="300" height="300" viewBox="0 0 300 300"><path id="hc-path" d=""/><path id="hc-head" d=""/></svg>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("hc-wrap"), text = document.getElementById("hc-text"), svg = document.getElementById("hc-arrow");
       var path = document.getElementById("hc-path"), head = document.getElementById("hc-head");
       PC.place(wrap, { x: v.x, y: v.y });
@@ -52,18 +55,17 @@
         PC.place(svg, { x: ax, y: ay });
       } else svg.style.display = "none";
       var tl = gsap.timeline({ paused: true });
-      tl.fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: PC.f(v.text_frames), ease: "none" }, v.enter_at);
-      PC.event("enter", v.enter_at, { el: "hc-text" });
+      var exit = { type: v.exit, at: v.exit_at };
+      // text and arrow share one life (the same fade, the same drift), so the arrow keeps pointing where it did
+      var main = { kind: "fade", frames: v.text_frames, rise: 6, ease: "none", zoom: false, rotate: 6, axis: "x" };
+      PCM.life(tl, wrap, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
       if (d) {
-        var len = path.getTotalLength(), hl = head.getTotalLength();
-        path.style.strokeDasharray = len + " " + len; head.style.strokeDasharray = hl + " " + hl;
+        PCM.life(tl, svg, { at: v.enter_at, main: main, hold: v.hold, exit: exit, events: { enter: "arrow" } });
         var at = v.enter_at + PC.f(v.text_frames) - PC.f(2);
-        tl.fromTo(path, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: PC.f(v.draw_frames), ease: "power1.inOut" }, at);
-        tl.fromTo(head, { strokeDashoffset: hl }, { strokeDashoffset: 0, duration: PC.f(3), ease: "power1.out" }, at + PC.f(v.draw_frames) - PC.f(1));
+        PCM.draw(tl, path, at, { frames: v.draw_frames, ease: "power1.inOut" });
+        PCM.draw(tl, head, at + PC.f(v.draw_frames) - PC.f(1), { frames: 3, ease: "power1.out" });
         PC.event("draw", at, { el: "hc-arrow", end: at + PC.f(v.draw_frames + 2) });
       }
-      PC.exit(tl, wrap, v.exit_at, v.exit);
-      if (d) PC.exit(tl, svg, v.exit_at, v.exit);
       window.__timelines["handwritten-callout"] = tl;
       tl.seek(0);
     })();

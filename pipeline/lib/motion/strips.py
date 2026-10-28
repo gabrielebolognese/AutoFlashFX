@@ -147,6 +147,30 @@ def pearson(a: list[float], b: list[float]) -> float:
     return sum((x - ma) * (y - mb) for x, y in zip(a, b)) / (sa * sb)
 
 
+def correlate_sliding(ref_curve: list[float], cur_curve: list[float], frames: int, points: int = 12) -> tuple[float, int, int]:
+    """The reference's move window against every window of `frames` frames in the component's curve (M14: the combined
+    entrance of E2 puts a zoom before the move a strip shows, so the biggest change is not always the strip's move);
+    the best Pearson r over the onsets and a 1-frame shift of the reference onset."""
+    o_ref, e_ref = move_window(ref_curve)
+    e_ref = min(e_ref, o_ref + max(3, frames) - 1)
+    best = (-1.0, o_ref, 0)
+    n = max(3, frames)
+    for shift in (-1, 0, 1):
+        r0 = max(0, o_ref + shift)
+        seg = ref_curve[r0:e_ref + 1] + [0.0]
+        if len(seg) < 3:
+            continue
+        ref_rs = resample(seg, points)
+        for onset in range(0, max(1, len(cur_curve) - 2)):
+            win = cur_curve[onset:onset + n]
+            if len(win) < 3 or max(win) <= 0:
+                continue
+            r = pearson(ref_rs, resample(win + [0.0], points))
+            if r > best[0]:
+                best = (r, r0, onset)
+    return best
+
+
 def correlate(ref_curve: list[float], cur_curve: list[float], frames: int, points: int = 12) -> tuple[float, int, int]:
     """The shapes of the two move windows (resampled to `points`), the best of a 1-frame shift of the reference onset.
     `frames` caps the window length (about the expected move plus a few frames)."""

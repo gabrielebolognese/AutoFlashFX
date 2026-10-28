@@ -11,6 +11,7 @@
   {"id":"confetti_count","type":"number","label":"Confetti pieces","default":18},
   {"id":"seed","type":"number","label":"Seed for the confetti","default":7},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,7 +21,8 @@
   <style>
     /* speech-bubble (vocabulary.md 23, Speech bubble and confetti on the end card): the bubble scales from about 0.5 to 1
        over 7 frames with a 40 px overshoot in y, settling over 9 more frames; a keyword pill pops 7 frames with 2
-       percent overshoot; confetti drifts (seeded, v07 f1251, v08 f1180). */
+       percent overshoot; confetti drifts (seeded, v07 f1251, v08 f1180). The bubble then holds (E1); every move is in
+       pc-motion.js. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #sb { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 18px; transform-origin: 20% 100%; }
     #sb-bubble { position: relative; padding: 26px 38px; border-radius: 34px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); font-weight: 800; font-size: 44px; letter-spacing: -0.02em; white-space: nowrap; }
@@ -35,38 +37,23 @@
     <div id="sb" class="pc-el"><div id="sb-bubble"></div><div id="sb-pill" class="pc-keyword-pill" style="display:none"></div></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 300, y: 880, text: "", keyword: "", tail: "bottom-left", bubble_frames: 7, overshoot_y: 40, settle_frames: 9, confetti: true, confetti_count: 18, seed: 7,
-        enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var sb = document.getElementById("sb"), bubble = document.getElementById("sb-bubble"), pill = document.getElementById("sb-pill"), layer = document.getElementById("sb-confetti");
       PC.place(sb, { x: v.x, y: v.y });
       bubble.textContent = v.text;
       if (v.tail === "bottom-right") bubble.classList.add("right");
       var tl = gsap.timeline({ paused: true });
-      tl.fromTo(sb, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: PC.f(v.bubble_frames), ease: "power2.out" }, v.enter_at);
-      tl.fromTo(sb, { y: 0 }, { y: -v.overshoot_y, duration: PC.f(v.bubble_frames), ease: "power2.out" }, v.enter_at);
-      tl.to(sb, { y: 0, duration: PC.f(v.settle_frames), ease: "power2.inOut" }, v.enter_at + PC.f(v.bubble_frames));
-      PC.event("pop", v.enter_at, { el: "sb-bubble" });
+      var exit = { type: v.exit, at: v.exit_at };
+      var b = PCM.bubble(tl, sb, v.enter_at, { frames: v.bubble_frames, overshootY: v.overshoot_y, settleFrames: v.settle_frames, hold: v.hold, exit: exit });
       if (v.keyword) {
         pill.style.display = "inline-flex"; pill.textContent = v.keyword;
-        PC.pop(tl, pill, v.enter_at + PC.f(v.bubble_frames) + PC.f(4), { overshoot: 0.02, frames: 7 });
+        PCM.life(tl, pill, { at: v.enter_at + PC.f(v.bubble_frames) + PC.f(4), main: { kind: "pop", overshoot: 0.02, frames: 7, rotate: 6 }, hold: { kind: "none" }, inertia: { move: 0, scale: 0.01, rotate: 1 }, until: b.until });
       }
-      if (v.confetti) {
-        var rnd = PC.prng(v.seed), colors = ["#DC6532", "#289C5C", "#FFFAF7", "#C9623C", "#D67354"];
-        for (var i = 0; i < v.confetti_count; i++) {
-          var p = PC.el("div", "sb-piece", layer); p.id = "sb-p" + i;
-          p.style.background = colors[i % colors.length];
-          var px = v.x - 120 + rnd() * 520, py = v.y - 160 + rnd() * 120, delay = rnd() * 0.25, fall = 260 + rnd() * 240, rot = rnd() * 720 - 360;
-          p.style.left = px + "px"; p.style.top = py + "px";
-          var at = v.enter_at + delay;
-          tl.fromTo(p, { opacity: 0, y: 0, rotation: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-          tl.to(p, { y: fall, rotation: rot, duration: 1.2 + rnd() * 0.5, ease: "power1.in" }, at);
-          tl.to(p, { opacity: 0, duration: 0.25, ease: "none" }, at + 1.1 + rnd() * 0.3);
-        }
-        PC.event("confetti", v.enter_at, { el: "sb-confetti" });
-      }
-      PC.exit(tl, sb, v.exit_at, v.exit);
+      if (v.confetti) PCM.confetti(tl, layer, v.enter_at, { seed: v.seed, count: v.confetti_count, x: v.x, y: v.y });
       window.__timelines["speech-bubble"] = tl;
       tl.seek(0);
     })();

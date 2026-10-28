@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"kind": "pullback", "image": "assets/demo/repo.png", "title": "FlashFX editor", "frames": 8, "at": 0.6, "x": 150, "y": 520, "w": 780, "h": 880, "honesty": "mock", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"kind": "pullback", "image": "assets/demo/repo.png", "title": "FlashFX editor", "frames": 8, "at": 0.6, "x": 150, "y": 520, "w": 780, "h": 880, "honesty": "mock", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* camera-move (vocabulary.md 19, Camera pull-back or zoom): reveals context (the reel inside an editor) or dives
        into one card. Pull-back of the whole scene into an app window, 8 frames ease-out (v02 f828 to f835); the zoom
-       goes the other way, 20 frames ease-in-out (v05). The caption layer is a separate component and does not move. */
+       goes the other way, 20 frames ease-in-out (v05). The caption layer is a separate component and does not move.
+       Before and after the move the scene keeps a slow drift (E1); the camera move itself is PCM.camera (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #cm-stage { left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 50%; }
     #cm-content { position: absolute; inset: 0; background: var(--c-surface); overflow: hidden; }
@@ -64,9 +70,10 @@ window.__pcEvents = [];
     <div id="cm-stage" class="pc-el"><div id="cm-content"><img id="cm-img" alt="" style="display:none"><div id="cm-ph">the scene</div></div></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ kind: "pullback", image: "", title: "FlashFX editor", frames: 8, at: 0.6, x: 150, y: 520, w: 780, h: 880, honesty: "mock", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ kind: "pullback", image: "", title: "FlashFX editor", frames: 8, at: 0.6, x: 150, y: 520, w: 780, h: 880, honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var stage = document.getElementById("cm-stage"), win = document.getElementById("cm-window");
       document.getElementById("cm-title").textContent = v.title;
       if (v.image) { var img = document.getElementById("cm-img"); img.src = v.image; img.style.display = "block"; document.getElementById("cm-ph").style.display = "none"; }
@@ -77,18 +84,16 @@ window.__pcEvents = [];
       var sx = v.w / 1080, sy = v.h / 1920, s = Math.min(sx, sy);
       var endX = v.x + v.w / 2 - 540, endY = v.y + v.h / 2 - 960;
       var tl = gsap.timeline({ paused: true });
-      var ease = v.kind === "zoom" ? "power2.inOut" : "power2.out";
+      var exit = { type: v.exit, at: v.exit_at };
+      // before the camera moves, the scene content drifts inside the stage (E1: nothing waits still)
+      if (v.at > 0) PCM.life(tl, document.getElementById("cm-content"), { at: 0, main: { kind: "none" }, hold: { level: v.hold, kind: "drift", dir: { x: 0, y: -1 } }, inertia: { move: 0, scale: 0, rotate: 0 }, until: v.at + PC.f(v.frames) });
+      var cam = PCM.camera(tl, stage, v.at, { kind: v.kind, frames: v.frames, scale: s, x: endX, y: endY, hold: v.hold, exit: exit });
       if (v.kind === "zoom") {
         tl.set(win, { opacity: 1 }, 0);
-        tl.fromTo(stage, { scale: s, x: endX, y: endY }, { scale: 1, x: 0, y: 0, duration: PC.f(v.frames), ease: ease }, v.at);
-        tl.to(win, { opacity: 0, duration: PC.f(3), ease: "none" }, v.at + PC.f(v.frames) - PC.f(3));
+        PCM.exit(tl, win, v.at + PC.f(v.frames) - PC.f(3), "fade", { frames: 3 });
       } else {
-        tl.fromTo(stage, { scale: 1, x: 0, y: 0 }, { scale: s, x: endX, y: endY, duration: PC.f(v.frames), ease: ease }, v.at);
-        tl.fromTo(win, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, v.at + PC.f(2));
+        PCM.life(tl, win, { at: v.at + PC.f(2), main: { kind: "fade", frames: 3, rise: 0, zoom: false, rotate: false }, hold: { level: v.hold, kind: "drift-rotate", dir: cam.dir }, inertia: { move: 0, scale: 0, rotate: 0 }, until: cam.until, exit: exit, events: { enter: "window" } });
       }
-      PC.event("camera", v.at, { el: "cm-stage", kind: v.kind, end: v.at + PC.f(v.frames) });
-      PC.exit(tl, stage, v.exit_at, v.exit);
-      PC.exit(tl, win, v.exit_at, v.exit);
       window.__timelines["camera-move"] = tl;
       tl.seek(0);
     })();

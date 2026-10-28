@@ -13,6 +13,7 @@
   {"id":"font_px","type":"number","label":"Mono font size (px)","default":30},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -22,7 +23,8 @@
   <style>
     /* terminal-card (vocabulary.md 11, Terminal or code card that types): shows the prompt or the code being written: a
        dark window card with colored mono text; lines appear one by one, a rewrite types 1.7 to 2.6 characters per
-       frame (v04), here 2 per frame. The typing segment is a sound event (typing, trimmed to its length). */
+       frame (v04), here 2 per frame. The typing segment is a sound event (typing, trimmed to its length). The card lives
+       through E1's phases with E2's combined entrance; the typing is a tween on a setter (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #tc { overflow: hidden; display: flex; flex-direction: column; }
     #tc-body { padding: 30px 40px 36px; font-family: "JetBrains Mono", monospace; font-weight: 500; line-height: 1.45; color: #F3E9E1; min-height: 160px; }
@@ -37,10 +39,11 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 560, w: 900, h: 0, title: "terminal", lines_json: [], mode: "type", chars_per_frame: 2, line_gap_frames: 6, start_delay_frames: 8,
-        prompt: "$ ", font_px: 30, enter_at: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        prompt: "$ ", font_px: 30, enter_at: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var tc = document.getElementById("tc"), body = document.getElementById("tc-body");
       PC.place(tc, v);
       document.getElementById("tc-title").textContent = v.title;
@@ -51,21 +54,20 @@
         return { el: el, text: (i === 0 && v.prompt ? v.prompt : "") + (l.text || "") };
       });
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, tc, v.enter_at, { rise: 38 });
-      var t = landAt + PC.f(v.start_delay_frames);
+      var life = PCM.life(tl, tc, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      var t = life.land + PC.f(v.start_delay_frames);
+      var quiet = { move: 0, scale: 0, rotate: 0 };
       lines.forEach(function (l, i) {
         if (v.mode === "type") {
-          var end = PC.typeInto(tl, l.el, l.text, t, { framesPerChar: 1 / Math.max(0.25, v.chars_per_frame) });
+          var end = PCM.typeInto(tl, l.el, l.text, t, { framesPerChar: 1 / Math.max(0.25, v.chars_per_frame) });
           t = end + PC.f(v.line_gap_frames);
         } else {
           tl.set(l.el, { textContent: l.text }, t);
-          tl.fromTo(l.el, { opacity: 0 }, { opacity: 1, duration: PC.f(2), ease: "none" }, t);
-          PC.event("line", t, { el: l.el.id });
+          PCM.life(tl, l.el, { at: t, main: { kind: "fade", frames: 2, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: t + PC.f(1), events: { enter: "line" } });
           t += PC.f(v.line_gap_frames);
         }
       });
       lines.forEach(function (l) { if (v.mode !== "type") l.el.textContent = ""; });
-      PC.exit(tl, tc, v.exit_at, v.exit);
       window.__timelines["terminal-card"] = tl;
       tl.seek(0);
     })();

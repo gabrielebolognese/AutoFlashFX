@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 440, "y": 820, "kind": "tile", "text": "LINK", "icon": "bolt", "size": 160, "overshoot": 0.13, "frames": 14, "enter_at": 0.3, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 440, "y": 820, "kind": "tile", "text": "LINK", "icon": "bolt", "size": 160, "overshoot": 0.13, "frames": 14, "enter_at": 0.3, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* pop (vocabulary.md 8): brings small things in with a little spring: badges, logo tiles, keyword pills, small chips.
        Scale from about 0.5 to a peak, then back to 1 (back-out); opacity reaches 1 in the first 4 frames. Icons and
-       badges overshoot 13 to 16 percent, pills and cards 1 to 3 percent, over 3 to 15 frames. */
+       badges overshoot 13 to 16 percent, pills and cards 1 to 3 percent, over 3 to 15 frames. The pop is the main
+       animation of E1; a parallax rotation rides on it (E2), then the inertia and the hold (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #pop-el.badge { border-radius: 50%; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
     #pop-el.tile { border-radius: 36px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
@@ -56,9 +62,10 @@ window.__pcEvents = [];
     <div id="pop-el" class="pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 440, y: 820, kind: "pill", text: "LINK", icon: "star", size: 160, overshoot: 0.02, frames: 7, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 440, y: 820, kind: "pill", text: "LINK", icon: "star", size: 160, overshoot: 0.02, frames: 7, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var el = document.getElementById("pop-el");
       var icons = {
         star: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5 5.9 21l1.5-6.8L2.2 9.5l6.9-.7z"/></svg>',
@@ -72,8 +79,7 @@ window.__pcEvents = [];
       else { el.className = "pc-el " + v.kind; el.style.width = v.size + "px"; el.style.height = v.size + "px"; el.innerHTML = icons[v.icon] || icons.star; }
       PC.place(el, { x: v.x, y: v.y });
       var tl = gsap.timeline({ paused: true });
-      PC.pop(tl, el, v.enter_at, { overshoot: v.overshoot, frames: v.frames, from: 0.5 });
-      PC.exit(tl, el, v.exit_at, v.exit);
+      PCM.life(tl, el, { at: v.enter_at, main: { kind: "pop", overshoot: v.overshoot, frames: v.frames, from: 0.5 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
       window.__timelines["pop"] = tl;
       tl.seek(0);
     })();

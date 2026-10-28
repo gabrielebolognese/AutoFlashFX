@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 640, "w": 900, "prompt": "Design the landing page. Stop making it look AI-made.", "placeholder": "Message Claude", "reply": "Planning the palette first: 4 to 6 hex colors.", "frames_per_char": 1.15, "send_delay_frames": 3, "send_frames": 2, "reply_delay_frames": 10, "enter_at": 0, "type_at": 0.4, "honesty": "mock", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 640, "w": 900, "prompt": "Design the landing page. Stop making it look AI-made.", "placeholder": "Message Claude", "reply": "Planning the palette first: 4 to 6 hex colors.", "frames_per_char": 1.15, "send_delay_frames": 3, "send_frames": 2, "reply_delay_frames": 10, "enter_at": 0, "type_at": 0.4, "honesty": "mock", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,9 @@ window.__pcEvents = [];
   <style>
     /* chat-card (vocabulary.md 17): shows a prompt being sent: a surface card with an input bar and an accent send
        button. The text types at about 1.15 frames per character (v07); the send button turns from gray to accent over
-       2 frames, 3 frames after the last character (v06); an optional reply bubble follows. */
+       2 frames, 3 frames after the last character (v06); an optional reply bubble follows. The card lives through E1's
+       phases with E2's combined entrance; the bar and the reply sit at their own depths (E6); the typing is a tween on
+       a setter (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #chat { padding: 34px 36px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; }
     #chat-reply { display: none; align-self: flex-start; max-width: 86%; padding: 18px 26px; border-radius: 22px 22px 22px 6px; background: var(--c-surface-chrome); font-weight: 600; font-size: 30px; line-height: 1.3; box-shadow: 0 0 0 1px var(--c-card-edge); }
@@ -63,37 +70,33 @@ window.__pcEvents = [];
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 640, w: 900, prompt: "", placeholder: "Message Claude", reply: "", frames_per_char: 1.15, send_delay_frames: 3, send_frames: 2,
-        reply_delay_frames: 10, enter_at: 0, type_at: 0.4, honesty: "mock", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        reply_delay_frames: 10, enter_at: 0, type_at: 0.4, honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var card = document.getElementById("chat"), input = document.getElementById("chat-input"), send = document.getElementById("chat-send"), reply = document.getElementById("chat-reply");
+      var bar = document.getElementById("chat-bar");
       PC.place(card, { x: v.x, y: v.y, w: v.w });
       PC.honesty(card, v.honesty, { top: -22, right: 24 });
+      PCM.depth(card, [reply, bar]);
       var accent = getComputedStyle(document.documentElement).getPropertyValue("--c-accent").trim() || "#DC6532";
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, card, v.enter_at, { rise: 38 });
-      var t0 = Math.max(landAt, v.type_at);
+      var life = PCM.life(tl, card, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      var t0 = Math.max(life.land, v.type_at);
       input.textContent = v.placeholder;
-      var state = { n: 0 }, len = v.prompt.length;
-      var render = function () {
-        var n = Math.round(state.n);
+      var typedEnd = PCM.typeInto(tl, input, v.prompt, t0, { framesPerChar: v.frames_per_char, render: function (n) {
         if (n <= 0) { input.textContent = v.placeholder; input.classList.add("empty"); }
         else { input.textContent = v.prompt.slice(0, n); input.classList.remove("empty"); }
-      };
-      if (len > 0) tl.to(state, { n: len, duration: PC.f(v.frames_per_char * len), ease: "none", snap: "n", onUpdate: render }, t0);
-      var typedEnd = t0 + PC.f(v.frames_per_char * len);
-      PC.event("typing", t0, { el: "chat-input", end: typedEnd, chars: len });
+      } });
       var sendAt = typedEnd + PC.f(v.send_delay_frames);
-      tl.to(send, { backgroundColor: accent, duration: PC.f(v.send_frames), ease: "none" }, sendAt);
+      PCM.recolor(tl, send, sendAt, { backgroundColor: accent, frames: v.send_frames });
       PC.event("send", sendAt, { el: "chat-send" });
       if (v.reply) {
         reply.textContent = v.reply; reply.style.display = "block";
         var rAt = sendAt + PC.f(v.reply_delay_frames);
-        tl.fromTo(reply, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: PC.f(5), ease: "power2.out" }, rAt);
-        PC.event("reply", rAt, { el: "chat-reply" });
+        PCM.life(tl, reply, { at: rAt, main: { kind: "fade", frames: 5, rise: 16, ease: "power2.out", zoom: "small", rotate: 8, axis: "x" }, hold: { kind: "none" }, inertia: { move: 4, scale: 0.01, rotate: 1 }, until: life.until, events: { enter: "reply" } });
       }
-      PC.exit(tl, card, v.exit_at, v.exit);
       window.__timelines["chat-card"] = tl;
       tl.seek(0);
     })();

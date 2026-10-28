@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"kicker": "CLAUDE CODE SITES", "kicker_mark": "assets/brand/mark/mark-gradient.png", "lines_json": "[\"Why your Claude Code\", \"cards all look\", \"*identical.*\"]", "words_json": "", "kicker_at": 0.1, "headline_at": 0.5, "word_frames": 3, "x": 90, "w": 900, "align": "center", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"kicker": "CLAUDE CODE SITES", "kicker_mark": "assets/brand/mark/mark-gradient.png", "lines_json": "[\"Why your Claude Code\", \"cards all look\", \"*identical.*\"]", "words_json": "", "kicker_at": 0.1, "headline_at": 0.5, "word_frames": 3, "x": 90, "w": 900, "align": "center", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,20 +38,23 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
   
   
+  
 <link rel="stylesheet" href="assets/tokens.css">
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
-    /* headline (vocabulary.md 20, Headline reveal, and style.md Hook): frame 0 is empty paper with the accent mark where
-       the kicker will start; the kicker words fade in one by one, then the headline builds word by word (3 frames per
-       word, as spoken when words_json gives the times; open question 11: both look refs) over 2 to 3 lines with one
-       phrase in the serif italic. Kicker top y 253 (open question 5: v02), cap 21 (open question 6: v02). */
+    /* headline (vocabulary.md 20, Headline reveal, and style.md Hook): frame 0 is paper with the accent mark where the
+       kicker will start; the kicker words fade in one by one, then the headline builds word by word (3 frames per word,
+       as spoken when words_json gives the times; open question 11: both look refs) over 2 to 3 lines with one phrase in
+       the serif italic. Kicker top y 253 (open question 5: v02), cap 21 (open question 6: v02). The kicker and the
+       headline block move from frame 0 (E1): a slow parallax rotation and scale creep, no drift (the kicker sits just
+       under the safe top); each word fades in on its own time (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #hl-kicker { position: absolute; top: var(--kicker-top); white-space: nowrap; }
     #hl-kicker .kw { display: inline-block; margin-right: 0.45em; }
@@ -62,10 +69,11 @@ window.__pcEvents = [];
     <div id="hl-lines" class="pc-headline pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ kicker: "", kicker_mark: "", lines_json: [], words_json: [], kicker_at: 0.1, headline_at: 0.5, word_frames: 3,
-        x: 90, w: 900, align: "center", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        x: 90, w: 900, align: "center", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var kicker = document.getElementById("hl-kicker"), mark = document.getElementById("hl-mark"), lines = document.getElementById("hl-lines");
       var capRatio = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-kicker-cap")) || 0.7;
       var kickerCap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--kicker-cap")) || 21;
@@ -107,18 +115,22 @@ window.__pcEvents = [];
       }
 
       var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      // the blocks move from frame 0: a parallax rotation around the horizontal axis and a scale creep, no drift
+      PCM.life(tl, kicker, { at: 0, main: { kind: "none", axis: "x" }, hold: { level: v.hold, kind: "rotate-scale" }, inertia: quiet, exit: exit });
+      PCM.life(tl, lines, { at: 0, main: { kind: "none", axis: "x" }, hold: { level: v.hold, kind: "rotate-scale" }, inertia: quiet, exit: exit });
       tl.set(mark, { opacity: 1 }, 0);
       kwords.forEach(function (s, i) {
-        tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, v.kicker_at + PC.f(3 * i));
+        var at = v.kicker_at + PC.f(3 * i);
+        PCM.life(tl, s, { at: at, main: { kind: "fade", frames: 3, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: at + PC.f(1), events: { enter: "kicker_word" } });
       });
       var times = Array.isArray(v.words_json) ? v.words_json : [];
       wordEls.forEach(function (span, i) {
         var at = (times[i] && typeof times[i].t === "number") ? times[i].t : v.headline_at + PC.f(v.word_frames * i);
-        tl.fromTo(span, { opacity: 0 }, { opacity: 1, duration: PC.f(v.word_frames), ease: "none" }, at);
+        PCM.life(tl, span, { at: at, main: { kind: "fade", frames: v.word_frames, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: at + PC.f(1), events: { enter: "word_fade" } });
         PC.event("word", at, { el: "hl-" + i, text: span.textContent });
       });
-      PC.exit(tl, kicker, v.exit_at, v.exit);
-      PC.exit(tl, lines, v.exit_at, v.exit);
       window.__timelines["headline"] = tl;
       tl.seek(0);
     })();

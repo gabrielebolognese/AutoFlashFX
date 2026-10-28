@@ -58,8 +58,9 @@ def replace_3d(plan: dict, cat_by_id: dict) -> list[str]:
     replaced = []
     for s in plan.get("scenes", []):
         for c in s.get("components", []):
-            if cat_by_id.get(c["component"], {}).get("kind") != "3d":
-                continue
+            entry = cat_by_id.get(c["component"], {})
+            if entry.get("kind") != "3d" or entry.get("fallback") == "css":
+                continue  # icon-3d draws its CSS-extruded fallback itself (M14)
             p = c.get("props", {})
             label = str(p.get("label") or "").strip()
             w = float(p.get("w", 600) or 600)

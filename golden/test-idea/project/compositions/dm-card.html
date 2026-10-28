@@ -10,6 +10,7 @@
   {"id":"app_label","type":"string","label":"App label (small, grey)","default":"Instagram"},
   {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"pop","label":"pop"},{"value":"drop","label":"drop from above"}]},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,8 +21,9 @@
     /* dm-card (branding, tweaks.md "Branding (FlashFX account)", BUILD_SPEC.md 2.7): the DM notification card of the
        CTA beat, in the style's look: a surface card with a round avatar image (mark/avatar-dark.png, at least 112 px
        across so its bolt stays 64 px tall), the sender name "FlashFX" and one message line. The avatar is an image file
-       with its aspect ratio locked, never redrawn. Enters with the style's card move; its landing is the notification
-       sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
+       with its aspect ratio locked, never redrawn. Enters with the style's card move (or a pop, or a drop from above),
+       combined with E2's zoom and parallax rotation, then E1's inertia and hold (pc-motion.js); its landing is the
+       notification sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #dm { display: flex; align-items: center; gap: 28px; padding: 26px 34px; box-sizing: border-box; }
     #dm-avatar { flex: 0 0 auto; border-radius: 50%; overflow: hidden; background: var(--c-ink-chip); }
@@ -43,10 +45,11 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 110, y: 1250, w: 860, avatar: "", avatar_size: 120, sender: "FlashFX", message: "", time_label: "now", app_label: "Instagram",
-        enter: "rise", enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter: "rise", enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var card = document.getElementById("dm"), av = document.getElementById("dm-avatar"), img = document.getElementById("dm-avatar-img");
       PC.place(card, { x: v.x, y: v.y, w: v.w });
       var size = Math.max(112, v.avatar_size);
@@ -56,17 +59,12 @@
       document.getElementById("dm-app").textContent = v.app_label;
       document.getElementById("dm-time").textContent = v.time_label;
       document.getElementById("dm-message").textContent = v.message;
+      PCM.depth(card, [av, document.getElementById("dm-text")]);
 
       var tl = gsap.timeline({ paused: true });
-      var landAt;
-      if (v.enter === "pop") landAt = PC.pop(tl, card, v.enter_at, { overshoot: 0.02, frames: 7 });
-      else if (v.enter === "drop") {
-        tl.fromTo(card, { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: PC.f(8), ease: "expo.out" }, v.enter_at);
-        landAt = v.enter_at + PC.f(8);
-        PC.event("enter", v.enter_at, { el: "dm" }); PC.event("land", landAt, { el: "dm" });
-      } else landAt = PC.enter(tl, card, v.enter_at, { rise: 38 });
-      PC.event("notification", landAt, { el: "dm" });
-      PC.exit(tl, card, v.exit_at, v.exit);
+      var main = v.enter === "pop" ? { kind: "pop", overshoot: 0.02, frames: 7 } : v.enter === "drop" ? { kind: "drop", rise: 60 } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      PC.event("notification", life.land, { el: "dm" });
       window.__timelines["dm-card"] = tl;
       tl.seek(0);
     })();

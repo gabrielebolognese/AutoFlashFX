@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 110, "y": 700, "w": 860, "avatar": "assets/brand/mark/avatar-dark.png", "avatar_size": 120, "sender": "FlashFX", "message": "Comment TELLS and I send you the checklist", "time_label": "now", "app_label": "Instagram", "enter": "rise", "enter_at": 0.3, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 110, "y": 700, "w": 860, "avatar": "assets/brand/mark/avatar-dark.png", "avatar_size": 120, "sender": "FlashFX", "message": "Comment TELLS and I send you the checklist", "time_label": "now", "app_label": "Instagram", "enter": "rise", "enter_at": 0.3, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -47,8 +52,9 @@ window.__pcEvents = [];
     /* dm-card (branding, tweaks.md "Branding (FlashFX account)", BUILD_SPEC.md 2.7): the DM notification card of the
        CTA beat, in the style's look: a surface card with a round avatar image (mark/avatar-dark.png, at least 112 px
        across so its bolt stays 64 px tall), the sender name "FlashFX" and one message line. The avatar is an image file
-       with its aspect ratio locked, never redrawn. Enters with the style's card move; its landing is the notification
-       sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
+       with its aspect ratio locked, never redrawn. Enters with the style's card move (or a pop, or a drop from above),
+       combined with E2's zoom and parallax rotation, then E1's inertia and hold (pc-motion.js); its landing is the
+       notification sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #dm { display: flex; align-items: center; gap: 28px; padding: 26px 34px; box-sizing: border-box; }
     #dm-avatar { flex: 0 0 auto; border-radius: 50%; overflow: hidden; background: var(--c-ink-chip); }
@@ -70,10 +76,11 @@ window.__pcEvents = [];
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 110, y: 1250, w: 860, avatar: "", avatar_size: 120, sender: "FlashFX", message: "", time_label: "now", app_label: "Instagram",
-        enter: "rise", enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter: "rise", enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var card = document.getElementById("dm"), av = document.getElementById("dm-avatar"), img = document.getElementById("dm-avatar-img");
       PC.place(card, { x: v.x, y: v.y, w: v.w });
       var size = Math.max(112, v.avatar_size);
@@ -83,17 +90,12 @@ window.__pcEvents = [];
       document.getElementById("dm-app").textContent = v.app_label;
       document.getElementById("dm-time").textContent = v.time_label;
       document.getElementById("dm-message").textContent = v.message;
+      PCM.depth(card, [av, document.getElementById("dm-text")]);
 
       var tl = gsap.timeline({ paused: true });
-      var landAt;
-      if (v.enter === "pop") landAt = PC.pop(tl, card, v.enter_at, { overshoot: 0.02, frames: 7 });
-      else if (v.enter === "drop") {
-        tl.fromTo(card, { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: PC.f(8), ease: "expo.out" }, v.enter_at);
-        landAt = v.enter_at + PC.f(8);
-        PC.event("enter", v.enter_at, { el: "dm" }); PC.event("land", landAt, { el: "dm" });
-      } else landAt = PC.enter(tl, card, v.enter_at, { rise: 38 });
-      PC.event("notification", landAt, { el: "dm" });
-      PC.exit(tl, card, v.exit_at, v.exit);
+      var main = v.enter === "pop" ? { kind: "pop", overshoot: 0.02, frames: 7 } : v.enter === "drop" ? { kind: "drop", rise: 60 } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      PC.event("notification", life.land, { el: "dm" });
       window.__timelines["dm-card"] = tl;
       tl.seek(0);
     })();

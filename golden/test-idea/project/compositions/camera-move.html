@@ -9,6 +9,7 @@
   {"id":"w","type":"number","label":"End window width (px)","default":780},
   {"id":"h","type":"number","label":"End window height (px)","default":880},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"mock","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the move)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -18,7 +19,8 @@
   <style>
     /* camera-move (vocabulary.md 19, Camera pull-back or zoom): reveals context (the reel inside an editor) or dives
        into one card. Pull-back of the whole scene into an app window, 8 frames ease-out (v02 f828 to f835); the zoom
-       goes the other way, 20 frames ease-in-out (v05). The caption layer is a separate component and does not move. */
+       goes the other way, 20 frames ease-in-out (v05). The caption layer is a separate component and does not move.
+       Before and after the move the scene keeps a slow drift (E1); the camera move itself is PCM.camera (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #cm-stage { left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 50%; }
     #cm-content { position: absolute; inset: 0; background: var(--c-surface); overflow: hidden; }
@@ -36,9 +38,10 @@
     <div id="cm-stage" class="pc-el"><div id="cm-content"><img id="cm-img" alt="" style="display:none"><div id="cm-ph">the scene</div></div></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ kind: "pullback", image: "", title: "FlashFX editor", frames: 8, at: 0.6, x: 150, y: 520, w: 780, h: 880, honesty: "mock", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ kind: "pullback", image: "", title: "FlashFX editor", frames: 8, at: 0.6, x: 150, y: 520, w: 780, h: 880, honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var stage = document.getElementById("cm-stage"), win = document.getElementById("cm-window");
       document.getElementById("cm-title").textContent = v.title;
       if (v.image) { var img = document.getElementById("cm-img"); img.src = v.image; img.style.display = "block"; document.getElementById("cm-ph").style.display = "none"; }
@@ -49,18 +52,16 @@
       var sx = v.w / 1080, sy = v.h / 1920, s = Math.min(sx, sy);
       var endX = v.x + v.w / 2 - 540, endY = v.y + v.h / 2 - 960;
       var tl = gsap.timeline({ paused: true });
-      var ease = v.kind === "zoom" ? "power2.inOut" : "power2.out";
+      var exit = { type: v.exit, at: v.exit_at };
+      // before the camera moves, the scene content drifts inside the stage (E1: nothing waits still)
+      if (v.at > 0) PCM.life(tl, document.getElementById("cm-content"), { at: 0, main: { kind: "none" }, hold: { level: v.hold, kind: "drift", dir: { x: 0, y: -1 } }, inertia: { move: 0, scale: 0, rotate: 0 }, until: v.at + PC.f(v.frames) });
+      var cam = PCM.camera(tl, stage, v.at, { kind: v.kind, frames: v.frames, scale: s, x: endX, y: endY, hold: v.hold, exit: exit });
       if (v.kind === "zoom") {
         tl.set(win, { opacity: 1 }, 0);
-        tl.fromTo(stage, { scale: s, x: endX, y: endY }, { scale: 1, x: 0, y: 0, duration: PC.f(v.frames), ease: ease }, v.at);
-        tl.to(win, { opacity: 0, duration: PC.f(3), ease: "none" }, v.at + PC.f(v.frames) - PC.f(3));
+        PCM.exit(tl, win, v.at + PC.f(v.frames) - PC.f(3), "fade", { frames: 3 });
       } else {
-        tl.fromTo(stage, { scale: 1, x: 0, y: 0 }, { scale: s, x: endX, y: endY, duration: PC.f(v.frames), ease: ease }, v.at);
-        tl.fromTo(win, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, v.at + PC.f(2));
+        PCM.life(tl, win, { at: v.at + PC.f(2), main: { kind: "fade", frames: 3, rise: 0, zoom: false, rotate: false }, hold: { level: v.hold, kind: "drift-rotate", dir: cam.dir }, inertia: { move: 0, scale: 0, rotate: 0 }, until: cam.until, exit: exit, events: { enter: "window" } });
       }
-      PC.event("camera", v.at, { el: "cm-stage", kind: v.kind, end: v.at + PC.f(v.frames) });
-      PC.exit(tl, stage, v.exit_at, v.exit);
-      PC.exit(tl, win, v.exit_at, v.exit);
       window.__timelines["camera-move"] = tl;
       tl.seek(0);
     })();

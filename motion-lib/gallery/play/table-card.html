@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 520, "w": 900, "title": "", "logos_json": "[{\"label\":\"Default skill\"},{\"label\":\"frontend-design\"}]", "pill": "compared", "rows_json": "[{\"label\":\"Palette\",\"values\":[\"purple gradient\",\"4 to 6 hex colors\"],\"good\":[false,true]},{\"label\":\"Cards\",\"values\":[\"same radius\",\"one point of view\"],\"good\":[false,true]},{\"label\":\"Labels\",\"values\":[\"ALL CAPS 01 02\",\"plain\"],\"good\":[false,true]}]", "enter_frames": 7, "rise": 28, "row_gap_frames": 3, "enter_at": 0, "honesty": "none", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 520, "w": 900, "title": "", "logos_json": "[{\"label\":\"Default skill\"},{\"label\":\"frontend-design\"}]", "pill": "compared", "rows_json": "[{\"label\":\"Palette\",\"values\":[\"purple gradient\",\"4 to 6 hex colors\"],\"good\":[false,true]},{\"label\":\"Cards\",\"values\":[\"same radius\",\"one point of view\"],\"good\":[false,true]},{\"label\":\"Labels\",\"values\":[\"ALL CAPS 01 02\",\"plain\"],\"good\":[false,true]}]", "enter_frames": 7, "rise": 28, "row_gap_frames": 3, "enter_at": 0, "honesty": "none", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* table-card (vocabulary.md 24): a surface card with a logo row and a small pill, label and value rows with hairline
        dividers, values right-aligned, good values in success. Card enter over 7 frames, rise 28 (v04 f195 to f202);
-       the rows follow 3 frames apart. Logos are image files (brand.json or research assets), never redrawn. */
+       the rows follow 3 frames apart. Logos are image files (brand.json or research assets), never redrawn. The card
+       lives through E1's phases with E2's combined entrance; the head and the rows sit at their own depths (E6). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #tb { padding: 36px 44px 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; }
     #tb-title { font-weight: 800; font-size: 36px; letter-spacing: -0.02em; }
@@ -70,9 +76,10 @@ window.__pcEvents = [];
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 90, y: 520, w: 900, title: "", logos_json: [], pill: "", rows_json: [], enter_frames: 7, rise: 28, row_gap_frames: 3, enter_at: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 90, y: 520, w: 900, title: "", logos_json: [], pill: "", rows_json: [], enter_frames: 7, rise: 28, row_gap_frames: 3, enter_at: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var tb = document.getElementById("tb"), head = document.getElementById("tb-head"), rowsEl = document.getElementById("tb-rows");
       PC.place(tb, { x: v.x, y: v.y, w: v.w });
       if (v.title) { var t = document.getElementById("tb-title"); t.textContent = v.title; t.style.display = "block"; }
@@ -98,14 +105,14 @@ window.__pcEvents = [];
         });
         return row;
       });
+      PCM.depth(tb, [head, rowsEl]);
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, tb, v.enter_at, { rise: v.rise, positionFrames: v.enter_frames, opacityFrames: Math.min(5, v.enter_frames) });
+      var life = PCM.life(tl, tb, { at: v.enter_at, main: { kind: "rise", rise: v.rise, positionFrames: v.enter_frames, opacityFrames: Math.min(5, v.enter_frames) }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      var quiet = { move: 0, scale: 0, rotate: 0 };
       rows.forEach(function (row, i) {
-        var at = landAt - PC.f(3) + PC.f(v.row_gap_frames) * i;
-        tl.fromTo(row, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-        PC.event("row", at, { el: row.id });
+        var at = life.land - PC.f(3) + PC.f(v.row_gap_frames) * i;
+        PCM.life(tl, row, { at: at, main: { kind: "fade", frames: 3, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: at + PC.f(1), events: { enter: "row" } });
       });
-      PC.exit(tl, tb, v.exit_at, v.exit);
       window.__timelines["table-card"] = tl;
       tl.seek(0);
     })();

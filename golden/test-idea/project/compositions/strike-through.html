@@ -12,6 +12,7 @@
   {"id":"x_frames","type":"number","label":"Frames per X stroke","default":6},
   {"id":"x_gap_frames","type":"number","label":"Frames between the X strokes","default":6},
   {"id":"replace_frames_per_char","type":"number","label":"Frames per typed character of the replacement","default":2},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -21,7 +22,8 @@
   <style>
     /* strike-through (vocabulary.md 15): "not X", before and after. A line drawn across over 4 frames (v04), or an X as
        two strokes of 6 frames each, 6 frames apart (v06); a replacement types in after it (v04). The strike is the
-       negative sound event. */
+       negative sound event. The group lives through E1's phases (pc-motion.js); the line and the typing are the
+       style's measured moves. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #st-wrap { display: inline-flex; align-items: center; gap: 22px; }
     #st-text { position: relative; display: inline-block; font-weight: 800; }
@@ -38,10 +40,11 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 120, y: 820, text: "video AI", style: "line", chip: true, font_px: 48, replacement: "", enter_at: 0, strike_at: 0.5, line_frames: 4, x_frames: 6,
-        x_gap_frames: 6, replace_frames_per_char: 2, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        x_gap_frames: 6, replace_frames_per_char: 2, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("st-wrap"), text = document.getElementById("st-text"), rep = document.getElementById("st-replacement");
       PC.place(wrap, { x: v.x, y: v.y });
       document.getElementById("st-label").textContent = v.text;
@@ -54,20 +57,21 @@
         lines[1].style.transformOrigin = "100% 50%";
       } else { lines.push(PC.el("span", "st-line b", text)); lines[0].id = "st-line"; }
       var tl = gsap.timeline({ paused: true });
-      tl.fromTo(text, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: PC.f(4), ease: "power2.out" }, v.enter_at);
-      PC.event("enter", v.enter_at, { el: "st-text" });
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      // the group holds; the text has its own 4-frame entrance (fade and a 10 px rise, with E2's small zoom and rotation)
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "none" }, hold: v.hold, inertia: quiet, exit: { type: v.exit, at: v.exit_at } });
+      PCM.life(tl, text, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 10, ease: "power2.out", zoom: "small", rotate: 8, axis: "x" }, hold: { kind: "none" }, inertia: { move: 4, scale: 0.01, rotate: 1 }, until: group.until });
       var t = Math.max(v.strike_at, v.enter_at + PC.f(4));
       if (v.style === "x") {
-        tl.fromTo(lines[0], { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: PC.f(v.x_frames), ease: "power2.out" }, t);
-        tl.fromTo(lines[1], { scaleX: 0, transformOrigin: "100% 50%" }, { scaleX: 1, duration: PC.f(v.x_frames), ease: "power2.out" }, t + PC.f(v.x_gap_frames));
-        PC.event("strike", t, { el: "st-x1" });
+        // the first stroke draws from the left, the second from the right (its origin is its right end)
+        PCM.grow(tl, lines[0], t, { frames: v.x_frames, axis: "x", origin: "0% 50%", ease: "power2.out", event: "strike" });
+        PCM.grow(tl, lines[1], t + PC.f(v.x_gap_frames), { frames: v.x_frames, axis: "x", origin: "100% 50%", ease: "power2.out", event: "strike_second" });
         t = t + PC.f(v.x_gap_frames + v.x_frames);
       } else {
         t = PC.strike(tl, lines[0], t, { frames: v.line_frames });
       }
-      tl.to(text, { opacity: 0.55, duration: PC.f(3), ease: "none" }, t);
-      if (v.replacement) PC.typeInto(tl, rep, v.replacement, t + PC.f(2), { framesPerChar: v.replace_frames_per_char });
-      PC.exit(tl, wrap, v.exit_at, v.exit);
+      PCM.dim(tl, text, t, { to: 0.55, frames: 3 });
+      if (v.replacement) PCM.typeInto(tl, rep, v.replacement, t + PC.f(2), { framesPerChar: v.replace_frames_per_char });
       window.__timelines["strike-through"] = tl;
       tl.seek(0);
     })();

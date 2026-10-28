@@ -9,6 +9,9 @@
                routing as JSON (review/route.py)
   feedback     print the markdown notes a re-run stage puts in its prompt (empty when none): --stage 09b-text
   strip        one filmstrip: strip VIDEO START SECONDS OUT.png [--fps 10]
+  energy       the energy meter (Motion and energy rules E0, review/energy.py): energy VIDEO [--plan merged.json] [--out energy.json]
+               [--tokens tokens.json]; `energy calibrate --refs styles/paper-cards/refs --out styles/paper-cards/analysis/energy.json`
+               measures the style's reference videos; exit 0 when the video meets every target, 1 when not
 Progress lines for the stage script: "@@ACTIVITY text", "@@SAY TAG text", "@@FLAG text", "@@ERROR text".
 """
 from __future__ import annotations
@@ -49,6 +52,15 @@ def main(argv: list[str]) -> int:
     s.add_argument("seconds", type=float)
     s.add_argument("out")
     s.add_argument("--fps", type=int, default=10)
+    e = sub.add_parser("energy")
+    e.add_argument("video", help="the video to measure, or `calibrate`")
+    e.add_argument("--plan", default="", help="a merged plan: the scenes are measured one by one")
+    e.add_argument("--out", default="", help="write the report as JSON")
+    e.add_argument("--tokens", default="", help="tokens.json with the energy targets (default: the spec's paper-cards targets)")
+    e.add_argument("--targets", default="", help="a JSON file of targets (overrides --tokens)")
+    e.add_argument("--refs", default="", help="calibrate: the style's refs folder (look/ and motion/)")
+    e.add_argument("--index", default="", help="calibrate: analysis/index.md with the nicknames (default: next to --out)")
+    e.add_argument("--still-threshold", type=float, default=None, help="experiments only: the still frame threshold (default frozen, 0.05)")
     a = ap.parse_args(argv)
     try:
         return run(a)
@@ -104,6 +116,9 @@ def remember(ctx: rc.Ctx, what: str, key: str, rep: dict) -> None:
 
 
 def run(a) -> int:
+    if a.cmd == "energy":
+        from review import energy
+        return energy.run_cli(a)
     if a.cmd == "strip":
         from review import filmstrip
         print(filmstrip.strip(rc.mixed(a.video), a.start, a.seconds, rc.mixed(a.out), fps=a.fps))

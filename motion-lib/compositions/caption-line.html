@@ -5,17 +5,20 @@
   {"id":"word_frames","type":"number","label":"Word fade frames","default":4},
   {"id":"box_frames","type":"number","label":"Emphasis box fade frames","default":4},
   {"id":"box_rise","type":"number","label":"Emphasis box rise (px)","default":9},
-  {"id":"out_frames","type":"number","label":"Chunk fade-out frames","default":2}
+  {"id":"out_frames","type":"number","label":"Chunk fade-out frames","default":2},
+  {"id":"hold","type":"enum","label":"Hold level (the chunk drifts upward while it is on screen)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]}
 ]'>
 <template>
   <link rel="stylesheet" href="assets/tokens.css">
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* caption-line (vocabulary.md 7, style.md Captions): the spoken words, one chunk of 1 to 4 words at a time, bare ink
-       words, sentence case, centered at cap center y 1480 (tweaks.md Caption box line), at most 620 px wide. The chunk is
-       laid out at its final width; each word appears in its own place when it is spoken (opacity 0 to 1 over 4 frames,
-       plain fade: open question 12). Emphasis words sit on an accent box that fades in with the word, rising 9 px.
-       The old chunk fades out over 2 frames; the next chunk's first word starts on the following frame. */
+       words, sentence case, centered at the cap center y of tokens.json, at most 620 px wide. The chunk is laid out at
+       its final width; each word appears in its own place when it is spoken (opacity 0 to 1 over 4 frames, plain fade:
+       open question 12). Emphasis words sit on an accent box that fades in with the word, rising 9 px. The old chunk
+       fades out over 2 frames; the next chunk's first word starts on the following frame. While a chunk is on screen it
+       drifts upward at the hold speed (normal, 4 px per second: E1, nothing stands still; the two caption modes of E3
+       come in M15). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     .pc-caption-chunk { line-height: 1; }
     /* a 9 px gap between a plain word and the next box (style.md Captions); the boxes of adjacent emphasis words touch */
@@ -28,13 +31,13 @@
     <div id="cap-layer" class="pc-el" style="left: 0; top: 0; width: 1080px; height: 1920px;"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ chunks_json: [], y: 1480, max_w: 620, word_frames: 4, box_frames: 4, box_rise: 9, out_frames: 2 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ chunks_json: [], y: 1480, max_w: 620, word_frames: 4, box_frames: 4, box_rise: 9, out_frames: 2, hold: "normal" }, window.__hyperframes.getVariables());
       var layer = document.getElementById("cap-layer");
       var chunks = Array.isArray(v.chunks_json) ? v.chunks_json : [];
       var fontPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-font")) || 67;
-      var capPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-cap")) || 48;
       var tl = gsap.timeline({ paused: true });
       var F = PC.f;
       chunks.forEach(function (chunk, ci) {
@@ -54,11 +57,10 @@
         // 1080 px line, so its scrollWidth would scale every chunk (found by S12's mechanical check, M11).
         var width = 0;
         try { var rg = document.createRange(); rg.selectNodeContents(div); width = rg.getBoundingClientRect().width; } catch (e) { width = div.scrollWidth; }
+        var fit = 1;
         if (width > v.max_w && width > 0) {
-          var k = Math.max(0.6, v.max_w / width);
-          div.style.transform = "scale(" + k + ")";
-          div.style.transformOrigin = "50% 50%";
-          PC.event("caption_overflow", chunk.start, { chunk: ci, width: width, scale: k });
+          fit = Math.max(0.6, v.max_w / width);
+          PC.event("caption_overflow", chunk.start, { chunk: ci, width: width, scale: fit });
         }
         var start = typeof chunk.start === "number" ? chunk.start : (words[0] ? words[0].t : 0);
         var end = typeof chunk.end === "number" ? chunk.end : start + 1;
@@ -67,17 +69,20 @@
           var nextFirst = (next.words && next.words[0] && typeof next.words[0].t === "number") ? next.words[0].t : next.start;
           if (typeof nextFirst === "number") end = Math.min(end, nextFirst - F(1));  // no overlap: the next word on the following frame
         }
-        tl.set(div, { opacity: 1 }, 0);
+        gsap.set(div, { opacity: 0 });        // nothing of the chunk shows before its first word (set at once: a zero-duration tween at 0 is skipped by a seek to 0)
+        tl.set(div, { opacity: 1 }, start);
+        // the chunk drifts upward while it is on screen (the hold of E1); the fit scale is part of its transform
+        gsap.set(div, { scale: fit, transformOrigin: "50% 50%" });
+        var outAt = Math.max(end - F(v.out_frames), start);
+        PCM.life(tl, div, { at: start, main: { kind: "none" }, hold: { level: v.hold, kind: "drift", dir: { x: 0, y: -1 } }, inertia: { move: 0, scale: 0, rotate: 0 }, until: outAt });
         words.forEach(function (wd) {
           var at = Math.max(wd.t, start);
-          tl.fromTo(wd.span, { opacity: 0 }, { opacity: 1, duration: F(v.word_frames), ease: "none" }, at);
-          if (wd.box) tl.fromTo(wd.box, { opacity: 0, y: v.box_rise }, { opacity: 1, y: 0, duration: F(v.box_frames), ease: "power1.out" }, at);
+          PCM.life(tl, wd.span, { at: at, main: { kind: "fade", frames: v.word_frames, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 }, until: at + F(1), events: { enter: "caption_word_fade" } });
+          if (wd.box) PCM.life(tl, wd.box, { at: at, main: { kind: "fade", frames: v.box_frames, rise: v.box_rise, ease: "power1.out", zoom: false, rotate: false }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 }, until: at + F(1), events: { enter: "caption_box_fade" } });
           PC.event("caption_word", at, { chunk: ci, text: wd.span.textContent, em: !!wd.box });
         });
-        var outAt = Math.max(end - F(v.out_frames), start);
-        tl.to(div, { opacity: 0, duration: F(v.out_frames), ease: "none" }, outAt);
+        PCM.exit(tl, div, outAt, "fade", { frames: v.out_frames, el: div.id });
         tl.set(div, { opacity: 0, visibility: "hidden" }, end);
-        tl.set(div, { visibility: "visible" }, 0);
         PC.event("caption_chunk", start, { chunk: ci, end: end, words: words.length });
       });
       window.__timelines["caption-line"] = tl;

@@ -88,6 +88,15 @@ def write_players(lib: str, comps: list[dict], specs: dict) -> None:
         common.write_text(os.path.join(folder, comp["id"] + ".html"), page)
 
 
+def energy_text(c: dict) -> str:
+    """The component's energy measures (frame-match renders it alone for 4 s: motion/framematch.py, review/energy.py)."""
+    e = c.get("energy") or {}
+    if not e or e.get("moving_share_pct") is None:
+        return "not measured"
+    return (f"moving {e.get('moving_share_pct')} percent of frames, middle band {e.get('middle_moving_share_pct')} percent, pixels changing {e.get('pixels_changing_pct')} percent, "
+            f"longest still {e.get('longest_still_s')} s, static windows {e.get('static_windows', 0)}")
+
+
 def fm_text(c: dict) -> str:
     fm = c.get("frame_match") or {}
     r = fm.get("result", "not run")
@@ -116,7 +125,7 @@ def write_index(lib: str, cat: dict, comps: list[dict], specs: dict) -> str:
   <div class="info">
     <h2>{esc(c['name'])} <small>{esc(comp['id'])}, {esc(item)}, {esc(c['kind'])}, <span class="{'ok' if c['status'] == 'approved' else 'cand'}">{esc(c['status'])}</span></small></h2>
     <p>{esc(c['does'])}</p>
-    <p><b>Frame match:</b> {esc(fm_text(c))}. <b>Beat types:</b> {esc(', '.join(c['beat_types']))}. <b>File:</b> <code>{esc(c['file'])}</code></p>
+    <p><b>Frame match:</b> {esc(fm_text(c))}. <b>Energy (alone, 4 s):</b> {esc(energy_text(c))}. <b>Beat types:</b> {esc(', '.join(c['beat_types']))}. <b>File:</b> <code>{esc(c['file'])}</code></p>
     <details><summary>Props ({len(c['props'])})</summary><table><tr><th>prop</th><th>type</th><th>default</th><th>label</th></tr>{props}</table><p>Demo props: <code>{demo}</code></p></details>
     <details><summary>Sound events</summary><ul>{events}</ul></details>
   </div>
@@ -143,7 +152,8 @@ def write_index(lib: str, cat: dict, comps: list[dict], specs: dict) -> str:
   <p>{len(comps)} components ({sum(1 for x in comps if x['catalog']['status'] == 'approved')} approved, {sum(1 for x in comps if x['catalog']['status'] != 'approved')} candidates), built {esc(cat.get('generated', ''))}, gallery {dt.date.today().isoformat()}.
   Every still is the component at a telling moment; Play loops it in the browser (a clock drives the same timeline HyperFrames seeks frame by frame in a render).
   The numbers behind each move are in <code>styles/paper-cards/vocabulary.md</code> and <code>tokens.json</code>; the measurements are in <a href="frame-match.md">frame-match.md</a>.
-  To change a look or a timing, edit the component in <code>motion-lib/compositions/</code>, then run <code>bash pipeline/bin/frame-match</code> and <code>bash pipeline/bin/gallery</code>.</p>
+  To change a look or a timing, edit the component in <code>motion-lib/compositions/</code>, then run <code>bash pipeline/bin/frame-match</code> and <code>bash pipeline/bin/gallery</code>.
+  Since M14 every component lives through the four phases of the Motion and energy rules (main animation, inertia, hold, exit; <code>motion-lib/assets/pc-motion.js</code>) and the energy line shows what it measures rendered alone for 4 s (<code>python pipeline/lib/review energy</code> measures a whole reel).</p>
   <p class="toc">{' '.join(f'<a href="#c-{esc(x["id"])}">{esc(x["id"])}</a>' for x in comps)}</p>
 </header>
 {''.join(rows)}
@@ -178,7 +188,8 @@ def write_showreel(lib: str, cat: dict, comps: list[dict], specs: dict) -> str:
     canvas_host = ""
     if canvas:
         canvas_host = (f'      <div id="paper-canvas" class="clip" data-composition-id="paper-canvas" data-composition-src="{canvas["catalog"]["file"]}" data-start="0" '
-                       f'data-duration="{total:g}" data-track-index="0" data-width="1080" data-height="1920" data-no-timeline style="z-index: 0"></div>')
+                       f'data-duration="{total:g}" data-track-index="0" data-width="1080" data-height="1920" style="z-index: 0" '
+                       f'data-variable-values=\'{json.dumps({"seed": 7, "duration": round(total + 1, 3)})}\'></div>')
     page = f"""<!doctype html>
 <html lang="en" data-resolution="portrait">
   <head>

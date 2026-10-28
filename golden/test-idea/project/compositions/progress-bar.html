@@ -10,6 +10,7 @@
   {"id":"check_frames","type":"number","label":"Check pop frames","default":3},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"fill_at","type":"number","label":"Fill starts (s)","default":0.5},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -18,7 +19,8 @@
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* progress-bar (vocabulary.md 18, Progress or meter bar): something finishing or a usage value. The bar fills over
-       6 frames, then a check badge pops over 3 frames (v01 0:33.4). */
+       6 frames, then a check badge pops over 3 frames (v01 0:33.4). The card lives through E1's phases with E2's
+       combined entrance (pc-motion.js); the percent counts through a setter. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #pb { padding: 30px 36px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; }
     #pb.bare { padding: 0; background: none; box-shadow: none; }
@@ -37,26 +39,25 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 120, y: 860, w: 840, label: "", value: 100, in_card: true, fill_frames: 6, check: true, check_frames: 3, enter_at: 0, fill_at: 0.5, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 120, y: 860, w: 840, label: "", value: 100, in_card: true, fill_frames: 6, check: true, check_frames: 3, enter_at: 0, fill_at: 0.5, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var pb = document.getElementById("pb"), fill = document.getElementById("pb-fill"), check = document.getElementById("pb-check"), pct = document.getElementById("pb-pct");
       PC.place(pb, { x: v.x, y: v.y, w: v.w });
       if (!v.in_card) pb.classList.add("bare");
       document.getElementById("pb-label").textContent = v.label;
       check.innerHTML = PC.checkSVG();
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, pb, v.enter_at, { rise: 38 });
-      var at = Math.max(landAt, v.fill_at);
+      var life = PCM.life(tl, pb, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      var at = Math.max(life.land, v.fill_at);
       var target = Math.max(0, Math.min(100, v.value)) / 100;
-      tl.fromTo(fill, { scaleX: 0 }, { scaleX: target, duration: PC.f(v.fill_frames), ease: "power2.out" }, at);
-      PC.countUp(tl, pct, at, { to: v.value, frames: v.fill_frames, suffix: "%", ease: "power2.out" });
-      PC.event("fill", at, { el: "pb-fill", end: at + PC.f(v.fill_frames) });
+      PCM.grow(tl, fill, at, { frames: v.fill_frames, axis: "x", to: target, ease: "power2.out", event: "fill" });
+      PCM.countUp(tl, pct, at, { to: v.value, frames: v.fill_frames, suffix: "%", ease: "power2.out" });
       if (v.check && target >= 0.999) {
-        PC.pop(tl, check, at + PC.f(v.fill_frames) - PC.f(1), { overshoot: 0.16, frames: v.check_frames, from: 0.3 });
-        PC.event("check", at + PC.f(v.fill_frames) - PC.f(1), { el: "pb-check" });
+        var cAt = at + PC.f(v.fill_frames) - PC.f(1);
+        PCM.life(tl, check, { at: cAt, main: { kind: "pop", overshoot: 0.16, frames: v.check_frames, from: 0.3, rotate: 8 }, hold: { kind: "none" }, inertia: { move: 0, scale: 0.01, rotate: 1 }, until: life.until, events: { enter: "check", land: "check_peak" } });
       } else gsap.set(check, { opacity: 0 });
-      PC.exit(tl, pb, v.exit_at, v.exit);
       window.__timelines["progress-bar"] = tl;
       tl.seek(0);
     })();

@@ -89,3 +89,9 @@
 /* the mascot: pixel art, body in the mascot color */
 .pc-mascot { width: var(--mascot-w); height: var(--mascot-h); }
 .pc-mascot svg { width: 100%; height: 100%; shape-rendering: crispEdges; display: block; }
+
+/* the canvas life (Motion and energy rules E5, E7; pc-motion.js PCM.canvas): the edge filler behind the content, partly
+   outside the frame, and the ambient stars, dots and clouds in the margins. No text, never on a text zone. */
+.pc-edge-layer, .pc-ambient-layer { position: absolute; inset: 0; pointer-events: none; }
+.pc-edge, .pc-ambient { position: absolute; will-change: transform, opacity; }
+.pc-edge svg, .pc-ambient svg { width: 100%; height: 100%; display: block; }

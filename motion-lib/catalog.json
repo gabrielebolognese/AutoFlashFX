@@ -1,6 +1,6 @@
 {
  "style": "paper-cards",
- "generated": "2026-11-01",
+ "generated": "2026-11-07",
  "fps": 30,
  "canvas": {
   "width": 1080,
@@ -8,7 +8,8 @@
  },
  "placement": "Every component is a full-frame 1080x1920 layer mounted as a HyperFrames sub-composition (data-composition-src) with its props as data-variable-values; x, y and w props place the element; the host order and z-index give the stacking; the canvas is mounted first for the whole reel, the caption line once over the body beats.",
  "conventions": {
-  "times": "props in seconds local to the clip (enter_at, exit_at); hero-3d also needs clip_start = its data-start",
+  "times": "props in seconds local to the clip (enter_at, exit_at); hero-3d and icon-3d also need clip_start = its data-start",
+  "hold": "every element component has hold (calm, normal, lively): the steady motion after its entrance (Motion and energy rules E1); the canvas takes seed and duration",
   "images": "image props take a path relative to the project (assets/brand/... from library/brand per brand.json, assets/research/... from the run's research assets); aspect ratio locked, never redrawn",
   "exit": "every element component has exit (none, fade-blur, fall, push, cut) and exit_at: the scene change of 9c",
   "honesty": "card-like components take honesty (none, mock, sourced) and show the light chip of tokens.json honesty_labels",
@@ -125,6 +126,17 @@
      "label": "Rise distance (px)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -221,13 +233,26 @@
     "exit_at": 2.6
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
-    "best_strip": "v03/extra/s30_hook_000.0.png",
-    "r": 0.911,
-    "run": "2026-11-01"
+    "checks_ok": 10,
+    "checks": 10,
+    "best_strip": "v07/extra/s30_000.0_hook.png",
+    "r": 0.935,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 6.9,
+    "middle_moving_share_pct": 11.5,
+    "pixels_changing_pct": 0.5,
+    "still_share_pct": 92.3,
+    "longest_still_s": 4.0,
+    "mean_change": 0.189,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -343,6 +368,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -395,13 +431,26 @@
     "icon": "download"
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 5,
-    "checks": 5,
-    "best_strip": "v03/extra/s30_count_044.9.png",
-    "r": 0.57,
-    "run": "2026-11-01"
+    "checks_ok": 9,
+    "checks": 9,
+    "best_strip": "v04/extra/s30_count_f925.png",
+    "r": 0.945,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 14.6,
+    "middle_moving_share_pct": 23.8,
+    "pixels_changing_pct": 0.32,
+    "still_share_pct": 74.6,
+    "longest_still_s": 3.23,
+    "mean_change": 0.205,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -494,6 +543,17 @@
      "type": "boolean",
      "default": true,
      "label": "The card wobbles slightly (v02)"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "calm",
+     "label": "Hold level (the steady motion while the card holds)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
     }
    ],
    "beat_types": [
@@ -531,13 +591,26 @@
     "lockup": "assets/brand/lockup/lockup-gradient-on-light.png"
    },
    "demo_duration": 5,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
-    "best_strip": "v09/extra/s30_049.7_end.png",
-    "r": 0.959,
-    "run": "2026-11-01"
+    "checks_ok": 11,
+    "checks": 11,
+    "best_strip": "v08/extra/s30_038.9_end.png",
+    "r": 0.975,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 11.5,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.64,
+    "still_share_pct": 69.2,
+    "longest_still_s": 3.0,
+    "mean_change": 0.249,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -615,6 +688,17 @@
      "label": "Face left"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -652,13 +736,26 @@
     "enter_at": 0.3
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 1,
-    "checks": 1,
+    "checks_ok": 4,
+    "checks": 4,
     "best_strip": "v08/extra/s30_000.8_mascot_title.png",
-    "r": 0.975,
-    "run": "2026-11-01"
+    "r": 0.988,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 1.5,
+    "pixels_changing_pct": 0.11,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.036,
+    "longest_still_run": 20,
+    "static_windows": 6,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -722,6 +819,17 @@
      "label": "Pop frames"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the pop)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -770,13 +878,26 @@
     "icon": "clock"
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
+    "checks_ok": 6,
+    "checks": 6,
     "best_strip": "v07/extra/s30_004.4_caption_tag.png",
-    "r": 0.69,
-    "run": "2026-11-01"
+    "r": 0.955,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 2.3,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.021,
+    "longest_still_run": 114,
+    "static_windows": 99,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -828,6 +949,17 @@
      "label": "Drift distance (px)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -869,13 +1001,26 @@
     "enter_at": 0.3
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 1,
-    "checks": 1,
+    "checks_ok": 4,
+    "checks": 4,
     "best_strip": "v03/extra/s30_label_042.4.png",
-    "r": 0.936,
-    "run": "2026-11-01"
+    "r": 0.972,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.011,
+    "longest_still_run": 62,
+    "static_windows": 59,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -931,6 +1076,17 @@
      "type": "number",
      "default": 2,
      "label": "Chunk fade-out frames"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the chunk drifts upward while it is on screen)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
     }
    ],
    "beat_types": [
@@ -950,13 +1106,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 4,
-    "checks": 4,
+    "checks_ok": 6,
+    "checks": 6,
     "best_strip": "v06/extra/s30_031.0_highlight.png",
-    "r": 0.96,
-    "run": "2026-11-01"
+    "r": 0.972,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.09,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.037,
+    "longest_still_run": 43,
+    "static_windows": 28,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1039,6 +1208,17 @@
      "label": "Pop at (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the pop)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1077,13 +1257,26 @@
     "enter_at": 0.3
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
-    "best_strip": "v08/extra/s30_003.8_logo_chain.png",
-    "r": 0.957,
-    "run": "2026-11-01"
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v03/extra/s30_cta_058.0.png",
+    "r": 0.992,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.009,
+    "longest_still_run": 80,
+    "static_windows": 86,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1175,6 +1368,17 @@
      "label": "First tick at (s, list mode)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1215,13 +1419,26 @@
     "x": 480
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
+    "checks_ok": 6,
+    "checks": 6,
     "best_strip": "v04/extra/s30_check_f1200.png",
-    "r": 0.979,
-    "run": "2026-11-01"
+    "r": 0.98,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 1.5,
+    "pixels_changing_pct": 0.03,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.015,
+    "longest_still_run": 87,
+    "static_windows": 87,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1335,6 +1552,23 @@
      ]
     },
     {
+     "id": "scroll_px_s",
+     "type": "number",
+     "default": 24,
+     "label": "The screenshot scrolls inside the window at this speed (px per second; 0 = still)"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1389,13 +1623,26 @@
     "honesty": "sourced"
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 5,
-    "checks": 5,
+    "checks_ok": 9,
+    "checks": 9,
     "best_strip": "v07/extra/s30_011.4_window_rise.png",
-    "r": 0.976,
-    "run": "2026-11-01"
+    "r": 0.956,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 20.8,
+    "middle_moving_share_pct": 100.0,
+    "pixels_changing_pct": 1.93,
+    "still_share_pct": 71.5,
+    "longest_still_s": 3.1,
+    "mean_change": 0.584,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1504,6 +1751,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1547,13 +1805,26 @@
    ],
    "demo": {},
    "demo_duration": 4,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 5,
-    "checks": 5,
+    "checks_ok": 9,
+    "checks": 9,
     "best_strip": "v06/extra/s30_070.9_typing_tail.png",
-    "r": 0.96,
-    "run": "2026-11-01"
+    "r": 0.959,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 10.0,
+    "middle_moving_share_pct": 10.8,
+    "pixels_changing_pct": 0.76,
+    "still_share_pct": 70.0,
+    "longest_still_s": 3.03,
+    "mean_change": 0.356,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1674,6 +1945,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1721,13 +2003,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
+    "checks_ok": 13,
+    "checks": 13,
     "best_strip": "v04/extra/s30_bars_f1426.png",
-    "r": 0.983,
-    "run": "2026-11-01"
+    "r": 0.978,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 13.8,
+    "middle_moving_share_pct": 16.9,
+    "pixels_changing_pct": 0.55,
+    "still_share_pct": 85.4,
+    "longest_still_s": 3.7,
+    "mean_change": 0.245,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1821,6 +2116,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the grid drifts and turns as one group)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1856,13 +2162,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
-    "best_strip": "v04/extra/s30_gridsettle_f444.png",
-    "r": 0.746,
-    "run": "2026-11-01"
+    "checks_ok": 9,
+    "checks": 9,
+    "best_strip": "v04/extra/s30_deckgrid_f420.png",
+    "r": 0.984,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 5.4,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.22,
+    "still_share_pct": 91.5,
+    "longest_still_s": 3.97,
+    "mean_change": 0.156,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -1944,6 +2263,17 @@
      "label": "Pop at (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the pop)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -1987,13 +2317,26 @@
     "enter_at": 0.2
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
-    "best_strip": "v08/extra/s30_003.8_logo_chain.png",
-    "r": 0.934,
-    "run": "2026-11-01"
+    "checks_ok": 10,
+    "checks": 10,
+    "best_strip": "v02/extra/s30_hook.png",
+    "r": 0.889,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 3.1,
+    "pixels_changing_pct": 0.07,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.033,
+    "longest_still_run": 67,
+    "static_windows": 52,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2091,6 +2434,17 @@
      "label": "Frames per typed character of the replacement"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2136,13 +2490,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 2,
-    "checks": 2,
-    "best_strip": "v04/extra/s30_strike_f1007.png",
-    "r": 0.977,
-    "run": "2026-11-01"
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v06/extra/s30_062.3_xstamp.png",
+    "r": 0.966,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.012,
+    "longest_still_run": 80,
+    "static_windows": 65,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2255,6 +2622,17 @@
      "label": "Mascot prop on the top-right corner (empty = none)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the landing)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2300,13 +2678,26 @@
     "enter_at": 0.2
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
-    "best_strip": "v08/extra/s30_000.0_hook.png",
-    "r": 0.958,
-    "run": "2026-11-01"
+    "checks_ok": 7,
+    "checks": 7,
+    "best_strip": "v01/extra/s30_hook.png",
+    "r": 0.982,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 8.5,
+    "middle_moving_share_pct": 8.5,
+    "pixels_changing_pct": 1.08,
+    "still_share_pct": 91.5,
+    "longest_still_s": 3.97,
+    "mean_change": 0.459,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2405,6 +2796,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2452,13 +2854,26 @@
    ],
    "demo": {},
    "demo_duration": 4,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 5,
-    "checks": 5,
+    "checks_ok": 10,
+    "checks": 10,
     "best_strip": "v06/extra/s30_070.9_typing_tail.png",
-    "r": 0.972,
-    "run": "2026-11-01"
+    "r": 0.954,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.8,
+    "middle_moving_share_pct": 13.1,
+    "pixels_changing_pct": 0.28,
+    "still_share_pct": 93.8,
+    "longest_still_s": 4.07,
+    "mean_change": 0.134,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2540,6 +2955,17 @@
      "label": "Fill starts (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2584,13 +3010,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 8,
-    "checks": 8,
+    "checks_ok": 13,
+    "checks": 13,
     "best_strip": "v01/extra/s30_card33.png",
-    "r": 0.965,
-    "run": "2026-11-01"
+    "r": 0.897,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.8,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.27,
+    "still_share_pct": 87.7,
+    "longest_still_s": 3.8,
+    "mean_change": 0.109,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2676,6 +3115,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the move)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2711,13 +3161,26 @@
     "image": "assets/demo/repo.png"
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 2,
-    "checks": 2,
-    "best_strip": "v05/extra/s30_windowshrink_f520.png",
-    "r": 0.641,
-    "run": "2026-11-01"
+    "checks_ok": 4,
+    "checks": 4,
+    "best_strip": "v02/extra/s30_zoom27.png",
+    "r": 0.899,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 6.9,
+    "middle_moving_share_pct": 7.7,
+    "pixels_changing_pct": 1.93,
+    "still_share_pct": 79.2,
+    "longest_still_s": 3.43,
+    "mean_change": 0.994,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2798,6 +3261,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (a parallax rotation and a scale creep; the block stays in the safe zone)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -2832,13 +3306,26 @@
     "kicker_mark": "assets/brand/mark/mark-gradient.png"
    },
    "demo_duration": 4,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 3,
-    "checks": 3,
-    "best_strip": "v02/extra/s30_hook.png",
-    "r": 0.929,
-    "run": "2026-11-01"
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v01/extra/s30_hook.png",
+    "r": 0.99,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.08,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.043,
+    "longest_still_run": 17,
+    "static_windows": 3,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -2947,6 +3434,17 @@
      "type": "number",
      "default": 4,
      "label": "Fade-blur frames"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion of both cards)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
     }
    ],
    "beat_types": [
@@ -2966,13 +3464,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
-    "best_strip": "v07/extra/s30_003.2_badge_exit.png",
-    "r": 0.992,
-    "run": "2026-11-01"
+    "checks_ok": 10,
+    "checks": 10,
+    "best_strip": "v07/extra/s30_034.7_exit_counter.png",
+    "r": 0.967,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 7.7,
+    "middle_moving_share_pct": 9.2,
+    "pixels_changing_pct": 1.07,
+    "still_share_pct": 73.8,
+    "longest_still_s": 3.2,
+    "mean_change": 0.34,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3043,6 +3554,17 @@
      "label": "Enter at (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -3083,13 +3605,26 @@
     "enter_at": 0.3
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 1,
-    "checks": 1,
+    "checks_ok": 5,
+    "checks": 5,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-01"
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.016,
+    "longest_still_run": 87,
+    "static_windows": 72,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3181,6 +3716,17 @@
      "label": "Enter at (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -3226,13 +3772,26 @@
     "enter_at": 0.3
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
-    "best_strip": "v07/extra/s30_041.0_end.png",
-    "r": 0.931,
-    "run": "2026-11-01"
+    "checks_ok": 9,
+    "checks": 9,
+    "best_strip": "v08/extra/s30_038.9_end.png",
+    "r": 0.987,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 3.8,
+    "middle_moving_share_pct": 20.0,
+    "pixels_changing_pct": 0.29,
+    "still_share_pct": 89.2,
+    "longest_still_s": 3.87,
+    "mean_change": 0.125,
+    "longest_still_run": 8,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3326,6 +3885,17 @@
      ]
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -3364,13 +3934,26 @@
    ],
    "demo": {},
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 5,
-    "checks": 5,
+    "checks_ok": 10,
+    "checks": 10,
     "best_strip": "v04/extra/s30_scene_f184.png",
-    "r": 0.975,
-    "run": "2026-11-01"
+    "r": 0.972,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 8.5,
+    "middle_moving_share_pct": 11.5,
+    "pixels_changing_pct": 0.51,
+    "still_share_pct": 90.0,
+    "longest_still_s": 3.9,
+    "mean_change": 0.22,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3458,6 +4041,17 @@
      "label": "Enter at (s)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -3498,13 +4092,26 @@
     "y": 700
    },
    "demo_duration": 3,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 4,
-    "checks": 4,
+    "checks_ok": 7,
+    "checks": 7,
     "best_strip": "v03/extra/s30_hook_000.0.png",
-    "r": 0.916,
-    "run": "2026-11-01"
+    "r": 0.908,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 6.2,
+    "middle_moving_share_pct": 13.1,
+    "pixels_changing_pct": 0.34,
+    "still_share_pct": 92.3,
+    "longest_still_s": 4.0,
+    "mean_change": 0.144,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3591,6 +4198,17 @@
      "label": "A label under the object (optional)"
     },
     {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the shadow and the label)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
      "id": "exit",
      "type": "enum",
      "default": "none",
@@ -3631,13 +4249,226 @@
     "label": "the skill file"
    },
    "demo_duration": 4,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 2,
-    "checks": 2,
+    "checks_ok": 5,
+    "checks": 5,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-01"
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 3.8,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.4,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.186,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
+   }
+  },
+  {
+   "id": "icon-3d",
+   "item": null,
+   "name": "3D icon (Three.js, CSS-extruded fallback)",
+   "kind": "3d",
+   "does": "A low-poly 3D icon turning slowly at the center of a scene (Motion and energy rules E6): a Three.js extrusion of an SVG path (bolt, star, play, check, cursor, heart) or a primitive (a rounded slab, a torus, a low-poly sphere) in a palette color, drawn from the hf-seek time on the WebGL backend of motion-lib/webgl.json, with a CSS-extruded fallback (the SVG in 8 to 16 depth layers under a turning stage) when WebGL is missing or mode is css. Needs the clip_start prop (its data-start). Never a logo. The style allows 3D objects in the hook and the end card (tweaks.md 3D).",
+   "file": "compositions/icon-3d.html",
+   "status": "approved",
+   "still": "gallery/stills/icon-3d.png",
+   "z": 2,
+   "measure": "#i3-stage",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 290,
+     "label": "Left of the 3D area (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top of the 3D area (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 500,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 500,
+     "label": "Height (px)"
+    },
+    {
+     "id": "icon",
+     "type": "enum",
+     "default": "bolt",
+     "label": "The icon (an extruded shape built in code)",
+     "options": [
+      "bolt",
+      "star",
+      "play",
+      "check",
+      "cursor",
+      "heart",
+      "card",
+      "ring",
+      "orb"
+     ]
+    },
+    {
+     "id": "color",
+     "type": "enum",
+     "default": "accent",
+     "label": "Color",
+     "options": [
+      "accent",
+      "ink",
+      "success",
+      "mascot",
+      "surface"
+     ]
+    },
+    {
+     "id": "mode",
+     "type": "enum",
+     "default": "auto",
+     "label": "Renderer",
+     "options": [
+      "auto",
+      "webgl",
+      "css"
+     ]
+    },
+    {
+     "id": "spin",
+     "type": "number",
+     "default": 24,
+     "label": "Turn (degrees per second, slow)"
+    },
+    {
+     "id": "tilt",
+     "type": "number",
+     "default": 14,
+     "label": "Tilt (degrees)"
+    },
+    {
+     "id": "depth",
+     "type": "number",
+     "default": 3.2,
+     "label": "Extrusion depth (px at the icon box of 24 units: 2 to 6)"
+    },
+    {
+     "id": "layers",
+     "type": "number",
+     "default": 12,
+     "label": "Depth layers of the CSS fallback (8 to 16)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s, local)"
+    },
+    {
+     "id": "enter_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Entrance frames (scale up with a back-out)"
+    },
+    {
+     "id": "clip_start",
+     "type": "number",
+     "default": 0,
+     "label": "The data-start of this clip in the root (s): hf-seek times are root times"
+    },
+    {
+     "id": "label",
+     "type": "string",
+     "default": "",
+     "label": "A label under the icon (optional)"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the shadow and the label)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, local; -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "ask"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": "enter_at x 30",
+     "cue": "hook_hit",
+     "note": "when it is the hook's set piece"
+    },
+    {
+     "event": "land",
+     "frame": "enter_at x 30 + 12",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "enter_at": 0.2,
+    "icon": "bolt"
+   },
+   "demo_duration": 4,
+   "fallback": "css",
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 4,
+    "checks": 4,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 3.8,
+    "pixels_changing_pct": 0.09,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.044,
+    "longest_still_run": 11,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   },
   {
@@ -3645,33 +4476,79 @@
    "item": null,
    "name": "Paper canvas",
    "kind": "canvas",
-   "does": "The background of every reel: paper, a warm glow top left, a warm glow lower right, darker bottom corners, a dot grid. Static, mounted for the whole reel at z 0.",
+   "does": "The background of every reel: paper, a warm glow top left, a warm glow lower right, darker bottom corners, a dot grid, and from M14 the life of Motion and energy rules E5 and E7: an edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside the left and right borders, at most 20 px per second, no text) and an ambient layer (stars, dots and small clouds drifting and twinkling), both seeded per reel (the seed and duration props) and kept out of every text zone. Mounted for the whole reel at z 0.",
    "file": "compositions/paper-canvas.html",
    "status": "approved",
    "still": "gallery/stills/paper-canvas.png",
    "z": 0,
-   "measure": "#paper-root",
+   "measure": "#paper-edges",
    "props": [
     {
      "id": "dots",
      "type": "boolean",
      "default": true,
      "label": "Dot grid"
+    },
+    {
+     "id": "layers",
+     "type": "boolean",
+     "default": true,
+     "label": "The edge filler and the ambient layer (Motion and energy rules E5, E7)"
+    },
+    {
+     "id": "seed",
+     "type": "number",
+     "default": 1,
+     "label": "Seed per reel (the layers are laid out from it)"
+    },
+    {
+     "id": "duration",
+     "type": "number",
+     "default": 90,
+     "label": "How long the reel runs (s): the layers drift for this long"
+    },
+    {
+     "id": "edges",
+     "type": "number",
+     "default": 6,
+     "label": "Edge elements (3 per side)"
+    },
+    {
+     "id": "ambient",
+     "type": "number",
+     "default": 16,
+     "label": "Ambient elements (stars, dots, clouds)"
     }
    ],
    "beat_types": [
     "any"
    ],
    "sound_events": [],
-   "demo": {},
+   "demo": {
+    "seed": 7,
+    "duration": 90
+   },
    "demo_duration": null,
+   "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 1,
-    "checks": 1,
+    "checks_ok": 10,
+    "checks": 10,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-01"
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.01,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.023,
+    "longest_still_run": 4,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
    }
   }
  ]

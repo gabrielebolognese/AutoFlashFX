@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 500, "y": 900, "prop": "clapper", "move": "hop", "enter_at": 0.3, "frames": 4, "scale": 3, "flip": false, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 500, "y": 900, "prop": "clapper", "move": "hop", "enter_at": 0.3, "frames": 4, "scale": 3, "flip": false, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* mascot (vocabulary.md 4): the recurring pixel creature, about 85 x 58 px, body in the mascot color, one prop. It
        perches on a corner of the scene's main element (the plan places it at x, y overlapping the edge) and enters 4
-       frames after the card lands, rising from below over 4 frames (v02); on the end card it walks or hops. */
+       frames after the card lands, rising from below over 4 frames (v02); on the end card it walks or hops. It idles in
+       every scene it is in (a bob, a blink, a wiggle of its prop; E7) on top of E1's hold (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #ms-wrap { transform-origin: 50% 100%; }
     #ms-wrap.flip svg { transform: scaleX(-1); }
@@ -55,34 +61,19 @@ window.__pcEvents = [];
     <div id="ms-wrap" class="pc-mascot pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 880, y: 520, prop: "clapper", move: "rise", enter_at: 0, frames: 4, scale: 1, flip: false, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 880, y: 520, prop: "clapper", move: "rise", enter_at: 0, frames: 4, scale: 1, flip: false, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var m = document.getElementById("ms-wrap");
       m.innerHTML = PC.mascotSVG(v.prop, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
       PC.place(m, { x: v.x, y: v.y });
       if (v.scale !== 1) { m.style.width = (85 * v.scale) + "px"; m.style.height = (58 * v.scale) + "px"; }
       if (v.flip) m.classList.add("flip");
       var tl = gsap.timeline({ paused: true });
-      var at = v.enter_at;
-      if (v.move === "pop") {
-        PC.pop(tl, m, at, { overshoot: 0.16, frames: Math.max(3, v.frames), from: 0.4 });
-      } else if (v.move === "hop") {
-        // hop 72 up and back over 11 frames, 5 up and 6 down (v09)
-        tl.fromTo(m, { opacity: 0 }, { opacity: 1, duration: PC.f(2), ease: "none" }, at);
-        tl.fromTo(m, { y: 0 }, { y: -72, duration: PC.f(5), ease: "power2.out" }, at);
-        tl.to(m, { y: 0, duration: PC.f(6), ease: "power2.in" }, at + PC.f(5));
-        PC.event("mascot", at, { el: "ms-wrap", move: "hop" });
-      } else if (v.move === "walk") {
-        tl.fromTo(m, { x: -260, opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-        tl.to(m, { x: 0, duration: PC.f(14), ease: "power2.out" }, at);
-        tl.to(m, { y: -5, duration: PC.f(3), ease: "power1.inOut", yoyo: true, repeat: 3 }, at);
-        PC.event("mascot", at, { el: "ms-wrap", move: "walk" });
-      } else {
-        tl.fromTo(m, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(v.frames), ease: "power2.out" }, at);
-        PC.event("mascot", at, { el: "ms-wrap", move: "rise" });
-      }
-      PC.exit(tl, m, v.exit_at, v.exit);
+      var exit = { type: v.exit, at: v.exit_at };
+      var life = PCM.mascotMove(tl, m, v.move, v.enter_at, { frames: v.frames, hold: v.hold, exit: exit });
+      PCM.idle(tl, m, v.enter_at, life.until - v.enter_at, { seed: PC.hash(v.prop) });
       window.__timelines["mascot"] = tl;
       tl.seek(0);
     })();

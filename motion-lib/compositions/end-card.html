@@ -11,7 +11,8 @@
   {"id":"fade_frames","type":"number","label":"Fade frames per element","default":6},
   {"id":"stagger_frames","type":"number","label":"Frames between elements","default":6},
   {"id":"type_frames","type":"number","label":"Frames per typed letter","default":2},
-  {"id":"wobble","type":"boolean","label":"The card wobbles slightly (v02)","default":true}
+  {"id":"wobble","type":"boolean","label":"The card wobbles slightly (v02)","default":true},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion while the card holds)","default":"calm","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]}
 ]'>
 <template>
   <link rel="stylesheet" href="assets/tokens.css">
@@ -20,7 +21,9 @@
     /* end-card (vocabulary.md 3, Keyword end card): the CTA. A tilted surface card (858 wide, x 105, top 324) with the
        verb and the keyword pill (typed, 2 frames per letter: open question 4), two handwritten lines under the card, a
        row of 5 mascots walking in from the left (v02), and the FlashFX lockup (tweaks.md Branding: the CTA always shows
-       it, at least 300 px wide). Elements fade in over 6 frames, 6 frames apart, top to bottom. No captions here. */
+       it, at least 300 px wide). Elements fade in over 6 frames, 6 frames apart, top to bottom. No captions here. The
+       card wobbles (v02) and every element holds (E1); the mascots idle (E7); the lockup only drifts (a logo is never
+       turned or distorted). Everything from pc-motion.js. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #ec-card { left: var(--end-card-x); top: var(--end-card-top); width: var(--end-card-w); height: 410px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
     #ec-verb { font-weight: 800; font-size: var(--end-verb-font); letter-spacing: -0.02em; line-height: 1; }
@@ -41,10 +44,11 @@
     <div id="ec-lockup" class="pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ verb: "Comment", keyword: "TELLS", line1: "", line2: "", mascots_json: ["clapper", "star", "film", "play", "grid"], lockup: "",
-        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true }, window.__hyperframes.getVariables());
+        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true, hold: "calm" }, window.__hyperframes.getVariables());
       var card = document.getElementById("ec-card"), verb = document.getElementById("ec-verb"), pill = document.getElementById("ec-pill");
       var kw = document.getElementById("ec-keyword"), linesEl = document.getElementById("ec-lines"), row = document.getElementById("ec-row");
       var lockupWrap = document.getElementById("ec-lockup");
@@ -56,6 +60,7 @@
       var gap = 171, count = props.length, startX = 540 - ((count - 1) * gap) / 2 - 42;
       var mascots = props.map(function (p, i) {
         var m = PC.el("div", "pc-mascot", row);
+        m.id = "ec-mascot-" + i;
         m.innerHTML = PC.mascotSVG(p, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
         m.style.left = (startX + i * gap) + "px";
         return m;
@@ -68,37 +73,35 @@
         lockupWrap.appendChild(lockupImg);
         lockupWrap.style.top = v.lockup_y + "px";
       }
+      PCM.depth(card, [verb, pill]);
 
       var tl = gsap.timeline({ paused: true });
       var step = PC.f(v.stagger_frames), fade = PC.f(v.fade_frames), t = v.enter_at;
-      tl.fromTo(card, { opacity: 0, y: 24, rotation: tilt, transformOrigin: "50% 50%" }, { opacity: 1, y: 0, duration: fade, ease: "power2.out" }, t);
-      PC.event("enter", t, { el: "ec-card" }); PC.event("land", t + fade, { el: "ec-card" });
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      gsap.set(card, { rotation: tilt });
+      // the card: a 6-frame fade with a 24 px rise and E2's combined zoom and rotation, then the hold (it has no exit: the
+      // reel ends on it) and the slow wobble of v02
+      var life = PCM.life(tl, card, { at: t, main: { kind: "fade", frames: v.fade_frames, rise: 24, ease: "power2.out", axis: "x" }, hold: v.hold, events: { enter: "enter" } });
+      PC.event("land", t + fade, { el: "ec-card" });
+      if (v.wobble) PCM.wobble(tl, card, life.land, Math.max(1, life.until - life.land), { rotate: 0.35, baseRotation: tilt, y: 0 });
       t += step;
-      tl.fromTo(verb, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t); t += step;
-      tl.fromTo(pill, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t);
-      var typeEnd = PC.typeInto(tl, kw, v.keyword, t + fade, { framesPerChar: v.type_frames });
+      PCM.life(tl, verb, { at: t, main: { kind: "fade", frames: v.fade_frames, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: t + PC.f(1), events: { enter: "verb" } }); t += step;
+      PCM.life(tl, pill, { at: t, main: { kind: "fade", frames: v.fade_frames, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: t + PC.f(1), events: { enter: "pill" } });
+      var typeEnd = PCM.typeInto(tl, kw, v.keyword, t + fade, { framesPerChar: v.type_frames });
       t += step;
-      tl.fromTo(linesEl, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t); t += step;
-      // the mascots walk in from the left edge, bunched, then spread to their spots (v02 s30_cta43)
+      PCM.life(tl, linesEl, { at: t, main: { kind: "fade", frames: v.fade_frames, rise: 0, zoom: false, rotate: 6, axis: "x" }, hold: { level: v.hold, kind: "drift-rotate" }, inertia: quiet, events: { enter: "lines" } }); t += step;
+      // the mascots walk in from the left edge, bunched, then spread to their spots (v02 s30_cta43), then idle; the row holds
+      var rowLife = PCM.life(tl, row, { at: t, main: { kind: "none" }, hold: { level: v.hold, kind: "drift" }, inertia: quiet });
       mascots.forEach(function (m, i) {
         var from = -120 - i * 30;
-        tl.fromTo(m, { x: from - (startX + i * gap), opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, t + PC.f(i));
-        tl.to(m, { x: 0, duration: PC.f(10 + i * 2), ease: "power2.out" }, t + PC.f(i));
-        tl.to(m, { y: -6, duration: PC.f(3), ease: "power1.inOut", yoyo: true, repeat: 3 }, t + PC.f(i));
+        PCM.mascotMove(tl, m, "walk", t + PC.f(i), { dx: from - (startX + i * gap), walkFrames: 10 + i * 2, hold: { kind: "none" }, until: rowLife.until });
+        PCM.idle(tl, m, t + PC.f(i), rowLife.until - t, { seed: 17 + i * 5, bob: 4 });
       });
       PC.event("mascots", t, { el: "ec-row" });
       t += step + PC.f(8);
       if (lockupImg) {
-        tl.fromTo(lockupWrap, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: fade, ease: "power2.out" }, Math.max(t, typeEnd + PC.f(2)));
-        PC.event("lockup", Math.max(t, typeEnd + PC.f(2)), { el: "ec-lockup" });
-      }
-      if (v.wobble) {
-        // a slow deterministic wobble of the card (v02): rotation and y as functions of time, never random
-        var wob = { p: 0 };
-        tl.to(wob, { p: 1, duration: 40, ease: "none", onUpdate: function () {
-          var s = wob.p * 40;
-          gsap.set(card, { rotation: tilt + Math.sin(s * 2.1) * 0.35, y: Math.sin(s * 1.6) * 2.5 });
-        } }, v.enter_at + fade);
+        var lAt = Math.max(t, typeEnd + PC.f(2));
+        PCM.life(tl, lockupWrap, { at: lAt, main: { kind: "fade", frames: v.fade_frames, rise: 18, ease: "power2.out", zoom: false, rotate: false }, hold: { level: v.hold, kind: "drift" }, events: { enter: "lockup" } });
       }
       window.__timelines["end-card"] = tl;
       tl.seek(0);

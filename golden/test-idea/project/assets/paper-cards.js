@@ -1,8 +1,10 @@
-/* paper-cards.js: the shared moves and helpers of the motion library (styles/paper-cards, version 2).
-   Loaded by every component from inside its <template> (HyperFrames runs it once per mount, in that mount's own
-   window). Everything is a pure function of timeline time: no clocks, no Math.random (PC.prng is seeded).
-   Frame counts and distances are the style's numbers (style.md Motion, vocabulary.md); the callers pass them from
-   their props, whose defaults mirror tokens.json. 30 fps. */
+/* paper-cards.js: the shared helpers of the motion library (styles/paper-cards, version 2): props, layout, the
+   seeded PRNG, the event registry, the mascot's pixel art, the honesty chip. The motion itself (the four phases of
+   every element, the combined main animations, the exits, the count-ups and typing, the canvas layers) lives in
+   pc-motion.js (PCM, Motion and energy rules E1, E2, E5 to E7; M14); the PC.* moves below delegate to it so that
+   the old call sites keep working. Loaded by every component from inside its <template> (HyperFrames runs it once
+   per mount, in that mount's own window). Everything is a pure function of timeline time: no clocks, no Math.random.
+   Frame counts and distances are the style's numbers (style.md Motion, vocabulary.md). 30 fps. */
 (function () {
   "use strict";
   var FPS = 30;
@@ -79,88 +81,43 @@
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   };
+  // a stable small integer from a string (seeds per reel: the idea id)
+  PC.hash = function (s) {
+    var h = 2166136261;
+    s = String(s || "");
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0) % 1000000;
+  };
 
-  // ---------------------------------------------------------------- the moves (style.md Motion, vocabulary.md)
-  // enter: opacity 0 to 1 over opacityFrames (5), y +rise (38) to 0 over positionFrames (8), expo.out, no scale
+  // ---------------------------------------------------------------- the moves (delegated to pc-motion.js, E1 and E2)
+  // enter: the card move (opacity 0 to 1 over 5 frames, y +38 to 0 over 8 frames, expo.out) with its inertia and hold
   PC.enter = function (tl, el, at, o) {
     o = o || {};
-    var of = o.opacityFrames === undefined ? 5 : o.opacityFrames;
-    var pf = o.positionFrames === undefined ? 8 : o.positionFrames;
-    var rise = o.rise === undefined ? 38 : o.rise;
-    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: PC.f(of), ease: "power1.out" }, at);
-    tl.fromTo(el, { y: rise }, { y: 0, duration: PC.f(pf), ease: o.ease || "expo.out" }, at);
-    PC.event("enter", at, { el: el.id }); PC.event("land", at + PC.f(pf), { el: el.id });
-    return at + PC.f(Math.max(of, pf));
+    return PCM.life(tl, el, { at: at, main: { kind: "rise", rise: o.rise, opacityFrames: o.opacityFrames, positionFrames: o.positionFrames, ease: o.ease, zoom: o.zoom, rotate: o.rotate, axis: o.axis },
+      hold: o.hold, exit: o.exit, until: o.until, inertia: o.inertia }).land;
   };
   // pop: scale from 0.5 to a peak of 1 + overshoot, then 1 (back-out); opacity reaches 1 within the first 4 frames
   PC.pop = function (tl, el, at, o) {
     o = o || {};
-    var frames = o.frames === undefined ? 7 : o.frames;
-    var over = o.overshoot === undefined ? 0.02 : o.overshoot;
-    var from = o.from === undefined ? 0.5 : o.from;
-    var up = Math.max(1, Math.round(frames * 0.55)), down = Math.max(1, frames - up);
-    tl.fromTo(el, { scale: from, transformOrigin: o.origin || "50% 50%" }, { scale: 1 + over, duration: PC.f(up), ease: "power2.out" }, at);
-    tl.to(el, { scale: 1, duration: PC.f(down), ease: "power1.inOut" }, at + PC.f(up));
-    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: PC.f(Math.min(4, frames)), ease: "none" }, at);
-    PC.event("pop", at, { el: el.id }); PC.event("pop_peak", at + PC.f(up), { el: el.id });
-    return at + PC.f(frames);
+    return PCM.life(tl, el, { at: at, main: { kind: "pop", frames: o.frames, overshoot: o.overshoot, from: o.from, rotate: o.rotate, axis: o.axis }, hold: o.hold, exit: o.exit, until: o.until, inertia: o.inertia }).land;
   };
   // fly-in from a parked spot: travels dx, dy over frames (14), expo.out, start tilt easing to 0
   PC.flyIn = function (tl, el, at, o) {
     o = o || {};
-    var frames = o.frames === undefined ? 14 : o.frames;
-    tl.fromTo(el, { x: o.dx || 0, y: o.dy === undefined ? 930 : o.dy, rotation: o.tilt === undefined ? 3.9 : o.tilt, transformOrigin: "50% 50%" },
-      { x: 0, y: 0, rotation: o.endTilt || 0, duration: PC.f(frames), ease: "expo.out" }, at);
-    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-    PC.event("enter", at, { el: el.id, move: "fly-in" }); PC.event("land", at + PC.f(frames), { el: el.id });
-    return at + PC.f(frames);
+    return PCM.life(tl, el, { at: at, main: { kind: "fly-in", dx: o.dx, dy: o.dy, tilt: o.tilt, endTilt: o.endTilt, frames: o.frames, rotate: o.rotate, axis: o.axis }, hold: o.hold, exit: o.exit, until: o.until, inertia: o.inertia }).land;
+  };
+  // fade: a plain fade over frames (4) with a small drift (the light chip, the callout, a caption word)
+  PC.fade = function (tl, el, at, o) {
+    o = o || {};
+    return PCM.life(tl, el, { at: at, main: { kind: "fade", frames: o.frames, rise: o.rise, ease: o.ease, zoom: o.zoom, rotate: o.rotate, axis: o.axis }, hold: o.hold, exit: o.exit, until: o.until, inertia: o.inertia }).land;
   };
   // exit: fade-blur (4 frames, both look refs), fall (10 frames, ease-in, tilts 2 degrees, v07), push (6 frames out to the
   // left, v03), cut. Returns the time the element is gone.
-  PC.exit = function (tl, el, at, type, o) {
-    o = o || {};
-    type = type || "none";
-    if (type === "none" || at === undefined || at === null || at < 0) return at;
-    if (type === "cut") { tl.set(el, { opacity: 0 }, at); PC.event("exit", at, { el: el.id, type: type }); return at; }
-    if (type === "fall") {
-      var ff = o.frames || 10;
-      tl.to(el, { y: "+=" + (o.distance || 1700), rotation: o.tilt === undefined ? 2 : o.tilt, duration: PC.f(ff), ease: "power2.in" }, at);
-      PC.event("exit", at, { el: el.id, type: type }); return at + PC.f(ff);
-    }
-    if (type === "push") {
-      var pf = o.frames || 6;
-      tl.to(el, { x: "-=" + (o.distance || 1300), duration: PC.f(pf), ease: "power2.in" }, at);
-      PC.event("exit", at, { el: el.id, type: type }); return at + PC.f(pf);
-    }
-    var bf = o.frames || 4;  // fade-blur
-    tl.to(el, { opacity: 0, filter: "blur(8px)", duration: PC.f(bf), ease: "power2.in" }, at);
-    PC.event("exit", at, { el: el.id, type: "fade-blur" }); return at + PC.f(bf);
-  };
+  PC.exit = function (tl, el, at, type, o) { return PCM.exit(tl, el, at, type, o); };
   // count-up: a number counting from `from` to `to` over frames (27.5), ease-out (cubic)
-  PC.countUp = function (tl, el, at, o) {
-    o = o || {};
-    var frames = o.frames === undefined ? 27.5 : o.frames;
-    var state = { v: o.from || 0 };
-    var dec = o.decimals || 0, prefix = o.prefix || "", suffix = o.suffix || "";
-    var render = function () { el.textContent = prefix + PC.fmt(state.v, dec) + suffix; };
-    render();
-    tl.to(state, { v: o.to, duration: PC.f(frames), ease: o.ease || "power3.out", onUpdate: render }, at);
-    PC.event("count_start", at, { el: el.id }); PC.event("count_end", at + PC.f(frames), { el: el.id });
-    return at + PC.f(frames);
-  };
+  PC.countUp = function (tl, el, at, o) { return PCM.countUp(tl, el, at, o); };
   // typing: the text grows one character per framesPerChar frames (2 for keywords, 1.15 for chat)
-  PC.typeInto = function (tl, el, text, at, o) {
-    o = o || {};
-    var fpc = o.framesPerChar === undefined ? 2 : o.framesPerChar;
-    var len = String(text).length;
-    var state = { n: 0 };
-    var caret = o.caret ? "|" : "";
-    var render = function () { el.textContent = String(text).slice(0, Math.round(state.n)) + (state.n < len ? caret : ""); };
-    render();
-    if (len > 0) tl.to(state, { n: len, duration: PC.f(fpc * len), ease: "none", snap: "n", onUpdate: render }, at);
-    PC.event("typing", at, { el: el.id, end: at + PC.f(fpc * len), chars: len });
-    return at + PC.f(fpc * len);
-  };
+  PC.typeInto = function (tl, el, text, at, o) { return PCM.typeInto(tl, el, text, at, o); };
   // a line drawn across an element (strike-through): scaleX 0 to 1 over frames (4), ease-out
   PC.strike = function (tl, line, at, o) {
     o = o || {};
@@ -171,8 +128,8 @@
 
   // ---------------------------------------------------------------- events (the sound events, local seconds)
   // Every move registers what happened and when, on this mount's window: window.__pcEvents = [{type, t, ...}].
-  // M10's events.py computes the absolute times from the plan and catalog.json; this list lets frame-match and the
-  // tests check that the declared frame offsets are the ones the timeline uses.
+  // M10's events.py reads them from the mounted component; frame-match and the tests check that the declared frame
+  // offsets are the ones the timeline uses.
   window.__pcEvents = window.__pcEvents || [];
   PC.event = function (type, t, extra) {
     var e = { type: type, t: Math.round(t * 1000) / 1000 };
@@ -194,25 +151,27 @@
     chip.style.top = (o.top === undefined ? 20 : o.top) + "px";
     return chip;
   };
-  // the mascot: pixel art on a 17 x 12 grid (85 x 58 px), body in the mascot color, one prop
+  // the mascot: pixel art on a 17 x 12 grid (85 x 58 px), body in the mascot color, one prop. The eyes (.pc-eye) blink
+  // and the prop (.pc-prop) wiggles in the idle of pc-motion.js (E7).
   PC.mascotSVG = function (prop, color) {
     color = color || "#D67354";
     var ink = "#100904", acc = "#DC6532", paper = "#FFFAF7", ok = "#289C5C";
-    var px = function (x, y, c, w, h) { return '<rect x="' + x + '" y="' + y + '" width="' + (w || 1) + '" height="' + (h || 1) + '" fill="' + c + '"/>'; };
+    var px = function (x, y, c, w, h, cls) { return '<rect x="' + x + '" y="' + y + '" width="' + (w || 1) + '" height="' + (h || 1) + '" fill="' + c + '"' + (cls ? ' class="' + cls + '"' : "") + '/>'; };
     var s = '<svg viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">';
     // body: a rounded blob with two ears, two legs
     s += px(3, 3, color, 9, 7) + px(2, 4, color, 1, 5) + px(12, 4, color, 1, 5) + px(4, 2, color, 7, 1) + px(4, 1, color, 1, 1) + px(10, 1, color, 1, 1);
     s += px(4, 10, color, 2, 1) + px(9, 10, color, 2, 1) + px(4, 11, ink, 2, 1) + px(9, 11, ink, 2, 1);
     // face
-    s += px(5, 5, paper, 2, 2) + px(9, 5, paper, 2, 2) + px(6, 6, ink, 1, 1) + px(10, 6, ink, 1, 1) + px(7, 8, ink, 2, 1);
+    s += px(5, 5, paper, 2, 2) + px(9, 5, paper, 2, 2) + px(6, 6, ink, 1, 1, "pc-eye") + px(10, 6, ink, 1, 1, "pc-eye") + px(7, 8, ink, 2, 1);
     // the prop, held to the right
+    s += '<g class="pc-prop">';
     if (prop === "star") s += px(14, 3, acc) + px(13, 4, acc, 3, 1) + px(14, 5, acc) + px(13, 6, acc) + px(15, 6, acc);
     else if (prop === "film") s += px(13, 3, ink, 3, 5) + px(14, 4, paper) + px(14, 6, paper) + px(13, 3, acc, 1, 1) + px(15, 7, acc, 1, 1);
     else if (prop === "play") s += px(13, 3, acc, 1, 5) + px(14, 4, acc, 1, 3) + px(15, 5, acc, 1, 1);
     else if (prop === "grid") s += px(13, 3, ink, 2, 2) + px(15, 3, acc, 2, 2) + px(13, 5, acc, 2, 2) + px(15, 5, ink, 2, 2);
     else if (prop === "check") s += px(13, 4, ok, 1, 1) + px(14, 5, ok, 1, 1) + px(15, 4, ok, 1, 1) + px(16, 3, ok, 1, 1);
     else s += px(13, 3, ink, 3, 1) + px(13, 4, paper, 3, 3) + px(13, 4, ink, 1, 3) + px(15, 4, ink, 1, 3) + px(14, 2, acc, 1, 1);  // clapperboard
-    s += "</svg>";
+    s += "</g></svg>";
     return s;
   };
   PC.mascot = function (parent, prop, cls) {
@@ -220,16 +179,9 @@
     m.innerHTML = PC.mascotSVG(prop, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim() || "#D67354");
     return m;
   };
-  // the mascot's entrance: 4 frames after its card lands, rising in from below the element over 4 frames (v02)
-  PC.mascotEnter = function (tl, m, landAt, o) {
-    o = o || {};
-    var delay = o.delayFrames === undefined ? 4 : o.delayFrames;
-    var frames = o.frames === undefined ? 4 : o.frames;
-    var at = landAt + PC.f(delay);
-    tl.fromTo(m, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(frames), ease: "power2.out" }, at);
-    PC.event("mascot", at, { el: m.id });
-    return at + PC.f(frames);
-  };
+  // the mascot's entrance: 4 frames after its card lands, rising in from below the element over 4 frames (v02), then
+  // its hold and idle (pc-motion.js)
+  PC.mascotEnter = function (tl, m, landAt, o) { return PCM.mascotEnter(tl, m, landAt, o).land; };
 
   window.PC = PC;
 })();

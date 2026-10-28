@@ -11,6 +11,7 @@
   {"id":"row_gap_frames","type":"number","label":"Frames between rows","default":7},
   {"id":"enter_at","type":"number","label":"Build starts (s)","default":0},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"mock","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the grid drifts and turns as one group)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,7 +21,8 @@
   <style>
     /* thumb-grid (vocabulary.md 13, Thumbnail grid, fan or deck): many examples at once. Grid build 3 to 4 frames per
        card (fade while rising), 1 frame apart inside a row, the next row 7 frames after the first (v02 0:34.6). Each
-       card can carry a small count chip (a dark pill with a play glyph and a number). */
+       card can carry a small count chip (a dark pill with a play glyph and a number). The grid is a group: it holds in
+       one shared direction (E1) and its cards sit at alternating depths under the hold's rotation (E6). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #tg { display: grid; }
     .tg-card { position: relative; border-radius: 24px; background: var(--c-surface); overflow: hidden; box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 26px -8px rgba(133, 112, 92, 0.32); }
@@ -30,16 +32,16 @@
     .tg-count { position: absolute; left: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 999px; background: var(--c-ink-chip); color: #FFFFFF; font-weight: 700; font-size: 24px; }
     .tg-count svg { width: 18px; height: 18px; }
     .tg-label { position: absolute; left: 14px; top: 12px; font-weight: 700; font-size: 26px; color: var(--c-ink); }
-    #tg-honesty-anchor { position: absolute; }
   </style>
   <div id="root" data-composition-id="thumb-grid" data-width="1080" data-height="1920">
     <div id="tg-wrap" class="pc-el"><div id="tg"></div></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 480, w: 900, cols: 3, gap: 18, ratio: 1.4, items_json: [], card_frames: 4, stagger_frames: 1, row_gap_frames: 7, enter_at: 0,
-        honesty: "mock", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("tg-wrap"), grid = document.getElementById("tg");
       PC.place(wrap, { x: v.x, y: v.y, w: v.w });
       var cols = Math.max(1, Math.round(v.cols));
@@ -58,15 +60,21 @@
         return c;
       });
       var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      PCM.depth(wrap, [grid]);
+      gsap.set(grid, { transformStyle: "preserve-3d" });
+      cards.forEach(function (c, i) { gsap.set(c, { z: (i % 2) * 18, force3D: true }); });
       var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      // the group holds as one; each card has its own entrance (fade while rising, a small zoom and parallax rotation)
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "none" }, hold: v.hold, inertia: quiet, exit: exit });
       cards.forEach(function (c, i) {
         var row = Math.floor(i / cols), col = i % cols;
         var at = v.enter_at + PC.f(v.row_gap_frames) * row + PC.f(v.stagger_frames) * col;
-        tl.fromTo(c, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(v.card_frames), ease: "power2.out" }, at);
+        PCM.life(tl, c, { at: at, main: { kind: "fade", frames: v.card_frames, rise: 30, ease: "power2.out", zoom: "small", rotate: 10, rotateSign: col % 2 ? -1 : 1 }, hold: { kind: "none" }, inertia: { move: 0, scale: 0.01, rotate: 1.5 }, until: group.until, events: { enter: "card" } });
         PC.event("card", at, { el: c.id, row: row });
       });
-      if (honesty) tl.fromTo(honesty, { opacity: 0 }, { opacity: 0.9, duration: PC.f(4), ease: "none" }, v.enter_at);
-      PC.exit(tl, wrap, v.exit_at, v.exit);
+      if (honesty) PCM.life(tl, honesty, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: v.enter_at + PC.f(1), events: { enter: "honesty" } });
       window.__timelines["thumb-grid"] = tl;
       tl.seek(0);
     })();

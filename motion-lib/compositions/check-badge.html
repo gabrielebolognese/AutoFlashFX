@@ -11,6 +11,7 @@
   {"id":"pop_frames","type":"number","label":"Badge pop frames","default":12},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"ticks_at","type":"number","label":"First tick at (s, list mode)","default":0.4},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,7 +21,7 @@
   <style>
     /* check-badge (vocabulary.md 9, Check badge and checklist ticks): marks done or yes. A success circle with a white
        check and a white ring that pops (0.2 to 1.16 to 1 over 6 plus 6 frames, v03), or a checklist card whose ticks pop
-       1 to 3 frames each, 4 to 6 frames apart (v06, v07). */
+       1 to 3 frames each, 4 to 6 frames apart (v06, v07). The badge and the card live through E1's phases (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #cb-list { padding: 30px 40px; box-sizing: border-box; display: none; flex-direction: column; gap: 18px; }
     .cb-row { display: flex; align-items: center; gap: 22px; font-weight: 700; font-size: 34px; }
@@ -34,12 +35,14 @@
     <div id="cb-list" class="pc-card pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ mode: "badge", x: 498, y: 860, size: 84, w: 760, items_json: [], tick_frames: 3, tick_gap_frames: 4, overshoot: 0.16, pop_frames: 12,
-        enter_at: 0, ticks_at: 0.4, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter_at: 0, ticks_at: 0.4, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var badge = document.getElementById("cb-badge"), list = document.getElementById("cb-list");
       var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
       if (v.mode === "list") {
         badge.style.display = "none";
         list.style.display = "flex";
@@ -52,21 +55,17 @@
           PC.el("span", "", row, text);
           return tick;
         });
-        var landAt = PC.enter(tl, list, v.enter_at, { rise: 38 });
+        var life = PCM.life(tl, list, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: exit });
         ticks.forEach(function (tick, i) {
-          var at = Math.max(v.ticks_at, landAt) + PC.f(v.tick_gap_frames) * i;
-          PC.pop(tl, tick, at, { overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2 });
-          PC.event("check", at, { el: tick.id });
+          var at = Math.max(v.ticks_at, life.land) + PC.f(v.tick_gap_frames) * i;
+          PCM.life(tl, tick, { at: at, main: { kind: "pop", overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2, rotate: 8 }, hold: { kind: "none" }, inertia: { move: 0, scale: 0.01, rotate: 1 }, until: life.until, events: { enter: "check", land: "check_peak" } });
         });
-        PC.exit(tl, list, v.exit_at, v.exit);
       } else {
         list.style.display = "none";
         badge.innerHTML = PC.checkSVG();
         badge.style.width = v.size + "px"; badge.style.height = v.size + "px";
         PC.place(badge, { x: v.x, y: v.y });
-        PC.pop(tl, badge, v.enter_at, { overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 });
-        PC.event("check", v.enter_at, { el: "cb-badge" });
-        PC.exit(tl, badge, v.exit_at, v.exit);
+        PCM.life(tl, badge, { at: v.enter_at, main: { kind: "pop", overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 }, hold: v.hold, exit: exit, events: { enter: "check", land: "check_peak" } });
       }
       window.__timelines["check-badge"] = tl;
       tl.seek(0);

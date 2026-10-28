@@ -155,8 +155,8 @@ def change_times(plan: dict, ctx: Context) -> list[int]:
 
 
 def is_text_component(cid: str, props: dict) -> bool:
-    if cid in ("hero-3d", "mascot", "logo-tile", "paper-canvas", "caption-line", "camera-move", "exit-move", "thumb-grid"):
-        return bool(props.get("label")) if cid == "hero-3d" else False
+    if cid in ("hero-3d", "icon-3d", "mascot", "logo-tile", "paper-canvas", "caption-line", "camera-move", "exit-move", "thumb-grid"):
+        return bool(props.get("label")) if cid in ("hero-3d", "icon-3d") else False
     if cid == "check-badge":
         return props.get("mode") == "list"
     if cid == "pop":
@@ -238,7 +238,7 @@ def rule_components(plan: dict, ctx: Context, rep: Report) -> None:
                 rep.err("components", f"{iid}: {c['component']} is a candidate, not an approved component")
             declared = {p["id"] for p in comp.get("props", [])}
             for k, v in c.get("props", {}).items():
-                if k not in declared and not (c["component"] == "hero-3d" and k == "clip_start"):
+                if k not in declared and not (c["component"] in ("hero-3d", "icon-3d") and k == "clip_start"):
                     rep.err("components", f"{iid}: prop {k} is not a declared variable of {c['component']} (declared: {', '.join(sorted(declared))})")
                     continue
                 decl = next((p for p in comp.get("props", []) if p["id"] == k), None)
@@ -630,7 +630,7 @@ def rule_branding(plan: dict, ctx: Context, rep: Report) -> None:
                     rep.err("branding", f"{c['id']}: a FlashFX asset ({v}) outside the CTA while the solution is {sol}: FlashFX logos elsewhere only when the solution is FlashFX")
                 if asset.get("type") == "lockup" and float(c.get("props", {}).get("lockup_w", c.get("props", {}).get("size", 360)) or 0) < float(bt.get("lockup_min_width", 300)) and c["component"] != "end-card":
                     rep.err("branding", f"{c['id']}: a lockup narrower than {bt.get('lockup_min_width', 300)} px")
-            if c["component"] == "hero-3d" and re.search(r"flashfx", str(c.get("props", {}).get("label", "")), re.I):
+            if c["component"] in ("hero-3d", "icon-3d") and re.search(r"flashfx", str(c.get("props", {}).get("label", "")), re.I):
                 rep.err("branding", f"{c['id']}: no 3D version of the FlashFX logo or name (BRAND.md)")
     slot = br.get("brand_slot")
     if flashfx:

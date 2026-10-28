@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 700, "value": 1134112, "decimals": 0, "prefix": "", "suffix": "", "unit": "installs", "container": "pill", "icon": "download", "sub_label": "", "enter_at": 0, "count_frames": 27.5, "count_delay_frames": 0, "honesty": "none", "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 700, "value": 1134112, "decimals": 0, "prefix": "", "suffix": "", "unit": "installs", "container": "pill", "icon": "download", "sub_label": "", "enter_at": 0, "count_frames": 27.5, "count_delay_frames": 0, "honesty": "none", "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,9 @@ window.__pcEvents = [];
   <style>
     /* stat-number (vocabulary.md 2, Stat number with count-up): a number that proves the point, counting from 0 with
        ease-out over 27.5 frames after its container entered (1). Containers: the white pill (168 tall, icon, number,
-       unit in accent; v01) or the chip (141 tall, number plus serif-italic unit, a sub-label pill under it; v02). */
+       unit in accent; v01) or the chip (141 tall, number plus serif-italic unit, a sub-label pill under it; v02). The
+       container lives through E1's phases with E2's combined entrance (pc-motion.js); the count is a tween on a
+       setter, so it renders under HyperFrames' suppressed events. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #stat-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
     #stat { display: inline-flex; align-items: center; gap: 22px; padding: 0 46px; white-space: nowrap; }
@@ -69,10 +76,11 @@ window.__pcEvents = [];
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 120, y: 700, value: 1134112, decimals: 0, prefix: "", suffix: "", unit: "installs", container: "pill", icon: "none",
-        sub_label: "", enter_at: 0, count_frames: 27.5, count_delay_frames: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        sub_label: "", enter_at: 0, count_frames: 27.5, count_delay_frames: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("stat-wrap"), stat = document.getElementById("stat"), num = document.getElementById("stat-num");
       var unit = document.getElementById("stat-unit");
       PC.place(wrap, { x: v.x, y: v.y });
@@ -91,9 +99,8 @@ window.__pcEvents = [];
       PC.honesty(stat, v.honesty, { top: -22, right: 24 });
 
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, wrap, v.enter_at, { rise: 38 });
-      PC.countUp(tl, num, landAt + PC.f(v.count_delay_frames), { to: v.value, frames: v.count_frames, decimals: v.decimals, prefix: v.prefix, suffix: v.suffix });
-      PC.exit(tl, wrap, v.exit_at, v.exit);
+      var life = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      PCM.countUp(tl, num, life.land + PC.f(v.count_delay_frames), { to: v.value, frames: v.count_frames, decimals: v.decimals, prefix: v.prefix, suffix: v.suffix });
       window.__timelines["stat-number"] = tl;
       tl.seek(0);
     })();

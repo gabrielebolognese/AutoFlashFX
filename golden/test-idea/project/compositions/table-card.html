@@ -11,6 +11,7 @@
   {"id":"row_gap_frames","type":"number","label":"Frames between rows","default":3},
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
 ]'>
@@ -20,7 +21,8 @@
   <style>
     /* table-card (vocabulary.md 24): a surface card with a logo row and a small pill, label and value rows with hairline
        dividers, values right-aligned, good values in success. Card enter over 7 frames, rise 28 (v04 f195 to f202);
-       the rows follow 3 frames apart. Logos are image files (brand.json or research assets), never redrawn. */
+       the rows follow 3 frames apart. Logos are image files (brand.json or research assets), never redrawn. The card
+       lives through E1's phases with E2's combined entrance; the head and the rows sit at their own depths (E6). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #tb { padding: 36px 44px 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; }
     #tb-title { font-weight: 800; font-size: 36px; letter-spacing: -0.02em; }
@@ -44,9 +46,10 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 90, y: 520, w: 900, title: "", logos_json: [], pill: "", rows_json: [], enter_frames: 7, rise: 28, row_gap_frames: 3, enter_at: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 90, y: 520, w: 900, title: "", logos_json: [], pill: "", rows_json: [], enter_frames: 7, rise: 28, row_gap_frames: 3, enter_at: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var tb = document.getElementById("tb"), head = document.getElementById("tb-head"), rowsEl = document.getElementById("tb-rows");
       PC.place(tb, { x: v.x, y: v.y, w: v.w });
       if (v.title) { var t = document.getElementById("tb-title"); t.textContent = v.title; t.style.display = "block"; }
@@ -72,14 +75,14 @@
         });
         return row;
       });
+      PCM.depth(tb, [head, rowsEl]);
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, tb, v.enter_at, { rise: v.rise, positionFrames: v.enter_frames, opacityFrames: Math.min(5, v.enter_frames) });
+      var life = PCM.life(tl, tb, { at: v.enter_at, main: { kind: "rise", rise: v.rise, positionFrames: v.enter_frames, opacityFrames: Math.min(5, v.enter_frames) }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      var quiet = { move: 0, scale: 0, rotate: 0 };
       rows.forEach(function (row, i) {
-        var at = landAt - PC.f(3) + PC.f(v.row_gap_frames) * i;
-        tl.fromTo(row, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
-        PC.event("row", at, { el: row.id });
+        var at = life.land - PC.f(3) + PC.f(v.row_gap_frames) * i;
+        PCM.life(tl, row, { at: at, main: { kind: "fade", frames: 3, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: at + PC.f(1), events: { enter: "row" } });
       });
-      PC.exit(tl, tb, v.exit_at, v.exit);
       window.__timelines["table-card"] = tl;
       tl.seek(0);
     })();

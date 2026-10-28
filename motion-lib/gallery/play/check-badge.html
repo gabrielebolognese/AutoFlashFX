@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"mode": "badge", "x": 480, "y": 860, "size": 120, "w": 760, "items_json": "[\"Plan the palette\",\"Review the layout\",\"Then code\"]", "tick_frames": 3, "tick_gap_frames": 4, "overshoot": 0.16, "pop_frames": 12, "enter_at": 0.3, "ticks_at": 0.4, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"mode": "badge", "x": 480, "y": 860, "size": 120, "w": 760, "items_json": "[\"Plan the palette\",\"Review the layout\",\"Then code\"]", "tick_frames": 3, "tick_gap_frames": 4, "overshoot": 0.16, "pop_frames": 12, "enter_at": 0.3, "ticks_at": 0.4, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,7 @@ window.__pcEvents = [];
   <style>
     /* check-badge (vocabulary.md 9, Check badge and checklist ticks): marks done or yes. A success circle with a white
        check and a white ring that pops (0.2 to 1.16 to 1 over 6 plus 6 frames, v03), or a checklist card whose ticks pop
-       1 to 3 frames each, 4 to 6 frames apart (v06, v07). */
+       1 to 3 frames each, 4 to 6 frames apart (v06, v07). The badge and the card live through E1's phases (pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #cb-list { padding: 30px 40px; box-sizing: border-box; display: none; flex-direction: column; gap: 18px; }
     .cb-row { display: flex; align-items: center; gap: 22px; font-weight: 700; font-size: 34px; }
@@ -60,12 +65,14 @@ window.__pcEvents = [];
     <div id="cb-list" class="pc-card pc-el"></div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ mode: "badge", x: 498, y: 860, size: 84, w: 760, items_json: [], tick_frames: 3, tick_gap_frames: 4, overshoot: 0.16, pop_frames: 12,
-        enter_at: 0, ticks_at: 0.4, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        enter_at: 0, ticks_at: 0.4, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var badge = document.getElementById("cb-badge"), list = document.getElementById("cb-list");
       var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
       if (v.mode === "list") {
         badge.style.display = "none";
         list.style.display = "flex";
@@ -78,21 +85,17 @@ window.__pcEvents = [];
           PC.el("span", "", row, text);
           return tick;
         });
-        var landAt = PC.enter(tl, list, v.enter_at, { rise: 38 });
+        var life = PCM.life(tl, list, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: exit });
         ticks.forEach(function (tick, i) {
-          var at = Math.max(v.ticks_at, landAt) + PC.f(v.tick_gap_frames) * i;
-          PC.pop(tl, tick, at, { overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2 });
-          PC.event("check", at, { el: tick.id });
+          var at = Math.max(v.ticks_at, life.land) + PC.f(v.tick_gap_frames) * i;
+          PCM.life(tl, tick, { at: at, main: { kind: "pop", overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2, rotate: 8 }, hold: { kind: "none" }, inertia: { move: 0, scale: 0.01, rotate: 1 }, until: life.until, events: { enter: "check", land: "check_peak" } });
         });
-        PC.exit(tl, list, v.exit_at, v.exit);
       } else {
         list.style.display = "none";
         badge.innerHTML = PC.checkSVG();
         badge.style.width = v.size + "px"; badge.style.height = v.size + "px";
         PC.place(badge, { x: v.x, y: v.y });
-        PC.pop(tl, badge, v.enter_at, { overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 });
-        PC.event("check", v.enter_at, { el: "cb-badge" });
-        PC.exit(tl, badge, v.exit_at, v.exit);
+        PCM.life(tl, badge, { at: v.enter_at, main: { kind: "pop", overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 }, hold: v.hold, exit: exit, events: { enter: "check", land: "check_peak" } });
       }
       window.__timelines["check-badge"] = tl;
       tl.seek(0);

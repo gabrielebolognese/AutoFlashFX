@@ -145,7 +145,7 @@ def build_events(project: str, plan: dict, verify: bool = True, gpu: str = "auto
                 comp = mcommon.parse_component(comp_file)
                 # the shim registers the timeline under the component's id (the file's data-composition-id)
                 props = dict(inst.get("props", {}))
-                if inst["component"] == "hero-3d":
+                if inst["component"] in ("hero-3d", "icon-3d"):
                     props["clip_start"] = 0  # the harness seeks local times; in the reel the host's data-start is added by the runtime
                 res = h.measure(comp, props, [], [])
                 local = []

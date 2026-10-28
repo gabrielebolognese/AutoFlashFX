@@ -87,10 +87,22 @@ MEASURE_JS = """
         node = node.parentElement;
       }
       const cs = getComputedStyle(el);
-      let scale = 1, rotation = 0;
-      try { const m = new DOMMatrixReadOnly(cs.transform); scale = Math.hypot(m.a, m.b); rotation = Math.atan2(m.b, m.a) * 180 / Math.PI; } catch (e) {}
+      // the element's own transform: the scale from the length of the x basis vector (m11, m12, m13: exact under a 3D
+      // parallax rotation, which a 2D hypot(a, b) would read as a smaller scale), the 2D rotation, and the parallax
+      // angles ry (rotateY) and rx (rotateX) for the hold checks (M14)
+      let scale = 1, rotation = 0, ry = 0, rx = 0, tx = 0, ty = 0;
+      try {
+        const m = new DOMMatrixReadOnly(cs.transform);
+        const sx = Math.hypot(m.m11, m.m12, m.m13), sy = Math.hypot(m.m21, m.m22, m.m23);
+        scale = Math.max(sx, sy);
+        rotation = Math.atan2(m.m12, m.m11) * 180 / Math.PI;
+        ry = Math.atan2(-m.m13, Math.hypot(m.m11, m.m12)) * 180 / Math.PI;
+        rx = Math.atan2(m.m23, Math.hypot(m.m21, m.m22)) * 180 / Math.PI;
+        tx = m.m41; ty = m.m42;
+      } catch (e) {}
       row[sel] = { x: r.left, y: r.top, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + r.height / 2,
                    opacity: Math.round(op * 1000) / 1000, scale: Math.round(scale * 10000) / 10000, rotation: Math.round(rotation * 100) / 100,
+                   ry: Math.round(ry * 100) / 100, rx: Math.round(rx * 100) / 100, tx: Math.round(tx * 1000) / 1000, ty: Math.round(ty * 1000) / 1000,
                    text: (el.textContent || "").trim().slice(0, 80), tag: el.tagName };
       if (el.tagName === "IMG") { row[sel].fit = cs.objectFit; row[sel].nw = el.naturalWidth; row[sel].nh = el.naturalHeight; }
     }
@@ -110,11 +122,12 @@ SEEK_JS = """
 """
 
 
-def write_page(component: dict, props: dict | None, lib: str, with_canvas: bool = True, background: bool = True) -> str:
-    """The harness page is written beside the library (under .harness/) so the <base> keeps asset paths simple."""
+def write_page(component: dict, props: dict | None, lib: str, with_canvas: bool = True, background: bool = True, tag: str = "") -> str:
+    """The harness page is written beside the library (under .harness/) so the <base> keeps asset paths simple; `tag`
+    names the file apart when two harnesses run at once (a probe next to frame-match, M14)."""
     folder = os.path.join(lib, ".harness")
     os.makedirs(folder, exist_ok=True)
-    path = os.path.join(folder, f"{component['id']}.html")
+    path = os.path.join(folder, f"{component['id']}{tag}.html")
     common.write_text(path, build_page(component, props, lib, with_canvas, background))
     return path
 
@@ -132,9 +145,14 @@ def chromium_args(gpu: str = "auto") -> list[str]:
 
 
 class Harness:
-    def __init__(self, lib: str | None = None, gpu: str = "auto"):
+    def __init__(self, lib: str | None = None, gpu: str = "auto", tag: str = "", dpr: float = 1.0):
+        """dpr: the device scale factor of the page. The DOM measurements do not depend on it; frame-match uses 0.25 so its
+        130 screenshots per component (the strip correlation and the energy measures need 180x320 and 108x192) cost a
+        quarter of the time (M14). The stills and the review's pixel checks keep 1.0."""
         self.lib = lib or common.motion_lib_dir()
         self.gpu = gpu
+        self.tag = tag
+        self.dpr = dpr
         self._pw = None
         self.browser = None
         self.page = None
@@ -144,7 +162,7 @@ class Harness:
         from playwright.sync_api import sync_playwright
         self._pw = sync_playwright().start()
         self.browser = self._pw.chromium.launch(headless=True, args=chromium_args(self.gpu))
-        self.page = self.browser.new_page(viewport={"width": 1080, "height": 1920}, device_scale_factor=1)
+        self.page = self.browser.new_page(viewport={"width": 1080, "height": 1920}, device_scale_factor=self.dpr)
         self.page.on("pageerror", lambda e: self.errors.append(str(e)))
         self.page.on("console", lambda m: self.errors.append("console." + m.type + ": " + m.text) if m.type == "error" else None)
         return self
@@ -158,7 +176,7 @@ class Harness:
                 self._pw.stop()
 
     def open(self, component: dict, props: dict | None, with_canvas: bool = True, background: bool = True, timeout_ms: int = 60000) -> None:
-        path = write_page(component, props, self.lib, with_canvas, background)
+        path = write_page(component, props, self.lib, with_canvas, background, self.tag)
         self.errors = []
         self.page.goto("file:///" + common.mixed(path).lstrip("/"), wait_until="load", timeout=timeout_ms)
         self.page.evaluate("document.fonts ? document.fonts.ready.then(() => true) : true")

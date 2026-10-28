@@ -274,7 +274,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 continue
             comp = mcommon.parse_component(comp_file)
             props = dict(host["props"])
-            if host["component"] == "hero-3d":
+            if host["component"] in ("hero-3d", "icon-3d"):
                 props["clip_start"] = 0
             h.open(comp, props)
             counts["hosts"] += 1

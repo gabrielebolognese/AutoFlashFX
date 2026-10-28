@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"x": 560, "y": 1150, "text": "same shadow|every time", "arrow": "up-left", "arrow_len": 150, "text_frames": 6, "draw_frames": 8, "enter_at": 0.3, "exit": "none", "exit_at": -1};
+<script>window.__timelines = {}; window.__hfVars = {"x": 560, "y": 1150, "text": "same shadow|every time", "arrow": "up-left", "arrow_len": 150, "text_frames": 6, "draw_frames": 8, "enter_at": 0.3, "hold": "normal", "exit": "none", "exit_at": -1};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -16,7 +16,11 @@ window.__pcEvents = [];
   
   <style>
     /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
-       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
     #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
     #paper-glow {
@@ -34,11 +38,12 @@ window.__pcEvents = [];
       background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
     }
   </style>
-  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
     <div id="paper-base"></div>
     <div id="paper-glow"></div>
     <div id="paper-dots"></div>
   </div>
+  
   
   
 <link rel="stylesheet" href="assets/tokens.css">
@@ -46,7 +51,8 @@ window.__pcEvents = [];
   <style>
     /* handwritten-callout (vocabulary.md 22): a hand-drawn aside with an arrow pointing at something, in the script
        color and the handwritten face (lines 69 px apart, font about 58). Its motion was not measured: the text fades
-       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. */
+       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. Text and arrow then drift
+       together (E1, pc-motion.js). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #hc-wrap { display: flex; flex-direction: column; align-items: flex-start; }
     #hc-text { white-space: pre; }
@@ -60,9 +66,10 @@ window.__pcEvents = [];
     <svg id="hc-arrow" class="pc-el" width="300" height="300" viewBox="0 0 300 300"><path id="hc-path" d=""/><path id="hc-head" d=""/></svg>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("hc-wrap"), text = document.getElementById("hc-text"), svg = document.getElementById("hc-arrow");
       var path = document.getElementById("hc-path"), head = document.getElementById("hc-head");
       PC.place(wrap, { x: v.x, y: v.y });
@@ -82,18 +89,17 @@ window.__pcEvents = [];
         PC.place(svg, { x: ax, y: ay });
       } else svg.style.display = "none";
       var tl = gsap.timeline({ paused: true });
-      tl.fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: PC.f(v.text_frames), ease: "none" }, v.enter_at);
-      PC.event("enter", v.enter_at, { el: "hc-text" });
+      var exit = { type: v.exit, at: v.exit_at };
+      // text and arrow share one life (the same fade, the same drift), so the arrow keeps pointing where it did
+      var main = { kind: "fade", frames: v.text_frames, rise: 6, ease: "none", zoom: false, rotate: 6, axis: "x" };
+      PCM.life(tl, wrap, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
       if (d) {
-        var len = path.getTotalLength(), hl = head.getTotalLength();
-        path.style.strokeDasharray = len + " " + len; head.style.strokeDasharray = hl + " " + hl;
+        PCM.life(tl, svg, { at: v.enter_at, main: main, hold: v.hold, exit: exit, events: { enter: "arrow" } });
         var at = v.enter_at + PC.f(v.text_frames) - PC.f(2);
-        tl.fromTo(path, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: PC.f(v.draw_frames), ease: "power1.inOut" }, at);
-        tl.fromTo(head, { strokeDashoffset: hl }, { strokeDashoffset: 0, duration: PC.f(3), ease: "power1.out" }, at + PC.f(v.draw_frames) - PC.f(1));
+        PCM.draw(tl, path, at, { frames: v.draw_frames, ease: "power1.inOut" });
+        PCM.draw(tl, head, at + PC.f(v.draw_frames) - PC.f(1), { frames: 3, ease: "power1.out" });
         PC.event("draw", at, { el: "hc-arrow", end: at + PC.f(v.draw_frames + 2) });
       }
-      PC.exit(tl, wrap, v.exit_at, v.exit);
-      if (d) PC.exit(tl, svg, v.exit_at, v.exit);
       window.__timelines["handwritten-callout"] = tl;
       tl.seek(0);
     })();

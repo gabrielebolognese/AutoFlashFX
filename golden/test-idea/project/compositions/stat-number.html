@@ -13,6 +13,7 @@
          {"id":"count_frames","type":"number","label":"Count-up frames","default":27.5},
          {"id":"count_delay_frames","type":"number","label":"Frames after the landing before the count starts","default":0},
          {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+         {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
          {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
          {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
        ]'>
@@ -22,7 +23,9 @@
   <style>
     /* stat-number (vocabulary.md 2, Stat number with count-up): a number that proves the point, counting from 0 with
        ease-out over 27.5 frames after its container entered (1). Containers: the white pill (168 tall, icon, number,
-       unit in accent; v01) or the chip (141 tall, number plus serif-italic unit, a sub-label pill under it; v02). */
+       unit in accent; v01) or the chip (141 tall, number plus serif-italic unit, a sub-label pill under it; v02). The
+       container lives through E1's phases with E2's combined entrance (pc-motion.js); the count is a tween on a
+       setter, so it renders under HyperFrames' suppressed events. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #stat-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
     #stat { display: inline-flex; align-items: center; gap: 22px; padding: 0 46px; white-space: nowrap; }
@@ -45,10 +48,11 @@
     </div>
   </div>
   <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
       var v = PC.vars({ x: 120, y: 700, value: 1134112, decimals: 0, prefix: "", suffix: "", unit: "installs", container: "pill", icon: "none",
-        sub_label: "", enter_at: 0, count_frames: 27.5, count_delay_frames: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        sub_label: "", enter_at: 0, count_frames: 27.5, count_delay_frames: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wrap = document.getElementById("stat-wrap"), stat = document.getElementById("stat"), num = document.getElementById("stat-num");
       var unit = document.getElementById("stat-unit");
       PC.place(wrap, { x: v.x, y: v.y });
@@ -67,9 +71,8 @@
       PC.honesty(stat, v.honesty, { top: -22, right: 24 });
 
       var tl = gsap.timeline({ paused: true });
-      var landAt = PC.enter(tl, wrap, v.enter_at, { rise: 38 });
-      PC.countUp(tl, num, landAt + PC.f(v.count_delay_frames), { to: v.value, frames: v.count_frames, decimals: v.decimals, prefix: v.prefix, suffix: v.suffix });
-      PC.exit(tl, wrap, v.exit_at, v.exit);
+      var life = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "rise", rise: 38 }, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      PCM.countUp(tl, num, life.land + PC.f(v.count_delay_frames), { to: v.value, frames: v.count_frames, decimals: v.decimals, prefix: v.prefix, suffix: v.suffix });
       window.__timelines["stat-number"] = tl;
       tl.seek(0);
     })();
