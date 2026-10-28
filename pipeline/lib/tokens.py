@@ -111,9 +111,12 @@ def tweaks_state(tweaks: str) -> dict:
 
 
 def proposed_block(tweaks: str, title: str) -> str:
-    """The text of one PROPOSED (or accepted) bullet, up to the next bullet."""
-    m = re.search(r"^- (?:PROPOSED )?\*\*" + re.escape(title) + r":\*\*(.*?)(?=^- |\Z)", tweaks, re.M | re.S)
-    return m.group(1) if m else ""
+    """The text of one PROPOSED (or accepted) bullet, up to the next bullet. Length and 3D also have an earlier
+    decision bullet with the same title, so the bullet that holds a "Proposal:" wins (else the last one)."""
+    pat = r"^- (?:PROPOSED )?\*\*" + re.escape(title) + r":\*\*(.*?)(?=^- |\Z)"
+    blocks = [m.group(1) for m in re.finditer(pat, tweaks, re.M | re.S)]
+    with_proposal = [b for b in blocks if "Proposal:" in b]
+    return (with_proposal or blocks or [""])[-1]
 
 
 # ----------------------------------------------------------------------------------------------- the build

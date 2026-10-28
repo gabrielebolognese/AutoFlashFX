@@ -111,7 +111,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   beats' windows; the breath after the hook), words_hook2.json and voiceover.json (the trail: every line's
   attempts, transcriptions, word error rates, respellings and rewrites, the timings, the pace). The voice is
   Kokoro af_bella from library/voice/engine.txt (the defaults of BUILD_SPEC.md 2.5 when that file is missing or
-  names another engine), never another engine or voice; config voice.wpm (176) is its measured pace.
+  names another engine), never another engine or voice; config voice.wpm (186, at engine.txt speed 1.1) is its measured pace.
 
 ## Folder map
 - `ideas.txt`: the idea queue (one idea per `{...}` block). `run.sh`: the video runner. `config.json`: models, engines,

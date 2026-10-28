@@ -3,3 +3,4 @@
 # Lines starting with # and empty lines are ignored.
 # Example:
 # FlashFX = flash F X
+FlashFX = flash-effex

@@ -1,32 +1,40 @@
-# account.md: who this account is for
+# account.md: who this account is for (FlashFX brand account)
 
-DRAFT with placeholders, built 2026-11-01 by pipeline/bin/build-voice-profile. The research, expansion and hooks stages read this file to aim every reel. Until the placeholders are filled they also keep the working assumption below, and every export carries a NEEDS REVIEW flag. Replace each [FILL IN] by hand (plain sentences), then the flag goes away.
-
-## Working assumption (used until this file is filled in)
-
-The reels are for people who build and publish with AI and developer tools (Claude Code, agents, skills, automation) and want practical, verified information they can use the same day.
+The research, expansion, gate, hooks and script stages read this file to aim every reel. Who is talking, and what
+it may claim, is in voice.md; the look is styles/paper-cards.
 
 ## Who the account is for
 
-[FILL IN: the audience in one or two sentences, as specific as "solo developers who ship client sites with AI tools", not "creatives"]
+Small content creators who want to build a personal brand. Not video editors: they can edit, at a beginner level,
+and they mainly want to save time and be efficient with their videos.
 
 ## The audience's problems
 
-- [FILL IN: a problem they say in their own words]
-- [FILL IN]
-- [FILL IN]
+- "I can't grow on social media, my videos suck."
+- "I don't have time to edit all of my videos, I need something faster."
 
 ## Topics in
 
-- [FILL IN: topics every reel may cover]
+- video editing
+- full A to Z workflows
+- content creator success
+- content strategy
 
 ## Topics out
 
-- [FILL IN: topics the account never covers]
+- sports, travel, adventure, memes, brainrot (as in voice.md, Off limits)
 
 ## What I sell
 
-[FILL IN: the product, service or offer, and what the comment keywords lead to]
+FlashFX plans, at https://flashfx.app. For now every comment keyword leads to https://flashfx.app.
+
+## Content strategy
+
+- Problem-first, not ads: every reel solves one real problem for the viewer with the best solution available:
+  FlashFX, an external tool or GitHub repo, or a method with no product.
+- Balance: about 1 reel in 4 is FlashFX-tailored (FlashFX is the solution); the other 3 use an external tool, a
+  repo or a method. S2 reads the solution types of the recent lines of logs/history.txt to keep this balance.
+- FlashFX only when it genuinely solves the problem, and every FlashFX claim comes from voice.md "Proof I can use".
 
 ## Brand
 
