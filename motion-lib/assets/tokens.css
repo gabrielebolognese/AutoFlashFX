@@ -103,6 +103,12 @@
   --m-camera-deg-s: 0.3;
   --m-depth-step: 24;
   --m-scroll-px-s: 30;
+  --m-room-life-s: 8;
+  --m-safe-top: 230;
+  --m-safe-bottom: 1440;
+  --m-margin-x: 60;
+  --m-rail-x: 850;
+  --m-rail-from-y: 960;
   --m-zone-caption: 200 1152 680 260;
   --m-zone-hook: 90 233 900 470;
   --m-zone-endcard: 200 324 680 640;

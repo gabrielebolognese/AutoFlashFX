@@ -84,11 +84,13 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
 - Section 3: icon-3d draws with WebGL (data-webgl 1, 16 percent of its area) and with the fallback (data-webgl 0,
   12 layers, turning); the layers for three seeds stay out of the text zones over 40 s, hold no text, sit 30 to 70
   percent outside and move under 20 px per second; the review sees the DM card's texts arriving (scale 0.85 at the
-  first frame), settled (scale 1 or more, the 28 px labels at 28 px or more) and leaving.
+  first frame), settled (scale 1 or more, the 28 px labels at 28 px or more) and leaving; the DM card at the CTA's y
+  keeps its message above the safe bottom for 8 s while the same card at y 700 drifts on.
 - Section 4: the golden builds, checks and renders in about 2 to 3 minutes; every energy measure better than before, the moving
   share doubled (13.0 to 28.1).
 - The full run: 71 passed, 0 failed (section 1: 25, section 2: 29, section 3: 7, section 4: 9, section 5: 1);
-  section 3 run again after the transients fix: 10 passed, the 7 before plus the 3 review checks (build/M14/test-m14-s3.log).
+  sections 1 and 3 run again after the transients and room fixes: 38 passed (the 32 before plus the safe-edge
+  variables check, the 3 review checks and the 2 room checks; build/M14/test-m14-s13.log).
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
 - Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the
@@ -110,6 +112,11 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   and exit windows (data-pcm-main, data-pcm-exit), the review reads the scale in 3D and leaves arriving and leaving
   elements to the next sample, and the "landed" sample sits after the combined animation (DECISIONS.md 303; test-m14
   section 3 checks it on the DM card).
+- The hold drifted the CTA's DM card below the safe bottom (its message reached y 1449 by the end of the ask beat:
+  the inertia and the normal drift, downward after a drop, had no room). The hold now fits the room: PCM.life reads
+  the element's rest box and the safe edges (tokens.css `--m-safe-*`) and slows the drift, then shrinks the inertia,
+  so that the planned travel over the element's life fits; the rotation and the creep keep it alive (DECISIONS.md
+  304; test-m14 section 3 checks the DM card at the CTA's y and at y 700).
 
 ## Known gaps
 

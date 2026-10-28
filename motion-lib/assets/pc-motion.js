@@ -68,6 +68,12 @@
       edgeOutsideMax: cssNum("--m-edge-outside-max", 0.7),
       ambientMaxSpeed: cssNum("--m-ambient-max-speed", 10),
       depthStep: cssNum("--m-depth-step", 24),
+      roomLife: cssNum("--m-room-life-s", 8),
+      safeTop: cssNum("--m-safe-top", 230),
+      safeBottom: cssNum("--m-safe-bottom", 1440),
+      marginX: cssNum("--m-margin-x", 60),
+      railX: cssNum("--m-rail-x", 850),
+      railFromY: cssNum("--m-rail-from-y", 960),
       scrollSpeed: cssNum("--m-scroll-px-s", 30),
       zones: ["caption", "hook", "endcard"].map(function (k) {
         var parts = cssText("--m-zone-" + k, "").split(/\s+/).map(parseFloat).filter(function (n) { return isFinite(n); });
@@ -131,6 +137,33 @@
     return m;
   }
 
+  // PCM.restBox(el): the element's layout box in canvas px (offsets up to #stage: transforms do not count, so the box
+  // is where the element rests, whatever its tweens have rendered). null when the element has no layout.
+  PCM.restBox = function (el) {
+    if (!el || el.offsetWidth === undefined) return null;
+    var w = el.offsetWidth, h = el.offsetHeight;
+    if (!(w > 0) || !(h > 0)) return null;
+    var x = 0, y = 0, n = el, guard = 0;
+    while (n && n !== document.body && n.id !== "stage" && guard++ < 64) { x += n.offsetLeft || 0; y += n.offsetTop || 0; n = n.offsetParent; }
+    return { x: x, y: y, w: w, h: h };
+  };
+
+  // PCM.room(box, dir): the px the box can travel along the unit direction dir before a safe edge (the safe top and
+  // bottom, the side margins, the right rail in the lower half: tokens.css --m-safe-*). Infinity when unknown; 0 when
+  // the box already sits past the edge.
+  PCM.room = function (box, dir) {
+    if (!box || !dir) return Infinity;
+    var N = PCM.numbers(), W = 1080;
+    var right = (box.y + box.h > N.railFromY) ? Math.min(W - N.marginX, N.railX) : W - N.marginX;
+    var rooms = [];
+    if (dir.y < 0) rooms.push((box.y - N.safeTop) / -dir.y);
+    if (dir.y > 0) rooms.push((N.safeBottom - (box.y + box.h)) / dir.y);
+    if (dir.x < 0) rooms.push((box.x - N.marginX) / -dir.x);
+    if (dir.x > 0) rooms.push((right - (box.x + box.w)) / dir.x);
+    if (!rooms.length) return Infinity;
+    return Math.max(0, Math.min.apply(null, rooms));
+  };
+
   // PCM.life(tl, el, o): the whole life of one element on the timeline tl. Returns {land, rotLand, scaleLand, until,
   // exitEnd, end: {x, y}}. Options:
   //   at          the start (s, local), default 0
@@ -144,6 +177,7 @@
   //   inertia     {seconds, move, scale, rotate} (defaults from the tokens; move 0 when the main has no move)
   //   exit        {type: none | fade-blur | fall | push | cut, at, frames, distance}
   //   until       when the hold ends (default: the exit, else at + horizon)
+  //   room        false: the inertia and the drift ignore the safe edges (default: they fit the room, PCM.room)
   //   events      {enter, land, el}: the event names registered (default enter and land; pops register pop and pop_peak)
   PCM.life = function (tl, el, o) {
     o = o || {};
@@ -261,6 +295,18 @@
     var fx = from.x || 0, fy = from.y || 0, fs = from.scale || 1;
     var end = { x: fx, y: fy };
     var T = until - land;
+    // the room (E1's "or": near a safe edge the hold turns and creeps instead of drifting): the inertia and the drift
+    // in dir fit between the element's rest box and the safe edges over its life (until, exit_at, else room_life_s)
+    if (o.room !== false && (A > 0 || drift > 0)) {
+      var exitKnown = exitAt !== undefined && exitAt !== null && exitAt >= 0;
+      var lifeEnd = (o.until !== undefined && o.until !== null) ? o.until : (exitKnown ? exitAt : at + N.roomLife);
+      var Tlife = Math.max(F(1), lifeEnd - land);
+      var room = PCM.room(PCM.restBox(el), dir);
+      if (room < A + drift * Tlife) {
+        if (room > A) drift = (room - A) / Tlife;
+        else { A = Math.max(0, room); drift = 0; }
+      }
+    }
     var total = A + drift * T;
     if (T > 0 && total > 0 && (A > 0 || drift > 0)) {
       end = { x: fx + dir.x * total, y: fy + dir.y * total };

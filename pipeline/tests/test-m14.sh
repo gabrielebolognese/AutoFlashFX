@@ -141,6 +141,7 @@ EOF
   assert_grep "m-perspective: 1400;" "$CSS" "tokens.css exposes the perspective"
   assert_grep "m-hold-normal-drift: 4;" "$CSS" "tokens.css exposes the hold speeds"
   assert_grep "m-zone-caption: [0-9]" "$CSS" "tokens.css exposes the text zones"
+  assert_grep "m-safe-bottom: 1440;" "$CSS" "tokens.css exposes the safe edges for the hold's room"
   # the Energy override line
   mkdir -p "$SANDBOX/styles/paper-cards"
   cp styles/paper-cards/style.md styles/paper-cards/tweaks.md "$SANDBOX/styles/paper-cards/"
@@ -348,6 +349,17 @@ with harness.Harness(lib=lib, gpu=gpu, tag="-m14") as h:
     print("review-arriving", "ok" if arriving and 0.8 <= first_scale <= 0.87 else "no")
     print("review-settled", "ok" if settled and small and all(t["size"] * t["scale"] >= 27.9 for t in small) else "no")
     print("review-leaving", "ok" if leaving else "no")
+    # the room rule: the DM card dropped in at the CTA's y (its bottom 2 px above the safe bottom) keeps its message
+    # above the safe bottom for 8 s (the drift fits the room), while the same card at y 700 drifts on
+    h.open(dm, {"enter_at": 0.0, "y": 1266, "enter": "drop", "hold": "normal"})  # the CTA's card: a drop, so the inertia and the drift point down
+    rv2 = h.page.evaluate(mechanical.REVIEW_JS, {"id": "dm-card", "times": [1.0, 4.0, 8.0]})
+    bottoms = [max([t["y"] + t["h"] for t in row["texts"] if t["opacity"] >= 0.5] or [0]) for row in rv2["rows"]]
+    h.open(dm, {"enter_at": 0.0, "y": 700, "enter": "drop", "hold": "normal"})
+    mv = h.page.evaluate(harness.MEASURE_JS, {"id": "dm-card", "times": [1.0, 8.0], "selectors": ["#dm"]})
+    ty = [r["#dm"]["ty"] for r in mv["rows"] if r.get("#dm")]
+    print("room-rows", [round(b, 1) for b in bottoms], [round(v, 1) for v in ty])
+    print("room-hold", "ok" if bottoms and 1380 <= max(bottoms) <= 1444 else "no")
+    print("room-free", "ok" if len(ty) == 2 and ty[1] - ty[0] >= 20 else "no")  # downward: 16 px of inertia plus 4 px per second
     print("counts", counts)
     print("layers-present", "ok" if all(e >= 4 and a >= 8 for _, e, a in counts) else "no")
     print("zones-clear", "ok" if not bad_zone else str(bad_zone[:6]))
@@ -366,6 +378,8 @@ EOF
   assert_grep "^review-arriving ok" /tmp/m14-i3.txt "the review sees the DM card's texts arriving for the combined animation (data-pcm-main), the scale read in 3D (0.85 at the first frame)"
   assert_grep "^review-settled ok" /tmp/m14-i3.txt "once landed the texts are judged, their scale at least 1 (the inertia grows): the 28 px labels read 28 px or more"
   assert_grep "^review-leaving ok" /tmp/m14-i3.txt "the review sees the texts leaving during the exit (data-pcm-exit)"
+  assert_grep "^room-hold ok" /tmp/m14-i3.txt "the hold fits the room: the DM card at the CTA's y keeps its message above the safe bottom for 8 s"
+  assert_grep "^room-free ok" /tmp/m14-i3.txt "the same card with room below drifts on (20 px or more between 1 and 8 s)"
 fi
 
 # ------------------------------------------------------------------------------------------------ 4. the golden reel

@@ -139,7 +139,9 @@ GRAMMAR = {
              "calm": {"drift_px_s": 2, "rotate_deg_s": 0.2, "scale_pct_s": 0.2},
              "normal": {"drift_px_s": 4, "rotate_deg_s": 0.4, "scale_pct_s": 0.35},
              "lively": {"drift_px_s": 8, "rotate_deg_s": 0.6, "scale_pct_s": 0.5},
-             "drift_range_px_s": [2, 8], "rotate_range_deg_s": [0.2, 0.6], "scale_range_pct_s": [0.2, 0.5]},
+             "drift_range_px_s": [2, 8], "rotate_range_deg_s": [0.2, 0.6], "scale_range_pct_s": [0.2, 0.5],
+             "room_life_s": 8,
+             "room_note": "the inertia and the drift fit the room between the element's rest box and the safe edges (zones: safe_top, safe_bottom, margin_x, the right rail in the lower half) in their direction over the element's life (its until or exit_at, else room_life_s): near an edge the hold turns and creeps instead of drifting (E1: a drift, a rotation or a creep)"},
     "exit": {"min_s": 0.2, "max_s": 0.4, "ease": "power2.in", "note": "the style's exits (transitions.*) stay the reference"},
     "static_max_s": 0.5,
     "horizon_s": 90,
@@ -691,6 +693,16 @@ def css_text(tokens: dict) -> str:
             f"  --m-camera-deg-s: {g['camera']['rotate_deg_s']};",
             f"  --m-depth-step: {g['camera']['depth_step_px']};",
             f"  --m-scroll-px-s: {g.get('content', {}).get('scroll_px_s', 30)};",
+            f"  --m-room-life-s: {h.get('room_life_s', 8)};",
+        ]
+        zn = tokens.get("zones") or {}
+        rail = zn.get("right_rail") or {}
+        lines += [  # the safe edges, for the hold's room (pc-motion.js PCM.room)
+            f"  --m-safe-top: {zn.get('safe_top', 230):g};",
+            f"  --m-safe-bottom: {zn.get('safe_bottom', 1440):g};",
+            f"  --m-margin-x: {zn.get('margin_x', 60):g};",
+            f"  --m-rail-x: {1080 - float(rail.get('width', 230)):g};",
+            f"  --m-rail-from-y: {float(rail.get('from_y', 960)):g};",
         ]
         for name, zb in g.get("text_zones", {}).items():
             lines.append(f"  --m-zone-{name}: {zb['x']:g} {zb['y']:g} {zb['w']:g} {zb['h']:g};")

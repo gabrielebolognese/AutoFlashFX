@@ -99,7 +99,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   `energy`, the gallery's energy line), golden/test-idea/energy.json and build/M14/golden-energy-before.json, the
   review's reading of the grammar's transients (PCM.mark sets `data-pcm-main` and `data-pcm-exit` on every element,
   the review reads the scale in 3D, does not judge an element while it arrives or leaves and samples "landed" after
-  the combined animation: DECISIONS.md 303). Run every
+  the combined animation: DECISIONS.md 303), the hold's room (PCM.room: the inertia and the drift fit the room from
+  the element's rest box to the safe edges, `--m-safe-*` in tokens.css, over its life or room_life_s 8 s: near an
+  edge the element turns and creeps instead of drifting; DECISIONS.md 304). Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4

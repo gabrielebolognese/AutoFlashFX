@@ -2267,3 +2267,17 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     (the inertia's scale 0.04 and the hold's creep go up), so a text never reads smaller than its designed size after
     its entrance: the 24 px floor stays a rule about the design. test-m14 section 3 checks the three states on the DM
     card.
+304. **Also found by the M11 rerun: the hold fits the room.** The CTA's DM card drops in and lands with its bottom 2 px
+    above the safe bottom (decision 302); E1's inertia (16 px, downward: the drop's direction) and the normal hold's
+    drift (4 px per second) then carried its message to y 1449 by the end of the ask beat, below the safe bottom of
+    1440. E1 offers the hold as a drift, a rotation or a creep, so near a safe edge the element turns and creeps
+    instead of drifting: PCM.life reads the element's rest box (layout offsets up to #stage, which no tween changes),
+    the room from it to the safe edges in the move's direction (the safe top and bottom, the side margins, the right
+    rail in the lower half, as `--m-safe-*` in tokens.css from tokens.json zones) and fits the planned travel into it:
+    the inertia plus the drift over the element's life, which is its `until` or `exit_at` when known and else the
+    grammar's room_life_s (8 s, tokens.json motion.grammar.hold; the components do not know the host's duration). The
+    drift slows first, then the inertia shrinks; the rotation and the creep keep the element alive (frame-match's
+    static rule). A component may opt out with `room: false`. The DM card at the CTA's y therefore moves 2 px down and
+    grows; at y 700 it drifts as before (test-m14 section 3 checks both). The scale creep still moves a wide card's
+    edges a few px outward over a long hold; the review's samples watch for it, and M16's energy loop can tune the
+    hold levels and the room per scene with the real lives.
