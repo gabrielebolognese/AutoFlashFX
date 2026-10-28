@@ -1,42 +1,56 @@
 {
- "run": "2026-11-07T12:23:29",
+ "run": "2026-11-07T13:19:32",
  "results": [
   {
-   "id": "caption-line",
+   "id": "window-card",
    "pass": true,
    "numbers_ok": true,
    "strip_ok": true,
    "checks": [
     {
-     "check": "fade: opacity frames",
-     "expected": 4,
-     "measured": 4,
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
      "ok": true,
      "unit": "frames"
     },
     {
-     "check": "fade: opacity frames",
-     "expected": 4,
-     "measured": 4,
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
      "ok": true,
      "unit": "frames"
     },
     {
-     "check": "exit: frames to fade out",
-     "expected": 2,
-     "measured": 3,
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
      "ok": true,
-     "unit": "frames"
+     "unit": ""
     },
     {
      "check": "after: frames after the reference",
-     "expected": 1,
-     "measured": 2,
+     "expected": 4,
+     "measured": 5,
      "ok": true,
      "unit": "frames"
     },
     {
-     "check": "life: never static #cap-c0",
+     "check": "life: never static #wc",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #wc-mascot",
      "expected": "0 still windows of 0.5 s",
      "measured": 0,
      "ok": true,
@@ -45,41 +59,47 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 41,
+     "measured": 0,
      "ok": true,
-     "unit": "frames",
-     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #wc",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.83,
+     "ok": true,
+     "unit": "s (hold speed 9.21 px/s)"
     }
    ],
    "correlation": {
     "best": {
-     "strip": "v06/extra/s30_031.0_highlight.png",
-     "r": 0.972,
-     "ref_onset": 6,
-     "cur_onset": 14,
-     "frames": 7
+     "strip": "v07/extra/s30_011.4_window_rise.png",
+     "r": 0.973,
+     "ref_onset": 23,
+     "cur_onset": 22,
+     "frames": 11
     },
     "strips": [
      {
-      "strip": "v03/extra/s30_capswap_008.0.png",
-      "r": 0.857,
-      "ref_onset": 15,
-      "cur_onset": 39,
-      "frames": 7
+      "strip": "v07/extra/s30_011.4_window_rise.png",
+      "r": 0.973,
+      "ref_onset": 23,
+      "cur_onset": 22,
+      "frames": 11
      },
      {
-      "strip": "v01/extra/s30_sc18.png",
-      "r": 0.899,
-      "ref_onset": 1,
-      "cur_onset": 60,
-      "frames": 7
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.96,
+      "ref_onset": 5,
+      "cur_onset": 20,
+      "frames": 11
      },
      {
-      "strip": "v06/extra/s30_031.0_highlight.png",
-      "r": 0.972,
-      "ref_onset": 6,
-      "cur_onset": 14,
-      "frames": 7
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.924,
+      "ref_onset": 5,
+      "cur_onset": 6,
+      "frames": 11
      }
     ]
    },
@@ -87,129 +107,38 @@
    "webgl": null,
    "events": [
     {
-     "type": "caption_overflow",
-     "t": 0.2,
-     "chunk": 0,
-     "width": 775.140625,
-     "scale": 0.7998548650446492
+     "type": "enter",
+     "t": 0,
+     "el": "wc"
     },
     {
-     "type": "caption_word_fade",
-     "t": 0.2,
-     "el": "cap-c0-w0"
+     "type": "land",
+     "t": 0.267,
+     "el": "wc"
     },
     {
-     "type": "caption_word",
-     "t": 0.2,
-     "chunk": 0,
-     "text": "You",
-     "em": false
+     "type": "scroll",
+     "t": 0.267,
+     "el": "wc-img",
+     "end": 38.266666666666666,
+     "px": 912
     },
     {
-     "type": "caption_word_fade",
-     "t": 0.45,
-     "el": "cap-c0-w1"
-    },
-    {
-     "type": "caption_word",
-     "t": 0.45,
-     "chunk": 0,
-     "text": "ship",
-     "em": false
-    },
-    {
-     "type": "caption_word_fade",
-     "t": 0.7,
-     "el": "cap-c0-w2"
-    },
-    {
-     "type": "caption_box_fade",
-     "t": 0.7,
-     "el": "cap-c0-w2-box"
-    },
-    {
-     "type": "caption_word",
-     "t": 0.7,
-     "chunk": 0,
-     "text": "Claude",
-     "em": true
-    },
-    {
-     "type": "caption_word_fade",
-     "t": 0.95,
-     "el": "cap-c0-w3"
-    },
-    {
-     "type": "caption_box_fade",
-     "t": 0.95,
-     "el": "cap-c0-w3-box"
-    },
-    {
-     "type": "caption_word",
-     "t": 0.95,
-     "chunk": 0,
-     "text": "Code",
-     "em": true
-    },
-    {
-     "type": "fade",
-     "t": 1.333,
-     "el": "cap-c0"
-    },
-    {
-     "type": "caption_chunk",
-     "t": 0.2,
-     "chunk": 0,
-     "end": 1.4,
-     "words": 4
-    },
-    {
-     "type": "caption_word_fade",
-     "t": 1.45,
-     "el": "cap-c1-w0"
-    },
-    {
-     "type": "caption_word",
-     "t": 1.45,
-     "chunk": 1,
-     "text": "client",
-     "em": false
-    },
-    {
-     "type": "caption_word_fade",
-     "t": 1.8,
-     "el": "cap-c1-w1"
-    },
-    {
-     "type": "caption_word",
-     "t": 1.8,
-     "chunk": 1,
-     "text": "sites.",
-     "em": false
-    },
-    {
-     "type": "fade",
-     "t": 2.833,
-     "el": "cap-c1"
-    },
-    {
-     "type": "caption_chunk",
-     "t": 1.45,
-     "chunk": 1,
-     "end": 2.9,
-     "words": 2
+     "type": "mascot",
+     "t": 0.4,
+     "el": "wc-mascot"
     }
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 0.0,
-    "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.09,
-    "still_share_pct": 100.0,
-    "longest_still_s": 4.33,
-    "mean_change": 0.036,
-    "longest_still_run": 41,
-    "static_windows": 30,
+    "moving_share_pct": 79.2,
+    "middle_moving_share_pct": 82.3,
+    "pixels_changing_pct": 2.36,
+    "still_share_pct": 0.0,
+    "longest_still_s": 0.03,
+    "mean_change": 0.732,
+    "longest_still_run": 0,
+    "static_windows": 0,
     "frames": 130
    }
   }

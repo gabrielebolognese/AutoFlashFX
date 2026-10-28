@@ -1,26 +1,28 @@
 # frame-match: the library components against the style's numbers, the reference strips and the Motion and energy rules
 
-Run 2026-11-07 12:23 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png. The life checks (M14, E1): every component is measured for 4.3 s; no visible element stands still for 0.5 s (the calm hold speed over half a second), the main element's inertia ends 2.0 to 4.0 s after its landing, and the energy columns are the component's own frames measured as review/energy.py measures a reel.
+Run 2026-11-07 13:19 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png. The life checks (M14, E1): every component is measured for 4.3 s; no visible element stands still for 0.5 s (the calm hold speed over half a second), the main element's inertia ends 2.0 to 4.0 s after its landing, and the energy columns are the component's own frames measured as review/energy.py measures a reel.
 
 **1 pass, 0 fail** of 1 components.
 
 | component | result | checks | best strip | r | moving share | pixels changing | longest still |
 |---|---|---|---|---|---|---|---|
-| caption-line | pass | 6/6 | v06/extra/s30_031.0_highlight.png | 0.972 | 0% | 0.09% | 4.33 s |
+| window-card | pass | 9/9 | v07/extra/s30_011.4_window_rise.png | 0.973 | 79.2% | 2.36% | 0.03 s |
 
-## caption-line: pass
+## window-card: pass
 
 | check | expected | measured | ok |
 |---|---|---|---|
-| fade: opacity frames | 4 frames | 4 | yes |
-| fade: opacity frames | 4 frames | 4 | yes |
-| exit: frames to fade out | 2 frames | 3 | yes |
-| after: frames after the reference | 1 frames | 2 | yes |
-| life: never static #cap-c0 | 0 still windows of 0.5 s windows | 0 | yes |
-| life: pixels never still | < 15 frames frames | 41 | yes |
-| | | WARN: the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold) | |
+| enter: opacity frames | 5 frames | 5 | yes |
+| enter: rise px | 38 px | 38 | yes |
+| enter: position frames (fit) | 8 frames | 8 | yes |
+| enter: ease | ease-out | expo.out | yes |
+| after: frames after the reference | 4 frames | 5 | yes |
+| life: never static #wc | 0 still windows of 0.5 s windows | 0 | yes |
+| life: never static #wc-mascot | 0 still windows of 0.5 s windows | 0 | yes |
+| life: pixels never still | < 15 frames frames | 0 | yes |
+| life: inertia after the landing #wc | 2.0 to 4.0 s s (hold speed 9.21 px/s) | 2.83 | yes |
 
-Strips: v03/extra/s30_capswap_008.0.png r=0.857; v01/extra/s30_sc18.png r=0.899; v06/extra/s30_031.0_highlight.png r=0.972
+Strips: v07/extra/s30_011.4_window_rise.png r=0.973; v01/extra/s30_hook.png r=0.96; v03/extra/s30_hook_000.0.png r=0.924
 
-Energy alone (131 frames): moving share 0 percent, middle band 0 percent, pixels changing 0.09 percent, longest still 4.33 s, mean change 0.036
+Energy alone (131 frames): moving share 79.2 percent, middle band 82.3 percent, pixels changing 2.36 percent, longest still 0.03 s, mean change 0.732
 

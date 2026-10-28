@@ -416,6 +416,7 @@ def rule_zones(plan: dict, ctx: Context, rep: Report) -> None:
     rail_x = 1080 - float(rail.get("width", 230))
     rail_y = float(rail.get("from_y", 960))
     safe_bottom = float(z.get("safe_bottom", 1440))
+    band_exception = bool(((ctx.toks.get("zones") or {}).get("caption") or {}).get("safe_zone_exception", False))
     cta = plan.get("branding", {}).get("cta_scene")
     for s in plan.get("scenes", []):
         for c in s.get("components", []):
@@ -431,7 +432,10 @@ def rule_zones(plan: dict, ctx: Context, rep: Report) -> None:
                 rep.err("zones", f"{c['id']}: top at y {y0:.0f}, above the hero zone's top {hero.get('top_min')} (tokens.json zones.hero)")
             if s["id"] != cta and y1 > safe_bottom + tol:
                 rep.err("zones", f"{c['id']}: bottom at y {y1:.0f}, below the safe zone's bottom {safe_bottom:.0f} (tokens.json zones.safe_bottom)")
-            elif s["id"] == cta and y1 > safe_bottom + tol and cid not in ("dm-card", "end-card"):
+            elif s["id"] == cta and y1 > safe_bottom + tol and not (cid in ("dm-card", "end-card") and band_exception):
+                # the DM card and the end card may sit in the caption band only while that band lies below the safe bottom
+                # (tweaks.md's old caption box at y 1480); with the captions inside the safe zone (y 1332 since
+                # 2026-11-07) they keep the safe bottom like everything else (M14)
                 rep.err("zones", f"{c['id']}: bottom at y {y1:.0f}, below the safe zone's bottom {safe_bottom:.0f}")
             if c.get("role") == "hero" and s["id"] != cta and y1 > float(hero.get("bottom_max", 1176)) + tol:
                 rep.warn("zones", f"{c['id']}: the hero's bottom at y {y1:.0f} is under the style's hero zone ({hero.get('bottom_max')}); fine as long as it stays off the caption band")

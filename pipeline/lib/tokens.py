@@ -129,7 +129,7 @@ def proposed_block(tweaks: str, title: str) -> str:
 # The Motion and energy rules of BUILD_SPEC.md section 5 (E1, E2, E5 to E8), as values. They hold for every style; the
 # style supplies the look through the other tokens. pc-motion.js reads them from tokens.css (--m-*).
 GRAMMAR = {
-    "main": {"min_s": 0.3, "max_s": 0.6, "frames": 15, "ease": "power3.inOut", "zoom_from": 0.85, "zoom_from_small": 0.92, "zoom_from_close": 1.15,
+    "main": {"min_s": 0.3, "max_s": 0.6, "frames": 18, "ease": "power3.inOut", "zoom_from": 0.85, "zoom_from_small": 0.92, "zoom_from_close": 1.15,
              "rotate_from_deg": 12, "rotate_from_range_deg": [8, 15], "rotate_to_deg": 1, "rotate_to_range_deg": [0, 2], "rotate_lag_frames": 3,
              "rotate_lag_range_frames": [2, 4], "move_short_px": 24, "perspective_px": 1400, "perspective_range_px": [1200, 1600],
              "note": "the opacity and position frames of the main animation stay the style's measured enters (motion.enter, motion.pop)"},
@@ -146,7 +146,7 @@ GRAMMAR = {
     "edges": {"outside_share": [0.3, 0.7], "max_speed_px_s": 20, "count": 6, "inside_max_px": 180, "no_text": True},
     "ambient": {"count": 16, "max_speed_px_s": 10, "twinkle_s": [2, 4], "kinds": ["star", "dot", "cloud"]},
     "camera": {"rotate_deg_s": 0.3, "perspective_px": 1400, "depth_step_px": 24},
-    "content": {"scroll_px_s": 24, "scroll_scale": 1.25, "note": "a screenshot inside a window card scrolls slowly (content motion, E1: the content itself keeps moving)"},
+    "content": {"scroll_px_s": 30, "note": "a screenshot inside a window card scrolls slowly through its own height (content motion, E1: the content itself keeps moving)"},
     "mascot_idle": {"bob_px": 3, "blink_every_s": [2.6, 3.8], "prop_wiggle_deg": 6},
     "captions": {"fonts": ["grotesk", "serif-italic", "handwritten", "kicker"], "emphasis_size_ratio": [1.25, 1.5], "anchor_size_ratio": [2, 3],
                  "min_fonts_in_group": 3, "group_words": [2, 6], "word_rise_px": [8, 16], "word_rotate_deg": [2, 4], "group_rise_px": [20, 40],
@@ -690,8 +690,7 @@ def css_text(tokens: dict) -> str:
             f"  --m-ambient-count: {g['ambient']['count']};",
             f"  --m-camera-deg-s: {g['camera']['rotate_deg_s']};",
             f"  --m-depth-step: {g['camera']['depth_step_px']};",
-            f"  --m-scroll-px-s: {g.get('content', {}).get('scroll_px_s', 24)};",
-            f"  --m-scroll-scale: {g.get('content', {}).get('scroll_scale', 1.25)};",
+            f"  --m-scroll-px-s: {g.get('content', {}).get('scroll_px_s', 30)};",
         ]
         for name, zb in g.get("text_zones", {}).items():
             lines.append(f"  --m-zone-{name}: {zb['x']:g} {zb['y']:g} {zb['w']:g} {zb['h']:g};")

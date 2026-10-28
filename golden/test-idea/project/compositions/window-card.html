@@ -12,7 +12,7 @@
   {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
   {"id":"mascot","type":"string","label":"Mascot prop on the top-right corner (empty = none)","default":""},
   {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
-  {"id":"scroll_px_s","type":"number","label":"The screenshot scrolls inside the window at this speed (px per second; 0 = still)","default":24},
+  {"id":"scroll_px_s","type":"number","label":"The screenshot scrolls inside the window at this speed (px per second; 0 = still)","default":30},
   {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
   {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
   {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
@@ -24,8 +24,8 @@
     /* window-card (vocabulary.md 10): shows the tool or a site: a card with a surface-chrome title bar and 3 traffic-light
        dots, the content a real screenshot (research assets) or text lines. Enters with the card move (1) or a fly-in (16),
        combined with E2's zoom and parallax rotation, then the inertia and the hold of E1 (pc-motion.js). The screenshot
-       inside scrolls slowly (24 px per second by default, scroll_px_s), enlarged a quarter so it has room: the content
-       itself keeps moving, as in the references' window cards (E1, E8). */
+       inside scrolls slowly (30 px per second by default, scroll_px_s) through its own height (object-fit cover, the
+       object-position moving down): the content itself keeps moving, as in the references' window cards (E1, E8). */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
     #wc { overflow: hidden; display: flex; flex-direction: column; }
     #wc-body { flex: 1 1 auto; min-height: 0; position: relative; background: var(--c-surface); overflow: hidden; }
@@ -48,7 +48,7 @@
   <script>
     (function () {
       var v = PC.vars({ x: 90, y: 420, w: 900, h: 760, title: "", kind: "light", image: "", image_fit: "cover-top", lines_json: [], enter: "rise", enter_at: 0,
-        mascot: "", honesty: "none", scroll_px_s: 24, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+        mascot: "", honesty: "none", scroll_px_s: 30, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
       var wc = document.getElementById("wc"), chrome = document.getElementById("wc-chrome"), img = document.getElementById("wc-img"), lines = document.getElementById("wc-lines");
       PC.place(wc, v);
       document.getElementById("wc-title").textContent = v.title;
@@ -60,9 +60,10 @@
       var exit = { type: v.exit, at: v.exit_at };
       var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
       var life = PCM.life(tl, wc, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
-      // the screenshot scrolls slowly inside the window (the page reads on: content motion, E1)
+      // the screenshot scrolls slowly inside the window (the page reads on: content motion, E1); object-fit cover with
+      // object-position moving down, so the image box never leaves the window
       if (v.image && v.image_fit !== "contain" && v.scroll_px_s > 0) {
-        PCM.scroll(tl, img, life.land, life.until - life.land, { speed: v.scroll_px_s, height: v.h - 72 });
+        PCM.scroll(tl, img, life.land, life.until - life.land, { speed: v.scroll_px_s, width: v.w, height: v.h - 72 });
       }
       if (v.mascot) {
         var m = document.getElementById("wc-mascot");

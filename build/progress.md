@@ -434,7 +434,7 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   pc-motion.js; `npx hyperframes lint` and `check` clean; the gallery with the energy line), 3 icon-3d with WebGL and with
   its CSS fallback, the canvas layers for three seeds out of every text zone, without text, 30 to 70 percent outside, under
   20 px per second, 4 the golden reel rendered again from the same plan (every energy measure better than before, the
-  moving share doubled: 13.0 to 26.9 percent), 5 the em dash scan. Results: the full run (build/M14/test-m14.log) 71 passed, 0
+  moving share doubled: 13.0 to 28.1 percent), 5 the em dash scan. Results: the full run (build/M14/test-m14.log) 71 passed, 0
   failed in 37 minutes (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1); the partial runs
   before it (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame. After the touches to their code:
   test-m9 section 1 27 passed (its sandbox re-proposes the six accepted tweaks lines), test-m10 fake sections 134 passed;

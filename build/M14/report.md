@@ -40,8 +40,8 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
    pixels of a canvas); each component's energy measured alone (catalog.json `energy`, the gallery's energy line); the
    strip correlation finds the reference move anywhere in the move's frames; quarter-scale screenshots (12 minutes
    for the 28 components instead of over 30).
-7. **The golden reel rendered again from the same plan**: moving share 13.0 to 26.9 percent, middle band 12.0 to
-   29.4, pixels changing 1.0 to 1.41, still stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s
+7. **The golden reel rendered again from the same plan**: moving share 13.0 to 28.1 percent, middle band 12.0 to
+   29.8, pixels changing 1.0 to 1.6, still stretches 49.5 to 29.9 percent, longest still 2.8 to 2.43 s
    (golden/test-idea/energy.json against build/M14/golden-energy-before.json).
 
 ## Files
@@ -83,8 +83,8 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
 - Section 3: icon-3d draws with WebGL (data-webgl 1, 16 percent of its area) and with the fallback (data-webgl 0,
   12 layers, turning); the layers for three seeds stay out of the text zones over 40 s, hold no text, sit 30 to 70
   percent outside and move under 20 px per second.
-- Section 4: the golden builds, checks and renders in 112 s; every energy measure better than before, the moving
-  share doubled (13.0 to 26.9).
+- Section 4: the golden builds, checks and renders in about 2 to 3 minutes; every energy measure better than before, the moving
+  share doubled (13.0 to 28.1).
 - The full run: 71 passed, 0 failed (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1).
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
@@ -97,6 +97,11 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   tokens, tokens.css and the review followed, the component's default did not): every reel's captions would have
   failed S12's band check. caption-line now takes the style's position from tokens.css unless the plan gives one
   (DECISIONS.md 301). Found by the M11 fake test's rerun; the fixtures and the golden were rebuilt.
+- The same acceptance left the CTA's DM card (y 1305) ending below the safe bottom once the caption band's exception
+  was gone: the director's default, the golden plan, the fixtures and the frozen run now place it at y 1266 with the
+  lockup at 1146, and the validator's CTA exemption follows the band exception (DECISIONS.md 302). The window card's
+  screenshot scrolls by its object-position (the image box stays inside the window; the review's off-canvas rule had
+  flagged the transformed image).
 
 ## Known gaps
 

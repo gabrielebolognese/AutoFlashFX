@@ -633,7 +633,7 @@
       "line2": "ditch the identical cards",
       "lockup": "brand/lockup/lockup-gradient-on-light.png",
       "lockup_w": 300,
-      "lockup_y": 1170
+      "lockup_y": 1146
      },
      "role": "cta",
      "honesty_label": null,
@@ -653,7 +653,7 @@
       "time_label": "",
       "app_label": "Instagram",
       "x": 110,
-      "y": 1305,
+      "y": 1266,
       "w": 740,
       "enter": "drop"
      },

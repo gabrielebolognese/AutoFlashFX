@@ -1,53 +1,385 @@
 {
  "scenes": [
-  {"beat": "b1", "set_piece": true, "components": [
-    {"component": "headline", "role": "hero", "at": "scene",
-     "props": {"kicker": "CLAUDE CODE SITES", "kicker_mark": "@brand-slot", "lines_json": ["Why your Claude Code", "cards all look", "*identical.*"], "x": 90, "w": 900, "align": "center"}},
-    {"component": "hero-3d", "role": "set-piece", "at": "breath",
-     "props": {"x": 240, "y": 820, "w": 600, "h": 600, "object": "card", "spin": 40, "tilt": 18, "enter_at": 0, "enter_frames": 12, "label": ""}}
-  ]},
-  {"beat": "b2", "components": [
-    {"component": "card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 560, "w": 900, "title": "Clients spot it instantly", "body": "You ship Claude Code client sites.", "mascot": "star", "enter": "rise"}},
-    {"component": "dark-chip", "role": "label", "at": "word:instantly", "props": {"x": 600, "y": 742, "text": "same look, every site", "accent_word": "every site", "icon": "dot"}}
-  ]},
-  {"beat": "b3", "honesty": "sourced", "components": [
-    {"component": "window-card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 400, "w": 900, "h": 820, "title": "SKILL.md", "image": "research/03-skill-md.png", "honesty": "sourced", "mascot": "film", "enter": "rise"}},
-    {"component": "dark-chip", "role": "label", "at": "word:shadow", "props": {"x": 560, "y": 1180, "text": "rgba(0,0,0,.1)", "accent_word": ".1", "icon": "file"}}
-  ]},
-  {"beat": "b4", "components": [
-    {"component": "card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 520, "w": 900, "title": "Distributional convergence", "body": "It's not your fault.", "enter": "rise"}},
-    {"component": "handwritten-callout", "role": "support", "at": "word:calls", "props": {"x": 560, "y": 840, "text": "Anthropic's|own words", "arrow": "up-left", "arrow_len": 140}}
-  ]},
-  {"beat": "b5", "components": [
-    {"component": "light-chip", "role": "label", "at": "word:Anthropic's", "props": {"x": 120, "y": 560, "text": "even Anthropic's palette"}},
-    {"component": "strike-through", "role": "hero", "at": "word:terracotta", "word_props": {"strike_at": "flagged"}, "props": {"x": 120, "y": 680, "text": "#D97757 on cream", "chip": true, "style": "line", "replacement": "AI look"}}
-  ]},
-  {"beat": "b6", "components": [
-    {"component": "card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 500, "w": 900, "h": 500, "title": "The tells the skill names", "body": "", "enter": "rise"}},
-    {"component": "dark-chip", "role": "label", "at": "word:One", "props": {"x": 140, "y": 640, "text": "One accented headline word", "accent_word": "One"}},
-    {"component": "dark-chip", "role": "label", "at": "word:All", "props": {"x": 140, "y": 740, "text": "ALL CAPS labels", "accent_word": "ALL CAPS"}},
-    {"component": "dark-chip", "role": "label", "at": "word:Fake", "props": {"x": 140, "y": 840, "text": "Fake 01, 02, 03", "accent_word": "01, 02, 03"}}
-  ]},
-  {"beat": "b7", "components": [
-    {"component": "check-badge", "role": "hero", "at": "scene", "word_props": {"ticks_at": "plans"}, "props": {"mode": "list", "x": 160, "y": 620, "w": 760, "items_json": ["Plans 4 to 6 hex colors", "Reviews the layout", "Then codes"], "tick_gap_frames": 6}}
-  ]},
-  {"beat": "b8", "honesty": "sourced", "components": [
-    {"component": "window-card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 380, "w": 900, "h": 760, "title": "claude.com/plugins", "image": "research/02-plugin-page.png", "honesty": "sourced", "enter": "rise"}},
-    {"component": "stat-number", "role": "support", "at": "word:Over", "props": {"x": 120, "y": 1190, "value": 1134112, "unit": "installs", "icon": "download", "container": "pill", "honesty": "sourced"}}
-  ]},
-  {"beat": "b9", "components": [
-    {"component": "terminal-card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 600, "w": 900, "title": "Claude Code", "mode": "type", "chars_per_frame": 2, "start_delay_frames": 8, "prompt": "", "lines_json": [{"text": "/plugin install frontend-design@claude-plugins-official", "color": "accent"}, {"text": "Pick a scope: user or project", "color": "muted"}]}}
-  ]},
-  {"beat": "b10", "components": [
-    {"component": "card", "role": "hero", "at": "scene", "props": {"x": 90, "y": 560, "w": 900, "title": "Turns on by itself", "body": "Ask for frontend work and the skill is already on.", "mascot": "check", "enter": "rise"}},
-    {"component": "check-badge", "role": "support", "at": "word:itself", "props": {"mode": "badge", "x": 880, "y": 520, "size": 96}}
-  ]},
-  {"beat": "b11", "components": [
-    {"component": "end-card", "role": "cta", "at": "scene", "props": {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "ditch the identical cards", "lockup_w": 300, "lockup_y": 1170}},
-    {"component": "dm-card", "role": "notification", "at": "word:TELLS", "props": {"sender": "FlashFX", "message": "Comment TELLS and I send the checklist", "time_label": "", "app_label": "Instagram", "x": 110, "y": 1305, "w": 740, "enter": "drop"}}
-  ]}
+  {
+   "beat": "b1",
+   "set_piece": true,
+   "components": [
+    {
+     "component": "headline",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "kicker": "CLAUDE CODE SITES",
+      "kicker_mark": "@brand-slot",
+      "lines_json": [
+       "Why your Claude Code",
+       "cards all look",
+       "*identical.*"
+      ],
+      "x": 90,
+      "w": 900,
+      "align": "center"
+     }
+    },
+    {
+     "component": "hero-3d",
+     "role": "set-piece",
+     "at": "breath",
+     "props": {
+      "x": 240,
+      "y": 820,
+      "w": 600,
+      "h": 600,
+      "object": "card",
+      "spin": 40,
+      "tilt": 18,
+      "enter_at": 0,
+      "enter_frames": 12,
+      "label": ""
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b2",
+   "components": [
+    {
+     "component": "card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Clients spot it instantly",
+      "body": "You ship Claude Code client sites.",
+      "mascot": "star",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "dark-chip",
+     "role": "label",
+     "at": "word:instantly",
+     "props": {
+      "x": 600,
+      "y": 742,
+      "text": "same look, every site",
+      "accent_word": "every site",
+      "icon": "dot"
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b3",
+   "honesty": "sourced",
+   "components": [
+    {
+     "component": "window-card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 400,
+      "w": 900,
+      "h": 820,
+      "title": "SKILL.md",
+      "image": "research/03-skill-md.png",
+      "honesty": "sourced",
+      "mascot": "film",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "dark-chip",
+     "role": "label",
+     "at": "word:shadow",
+     "props": {
+      "x": 560,
+      "y": 1180,
+      "text": "rgba(0,0,0,.1)",
+      "accent_word": ".1",
+      "icon": "file"
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b4",
+   "components": [
+    {
+     "component": "card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 520,
+      "w": 900,
+      "title": "Distributional convergence",
+      "body": "It's not your fault.",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "handwritten-callout",
+     "role": "support",
+     "at": "word:calls",
+     "props": {
+      "x": 560,
+      "y": 840,
+      "text": "Anthropic's|own words",
+      "arrow": "up-left",
+      "arrow_len": 140
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b5",
+   "components": [
+    {
+     "component": "light-chip",
+     "role": "label",
+     "at": "word:Anthropic's",
+     "props": {
+      "x": 120,
+      "y": 560,
+      "text": "even Anthropic's palette"
+     }
+    },
+    {
+     "component": "strike-through",
+     "role": "hero",
+     "at": "word:terracotta",
+     "word_props": {
+      "strike_at": "flagged"
+     },
+     "props": {
+      "x": 120,
+      "y": 680,
+      "text": "#D97757 on cream",
+      "chip": true,
+      "style": "line",
+      "replacement": "AI look"
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b6",
+   "components": [
+    {
+     "component": "card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 500,
+      "w": 900,
+      "h": 500,
+      "title": "The tells the skill names",
+      "body": "",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "dark-chip",
+     "role": "label",
+     "at": "word:One",
+     "props": {
+      "x": 140,
+      "y": 640,
+      "text": "One accented headline word",
+      "accent_word": "One"
+     }
+    },
+    {
+     "component": "dark-chip",
+     "role": "label",
+     "at": "word:All",
+     "props": {
+      "x": 140,
+      "y": 740,
+      "text": "ALL CAPS labels",
+      "accent_word": "ALL CAPS"
+     }
+    },
+    {
+     "component": "dark-chip",
+     "role": "label",
+     "at": "word:Fake",
+     "props": {
+      "x": 140,
+      "y": 840,
+      "text": "Fake 01, 02, 03",
+      "accent_word": "01, 02, 03"
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b7",
+   "components": [
+    {
+     "component": "check-badge",
+     "role": "hero",
+     "at": "scene",
+     "word_props": {
+      "ticks_at": "plans"
+     },
+     "props": {
+      "mode": "list",
+      "x": 160,
+      "y": 620,
+      "w": 760,
+      "items_json": [
+       "Plans 4 to 6 hex colors",
+       "Reviews the layout",
+       "Then codes"
+      ],
+      "tick_gap_frames": 6
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b8",
+   "honesty": "sourced",
+   "components": [
+    {
+     "component": "window-card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 760,
+      "title": "claude.com/plugins",
+      "image": "research/02-plugin-page.png",
+      "honesty": "sourced",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "stat-number",
+     "role": "support",
+     "at": "word:Over",
+     "props": {
+      "x": 120,
+      "y": 1190,
+      "value": 1134112,
+      "unit": "installs",
+      "icon": "download",
+      "container": "pill",
+      "honesty": "sourced"
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b9",
+   "components": [
+    {
+     "component": "terminal-card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 600,
+      "w": 900,
+      "title": "Claude Code",
+      "mode": "type",
+      "chars_per_frame": 2,
+      "start_delay_frames": 8,
+      "prompt": "",
+      "lines_json": [
+       {
+        "text": "/plugin install frontend-design@claude-plugins-official",
+        "color": "accent"
+       },
+       {
+        "text": "Pick a scope: user or project",
+        "color": "muted"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b10",
+   "components": [
+    {
+     "component": "card",
+     "role": "hero",
+     "at": "scene",
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Turns on by itself",
+      "body": "Ask for frontend work and the skill is already on.",
+      "mascot": "check",
+      "enter": "rise"
+     }
+    },
+    {
+     "component": "check-badge",
+     "role": "support",
+     "at": "word:itself",
+     "props": {
+      "mode": "badge",
+      "x": 880,
+      "y": 520,
+      "size": 96
+     }
+    }
+   ]
+  },
+  {
+   "beat": "b11",
+   "components": [
+    {
+     "component": "end-card",
+     "role": "cta",
+     "at": "scene",
+     "props": {
+      "verb": "Comment",
+      "keyword": "TELLS",
+      "line1": "and I send you the checklist",
+      "line2": "ditch the identical cards",
+      "lockup_w": 300,
+      "lockup_y": 1146
+     }
+    },
+    {
+     "component": "dm-card",
+     "role": "notification",
+     "at": "word:TELLS",
+     "props": {
+      "sender": "FlashFX",
+      "message": "Comment TELLS and I send the checklist",
+      "time_label": "",
+      "app_label": "Instagram",
+      "x": 110,
+      "y": 1266,
+      "w": 740,
+      "enter": "drop"
+     }
+    }
+   ]
+  }
  ],
- "hook2": {"kicker": "CLAUDE CODE SITES", "lines": ["5 AI looks to avoid.", "*One is Anthropic's.*"], "set_piece": true},
+ "hook2": {
+  "kicker": "CLAUDE CODE SITES",
+  "lines": [
+   "5 AI looks to avoid.",
+   "*One is Anthropic's.*"
+  ],
+  "set_piece": true
+ },
  "wishlist": [],
  "notes": "The hook headline builds on the spoken words and the 3D card lands in the breath; every body beat has one hero and one element landing on its key word; the two screenshots are real research assets; the CTA follows the branding rules."
 }

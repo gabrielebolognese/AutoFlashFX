@@ -265,7 +265,7 @@ def apply_branding(plan: dict, sol: dict, brand: dict, toks: dict, script: dict,
     dm = next((c for c in comps if c["component"] == "dm-card"), None)
     if not ec:
         ec = {"id": f"{ask['id']}-end-card-{len(comps) + 1}", "component": "end-card", "start_ms": ask["start_ms"], "end_ms": ask["end_ms"], "role": "cta",
-              "props": {"verb": "Comment", "keyword": keyword, "line1": "and I send it to you", "line2": "", "lockup_w": 300, "lockup_y": 1170}}
+              "props": {"verb": "Comment", "keyword": keyword, "line1": "and I send it to you", "line2": "", "lockup_w": 300, "lockup_y": 1146}}
         comps.insert(0, ec)
         notes.append("the CTA had no end-card: added")
     ec["props"].setdefault("keyword", keyword)
@@ -280,7 +280,7 @@ def apply_branding(plan: dict, sol: dict, brand: dict, toks: dict, script: dict,
             pass
         dm = {"id": f"{ask['id']}-dm-card-{len(comps) + 1}", "component": "dm-card", "start_ms": at, "end_ms": ask["end_ms"], "role": "notification",
               "props": {"sender": str(cta_bt.get("dm_sender", "FlashFX")), "message": f"Comment {keyword} and I send it to you", "time_label": "", "app_label": "Instagram",
-                        "x": 110, "y": 1305, "w": 740, "enter": "drop"}}
+                        "x": 110, "y": 1266, "w": 740, "enter": "drop"}}  # ends above the safe bottom (1440) now that the captions sit at 1332 (M14)
         comps.append(dm)
         notes.append("the CTA had no dm-card: added, landing on the keyword")
     dm["props"]["avatar"] = avatar

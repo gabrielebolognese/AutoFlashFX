@@ -71,7 +71,7 @@
   --end-card-tilt: -1.7deg;
   /* the motion grammar (BUILD_SPEC.md section 5, Motion and energy rules; tokens.json motion.grammar): read by pc-motion.js */
   --m-perspective: 1400;
-  --m-main-frames: 15;
+  --m-main-frames: 18;
   --m-zoom-from: 0.85;
   --m-zoom-from-small: 0.92;
   --m-zoom-from-close: 1.15;
@@ -102,8 +102,7 @@
   --m-ambient-count: 16;
   --m-camera-deg-s: 0.3;
   --m-depth-step: 24;
-  --m-scroll-px-s: 24;
-  --m-scroll-scale: 1.25;
+  --m-scroll-px-s: 30;
   --m-zone-caption: 200 1152 680 260;
   --m-zone-hook: 90 233 900 470;
   --m-zone-endcard: 200 324 680 640;

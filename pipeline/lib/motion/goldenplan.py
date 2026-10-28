@@ -96,9 +96,9 @@ DESIGN = [
     ]},
     {"beat": "b11", "beat_type": "ask", "cta": True, "components": [
         {"component": "end-card", "role": "cta", "props": {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "ditch the identical cards",
-                                                           "lockup": "brand/lockup/lockup-gradient-on-light.png", "lockup_w": 300, "lockup_y": 1170}},
+                                                           "lockup": "brand/lockup/lockup-gradient-on-light.png", "lockup_w": 300, "lockup_y": 1146}},
         {"component": "dm-card", "role": "notification", "at_word": "TELLS", "props": {"avatar": "brand/mark/avatar-dark.png", "sender": "FlashFX", "message": "Comment TELLS and I send the checklist",
-                                                                                      "time_label": "", "app_label": "Instagram", "x": 110, "y": 1305, "w": 740, "enter": "drop"}},
+                                                                                      "time_label": "", "app_label": "Instagram", "x": 110, "y": 1266, "w": 740, "enter": "drop"}},
     ]},
 ]
 

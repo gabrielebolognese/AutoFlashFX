@@ -1554,7 +1554,7 @@
     {
      "id": "scroll_px_s",
      "type": "number",
-     "default": 24,
+     "default": 30,
      "label": "The screenshot scrolls inside the window at this speed (px per second; 0 = still)"
     },
     {
@@ -1629,16 +1629,16 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v07/extra/s30_011.4_window_rise.png",
-    "r": 0.956,
+    "r": 0.973,
     "run": "2026-11-07"
    },
    "energy": {
-    "moving_share_pct": 20.8,
-    "middle_moving_share_pct": 100.0,
-    "pixels_changing_pct": 1.93,
-    "still_share_pct": 71.5,
-    "longest_still_s": 3.1,
-    "mean_change": 0.584,
+    "moving_share_pct": 79.2,
+    "middle_moving_share_pct": 82.3,
+    "pixels_changing_pct": 2.36,
+    "still_share_pct": 0.0,
+    "longest_still_s": 0.03,
+    "mean_change": 0.732,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,

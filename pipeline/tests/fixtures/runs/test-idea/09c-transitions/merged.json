@@ -842,7 +842,7 @@
       "mascots_json": "[\"clapper\", \"star\", \"film\", \"play\", \"grid\"]",
       "lockup": "brand/lockup/lockup-gradient-on-light.png",
       "lockup_w": 300,
-      "lockup_y": 1170,
+      "lockup_y": 1146,
       "wobble": true
      },
      "z": 2,
@@ -861,7 +861,7 @@
      "end_ms": 41460,
      "props": {
       "x": 110,
-      "y": 1305,
+      "y": 1266,
       "w": 740,
       "avatar": "brand/mark/avatar-dark.png",
       "avatar_size": 120,

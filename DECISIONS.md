@@ -2143,8 +2143,8 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 292. **One life per element (PCM.life).** The four phases of E1 are GSAP tweens laid on the component's timeline:
     the main animation (the style's measured enter: rise 38 px over 8 frames expo.out with opacity over 5; the pop
     with its overshoot; the fly-in; a fade; a slide), the combined properties of E2 on top of it (a zoom from 0.85, or
-    0.92 for small things, or 1.15 from a close start, over 12 frames power3.inOut, and a parallax rotateY or rotateX
-    from 12 degrees to 1 starting 3 frames later), then the inertia and the hold as one tween per property whose ease
+    0.92 for small things, or 1.15 from a close start, over 18 frames (0.6 s) power3.inOut, and a parallax rotateY or
+    rotateX from 12 degrees to 1 starting 3 frames later), then the inertia and the hold as one tween per property whose ease
     is the closed form d(t) = A (1 - (1 - min(t, D) / D)^3) + v t (PCM.glide: a cubic decelerating tail of amplitude A
     over D = 3 s on top of the hold's constant speed v, so the speed never reaches zero), then the exit. The inertia
     continues the main move's direction: a risen card keeps rising 12 px, a zoomed one keeps growing to 1.03, a turned
@@ -2217,17 +2217,18 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     and footprint, plan_validate.py and events.py know icon-3d; the frozen fixtures' index.html canvas hosts), M11
     (mechanical.py's clip_start for icon-3d), M1 (config: nothing). The frozen test projects rebuild from the plans
     with the new library, so M10 to M13's fake tests exercise it.
-299. **What the golden reel measures after the rewrite (the same plan, the new library):** moving share 13.0 to 27.0
-    percent (doubled, as the acceptance test asks), middle band 12.0 to 29.4, pixels changing 1.0 to 1.42, still
-    stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s (build/M14/golden-energy-before.json against
+299. **What the golden reel measures after the rewrite (the same plan, the new library):** moving share 13.0 to 28.1
+    percent (doubled, as the acceptance test asks), middle band 12.0 to 29.8, pixels changing 1.0 to 1.6, still
+    stretches 49.5 to 29.9 percent, longest still 2.8 to 2.43 s (build/M14/golden-energy-before.json against
     golden/test-idea/energy.json); frozen frames fell from 25 to 4 percent. The gain came from three things in this
-    order: the window cards' screenshots scrolling inside their frames (24 px per second, enlarged a quarter for the
-    room: the two window scenes went from 10 and 32 percent moving to 92 and 55), the longer combined entrances (the
-    zoom and parallax over 15 frames instead of a bare 8-frame rise) and the inertia's first second. The holds
+    order: the window cards' screenshots scrolling inside their frames (30 px per second through the page's own height
+    by object-position: the two window scenes went from 10 and 32 percent moving to over 80 and 60), the longer
+    combined entrances (the zoom and parallax over 18 frames instead of a bare 8-frame rise) and the inertia's first
+    second. The holds
     themselves (2 to 8 px per second, a tenth of a degree per frame) are subtle at 108x192 by the spec's own numbers:
     they end the frozen frames and the still stretches, not the moving share. The golden still misses every target
     (41, 46, 3.3, 15, 2): that is M15's kinetic captions and M16's content motion, camera and layered scenes, as the
-    spec plans. The render took 112 s (90 s before: the 3D parallax and the canvas layers cost about a quarter).
+    spec plans. The render takes 2 to 3 minutes on this PC (90 s before: the 3D parallax, the canvas layers and the scrolling screenshots cost the rest).
 300. **Found on the way:** the Bash tool truncates a command near 8 KB, so every multi-file change of this milestone
     is a patch script under build/M14/tmp/ run by python; two harnesses writing the same page file corrupt each other
     (the tag); a zero-duration GSAP tween at position 0 is not rendered when the timeline is seeked to exactly 0
@@ -2240,3 +2241,13 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     failed S12's zone check from that day on. The default is now 0, meaning the style's position from tokens.css
     (--caption-y); a plan may still give a y. The frozen M10 and M11 fixtures rebuild with it, the golden was rendered
     once more (its energy numbers moved by a tenth of a point), and the gallery still shows the words in the band.
+302. **Also found by the M11 rerun: the CTA's DM card ended below the safe bottom.** With the old caption box at y 1480
+    the review and the validator let the DM card and the end card sit in the caption band (DECISIONS.md 218, 248); the
+    accepted caption position (1332) drops that exception, so a DM card at y 1305 (172 px tall) ran to 1477 against
+    the safe bottom of 1440. The director's default (plan9.apply_branding), the golden plan, the validator fixtures and
+    the frozen run now put the DM card at y 1266 and the end card's lockup at lockup_y 1146 (the lockup keeps its clear
+    space above the card, the card ends at 1438), and the validator's CTA exemption applies only while the caption band
+    lies below the safe bottom (tokens.json zones.caption.safe_zone_exception). The golden plan therefore differs from
+    M9's by these two numbers; the M14 test still renders it without regenerating it ("the same plan") and compares it
+    with its own hash. The window card's scrolling screenshot moved from a transform to its object-position at the
+    same time: the image box never leaves the window, so the review's off-canvas rule stays quiet.

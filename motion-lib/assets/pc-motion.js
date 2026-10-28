@@ -49,7 +49,7 @@
     };
     NUMS = {
       perspective: cssNum("--m-perspective", 1400),
-      mainFrames: cssNum("--m-main-frames", 15),
+      mainFrames: cssNum("--m-main-frames", 18),
       zoomFrom: cssNum("--m-zoom-from", 0.85),
       zoomFromSmall: cssNum("--m-zoom-from-small", 0.92),
       zoomFromClose: cssNum("--m-zoom-from-close", 1.15),
@@ -68,8 +68,7 @@
       edgeOutsideMax: cssNum("--m-edge-outside-max", 0.7),
       ambientMaxSpeed: cssNum("--m-ambient-max-speed", 10),
       depthStep: cssNum("--m-depth-step", 24),
-      scrollSpeed: cssNum("--m-scroll-px-s", 24),
-      scrollScale: cssNum("--m-scroll-scale", 1.25),
+      scrollSpeed: cssNum("--m-scroll-px-s", 30),
       zones: ["caption", "hook", "endcard"].map(function (k) {
         var parts = cssText("--m-zone-" + k, "").split(/\s+/).map(parseFloat).filter(function (n) { return isFinite(n); });
         return parts.length === 4 ? { x: parts[0], y: parts[1], w: parts[2], h: parts[3] } : null;
@@ -410,18 +409,21 @@
     tl.fromTo(el, { x: 0, y: 0 }, { x: o.dx || 0, y: o.dy || 0, duration: seconds, ease: "none", immediateRender: false }, at);
     return at + seconds;
   };
-  // a screenshot scrolling inside its window: the image is enlarged by scrollScale (the extra height is the slack) and
-  // moves up at scrollSpeed px per second for the element's life, never past its slack (E1: the content keeps moving)
+  // a screenshot scrolling inside its window (object-fit cover, taller than the window): its object-position moves from
+  // the top toward the bottom at scrollSpeed px per second for the element's life, never past the bottom. The image box
+  // itself never moves or grows (the review's off-canvas rule reads the box); the page itself is the room to scroll.
   PCM.scroll = function (tl, img, at, seconds, o) {
     o = o || {};
     var N = PCM.numbers();
-    var scale = o.scale || N.scrollScale, speed = o.speed === undefined ? N.scrollSpeed : o.speed;
-    var h = o.height || img.getBoundingClientRect().height || 700;
-    var slack = Math.max(0, h * (scale - 1));
-    gsap.set(img, { scale: scale, transformOrigin: "50% 0%" });
-    if (!(seconds > 0) || slack <= 0 || speed <= 0) return at;
+    var speed = o.speed === undefined ? N.scrollSpeed : o.speed;
+    var boxW = o.width || img.getBoundingClientRect().width || 900, boxH = o.height || img.getBoundingClientRect().height || 700;
+    var nw = img.naturalWidth || 1080, nh = img.naturalHeight || 1920;  // a page screenshot is portrait when not yet loaded
+    var drawnH = Math.max(boxH, boxW * nh / nw);
+    var slack = drawnH - boxH;
+    if (!(seconds > 0) || slack <= 1 || speed <= 0) return at;
     var dist = Math.min(slack, speed * seconds);
-    tl.fromTo(img, { y: 0 }, { y: -dist, duration: dist / speed, ease: "none", immediateRender: false }, at);
+    var pct = Math.round(dist / slack * 10000) / 100;
+    tl.fromTo(img, { objectPosition: "50% 0%" }, { objectPosition: "50% " + pct + "%", duration: dist / speed, ease: "none", immediateRender: false }, at);
     PC.event("scroll", at, { el: img.id, end: at + dist / speed, px: dist });
     return at + dist / speed;
   };
