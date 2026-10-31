@@ -8,6 +8,7 @@
 #                                    can commit there). Sets SANDBOX (POSIX path) and SANDBOX_M (C:/ form).
 #   sandbox_cleanup                  remove it (also run by the EXIT trap)
 #   fast_mode                        REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1
+#                                    REELS_TICK_SECONDS=0.2 REELS_DUMMY_SECONDS=0.3 (unless already set)
 #   pass / fail "text"               count and print a PASS or FAIL line
 #   assert_eq got expected "name"    assert_ne, assert_rc expected actual "name"
 #   assert_true "name" cmd args...   assert_false
@@ -73,7 +74,10 @@ sandbox_cleanup() {
   SANDBOX=""
 }
 
-fast_mode() { export REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1; }
+fast_mode() {
+  export REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1 REELS_TICK_SECONDS=0.2
+  export REELS_DUMMY_SECONDS="${REELS_DUMMY_SECONDS:-0.3}"
+}
 
 test_summary() {
   printf '\n%s: %d passed, %d failed\n' "$TEST_NAME" "$PASS_N" "$FAIL_N"

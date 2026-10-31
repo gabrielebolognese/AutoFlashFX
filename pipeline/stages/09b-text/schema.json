@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09b-text/plan.json",
+  "title": "09b-text plan.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "pass",
+    "cards",
+    "captions"
+  ],
+  "properties": {
+    "pass": {
+      "type": "string",
+      "const": "text"
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "scene",
+          "text",
+          "zone"
+        ]
+      }
+    },
+    "captions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "start_ms",
+          "end_ms",
+          "words"
+        ]
+      }
+    },
+    "labels": {
+      "type": "array"
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/03-gate/gate.json",
+  "title": "03-gate gate.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "round",
+    "scores",
+    "F",
+    "pass",
+    "decision",
+    "reason"
+  ],
+  "properties": {
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "P",
+        "S",
+        "C"
+      ],
+      "properties": {
+        "P": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "S": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "C": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        }
+      }
+    },
+    "F": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "fail"
+      ]
+    },
+    "pass": {
+      "type": "boolean"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "angle",
+        "drop"
+      ]
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string"
+    }
+  }
+}

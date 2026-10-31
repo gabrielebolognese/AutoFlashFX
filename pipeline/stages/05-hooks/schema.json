@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/05-hooks/hooks.json",
+  "title": "05-hooks hooks.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "hooks"
+  ],
+  "properties": {
+    "templates_considered": {
+      "type": "integer"
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hooks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "family",
+          "spoken",
+          "on_screen",
+          "marker"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": "string"
+          },
+          "family": {
+            "type": "string"
+          },
+          "spoken": {
+            "type": "string"
+          },
+          "on_screen": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

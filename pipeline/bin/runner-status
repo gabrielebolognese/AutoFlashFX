@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# runner-status: what is the runner doing? Prints whether a runner is alive, logs/status.txt (the latest status
+# line) and the last 20 lines of logs/runner.log. Mentions logs/STOPPED.md and logs/blocked.txt when they exist.
+#   bash pipeline/bin/runner-status [N]      N: lines of the log to show (default 20)
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+n="${1:-20}"
+pid=""
+if [ -f "$REELS_LOCKS/runner/pid" ]; then read -r pid _ < "$REELS_LOCKS/runner/pid" || true; fi
+if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then
+  echo "runner: running (pid $pid)"
+elif [ -n "$pid" ]; then
+  echo "runner: not running (its last lock belonged to pid $pid, which is gone)"
+else
+  echo "runner: not running"
+fi
+if [ -f "$REELS_LOGS/status.txt" ]; then
+  echo "status: $(cat "$REELS_LOGS/status.txt")"
+else
+  echo "status: no logs/status.txt yet (the runner has never started here)"
+fi
+[ -f "$REELS_LOGS/STOPPED.md" ] && echo "STOPPED: logs/STOPPED.md exists, read it for the diagnosis and the fix"
+[ -s "$REELS_LOGS/blocked.txt" ] && echo "blocked: $(grep -c '^#' "$REELS_LOGS/blocked.txt") idea(s) in logs/blocked.txt"
+echo
+if [ -f "$REELS_LOGS/runner.log" ]; then
+  echo "last $n lines of logs/runner.log:"
+  tail -n "$n" "$REELS_LOGS/runner.log"
+else
+  echo "no logs/runner.log yet"
+fi
+exit 0

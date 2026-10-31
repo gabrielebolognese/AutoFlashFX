@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/08-voiceover/words.json",
+  "title": "08-voiceover words.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "engine",
+    "duration_ms",
+    "words"
+  ],
+  "properties": {
+    "engine": {
+      "type": "string"
+    },
+    "sample_rate": {
+      "type": "integer"
+    },
+    "duration_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "words": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "word",
+          "start_ms",
+          "end_ms",
+          "beat"
+        ],
+        "properties": {
+          "word": {
+            "type": "string"
+          },
+          "start_ms": {
+            "type": "number"
+          },
+          "end_ms": {
+            "type": "number"
+          },
+          "beat": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

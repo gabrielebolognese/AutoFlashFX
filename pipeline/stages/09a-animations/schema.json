@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09a-animations/plan.json",
+  "title": "09a-animations plan.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "pass",
+    "scenes"
+  ],
+  "properties": {
+    "pass": {
+      "type": "string",
+      "const": "animations"
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "beat",
+          "start_ms",
+          "end_ms",
+          "component"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "beat": {
+            "type": "string"
+          },
+          "start_ms": {
+            "type": "number"
+          },
+          "end_ms": {
+            "type": "number"
+          },
+          "component": {
+            "type": "string"
+          },
+          "props": {
+            "type": "object"
+          },
+          "enter": {
+            "type": "string"
+          },
+          "exit": {
+            "type": "string"
+          },
+          "emphasis_hits": {
+            "type": "array"
+          },
+          "set_piece": {
+            "type": "boolean"
+          },
+          "honesty_label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

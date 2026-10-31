@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/01-research/research.json",
+  "title": "01-research research.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "idea_id",
+    "checked",
+    "claims",
+    "one_true_thing"
+  ],
+  "properties": {
+    "idea_id": {
+      "type": "string"
+    },
+    "checked": {
+      "type": "string"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "url",
+          "checked"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "checked": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "numbers": {
+      "type": "object"
+    },
+    "pitfalls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "one_true_thing": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assets": {
+      "type": "array"
+    }
+  }
+}

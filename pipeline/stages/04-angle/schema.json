@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/04-angle/angle.json",
+  "title": "04-angle angle.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "round",
+    "change",
+    "keeps_core_topic"
+  ],
+  "properties": {
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_scores": {
+      "type": "object"
+    },
+    "change": {
+      "type": "string"
+    },
+    "keeps_core_topic": {
+      "type": "boolean"
+    }
+  }
+}

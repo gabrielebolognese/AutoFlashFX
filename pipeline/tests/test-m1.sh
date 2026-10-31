@@ -205,13 +205,15 @@ assert_true "the error line names the path and the problem" grep -q "bad.json: i
 python "$REPO_DIR/pipeline/bin/validate-json" "$SANDBOX_M/schema.json" "$SANDBOX_M/missing.json" >/dev/null; assert_rc 2 $? "an unreadable file exits 2"
 
 section "7. run.sh banner and preflight"
-printf '{%s}\n' "$SPEC_IDEA" > "$SANDBOX/ideas.txt"
+# M2 replaced the body of run.sh with the processing loop; an empty queue keeps this a banner-only start
+# (the queue listing and the loop itself are covered by test-m2.sh).
+: > "$SANDBOX/ideas.txt"
 rm -f "$SANDBOX/logs/runner.log" "$SANDBOX/logs/status.txt"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/run.sh" --once ) > "$SANDBOX/run.out" 2>&1; rc=$?
 assert_rc 0 $rc "bash run.sh --once exits 0"
 assert_grep '^\[[0-9]{2}:[0-9]{2}\] READY  preflight ok: [0-9]+ tools, [0-9]+ python packages, [0-9]+ files' "$SANDBOX/run.out" "preflight line"
-assert_grep '^\[[0-9]{2}:[0-9]{2}\] START  reels autopilot v[0-9]+\.[0-9]+\.[0-9]+.* \| queue: 1 idea \| style: paper-cards \| voice: chatterbox \(fallback kokoro\) \| sfx map: not built$' "$SANDBOX/run.out" "banner: version, queue, style, voice engine, sfx map"
-assert_grep '^\[[0-9]{2}:[0-9]{2}\] QUEUE  1\. Claude Code' "$SANDBOX/run.out" "the queue is listed"
+assert_grep '^\[[0-9]{2}:[0-9]{2}\] START  reels autopilot v[0-9]+\.[0-9]+\.[0-9]+.* \| queue: 0 ideas \| style: paper-cards \| voice: chatterbox \(fallback kokoro\) \| sfx map: not built$' "$SANDBOX/run.out" "banner: version, queue, style, voice engine, sfx map"
+assert_grep '^\[[0-9]{2}:[0-9]{2}\] IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked' "$SANDBOX/run.out" "the summary line when the queue is empty"
 assert_not_grep $'\x1b' "$SANDBOX/run.out" "NO_COLOR output has no escape codes"
 assert_file "$SANDBOX/logs/runner.log" "logs/runner.log written"
 assert_file "$SANDBOX/logs/status.txt" "logs/status.txt written"

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09c-transitions/plan.json",
+  "title": "09c-transitions plan.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "pass",
+    "transitions"
+  ],
+  "properties": {
+    "pass": {
+      "type": "string",
+      "const": "transitions"
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "type",
+          "duration_ms"
+        ]
+      }
+    }
+  }
+}

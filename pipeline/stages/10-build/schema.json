@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/10-build/events.json",
+  "title": "10-build events.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "duration_ms",
+    "events"
+  ],
+  "properties": {
+    "composition": {
+      "type": "string"
+    },
+    "duration_ms": {
+      "type": "number"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ms",
+          "type",
+          "component",
+          "scene",
+          "scene_change"
+        ],
+        "properties": {
+          "ms": {
+            "type": "number"
+          },
+          "type": {
+            "type": "string"
+          },
+          "component": {
+            "type": "string"
+          },
+          "scene": {
+            "type": "string"
+          },
+          "scene_change": {
+            "type": "boolean"
+          },
+          "transition_ms": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

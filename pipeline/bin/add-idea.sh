@@ -35,5 +35,10 @@ if [ -z "$(printf '%s' "$input" | tr -d '[:space:]{}')" ]; then
   exit 1
 fi
 
+# The source shows in the runner's NEW line: "Claude Code" when run from a Claude Code session (it sets CLAUDECODE).
+source_name="${REELS_SOURCE:-}"
+if [ -z "$source_name" ]; then
+  if [ -n "${CLAUDECODE:-}" ]; then source_name="Claude Code"; else source_name="add-idea.sh"; fi
+fi
 printf '%s' "$input" | ideas_py append --file "$REELS_IDEAS" --root "$REELS_ROOT" --stale "$(ideas_stale)" \
-  --source "${REELS_SOURCE:-add-idea}" --plain
+  --source "$source_name" --plain

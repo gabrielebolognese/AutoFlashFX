@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/11-sfx/cues.json",
+  "title": "11-sfx cues.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "cues",
+    "verification"
+  ],
+  "properties": {
+    "seed": {
+      "type": "integer"
+    },
+    "cues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cue_type",
+          "ms",
+          "file",
+          "gain_db"
+        ],
+        "properties": {
+          "event": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "cue_type": {
+            "type": "string"
+          },
+          "ms": {
+            "type": "number"
+          },
+          "file": {
+            "type": "string"
+          },
+          "gain_db": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/07-script/script.json",
+  "title": "07-script script.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "tone",
+    "video_type",
+    "target_seconds",
+    "beats",
+    "ask"
+  ],
+  "properties": {
+    "tone": {
+      "type": "string"
+    },
+    "video_type": {
+      "type": "string",
+      "enum": [
+        "default",
+        "list"
+      ]
+    },
+    "target_seconds": {
+      "type": "number"
+    },
+    "wpm": {
+      "type": "number"
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "display",
+          "spoken",
+          "emphasis",
+          "card"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "hook",
+              "stake",
+              "number",
+              "tool",
+              "step",
+              "comparison",
+              "proof",
+              "mechanism",
+              "before-after",
+              "pain-payoff",
+              "payoff",
+              "ask"
+            ]
+          },
+          "display": {
+            "type": "string"
+          },
+          "spoken": {
+            "type": "string"
+          },
+          "emphasis": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "card": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ask": {
+      "type": "object",
+      "required": [
+        "keyword",
+        "line"
+      ],
+      "properties": {
+        "keyword": {
+          "type": "string"
+        },
+        "line": {
+          "type": "string"
+        }
+      }
+    },
+    "checks": {
+      "type": "object"
+    }
+  }
+}

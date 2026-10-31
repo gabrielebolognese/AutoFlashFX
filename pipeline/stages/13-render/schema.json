@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/13-render/render.json",
+  "title": "13-render render.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "files",
+    "checks",
+    "pass"
+  ],
+  "properties": {
+    "files": {
+      "type": "object",
+      "required": [
+        "reel",
+        "hook2"
+      ]
+    },
+    "checks": {
+      "type": "object"
+    },
+    "pass": {
+      "type": "boolean"
+    }
+  }
+}

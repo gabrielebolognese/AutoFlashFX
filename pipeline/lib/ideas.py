@@ -174,11 +174,14 @@ def write_atomic(path: str, text: str, newline: str) -> None:
 
 
 class QueueLock:
-    """The ideas lock: a directory created with mkdir, stale after stale_s seconds."""
+    """A lock directory <root>/.locks/<name> created with mkdir, stale after stale_s seconds.
+    name is "ideas" for the queue and "exports" for the export numbering (export.py)."""
 
-    def __init__(self, root: str, stale_s: float = DEFAULT_STALE_S, wait_s: float = DEFAULT_WAIT_S):
+    def __init__(self, root: str, stale_s: float = DEFAULT_STALE_S, wait_s: float = DEFAULT_WAIT_S,
+                 name: str = "ideas"):
         self.root = root
-        self.dir = os.path.join(root, ".locks", "ideas")
+        self.name = name
+        self.dir = os.path.join(root, ".locks", name)
         self.stale_s = stale_s
         self.wait_s = wait_s
 
@@ -194,7 +197,7 @@ class QueueLock:
                     self._break(age)
                     continue
                 if time.monotonic() > deadline:
-                    raise LockTimeout(f"the ideas lock stayed busy for {self.wait_s:.0f}s ({self._holder()})")
+                    raise LockTimeout(f"the {self.name} lock stayed busy for {self.wait_s:.0f}s ({self._holder()})")
                 time.sleep(0.05)
                 continue
             try:
@@ -240,7 +243,7 @@ class QueueLock:
             os.rmdir(self.dir)
         except OSError:
             return
-        log_line(self.root, "WARN", f"removed a stale ideas lock (age {age:.0f}s, {holder})")
+        log_line(self.root, "WARN", f"removed a stale {self.name} lock (age {age:.0f}s, {holder})")
 
 
 def mark_new(root: str, ids: list[str], queue: int, source: str) -> None:

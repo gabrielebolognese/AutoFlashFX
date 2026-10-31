@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/06-judge/judge.json",
+  "title": "06-judge judge.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "winner",
+    "runner_up",
+    "reasons"
+  ],
+  "properties": {
+    "winner": {
+      "type": "object",
+      "required": [
+        "id",
+        "spoken",
+        "on_screen"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "spoken": {
+          "type": "string"
+        },
+        "on_screen": {
+          "type": "string"
+        },
+        "family": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "marker": {
+          "type": "string"
+        }
+      }
+    },
+    "runner_up": {
+      "type": "object",
+      "required": [
+        "id",
+        "spoken",
+        "on_screen"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "spoken": {
+          "type": "string"
+        },
+        "on_screen": {
+          "type": "string"
+        },
+        "family": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "marker": {
+          "type": "string"
+        }
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "filtered_out": {
+      "type": "array"
+    },
+    "rankings": {
+      "type": "array"
+    }
+  }
+}

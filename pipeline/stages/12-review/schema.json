@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/12-review/review.json",
+  "title": "12-review review.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "round",
+    "pass",
+    "edit_review"
+  ],
+  "properties": {
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pass": {
+      "type": "boolean"
+    },
+    "mechanical": {
+      "type": "object"
+    },
+    "style": {
+      "type": "object"
+    },
+    "audio": {
+      "type": "object"
+    },
+    "edit_review": {
+      "type": "object",
+      "required": [
+        "scores",
+        "issues"
+      ],
+      "properties": {
+        "scores": {
+          "type": "object"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "tag",
+              "text"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

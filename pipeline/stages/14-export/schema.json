@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/14-export/export.json",
+  "title": "14-export export.json (first version, M2)",
+  "type": "object",
+  "required": [
+    "caption",
+    "hashtags",
+    "keyword",
+    "deliverable",
+    "deliverable_status",
+    "hooks",
+    "files"
+  ],
+  "properties": {
+    "caption": {
+      "type": "string"
+    },
+    "hashtags": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string"
+      }
+    },
+    "keyword": {
+      "type": "string"
+    },
+    "deliverable": {
+      "type": "string"
+    },
+    "deliverable_status": {
+      "type": "string",
+      "enum": [
+        "existing",
+        "new"
+      ]
+    },
+    "link": {
+      "type": "string"
+    },
+    "hooks": {
+      "type": "object",
+      "required": [
+        "hook1",
+        "hook2"
+      ],
+      "properties": {
+        "hook1": {
+          "type": "string"
+        },
+        "hook2": {
+          "type": "string"
+        }
+      }
+    },
+    "needs_review": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "url",
+          "checked"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "checked": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "reel",
+        "hook2"
+      ],
+      "properties": {
+        "reel": {
+          "type": "string"
+        },
+        "hook2": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
