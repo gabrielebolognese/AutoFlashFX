@@ -192,3 +192,71 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     bytes; `library/voice/` is ignored as `library/voice/*` with README.txt re-included (suggestion 9).
 51. **Folders git cannot hold empty** (motion-lib/candidates, motion-lib/gallery, golden, pipeline/stages,
     pipeline/vendor, pipeline/knowledge) carry a .gitkeep until their milestone fills them.
+
+## M2 (2026-10-31)
+
+### Runner loop and state
+52. **The stage table lives in state.py** (key, label, default activity, primary output, initial status); bash loads
+    it once per start with `state.py stages`, and state.json copies the order at creation so a run keeps its order
+    even if the table changes later. 04-angle starts as `skipped`: the gate reopens it (`state.py reopen 04-angle
+    03-gate`) when an angle round is needed (M4). The same `reopen` serves the review loop's fix routing (M11).
+53. **One primary JSON output per stage, and the .done marker is written by the runner, never by the stage.**
+    `state.py stage-done` validates `<stage>/<primary>` against `pipeline/stages/<stage>/schema.json` in the same
+    Python process (jsonschema is imported there, the slowest part of a stage transition at about 0.35 s) and writes
+    `.done`; an invalid output leaves the stage `failed` and goes to the code error path. `state.py next` re-checks
+    the marker on resume. Extra outputs (facts.md, wav, mp4) are the stage's business and its CONTRACT.md lists them.
+54. **Stage scripts run as background children and the runner polls them** (`kill -0` every REELS_TICK_SECONDS,
+    default 1 s), so the heartbeat and the NEW lines print during long stages. A stage's stdout and stderr go to
+    `<stage>/stage.log`; the runner's terminal is its fd 3 (REELS_SAY_FD=3), so `say` lines from a stage still
+    reach the screen, runner.log and status.txt. The child pid is written to `<stage>/.pid`; on resume a still
+    running orphan is waited for and judged by its outputs instead of being started twice.
+55. **Resume order:** every loop iteration first looks for an unfinished run (status running, oldest first) and only
+    then takes the first idea, so a restart finishes the interrupted run even when the idea was removed from
+    ideas.txt by hand meanwhile (the removal at the end then logs a WARN). The runner lock `.locks/runner` holds the
+    pid; a live pid (`ps -p`) refuses a second runner with exit 1, a dead one is taken over.
+56. **Work time, not wall time:** state.json `timing` keeps `session_started`, `accumulated` and `last_seen`
+    (refreshed at every state write and by the heartbeat through `state.py touch`); `pickup` adds the previous
+    session's `last_seen - session_started` to `accumulated`. "minute N" in the heartbeat and the duration in the
+    DONE line therefore skip the hours the PC was off, at the heartbeat's granularity.
+57. **Idea position i/n:** i is this session's idea count; n is (i - 1) plus the ideas still in ideas.txt (the
+    current one included). START 2/5 and NEXT 3/5 then keep the denominator of spec section 7 while the queue
+    shrinks, and new ideas raise it.
+58. **The heartbeat's stage timer** counts from the start of the current stage attempt, not from the last
+    `set_activity` (stages may change their activity text every few seconds, as the voiceover does per beat).
+59. **status.txt** is overwritten by every line except the tags in REELS_STATUS_SKIP_TAGS (default QUEUE, the banner
+    listing, and INFO, chatter). The IDLE tag is used both for the summary line when the queue empties and for the
+    idle heartbeat, so `--once` ends on an IDLE line and status.txt always reads as a status.
+60. **Until M3 a code error blocks the idea.** A non-zero exit (other than 10 and 20) or an invalid output prints the
+    ERROR line, counts an open issue and blocks the idea with the reason "code error, ... (no automatic fix before
+    M3)": the idea lands in logs/blocked.txt for a re-add and the runner moves on, as rule zero demands. M3 replaces
+    the body of `runner_code_error` with the review and fix loop. A stage whose run.sh does not exist yet is a
+    systemic stop instead (STOPPED.md names the stage and the REELS_DUMMY=all alternative) and the idea stays in
+    ideas.txt: blocking every idea at a stage that is not built would empty the queue for nothing.
+61. **The export runs in Python under the exports lock** (`export.py run`): N = highest number in exports/ plus 1,
+    `runs/<id>/export/` is assembled (N.mp4 and Nhook2.mp4 copied from the files named in 14-export/export.json,
+    Ncaptions.txt rendered from export.json in the format of spec section 8, because the HOOKS lines need N), then
+    one rename into exports/N/. state.json records `export.intent` before the move and `export.number` after; after
+    a crash in between, the RUN section of every `Ncaptions.txt` identifies an export that was moved but not
+    recorded, so there is never a duplicate or a gap. A leftover `.locks/exports` is removed at startup: only a
+    runner takes it and only one runner exists. 14-export therefore produces export.json (caption, hashtags,
+    keyword, deliverable and its status, link, hooks, needs_review, facts, files) rather than the captions file.
+62. **History and blocked formats:** `YYYY-MM-DD HH:MM | <normalized idea> | exported N` (or `dropped: reason`,
+    `blocked: reason`); an exported line is not repeated for the same idea and number on a restart.
+    logs/blocked.txt gets two lines per idea: `# date | blocked at S10 | reason | runs/<id>` and the idea in braces,
+    ready for add-idea.sh. The IDLE line's "today" counts come from history.txt lines that start with today's date.
+63. **Dummy stages** share pipeline/lib/dummy.sh: REELS_DUMMY_SECONDS (default 1) and the planted lists
+    REELS_DUMMY_FAIL, DROP, BLOCK, FLAG and INVALID plus REELS_DUMMY_ONCE_FILE (a planted event fires once per
+    kind), so the tests cover every outcome without a model. REELS_DUMMY accepts `all`, stage keys or bare numbers.
+    The 48 stage files (CONTRACT.md, schema.json, dummy.sh for 16 stages) were produced from one table and are
+    committed as plain files; the schemas are first versions that each stage's milestone refines.
+64. **Test knobs are literal seconds and are never scaled:** REELS_POLL_SECONDS, REELS_STATUS_EVERY,
+    REELS_TICK_SECONDS. REELS_SLEEP_SCALE (0 = log the wait and skip it) applies only to waits that come from
+    config: the idle poll in M2, the limit and backoff waits from M3 on.
+65. **The Bash tool collapses a double backslash into one inside heredocs** (found while patching files with inline
+    Python): write single backslashes in heredocs, or write the file with the Write tool. Also: a `&` after an `&&`
+    chain backgrounds the whole chain, including `export`s made earlier in it.
+66. **Earlier milestones touched by M2:** ideas.py's lock class got a `name` parameter (the exports lock reuses it,
+    the ideas lock is unchanged); add-idea.sh records "Claude Code" as the source when CLAUDECODE is set, for the NEW
+    line; tests/lib.sh fast_mode adds REELS_TICK_SECONDS and REELS_DUMMY_SECONDS; test-m1 section 7 runs the banner
+    with an empty queue because run.sh now processes the queue; log.sh builds its line with `printf -v` instead of a
+    command substitution (one fork less per line) and writes to fd 3 inside stages.
