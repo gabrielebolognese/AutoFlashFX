@@ -114,7 +114,7 @@ def slug_of(text: str, words: int = 5, max_len: int = 40) -> str:
 
 
 def state_path(run_dir: str) -> str:
-    return os.path.join(run_dir, "state.json")
+    return os.path.join(run_dir, "state.json").replace("\\", "/")  # one separator style in every message and log
 
 
 def load(run_dir: str) -> dict:

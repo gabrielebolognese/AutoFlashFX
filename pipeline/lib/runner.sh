@@ -17,6 +17,10 @@
 # REELS_POLL_SECONDS, REELS_STATUS_EVERY, REELS_TICK_SECONDS (literal seconds, never scaled), REELS_SLEEP_SCALE
 # (multiplies the configured waits; 0 logs the wait and does not sleep), REELS_CRASH_AT=assembled|moved (the
 # runner kills itself at that point of the export, for the crash tests).
+#
+# The runner stops on its own only through runner_systemic_stop (STOP line plus logs/STOPPED.md). A state.json that
+# cannot be read or written mid-run (OneDrive or an antivirus holding the file, a damaged file) goes through
+# runner_state: one retry after STATE_RETRY_SECONDS, then the systemic stop; the idea stays in ideas.txt.
 
 RUNNER_LOCKED=0
 CHILD_PID=""
@@ -24,6 +28,8 @@ IN_RUN=0
 RUN_DIR=""
 STOP_REQUESTED=0
 NEXT_PHASE=""; NEXT_STAGE=""; NEXT_LABEL=""; NEXT_ACTIVITY=""; NEXT_ATTEMPTS=""; NEXT_NUMBER=""
+STATE_OUT=""; STATE_RC=0        # the last runner_state result: its JSON and its exit code
+STATE_RETRY_SECONDS=3           # the wait before the one retry of a failed state.py call (scaled by runner_sleep)
 
 # ------------------------------------------------------------------ setup
 
@@ -96,28 +102,61 @@ runner_sleep() {  # runner_sleep <seconds> [what]: scaled by REELS_SLEEP_SCALE; 
   sleep "$s"
 }
 
-runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>"
+runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>" ["<fix 2>" ...]: numbered fix lines
+  local title="$1" diagnosis="$2" n=1 fix
+  shift 2
   mkdir -p "$REELS_LOGS"
   {
-    echo "# Runner stopped: $1"
+    echo "# Runner stopped: $title"
     echo
     printf 'Written %(%Y-%m-%d %H:%M)T by run.sh. The runner stops on its own only for a systemic failure.\n' -1
     echo "This file is removed at the next successful start."
     echo
     echo "## Diagnosis"
-    echo "- $2"
+    echo "- $diagnosis"
     echo
     echo "## Fix"
-    echo "1. $3"
+    for fix in "$@"; do echo "$n. $fix"; n=$((n + 1)); done
     echo
     echo "Then start the runner again: bash run.sh"
   } > "$REELS_LOGS/STOPPED.md"
 }
 
-runner_systemic_stop() {  # runner_systemic_stop "<reason>" "<fix>"
-  runner_write_stopped "$1" "$1" "$2"
-  say STOP "systemic failure: $1. See logs/STOPPED.md"
+runner_systemic_stop() {  # runner_systemic_stop "<reason>" "<fix>" ["<fix 2>" ...]
+  local reason="$1"
+  shift
+  runner_write_stopped "$reason" "$reason" "$@"
+  say STOP "systemic failure: $reason. See logs/STOPPED.md"
   STOP_REQUESTED=1
+}
+
+runner_state() {  # runner_state <read|update> "<ok exit codes>" <state command...> -> 0 (STATE_OUT holds the JSON,
+                  # STATE_RC the exit code) or 2 after the systemic stop.
+  # A state.py call that fails twice, with a short wait in between (OneDrive and antivirus scans hold files briefly;
+  # state.py's own save already retries its rename for a second), means the runner can no longer trust
+  # runs/<id>/state.json: going on could repeat a stage or duplicate an export, and blocking the idea would hide an
+  # environment problem that hits every idea. So it is a systemic stop (BUILD_SPEC.md section 4): ERROR and STOP
+  # lines, logs/STOPPED.md with the file and the fix, exit 3; the idea stays in ideas.txt.
+  local what="$1" ok="$2" out="$REELS_LOGS/.state.out" err="$REELS_LOGS/.state.err" try detail
+  shift 2
+  for try in 1 2; do
+    "$@" >"$out" 2>"$err"; STATE_RC=$?
+    case " $ok " in
+      *" $STATE_RC "*) STATE_OUT="$(cat "$out" 2>/dev/null)"; return 0 ;;
+    esac
+    # the last stderr line, without the tool name and with the run folder in its short form
+    detail="$(grep -v '^[[:space:]]*$' "$err" 2>/dev/null | tail -n 1 | tr -d '\r')"
+    detail="${detail#state.py: }"; detail="${detail//"$RUN_DIR"/runs/$RUN_ID}"; detail="${detail:0:160}"
+    [ -n "$detail" ] || detail="no output from state.py (exit $STATE_RC)"
+    [ "$try" = 1 ] || break
+    say WARN "cannot $what runs/$RUN_ID/state.json ($detail), trying again in ${STATE_RETRY_SECONDS}s"
+    runner_sleep "$STATE_RETRY_SECONDS" "state.json retry"
+  done
+  say ERROR "cannot $what runs/$RUN_ID/state.json: $detail"
+  runner_systemic_stop "cannot $what runs/$RUN_ID/state.json ($detail)" \
+    "If the file was only busy (OneDrive syncing it, an antivirus scan, an editor holding it): close whatever holds it, or pause OneDrive, and start the runner again. The run resumes where it stopped." \
+    "If state.json itself is damaged (it is not valid JSON any more): the next start skips this run folder and starts the idea over in a new one, because the idea is still in ideas.txt. Move runs/$RUN_ID out of runs/ (for example into runs/_broken/) when you no longer need it."
+  return 2
 }
 
 # ------------------------------------------------------------------ stages
@@ -174,11 +213,12 @@ runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> -
     return 2
   fi
   mkdir -p "$RUN_DIR/$stage"
-  runner_adopt_orphan "$stage" "$label" "$activity" && return $?
+  runner_adopt_orphan "$stage" "$label" "$activity"; rc=$?
+  [ "$rc" = 3 ] || return "$rc"   # 3: no orphan (or it left nothing valid), run the stage; else the stage's result
   if [ "$attempts" -gt 0 ]; then
     say INFO "$label $activity: attempt $((attempts + 1)) (the previous one was interrupted)"
   fi
-  state_stage_start "$RUN_DIR" "$stage" >/dev/null || { say ERROR "cannot update $RUN_DIR/state.json"; return 2; }
+  runner_state update 0 state_stage_start "$RUN_DIR" "$stage" || return 2
   STAGE_STARTED="$EPOCHSECONDS"
   set_activity "$activity"
   REELS_SAY_FD=3 bash "$script" "$RUN_DIR" 3>&1 >>"$RUN_DIR/$stage/stage.log" 2>&1 &
@@ -190,13 +230,15 @@ runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> -
   runner_handle_stage_exit "$stage" "$label" "$activity" "$rc"
 }
 
-runner_adopt_orphan() {  # a stage process left by a killed runner: wait for it, keep its outputs. Returns 1 when none.
+runner_adopt_orphan() {  # a stage process left by a killed runner: wait for it, keep its outputs.
+                         # Returns 3 when the stage must run (no orphan, or it left no valid output); otherwise the
+                         # stage's result from runner_handle_stage_exit (0 continue, 1 run ended, 2 stop).
   local stage="$1" label="$2" activity="$3" pid="" rest
-  [ -f "$RUN_DIR/$stage/.pid" ] || return 1
+  [ -f "$RUN_DIR/$stage/.pid" ] || return 3
   { read -r pid rest < "$RUN_DIR/$stage/.pid"; } 2>/dev/null || pid=""
   if [ -z "$pid" ] || ! ps -p "$pid" >/dev/null 2>&1; then
     rm -f "$RUN_DIR/$stage/.pid"
-    return 1
+    return 3
   fi
   say WARN "$label $activity still runs from the previous runner (pid $pid), waiting for it instead of starting it twice"
   STAGE_STARTED="$EPOCHSECONDS"
@@ -212,14 +254,15 @@ runner_adopt_orphan() {  # a stage process left by a killed runner: wait for it,
     return $?
   fi
   say INFO "$label $activity: the orphaned process left no valid output, running the stage again"
-  return 1
+  return 3
 }
 
-runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run ended
+runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run ended, 2 stop (state.json unusable)
   local stage="$1" label="$2" activity="$3" rc="$4" res src seconds next_phase next_stage next_activity reason
   case "$rc" in
     0)
-      res="$(state_stage_done "$RUN_DIR" "$stage" 0)"; src=$?
+      runner_state update "0 5" state_stage_done "$RUN_DIR" "$stage" 0 || return 2   # 5: the output did not validate
+      res="$STATE_OUT"; src="$STATE_RC"
       if [ "$src" = 0 ]; then
         local issues_fixed="" issues_open=""
         # NEXT_* tell the loop what follows, so it does not have to ask state.py again
@@ -378,7 +421,8 @@ runner_process_run() {  # -> 0 run ended (any outcome), 2 systemic stop requeste
       nx_attempts="$NEXT_ATTEMPTS"; nx_number="$NEXT_NUMBER"
       NEXT_PHASE=""
     else
-      nxt="$(state_next "$RUN_DIR")" || { say ERROR "cannot read $RUN_DIR/state.json"; rc=2; break; }
+      runner_state read 0 state_next "$RUN_DIR" || { rc=2; break; }
+      nxt="$STATE_OUT"
       eval "$(json_eval "$nxt" phase=phase nx_stage=stage nx_label=label nx_activity=activity nx_attempts=attempts nx_number=number)"
     fi
     case "${phase:-finished}" in
@@ -458,8 +502,13 @@ runner_main() {
     runner_tick
     if runner_pick_run; then
       runner_process_run; rc=$?
-      [ "$STOP_REQUESTED" = 1 ] && return 3
-      [ "$rc" = 2 ] && return 3
+      if [ "$rc" = 2 ] || [ "$STOP_REQUESTED" = 1 ]; then
+        # the runner never exits on its own without a STOP line and logs/STOPPED.md (BUILD_SPEC.md section 4): a
+        # stop that runner_systemic_stop did not write gets a generic diagnosis here
+        [ "$STOP_REQUESTED" = 1 ] || runner_systemic_stop "the run ${RUN_DIR:-?} could not continue (the ERROR line before this one in logs/runner.log says why)" \
+          "read the last lines of logs/runner.log and fix what they name"
+        return 3
+      fi
       continue
     fi
     if [ -z "$IDLE_SINCE" ]; then

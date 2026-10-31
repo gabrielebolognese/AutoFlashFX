@@ -260,5 +260,19 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     line; tests/lib.sh fast_mode adds REELS_TICK_SECONDS and REELS_DUMMY_SECONDS; test-m1 section 7 runs the banner
     with an empty queue because run.sh now processes the queue; log.sh builds its line with `printf -v` instead of a
     command substitution (one fork less per line) and writes to fd 3 inside stages.
+67. **A state.json that cannot be read or written mid-run is a systemic stop, after one retry** (M2 review 1, fix 1).
+    Every state.py call on the stage path (`stage-start`, `stage-done`, `next`) goes through `runner_state` in
+    runner.sh: an exit code outside the expected set (0, plus 5 for `stage-done`, which is a validation result and
+    not a failure) is retried once after STATE_RETRY_SECONDS (3 s, scaled like the configured waits; OneDrive and
+    antivirus scans hold files briefly, and state.py's own save already retries its rename for a second), then the
+    runner prints WARN, ERROR and STOP, writes logs/STOPPED.md naming runs/<id>/state.json, state.py's message and
+    the two fixes (unlock the file and restart, or move the folder out of runs/), and exits 3. The idea stays in
+    ideas.txt. Blocking the idea instead would hide an environment problem that hits every idea, and going on
+    without a trusted state.json could repeat a stage or duplicate an export. `runner_main` adds a guard: a run
+    that ends with "stop" without STOPPED.md gets a generic one, so the runner never exits on its own without a
+    diagnosis (BUILD_SPEC.md section 4). `runner_adopt_orphan` now returns 3 for "run the stage" so the stage's
+    real result (0 continue, 1 run ended, 2 stop) propagates; before, a run that ended inside the orphan path ran
+    the stage once more. `runner_systemic_stop` takes several fix lines, numbered in STOPPED.md. state.py's
+    `state_path` uses forward slashes, so its messages match the runner's paths in the logs.
 
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.

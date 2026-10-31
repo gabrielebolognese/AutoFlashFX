@@ -12,7 +12,9 @@
 #   5. drop, code error (blocked), FLAG and an invalid output: history, blocked.txt, numbering without gaps
 #   6. forever mode: IDLE lines, the NEW line from add-idea.sh, a second runner refused, SIGTERM
 #   7. a stage that is not built yet stops the runner (STOPPED.md) and keeps the idea; runner-status
-# Runtime: about 6 minutes (16 dummy stages cost about 2 s each in runner overhead).
+#   8. state.json damaged mid-run: one retry, then the systemic stop (ERROR, STOP, STOPPED.md with the run folder
+#      and the fix, exit 3, the idea kept), seen at stage-done and at stage-start (through the orphan wait)
+# Runtime: about 7 minutes (16 dummy stages cost about 2 s each in runner overhead).
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$REPO_DIR"
@@ -386,5 +388,84 @@ assert_rc 0 $rc "a later start with dummy stages resumes the kept run"
 assert_grep "removed logs/STOPPED.md" "$SANDBOX/stop2.out" "the successful start removes STOPPED.md"
 assert_grep "resumed at researching facts, 0 stages done" "$SANDBOX/stop2.out" "the kept run is resumed from its first stage"
 assert_grep "${ts_regex}DONE   exported #1" "$SANDBOX/stop2.out" "and exported"
+
+# ----------------------------------------------------------------------------------------------------------------
+section "8. state.json damaged mid-run: one retry, then the systemic stop with STOPPED.md"
+# The damage lands while the gate's dummy runs (its .pid exists), a window in which nothing writes state.json; the
+# runner meets it at stage-done. REELS_STATUS_EVERY=60 keeps the heartbeat (and its state touch) out of the window.
+sandbox_init
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+REELS_DUMMY_SECONDS=2 REELS_STATUS_EVERY=60 runner_bg "$SANDBOX/state1.out" --once
+OUT="$SANDBOX/state1.out"
+if wait_for 'STEP   expanding idea done' "$SANDBOX/logs/runner.log" 90 \
+   && RD="$(run_dirs | head -n 1)" && wait_for '^[0-9]+' "$RD/03-gate/.pid" 10; then
+  RID="$(basename "$RD")"
+  printf 'not json\n' > "$RD/state.json"
+  lp="$(lock_pid)"
+  wait_gone "$lp" 60 || kill -9 "$lp" $RUNNER_JOB 2>/dev/null
+  wait $RUNNER_JOB 2>/dev/null; rc=$?
+  assert_rc 3 $rc "the runner stops with exit 3 (a systemic stop, not a silent exit)"
+  assert_grep "${ts_regex}WARN   cannot update runs/$RID/state.json \(cannot read runs/$RID/state.json: Expecting value: line 1 column 1 \(char 0\)\), trying again in [0-9]+s$" "$OUT" "WARN line: the failed state call is retried once, with state.py's message in short form"
+  assert_grep "${ts_regex}ERROR  cannot update runs/$RID/state.json: cannot read runs/$RID/state.json: Expecting value: line 1 column 1 \(char 0\)$" "$OUT" "ERROR line after the retry"
+  assert_grep "${ts_regex}STOP   systemic failure: cannot update runs/$RID/state.json \(.*\)\. See logs/STOPPED.md$" "$OUT" "STOP line"
+  assert_eq "$(grep -c -E "${ts_regex}(ERROR|STOP) " "$OUT")" "2" "one ERROR line and one STOP line, no more"
+  assert_not_grep "${ts_regex}(BLOCK|DROP|DONE|NEXT) |STEP   checking idea" "$OUT" "the run neither goes on nor ends as blocked, dropped or exported"
+  assert_file "$SANDBOX/logs/STOPPED.md" "STOPPED.md written"
+  assert_grep "^- cannot update runs/$RID/state.json \(cannot read runs/$RID/state.json: Expecting value: line 1 column 1 \(char 0\)\)$" "$SANDBOX/logs/STOPPED.md" "STOPPED.md names the run folder and the error in its diagnosis"
+  assert_grep "^1\. If the file was only busy .*OneDrive.*start the runner again" "$SANDBOX/logs/STOPPED.md" "STOPPED.md fix 1: unlock the file and restart"
+  assert_grep "^2\. If state.json itself is damaged .*runs/$RID out of runs/ .*runs/_broken/" "$SANDBOX/logs/STOPPED.md" "STOPPED.md fix 2: move the run folder out of runs/"
+  assert_grep "^\[[0-9:]+\] STOP   systemic failure: cannot update runs/$RID/state.json" "$SANDBOX/logs/status.txt" "status.txt holds the STOP line"
+  assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "1" "the idea stays in ideas.txt"
+  assert_no_file "$SANDBOX/logs/history.txt" "no history line"
+  assert_no_file "$SANDBOX/.locks/runner" "the runner lock is released"
+  status_out="$(bash "$REPO_DIR/pipeline/bin/runner-status" 3)"
+  assert_true "runner-status: says the runner is not running" grep -q "^runner: not running" <<<"$status_out"
+  assert_true "runner-status: shows the STOP status line" grep -q "^status: \[.*STOP   systemic failure: cannot update" <<<"$status_out"
+  assert_true "runner-status: mentions STOPPED.md" grep -q "^STOPPED: logs/STOPPED.md exists" <<<"$status_out"
+else
+  fail "the runner never reached the gate's dummy (see $OUT)"; cat "$OUT"
+  kill -9 "$(lock_pid)" $RUNNER_JOB 2>/dev/null
+fi
+
+# The same failure at the start of a stage (runner_run_stage), reached through the orphan wait: a stage process
+# left by a killed runner is waited for instead of being started twice (DECISIONS.md 54). A sleep plays the orphan.
+sandbox_init
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+ORPHAN=""
+REELS_DUMMY_SECONDS=3 REELS_STATUS_EVERY=60 runner_bg "$SANDBOX/state2.out" --once
+OUT="$SANDBOX/state2.out"
+if wait_for 'START  idea 1/1' "$SANDBOX/logs/runner.log" 60; then
+  RD="$(run_dirs | head -n 1)"; RID="$(basename "$RD")"
+  sleep 120 & ORPHAN=$!
+  printf '%s %s\n' "$ORPHAN" "$EPOCHSECONDS" > "$RD/02-expansion/.pid"
+  if wait_for "WARN   S2 expanding idea still runs from the previous runner \(pid $ORPHAN\), waiting for it instead of starting it twice" "$SANDBOX/logs/runner.log" 30; then
+    pass "an orphaned stage process is waited for instead of being started twice"
+    sleep 1
+    assert_no_file "$RD/02-expansion/stage.log" "the stage is not started while the orphan lives"
+    printf 'not json\n' > "$RD/state.json"
+    kill "$ORPHAN" 2>/dev/null; wait "$ORPHAN" 2>/dev/null
+    lp="$(lock_pid)"
+    wait_gone "$lp" 60 || kill -9 "$lp" $RUNNER_JOB 2>/dev/null
+    wait $RUNNER_JOB 2>/dev/null; rc=$?
+    assert_rc 3 $rc "the runner stops with exit 3"
+    assert_grep "${ts_regex}INFO   S2 expanding idea: the orphaned process left no valid output, running the stage again$" "$OUT" "the orphan's outputs are judged before the stage runs again"
+    assert_grep "${ts_regex}WARN   cannot update runs/$RID/state.json \(.*\), trying again in [0-9]+s$" "$OUT" "WARN line: the stage start is retried once"
+    assert_grep "${ts_regex}ERROR  cannot update runs/$RID/state.json: " "$OUT" "ERROR line: the stage start fails"
+    assert_grep "${ts_regex}STOP   systemic failure: cannot update runs/$RID/state.json \(.*\)\. See logs/STOPPED.md$" "$OUT" "STOP line"
+    assert_not_grep "expanding idea done|${ts_regex}(BLOCK|DROP|DONE) " "$OUT" "the stage never ran and the run did not end another way"
+    assert_no_file "$RD/02-expansion/stage.log" "no stage.log: the stage was never started"
+    assert_file "$SANDBOX/logs/STOPPED.md" "STOPPED.md written"
+    assert_grep "runs/$RID/state.json" "$SANDBOX/logs/STOPPED.md" "STOPPED.md names the run folder"
+    assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "1" "the idea stays in ideas.txt"
+    assert_no_file "$SANDBOX/.locks/runner" "the runner lock is released"
+  else
+    fail "the runner did not wait for the planted orphan (see $OUT)"; cat "$OUT"
+    kill -9 "$(lock_pid)" $RUNNER_JOB 2>/dev/null
+  fi
+else
+  fail "the runner never started the run (see $OUT)"; cat "$OUT"
+  kill -9 "$(lock_pid)" $RUNNER_JOB 2>/dev/null
+fi
+if [ -n "$ORPHAN" ]; then kill "$ORPHAN" 2>/dev/null; wait "$ORPHAN" 2>/dev/null; fi
 
 test_summary
