@@ -43,7 +43,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   or parentheses.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and
   transcription use `.venv-tts/Scripts/python.exe` (Python 3.11).
-- **Shell:** Git Bash. Scripts use LF endings (.gitattributes) and GNU date.
+- **Shell:** Git Bash. Every text file is LF (.gitattributes: `* text=auto eol=lf`); scripts use GNU date.
+- **Tool limits:** the Bash tool's command string fails above roughly 8 KB here, so write long files with the
+  Write tool instead of a heredoc. Check line endings with Python on bytes, not with grep.
 
 ## Skills
 The `/ig-*` skills from github.com/Jakeschincariol/instagram-agent-skill are installed globally in `~/.claude/skills/`
