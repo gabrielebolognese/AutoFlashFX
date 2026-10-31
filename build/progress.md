@@ -9,9 +9,15 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 - Notes: see build/M0/report.md.
 
 ## M1 Skeleton
-- Status: not started
-- Test command: `bash pipeline/tests/test-m1.sh` (planned)
-- Notes:
+- Status: done (2026-10-31). 96 checks pass in about 35 seconds, no model calls.
+- Test command: `bash pipeline/tests/test-m1.sh` (plus `bash pipeline/tests/test-no-emdash.sh`;
+  `bash pipeline/tests/run-all.sh` runs every test that exists)
+- Notes: config.json, ideas.txt (the test idea), library/hooks.txt (moved, unchanged), library/profile headers,
+  pipeline/lib/{common,log,config,ideas,preflight}.sh, pipeline/lib/ideas.py, pipeline/bin/{add-idea.sh,
+  validate-json, preflight, setup-python}, run.sh (preflight and banner; the loop arrives in M2), the test harness
+  pipeline/tests/lib.sh and the parser fixtures. Windows gotchas are recorded in DECISIONS.md 38 to 40 (mixed
+  paths through cygpath -m, Python output forced to LF). add-idea.sh records additions in logs/.new-ideas for the
+  M2 NEW line. Report: build/M1/report.md.
 
 ## M2 Runner core and terminal output
 - Status: not started

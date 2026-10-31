@@ -132,3 +132,63 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 37. **Big files are written with the Write tool, not heredocs.** On this Windows setup the Bash tool's command
     string fails above roughly 8 KB (ENAMETOOLONG or a truncated heredoc). Small edits with sed and short heredocs
     are fine.
+
+## M1 (2026-10-31)
+
+### Paths and interpreters
+38. **Paths cross into Python in mixed form (C:/Users/...).** Git Bash converts command-line arguments that look
+    like POSIX paths (/c/...) before a Windows program sees them, but it does not convert environment variables.
+    common.sh therefore exports REELS_REPO, REELS_ROOT and friends through `cygpath -m`, a form both bash and
+    Windows Python accept, and ideas.py converts a /c/... argument itself (winpath) as a second net.
+39. **Python output is forced to LF and UTF-8.** Windows Python writes CRLF to pipes by default and uses cp1252
+    when piped. Every helper calls `sys.stdout.reconfigure(encoding="utf-8", newline="\n")` (the inline snippets
+    in config.sh too) and common.sh exports PYTHONUTF8=1. Bash command substitution happens to strip a trailing
+    CR, but `while read` loops over Python output would not, so the fix is at the source. Correction to item 36:
+    the user's files may stay CRLF in the working copy; every reader of a user-edited text file (ideas.py now,
+    the hooks, profile, tweaks and overrides readers later) strips CR itself.
+40. **LANG defaults to C.UTF-8** in common.sh and the test harness when it is unset (the Bash tool starts bash
+    without a locale), so `${#text}` and `${text:0:60}` count characters, not bytes.
+
+### Queue (ideas.txt)
+41. **Nested or unclosed braces:** a second { before the } restarts the block (the earlier, unclosed brace becomes
+    a note) and a warning goes to stderr; a } without an open block is a note; {} is ignored. The spec forbids
+    nesting, so this only decides what happens on a typo, and restarting protects the common case (a brace that
+    was never closed must not swallow the ideas after it).
+42. **Writes keep the file's newline style** (a CRLF file is written back as CRLF, LF otherwise) and keep every
+    note outside braces; a removed block that stood alone on its lines takes those lines with it. UTF-8 with or
+    without BOM is read; the BOM is not written back.
+43. **Lock details:** `.locks/ideas` holds a `pid` file (pid and epoch); waiters poll every 50 ms for up to
+    runner.lock_wait_seconds (30); a lock whose directory mtime is older than runner.lock_stale_seconds (60) is
+    removed after a second mtime check (a fresh lock taken in between is left alone) and the removal is logged as
+    a WARN line in runner.log. The remaining race (two breakers in the same microseconds) is accepted on a
+    single-user machine.
+44. **Similarity fallback** uses difflib.SequenceMatcher on the normalized texts with the spec's 0.9 threshold;
+    the runner passes the text it started with on stdin (`--text-stdin`); exit 3 and a WARN line when nothing
+    matches, and the file is not rewritten.
+45. **add-idea.sh records every addition in logs/.new-ideas** (epoch, id, queue size, source) and prints its own
+    confirmation line; the runner (M2) reads and clears that file to print the NEW line, and clears it at startup
+    because the banner already shows the queue (the M0 review's suggestion 5). Text without braces given to
+    add-idea.sh is wrapped in braces, so a note pasted without them still becomes one idea.
+46. **ideas.py exit codes:** 0 ok, 1 usage, 2 file error, 3 not found or empty queue, 4 lock timeout. JSON on
+    stdout unless --plain, so M2's state code can read `first` directly.
+
+### Config and preflight
+47. **Effort levels per role:** high for research, script, visual_director, builder and reviewer; medium for
+    gate, judge, qa, cut, checks and fixer; xhigh for the two fable escalations; low for indexer and probe.
+    config.json also carries `version` (shown in the banner), `runner.lock_stale_seconds`,
+    `runner.lock_wait_seconds`, `runner.min_free_gb`, `lengths.default_s` and `lengths.list_s`. The tts engine
+    parameters and the sfx base gains are starting values for M7, M8 and M11 to tune.
+48. **preflight.require entries** have a `check` type (command, python_module, file, disk, shell), an optional
+    `min_version` (the first X.Y[.Z] of `--version`, compared with sort -V), `in_root` for files under the state
+    root, `level: warn` for soft checks (the gh login) and a `fix` string that goes verbatim into logs/STOPPED.md.
+    A hard failure makes preflight_run return 3 and run.sh exits with it. A successful preflight deletes a
+    leftover logs/STOPPED.md (the runner is running, so it is not stopped) and says so.
+49. **log.sh ships in M1** with `say` only (the format of spec section 6, colors on a terminal, runner.log append,
+    status.txt overwrite for every tag); M2 adds the heartbeat and the per-tag status rules. READY, INFO, QUEUE and
+    WARN are extra tags for the startup lines, next to the spec's list.
+50. **Tests:** run-all.sh runs every `test-*.sh` (the milestone tests in order, then the unit tests), so
+    test-limits.sh (M3) and test-no-emdash.sh are always included (the M0 review's suggestion 6);
+    `pipeline/tests/fixtures/ideas/crlf.txt` is marked `-text` in .gitattributes so git never normalizes its CRLF
+    bytes; `library/voice/` is ignored as `library/voice/*` with README.txt re-included (suggestion 9).
+51. **Folders git cannot hold empty** (motion-lib/candidates, motion-lib/gallery, golden, pipeline/stages,
+    pipeline/vendor, pipeline/knowledge) carry a .gitkeep until their milestone fills them.
