@@ -5,12 +5,16 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M2 Runner core and terminal output: done (2026-10-31). Next: M3 Error system. The build is driven by
-  `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
+- M3 Error system: done (2026-10-31). Next: M4 Research, expansion, gate, angle (S1 to S4). The build is driven
+  by `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
   folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh, pipeline/bin/runner-status,
-  the tests in pipeline/tests/. Run every test with `bash pipeline/tests/run-all.sh` (about 7 minutes).
+  the error system (pipeline/lib/ai.sh for every model call, limits.py and limits.sh for usage limits, errors.py
+  for the classifier, review.sh with pipeline/bin/review-cycle for the reviewer and fixer loop, the prompts in
+  pipeline/stages/_prompts/, pipeline/knowledge/known-issues.md), the tests in pipeline/tests/ (with a fake claude
+  in tests/fakes/). Run every test with `bash pipeline/tests/run-all.sh` (about 25 minutes; test-m3 section 4
+  makes a few real model calls).
 - The real stages (run.sh in each stage folder) arrive from M4 on. `REELS_DUMMY=all bash run.sh --once` runs the
   whole loop with dummy stages; `bash run.sh` alone stops with logs/STOPPED.md until the stages exist.
 
@@ -28,7 +32,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
   instagram-agent-skill), knowledge/known-issues.md, tests/.
 - `runs/`: one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
-  its outputs, stage.log and .done). `logs/`: runner.log, status.txt, history.txt, blocked.txt, limits.log,
+  its outputs, stage.log, .done and calls/ with every model call's raw output; errors/E<n>.md and fixes/F<n>.md
+  from the review and fix loop). `logs/`: runner.log, status.txt, history.txt, blocked.txt, limits.log,
   suggested-ideas.txt, sfx-usage.json, STOPPED.md.
 - `tools/analyze_refs.py`: reference video analyzer. `build/`, `build-runner.sh`: the automated build (temporary).
 
@@ -41,7 +46,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   ideas.txt and writes dummy files into exports/, so use it in a copy or re-add the idea afterwards).
 - `bash pipeline/bin/runner-status` prints whether a runner is alive, the latest status line and the log tail.
 - The terminal lines: REEL (heartbeat every 5 minutes), IDLE, START, STEP, DONE, DROP, BLOCK, NEW, NEXT, FLAG,
-  STOP; the error lines (ERROR, FIXED, LIMIT, RESUME, RETRY, ESCAL) arrive with M3.
+  STOP, and the error lines LIMIT, RESUME, RETRY, ERROR, FIXED, ESCAL.
 
 ## Rules for Claude Code sessions in this folder
 - **Braces rule:** when the user's message contains text in `{...}`, append each braced block to ideas.txt by
@@ -53,14 +58,20 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   add-idea.sh). The runner's own fixer may edit only `pipeline/` and `motion-lib/candidates/`.
 - **Reading the logs:** `logs/history.txt` has one line per finished idea (`date | idea | exported N`, `dropped:
   reason` or `blocked: reason`); `logs/blocked.txt` lists blocked ideas with the reason so they can be re-added;
-  `logs/STOPPED.md` exists only after a systemic stop and contains the diagnosis and the exact fix.
+  `logs/STOPPED.md` exists only after a systemic stop and contains the diagnosis and the exact fix;
+  `logs/limits.log` has every usage limit wait with its target time.
+- **Automatic fixes (BUILD_SPEC.md 4.2):** a code error in a stage is reviewed and fixed by the runner itself: the
+  report is `runs/<id>/errors/E<n>.md`, the verdict `runs/<id>/fixes/F<n>.md`, the fix a commit `autofix(<stage>):
+  ...` plus a line in pipeline/knowledge/known-issues.md. The fixer may edit only pipeline/ and
+  motion-lib/candidates/. Usage limits and temporary errors are waited out inside the stage (LIMIT, RETRY lines).
 - **Never write an em dash** in any file, prompt, caption, script or terminal message. Use commas, colons, periods
   or parentheses.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and
   transcription use `.venv-tts/Scripts/python.exe` (Python 3.11).
 - **Shell:** Git Bash. Every text file is LF (.gitattributes: `* text=auto eol=lf`); scripts use GNU date.
 - **Tool limits:** the Bash tool's command string fails above roughly 8 KB here, so write long files with the
-  Write tool instead of a heredoc. Check line endings with Python on bytes, not with grep.
+  Write tool instead of a heredoc; the tool also collapses `\\` to `\` inside heredocs. Check line endings with
+  Python on bytes, not with grep. A `C:/...` entry in PATH is invisible to Git Bash: use `/c/...`.
 - **Windows paths and Python output:** every script sources pipeline/lib/common.sh, which exports the roots in
   `C:/...` form (cygpath -m) and PYTHONUTF8; environment variables are not path-converted by Git Bash, arguments
   are. Python helpers must print LF (`sys.stdout.reconfigure(newline="\n")`), because Windows Python writes CRLF

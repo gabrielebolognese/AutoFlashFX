@@ -41,9 +41,28 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   plain `say` calls (log.sh colors them already). Report: build/M2/report.md.
 
 ## M3 Error system
-- Status: not started
-- Test command: `bash pipeline/tests/test-m3.sh` (planned)
-- Notes:
+- Status: done (2026-10-31). 279 checks in about 10 minutes (one section calls the real Opus reviewer and Sonnet
+  fixer, about 2 minutes); the whole suite (M1, M2, M3, limits, em dash scan) passes in about 20 minutes.
+- Test command: `bash pipeline/tests/test-m3.sh` (10 to 20 minutes; section 4 calls the real Opus reviewer and
+  Sonnet fixer, `M3_SECTIONS="1 2 3 5 6 7 8"` runs everything else with the fake claude) plus
+  `bash pipeline/tests/test-limits.sh` (the parser and classifier units, seconds); `bash pipeline/tests/run-all.sh`
+  runs M1, M2, M3, limits and the em dash scan (about 25 minutes).
+- Notes: every model call goes through `ai()` in pipeline/lib/ai.sh (prompt on stdin, calls saved under
+  `<stage>/calls/`, the protected files denied and guarded by pipeline/lib/protect.py, the schema retry in the same
+  session, `--session KEY` for session ids in state.json). Usage limits: pipeline/lib/limits.py (Python zoneinfo,
+  because the Git Bash date has no zone database) and limits.sh (the wait in 60 s chunks, LIMIT and RESUME lines,
+  logs/limits.log, the probe loop). The classifier and the signature: pipeline/lib/errors.py and errors.sh
+  (transient backoff 60 s, 4 min, 16 min, then a code error). The review and fix loop: pipeline/lib/review.sh with
+  the child script pipeline/bin/review-cycle (E<n>.md, the Opus reviewer with structured output rendered as F<n>.md,
+  the Sonnet fixer bounded to pipeline/ and motion-lib/candidates/ by path rules plus pipeline/lib/treeguard.py, the
+  verify command, the known-issues line and the `autofix(<stage>): ...` commit, the restart note), the caps
+  (3 Opus cycles, the repeated signature shortcut, 1 Fable escalation), blocking with the reviewer's reason, the
+  systemic stop after 3 identical blocks (logs/.block-streak). Prompts and schemas in pipeline/stages/_prompts/.
+  Test knobs: REELS_SLEEP_SCALE=0 (fast-forward), REELS_PROBE_MAX, REELS_LIMIT_MARGIN, REELS_CLAUDE, the fake's
+  FAKE_CLAUDE_* (pipeline/tests/fakes/claude.py). Hooks for M4: `ai <role> <stage_dir> <prompt> --session A
+  --schema ...` returns 3 when the stored session is gone (reseed), `ai_restart_note <stage_dir>` gives the note
+  written after a fix, every stage's error lands in `<stage>/error.json` for the report. DECISIONS.md 69 to 87.
+  Report: build/M3/report.md.
 
 ## M4 Research, expansion, gate, angle (S1 to S4)
 - Status: not started

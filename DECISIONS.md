@@ -290,5 +290,128 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     unfinished) stay unlocked, because os.replace keeps every read whole. The lock file is never written and stays
     in the run folder.
 
+## M3 (2026-10-31)
+
+### Usage limits
+69. **The limit parser is Python with zoneinfo (pipeline/lib/limits.py), not GNU date.** The GNU date shipped with
+    Git Bash has no zoneinfo database (there is no /usr/share/zoneinfo), so `TZ=Europe/Rome date -d 3pm` silently
+    computes 3pm UTC: the spec's "timezone in parentheses" format would come out wrong by the zone's offset.
+    zoneinfo (Python 3.13 with the tzdata package) handles IANA names, UTC and a table of common abbreviations
+    (PST, EST, CET...), and aware datetime arithmetic keeps the wall clock across a DST change (checked:
+    "resets Mon 12:00am (America/New_York)" across the US switch of Nov 1, 2026). The default zone is
+    config runner.timezone, then the PC's zone (its Windows name mapped to an IANA zone, so DST rules apply),
+    then the fixed offset the C runtime reports. Rollovers: +1 day for a time, +7 days for a weekday, next year
+    for a date. "try again in 2 hours" (relative) is parsed too, as an extra. GNU date and bash's `printf %()T`
+    still format the times that are printed.
+70. **Limit detection only runs on failed calls** (non-zero exit, is_error, no JSON): a successful answer that
+    happens to contain the word "limit" is never a limit. The detector phrases: "hit your (session|weekly) limit",
+    "limit reached", "usage limit", "reached your limit", "out of extra usage"; the kind is weekly, session or
+    usage from the same line; the time comes from "resets ..." or an epoch after a "|" (13 digits = milliseconds).
+71. **The wait (limits.sh):** the target is the reset plus runner.limit_margin_seconds (120); the sleep goes in 60 s
+    chunks that re-read EPOCHSECONDS, and the activity text is rewritten each chunk ("waiting for usage limit
+    (weekly) until Mon 00:02 (5h41m left)"), so a PC that slept still resumes on time. REELS_SLEEP_SCALE=0 logs one
+    INFO line with the target and sleeps nothing (the fast-forward test mode of the spec); 0.001 keeps the chunks.
+    logs/limits.log gets one line per wait (kind, reset, target with the margin, the message) and one per resume;
+    an unparseable limit sleeps errors.unparsed_limit_sleep_seconds (1800), then probes the probe model ("reply
+    ok") every errors.probe_every_seconds (1800) until it answers, forever (REELS_PROBE_MAX caps it in tests).
+    The retry is the same command with the same --resume, so a resumed session stays the session.
+
+### ai() and the classifier
+72. **The prompt travels on stdin, never on the command line.** Windows has a 32 KB command line, and the CLI's
+    variadic flags (--allowedTools, --tools) swallow a positional prompt that follows them (seen in the first M3
+    probe: "Input must be provided either through stdin or as a prompt argument"). The JSON schema does go on the
+    command line, compacted and without its "$schema" and "$id" keys: the CLI's validator rejects a schema that
+    names the 2020-12 meta-schema ("no schema with key or ref"), while the local jsonschema validation of the
+    same files handles it. Every call saves NNN.json (raw output), NNN.err (stderr), NNN.meta (role, model,
+    effort, the exact command, timing, the class) and NNN.out.json (the structured output) under <stage>/calls/.
+73. **Tool lists:** `--tools` restricts the available set and the same names are pre-approved with
+    `--allowedTools` (so nothing prompts under --permission-prompts none); the fixer's Edit, Write and MultiEdit
+    are approved only under pipeline/** and motion-lib/candidates/**. The protected files are denied with
+    `--disallowedTools` rules (Edit, Write, MultiEdit and NotebookEdit on ideas.txt, library/**, styles/** and
+    exports/**; Read on .env and .env.*). Verified with a haiku probe in M3: the path rules deny the edit ("File
+    is in a directory that is denied by your permission settings") and Read outside the working directory works
+    in auto mode without --add-dir, so the reviewer needs no extra directory to read the run folder.
+74. **The second net, pipeline/lib/protect.py:** before every call a snapshot (sha1 and a copy) of the protected
+    text files (ideas.txt, .md .txt .json under library/ and styles/, minus voice recordings, refs, analysis,
+    caches and previews) and a listing of exports/; after the call a changed, added or removed file is restored
+    from the snapshot and the call becomes a code error naming the file. exports/ is only listed (renders are too
+    big to copy): a change there is reported, not restored.
+75. **Classes and order (pipeline/lib/errors.py):** ok (exit 0 and a JSON result with is_error false), limit,
+    transient, error. Transient: the api_error_status 408, 409, 425, 429, 5xx and 529; an exit 124 or 137 (the
+    call killed by `timeout -k 15 <timeouts.*>`); overloaded, rate limits, timeouts, ECONNRESET and the other
+    network errors, server errors and "temporarily unavailable" in the text; a retry-after value larger than the
+    backoff replaces it. The backoff table errors.transient_backoff_seconds is 60, 240, 960: three retries, the
+    fourth failure is a code error. Fatal texts (not logged in, invalid key, unknown option, unrecognized model,
+    billing) are code errors flagged `fatal`: a review cycle whose own call fails fatally blocks the idea at once,
+    because the reviewer would hit the same wall. "No conversation found with session ID" is `resume_failed`:
+    ai() returns 3 and clears the session stored by --session, so M4's session code can reseed.
+76. **ai() does the stage's one schema retry itself:** an answer whose structured output fails the schema is
+    re-asked once in the same session (`--resume` the answer's session id) with the validation errors; a second
+    failure is a code error ("output did not match the schema after one retry"). Stages therefore never implement
+    the retry of BUILD_SPEC.md section 5 themselves.
+77. **Sessions:** `--session KEY` reads sessions.KEY from state.json for `--resume` and stores the answer's session
+    id there; `--resume SID` is the raw form. The reseed fallback of spec section 3 (a new session seeded with
+    facts.md and friends) is M4's, built on the exit code 3.
+
+### The review and fix loop
+78. **Each review cycle runs in a child process** (pipeline/bin/review-cycle), started and polled by the runner
+    exactly like a stage (fd 3 for its say lines, errors/E<n>.log for its output), so the heartbeat keeps printing
+    during the model calls and a usage limit inside the reviewer's own call is handled by the same ai() code. The
+    cycle's verdict comes back in fixes/F<n>.result.json (outcome fixed, no_auto, failed or error).
+79. **E<n> numbering is per run** (E1, E2... across stages, the stage in the header `- stage:`); F<n> fixes E<n>.
+    "All previous error and fix files for this stage" are included as the first 40 lines of each earlier E file
+    (they contain the ones before them recursively, and the full files sit next to it), plus the earlier F files,
+    their outcomes and the last 40 lines of their verify logs, whole. "The git diff since the last successful
+    run" diffs pipeline/ and motion-lib/ from logs/.last-good-sha (HEAD at the last export, written by
+    runner_finalize, or HEAD at the first start) and adds the uncommitted changes. The input files are the run
+    folder's files (minus calls, errors and fixes) with their sizes, capped at 300.
+80. **The reviewer and the fixer answer with structured output** (pipeline/stages/_prompts/reviewer.schema.json
+    and fixer.schema.json), and F<n>.md is rendered from the verdict, so the five parts (root cause, class,
+    changes, verify command, auto_apply) are always present and in the same place. The reviewer has
+    config review.reviewer_tools (Read, Glob, Grep, WebSearch, WebFetch) and gets E<n>.md and known-issues.md
+    inline in its prompt; the escalation reviewer gets the same prompt plus an escalation note. The fixer does
+    not commit: review-cycle runs the verify command itself (timeouts.verify_seconds), appends the known-issues
+    line `- <date> | <stage> | <symptom -> fix> (F<n>, runs/<id>)` and makes one `autofix(<stage>): <summary>`
+    commit holding the code change and the line (a sha in the line would not exist yet). When the fixer changed
+    nothing but the verify passes, the restart still happens (with an empty commit field).
+81. **The caps, precisely:** `repeats` counts consecutive stage failures with the same signature, the first one
+    included, so a fix that leaves the error unchanged escalates after one Opus cycle ("skip the remaining Opus
+    cycles" when the signature appears errors.repeated_signature_skip = 2 times in a row); a failed verification
+    counts as a used cycle but not as a repeat (the stage did not run); after the escalation cycle any failure
+    blocks. A verdict with auto_apply no blocks at once with "<class>: <root cause>. Needs you: <user action>".
+82. **The block streak** (logs/.block-streak: signature, count, label) counts only code-error blocks; an export
+    or a drop clears it, a quality block (a stage's exit 20) leaves it alone, and a systemic stop clears it so the
+    next start after the user's fix begins fresh. The third identical block goes to blocked.txt like the others,
+    then the STOP line and logs/STOPPED.md (the error, the F files to read, how to re-add the ideas) and the
+    runner exits 3 without starting the next idea.
+83. **The working tree guard** (pipeline/lib/treeguard.py) protects the user's uncommitted work from the fixer:
+    `git status` with content hashes before the fixer call and copies of the modified or untracked files outside
+    the allowed paths; afterwards a file changed outside pipeline/ and motion-lib/candidates/ goes back (a tracked
+    file to its copy or to HEAD, a new file is deleted); nothing already modified before the call is reverted to
+    HEAD. Side effect seen in the tests: any file written inside the repo during the fixer call is put back too,
+    so the fake claude's log lives outside the sandbox.
+84. **Restart after a fix:** the runner writes <stage>/restart-note.md (what failed, which fix, which commit); a
+    stage that resumes a model session reads and removes it with `ai_restart_note` (M4+); the INFO line reads
+    "attempt N after the fix" instead of "(the previous one was interrupted)". A failed export goes through the
+    same loop (stage 14-export, the export command in the report) and is tried again after a fix.
+
+### Config, tests and Windows notes
+85. **Config additions:** `errors` (transient_backoff_seconds, unparsed_limit_sleep_seconds, probe_every_seconds,
+    repeated_signature_skip, log_tail_lines), `timeouts` (model_call_seconds 3600, reviewer_seconds 2400,
+    fixer_seconds 2400, verify_seconds 900, probe_seconds 300; later milestones add tts, align and render) and
+    `review` (reviewer_tools, fixer_tools, fixer_paths, protected_paths). Test knobs: REELS_SLEEP_SCALE,
+    REELS_PROBE_MAX, REELS_LIMIT_MARGIN, REELS_CLAUDE (the binary) and the FAKE_CLAUDE_* variables of the fake.
+86. **The fake claude** (pipeline/tests/fakes/claude, a bash shim over claude.py) answers by mode: ok, echo, every
+    limit format on three channels (the JSON result, stderr, plain text), transient failures with a counter,
+    hang (for the timeout), bad-json (the schema retry), fatal, resume-missing, tamper (the protected files guard)
+    and the reviewer and fixer verdicts by policy (FAKE_CLAUDE_REVIEW yes, no, verify-fails; FAKE_CLAUDE_FIX ok,
+    fail), detected from the "# Role:" line of the prompt; a script file gives one mode per call. It logs every
+    call (flags, prompt head, model, the limit's moment) so the tests assert the exact command line. Real models
+    run only in test-m3 section 4 (the planted bug), runnable alone with M3_SECTIONS=4.
+87. **Windows notes found in M3:** a `C:/...` entry in PATH is invisible to Git Bash (use `/c/...`: the first fake
+    probe silently reached the real CLI); the fake takes `/c/...` paths in its environment variables for the
+    same reason; `$(( 008 + 1 ))` is an octal error in bash, so call numbers are read with `10#`; the Bash tool
+    collapses `\\` to `\` inside heredocs, so inline Python that needs a backslash is written to a file first.
+
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
 2026-10-31: no fallback voice. Only Gabriele's cloned voice; failures retry, then block the idea.
