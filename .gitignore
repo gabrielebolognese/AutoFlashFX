@@ -1,0 +1,59 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.venv-tts/
+
+# Node (HyperFrames, Puppeteer)
+node_modules/
+out/
+dist/
+.hyperframes/
+.env
+.env.*
+
+# Runner state (BUILD_SPEC.md section 1)
+runs/
+exports/
+logs/
+.locks/
+library/voice/
+library/.hooks.index.json
+library/hooks.lint.txt
+
+# Reference videos, analysis frames, sound pack audio and caches
+styles/*/refs/
+styles/*/analysis/
+styles/sfx/**/*.wav
+styles/sfx/**/*.mp3
+styles/sfx/**/*.MP3
+styles/sfx/**/*.aif
+styles/sfx/**/*.aiff
+styles/sfx/**/*.ogg
+styles/sfx/**/*.flac
+styles/sfx/**/*.m4a
+styles/sfx/.cache/
+styles/sfx/previews/
+
+# Large media: raw footage and renders
+*.mp4
+*.mov
+*.m4a
+*.wav
+
+# Build runner runtime files
+build/state.env
+build/.status
+build/status.txt
+build/*.log
+build/limits.log
+build/*/batches/
+build/check.*
