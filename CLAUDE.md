@@ -5,9 +5,9 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M3 Error system: done (2026-10-31; review 1 fixes in build/M3/fixes-1.md). Next: M4 Research, expansion, gate,
-  angle (S1 to S4). The build is driven by `bash build-runner.sh`; its log is build/build.log and its per-milestone
-  reports are in build/M<n>/.
+- M3 Error system: done (2026-10-31; review fixes in build/M3/fixes-1.md and fixes-2.md). Next: M4 Research,
+  expansion, gate, angle (S1 to S4). The build is driven by `bash build-runner.sh`; its log is build/build.log and
+  its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
   folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh, pipeline/bin/runner-status,

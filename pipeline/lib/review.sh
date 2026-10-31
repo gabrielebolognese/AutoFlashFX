@@ -73,6 +73,7 @@ review_begin() {  # RUN_DIR STAGE RC "MSG" "CMD" "ACTIVITY": the stage enters th
   state_set "$run_dir" \
     "errors.$stage.review={\"active\": true, \"rc\": $rc, \"msg\": $(json_quote "$msg"), \"cmd\": $(json_quote "$cmd"), \"activity\": $(json_quote "$activity")}" \
     "errors.$stage.last_outcome=null" "errors.$stage.pending=null" "errors.$stage.transient_tries=0" \
+    "errors.$stage.limit_tries=0" "errors.$stage.limit_message=null" "errors.$stage.limit_waited=null" "errors.$stage.limit_probes=null" \
     "errors.$stage.restart=null" >/dev/null 2>&1
 }
 

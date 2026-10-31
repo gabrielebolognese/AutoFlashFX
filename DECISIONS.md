@@ -438,6 +438,7 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     does, with runner_tick; stages and review-cycle do not define it). Tested by test-m3 section 9 with the
     fixture pipeline/tests/fixtures/stages/flaky/ (FLAKY_MODE reset, limit, error; FLAKY_FAILS) and the aicall
     fixture's AICALL_FAIL_NOTE (a transient-looking last line after a model call error: no second classification).
+    The limit path is bounded since review 2 (item 91).
 89. **The review loop survives a restart (M3 review 1, fix 1).** Before this fix review_note_failure stored the
     signature before the cycle ran and review_record counted the cycle after it, so a runner killed during
     cycle 1 ran the stage again on restart, counted the identical failure as the second repeat and escalated to
@@ -469,3 +470,53 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     an outage ("temporary file" is a code error, "temporary failure in name resolution" and "temporarily
     unavailable" are transient). test-limits.sh checks each of these texts; the detail label of a 529 found in
     text is "overloaded", like the one found in the JSON field.
+
+### M3 review 2 fixes (2026-10-31)
+91. **The limit path of a failed stage script is bounded (M3 review 2, fix 1).** Item 88 waited out every limit
+    message a stage printed and ran the stage again, with no counter: a stage that kept printing the same text
+    waited forever (a parsed "resets 3pm" rolled to the next day at every attempt; an unparsed one slept 30 minutes
+    and probed, the probe answered at once, and the stage failed again), which breaks rule zero and keeps a code
+    error away from the review. Now runner_limit_failed (runner.sh) keeps errors.<stage>.limit_tries,
+    limit_message, limit_waited and limit_probes in state.json (a restart keeps them; a success or a code error
+    resets them, like transient_tries). The first limit message always gets its wait (LIMIT, RESUME,
+    logs/limits.log). The same failure is a code error for the review loop, with the message "usage limit message
+    persisted after N wait(s) ...: exit N: <last line>", when (a) the message comes back unchanged right after a
+    wait that completed (limit_waited; a runner killed during the wait and restarted before the reset reruns the
+    stage, and the same real limit message earns its wait again): for a parsed limit the reset time it named has
+    passed, so a genuine new limit would name a new time; for an unparsed
+    limit only when the probe model answered on its first try, which showed no limit was active, so the text is
+    not a limit (an unparsed limit whose probe needed several tries may come back with the same text, because the
+    text has no time in it, and gets another wait); or (b) after errors.script_limit_retries waits (config, default
+    2) whatever the message. The reviewer then sees the full log. Found while testing the cap: stage.log is
+    appended across attempts and the limit detector takes the first limit line of the tail, so attempt 2 was
+    classified from attempt 1's line; runner_log_mark now records the log's size at every stage start
+    (<stage>/.log-offset) and runner_stage_failed classifies only this attempt's part of the log
+    (runner_log_attempt), so an earlier attempt's limit line or network error is never read again. Model calls
+    inside ai() are not affected: a limit the CLI reports is a real one, and its wait loop stays as it was.
+    Tested by test-m3 section 9 with the flaky
+    fixture (FLAKY_MODE limit with FLAKY_FAILS 99: one LIMIT, one RESUME, ERROR, one review, BLOCK, the runner
+    ends by itself; limit-new, a new reset time each time: two waits then ERROR; quoted-limit, a log line quoting
+    "hit its usage limit, it resets weekly" before a JSONDecodeError traceback: one LIMIT, the probe answers,
+    ERROR, one review).
+92. **Echoed source lines are not error messages, and a timeout has to look like one (M3 review 2, fix 2).** A
+    Python traceback prints the source line of every frame, so a plain KeyError whose frames held
+    `subprocess.run(cmd, check=True, timeout=600)` matched the bare word "timeout" and became transient (three
+    retries, 21 minutes, and an ERROR line blaming a timeout). Most tracebacks from M4 on will hold such a line
+    (ffmpeg, renders, TTS and alignment run through subprocess with the configured timeouts), and Node errors
+    echo `page.setDefaultTimeout(120000)` and frames like `at Timeout._onTimeout (node:internal/timers)`. So
+    errors.py strip_echo() removes, before any pattern runs, the lines indented deeper than a `File "...", line N`
+    line (the code and its carets), caret-only lines with the code line above them (Node's uncaught-exception
+    header) and JavaScript stack frames (`    at ...`); exception lines, chained causes ("cause: Error: read
+    ECONNRESET", "The above exception was the direct cause") and ordinary log lines stay, and the message of the
+    ERROR line still comes from the raw text. The timeout words are TIMEOUT_WORDS: "timed out", TimeoutError,
+    TimeoutException, TimeoutExpired (and ReadTimeoutError and the like), ETIMEDOUT, ESOCKETTIMEDOUT, undici's
+    UND_ERR_*_TIMEOUT, "timeout exceeded | expired | reached | elapsed | occurred | after N | of N | while |
+    waiting", "Timeout 30000ms exceeded", "i/o timeout", "due to timeout", "deadline exceeded" and the noun phrases
+    "request | connection | connect | read | handshake | navigation | socket | response | idle | operation |
+    network | upstream | api timeout" when not followed by a number (a setting). The bare word "timeout", a
+    keyword argument, a CLI flag or a config echo ("timeout 600 s") no longer count; exit 124 and 137 still do.
+    The whole 40-line tail is still matched (a transient line early in the tail still wins over an exception at
+    the end: the reviewer's optional note, left open). Tested by test-limits.sh (the KeyError traceback, the same
+    traceback ending in TimeoutExpired, the Node setDefaultTimeout line, Node frames, an echoed `raise
+    ConnectionError("read ECONNRESET")`, curl's "timed out", a config echo) and test-m3 section 9 (the traceback
+    fixture: ERROR at once, no RETRY, one review).

@@ -25,7 +25,9 @@
 #      uncommitted work and a log that grew during the call survive) and protect.py (protected files restored)
 #   9. a failed stage script is classified before any review (M3 review 1, fix 2): a network reset is retried
 #      (RETRY 60 s, 4 min, 16 min, then a code error and one review), a usage limit printed by the stage is waited
-#      out (LIMIT, RESUME, no reviewer call), a stage whose own model call failed goes straight to the review
+#      out (LIMIT, RESUME, no reviewer call), a stage whose own model call failed goes straight to the review;
+#      the limit path is bounded (M3 review 2, fix 1: the same limit message right after its wait, or the third
+#      limit message, is a code error with one review) and a traceback's echoed frames are not an error (fix 2)
 #  10. a runner killed during a review cycle (M3 review 1, fix 1): the restart resumes the same cycle (no ESCAL
 #      before an Opus cycle, no second ERROR, one open issue) and adopts a review-cycle child that still runs
 set -u
@@ -49,6 +51,7 @@ KEY_ERROR="exit 1: FileNotFoundError: library/keys/service.key is missing: this 
 REVIEWER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer"]["model"])')"
 ESCALATION="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer_escalation"]["model"])')"
 FIXER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["fixer"]["model"])')"
+PROBE="$(python -c 'import json; print(json.load(open("config.json"))["models"]["probe"]["model"])')"
 
 state_get() { python "$STATE_PY" get "$@"; }
 run_dirs() { ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||'; }
@@ -118,6 +121,11 @@ for line in open(sys.argv[1], encoding="utf-8"):
     if d["n"] == n:
         v = d.get(key)
         print(v if not isinstance(v, (list, dict)) else json.dumps(v)); break' "$FAKE_CLAUDE_LOG" "$1" "$2"
+}
+event_tags() {  # event_tags <runner output>: the event lines' tags in order, comma separated
+  python -c '
+import re, sys
+print(",".join(m.group(1) for m in re.finditer(r"^\[\d\d:\d\d\] (LIMIT|RESUME|RETRY|ERROR|BLOCK|FIXED|ESCAL) ", open(sys.argv[1], encoding="utf-8").read(), re.M)))' "$1"
 }
 fake_roles() {  # the role:model pairs of every logged call, comma separated
   python - "$FAKE_CLAUDE_LOG" <<'EOF'
@@ -684,6 +692,88 @@ assert_eq "$(fake_roles)" "call:haiku,reviewer:$REVIEWER" "the stage's own call,
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "1" "state: the stage ran once"
 assert_grep "^## Model call error \(10-build/error.json\)" "$RD/errors/E1.md" "E1.md carries the model call's error.json"
 assert_grep '"message": "Boom happened in the model call"' "$RD/10-build/error.json" "error.json is this attempt's"
+
+# the limit path is bounded (M3 review 2, fix 1): a stage that prints the same limit message again right after the
+# wait it earned is a code error for the review loop, not another wait (and never a loop forever)
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/limitloop.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/limitloop.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner ends on its own: the persisted limit message reaches the review and the block"
+assert_eq "$(grep -c -E "${ts_regex}LIMIT  " "$OUT")" "1" "one LIMIT line: the first limit message gets its wait"
+assert_grep "${ts_regex}RESUME limit reset, continuing: building visuals$" "$OUT" "RESUME after the wait"
+assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the usage limit$" "$OUT" "the rerun is announced"
+assert_grep "${ts_regex}ERROR  S10 building visuals: usage limit message persisted after 1 wait \(the same message right after the reset it named\): exit 1: You've hit your session limit .* resets 3pm$" "$OUT" "the same message after its wait is a code error naming the persisted limit"
+assert_eq "$(grep -c -E "${ts_regex}ERROR  " "$OUT")" "1" "one ERROR line"
+assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S10: environment problem: fake reviewer: usage limit message persisted" "$OUT" "the reviewer's verdict blocks the idea"
+assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call, no probe (the reset time was parsed)"
+assert_eq "$(event_tags "$OUT")" "LIMIT,RESUME,ERROR,BLOCK" "the order is LIMIT, RESUME, ERROR, BLOCK"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts"
+assert_eq "$(state_get "$RD" errors.10-build.limit_tries)" "0" "state: the limit counter is reset when the error goes to review"
+assert_grep "^- error: usage limit message persisted after 1 wait" "$RD/errors/E1.md" "E1.md names the persisted limit message"
+assert_grep "resets 3pm" "$RD/errors/E1.md" "E1.md shows the stage's limit line to the reviewer"
+
+# a limit message that changes at every attempt (a new reset time each time) gets errors.script_limit_retries
+# waits (2), then the next one is a code error
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/limitcap.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit-new FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/limitcap.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner ends on its own after the capped waits"
+assert_eq "$(grep -c -E "${ts_regex}LIMIT  " "$OUT")" "2" "two LIMIT lines: the cap errors.script_limit_retries"
+assert_grep "${ts_regex}INFO   S10 building visuals: attempt 3 after the usage limit$" "$OUT" "the second rerun is announced"
+assert_grep "${ts_regex}ERROR  S10 building visuals: usage limit message persisted after 2 waits: exit 1: You've hit your session limit .* resets 5pm$" "$OUT" "the third limit message is a code error"
+assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call"
+assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: " "$OUT" "BLOCK on the reviewer's verdict"
+assert_eq "$(event_tags "$OUT")" "LIMIT,RESUME,LIMIT,RESUME,ERROR,BLOCK" "the order is LIMIT, RESUME, LIMIT, RESUME, ERROR, BLOCK"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "3" "state: three attempts"
+assert_eq "$(grep -c "session limit | reset" "$SANDBOX/logs/limits.log")" "2" "limits.log has the two waits"
+
+# a log line that quotes a usage limit ("hit its usage limit, it resets weekly") before a real exception: the
+# unparsed limit gets its sleep and the probe (which answers at once), the rerun prints the same text, and that is
+# a code error with one review, not a probe loop every 30 minutes forever
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/quoted.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=quoted-limit FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/quoted.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner ends on its own"
+assert_eq "$(grep -c -E "${ts_regex}LIMIT  " "$OUT")" "1" "one LIMIT line: the quoted limit is waited out once"
+assert_grep "${ts_regex}LIMIT  weekly limit hit but no reset time found, probing every 30 min \(first probe in 30 min\)$" "$OUT" "an unparsed weekly limit enters the probe loop"
+assert_grep "${ts_regex}RESUME limit is over \(probe 1 answered\), continuing: building visuals$" "$OUT" "the probe answered at once"
+assert_grep "${ts_regex}ERROR  S10 building visuals: usage limit message persisted after 1 wait \(the same message, and the probe model had answered at once\): exit 1: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 \(char 0\)$" "$OUT" "the same quoted text after the probe is a code error"
+assert_not_grep "${ts_regex}RETRY  " "$OUT" "no RETRY: the traceback is a code error, not a temporary error"
+assert_eq "$(fake_roles)" "call:$PROBE,reviewer:$REVIEWER" "the probe call, then one reviewer call"
+assert_grep "${ts_regex}BLOCK  idea \"Idea C.*\" blocked at S10: " "$OUT" "BLOCK on the reviewer's verdict"
+assert_eq "$(event_tags "$OUT")" "LIMIT,RESUME,ERROR,BLOCK" "the order is LIMIT, RESUME, ERROR, BLOCK"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts"
+assert_grep "resets weekly" "$RD/errors/E1.md" "E1.md shows the quoted line to the reviewer"
+
+# a traceback whose frames echo a source line with "timeout=600" (M3 review 2, fix 2) is a code error at once: no
+# RETRY ladder, ERROR with the exception line, one review
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/trace.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=traceback FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/trace.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner ends on its own"
+assert_not_grep "${ts_regex}(RETRY|LIMIT) " "$OUT" "no RETRY and no LIMIT: an echoed source line is not an error message"
+assert_grep "${ts_regex}ERROR  S10 building visuals: exit 1: KeyError: 'beatz'$" "$OUT" "ERROR at once, with the exception line"
+assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call"
+assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S10: " "$OUT" "BLOCK on the reviewer's verdict"
+assert_eq "$(event_tags "$OUT")" "ERROR,BLOCK" "the order is ERROR, BLOCK"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "1" "state: the stage ran once (no transient retry)"
+assert_eq "$(state_get "$RD" errors.10-build.transient_tries 0)" "0" "state: no transient try"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------

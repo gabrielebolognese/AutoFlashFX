@@ -7,7 +7,8 @@
 # the expected epochs are computed independently here (explicit datetimes in Python) and do not depend on the PC's
 # clock or zone: time only, weekday and time, date and time, a timezone in parentheses, an epoch after a |, plus the
 # rollovers (+1 day, +7 days, next year), a DST change inside the wait, the weekly kind, an unparseable limit and
-# text without a limit.
+# text without a limit. Section 3: the signature and the classifier, including the texts a failed stage's log can
+# hold (tracebacks whose frames echo source lines, Node stack frames, timeout words that are settings, not errors).
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 LIMITS="$REPO_DIR/pipeline/lib/limits.py"
@@ -132,6 +133,58 @@ printf 'Temporary failure in name resolution\n' > "$tmp/tempfail.txt"
 assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/tempfail.txt")" "transient temporary error False False" "a temporary failure is transient"
 printf "stage: fetching the clip\nYou've hit your session limit · resets 3pm\n" > "$tmp/stagelimit.txt"
 assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/stagelimit.txt")" "limit session limit False False" "a limit printed by a stage script is a limit"
+# tracebacks echo source lines and stack frames, which are not error messages (M3 review 2, fix 2), and a timeout
+# has to look like an error ("timed out", TimeoutError, "timeout exceeded"), not like the keyword timeout=600
+cat > "$tmp/keyerr.txt" <<'TRACE'
+Traceback (most recent call last):
+  File "C:/x/pipeline/stages/10-build/helper.py", line 12, in <module>
+    r = subprocess.run(cmd, check=True, timeout=600)
+  File "C:/x/pipeline/stages/10-build/helper.py", line 20, in build
+    beats = plan["beatz"]
+KeyError: 'beatz'
+TRACE
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/keyerr.txt")" "error  False False" "a KeyError traceback with timeout=600 in an echoed frame is a code error"
+assert_eq "$(python "$ERRORS" classify --rc 1 --stdout "$tmp/empty.json" --stderr "$tmp/keyerr.txt" | python -c 'import json,sys; print(json.load(sys.stdin)["message"])')" "KeyError: 'beatz'" "its message is the exception line"
+cat > "$tmp/texp.txt" <<'TRACE'
+Traceback (most recent call last):
+  File "C:/x/pipeline/stages/10-build/helper.py", line 12, in <module>
+    r = subprocess.run(cmd, check=True, timeout=600)
+  File "C:/Python313/Lib/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+subprocess.TimeoutExpired: Command '['ffmpeg', '-i', 'draft.mp4']' timed out after 600 seconds
+TRACE
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/texp.txt")" "transient timeout False False" "the same traceback ending in TimeoutExpired (timed out) is transient"
+cat > "$tmp/node.txt" <<'TRACE'
+page.setDefaultTimeout(120000)
+TypeError: Cannot read properties of undefined (reading 'length')
+TRACE
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/node.txt")" "error  False False" "a Node log line with setDefaultTimeout before a TypeError is a code error"
+printf 'TimeoutError: Navigation timeout of 30000 ms exceeded\n' > "$tmp/nav.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/nav.txt")" "transient timeout False False" "a navigation TimeoutError is transient"
+cat > "$tmp/frames.txt" <<'TRACE'
+C:\x\render.js:10
+    const b = plan.beatz.length;
+                         ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at build (C:\x\render.js:10:26)
+    at Timeout._onTimeout (node:internal/timers:573:17)
+    at listOnTimeout (node:internal/timers:516:7)
+TRACE
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/frames.txt")" "error  False False" "Node stack frames (at Timeout._onTimeout) are not error messages"
+cat > "$tmp/echo.txt" <<'TRACE'
+Traceback (most recent call last):
+  File "C:/x/helper.py", line 5, in <module>
+    raise ConnectionError("read ECONNRESET")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'beatz'
+TRACE
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/echo.txt")" "error  False False" "an echoed source line that mentions ECONNRESET is not a network error"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/reset.txt")" "transient connection reset False False" "the flaky fixture's fetch failed plus cause ECONNRESET stays transient"
+printf 'curl: (28) Operation timed out after 30001 milliseconds with 0 bytes received\n' > "$tmp/curl.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/curl.txt")" "transient timeout False False" "curl timed out is transient"
+printf 'render: timeout 600 s, 30 fps, connection timeout=30\nValueError: no beats\n' > "$tmp/cfg.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/cfg.txt")" "error  False False" "a timeout setting echoed in a log line is not a timeout"
 rm -rf "$tmp"
 
 test_summary

@@ -2,8 +2,11 @@
 # Test fixture "flaky" (installed by test-m3.sh as pipeline/stages/10-build/run.sh in a sandbox): fails FLAKY_FAILS
 # times (default 2) the way an external tool fails, then writes a valid events.json. The runner must classify the
 # failure (BUILD_SPEC.md section 4: usage limit, transient, code error) instead of sending it to the reviewer.
-# FLAKY_MODE: reset (a network reset on stderr, transient), limit (a usage limit message, waited out), error (a
-# code error). The attempt counter is <run_dir>/10-build/.flaky-count. Usage: run.sh <run_dir>
+# FLAKY_MODE: reset (a network reset on stderr, transient), limit (a usage limit message, waited out), limit-new (a
+# limit message with a different reset time at every attempt), quoted-limit (a log line that quotes a usage limit,
+# then a JSONDecodeError traceback: the text is not a limit), traceback (a KeyError traceback whose frames echo a
+# source line with timeout=600: a code error, not a timeout), error (a code error). The attempt counter is
+# <run_dir>/10-build/.flaky-count. Usage: run.sh <run_dir>
 set -u
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)"
 source "$LIB/common.sh"
@@ -22,6 +25,30 @@ if [ "$n" -le "${FLAKY_FAILS:-2}" ]; then
       ;;
     error)
       echo "ValueError: the reference clip has no frames (planted)" >&2
+      ;;
+    limit-new)   # a different reset time each attempt (a limit hit again after a genuine reset would read like this)
+      echo "You've hit your session limit · resets $((n + 2))pm" >&2
+      ;;
+    quoted-limit)   # a log line that quotes a usage limit, then a real exception (M3 review 2, fix 1)
+      echo "step 1: wrote facts.md (the source says Claude Code hit its usage limit, it resets weekly)"
+      cat >&2 <<'TRACE'
+Traceback (most recent call last):
+  File "C:/x/pipeline/stages/10-build/helper.py", line 12, in <module>
+    data = json.loads(raw)
+  File "C:/Python313/Lib/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+TRACE
+      ;;
+    traceback)   # a code error whose traceback echoes a source line with "timeout=600" (M3 review 2, fix 2)
+      cat >&2 <<'TRACE'
+Traceback (most recent call last):
+  File "C:/x/pipeline/stages/10-build/helper.py", line 12, in <module>
+    r = subprocess.run(cmd, check=True, timeout=600)
+  File "C:/x/pipeline/stages/10-build/helper.py", line 20, in build
+    beats = plan["beatz"]
+KeyError: 'beatz'
+TRACE
       ;;
     *)
       echo "TypeError: fetch failed" >&2

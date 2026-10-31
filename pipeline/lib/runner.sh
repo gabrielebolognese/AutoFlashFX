@@ -25,10 +25,12 @@
 #
 # A failed stage script (BUILD_SPEC.md section 4, M3): runner_stage_failed classifies the exit code and the tail of
 # stage.log in the spec's order with the classifier ai() uses (pipeline/lib/errors.py): a usage limit is waited out
-# (LIMIT, RESUME) and the stage runs again; a transient error is retried after 60 s, 4 min, 16 min (RETRY lines,
-# the counter errors.<stage>.transient_tries in state.json survives a restart) and the fourth failure is a code
-# error; a stage whose own model call failed (ai() wrote <stage>/error.json in this attempt) was classified and
-# retried there already and is a code error at once.
+# (LIMIT, RESUME) and the stage runs again, at most errors.script_limit_retries times per failure, and a limit
+# message that comes back unchanged right after its wait is a code error (runner_limit_failed, the counters
+# errors.<stage>.limit_tries, limit_message, limit_waited and limit_probes in state.json); a transient error is retried after
+# 60 s, 4 min, 16 min (RETRY lines, the counter errors.<stage>.transient_tries in state.json survives a restart)
+# and the fourth failure is a code error; a stage whose own model call failed (ai() wrote <stage>/error.json in
+# this attempt) was classified and retried there already and is a code error at once.
 #
 # Code errors (BUILD_SPEC.md 4.2, M3): runner_code_error prints ERROR and runs the review and fix loop of
 # pipeline/lib/review.sh through the child script pipeline/bin/review-cycle (so the heartbeat keeps printing):
@@ -195,6 +197,23 @@ runner_wait_child() {  # waits for CHILD_PID, ticking (heartbeat, NEW lines) mea
   return $rc
 }
 
+runner_log_mark() {  # runner_log_mark <stage>: record where this attempt's output starts in stage.log. The log is
+                     # appended across attempts, and runner_stage_failed must not read an earlier attempt's limit
+                     # line or network error again when it classifies the new failure.
+  local log="$RUN_DIR/$1/stage.log" size=0
+  if [ -f "$log" ]; then size="$(stat -c %s "$log" 2>/dev/null || wc -c < "$log" | tr -d ' ')"; fi
+  case "$size" in ''|*[!0-9]*) size=0 ;; esac
+  printf '%s\n' "$size" > "$RUN_DIR/$1/.log-offset"
+}
+
+runner_log_attempt() {  # runner_log_attempt <stage>: this attempt's part of stage.log (from the runner_log_mark mark)
+  local log="$RUN_DIR/$1/stage.log" offset=0
+  [ -f "$log" ] || return 0
+  [ -f "$RUN_DIR/$1/.log-offset" ] && { read -r offset < "$RUN_DIR/$1/.log-offset"; } 2>/dev/null
+  case "$offset" in ''|*[!0-9]*) offset=0 ;; esac
+  tail -c +$((offset + 1)) "$log"
+}
+
 runner_last_log_line() {  # the last non-empty line of a stage log, trimmed, for the ERROR line
   local file="$1" line=""
   [ -f "$file" ] && line="$(grep -v '^[[:space:]]*$' "$file" | tail -n 1 | tr -d '\r')"
@@ -248,6 +267,7 @@ runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> [
     fi
   fi
   rm -f "$RUN_DIR/$stage/error.json"   # a model call error of this attempt (ai.sh) is told apart from an older one
+  runner_log_mark "$stage"             # the classifier reads only this attempt's part of stage.log
   runner_state update 0 state_stage_start "$RUN_DIR" "$stage" || return 2
   STAGE_STARTED="$EPOCHSECONDS"
   set_activity "$activity"
@@ -301,8 +321,9 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
           issues_fixed=issues_fixed issues_open=issues_open)"
         ISSUES_FIXED="${issues_fixed:-$ISSUES_FIXED}"
         ISSUES_OPEN="${issues_open:-$ISSUES_OPEN}"
-        if [ "${attempts:-1}" -gt 1 ] 2>/dev/null; then  # a retried stage passed: its transient counter starts over
-          state_set "$RUN_DIR" "errors.$stage.transient_tries=0" "errors.$stage.restart=null" >/dev/null 2>&1
+        if [ "${attempts:-1}" -gt 1 ] 2>/dev/null; then  # a retried stage passed: its transient and limit counters start over
+          state_set "$RUN_DIR" "errors.$stage.transient_tries=0" "errors.$stage.restart=null" "errors.$stage.limit_tries=0" \
+            "errors.$stage.limit_message=null" "errors.$stage.limit_waited=null" "errors.$stage.limit_probes=null" >/dev/null 2>&1
         fi
         say STEP "$activity done ($(fmt_dur "${seconds:-0}")) -> $(runner_next_text "${NEXT_PHASE:-done}" "$NEXT_ACTIVITY")"
         return 0
@@ -333,8 +354,8 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
 runner_stage_failed() {  # stage label activity rc -> 0 run the stage again (after a limit or a transient wait),
                          # else the review loop's result (0 restart after a fix, 1 run ended, 2 stop)
   # BUILD_SPEC.md section 4 for a failed stage script: classify in order (usage limit, transient, code error) on
-  # the exit code and the last errors.classify_tail_lines of stage.log, with the patterns ai() uses
-  # (pipeline/lib/errors.py). A stage whose own model call failed (<stage>/error.json, written by ai() in this
+  # the exit code and the last errors.classify_tail_lines of this attempt's part of stage.log (runner_log_attempt),
+  # with the patterns ai() uses (pipeline/lib/errors.py). A stage whose own model call failed (<stage>/error.json, written by ai() in this
   # attempt) was classified and retried there already: it is a code error now. The transient counter lives in
   # state.json (errors.<stage>.transient_tries) so a restart keeps it; a success or a code error resets it.
   local stage="$1" label="$2" activity="$3" rc="$4" log="$RUN_DIR/$stage/stage.log" tail_file="$RUN_DIR/$stage/.log-tail"
@@ -345,21 +366,14 @@ runner_stage_failed() {  # stage label activity rc -> 0 run the stage again (aft
     return $?
   fi
   tail_n="$(cfg errors.classify_tail_lines 40)"
-  if [ -f "$log" ]; then tail -n "$tail_n" "$log" | tr -d '\r' > "$tail_file"; else : > "$tail_file"; fi
+  if [ -f "$log" ]; then runner_log_attempt "$stage" | tail -n "$tail_n" | tr -d '\r' > "$tail_file"; else : > "$tail_file"; fi
   out="$(error_classify "$rc" "" "$tail_file" 2>/dev/null)" || out=""
   rm -f "$tail_file"
   eval "$(json_eval "$out" cls=class detail=detail retry_after=retry_after l_kind=limit.kind l_reset=limit.reset l_msg=limit.message)"
   case "$cls" in
     limit)
-      state_stage_fail "$RUN_DIR" "$stage" "$rc" "usage limit (${l_kind:-usage}): ${l_msg:-$msg}" >/dev/null
-      state_set "$RUN_DIR" "errors.$stage.restart=\"limit\"" >/dev/null 2>&1
-      if [ -n "$l_reset" ]; then
-        limit_wait "$l_reset" "${l_kind:-usage}" "$activity" "$l_msg"
-      elif ! limit_wait_unparsed "${l_kind:-usage}" "$activity" "$l_msg" -- ai_probe "$RUN_DIR/$stage"; then
-        runner_code_error "$stage" "$label" "$activity" "$rc" "usage limit with no reset time, and the probe never answered: $msg"
-        return $?
-      fi
-      return 0
+      runner_limit_failed "$stage" "$label" "$activity" "$rc" "$msg" "${l_kind:-usage}" "$l_reset" "$l_msg"
+      return $?
       ;;
     transient)
       tries="$(state_get "$RUN_DIR" "errors.$stage.transient_tries" 0 2>/dev/null)"
@@ -385,6 +399,53 @@ runner_stage_failed() {  # stage label activity rc -> 0 run the stage again (aft
       return $?
       ;;
   esac
+}
+
+runner_limit_failed() {  # stage label activity rc msg kind reset limit_message -> 0 run the stage again after the
+                         # wait, else the review loop's result (0 restart after a fix, 1 run ended, 2 stop)
+  # The limit path of a failed stage script is bounded (M3 review 2, fix 1; DECISIONS.md 91). The first limit
+  # message always gets its wait (LIMIT, RESUME). The same failure is a code error for the review loop when the
+  # message comes back unchanged right after a wait that completed (a reset time that was waited for, or an
+  # unparsed limit whose probe answered on its first try: no limit was active, the text is not a limit), and in any
+  # case after errors.script_limit_retries waits (default 2). The counters errors.<stage>.limit_tries,
+  # limit_message, limit_waited and limit_probes live in state.json (a restart keeps them; a wait the previous
+  # runner did not finish is not a completed wait); a success or a code error resets them.
+  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5" kind="${6:-usage}" reset="$7" lmsg="$8"
+  local tries cap prev_msg prev_waited prev_probes why=""
+  tries="$(state_get "$RUN_DIR" "errors.$stage.limit_tries" 0 2>/dev/null)"
+  case "$tries" in ''|*[!0-9]*) tries=0 ;; esac
+  cap="$(cfg errors.script_limit_retries 2)"
+  case "$cap" in ''|*[!0-9]*) cap=2 ;; esac
+  prev_msg="$(state_get "$RUN_DIR" "errors.$stage.limit_message" "" 2>/dev/null)"
+  prev_waited="$(state_get "$RUN_DIR" "errors.$stage.limit_waited" "" 2>/dev/null)"
+  prev_probes="$(state_get "$RUN_DIR" "errors.$stage.limit_probes" "" 2>/dev/null)"
+  if [ "$tries" -ge "$cap" ]; then
+    why="usage limit message persisted after $tries $(plural "$tries" wait)"
+  elif [ "$tries" -gt 0 ] && [ "$prev_waited" = true ] && [ -n "$lmsg" ] && [ "$lmsg" = "$prev_msg" ]; then
+    if [ -n "$reset" ]; then
+      why="usage limit message persisted after $tries $(plural "$tries" wait) (the same message right after the reset it named)"
+    elif [ "$prev_probes" = 1 ]; then
+      why="usage limit message persisted after $tries $(plural "$tries" wait) (the same message, and the probe model had answered at once)"
+    fi
+  fi
+  if [ -n "$why" ]; then
+    runner_code_error "$stage" "$label" "$activity" "$rc" "$why: $msg"
+    return $?
+  fi
+  tries=$((tries + 1))
+  state_stage_fail "$RUN_DIR" "$stage" "$rc" "usage limit ($kind): ${lmsg:-$msg}" >/dev/null
+  state_set "$RUN_DIR" "errors.$stage.restart=\"limit\"" "errors.$stage.limit_tries=$tries" \
+    "errors.$stage.limit_message=$(json_quote "$lmsg")" "errors.$stage.limit_waited=false" "errors.$stage.limit_probes=0" >/dev/null 2>&1
+  if [ -n "$reset" ]; then
+    limit_wait "$reset" "$kind" "$activity" "$lmsg"
+    state_set "$RUN_DIR" "errors.$stage.limit_waited=true" >/dev/null 2>&1
+  elif limit_wait_unparsed "$kind" "$activity" "$lmsg" -- ai_probe "$RUN_DIR/$stage"; then
+    state_set "$RUN_DIR" "errors.$stage.limit_waited=true" "errors.$stage.limit_probes=${LIMIT_PROBES:-0}" >/dev/null 2>&1
+  else
+    runner_code_error "$stage" "$label" "$activity" "$rc" "usage limit with no reset time, and the probe never answered: $msg"
+    return $?
+  fi
+  return 0
 }
 
 runner_code_error() {  # stage label activity rc message -> 0 restart the stage, 1 run ended (blocked), 2 stop

@@ -16,7 +16,8 @@
 #   limit_wait_unparsed KIND "activity" "message" -- probe command...   the LIMIT line, sleep
 #                                          errors.unparsed_limit_sleep_seconds, then run the probe command every
 #                                          errors.probe_every_seconds until it exits 0 (REELS_PROBE_MAX caps the
-#                                          probes in tests, exit 1 when reached), then the RESUME line
+#                                          probes in tests, exit 1 when reached), then the RESUME line;
+#                                          LIMIT_PROBES holds how many probes it took (1: the first one answered)
 #   limits_log "text"                      append "<date time> | text" to logs/limits.log
 #   fmt_left SECONDS                       5h41m, 12m
 #   fmt_wait SECONDS                       60s, 4m, 16m (the RETRY line)
@@ -151,8 +152,10 @@ limit_wait_unparsed() {  # limit_wait_unparsed <kind> "<activity>" "<message>" -
   limits_log "$kind limit | no reset time parsed | probing every ${every} s after ${first} s${message:+ | \"$message\"}"
   set_activity "waiting for usage limit ($kind), no reset time given, probing every $((every / 60)) min"
   reels_sleep "$first" "unparsed limit"
+  LIMIT_PROBES=0
   while :; do
     n=$((n + 1))
+    LIMIT_PROBES="$n"
     if "$@"; then break; fi
     if [ -n "$max" ] && [ "$n" -ge "$max" ]; then
       say WARN "the usage limit probe failed $n times and REELS_PROBE_MAX is $max, giving up"

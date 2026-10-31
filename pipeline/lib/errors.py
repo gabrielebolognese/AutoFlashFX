@@ -6,7 +6,9 @@ The classifier runs after every model call made by ai() (pipeline/lib/ai.sh), in
   2. transient  overloaded or 529, 5xx, timeouts, network resets, rate limits with retry-after: back off and retry
   3. error      a code or runtime error: the review and fix loop (4.2)
   ok            exit 0, a JSON result with is_error false
-Quality gate failures never reach this classifier: they are the stages' own loops.
+Quality gate failures never reach this classifier: they are the stages' own loops. The same classifier reads the
+tail of a failed stage script's log (runner_stage_failed): strip_echo() drops the source lines that Python
+tracebacks and Node stack frames echo before any pattern runs, and a timeout has to look like an error.
 
 Usage:
   errors.py classify --rc N [--stdout FILE] [--stderr FILE] [--tz ZONE] [--now EPOCH] [--margin S]
@@ -37,15 +39,27 @@ TRANSIENT_STATUS = {408, 409, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 
 # The text patterns also run on the tail of a failed stage's log (runner_stage_failed), which is far noisier than a
 # CLI result: the error codes are word-bounded (ENOTFOUND used to match inside "FileNotFoundError"), an HTTP status
 # counts only next to a word that makes it one ("API Error: 503", "status 500", not "wrote 503 bytes"), and
-# "temporary" alone is not an outage ("temporary file").
+# "temporary" alone is not an outage ("temporary file"). A timeout has to look like an error ("timed out",
+# TimeoutError, ETIMEDOUT, "timeout exceeded", exit 124 or 137), never the bare word: tracebacks echo source lines
+# such as `subprocess.run(cmd, timeout=600)` (DECISIONS.md 92), and strip_echo() below removes those lines first.
 STATUS_CONTEXT = r"(?:api error|http|status(?: code)?|error|code)[:= ]+"
+TIMEOUT_WORDS = (
+    r"timed[ -]out"
+    r"|\b\w*timeout(?:error|exception|expired)\b"
+    r"|\bE(?:SOCKET)?TIMEDOUT\b|\bUND_ERR_\w*TIMEOUT\b"
+    r"|\btimeout (?:exceeded|expired|reached|elapsed|occurred|after \d|of \d|while |waiting )"
+    r"|\btimeout \d+ ?ms exceeded|\bi/o timeout\b|due to (?:a )?timeout\b"
+    r"|\b(?:request|connection|connect|read|handshake|navigation|socket|response|idle|operation|network|upstream|api)"
+    r" timeout\b(?!\s*[=:]?\s*\d)"
+    r"|deadline exceeded"
+)
 TRANSIENT_PATTERNS = [
     (r"overloaded", "overloaded"),
     (STATUS_CONTEXT + r"529\b", "overloaded"),
     (r"rate[_ -]?limit", "rate limit"),
     (r"too many requests|" + STATUS_CONTEXT + r"429\b", "rate limit"),
     (r"retry[- _]?after", "rate limit"),
-    (r"timed? ?out|timeout|\bETIMEDOUT\b|deadline exceeded", "timeout"),
+    (TIMEOUT_WORDS, "timeout"),
     (r"\bECONNRESET\b|connection reset|socket hang up|\bEPIPE\b", "connection reset"),
     (r"\bECONNREFUSED\b|connection refused", "connection refused"),
     (r"\bEAI_AGAIN\b|\bENOTFOUND\b|getaddrinfo|network error|fetch failed|network is unreachable|\bENETUNREACH\b", "network error"),
@@ -76,6 +90,42 @@ def read(path: str | None) -> str:
         return ""
     with open(path, "rb") as f:
         return f.read().decode("utf-8", "replace").replace("\r\n", "\n").replace("\r", "\n")
+
+
+FILE_LINE_RE = re.compile(r'^(\s*)File ".*", line \d+')
+CARET_RE = re.compile(r"^\s*[\^~]+[\^~\s]*$")
+FRAME_RE = re.compile(r"^\s+at\s+\S")
+
+
+def strip_echo(text: str) -> str:
+    """Remove the source code that tracebacks echo, so a frame like `subprocess.run(cmd, timeout=600)` or a Node
+    frame `at Timeout._onTimeout (...)` cannot pass for an error message (DECISIONS.md 92): the lines indented
+    deeper than a Python `File "...", line N` line (the code and its carets), caret-only lines and the code line
+    above them (Node's uncaught-exception header), and JavaScript stack frames (`    at ...`). The exception lines
+    themselves, chained causes and ordinary log lines stay."""
+    lines = text.split("\n")
+    drop: set[int] = set()
+    file_indent = None
+    for i, line in enumerate(lines):
+        if not line.strip():
+            file_indent = None
+            continue
+        m = FILE_LINE_RE.match(line)
+        if m:
+            file_indent = len(m.group(1))
+            continue
+        indent = len(line) - len(line.lstrip())
+        if file_indent is not None and indent > file_indent:
+            drop.add(i)
+            continue
+        file_indent = None
+        if CARET_RE.match(line):
+            drop.add(i)
+            if i > 0 and not FILE_LINE_RE.match(lines[i - 1]):
+                drop.add(i - 1)
+        elif FRAME_RE.match(line):
+            drop.add(i)
+    return "\n".join(line for i, line in enumerate(lines) if i not in drop)
 
 
 def parse_result(stdout: str) -> dict | None:
@@ -137,7 +187,8 @@ def classify(rc: int, stdout: str, stderr: str, tz: str, now_epoch: int, margin:
         return out
 
     result_text = str(data.get("result") or "") if data else ""
-    text = "\n".join(part for part in (result_text, stdout if data is None else "", stderr) if part)
+    # the patterns read the text without the source lines that tracebacks echo (the message below keeps the raw text)
+    text = "\n".join(part for part in (result_text, strip_echo(stdout if data is None else ""), strip_echo(stderr)) if part)
     first = one_line(result_text) or last_line(stderr) or one_line(stdout) or f"exit {rc} with no output"
     if status:
         first = f"api error {status}: {first}" if first and not first.startswith(("api error", "API Error")) else first

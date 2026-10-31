@@ -76,7 +76,8 @@
     "probe_every_seconds": 1800,
     "repeated_signature_skip": 2,
     "log_tail_lines": 200,
-    "classify_tail_lines": 40
+    "classify_tail_lines": 40,
+    "script_limit_retries": 2
   },
 
   "timeouts": {
