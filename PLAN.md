@@ -14,11 +14,11 @@ These are fixed now so that 13 fresh sessions build one coherent system.
 - Helpers that need real parsing, JSON, audio math or similarity: Python 3.13, always invoked as `python`
   (`python3` is the Windows Store stub). Packages listed in `requirements.txt`, installed by
   `pipeline/bin/setup-python`.
-- Text to speech: tools/voice.py (the user's script), which runs each engine through its own interpreter named in
-  `library/voice/engine.txt` (Chatterbox Turbo primary, Kokoro fallback, in the user's virtual environments outside
-  the project). Transcription (faster-whisper): a separate virtual environment `.venv-tts/` on Python 3.11 (created
-  by `pipeline/bin/setup-venv` with uv). Scripts call it by path: `.venv-tts/Scripts/python.exe`. Everything runs on
-  CPU (BUILD_SPEC section 0, Hardware).
+- Text to speech: tools/voice.py (the user's script), which runs the one engine named in `library/voice/engine.txt`
+  (Chatterbox Turbo, the user's cloned voice; no fallback voice) through its own interpreter, in the user's virtual
+  environment outside the project. Transcription (faster-whisper): a separate virtual environment `.venv-tts/` on
+  Python 3.11 (created by `pipeline/bin/setup-venv` with uv). Scripts call it by path: `.venv-tts/Scripts/python.exe`.
+  Everything runs on CPU (BUILD_SPEC section 0, Hardware).
 - Video: Node 22 with the npm package `hyperframes` (pinned in `package.json`) and `puppeteer` for the mechanical
   checks. `pipeline/bin/setup-node` runs `npm ci` and `npx hyperframes browser ensure`.
 - Nothing calls a model except through `ai()` in `pipeline/lib/ai.sh`.
@@ -318,43 +318,44 @@ Acceptance test: `bash pipeline/tests/test-m6.sh`
 
 Depends on: M6 (script.json), tools/voice.py and library/voice/engine.txt (both set up by the user). No model calls.
 The PC is CPU-only (integrated GPU, no NVIDIA, no CUDA): every engine runs on CPU, never with device "cuda". When
-engine.txt exists, no TTS engine is installed. Without it: chatterbox-tts and kokoro, CPU-only, and their model
-weights (several GB, once).
+engine.txt exists, no TTS engine is installed. Without it: chatterbox-tts, CPU-only, and its model weights (several
+GB, once). There is no fallback voice or engine: every reel is voiced only with the user's cloned voice.
 
 Creates:
 - `pipeline/bin/setup-venv`: installs uv with `python -m pip install uv` when missing, keeps `.venv-tts/` on Python
   3.11 for faster-whisper, soundfile and numpy (no TTS engine, no CUDA libraries); only when engine.txt is missing,
-  also creates two virtual environments outside the project with chatterbox-tts and kokoro, CPU-only (torch from
-  the CPU wheel index); idempotent; records versions in `pipeline/knowledge/venv-versions.txt`.
-- `pipeline/lib/tts/`: `engines.py` (reads library/voice/engine.txt: engine, python, seed, fallback, fallback_python,
-  fallback_voice; config.json `tts` defaults when it is missing; calls tools/voice.py through each engine's own
-  interpreter; turbo primary and kokoro fallback, chatterbox original only if engine.txt names it, no qwen3-tts),
-  `synth.py` (beat by beat, hook energy higher: chatterbox exaggeration, turbo cloned from reference_hook.wav when it
-  exists; fixed gaps of `tts.gap_ms`, silence trimming, seeds), `align.py` (faster-whisper word timestamps on CPU
+  also creates one virtual environment outside the project with chatterbox-tts, CPU-only (torch from the CPU wheel
+  index); idempotent; records versions in `pipeline/knowledge/venv-versions.txt`.
+- `pipeline/lib/tts/`: `engine.py` (reads library/voice/engine.txt: engine, python, seed; config.json `tts` defaults
+  when it is missing; calls tools/voice.py through the engine's own interpreter; turbo, chatterbox original only if
+  engine.txt names it, no other engine), `synth.py` (beat by beat, hook energy higher: turbo cloned from
+  reference_hook.wav when it exists, chatterbox original through exaggeration; fixed gaps of `tts.gap_ms`, silence
+  trimming, seeds), `align.py` (faster-whisper word timestamps on CPU
   with compute_type int8 into words.json with beat ids), `wer.py`, `loudness.py` (two-pass ffmpeg loudnorm to -14
   LUFS, true peak at most -1.5 dBTP, measurement with ffmpeg ebur128).
-- `pipeline/stages/08-voiceover/{run.sh,CONTRACT.md,schema.json}`: the engine choice (primary, fallback), cloning
-  from `library/voice/reference.wav` when present (kokoro stock voice otherwise, with a HUMAN_TODO), the
-  speakability loop (WER over 3%: new seed up to 3 times, then the whole voiceover with the fallback engine, then
-  one line rewrite through S7, then a flag), the 15% overrun flag, hook 2's voice; outputs vo.wav, vo_hook2.wav,
-  words.json, words_hook2.json.
-- `pipeline/bin/tts-blind-test`: wraps `tools/voice.py blindtest`; used only when engine.txt is missing, and adds the
-  HUMAN_TODO asking which engine won.
-- config.json `tts` filled (device cpu, defaults turbo primary and kokoro fallback, settings read from engine.txt
-  when it exists, gap_ms, whisper model), `preflight.require` gains engine.txt's interpreters (each exists and
-  imports its engine in a one-line test), the venv, and the voice reference or the kokoro fallback.
-- Activities "generating voiceover (beat 4/9)", "regenerating line 4 (try 2/3)", "switching to fallback voice",
-  "aligning words".
+- `pipeline/stages/08-voiceover/{run.sh,CONTRACT.md,schema.json}`: the one engine of engine.txt, cloning from
+  `library/voice/reference.wav` (required, checked by the preflight), the speakability ladder that never switches
+  voice or engine (WER over 3%: that line with a new seed up to 3 times, then the whole voiceover with a new seed up
+  to 2 times, then one rewrite of the line through S7 in simpler words and a regeneration, then a NEEDS REVIEW flag
+  at 8% or less or a block above 8%), engine crashes and hangs as code errors (spec 4.2, then block), the 15%
+  overrun flag, hook 2's voice; outputs vo.wav, vo_hook2.wav, words.json, words_hook2.json.
+- When engine.txt is missing: the HUMAN_TODO asking the user to write it.
+- config.json `tts` filled (device cpu, default engine turbo, settings read from engine.txt when it exists, no
+  fallback, gap_ms, whisper model), `preflight.require` gains engine.txt's interpreter (exists and imports its
+  engine in a one-line test), the venv and the voice reference.
+- Activities "generating voiceover (beat 4/9)", "regenerating line 4 (try 2/3)", "regenerating whole voiceover (try
+  1/2)", "rewriting line 4", "aligning words".
 - Tests: `pipeline/tests/test-m7.sh`, a fake engine for the loop tests, frozen `08-voiceover/` fixtures (words.json
   and the wav files, the wavs kept out of git and regenerated by the test when missing).
 
 Acceptance test: `bash pipeline/tests/test-m7.sh`
 - From the frozen script.json: vo.wav and vo_hook2.wav exist (48 kHz, mono); words.json and words_hook2.json validate,
-  cover every beat with monotonic timestamps; every line's WER is 3% or under, or the retry, fallback and rewrite
-  path is visible in the stage log; integrated loudness -14 LUFS plus or minus 1 and true peak at most -1.5 dBTP;
-  beat gaps within the configured range; total length within 15% of the script estimate or flagged.
-- Unit: wer.py on known pairs; the regeneration loop with a fake engine that returns garbage ends in the fallback
-  engine, never mixing voices mid-reel.
+  cover every beat with monotonic timestamps; every line's WER is 3% or under, or the retry, whole-voiceover and
+  rewrite path is visible in the stage log; integrated loudness -14 LUFS plus or minus 1 and true peak at most
+  -1.5 dBTP; beat gaps within the configured range; total length within 15% of the script estimate or flagged.
+- Unit: wer.py on known pairs; with a fake engine that returns garbage, the ladder runs in order and ends in a NEEDS
+  REVIEW flag (WER 8% or less) or a block (above 8%), never in another voice or engine; a fake engine that crashes
+  goes to the code error path.
 - The measured generation speed is recorded in DECISIONS.md.
 - Runtime: about 1 to 3 minutes of generation per reel on CPU, so 5 to 15 minutes for the test; without engine.txt
   the installs add 30 to 60 minutes to the first run.
@@ -592,12 +593,14 @@ M8 could run any time after M3, M9 any time after M7; the runner builds them in 
 - The repo lives inside a OneDrive-synced folder: runs/ and exports/ will grow to gigabytes and OneDrive can hold
   file handles during renames. Every mv in the runner retries briefly; a HUMAN_TODO asks to exclude the folder from
   sync.
-- CPU-only PC (integrated GPU, no NVIDIA, no CUDA): Chatterbox Turbo, Kokoro and faster-whisper run on CPU, about 1
-  to 3 minutes of generation per reel, and renders are slow. Acceptable for an unattended runner: drafts render at
+- CPU-only PC (integrated GPU, no NVIDIA, no CUDA): Chatterbox Turbo and faster-whisper run on CPU, about 1 to 3
+  minutes of generation per reel, and renders are slow. Acceptable for an unattended runner: drafts render at
   540x960, every step has a generous timeout and prints progress, and the engine choice is the user's, in
   library/voice/engine.txt.
-- Python version split: the TTS engines run in the user's own virtual environments (engine.txt), faster-whisper in
+- Python version split: the TTS engine runs in the user's own virtual environment (engine.txt), faster-whisper in
   `.venv-tts` (3.11 via uv), everything else on the system 3.13.
+- Single voice: no fallback voice or engine, so a reel the cloned voice cannot speak cleanly is flagged (WER 8% or
+  less) or blocked, never voiced with something else.
 - HyperFrames moves fast (0.8.x): the version is pinned in package.json and upgraded only by hand.
 - Style conflicts: style.md version 2 (no tracker, bare captions) wins over the spec's examples that mention a
   tracker; the plan schema keeps an optional tracker field for other styles.

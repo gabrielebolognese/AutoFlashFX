@@ -291,3 +291,4 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     in the run folder.
 
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
+2026-10-31: no fallback voice. Only Gabriele's cloned voice; failures retry, then block the idea.

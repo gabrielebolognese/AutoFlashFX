@@ -140,12 +140,12 @@ If a profile file is missing at runtime, continue with defaults and add a NEEDS 
 
 ### 2.5 library/voice/
 
-I set up the voice myself: Chatterbox Turbo (clones my voice, runs on CPU) is the primary engine and Kokoro (stock
-voice) the fallback. tools/voice.py already does text in, audio out with these engines (subcommands: say, words,
-blindtest).
+I set up the voice myself: Chatterbox Turbo, which clones my voice and runs on CPU. tools/voice.py already does
+text in, audio out with it (subcommands: say, words, blindtest). There is no fallback voice: every reel uses only
+my cloned voice. A reel with a different voice is worse than no reel.
 
-- reference.wav: 10 to 20 seconds of my clean speech at reel energy, for engines that clone. Until it exists, use
-  the kokoro stock voice and add a HUMAN_TODO.
+- reference.wav: 10 to 20 seconds of my clean speech at reel energy, the voice every reel is cloned from. Required:
+  there is no stock voice to use instead, so a missing reference.wav fails the preflight (section 3).
 - reference_hook.wav (optional): the same voice with hook-level energy, used for hook beats by engines that have no
   energy setting.
 - memo.*: the voice memo used to build voice.md.
@@ -155,13 +155,10 @@ blindtest).
 engine = turbo
 python = C:/Users/<me>/venvs/chatterbox/Scripts/python.exe
 seed = 7
-fallback = kokoro
-fallback_python = C:/Users/<me>/venvs/kokoro/Scripts/python.exe
-fallback_voice = am_michael
 ```
 
-- Build S8 on top of tools/voice.py, calling each engine through its own interpreter (the `python` and
-  `fallback_python` lines of engine.txt).
+- Build S8 on top of tools/voice.py, calling the engine through its own interpreter (the `python` line of
+  engine.txt).
 
 ### 2.6 styles/sfx/: the sound effects memory map
 
@@ -227,9 +224,9 @@ voice).
   5. take the next idea
 
   When ideas.txt has no idea: with --once, exit; otherwise check again every 120 seconds, forever.
-- Startup preflight: claude, ffmpeg, ffprobe, python, node, gh, the Python packages, disk space, the voice reference
-  (or the kokoro fallback), style files, tokens.json, the sfx map. A missing hard dependency is a systemic failure:
-  write logs/STOPPED.md with the exact fix and exit.
+- Startup preflight: claude, ffmpeg, ffprobe, python, node, gh, the Python packages, disk space, the voice reference,
+  engine.txt's interpreter (2.5), style files, tokens.json, the sfx map. A missing hard dependency is a systemic
+  failure: write logs/STOPPED.md with the exact fix and exit.
 - Each idea gets runs/<YYYY-MM-DD_HHMM>_<slug>/ with state.json and one subfolder per stage
   (01-research/, 02-expansion/, ...).
   - A stage is done when its outputs validate against its schema and a .done marker exists.
@@ -439,22 +436,26 @@ that it counts as a code error.
   (6 words or fewer).
 
 ### S8 Voiceover (no model)
-- **Engines:** turbo (Chatterbox Turbo, primary) and kokoro (stock voice, fallback), run through tools/voice.py with
-  the interpreters and settings in library/voice/engine.txt (2.5). Clone from reference.wav when the engine supports
-  it. No qwen3-tts (GPU only). Use chatterbox original only if engine.txt names it.
+- **Engine:** only the one in library/voice/engine.txt (2.5): turbo (Chatterbox Turbo), cloned from reference.wav,
+  run through tools/voice.py with engine.txt's interpreter and settings. Use chatterbox original only if engine.txt
+  names it. No qwen3-tts (GPU only). There is no fallback engine or voice: never switch voice or engine.
 - **Generate beat by beat.** The hook gets higher energy, the body normal energy:
-  - chatterbox: its exaggeration setting
   - turbo has no energy setting, so hook beats are cloned from reference_hook.wav when it exists
-  - other engines: the equivalent setting
+  - chatterbox original: its exaggeration setting
 
   Stitch the beats with fixed gaps (config, 120 to 200 ms) and trim silences.
 - **Align** with faster-whisper word timestamps into words.json: word, start ms, end ms, beat id. faster-whisper
   runs on CPU with compute_type int8 (no CUDA libraries).
-- **Speakability:** compare each line's transcription with its spoken text (word error rate).
-  - Over 3%: regenerate that line with a new seed, up to 3 times.
-  - Still failing: regenerate the whole voiceover with the fallback engine, so the voice never changes mid-reel.
-  - Still failing: one rewrite of that line through S7, then flag it.
+- **Speakability:** compare each line's transcription with its spoken text (word error rate). Never switch voice or
+  engine:
+  - A line fails the check (word error rate over 3%): regenerate that line with a new seed, up to 3 times.
+  - Still failing: regenerate the whole voiceover with a new seed, up to 2 times (keeps the delivery consistent).
+  - Still failing: rewrite that line once through S7 in simpler words, then regenerate it.
+  - Still failing: if the error rate is 8% or less, continue with a NEEDS REVIEW flag; above that, block the idea
+    (logs/blocked.txt). Never voice it with anything else.
   - A line running more than 15% over its estimated time is also flagged for rewrite.
+- **Engine failures:** the engine itself crashing or hanging is a code error: retries and the review and fix path of
+  section 4.2, then block the idea. Never a different engine.
 - **Loudness:** -14 LUFS integrated, true peak at most -1.5 dBTP (two-pass ffmpeg loudnorm).
 - **Hook 2:** also generate its voice, for the alternate clip.
 - **Speed:** expect about 1 to 3 minutes of generation per reel on this CPU. At M7, measure the real speed and record
@@ -604,7 +605,7 @@ logs/status.txt. Format: `[HH:MM] TAG  details`. TAG is a fixed 6-character word
 | S5 | picking hooks |
 | S6 | judging hooks |
 | S7 | writing script (draft 2/2, round 1/3), cutting script, checking script |
-| S8 | generating voiceover (beat 4/9), regenerating line 4 (try 2/3), switching to fallback voice, aligning words |
+| S8 | generating voiceover (beat 4/9), regenerating line 4 (try 2/3), regenerating whole voiceover (try 1/2), rewriting line 4, aligning words |
 | S9 | planning animations, planning text, planning transitions, validating plan |
 | S10 | building visuals, rendering draft |
 | S11 | adding sound effects (14 sounds), verifying sound sync and loudness |
@@ -696,8 +697,8 @@ runs/<id>
   - cut, checks, fixer: sonnet
   - builder_escalation, reviewer_escalation: fable
   - indexer, probe: haiku
-- **tts:** device cpu; primary, fallback and each engine's parameters (interpreter, seed, voice, energy values) read
-  from library/voice/engine.txt when it exists (engine.txt wins); gap_ms.
+- **tts:** device cpu; the engine and its parameters (interpreter, seed, energy values) read from
+  library/voice/engine.txt when it exists (engine.txt wins), no fallback engine; gap_ms.
 - **voice:** wpm (from voice.md), loudness target.
 - **sfx:** map path, base gain per cue type, max sounds per 10 seconds (4), minimum spacing in ms (250), minimum dB under
   the voice peak (8), attention interval (8 to 12 seconds), slow transition threshold (400 ms), sync tolerance (33 ms).
@@ -763,13 +764,14 @@ Keep it short and current:
   - Test: script.json passes every check for the test idea.
 - **M7 Voiceover (S8).**
   - Builds: S8 on top of tools/voice.py, cloning, alignment, the word error rate gate, loudness.
-    - When library/voice/engine.txt exists, use exactly its engines, interpreters and settings, and install nothing.
-    - Otherwise install chatterbox-tts and kokoro, CPU-only, in two virtual environments outside the project, and add
-      a HUMAN_TODO asking me which won my blind test.
-    - Update the preflight to check that engine.txt's interpreters exist and can import their engine (a one-line
+    - When library/voice/engine.txt exists, use exactly its engine, interpreter and settings, and install nothing.
+    - Otherwise install chatterbox-tts, CPU-only, in a virtual environment outside the project, and add a HUMAN_TODO
+      asking me to write engine.txt.
+    - Update the preflight to check only engine.txt's interpreter: it exists and can import its engine (a one-line
       import test).
-  - Test: the test idea's script produces vo.wav and words.json that pass every check, and the measured speed is
-    recorded in DECISIONS.md.
+  - Test, with only the engine in engine.txt: the test idea's script produces vo.wav and words.json in my cloned
+    voice that pass every check; the failure ladder ends in a flag or a block, never in another voice or engine; the
+    measured speed is recorded in DECISIONS.md.
 - **M8 Sound effects memory map (2.6).**
   - Builds: build-sfx-map over styles/sfx/, sfx-map.json, SFX-MAP.md, the pools, previews, overrides.txt handling,
     HUMAN_TODO to listen to the previews.
@@ -800,5 +802,6 @@ Keep it short and current:
 
 ## 13. Not in version 1
 
-Posting to Instagram (I post manually from exports/), music, multiple accounts, series, FlashFX as a render target,
-processing ideas in parallel.
+Posting to Instagram (I post manually from exports/); music; multiple accounts, each with its own voice (its own
+reference and engine.txt), its own style folder and its own content, run by the same pipeline and chosen per idea;
+series; FlashFX as a render target; processing ideas in parallel.
