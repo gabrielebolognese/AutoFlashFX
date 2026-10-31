@@ -10,6 +10,13 @@ a systemic failure (section 4).
 
 I am the only user. It runs on my Windows PC with Git Bash. I start the runner and walk away.
 
+### Hardware
+
+My PC is CPU-only: an integrated GPU, no NVIDIA card, no CUDA.
+- Never install CUDA builds of PyTorch, never assume a GPU, never use device "cuda".
+- Heavy steps (text to speech, transcription, renders) are slower than real time: use generous timeouts and print
+  progress instead of treating a slow step as a hang.
+
 ### Build mode
 
 The build is automated by build-runner.sh (in the root). It runs one milestone (section 12) per batch, each batch a
@@ -133,9 +140,28 @@ If a profile file is missing at runtime, continue with defaults and add a NEEDS 
 
 ### 2.5 library/voice/
 
-- reference.wav: 10 to 30 seconds of my clean speech at reel energy, for engines that clone. Until it exists, use
+I set up the voice myself: Chatterbox Turbo (clones my voice, runs on CPU) is the primary engine and Kokoro (stock
+voice) the fallback. tools/voice.py already does text in, audio out with these engines (subcommands: say, words,
+blindtest).
+
+- reference.wav: 10 to 20 seconds of my clean speech at reel energy, for engines that clone. Until it exists, use
   the kokoro stock voice and add a HUMAN_TODO.
+- reference_hook.wav (optional): the same voice with hook-level energy, used for hook beats by engines that have no
+  energy setting.
 - memo.*: the voice memo used to build voice.md.
+- engine.txt: written by me after my blind test, one `key = value` per line, for example:
+
+```
+engine = turbo
+python = C:/Users/<me>/venvs/chatterbox/Scripts/python.exe
+seed = 7
+fallback = kokoro
+fallback_python = C:/Users/<me>/venvs/kokoro/Scripts/python.exe
+fallback_voice = am_michael
+```
+
+- Build S8 on top of tools/voice.py, calling each engine through its own interpreter (the `python` and
+  `fallback_python` lines of engine.txt).
 
 ### 2.6 styles/sfx/: the sound effects memory map
 
@@ -413,11 +439,17 @@ that it counts as a code error.
   (6 words or fewer).
 
 ### S8 Voiceover (no model)
-- **Engine** from config: chatterbox, qwen3-tts or kokoro, with a primary and a fallback. Clone from reference.wav
-  when the engine supports it.
-- **Generate beat by beat.** The hook gets higher energy (chatterbox exaggeration or the equivalent setting), the
-  body normal energy. Stitch the beats with fixed gaps (config, 120 to 200 ms) and trim silences.
-- **Align** with faster-whisper word timestamps into words.json: word, start ms, end ms, beat id.
+- **Engines:** turbo (Chatterbox Turbo, primary) and kokoro (stock voice, fallback), run through tools/voice.py with
+  the interpreters and settings in library/voice/engine.txt (2.5). Clone from reference.wav when the engine supports
+  it. No qwen3-tts (GPU only). Use chatterbox original only if engine.txt names it.
+- **Generate beat by beat.** The hook gets higher energy, the body normal energy:
+  - chatterbox: its exaggeration setting
+  - turbo has no energy setting, so hook beats are cloned from reference_hook.wav when it exists
+  - other engines: the equivalent setting
+
+  Stitch the beats with fixed gaps (config, 120 to 200 ms) and trim silences.
+- **Align** with faster-whisper word timestamps into words.json: word, start ms, end ms, beat id. faster-whisper
+  runs on CPU with compute_type int8 (no CUDA libraries).
 - **Speakability:** compare each line's transcription with its spoken text (word error rate).
   - Over 3%: regenerate that line with a new seed, up to 3 times.
   - Still failing: regenerate the whole voiceover with the fallback engine, so the voice never changes mid-reel.
@@ -425,6 +457,8 @@ that it counts as a code error.
   - A line running more than 15% over its estimated time is also flagged for rewrite.
 - **Loudness:** -14 LUFS integrated, true peak at most -1.5 dBTP (two-pass ffmpeg loudnorm).
 - **Hook 2:** also generate its voice, for the alternate clip.
+- **Speed:** expect about 1 to 3 minutes of generation per reel on this CPU. At M7, measure the real speed and record
+  it in DECISIONS.md.
 - Outputs: vo.wav, vo_hook2.wav, words.json, words_hook2.json.
 
 ### S9 Visual plan (fresh sessions, model: visual_director), in three passes
@@ -458,7 +492,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
     emphasis word
   - the progress tracker
   - tokens.json as CSS variables
-  - 3D through the Three.js adapter, only where the style allows it
+  - 3D through the Three.js adapter, only where the style allows it and only with the WebGL backend that M9 found
+    working in headless Chrome (recorded in DECISIONS.md). Keep 3D scenes light: low poly, few objects. If WebGL is
+    not available, replace 3D beats with 2D components and flag NEEDS REVIEW.
 - Every motion-lib component declares its sound events (for example card enter at frame 0, stamp landing at frame 3,
   typing from frame 5 to 40). The build exports 10-build/events.json: every event's absolute time in ms, its type, the
   component, the scene, and whether it is a scene change (with the transition's duration).
@@ -466,7 +502,8 @@ An invalid pass gets one retry with the validator errors, then the review path.
   reel only, and flag NEEDS REVIEW. Candidates join the library only with my approval.
 - Also build the hook 2 alternate clip: the hook beat's visuals with hook 2's on-screen text and timing, 3.5 seconds
   at most.
-- Render a silent draft at full resolution (draft.mp4) for the next stages.
+- Render a silent draft at 540x960 (draft.mp4: half resolution, same timing and fps) for the next stages. Every
+  review draft is 540x960; 1080x1920 is rendered only in S13.
 
 ### S11 Sound effects (no model; scripts pipeline/bin/mix-sfx)
 1. **Assign cue types to events.json** (deterministic rules, randomness seeded per reel):
@@ -495,6 +532,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
 - If the sfx map is missing or empty, render voice only and add a NEEDS REVIEW flag.
 
 ### S12 Review and fix loop
+- **Draft resolution.** Every draft reviewed here is 540x960 (half resolution, same timing); 1080x1920 is rendered
+  only in S13. Scale every pixel-based check below to the draft resolution (zones, the right 230px, font sizes,
+  positions and distances in the style conformance comparison).
 - **Mechanical checks.** Puppeteer opens the composition and checks, at every beat and emphasis timestamp:
   - every text box is inside the zones in tokens.json (with the caption band exception from tweaks.md)
   - nothing in the right 230px of the lower half
@@ -656,7 +696,8 @@ runs/<id>
   - cut, checks, fixer: sonnet
   - builder_escalation, reviewer_escalation: fable
   - indexer, probe: haiku
-- **tts:** primary, fallback, each engine's parameters (seed, energy values), gap_ms.
+- **tts:** device cpu; primary, fallback and each engine's parameters (interpreter, seed, voice, energy values) read
+  from library/voice/engine.txt when it exists (engine.txt wins); gap_ms.
 - **voice:** wpm (from voice.md), loudness target.
 - **sfx:** map path, base gain per cue type, max sounds per 10 seconds (4), minimum spacing in ms (250), minimum dB under
   the voice peak (8), attention interval (8 to 12 seconds), slow transition threshold (400 ms), sync tolerance (33 ms).
@@ -664,6 +705,9 @@ runs/<id>
 - **caps:** angle_rounds 2, script_rounds 3, review_rounds_opus 3, review_rounds_fable 2, error_review_cycles 3,
   escalation_cycles 1, systemic_block_streak 3.
 - **runner:** poll_seconds 120, status_every_seconds 300, limit_margin_seconds 120, timezone Europe/Rome.
+- **render:** draft_resolution 540x960 (S10 to S12; S13 renders 1080x1920).
+- **timeouts:** one per step, in seconds, generous for a CPU-only PC (text to speech, alignment, renders, model
+  calls), because heavy steps run slower than real time (section 0, Hardware).
 - **style:** paper-cards. Plus paths.
 
 ## 10. Vendored tools
@@ -718,9 +762,14 @@ Keep it short and current:
 - **M6 Script (S7).**
   - Test: script.json passes every check for the test idea.
 - **M7 Voiceover (S8).**
-  - Builds: install the engines (default chatterbox, kokoro as fallback; HUMAN_TODO asking me which won my blind test),
-    cloning, alignment, the word error rate gate, loudness.
-  - Test: the test idea's script produces vo.wav and words.json that pass every check.
+  - Builds: S8 on top of tools/voice.py, cloning, alignment, the word error rate gate, loudness.
+    - When library/voice/engine.txt exists, use exactly its engines, interpreters and settings, and install nothing.
+    - Otherwise install chatterbox-tts and kokoro, CPU-only, in two virtual environments outside the project, and add
+      a HUMAN_TODO asking me which won my blind test.
+    - Update the preflight to check that engine.txt's interpreters exist and can import their engine (a one-line
+      import test).
+  - Test: the test idea's script produces vo.wav and words.json that pass every check, and the measured speed is
+    recorded in DECISIONS.md.
 - **M8 Sound effects memory map (2.6).**
   - Builds: build-sfx-map over styles/sfx/, sfx-map.json, SFX-MAP.md, the pools, previews, overrides.txt handling,
     HUMAN_TODO to listen to the previews.
@@ -734,6 +783,9 @@ Keep it short and current:
     - frame-matching against the reference filmstrips in styles/paper-cards/analysis
     - components that pass the frame-match go into motion-lib/, with a HUMAN_TODO for me to review the gallery
     - a golden reel built from the test idea, with a HUMAN_TODO for me to review it
+    - a WebGL test for Three.js in headless Chrome on this PC: hardware ANGLE first (the integrated GPU), then
+      SwiftShader software rendering. Record which works in DECISIONS.md. Keep 3D scenes light (low poly, few
+      objects). If WebGL is not available, 3D beats are replaced with 2D components and flagged NEEDS REVIEW.
 - **M10 Visual stages (S9, S10).**
   - Test: the three plan passes validate, the draft renders, events.json matches what is on screen.
 - **M11 Sound effects pass and review loop (S11, S12).**

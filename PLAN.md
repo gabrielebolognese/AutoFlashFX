@@ -14,9 +14,11 @@ These are fixed now so that 13 fresh sessions build one coherent system.
 - Helpers that need real parsing, JSON, audio math or similarity: Python 3.13, always invoked as `python`
   (`python3` is the Windows Store stub). Packages listed in `requirements.txt`, installed by
   `pipeline/bin/setup-python`.
-- Text to speech and transcription: a separate virtual environment `.venv-tts/` on Python 3.11 (created by
-  `pipeline/bin/setup-venv` with uv), because kokoro requires Python below 3.13 and chatterbox is tested on 3.11.
-  Scripts call it by path: `.venv-tts/Scripts/python.exe`.
+- Text to speech: tools/voice.py (the user's script), which runs each engine through its own interpreter named in
+  `library/voice/engine.txt` (Chatterbox Turbo primary, Kokoro fallback, in the user's virtual environments outside
+  the project). Transcription (faster-whisper): a separate virtual environment `.venv-tts/` on Python 3.11 (created
+  by `pipeline/bin/setup-venv` with uv). Scripts call it by path: `.venv-tts/Scripts/python.exe`. Everything runs on
+  CPU (BUILD_SPEC section 0, Hardware).
 - Video: Node 22 with the npm package `hyperframes` (pinned in `package.json`) and `puppeteer` for the mechanical
   checks. `pipeline/bin/setup-node` runs `npm ci` and `npx hyperframes browser ensure`.
 - Nothing calls a model except through `ai()` in `pipeline/lib/ai.sh`.
@@ -314,27 +316,33 @@ Acceptance test: `bash pipeline/tests/test-m6.sh`
 
 ## M7 Voiceover (S8)
 
-Depends on: M6 (script.json). No model calls. Downloads: uv, Python 3.11, chatterbox-tts, kokoro, faster-whisper
-and their model weights (several GB, once). The machine has no NVIDIA GPU: engines run on CPU.
+Depends on: M6 (script.json), tools/voice.py and library/voice/engine.txt (both set up by the user). No model calls.
+The PC is CPU-only (integrated GPU, no NVIDIA, no CUDA): every engine runs on CPU, never with device "cuda". When
+engine.txt exists, no TTS engine is installed. Without it: chatterbox-tts and kokoro, CPU-only, and their model
+weights (several GB, once).
 
 Creates:
-- `pipeline/bin/setup-venv`: installs uv with `python -m pip install uv` when missing, creates `.venv-tts/` on
-  Python 3.11, installs chatterbox-tts, kokoro, faster-whisper, soundfile and numpy; idempotent; records versions in
-  `pipeline/knowledge/venv-versions.txt`.
-- `pipeline/lib/tts/`: `engine_chatterbox.py`, `engine_kokoro.py`, `engine_qwen3.py` (declared in config, not
-  installed in v1: raises a clear "not installed" error so the fallback takes over), `synth.py` (beat by beat, hook
-  energy higher, fixed gaps of `tts.gap_ms`, silence trimming, seeds), `align.py` (faster-whisper word timestamps
-  into words.json with beat ids), `wer.py`, `loudness.py` (two-pass ffmpeg loudnorm to -14 LUFS, true peak at most
-  -1.5 dBTP, measurement with ffmpeg ebur128).
+- `pipeline/bin/setup-venv`: installs uv with `python -m pip install uv` when missing, keeps `.venv-tts/` on Python
+  3.11 for faster-whisper, soundfile and numpy (no TTS engine, no CUDA libraries); only when engine.txt is missing,
+  also creates two virtual environments outside the project with chatterbox-tts and kokoro, CPU-only (torch from
+  the CPU wheel index); idempotent; records versions in `pipeline/knowledge/venv-versions.txt`.
+- `pipeline/lib/tts/`: `engines.py` (reads library/voice/engine.txt: engine, python, seed, fallback, fallback_python,
+  fallback_voice; config.json `tts` defaults when it is missing; calls tools/voice.py through each engine's own
+  interpreter; turbo primary and kokoro fallback, chatterbox original only if engine.txt names it, no qwen3-tts),
+  `synth.py` (beat by beat, hook energy higher: chatterbox exaggeration, turbo cloned from reference_hook.wav when it
+  exists; fixed gaps of `tts.gap_ms`, silence trimming, seeds), `align.py` (faster-whisper word timestamps on CPU
+  with compute_type int8 into words.json with beat ids), `wer.py`, `loudness.py` (two-pass ffmpeg loudnorm to -14
+  LUFS, true peak at most -1.5 dBTP, measurement with ffmpeg ebur128).
 - `pipeline/stages/08-voiceover/{run.sh,CONTRACT.md,schema.json}`: the engine choice (primary, fallback), cloning
   from `library/voice/reference.wav` when present (kokoro stock voice otherwise, with a HUMAN_TODO), the
   speakability loop (WER over 3%: new seed up to 3 times, then the whole voiceover with the fallback engine, then
   one line rewrite through S7, then a flag), the 15% overrun flag, hook 2's voice; outputs vo.wav, vo_hook2.wav,
   words.json, words_hook2.json.
-- `pipeline/bin/tts-blind-test`: renders two script lines with both engines into `library/voice/blind-test/` and
-  adds the HUMAN_TODO asking which one won.
-- config.json `tts` filled (engines, seeds, energy, gap_ms, whisper model), `preflight.require` gains the venv and
-  the voice reference or the kokoro fallback.
+- `pipeline/bin/tts-blind-test`: wraps `tools/voice.py blindtest`; used only when engine.txt is missing, and adds the
+  HUMAN_TODO asking which engine won.
+- config.json `tts` filled (device cpu, defaults turbo primary and kokoro fallback, settings read from engine.txt
+  when it exists, gap_ms, whisper model), `preflight.require` gains engine.txt's interpreters (each exists and
+  imports its engine in a one-line test), the venv, and the voice reference or the kokoro fallback.
 - Activities "generating voiceover (beat 4/9)", "regenerating line 4 (try 2/3)", "switching to fallback voice",
   "aligning words".
 - Tests: `pipeline/tests/test-m7.sh`, a fake engine for the loop tests, frozen `08-voiceover/` fixtures (words.json
@@ -347,7 +355,9 @@ Acceptance test: `bash pipeline/tests/test-m7.sh`
   beat gaps within the configured range; total length within 15% of the script estimate or flagged.
 - Unit: wer.py on known pairs; the regeneration loop with a fake engine that returns garbage ends in the fallback
   engine, never mixing voices mid-reel.
-- Runtime: the first run includes the installs (30 to 60 minutes); afterwards 5 to 15 minutes on CPU.
+- The measured generation speed is recorded in DECISIONS.md.
+- Runtime: about 1 to 3 minutes of generation per reel on CPU, so 5 to 15 minutes for the test; without engine.txt
+  the installs add 30 to 60 minutes to the first run.
 
 ## M8 Sound effects memory map (spec 2.6)
 
@@ -451,7 +461,8 @@ Creates:
   allows), `npx hyperframes lint` and `check --json` must pass, `pipeline/lib/events.py` exports `events.json`
   (every declared sound event in absolute ms with type, component, scene, scene-change flag and transition
   duration, computed from `npx hyperframes timeline --json` and catalog.json), the hook 2 alternate clip project
-  (`10-build/hook2/`, 3.5 s at most), the silent draft render `draft.mp4` at full resolution, candidates in
+  (`10-build/hook2/`, 3.5 s at most), the silent draft render `draft.mp4` at 540x960 (`render.draft_resolution`:
+  half resolution, same timing and fps; 1080x1920 only in S13), candidates in
   `motion-lib/candidates/` with a NEEDS REVIEW flag when the plan needs a missing component.
 - `pipeline/bin/contact-sheet` (one still per beat with ffmpeg).
 - Activities "planning animations", "planning text", "planning transitions", "validating plan", "building visuals",
@@ -462,7 +473,7 @@ Creates:
 Acceptance test: `bash pipeline/tests/test-m10.sh`
 - Unit: every validator rule fails its fixture and the good plan passes.
 - Real, from the frozen script and words: the three plan.json files validate against their schemas and the merged
-  plan passes the validator; `check --json` passes on the built project; draft.mp4 is 1080x1920 at 30 fps with no
+  plan passes the validator; `check --json` passes on the built project; draft.mp4 is 540x960 at 30 fps with no
   audio stream and a duration within 0.2 s of vo.wav; the hook 2 clip renders at 3.5 s or less; events.json validates
   and matches what is on screen: for every scene change and every stamp, typing and count event, a Puppeteer seek one
   frame before and one frame after the event time shows the element's state change.
@@ -483,7 +494,8 @@ Creates:
 - `pipeline/stages/11-sfx/{run.sh,CONTRACT.md,schema.json}`: cues.json, sfx_stem.wav, draft_mixed.mp4,
   sound-map.txt; voice-only with a NEEDS REVIEW flag when the map is missing or empty.
 - `pipeline/stages/12-review/{run.sh,prompt-edit-review.md,CONTRACT.md,schema.json}` and
-  `pipeline/lib/review/{mechanical.mjs,style_check.py,audio_check.py,route.py}`: Puppeteer checks at every beat and
+  `pipeline/lib/review/{mechanical.mjs,style_check.py,audio_check.py,route.py}` (every pixel-based check scaled to
+  the 540x960 draft): Puppeteer checks at every beat and
   emphasis time (zones with the caption band exception, the right 230 px of the lower half, fonts and minimum sizes,
   overlaps, off-canvas, contrast 4.5:1, emphasis within 80 ms); style conformance by running tools/analyze_refs.py on
   draft_mixed.mp4 and comparing cadence, token colors (90% of non-image pixels within delta E 5), accent share and
@@ -580,10 +592,12 @@ M8 could run any time after M3, M9 any time after M7; the runner builds them in 
 - The repo lives inside a OneDrive-synced folder: runs/ and exports/ will grow to gigabytes and OneDrive can hold
   file handles during renames. Every mv in the runner retries briefly; a HUMAN_TODO asks to exclude the folder from
   sync.
-- No NVIDIA GPU: chatterbox and whisper run on CPU, so a 40 s voiceover takes minutes, not seconds. Acceptable for an
-  unattended runner; the engine choice stays in config.
-- Python version split: kokoro needs Python below 3.13, so TTS lives in `.venv-tts` (3.11 via uv) while everything
-  else uses the system 3.13.
+- CPU-only PC (integrated GPU, no NVIDIA, no CUDA): Chatterbox Turbo, Kokoro and faster-whisper run on CPU, about 1
+  to 3 minutes of generation per reel, and renders are slow. Acceptable for an unattended runner: drafts render at
+  540x960, every step has a generous timeout and prints progress, and the engine choice is the user's, in
+  library/voice/engine.txt.
+- Python version split: the TTS engines run in the user's own virtual environments (engine.txt), faster-whisper in
+  `.venv-tts` (3.11 via uv), everything else on the system 3.13.
 - HyperFrames moves fast (0.8.x): the version is pinned in package.json and upgraded only by hand.
 - Style conflicts: style.md version 2 (no tracker, bare captions) wins over the spec's examples that mention a
   tracker; the plan schema keeps an optional tracker field for other styles.

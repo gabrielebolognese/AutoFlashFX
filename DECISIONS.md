@@ -260,3 +260,5 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     line; tests/lib.sh fast_mode adds REELS_TICK_SECONDS and REELS_DUMMY_SECONDS; test-m1 section 7 runs the banner
     with an empty queue because run.sh now processes the queue; log.sh builds its line with `printf -v` instead of a
     command substitution (one fork less per line) and writes to fd 3 inside stages.
+
+2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
