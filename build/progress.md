@@ -41,10 +41,12 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   plain `say` calls (log.sh colors them already). Report: build/M2/report.md.
 
 ## M3 Error system
-- Status: done (2026-10-31). 279 checks in about 10 minutes (one section calls the real Opus reviewer and Sonnet
-  fixer, about 2 minutes); the whole suite (M1, M2, M3, limits, em dash scan) passes in about 20 minutes.
+- Status: done (2026-10-31); review 1 fixed the same day (build/M3/fixes-1.md: a failed stage script is classified
+  before any review, and a runner killed during a review cycle resumes the cycle; DECISIONS.md 88, 89). The test
+  has ten sections (one calls the real Opus reviewer and Sonnet fixer, about 2 minutes); the whole suite (M1, M2,
+  M3, limits, em dash scan) passes in about 25 minutes.
 - Test command: `bash pipeline/tests/test-m3.sh` (10 to 20 minutes; section 4 calls the real Opus reviewer and
-  Sonnet fixer, `M3_SECTIONS="1 2 3 5 6 7 8"` runs everything else with the fake claude) plus
+  Sonnet fixer, `M3_SECTIONS="1 2 3 5 6 7 8 9 10"` runs everything else with the fake claude) plus
   `bash pipeline/tests/test-limits.sh` (the parser and classifier units, seconds); `bash pipeline/tests/run-all.sh`
   runs M1, M2, M3, limits and the em dash scan (about 25 minutes).
 - Notes: every model call goes through `ai()` in pipeline/lib/ai.sh (prompt on stdin, calls saved under

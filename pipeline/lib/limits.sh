@@ -7,6 +7,8 @@
 #   reels_wait_until EPOCH [what] [prefix] wait in 60 s chunks that re-read the clock (so a PC that slept stays
 #                                          right); with a prefix, set_activity "<prefix> (<left> left)" each chunk;
 #                                          fast-forward logs one INFO line with the target
+#   reels_tick_hook                        called between the 60 s chunks of both waits: runs reels_wait_tick when
+#                                          the caller defines it (the runner does: heartbeat and NEW lines)
 #   limit_check "<text>"                   -> 0 a limit with a parsed reset (LIMIT_KIND, LIMIT_RESET, LIMIT_TARGET,
 #                                          LIMIT_WHEN, LIMIT_MSG set), 2 a limit but nothing parsed, 1 no limit
 #   limit_wait RESET KIND "activity" ["message"]   the LIMIT line, logs/limits.log, the wait until RESET plus
@@ -32,15 +34,26 @@ reels_fast_forward() {  # 0 when the scale is 0 (log the wait, do not sleep)
   return 1
 }
 
-reels_sleep_raw() {  # the scaled sleep without any line
-  local s="$1" scale
+reels_sleep_raw() {  # the scaled sleep without any line, in chunks of at most 60 s with the tick hook in between
+  local s="$1" scale whole
   scale="$(reels_sleep_scale)"
   case "$scale" in
     0|0.0|0.00) return 0 ;;
     1|1.0) ;;
     *) s="$(awk -v s="$s" -v k="$scale" 'BEGIN { v = s * k; if (v < 0.05) v = 0.05; printf "%.3f", v }')" ;;
   esac
+  whole="${s%%.*}"
+  case "$whole" in ''|*[!0-9]*) whole=0 ;; esac
+  if [ "$whole" -gt 60 ]; then  # a long wait: the runner's heartbeat and NEW lines keep coming between the chunks
+    while [ "$whole" -gt 60 ]; do sleep 60; whole=$((whole - 60)); reels_tick_hook; done
+    s="$whole"
+  fi
   sleep "$s"
+}
+
+reels_tick_hook() {  # between the chunks of a wait: the runner defines reels_wait_tick (heartbeat, NEW lines); stages do not
+  if declare -F reels_wait_tick >/dev/null 2>&1; then reels_wait_tick; fi
+  return 0
 }
 
 reels_sleep() {  # reels_sleep <seconds> [what]
@@ -91,6 +104,7 @@ reels_wait_until() {  # reels_wait_until <epoch> [what] [activity prefix]
     [ -n "$prefix" ] && set_activity "$prefix ($(fmt_left "$left") left)"
     chunk=$(( left < 60 ? left : 60 ))
     reels_sleep_raw "$chunk"
+    reels_tick_hook
   done
 }
 

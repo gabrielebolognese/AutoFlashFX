@@ -2,7 +2,8 @@
 # Test fixture "aicall" (installed by test-m3.sh as pipeline/stages/10-build/run.sh): one model call through ai()
 # (the fake claude in the tests), then a valid events.json. Exercises the limit, transient and error paths of ai()
 # inside a running stage. Usage: run.sh <run_dir>
-# Knobs: AICALL_ROLE (config role, default indexer), AICALL_SESSION (a session key stored in state.json).
+# Knobs: AICALL_ROLE (config role, default indexer), AICALL_SESSION (a session key stored in state.json),
+# AICALL_FAIL_NOTE (a line printed on stderr after a failed call: the last log line the runner sees).
 set -u
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)"
 source "$LIB/common.sh"
@@ -18,6 +19,7 @@ set_activity "building visuals"
 printf 'Reply with the single word ok.\n' > "$OUT/prompt.md"
 if ! ai "${AICALL_ROLE:-indexer}" "$OUT" "$OUT/prompt.md" --tools "" ${AICALL_SESSION:+--session "$AICALL_SESSION"}; then
   echo "10-build: the model call failed: $AI_ERROR" >&2
+  [ -n "${AICALL_FAIL_NOTE:-}" ] && echo "$AICALL_FAIL_NOTE" >&2   # an extra last log line (the runner's classifier test)
   exit 1
 fi
 echo "10-build: model said: $AI_RESULT (session $AI_SESSION)"

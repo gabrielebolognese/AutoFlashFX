@@ -415,3 +415,57 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
 2026-10-31: no fallback voice. Only Gabriele's cloned voice; failures retry, then block the idea.
+
+### M3 review 1 fixes (2026-10-31)
+88. **A failed stage script is classified before any review (M3 review 1, fix 2).** BUILD_SPEC.md section 4 says
+    "on any failed call or script"; until this fix only the model calls inside ai() were classified, so a stage
+    that exited non-zero after a network reset, or after a tool printed a usage limit, went straight to the
+    reviewer (who would most likely answer "external outage, auto_apply no" and block the idea). Now
+    runner_stage_failed (runner.sh) runs errors.py on the exit code and the last errors.classify_tail_lines (40)
+    of stage.log (the tail, not the whole log, so a benign old line that says "timeout" cannot turn a real bug
+    into a transient): a limit waits with limit_wait (LIMIT, RESUME, logs/limits.log; an unparsed one sleeps and
+    probes the probe model) and the stage runs again; a transient error prints RETRY and the stage runs again
+    after 60 s, 4 min, 16 min (errors.transient_backoff_seconds, scaled by REELS_SLEEP_SCALE, a retry-after value
+    larger than the step replaces it), and the fourth failure is a code error ("temporary error persisted after 3
+    retries (<detail>): exit N: <last line>"); the counter is errors.<stage>.transient_tries in state.json, so a
+    restart during a backoff keeps the ladder, and a success or a code error resets it. A stage whose own ai()
+    call failed carries <stage>/error.json (the runner removes the file at every stage start, so it is this
+    attempt's): that call was classified and retried inside ai(), so the stage is a code error at once. Exit 124
+    and 137 count as a timeout (transient), as in ai(). The classifier's fatal flag is ignored for scripts (a
+    missing tool is for the reviewer, not a login wall). The INFO line of the rerun says why: "attempt N after
+    the temporary error" or "after the usage limit" (errors.<stage>.restart). The runner's own waits keep the
+    heartbeat alive: limits.sh calls reels_wait_tick between its 60 s chunks when the caller defines it (runner.sh
+    does, with runner_tick; stages and review-cycle do not define it). Tested by test-m3 section 9 with the
+    fixture pipeline/tests/fixtures/stages/flaky/ (FLAKY_MODE reset, limit, error; FLAKY_FAILS) and the aicall
+    fixture's AICALL_FAIL_NOTE (a transient-looking last line after a model call error: no second classification).
+89. **The review loop survives a restart (M3 review 1, fix 1).** Before this fix review_note_failure stored the
+    signature before the cycle ran and review_record counted the cycle after it, so a runner killed during
+    cycle 1 ran the stage again on restart, counted the identical failure as the second repeat and escalated to
+    Fable with zero Opus reviews (and counted the open issue twice). Now state.json errors.<stage>.review
+    (active, rc, msg, cmd, activity) says a failure is in the loop and errors.<stage>.pending which cycle E<n>
+    runs now; the cycle's child pid is errors/E<n>.pid (like a stage's .pid). A runner that finds a failed stage
+    with an active review resumes the loop instead of running the stage again (runner_resume_review and
+    runner_review_loop in runner.sh): a child that still runs is adopted (WARN, wait with the heartbeat, take its
+    verdict); a finished child's F<n>.result.json is taken when it holds a verdict (fixed, no_auto, failed); a
+    cycle that ended without one (killed with the runner) runs again under the same E<n> after an INFO line
+    ("review cycle E1 (cycle 1/3, opus) was interrupted by the previous runner, resuming it: ..."), without a
+    repeated ESCAL line and without a second ERROR line. So no Opus cycle is lost, the open-issue counter stays at
+    one, and the failure is not a repeat: repeats grow only when the previous failure got its review
+    (errors.<stage>.reviewed, false after review_note_failure, true after review_record), which is the spec's
+    "twice in a row" across review attempts. A runner killed between the verdict fixed and the restart
+    (last_outcome fixed, nothing pending) just runs the stage again. The INFO line of a rerun of a failed stage
+    names the recorded reason ("after the fix" only when a fix was applied); a stage that was running when the
+    runner died keeps "(the previous one was interrupted)". A cycle that crashes while the runner lives still
+    counts as a used cycle (unchanged). Tested by test-m3 section 10: the whole tree killed while the fake
+    reviewer hangs (FAKE_CLAUDE_MODE=hang), then only the runner killed while the fake reviewer is slow
+    (FAKE_CLAUDE_DELAY, new) so the restart adopts the child.
+90. **The classifier's text patterns are tightened for stage logs (M3 review 1, fix 2).** The same patterns now
+    read the tail of a failed stage's log, which is far noisier than a CLI result, and the first dry run showed
+    the unfixable fixture's "FileNotFoundError: library/keys/service.key is missing" classified as transient:
+    ENOTFOUND matched inside FileNotFoundError, case-insensitively. So the error codes are word-bounded
+    (ECONNRESET, ECONNREFUSED, EPIPE, EAI_AGAIN, ENOTFOUND, ENETUNREACH, ETIMEDOUT), an HTTP status number
+    counts only next to a word that makes it one ("API Error: 503", "HTTP 502", "status 500", "error 429", not
+    "wrote 503 bytes"; the JSON field api_error_status still counts on its own), and "temporary" alone is not
+    an outage ("temporary file" is a code error, "temporary failure in name resolution" and "temporarily
+    unavailable" are transient). test-limits.sh checks each of these texts; the detail label of a 529 found in
+    text is "overloaded", like the one found in the JSON field.

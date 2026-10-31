@@ -114,6 +114,24 @@ printf '{"type":"result","is_error":false,"result":"ok","session_id":"s1","struc
 assert_eq "$(python "$ERRORS" classify --rc 0 --stdout "$tmp/ok.json" | python -c 'import json,sys; d=json.load(sys.stdin); print(d["class"], d["session_id"], d["structured"])')" "ok s1 True" "a good result is ok with its session id and structured flag"
 printf 'rate limited, retry-after: 30\n' > "$tmp/ra.txt"
 assert_eq "$(python "$ERRORS" classify --rc 1 --stdout "$tmp/empty.json" --stderr "$tmp/ra.txt" | python -c 'import json,sys; d=json.load(sys.stdin); print(d["class"], d["retry_after"])')" "transient 30" "retry-after is read"
+# the same patterns run on the tail of a failed stage's log (runner_stage_failed), so common log text must not
+# look transient: error codes are word-bounded, a status number needs its context, "temporary" alone is nothing
+printf 'FileNotFoundError: library/keys/service.key is missing: this stage needs the API key file\n' > "$tmp/fnf.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/fnf.txt")" "error  False False" "FileNotFoundError is a code error (ENOTFOUND does not match inside it)"
+printf 'wrote 503 bytes to events.json\nKeyError: beats\n' > "$tmp/bytes.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/bytes.txt")" "error  False False" "a bare number 503 in a log is not an HTTP status"
+printf 'removed the temporary file plan.tmp\nValueError: no beats\n' > "$tmp/tmpfile.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/tmpfile.txt")" "error  False False" "a temporary file is not a temporary error"
+printf 'API Error: 503 {"type":"error","error":{"type":"api_error","message":"Service unavailable"}}\n' > "$tmp/503.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/503.txt")" "transient server error False False" "an API error 503 is transient"
+printf 'Error: getaddrinfo ENOTFOUND api.anthropic.com\n' > "$tmp/dns.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/dns.txt")" "transient network error False False" "a DNS failure is transient"
+printf 'curl: (7) Failed to connect: connection refused\n' > "$tmp/refused.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/refused.txt")" "transient connection refused False False" "a refused connection is transient"
+printf 'Temporary failure in name resolution\n' > "$tmp/tempfail.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/tempfail.txt")" "transient temporary error False False" "a temporary failure is transient"
+printf "stage: fetching the clip\nYou've hit your session limit · resets 3pm\n" > "$tmp/stagelimit.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/stagelimit.txt")" "limit session limit False False" "a limit printed by a stage script is a limit"
 rm -rf "$tmp"
 
 test_summary

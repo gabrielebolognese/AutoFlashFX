@@ -34,18 +34,23 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import limits  # noqa: E402
 
 TRANSIENT_STATUS = {408, 409, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529}
+# The text patterns also run on the tail of a failed stage's log (runner_stage_failed), which is far noisier than a
+# CLI result: the error codes are word-bounded (ENOTFOUND used to match inside "FileNotFoundError"), an HTTP status
+# counts only next to a word that makes it one ("API Error: 503", "status 500", not "wrote 503 bytes"), and
+# "temporary" alone is not an outage ("temporary file").
+STATUS_CONTEXT = r"(?:api error|http|status(?: code)?|error|code)[:= ]+"
 TRANSIENT_PATTERNS = [
     (r"overloaded", "overloaded"),
-    (r"\b529\b", "529"),
+    (STATUS_CONTEXT + r"529\b", "overloaded"),
     (r"rate[_ -]?limit", "rate limit"),
-    (r"too many requests|\b429\b", "rate limit"),
+    (r"too many requests|" + STATUS_CONTEXT + r"429\b", "rate limit"),
     (r"retry[- _]?after", "rate limit"),
-    (r"timed? ?out|timeout|ETIMEDOUT|deadline exceeded", "timeout"),
-    (r"ECONNRESET|connection reset|socket hang up|EPIPE", "connection reset"),
-    (r"ECONNREFUSED|connection refused", "connection refused"),
-    (r"EAI_AGAIN|ENOTFOUND|getaddrinfo|network error|fetch failed|network is unreachable|ENETUNREACH", "network error"),
-    (r"internal server error|server_error|api_error|\b50[0-4]\b|bad gateway|service unavailable|gateway timeout", "server error"),
-    (r"temporarily unavailable|try again later|temporar(y|ily)", "temporary error"),
+    (r"timed? ?out|timeout|\bETIMEDOUT\b|deadline exceeded", "timeout"),
+    (r"\bECONNRESET\b|connection reset|socket hang up|\bEPIPE\b", "connection reset"),
+    (r"\bECONNREFUSED\b|connection refused", "connection refused"),
+    (r"\bEAI_AGAIN\b|\bENOTFOUND\b|getaddrinfo|network error|fetch failed|network is unreachable|\bENETUNREACH\b", "network error"),
+    (r"internal server error|server_error|api_error|" + STATUS_CONTEXT + r"50[0-4]\b|bad gateway|service unavailable|gateway timeout", "server error"),
+    (r"temporarily unavailable|try again later|temporary (?:error|failure|problem|outage)|temporarily (?:overloaded|down)", "temporary error"),
     (r"stream (was )?(interrupted|closed)|incomplete (response|chunked)", "stream interrupted"),
 ]
 FATAL_PATTERNS = [

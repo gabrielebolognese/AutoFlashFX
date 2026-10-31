@@ -5,8 +5,9 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M3 Error system: done (2026-10-31). Next: M4 Research, expansion, gate, angle (S1 to S4). The build is driven
-  by `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
+- M3 Error system: done (2026-10-31; review 1 fixes in build/M3/fixes-1.md). Next: M4 Research, expansion, gate,
+  angle (S1 to S4). The build is driven by `bash build-runner.sh`; its log is build/build.log and its per-milestone
+  reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
   folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh, pipeline/bin/runner-status,
@@ -63,7 +64,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 - **Automatic fixes (BUILD_SPEC.md 4.2):** a code error in a stage is reviewed and fixed by the runner itself: the
   report is `runs/<id>/errors/E<n>.md`, the verdict `runs/<id>/fixes/F<n>.md`, the fix a commit `autofix(<stage>):
   ...` plus a line in pipeline/knowledge/known-issues.md. The fixer may edit only pipeline/ and
-  motion-lib/candidates/. Usage limits and temporary errors are waited out inside the stage (LIMIT, RETRY lines).
+  motion-lib/candidates/. Usage limits and temporary errors never reach the reviewer: a failed model call is
+  waited out and retried inside the stage (ai.sh), a failed stage script by the runner itself (LIMIT, RESUME,
+  RETRY lines; DECISIONS.md 88). A runner restarted during a review cycle resumes that cycle (DECISIONS.md 89).
 - **Never write an em dash** in any file, prompt, caption, script or terminal message. Use commas, colons, periods
   or parentheses.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and

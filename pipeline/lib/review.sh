@@ -7,14 +7,22 @@
 # errors.repeated_signature_skip (2) times in a row the remaining Opus cycles are skipped; then one escalation
 # cycle with the Fable reviewer (caps.escalation_cycles); then the idea is blocked. A reviewer verdict with
 # auto_apply no blocks the idea at once with what the user must do. The runner keeps the counters in state.json
-# under errors.<stage> (cycles, escalated, repeats, last_signature, failures, last_outcome).
+# under errors.<stage>: cycles, escalated, repeats, last_signature, failures, reviewed (the last failure got its
+# review), last_n, last_outcome, review (the error under review: active, rc, msg, cmd, activity), pending (the
+# number of the cycle that runs now, until its verdict is recorded), restart (why the stage runs again: fixed,
+# transient, limit) and transient_tries (the runner's own retries of a failed stage script, runner_stage_failed).
+# A runner restarted in the middle of the loop resumes it from these fields (runner_resume_review in runner.sh).
 #
 # Runner side (pipeline/lib/runner.sh calls these):
-#   review_note_failure RUN_DIR STAGE SIGNATURE   count a stage failure: repeats of the same signature in a row
+#   review_note_failure RUN_DIR STAGE SIGNATURE   count a stage failure: repeats of the same signature in a row,
+#                                                 each separated by a review (an unreviewed one is not a repeat)
+#   review_begin RUN_DIR STAGE RC "MSG" "CMD" "ACTIVITY"   the stage enters the loop (errors.<stage>.review)
 #   review_decide RUN_DIR STAGE                   -> REVIEW_KIND (opus | fable | block), REVIEW_CYCLE (1-based),
 #                                                 REVIEW_CAP, REVIEW_DONE (Opus cycles so far), REVIEW_N (the number
 #                                                 of the next E file), REVIEW_REASON (when block)
+#   review_pending_set RUN_DIR STAGE N            cycle E<n> runs now (cleared by review_record)
 #   review_record RUN_DIR STAGE KIND N OUTCOME    count the cycle after it ran
+#   review_end RUN_DIR STAGE REASON               the loop ended: fixed (the stage restarts) or blocked
 #   review_restart_note RUN_DIR STAGE "MSG" N "SUMMARY" "COMMIT"   write <stage>/restart-note.md for the restart
 # Child side (pipeline/bin/review-cycle, a background child of the runner so the heartbeat keeps printing):
 #   review_error_file RUN_DIR STAGE N RC "MSG" "CMD"     errors/E<n>.md: the stage, command and exit code, the last
@@ -42,14 +50,38 @@ review_fixer_paths() { cfg review.fixer_paths '["pipeline","motion-lib/candidate
 # ------------------------------------------------------------------ runner side
 
 review_note_failure() {  # RUN_DIR STAGE SIGNATURE
-  local run_dir="$1" stage="$2" sig="$3" last repeats failures
-  last="$(state_get "$run_dir" "errors.$stage.last_signature" "")"
-  repeats="$(state_get "$run_dir" "errors.$stage.repeats" 0)"
-  failures="$(state_get "$run_dir" "errors.$stage.failures" 0)"
-  if [ -n "$sig" ] && [ "$sig" = "$last" ]; then repeats=$((repeats + 1)); else repeats=1; fi
+  # repeats counts consecutive failures with the same signature, each separated by a review (BUILD_SPEC.md 4.2.5:
+  # "twice in a row" across review attempts). A failure whose previous occurrence never got its review (the runner
+  # stopped before the cycle recorded its verdict) is the same failure seen again, not a repeat.
+  local run_dir="$1" stage="$2" sig="$3" rec last="" repeats="" failures="" reviewed=""
+  rec="$(state_get "$run_dir" "errors.$stage" "{}" 2>/dev/null)"
+  eval "$(json_eval "$rec" last=last_signature repeats=repeats failures=failures reviewed=reviewed)"
+  case "$repeats" in ''|*[!0-9]*) repeats=0 ;; esac
+  case "$failures" in ''|*[!0-9]*) failures=0 ;; esac
+  if [ -z "$sig" ] || [ "$sig" != "$last" ]; then repeats=1
+  elif [ "$reviewed" != false ]; then repeats=$((repeats + 1))
+  fi
+  [ "$repeats" -ge 1 ] || repeats=1
   state_set "$run_dir" "errors.$stage.last_signature=\"$sig\"" "errors.$stage.repeats=$repeats" \
-    "errors.$stage.failures=$((failures + 1))" >/dev/null 2>&1
+    "errors.$stage.failures=$((failures + 1))" "errors.$stage.reviewed=false" >/dev/null 2>&1
   REVIEW_REPEATS="$repeats"
+}
+
+review_begin() {  # RUN_DIR STAGE RC "MSG" "CMD" "ACTIVITY": the stage enters the review loop; a restart resumes it
+  local run_dir="$1" stage="$2" rc="$3" msg="$4" cmd="$5" activity="$6"
+  case "$rc" in ''|*[!0-9]*) rc=1 ;; esac
+  state_set "$run_dir" \
+    "errors.$stage.review={\"active\": true, \"rc\": $rc, \"msg\": $(json_quote "$msg"), \"cmd\": $(json_quote "$cmd"), \"activity\": $(json_quote "$activity")}" \
+    "errors.$stage.last_outcome=null" "errors.$stage.pending=null" "errors.$stage.transient_tries=0" \
+    "errors.$stage.restart=null" >/dev/null 2>&1
+}
+
+review_pending_set() {  # RUN_DIR STAGE N: cycle E<n> runs now (its child's pid is in errors/E<n>.pid)
+  state_set "$1" "errors.$2.pending=$3" >/dev/null 2>&1
+}
+
+review_end() {  # RUN_DIR STAGE REASON (fixed | blocked): the loop ended; "restart" tells the next attempt why it runs
+  state_set "$1" "errors.$2.review.active=false" "errors.$2.pending=null" "errors.$2.restart=$(json_quote "$3")" >/dev/null 2>&1
 }
 
 review_decide() {  # RUN_DIR STAGE
@@ -79,9 +111,11 @@ review_record() {  # RUN_DIR STAGE KIND N OUTCOME
   local run_dir="$1" stage="$2" kind="$3" n="$4" outcome="$5" cycles
   cycles="$(state_get "$run_dir" "errors.$stage.cycles" 0)"
   if [ "$kind" = fable ]; then
-    state_set "$run_dir" "errors.$stage.escalated=true" "errors.$stage.last_n=$n" "errors.$stage.last_outcome=\"$outcome\"" >/dev/null 2>&1
+    state_set "$run_dir" "errors.$stage.escalated=true" "errors.$stage.last_n=$n" "errors.$stage.last_outcome=\"$outcome\"" \
+      "errors.$stage.pending=null" "errors.$stage.reviewed=true" >/dev/null 2>&1
   else
-    state_set "$run_dir" "errors.$stage.cycles=$((cycles + 1))" "errors.$stage.last_n=$n" "errors.$stage.last_outcome=\"$outcome\"" >/dev/null 2>&1
+    state_set "$run_dir" "errors.$stage.cycles=$((cycles + 1))" "errors.$stage.last_n=$n" "errors.$stage.last_outcome=\"$outcome\"" \
+      "errors.$stage.pending=null" "errors.$stage.reviewed=true" >/dev/null 2>&1
   fi
 }
 

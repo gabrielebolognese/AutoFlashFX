@@ -2,7 +2,7 @@
 # test-m3.sh: acceptance test for M3 (Error system). One section makes real model calls (the Opus reviewer and the
 # Sonnet fixer on a planted bug); everything else uses the fake claude in pipeline/tests/fakes.
 #   bash pipeline/tests/test-m3.sh                 everything (10 to 20 minutes, dominated by the real calls)
-#   M3_SECTIONS="1 2 3" bash pipeline/tests/test-m3.sh    only those sections (4 is the real-model one)
+#   M3_SECTIONS="1 2 3" bash pipeline/tests/test-m3.sh    only those sections (4 is the real-model one; 1 to 10 exist)
 #
 # Covers (BUILD_SPEC.md section 12, M3, and PLAN.md M3):
 #   1. ai() units with the fake: the command line (model and effort from config, tools, the protected-file denials),
@@ -23,12 +23,17 @@
 #      idea left in the queue
 #   8. the two guards as units: treeguard.py (the fixer's changes outside pipeline/ are undone, the user's own
 #      uncommitted work and a log that grew during the call survive) and protect.py (protected files restored)
+#   9. a failed stage script is classified before any review (M3 review 1, fix 2): a network reset is retried
+#      (RETRY 60 s, 4 min, 16 min, then a code error and one review), a usage limit printed by the stage is waited
+#      out (LIMIT, RESUME, no reviewer call), a stage whose own model call failed goes straight to the review
+#  10. a runner killed during a review cycle (M3 review 1, fix 1): the restart resumes the same cycle (no ESCAL
+#      before an Opus cycle, no second ERROR, one open issue) and adopts a review-cycle child that still runs
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$REPO_DIR"
 fast_mode
 export REELS_DUMMY_SECONDS=0.1
-SECTIONS="${M3_SECTIONS:-1 2 3 4 5 6 7 8}"
+SECTIONS="${M3_SECTIONS:-1 2 3 4 5 6 7 8 9 10}"
 want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 
 STATE_PY="$REPO_DIR/pipeline/lib/state.py"
@@ -41,6 +46,9 @@ IDEA_D="Idea D: the fourth idea stays in the queue"
 ts_regex='^\[[0-9]{2}:[0-9]{2}\] '
 RUNNER_JOB=""
 KEY_ERROR="exit 1: FileNotFoundError: library/keys/service.key is missing: this stage needs the API key file that only the user can create"
+REVIEWER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer"]["model"])')"
+ESCALATION="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer_escalation"]["model"])')"
+FIXER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["fixer"]["model"])')"
 
 state_get() { python "$STATE_PY" get "$@"; }
 run_dirs() { ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||'; }
@@ -64,6 +72,20 @@ wait_for() {  # wait_for <regex> <file> [seconds]
     sleep 0.2; i=$((i + 1))
   done
   return 1
+}
+
+wait_gone() {  # wait_gone <pid> [seconds]
+  local i=0 n=$(( ${2:-10} * 5 ))
+  while [ $i -lt $n ]; do ps -p "$1" >/dev/null 2>&1 || return 0; sleep 0.2; i=$((i + 1)); done
+  return 1
+}
+
+kill_tree() {  # kill_tree <pid>: SIGKILL the process, then every descendant (ps -ef lists bash and native children
+               # with their parent pid; the parent goes first so it cannot react to a child's death)
+  local pid="$1" kids k
+  kids="$(ps -ef 2>/dev/null | awk -v p="$pid" 'NR > 1 && $3 == p { print $2 }')"
+  kill -9 "$pid" 2>/dev/null
+  for k in $kids; do kill_tree "$k"; done
 }
 
 install_stage() {  # install_stage <fixture name> <stage key>: the fixture's files become the stage's run.sh (+ helpers)
@@ -450,9 +472,6 @@ head_before="$(git -C "$SANDBOX" rev-parse HEAD)"
 run_once "$SANDBOX/escal.out" FAKE_CLAUDE_REVIEW=yes FAKE_CLAUDE_FIX=ok REELS_DUMMY="$(dummy_except 10-build)"; rc=$?
 OUT="$SANDBOX/escal.out"
 RD="$(run_dirs | head -n 1)"
-REVIEWER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer"]["model"])')"
-ESCALATION="$(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer_escalation"]["model"])')"
-FIXER="$(python -c 'import json; print(json.load(open("config.json"))["models"]["fixer"]["model"])')"
 assert_rc 0 $rc "the runner exits 0 after blocking the idea"
 assert_eq "$(grep -c -E "${ts_regex}ERROR  S10 building visuals: " "$OUT")" "3" "three failures of the stage (the original, after the fix, after the escalated fix)"
 assert_eq "$(grep -c -E "${ts_regex}FIXED  S10: fake fix for 10-build \(nothing changed\) \(commit [0-9a-f]{7,}\), restarting stage$" "$OUT")" "2" "two FIXED lines with commits"
@@ -576,6 +595,177 @@ assert_file "$SANDBOX/library/hooks.txt" "protect: a deleted library file is res
 assert_eq "$(git -C "$SANDBOX" status --porcelain -- styles/paper-cards/style.md)" "" "protect: style.md is restored"
 assert_true "protect: the exports change is reported (not restored)" grep -q '"exports_changed": true' <<<"$out"
 assert_true "protect: the report names the changed files" grep -q '"changed": \["root/ideas.txt", "repo/styles/paper-cards/style.md"\]' <<<"$out"
+fi
+
+# ----------------------------------------------------------------------------------------------------------------
+if want 9; then
+section "9. a failed stage script is classified: transient retries, a usage limit, then the code error"
+# a network reset twice, then success: two RETRY lines, no ERROR, no reviewer call
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/flaky.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=reset FLAKY_FAILS=2; rc=$?
+OUT="$SANDBOX/flaky.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner exports the idea after two temporary failures of the stage"
+assert_grep "${ts_regex}RETRY  temporary error \(connection reset\), retrying in 60s \(try 1/3\)$" "$OUT" "RETRY 1: 60 s"
+assert_grep "${ts_regex}RETRY  temporary error \(connection reset\), retrying in 4m \(try 2/3\)$" "$OUT" "RETRY 2: 4 min"
+assert_eq "$(grep -c "fast-forward: skipping a .* wait (transient backoff)" "$OUT")" "2" "two scaled backoff waits (fast-forward)"
+assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the temporary error$" "$OUT" "the first rerun is announced"
+assert_grep "${ts_regex}INFO   S10 building visuals: attempt 3 after the temporary error$" "$OUT" "the second rerun too"
+assert_not_grep "${ts_regex}(ERROR|BLOCK|FIXED|ESCAL) " "$OUT" "no ERROR: a temporary error is retried, not reviewed"
+assert_grep "${ts_regex}STEP   building visuals done" "$OUT" "the stage passes on the third attempt"
+assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the idea is exported"
+assert_eq "$(fake_calls)" "0" "no model call at all: the reviewer was never asked"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "3" "state: three attempts of the stage"
+assert_eq "$(state_get "$RD" errors.10-build.transient_tries)" "0" "state: the transient counter is reset by the success"
+assert_eq "$(state_get "$RD" issues.open)" "0" "state: no open issue"
+assert_eq "$(state_get "$RD" issues.fixed)" "0" "state: nothing fixed"
+
+# the same stage failing four times: the fourth failure is a code error with one review cycle
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/flaky4.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=reset FLAKY_FAILS=9 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/flaky4.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner blocks the idea on the reviewer's verdict and exits 0"
+assert_eq "$(grep -c -E "${ts_regex}RETRY  " "$OUT")" "3" "three RETRY lines (60 s, 4 min, 16 min)"
+assert_grep "${ts_regex}RETRY  temporary error \(connection reset\), retrying in 16m \(try 3/3\)$" "$OUT" "RETRY 3: 16 min"
+assert_grep "${ts_regex}ERROR  S10 building visuals: temporary error persisted after 3 retries \(connection reset\): exit 1: .*ECONNRESET" "$OUT" "the fourth failure is a code error"
+assert_eq "$(grep -c -E "${ts_regex}ERROR  " "$OUT")" "1" "one ERROR line"
+assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: environment problem: fake reviewer: temporary error persisted" "$OUT" "then the review loop: the reviewer's verdict blocks the idea"
+assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call, after the retries"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "4" "state: four attempts"
+assert_eq "$(state_get "$RD" errors.10-build.transient_tries)" "0" "state: the counter is reset when the error goes to review"
+assert_grep "^- error: temporary error persisted after 3 retries \(connection reset\)" "$RD/errors/E1.md" "E1.md names the persisted temporary error"
+assert_true "the order is RETRY, RETRY, RETRY, ERROR, BLOCK" python -c '
+import re, sys
+tags = [m.group(1) for m in re.finditer(r"^\[\d\d:\d\d\] (RETRY|ERROR|BLOCK|FIXED|ESCAL) ", open(sys.argv[1], encoding="utf-8").read(), re.M)]
+sys.exit(0 if tags == ["RETRY", "RETRY", "RETRY", "ERROR", "BLOCK"] else 1)' "$OUT"
+
+# a usage limit printed by a stage script: LIMIT, the wait, RESUME, the stage again, no review, no model call
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/flakylimit.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit FLAKY_FAILS=1; rc=$?
+OUT="$SANDBOX/flakylimit.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner exports the idea after the limit"
+assert_grep "${ts_regex}LIMIT  session limit hit, resuming at ([0-9]{2}:[0-9]{2}|[A-Z][a-z]{2} [0-9]{2}:[0-9]{2}) \(\+2 min margin\)$" "$OUT" "LIMIT line from the stage's message"
+assert_grep "${ts_regex}INFO   fast-forward: skipping the wait until " "$OUT" "the wait until the reset plus the margin (fast-forward)"
+assert_grep "${ts_regex}RESUME limit reset, continuing: building visuals$" "$OUT" "RESUME names the stage's activity"
+assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the usage limit$" "$OUT" "the rerun is announced"
+assert_not_grep "${ts_regex}(ERROR|RETRY|BLOCK) " "$OUT" "a limit is never an error"
+assert_grep "${ts_regex}DONE   exported #1" "$OUT" "exported"
+assert_eq "$(fake_calls)" "0" "no reviewer call, no probe"
+assert_grep "\| session limit \| reset .* \| waiting until .* \(reset \+ 120 s\) \| \"You've hit your session limit" "$SANDBOX/logs/limits.log" "limits.log has the wait with the stage's message"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts"
+
+# a stage whose own model call failed (ai() wrote error.json) is not classified again: the log tail looks
+# transient, but ai() already classified and retried that call; the runner goes straight to the review
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage aicall 10-build
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf 'error:Boom happened in the model call\nreview:no\n' > "$SANDBOX/script.txt"
+run_once "$SANDBOX/aierr.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FAKE_CLAUDE_SCRIPT="$SANDBOX_M/script.txt" \
+  AICALL_FAIL_NOTE="note: the fetch failed with ECONNRESET right after the model call"; rc=$?
+OUT="$SANDBOX/aierr.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner blocks the idea and exits 0"
+assert_not_grep "${ts_regex}RETRY  " "$OUT" "no RETRY: the model call's error was classified by ai() already (error.json)"
+assert_grep "${ts_regex}ERROR  S10 building visuals: exit 1: note: the fetch failed with ECONNRESET right after the model call$" "$OUT" "ERROR at once, with the last log line"
+assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S10: " "$OUT" "then the reviewer's block"
+assert_eq "$(fake_roles)" "call:haiku,reviewer:$REVIEWER" "the stage's own call, then one reviewer call"
+assert_eq "$(state_get "$RD" stages.10-build.attempts)" "1" "state: the stage ran once"
+assert_grep "^## Model call error \(10-build/error.json\)" "$RD/errors/E1.md" "E1.md carries the model call's error.json"
+assert_grep '"message": "Boom happened in the model call"' "$RD/10-build/error.json" "error.json is this attempt's"
+fi
+
+# ----------------------------------------------------------------------------------------------------------------
+if want 10; then
+section "10. a runner killed during a review cycle: the restart resumes the cycle, no Opus cycle lost"
+# (a) the whole process tree dies while the reviewer call hangs: the restart runs the same cycle E1 as cycle 1/3
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage unfixable 10-build
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+export REELS_DUMMY="$(dummy_except 10-build)"
+FAKE_CLAUDE_MODE=hang runner_bg "$SANDBOX/rkill1.out" --once
+if wait_for '"role": "reviewer"' "$FAKE_CLAUDE_LOG" 120; then
+  RD="$(run_dirs | head -n 1)"
+  wait_for '^[0-9]+' "$RD/errors/E1.pid" 10
+  cycle_pid="$(cut -d' ' -f1 "$RD/errors/E1.pid" 2>/dev/null)"
+  lp="$(lock_pid)"
+  kill_tree "$lp"; kill -9 $RUNNER_JOB 2>/dev/null
+  wait $RUNNER_JOB 2>/dev/null
+  wait_gone "$lp" 10
+  assert_false "the runner is dead after SIGKILL" ps -p "$lp"
+  assert_false "the review cycle child is dead too" ps -p "${cycle_pid:-0}"
+  assert_eq "$(state_get "$RD" stages.10-build.status)" "failed" "state: the stage had failed (under review) when killed"
+  assert_eq "$(state_get "$RD" errors.10-build.review.active)" "true" "state: the review loop was active"
+  assert_eq "$(state_get "$RD" errors.10-build.pending)" "1" "state: cycle E1 was pending"
+  assert_eq "$(state_get "$RD" errors.10-build.cycles 0)" "0" "state: no cycle recorded yet"
+  assert_file "$RD/errors/E1.pid" "the cycle's pid file is left behind by the kill"
+  run_once "$SANDBOX/rkill2.out" FAKE_CLAUDE_REVIEW=no; rc=$?
+  OUT="$SANDBOX/rkill2.out"
+  assert_rc 0 $rc "the restarted runner blocks the idea on the reviewer's verdict and exits 0"
+  assert_grep "${ts_regex}START  idea 1/1 \"Idea A.*\" -> runs/$(basename "$RD") \(resumed at building visuals, " "$OUT" "START says where it resumes"
+  assert_grep "${ts_regex}INFO   S10 building visuals: review cycle E1 \(cycle 1/3, $REVIEWER\) was interrupted by the previous runner, resuming it: $KEY_ERROR$" "$OUT" "the restart resumes cycle E1 as cycle 1/3 with the Opus reviewer"
+  assert_not_grep "${ts_regex}(ESCAL|ERROR|RETRY|FIXED) " "$OUT" "no ESCAL before an Opus cycle, no second ERROR: the stage did not run again"
+  assert_not_grep "after the fix" "$OUT" "no 'after the fix' line: nothing was fixed"
+  assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S10: environment problem: fake reviewer: " "$OUT" "BLOCK on the resumed cycle's verdict"
+  assert_eq "$(fake_roles)" "reviewer:$REVIEWER,reviewer:$REVIEWER" "the hung reviewer call, then the resumed cycle's reviewer call, both with the Opus reviewer"
+  assert_eq "$(state_get "$RD" errors.10-build.cycles)" "1" "state: one Opus cycle in all"
+  assert_eq "$(state_get "$RD" errors.10-build.repeats)" "1" "state: the signature was counted once"
+  assert_eq "$(state_get "$RD" errors.10-build.escalated false)" "false" "state: no escalation"
+  assert_eq "$(state_get "$RD" issues.open)" "1" "state: one open issue, not two"
+  assert_eq "$(state_get "$RD" stages.10-build.attempts)" "1" "state: the stage ran once"
+  assert_eq "$(state_get "$RD" errors.10-build.pending)" "" "state: nothing pending after the verdict"
+  assert_no_file "$RD/errors/E1.pid" "the cycle's pid file is removed"
+  assert_no_file "$RD/errors/E2.md" "no E2: the interrupted cycle kept its number"
+  assert_grep '"outcome": "no_auto"' "$RD/fixes/F1.result.json" "F1.result.json holds the verdict"
+  assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: " "$SANDBOX/logs/blocked.txt" "blocked.txt has the idea"
+else
+  fail "the reviewer call never started (see $SANDBOX/rkill1.out)"; cat "$SANDBOX/rkill1.out"
+  kill_tree "$(lock_pid)"; kill -9 $RUNNER_JOB 2>/dev/null
+fi
+
+# (b) only the runner dies: its review-cycle child keeps working, the restart adopts it and takes its verdict
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage unfixable 10-build
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+FAKE_CLAUDE_DELAY=20 FAKE_CLAUDE_REVIEW=no runner_bg "$SANDBOX/rkill3.out" --once
+if wait_for '"role": "reviewer"' "$FAKE_CLAUDE_LOG" 120; then
+  RD="$(run_dirs | head -n 1)"
+  wait_for '^[0-9]+' "$RD/errors/E1.pid" 10
+  cycle_pid="$(cut -d' ' -f1 "$RD/errors/E1.pid" 2>/dev/null)"
+  lp="$(lock_pid)"
+  kill -9 "$lp" $RUNNER_JOB 2>/dev/null
+  wait $RUNNER_JOB 2>/dev/null
+  wait_gone "$lp" 10
+  assert_true "the review cycle child still runs after the runner died" ps -p "${cycle_pid:-0}"
+  run_once "$SANDBOX/rkill4.out" FAKE_CLAUDE_REVIEW=no; rc=$?
+  OUT="$SANDBOX/rkill4.out"
+  assert_rc 0 $rc "the restarted runner exits 0"
+  assert_grep "${ts_regex}WARN   S10: review cycle E1 still runs from the previous runner \(pid $cycle_pid\), waiting for it instead of starting it twice$" "$OUT" "the orphaned cycle is adopted"
+  assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: environment problem: fake reviewer: " "$OUT" "its verdict blocks the idea"
+  assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call in all: the adopted cycle's"
+  assert_eq "$(state_get "$RD" errors.10-build.cycles)" "1" "state: one cycle"
+  assert_eq "$(state_get "$RD" issues.open)" "1" "state: one open issue"
+  assert_not_grep "${ts_regex}(ESCAL|ERROR|FIXED) " "$OUT" "no ESCAL, no second ERROR"
+  assert_false "the adopted child has ended" ps -p "$cycle_pid"
+  assert_no_file "$RD/errors/E1.pid" "its pid file is removed"
+else
+  fail "the reviewer call never started (see $SANDBOX/rkill3.out)"; cat "$SANDBOX/rkill3.out"
+  kill_tree "$(lock_pid)"; kill -9 $RUNNER_JOB 2>/dev/null
+fi
+unset REELS_DUMMY
 fi
 
 test_summary

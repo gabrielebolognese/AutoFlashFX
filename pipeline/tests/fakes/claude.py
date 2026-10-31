@@ -11,6 +11,8 @@ Mode selection:
                               last line the last mode repeats. The position is kept in FAKE_CLAUDE_STATE/script.n.
   FAKE_CLAUDE_MODE=<mode>     otherwise this mode for every call (default: auto)
   FAKE_CLAUDE_STATE=<dir>     counters (default: next to the log, else the system temp folder)
+  FAKE_CLAUDE_DELAY=<seconds> every answering call (ok, echo, review, fix, fixture, bad-json) sleeps this long after
+                              it was logged, so a test can kill the runner while a reviewer is still working
 
 Modes:
   ok | ok:<text>              a success result ("ok" or the text)
@@ -322,6 +324,9 @@ def main(argv: list[str]) -> int:
         return 0
 
     log()
+    delay = float(os.environ.get("FAKE_CLAUDE_DELAY") or 0)
+    if delay > 0:  # the call is logged, then takes this long (a reviewer still working when the runner is killed)
+        time.sleep(delay)
     if kind == "echo":
         emit(prompt, sid=sid)
         return 0

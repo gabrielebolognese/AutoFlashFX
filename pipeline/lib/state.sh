@@ -16,6 +16,7 @@
 #   state_finish <run_dir> exported|dropped|blocked "<reason>" [stage] [number]
 #   json_field '<json>' <key> [default]        read one field of a JSON object (dotted keys allowed)
 #   eval "$(json_eval '<json>' VAR=key ...)"  read several fields in one call (missing keys give "")
+#   json_quote "<text>"                        the text as a JSON string literal (a state_set value)
 #   run_flag <run_dir> <stage> "<text>"        record the flag and print the FLAG line (needs log.sh)
 #
 # Every command that writes state.json holds runs/<id>/state.lock (state.py StateLock) from its load to its save,
@@ -62,6 +63,12 @@ else: print(cur)' "$@"
 run_flag() {
   state_flag "$1" "$2" "$3" >/dev/null
   say FLAG "needs review: $3"
+}
+
+json_quote() {  # json_quote "text" -> the text as a JSON string literal, for state_set values that must stay text
+  "$REELS_PY" -c 'import json, sys
+sys.stdout.reconfigure(newline="\n")
+print(json.dumps(sys.argv[1], ensure_ascii=False))' "$1"
 }
 
 json_eval() {  # eval "$(json_eval '<json>' VAR=key ...)": several fields in one Python call; a missing key gives ""

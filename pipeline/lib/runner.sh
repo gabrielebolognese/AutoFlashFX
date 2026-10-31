@@ -23,12 +23,21 @@
 # cannot be read or written mid-run (OneDrive or an antivirus holding the file, a damaged file) goes through
 # runner_state: one retry after STATE_RETRY_SECONDS, then the systemic stop; the idea stays in ideas.txt.
 #
+# A failed stage script (BUILD_SPEC.md section 4, M3): runner_stage_failed classifies the exit code and the tail of
+# stage.log in the spec's order with the classifier ai() uses (pipeline/lib/errors.py): a usage limit is waited out
+# (LIMIT, RESUME) and the stage runs again; a transient error is retried after 60 s, 4 min, 16 min (RETRY lines,
+# the counter errors.<stage>.transient_tries in state.json survives a restart) and the fourth failure is a code
+# error; a stage whose own model call failed (ai() wrote <stage>/error.json in this attempt) was classified and
+# retried there already and is a code error at once.
+#
 # Code errors (BUILD_SPEC.md 4.2, M3): runner_code_error prints ERROR and runs the review and fix loop of
 # pipeline/lib/review.sh through the child script pipeline/bin/review-cycle (so the heartbeat keeps printing):
 # FIXED restarts the stage, a verdict that needs the user blocks the idea, and the same error blocking
 # caps.systemic_block_streak ideas in a row is the systemic stop (logs/.block-streak keeps the streak across
-# restarts; an export or a drop resets it). Usage limits and transient errors never reach the runner: ai() waits
-# and retries inside the stage (LIMIT, RESUME and RETRY lines come from there).
+# restarts; an export or a drop resets it). The loop survives a restart: state.json says which stage is under
+# review and which cycle E<n> is pending, errors/E<n>.pid names the cycle's child, and runner_resume_review adopts
+# a child that still runs, takes the verdict of one that finished, or runs the interrupted cycle again (same E<n>,
+# no Opus cycle lost, the stage is not run again).
 
 RUNNER_LOCKED=0
 CHILD_PID=""
@@ -102,6 +111,10 @@ runner_on_exit() {
 
 runner_sleep() {  # runner_sleep <seconds> [what]: scaled by REELS_SLEEP_SCALE; 0 means fast-forward (log only)
   reels_sleep "$@"
+}
+
+reels_wait_tick() {  # limits.sh calls this between the 60 s chunks of the runner's own waits (a limit, a backoff)
+  runner_tick
 }
 
 runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>" ["<fix 2>" ...]: numbered fix lines
@@ -215,15 +228,26 @@ runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> [
     return 2
   fi
   mkdir -p "$RUN_DIR/$stage"
+  if [ "$status" = failed ] && [ "$(state_get "$RUN_DIR" "errors.$stage.review.active" false 2>/dev/null)" = true ]; then
+    # the previous runner stopped while this failure was in the review loop: resume the loop, not the stage
+    runner_resume_review "$stage" "$label" "$activity"
+    return $?
+  fi
   runner_adopt_orphan "$stage" "$label" "$activity"; rc=$?
   [ "$rc" = 3 ] || return "$rc"   # 3: no orphan (or it left nothing valid), run the stage; else the stage's result
   if [ "$attempts" -gt 0 ]; then
     if [ "$status" = failed ]; then
-      say INFO "$label $activity: attempt $((attempts + 1)) after the fix"
+      case "$(state_get "$RUN_DIR" "errors.$stage.restart" "" 2>/dev/null)" in
+        fixed) say INFO "$label $activity: attempt $((attempts + 1)) after the fix" ;;
+        transient) say INFO "$label $activity: attempt $((attempts + 1)) after the temporary error" ;;
+        limit) say INFO "$label $activity: attempt $((attempts + 1)) after the usage limit" ;;
+        *) say INFO "$label $activity: attempt $((attempts + 1)) (the previous one failed)" ;;
+      esac
     else
       say INFO "$label $activity: attempt $((attempts + 1)) (the previous one was interrupted)"
     fi
   fi
+  rm -f "$RUN_DIR/$stage/error.json"   # a model call error of this attempt (ai.sh) is told apart from an older one
   runner_state update 0 state_stage_start "$RUN_DIR" "$stage" || return 2
   STAGE_STARTED="$EPOCHSECONDS"
   set_activity "$activity"
@@ -270,13 +294,16 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
       runner_state update "0 5" state_stage_done "$RUN_DIR" "$stage" 0 || return 2   # 5: the output did not validate
       res="$STATE_OUT"; src="$STATE_RC"
       if [ "$src" = 0 ]; then
-        local issues_fixed="" issues_open=""
+        local issues_fixed="" issues_open="" attempts=""
         # NEXT_* tell the loop what follows, so it does not have to ask state.py again
-        eval "$(json_eval "$res" seconds=seconds NEXT_PHASE=next_phase NEXT_STAGE=next_stage NEXT_LABEL=next_label \
+        eval "$(json_eval "$res" seconds=seconds attempts=attempts NEXT_PHASE=next_phase NEXT_STAGE=next_stage NEXT_LABEL=next_label \
           NEXT_ACTIVITY=next_activity NEXT_ATTEMPTS=next_attempts NEXT_NUMBER=export_number \
           issues_fixed=issues_fixed issues_open=issues_open)"
         ISSUES_FIXED="${issues_fixed:-$ISSUES_FIXED}"
         ISSUES_OPEN="${issues_open:-$ISSUES_OPEN}"
+        if [ "${attempts:-1}" -gt 1 ] 2>/dev/null; then  # a retried stage passed: its transient counter starts over
+          state_set "$RUN_DIR" "errors.$stage.transient_tries=0" "errors.$stage.restart=null" >/dev/null 2>&1
+        fi
         say STEP "$activity done ($(fmt_dur "${seconds:-0}")) -> $(runner_next_text "${NEXT_PHASE:-done}" "$NEXT_ACTIVITY")"
         return 0
       fi
@@ -297,17 +324,73 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
       return 1
       ;;
     *)
-      runner_code_error "$stage" "$label" "$activity" "$rc" "exit $rc: $(runner_last_log_line "$RUN_DIR/$stage/stage.log")"
+      runner_stage_failed "$stage" "$label" "$activity" "$rc"
+      return $?
+      ;;
+  esac
+}
+
+runner_stage_failed() {  # stage label activity rc -> 0 run the stage again (after a limit or a transient wait),
+                         # else the review loop's result (0 restart after a fix, 1 run ended, 2 stop)
+  # BUILD_SPEC.md section 4 for a failed stage script: classify in order (usage limit, transient, code error) on
+  # the exit code and the last errors.classify_tail_lines of stage.log, with the patterns ai() uses
+  # (pipeline/lib/errors.py). A stage whose own model call failed (<stage>/error.json, written by ai() in this
+  # attempt) was classified and retried there already: it is a code error now. The transient counter lives in
+  # state.json (errors.<stage>.transient_tries) so a restart keeps it; a success or a code error resets it.
+  local stage="$1" label="$2" activity="$3" rc="$4" log="$RUN_DIR/$stage/stage.log" tail_file="$RUN_DIR/$stage/.log-tail"
+  local msg out="" cls="" detail="" retry_after="" l_kind="" l_reset="" l_msg="" tries backoff_n delay tail_n
+  msg="exit $rc: $(runner_last_log_line "$log")"
+  if [ -f "$RUN_DIR/$stage/error.json" ]; then
+    runner_code_error "$stage" "$label" "$activity" "$rc" "$msg"
+    return $?
+  fi
+  tail_n="$(cfg errors.classify_tail_lines 40)"
+  if [ -f "$log" ]; then tail -n "$tail_n" "$log" | tr -d '\r' > "$tail_file"; else : > "$tail_file"; fi
+  out="$(error_classify "$rc" "" "$tail_file" 2>/dev/null)" || out=""
+  rm -f "$tail_file"
+  eval "$(json_eval "$out" cls=class detail=detail retry_after=retry_after l_kind=limit.kind l_reset=limit.reset l_msg=limit.message)"
+  case "$cls" in
+    limit)
+      state_stage_fail "$RUN_DIR" "$stage" "$rc" "usage limit (${l_kind:-usage}): ${l_msg:-$msg}" >/dev/null
+      state_set "$RUN_DIR" "errors.$stage.restart=\"limit\"" >/dev/null 2>&1
+      if [ -n "$l_reset" ]; then
+        limit_wait "$l_reset" "${l_kind:-usage}" "$activity" "$l_msg"
+      elif ! limit_wait_unparsed "${l_kind:-usage}" "$activity" "$l_msg" -- ai_probe "$RUN_DIR/$stage"; then
+        runner_code_error "$stage" "$label" "$activity" "$rc" "usage limit with no reset time, and the probe never answered: $msg"
+        return $?
+      fi
+      return 0
+      ;;
+    transient)
+      tries="$(state_get "$RUN_DIR" "errors.$stage.transient_tries" 0 2>/dev/null)"
+      case "$tries" in ''|*[!0-9]*) tries=0 ;; esac
+      tries=$((tries + 1))
+      backoff_n="$(error_backoff_count)"
+      if [ "$tries" -le "$backoff_n" ]; then
+        delay="$(error_backoff "$tries")"
+        [ -n "$retry_after" ] && [ "$retry_after" -gt "$delay" ] 2>/dev/null && delay="$retry_after"
+        state_stage_fail "$RUN_DIR" "$stage" "$rc" "temporary error ($detail), try $tries/$backoff_n: $msg" >/dev/null
+        state_set "$RUN_DIR" "errors.$stage.transient_tries=$tries" "errors.$stage.restart=\"transient\"" >/dev/null 2>&1
+        say RETRY "temporary error ($detail), retrying in $(fmt_wait "$delay") (try $tries/$backoff_n)"
+        set_activity "retrying after temporary error ($detail), next try in $(fmt_wait "$delay") (try $tries/$backoff_n)"
+        runner_sleep "$delay" "transient backoff"
+        set_activity "$activity"
+        return 0
+      fi
+      runner_code_error "$stage" "$label" "$activity" "$rc" "temporary error persisted after $backoff_n retries ($detail): $msg"
+      return $?
+      ;;
+    *)
+      runner_code_error "$stage" "$label" "$activity" "$rc" "$msg"
       return $?
       ;;
   esac
 }
 
 runner_code_error() {  # stage label activity rc message -> 0 restart the stage, 1 run ended (blocked), 2 stop
-  # The review and fix loop of BUILD_SPEC.md 4.2 (pipeline/lib/review.sh). Each cycle runs in the child
-  # pipeline/bin/review-cycle, polled like a stage, so the heartbeat keeps printing during the model calls.
-  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5" sig cmd n crc result model_name
-  local outcome reason summary commit class root_cause user_action fatal
+  # The review and fix loop of BUILD_SPEC.md 4.2 (pipeline/lib/review.sh): the ERROR line, the counters, then
+  # runner_review_loop. review_begin records the error in state.json so a restarted runner resumes the loop.
+  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5" sig cmd
   say ERROR "$label $activity: $msg"
   state_stage_fail "$RUN_DIR" "$stage" "$rc" "$msg" >/dev/null
   ISSUES_OPEN=$((ISSUES_OPEN + 1))
@@ -319,36 +402,83 @@ runner_code_error() {  # stage label activity rc message -> 0 restart the stage,
   else
     cmd="bash $(runner_stage_script "$stage") $RUN_DIR"
   fi
+  review_begin "$RUN_DIR" "$stage" "$rc" "$msg" "$cmd" "$activity"
+  runner_review_loop "$stage" "$label" "$activity" "$rc" "$msg" "$sig" "$cmd"
+}
+
+runner_resume_review() {  # stage label activity -> as runner_code_error, for a failure the previous runner left in the loop
+  local stage="$1" label="$2" activity="$3" rec rc="" msg="" cmd="" act="" sig pending last_outcome last_n
+  rec="$(state_get "$RUN_DIR" "errors.$stage" "{}" 2>/dev/null)"
+  eval "$(json_eval "$rec" rc=review.rc msg=review.msg cmd=review.cmd act=review.activity sig=last_signature \
+    pending=pending last_outcome=last_outcome last_n=last_n)"
+  [ -n "$act" ] && activity="$act"
+  [ -n "$msg" ] || msg="$(state_get "$RUN_DIR" "stages.$stage.error" "the stage failed" 2>/dev/null)"
+  [ -n "$cmd" ] || cmd="bash $(runner_stage_script "$stage") $RUN_DIR"
+  [ -n "$sig" ] || sig="$(error_signature "$msg")"
+  case "$rc" in ''|*[!0-9]*) rc=1 ;; esac
+  if [ -z "$pending" ] && [ "$last_outcome" = fixed ]; then
+    # the fix was applied and recorded, the runner died before the restart: nothing left to review
+    say INFO "$label $activity: the previous runner stopped right after fix F${last_n:-?} was applied, running the stage again"
+    review_end "$RUN_DIR" "$stage" fixed
+    return 0
+  fi
+  runner_review_loop "$stage" "$label" "$activity" "$rc" "$msg" "$sig" "$cmd"
+}
+
+runner_review_loop() {  # stage label activity rc msg sig cmd -> 0 restart the stage, 1 run ended (blocked), 2 stop
+  # Each cycle runs in the child pipeline/bin/review-cycle, polled like a stage, so the heartbeat keeps printing
+  # during the model calls. Until its verdict is recorded, the cycle number is errors.<stage>.pending in state.json
+  # and the child's pid is errors/E<n>.pid: a runner restarted in the middle resumes the same cycle E<n> (adopting
+  # a child that still runs, taking the verdict of one that finished, running again one that ended without a
+  # verdict) instead of running the stage again, so no Opus cycle is lost and no false repeat is counted.
+  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5" sig="$6" cmd="$7" n crc result model_name pending kind_text
+  local outcome reason summary commit class root_cause user_action fatal
   mkdir -p "$RUN_DIR/errors" "$RUN_DIR/fixes"
   while :; do
     review_decide "$RUN_DIR" "$stage"
+    n="$REVIEW_N"
+    pending="$(state_get "$RUN_DIR" "errors.$stage.pending" "" 2>/dev/null)"
+    case "$pending" in ''|*[!0-9]*) pending="" ;; esac
+    [ -n "$pending" ] && n="$pending"
     case "$REVIEW_KIND" in
       block)
+        review_end "$RUN_DIR" "$stage" blocked
         runner_block_error "$stage" "$label" "$REVIEW_REASON: $msg" "$sig"
         return $?
         ;;
       fable)
         model_name="$(cfg models.reviewer_escalation.model fable)"
-        say ESCAL "$label still failing after $REVIEW_DONE $(plural "$REVIEW_DONE" review), escalating to $model_name"
+        kind_text="escalated review, $model_name"
+        [ -n "$pending" ] || say ESCAL "$label still failing after $REVIEW_DONE $(plural "$REVIEW_DONE" review), escalating to $model_name"
         set_activity "error in $label: escalated review ($model_name)"
         ;;
       *)
         model_name="$(cfg models.reviewer.model opus)"
+        kind_text="cycle $REVIEW_CYCLE/$REVIEW_CAP, $model_name"
         set_activity "error in $label: reviewing (cycle $REVIEW_CYCLE/$REVIEW_CAP, $model_name)"
         ;;
     esac
-    n="$REVIEW_N"
-    printf '%s' "$msg" > "$RUN_DIR/errors/E$n.msg"
-    printf '%s' "$cmd" > "$RUN_DIR/errors/E$n.cmd"
-    rm -f "$RUN_DIR/fixes/F$n.result.json"
-    STAGE_STARTED="$EPOCHSECONDS"
-    REELS_SAY_FD=3 bash "$REELS_PIPELINE/bin/review-cycle" "$RUN_DIR" "$stage" "$label" "$n" "$REVIEW_KIND" \
-      "$REVIEW_CYCLE" "$REVIEW_CAP" "$rc" 3>&1 >>"$RUN_DIR/errors/E$n.log" 2>&1 &
-    CHILD_PID=$!
-    runner_wait_child "$CHILD_PID"; crc=$?
-    CHILD_PID=""
-    result="$(cat "$RUN_DIR/fixes/F$n.result.json" 2>/dev/null)"
-    [ -n "$result" ] || result="{\"outcome\": \"error\", \"reason\": \"review-cycle exited $crc without a result (see errors/E$n.log)\"}"
+    result=""
+    if [ -n "$pending" ]; then
+      say INFO "$label $activity: review cycle E$n ($kind_text) was interrupted by the previous runner, resuming it: $msg"
+      runner_adopt_review "$stage" "$label" "$n" && result="$(cat "$RUN_DIR/fixes/F$n.result.json" 2>/dev/null)"
+    fi
+    if [ -z "$result" ]; then
+      printf '%s' "$msg" > "$RUN_DIR/errors/E$n.msg"
+      printf '%s' "$cmd" > "$RUN_DIR/errors/E$n.cmd"
+      rm -f "$RUN_DIR/fixes/F$n.result.json"
+      review_pending_set "$RUN_DIR" "$stage" "$n"
+      STAGE_STARTED="$EPOCHSECONDS"
+      REELS_SAY_FD=3 bash "$REELS_PIPELINE/bin/review-cycle" "$RUN_DIR" "$stage" "$label" "$n" "$REVIEW_KIND" \
+        "$REVIEW_CYCLE" "$REVIEW_CAP" "$rc" 3>&1 >>"$RUN_DIR/errors/E$n.log" 2>&1 &
+      CHILD_PID=$!
+      printf '%s %s\n' "$CHILD_PID" "$EPOCHSECONDS" > "$RUN_DIR/errors/E$n.pid"
+      runner_wait_child "$CHILD_PID"; crc=$?
+      CHILD_PID=""
+      rm -f "$RUN_DIR/errors/E$n.pid"
+      result="$(cat "$RUN_DIR/fixes/F$n.result.json" 2>/dev/null)"
+      [ -n "$result" ] || result="{\"outcome\": \"error\", \"reason\": \"review-cycle exited $crc without a result (see errors/E$n.log)\"}"
+    fi
     outcome=""; reason=""; summary=""; commit=""; class=""; root_cause=""; user_action=""; fatal=""
     eval "$(json_eval "$result" outcome=outcome reason=reason summary=summary commit=commit class=class root_cause=root_cause user_action=user_action fatal=fatal)"
     review_record "$RUN_DIR" "$stage" "$REVIEW_KIND" "$n" "${outcome:-error}"
@@ -360,15 +490,18 @@ runner_code_error() {  # stage label activity rc message -> 0 restart the stage,
         state_py issue "$RUN_DIR" fixed +1 >/dev/null 2>&1
         state_py issue "$RUN_DIR" open -1 >/dev/null 2>&1
         review_restart_note "$RUN_DIR" "$stage" "$msg" "$n" "${summary:-fix F$n applied}" "$commit"
+        review_end "$RUN_DIR" "$stage" fixed
         set_activity "$activity"
         return 0
         ;;
       no_auto)
+        review_end "$RUN_DIR" "$stage" blocked
         runner_block_error "$stage" "$label" "${class:-needs the user}: ${root_cause:-$reason}${user_action:+. Needs you: $user_action}" "$sig"
         return $?
         ;;
       *)
         if [ "$fatal" = 1 ] || [ "$fatal" = true ]; then
+          review_end "$RUN_DIR" "$stage" blocked
           runner_block_error "$stage" "$label" "cannot review it: ${reason:-the review call failed}" "$sig"
           return $?
         fi
@@ -376,6 +509,27 @@ runner_code_error() {  # stage label activity rc message -> 0 restart the stage,
         ;;
     esac
   done
+}
+
+runner_adopt_review() {  # stage label n -> 0 when cycle E<n>'s verdict is in fixes/F<n>.result.json (a child of the
+                         # previous runner that still ran, or had finished); 1 when the cycle must run again
+  local stage="$1" label="$2" n="$3" pidfile="$RUN_DIR/errors/E$3.pid" pid="" rest outcome=""
+  if [ -f "$pidfile" ]; then
+    { read -r pid rest < "$pidfile"; } 2>/dev/null || pid=""
+    if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then
+      say WARN "$label: review cycle E$n still runs from the previous runner (pid $pid), waiting for it instead of starting it twice"
+      STAGE_STARTED="$EPOCHSECONDS"
+      while ps -p "$pid" >/dev/null 2>&1; do
+        runner_tick
+        sleep "$TICK_SECONDS"
+      done
+    fi
+    rm -f "$pidfile"
+  fi
+  [ -s "$RUN_DIR/fixes/F$n.result.json" ] || return 1
+  outcome="$(json_field "$(cat "$RUN_DIR/fixes/F$n.result.json")" outcome "" 2>/dev/null)"
+  case "$outcome" in fixed|no_auto|failed) return 0 ;; esac
+  return 1   # a cycle that ended without a verdict (killed with the runner, or its file is unreadable) runs again
 }
 
 runner_block_error() {  # stage label reason signature -> 1 run ended, 2 systemic stop (the streak reached the cap)
