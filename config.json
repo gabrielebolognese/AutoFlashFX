@@ -1,0 +1,123 @@
+{
+  "version": "0.1.0",
+  "style": "paper-cards",
+
+  "models": {
+    "research":            {"model": "opus",   "effort": "high"},
+    "gate":                {"model": "opus",   "effort": "medium"},
+    "judge":               {"model": "opus",   "effort": "medium"},
+    "script":              {"model": "opus",   "effort": "high"},
+    "visual_director":     {"model": "opus",   "effort": "high"},
+    "builder":             {"model": "opus",   "effort": "high"},
+    "qa":                  {"model": "opus",   "effort": "medium"},
+    "reviewer":            {"model": "opus",   "effort": "high"},
+    "cut":                 {"model": "sonnet", "effort": "medium"},
+    "checks":              {"model": "sonnet", "effort": "medium"},
+    "fixer":               {"model": "sonnet", "effort": "medium"},
+    "builder_escalation":  {"model": "fable",  "effort": "xhigh"},
+    "reviewer_escalation": {"model": "fable",  "effort": "xhigh"},
+    "indexer":             {"model": "haiku",  "effort": "low"},
+    "probe":               {"model": "haiku",  "effort": "low"}
+  },
+
+  "tts": {
+    "primary": "chatterbox",
+    "fallback": "kokoro",
+    "gap_ms": 160,
+    "gap_ms_range": [120, 200],
+    "whisper_model": "small.en",
+    "engines": {
+      "chatterbox": {"seed": 42, "exaggeration_hook": 0.7, "exaggeration_body": 0.5, "cfg_weight": 0.5, "clones": true},
+      "kokoro":     {"voice": "am_adam", "speed_hook": 1.05, "speed_body": 1.0, "clones": false},
+      "qwen3-tts":  {"installed": false, "clones": true}
+    }
+  },
+
+  "voice": {
+    "wpm": 150,
+    "loudness_lufs": -14,
+    "true_peak_dbtp": -1.5,
+    "reference": "library/voice/reference.wav"
+  },
+
+  "sfx": {
+    "map": "styles/sfx/sfx-map.json",
+    "normalize_peak_dbfs": -12,
+    "base_gain_db": {
+      "transition_slow": -8, "transition_fast": -8, "attention": -12, "hero_enter": -10, "ui_click": -14,
+      "stamp": -8, "number": -14, "success": -10, "typing": -16, "negative": -10, "hook_hit": -6, "notification": -10
+    },
+    "max_per_10s": 4,
+    "min_spacing_ms": 250,
+    "min_db_under_voice": 8,
+    "attention_interval_s": [8, 12],
+    "slow_transition_ms": 400,
+    "sync_tolerance_ms": 33
+  },
+
+  "lengths": {
+    "default_s": [25, 40],
+    "list_s": [45, 75]
+  },
+
+  "caps": {
+    "angle_rounds": 2,
+    "script_rounds": 3,
+    "review_rounds_opus": 3,
+    "review_rounds_fable": 2,
+    "error_review_cycles": 3,
+    "escalation_cycles": 1,
+    "systemic_block_streak": 3
+  },
+
+  "runner": {
+    "poll_seconds": 120,
+    "status_every_seconds": 300,
+    "limit_margin_seconds": 120,
+    "timezone": "Europe/Rome",
+    "sleep_scale": 1,
+    "lock_stale_seconds": 60,
+    "lock_wait_seconds": 30,
+    "min_free_gb": 10
+  },
+
+  "paths": {
+    "ideas": "ideas.txt",
+    "runs": "runs",
+    "exports": "exports",
+    "logs": "logs",
+    "locks": ".locks",
+    "library": "library",
+    "hooks": "library/hooks.txt",
+    "profile": "library/profile",
+    "voice_dir": "library/voice",
+    "styles": "styles",
+    "style_dir": "styles/paper-cards",
+    "tokens": "styles/paper-cards/tokens.json",
+    "sfx_dir": "styles/sfx",
+    "motion_lib": "motion-lib",
+    "golden": "golden",
+    "vendor": "pipeline/vendor/ig-agent-skill",
+    "known_issues": "pipeline/knowledge/known-issues.md",
+    "venv_python": ".venv-tts/Scripts/python.exe"
+  },
+
+  "preflight": {
+    "require": [
+      {"check": "command", "name": "claude", "fix": "npm install -g @anthropic-ai/claude-code, then run claude once and log in"},
+      {"check": "command", "name": "ffmpeg", "fix": "winget install Gyan.FFmpeg, then open a new terminal"},
+      {"check": "command", "name": "ffprobe", "fix": "ffprobe ships with ffmpeg: winget install Gyan.FFmpeg, then open a new terminal"},
+      {"check": "command", "name": "python", "min_version": "3.11", "fix": "install Python 3.13 from python.org with 'Add to PATH'; 'python' must resolve to it (python3 is the Windows Store stub)"},
+      {"check": "command", "name": "node", "min_version": "22.0", "fix": "install Node 22 LTS from nodejs.org"},
+      {"check": "command", "name": "gh", "fix": "winget install GitHub.cli, then gh auth login"},
+      {"check": "command", "name": "git", "fix": "install Git for Windows from git-scm.com"},
+      {"check": "python_module", "name": "jsonschema", "fix": "bash pipeline/bin/setup-python"},
+      {"check": "file", "path": "styles/paper-cards/style.md", "fix": "restore it: git checkout -- styles/paper-cards/style.md"},
+      {"check": "file", "path": "styles/paper-cards/tweaks.md", "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"},
+      {"check": "file", "path": "styles/paper-cards/vocabulary.md", "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"},
+      {"check": "file", "path": "library/hooks.txt", "in_root": true, "fix": "restore it: git checkout -- library/hooks.txt (one hook per line, __ marks the blank)"},
+      {"check": "disk", "min_free_gb": 10, "fix": "free at least 10 GB on the drive that holds the repo (renders live in runs/ and exports/)"},
+      {"check": "shell", "cmd": "gh auth status", "level": "warn", "fix": "gh auth login (the research stage needs it from M4 on)"}
+    ]
+  }
+}

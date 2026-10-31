@@ -1,0 +1,6 @@
+# Comment keywords and what the viewer gets after commenting with one.
+# One per line:  KEYWORD | what they get | link
+# Write "to create" instead of the link when the deliverable does not exist yet.
+# Lines starting with # and empty lines are ignored.
+# Example:
+# GUIDE | the one-page setup checklist (PDF) | https://example.com/guide

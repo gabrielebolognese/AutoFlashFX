@@ -1,0 +1,5 @@
+# Words the text to speech engine says wrong, and how to say them.
+# One per line:  word = how to say it
+# Lines starting with # and empty lines are ignored.
+# Example:
+# FlashFX = flash F X

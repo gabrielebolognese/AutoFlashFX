@@ -25,7 +25,8 @@ runs/
 exports/
 logs/
 .locks/
-library/voice/
+library/voice/*
+!library/voice/README.txt
 library/.hooks.index.json
 library/hooks.lint.txt
 

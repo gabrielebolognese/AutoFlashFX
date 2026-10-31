@@ -1,0 +1,2 @@
+# Python packages for the system Python (3.13). Install with: bash pipeline/bin/setup-python
+jsonschema>=4.20

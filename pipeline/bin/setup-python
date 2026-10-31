@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# setup-python: install the Python packages the pipeline needs on the system Python (3.13, requirements.txt).
+# Safe to run again. Later milestones extend requirements.txt (playwright and its Chromium in M4).
+#   bash pipeline/bin/setup-python
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+
+if ! "$REELS_PY" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)' 2>/dev/null; then
+  echo "setup-python: '$REELS_PY' must be Python 3.11 or newer (python3 is the Windows Store stub, use python)" >&2
+  exit 1
+fi
+"$REELS_PY" -m pip install --disable-pip-version-check -r "$REELS_REPO/requirements.txt" || exit 1
+"$REELS_PY" -c 'import jsonschema' || exit 1
+echo "setup-python: ok ($("$REELS_PY" --version 2>&1))"

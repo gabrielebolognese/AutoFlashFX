@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+"""validate-json <schema.json> <file.json> [<file.json> ...]
+
+Validates every file against the schema (JSON Schema, draft 2020-12 unless the schema says otherwise, through
+the jsonschema package). Prints one line per problem ("file: json path: message").
+Exit 0 when every file is valid, 1 when any file is invalid, 2 when a file or the schema cannot be read.
+Run as: python pipeline/bin/validate-json schema.json output.json
+"""
+import json
+import sys
+
+
+def load(path):
+    with open(path, encoding="utf-8-sig") as f:
+        return json.load(f)
+
+
+def main(argv):
+    for stream in (sys.stdout, sys.stderr):  # Windows Python writes CRLF to pipes otherwise
+        try:
+            stream.reconfigure(encoding="utf-8", newline="\n")
+        except (AttributeError, ValueError):
+            pass
+    if len(argv) < 2 or argv[0] in ("-h", "--help"):
+        print(__doc__.strip())
+        return 1
+    try:
+        import jsonschema
+    except ImportError:
+        print("validate-json: the jsonschema package is missing: run bash pipeline/bin/setup-python", file=sys.stderr)
+        return 2
+    try:
+        schema = load(argv[0])
+    except (OSError, ValueError) as exc:
+        print(f"validate-json: cannot read the schema {argv[0]}: {exc}")
+        return 2
+    cls = jsonschema.validators.validator_for(schema)
+    try:
+        cls.check_schema(schema)
+    except jsonschema.SchemaError as exc:
+        print(f"validate-json: the schema {argv[0]} is itself invalid: {exc.message}")
+        return 2
+    validator = cls(schema)
+    rc = 0
+    for path in argv[1:]:
+        try:
+            data = load(path)
+        except (OSError, ValueError) as exc:
+            print(f"{path}: cannot read: {exc}")
+            rc = 2
+            continue
+        errors = sorted(validator.iter_errors(data), key=lambda e: [str(p) for p in e.absolute_path])
+        for err in errors:
+            where = "/".join(str(p) for p in err.absolute_path) or "$"
+            print(f"{path}: {where}: {err.message}")
+        if errors and rc == 0:
+            rc = 1
+    return rc
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

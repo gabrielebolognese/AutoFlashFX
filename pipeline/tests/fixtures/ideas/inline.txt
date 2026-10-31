@@ -1,0 +1,1 @@
+Urgent: {Idea A about uv, the Python installer} and later {Idea B about the gh CLI} end of note.

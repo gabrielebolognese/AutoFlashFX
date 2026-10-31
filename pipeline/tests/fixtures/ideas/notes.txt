@@ -1,0 +1,5 @@
+TODO list for the account (not ideas):
+- post on Tuesdays
+- a stray closing brace } here is ignored
+{The only real idea in this file: Playwright screenshots in a reel}
+trailing note with an unclosed brace { that never closes

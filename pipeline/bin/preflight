@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# preflight: run the startup checks on their own (the same checks run.sh runs before the loop).
+# Exit 0 when the runner can start; 3 and logs/STOPPED.md when a hard dependency is missing.
+#   bash pipeline/bin/preflight
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+source "$REELS_PIPELINE/lib/log.sh"
+source "$REELS_PIPELINE/lib/config.sh"
+source "$REELS_PIPELINE/lib/preflight.sh"
+mkdir -p "$REELS_LOGS"
+preflight_run

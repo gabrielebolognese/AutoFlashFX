@@ -1,0 +1,1 @@
+{Claude Code's frontend-design skill: it makes websites built with AI stop looking AI-generated. Show what it does and how to install it.}

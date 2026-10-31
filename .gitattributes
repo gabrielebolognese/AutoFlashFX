@@ -7,3 +7,4 @@
 *.wav binary
 *.woff2 binary
 *.ttf binary
+pipeline/tests/fixtures/ideas/crlf.txt -text

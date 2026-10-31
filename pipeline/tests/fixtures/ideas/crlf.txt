@@ -1,0 +1,3 @@
+﻿{Idea with CRLF endings: ffmpeg in 60 seconds,
+the three flags that matter}
+{Another CRLF idea about the gh CLI}
