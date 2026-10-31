@@ -5,7 +5,8 @@ The number is assigned at export time: N = the highest number in exports/ plus 1
 no gaps. Everything is assembled in runs/<id>/export/ first: N.mp4 and Nhook2.mp4 copied from the files named in
 14-export/export.json, Ncaptions.txt rendered from export.json in the format of spec section 8 (the HOOKS lines
 need N, so only this step can write it). Then the folder is moved into exports/N/ with one rename. The lock
-.locks/exports (mkdir, stale after --stale seconds) is held from the numbering to the move.
+.locks/exports (mkdir, stale after --stale seconds) is held from the numbering to the move. The export record in
+state.json is updated under state.py's StateLock (runs/<id>/state.lock), from a fresh load each time.
 
 A crash at any point is safe on restart:
   - before the move: the staging folder is rebuilt and N recomputed (nothing is in exports/ yet)
@@ -132,6 +133,15 @@ def load_manifest(run_dir: str) -> tuple[dict, dict]:
     return manifest, sources
 
 
+def record_export(run_dir: str, **fields) -> None:
+    """Update the export record in state.json under the state lock, from a fresh load, so that no other writer's
+    change is lost (the same rule as every state.py command)."""
+    with state_lib.StateLock(run_dir):
+        state = state_lib.load(run_dir)
+        state["export"].update(fields)
+        state_lib.save(run_dir, state)
+
+
 def rename_with_retries(src: str, dst: str) -> None:
     for attempt in range(RENAME_TRIES):
         try:
@@ -156,9 +166,8 @@ def cmd_run(args) -> int:
     with QueueLock(root, args.stale, args.wait, name="exports"):
         existing = find_export_of(exports, run_id)
         if existing is not None:
-            state["export"].update({"number": existing, "intent": existing, "assembled": True, "moved": True,
-                                    "dir": f"{exports}/{existing}"})
-            state_lib.save(run_dir, state)
+            record_export(run_dir, number=existing, intent=existing, assembled=True, moved=True,
+                          dir=f"{exports}/{existing}")
             print(json.dumps({"number": existing, "dir": f"{exports}/{existing}", "already": True}))
             return 0
         numbers = numeric_dirs(exports)
@@ -171,8 +180,7 @@ def cmd_run(args) -> int:
         shutil.copyfile(sources["hook2"], os.path.join(staging, f"{n}hook2.mp4"))
         with open(os.path.join(staging, f"{n}captions.txt"), "w", encoding="utf-8", newline="\n") as f:
             f.write(render_captions(manifest, n, run_id))
-        state["export"].update({"intent": n, "assembled": True, "moved": False, "dir": None})
-        state_lib.save(run_dir, state)
+        record_export(run_dir, intent=n, assembled=True, moved=False, dir=None)
         write_activity(root, f"exporting #{n}")
         if args.crash_at == "assembled":
             os._exit(99)
@@ -180,8 +188,7 @@ def cmd_run(args) -> int:
         rename_with_retries(staging, target)
         if args.crash_at == "moved":
             os._exit(99)
-        state["export"].update({"number": n, "moved": True, "dir": f"{exports}/{n}"})
-        state_lib.save(run_dir, state)
+        record_export(run_dir, number=n, moved=True, dir=f"{exports}/{n}")
     print(json.dumps({"number": n, "dir": f"{exports}/{n}", "already": False}))
     return 0
 

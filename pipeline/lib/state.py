@@ -3,7 +3,11 @@
 
 One run folder per idea, with state.json and one subfolder per stage. The runner (pipeline/lib/runner.sh) calls
 this script for every state change; bash never edits state.json itself. Every write is atomic (temp file in the
-same folder, then os.replace, retried because OneDrive briefly holds handles).
+same folder, then os.replace, retried because OneDrive briefly holds handles), and every command that may write
+holds the exclusive lock <run>/state.lock from its load to its save (StateLock: an OS file lock, released by the
+OS when the holder exits), because two processes write state.json while a stage runs: the stage (flag, issue,
+round, set) and the runner's heartbeat (touch). Read-only commands (summary, get, unfinished) take no lock:
+os.replace keeps every read whole. export.py takes the same lock for its export record.
 
 Stage table (the single source of truth for the stage order, labels, default activity text and primary output):
   key              label  activity                      output         initial status
@@ -39,12 +43,15 @@ Usage:
   state.py finish RUN_DIR exported|dropped|blocked --reason TEXT [--stage S] [--number N]
   state.py slug TEXT                                    the slug used in run folder names
 
-Exit codes: 0 ok, 1 usage, 2 state file error, 3 not found or nothing to do, 5 validation failed (stage-done).
+Exit codes: 0 ok, 1 usage, 2 state file error (state.lock busy for REELS_STATE_LOCK_WAIT seconds included,
+default 30), 3 not found or nothing to do, 5 validation failed (stage-done).
 JSON on stdout. Paths may be C:/... or /c/... (both work).
 """
 from __future__ import annotations
 
 import argparse
+import errno
+import functools
 import json
 import os
 import re
@@ -55,6 +62,9 @@ from datetime import datetime
 
 VERSION = 1
 REPLACE_TRIES = 5
+LOCK_WAIT_S = 30.0       # how long a writer waits for state.lock (REELS_STATE_LOCK_WAIT overrides it, in seconds)
+LOCK_POLL_S = 0.02
+LOCK_BUSY_ERRNOS = (errno.EACCES, errno.EAGAIN, errno.EDEADLOCK, errno.EPERM)
 
 # key, label, default activity, primary output, initial status
 STAGES = [
@@ -153,6 +163,84 @@ def save(run_dir: str, state: dict) -> None:
         except OSError:
             pass
         raise StateError(f"cannot write {path}: {exc}") from exc
+
+
+def lock_wait_seconds() -> float:
+    try:
+        return float(os.environ.get("REELS_STATE_LOCK_WAIT") or LOCK_WAIT_S)
+    except ValueError:
+        return LOCK_WAIT_S
+
+
+class StateLock:
+    """The exclusive lock on <run_dir>/state.lock that every command changing state.json holds from its load to
+    its save. It is an OS file lock (msvcrt.locking on Windows, fcntl.flock elsewhere) on one byte of a file that
+    is never written, so the OS releases it when the holder exits, a kill -9 included: no stale lock to clean up.
+    Without it two processes (the stage's flag and the heartbeat's touch, for example) each load, change and save
+    the file, and the later save silently drops the earlier change. A waiter polls every LOCK_POLL_S seconds and
+    gives up with a StateError (exit 2) after wait_s seconds; EACCES at os.open (OneDrive or an antivirus holding
+    the lock file) is retried the same way."""
+
+    def __init__(self, run_dir: str, wait_s: float | None = None):
+        self.run_dir = run_dir
+        self.path = os.path.join(run_dir, "state.lock").replace("\\", "/")
+        self.wait_s = lock_wait_seconds() if wait_s is None else wait_s
+        self.fd = None
+
+    def __enter__(self) -> "StateLock":
+        if not os.path.isfile(state_path(self.run_dir)):
+            raise StateError(f"no state.json in {self.run_dir}")
+        deadline = time.monotonic() + self.wait_s
+        while True:
+            try:
+                if self.fd is None:
+                    self.fd = os.open(self.path, os.O_RDWR | os.O_CREAT, 0o666)
+                if os.name == "nt":
+                    import msvcrt
+                    msvcrt.locking(self.fd, msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(self.fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return self
+            except OSError as exc:
+                if exc.errno not in LOCK_BUSY_ERRNOS:
+                    self._close()
+                    raise StateError(f"cannot lock {self.path}: {exc}") from exc
+                if time.monotonic() > deadline:
+                    self._close()
+                    raise StateError(f"the lock {self.path} stayed busy for {self.wait_s:g}s ({exc})") from exc
+                time.sleep(LOCK_POLL_S)
+
+    def __exit__(self, *exc) -> None:
+        if self.fd is not None:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    os.lseek(self.fd, 0, os.SEEK_SET)
+                    msvcrt.locking(self.fd, msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(self.fd, fcntl.LOCK_UN)
+            except OSError:
+                pass
+        self._close()
+
+    def _close(self) -> None:
+        if self.fd is not None:
+            try:
+                os.close(self.fd)
+            except OSError:
+                pass
+            self.fd = None
+
+
+def locked(func):
+    """Run a command under the StateLock of its run folder: every command that may write state.json."""
+    @functools.wraps(func)
+    def wrapper(args):
+        with StateLock(args.run_dir):
+            return func(args)
+    return wrapper
 
 
 def emit(payload) -> None:
@@ -337,6 +425,7 @@ def cmd_unfinished(args) -> int:
     return 0 if found else 3
 
 
+@locked
 def cmd_pickup(args) -> int:
     state = load(args.run_dir)
     now = now_epoch()
@@ -368,6 +457,7 @@ def cmd_summary(args) -> int:
     return 0
 
 
+@locked
 def cmd_next(args) -> int:
     state = load(args.run_dir)
     before = json.dumps(state["stages"], sort_keys=True)
@@ -378,6 +468,7 @@ def cmd_next(args) -> int:
     return 0
 
 
+@locked
 def cmd_stage_start(args) -> int:
     state = load(args.run_dir)
     if args.stage not in state["stages"]:
@@ -429,6 +520,7 @@ def validate_output(schemas_dir: str, run_dir: str, stage: str) -> list[str]:
     return errors
 
 
+@locked
 def cmd_stage_done(args) -> int:
     state = load(args.run_dir)
     if args.stage not in state["stages"]:
@@ -461,6 +553,7 @@ def cmd_stage_done(args) -> int:
     return 0
 
 
+@locked
 def cmd_stage_fail(args) -> int:
     state = load(args.run_dir)
     if args.stage not in state["stages"]:
@@ -476,6 +569,7 @@ def cmd_stage_fail(args) -> int:
     return 0
 
 
+@locked
 def cmd_reopen(args) -> int:
     state = load(args.run_dir)
     for stage in args.stages:
@@ -491,6 +585,7 @@ def cmd_reopen(args) -> int:
     return 0
 
 
+@locked
 def cmd_flag(args) -> int:
     state = load(args.run_dir)
     now = now_epoch()
@@ -500,6 +595,7 @@ def cmd_flag(args) -> int:
     return 0
 
 
+@locked
 def cmd_issue(args) -> int:
     state = load(args.run_dir)
     state["issues"][args.kind] = max(0, int(state["issues"][args.kind]) + int(args.delta))
@@ -508,6 +604,7 @@ def cmd_issue(args) -> int:
     return 0
 
 
+@locked
 def cmd_round(args) -> int:
     state = load(args.run_dir)
     if args.value is not None:
@@ -524,6 +621,7 @@ def parse_value(text: str):
         return text
 
 
+@locked
 def cmd_set(args) -> int:
     state = load(args.run_dir)
     for pair in args.pairs:
@@ -558,6 +656,7 @@ def cmd_get(args) -> int:
     return 0
 
 
+@locked
 def cmd_touch(args) -> int:
     state = load(args.run_dir)
     state["timing"]["last_seen"] = now_epoch()
@@ -565,6 +664,7 @@ def cmd_touch(args) -> int:
     return 0
 
 
+@locked
 def cmd_finish(args) -> int:
     state = load(args.run_dir)
     now = now_epoch()

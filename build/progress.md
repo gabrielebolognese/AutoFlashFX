@@ -20,9 +20,10 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   M2 NEW line. Report: build/M1/report.md.
 
 ## M2 Runner core and terminal output
-- Status: done (2026-10-31); review 1 fixed the same day (build/M2/fixes-1.md). 213 checks pass in about 7 minutes
-  on a quiet machine, no model calls (dummy stages). Section 2's heartbeat-schedule check measures the runner's
-  loop timing: it fails when other work saturates the CPU, so run the test on a quiet machine.
+- Status: done (2026-10-31); reviews 1 and 2 fixed the same day (build/M2/fixes-1.md, fixes-2.md). 220 checks pass
+  in 7 to 10 minutes depending on the machine's load (measured 6.5 to 9.5 minutes), no model calls (dummy stages).
+  Section 2's heartbeat-schedule check measures the runner's loop timing: it fails when other work saturates the
+  CPU, so run the test on a quiet machine.
 - Test command: `bash pipeline/tests/test-m2.sh` (plus `bash pipeline/tests/test-m1.sh` and
   `bash pipeline/tests/test-no-emdash.sh`; `bash pipeline/tests/run-all.sh` runs everything, about 9 minutes)
 - Notes: run.sh is the loop of spec section 3 (pipeline/lib/runner.sh), with state.py and state.sh (state.json,
@@ -32,7 +33,8 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   CONTRACT.md, schema.json and dummy.sh (run.sh and prompt.md arrive with each stage's milestone),
   pipeline/bin/runner-status. Until M3 a code error blocks the idea and a missing run.sh is a systemic stop
   (DECISIONS.md 60); a state.json that cannot be read or written mid-run is a systemic stop after one retry
-  (`runner_state`, DECISIONS.md 67). Fast test knobs: REELS_DUMMY, REELS_DUMMY_SECONDS and the planted REELS_DUMMY_* lists,
+  (`runner_state`, DECISIONS.md 67); every state.json write holds the OS file lock runs/<id>/state.lock, so
+  concurrent writers (a stage's flag, the heartbeat's touch) lose nothing (DECISIONS.md 68). Fast test knobs: REELS_DUMMY, REELS_DUMMY_SECONDS and the planted REELS_DUMMY_* lists,
   REELS_STATUS_EVERY, REELS_POLL_SECONDS, REELS_TICK_SECONDS, REELS_CRASH_AT (DECISIONS.md 63, 64). Hooks for M3:
   `runner_code_error` in runner.sh is where the review and fix loop goes; state.py has `issue`, `round`, `reopen`,
   `flag` and per-stage `session_id` fields; the event lines LIMIT, RESUME, RETRY, ERROR, FIXED, ESCAL, STOP are

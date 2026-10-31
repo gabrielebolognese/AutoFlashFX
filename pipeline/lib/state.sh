@@ -17,6 +17,9 @@
 #   json_field '<json>' <key> [default]        read one field of a JSON object (dotted keys allowed)
 #   eval "$(json_eval '<json>' VAR=key ...)"  read several fields in one call (missing keys give "")
 #   run_flag <run_dir> <stage> "<text>"        record the flag and print the FLAG line (needs log.sh)
+#
+# Every command that writes state.json holds runs/<id>/state.lock (state.py StateLock) from its load to its save,
+# so a stage's flag and the runner's heartbeat touch never lose each other's change. A lock busy for 30 s is exit 2.
 
 state_py() { "$REELS_PY" "$REELS_PIPELINE/lib/state.py" "$@"; }
 

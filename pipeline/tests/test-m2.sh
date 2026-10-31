@@ -3,7 +3,8 @@
 #   bash pipeline/tests/test-m2.sh
 #
 # Covers (BUILD_SPEC.md section 12, M2, and PLAN.md M2):
-#   1. state.py and export.py units: the stage table, run creation, markers, validation, reopen, numbering, captions
+#   1. state.py and export.py units: the stage table, run creation, markers, validation, reopen, the state lock
+#      under concurrent writers (flags and counters all land, a writer waits for a holder), numbering, captions
 #   2. two dummy ideas end to end: banner, queue listing, START/STEP/DONE/NEXT lines, exports/1 and exports/2 with
 #      N.mp4, Ncaptions.txt and Nhook2.mp4, two history lines, an empty ideas.txt, the heartbeat on the scaled
 #      schedule with every field, the summary line, status.txt, no escape codes under NO_COLOR
@@ -118,6 +119,42 @@ python "$STATE_PY" flag "$RD" 07-script "soft script check failed (detect 64)" >
 assert_eq "$(state_get "$RD" flags.0.text)" "soft script check failed (detect 64)" "flag: recorded"
 python "$STATE_PY" finish "$RD" dropped --reason "test" --stage 03-gate >/dev/null
 python "$STATE_PY" unfinished --runs "$RUNS" >/dev/null 2>&1; assert_rc 3 $? "unfinished: exit 3 once the run is finished"
+
+# the state lock (M2 review 2): every command that writes state.json holds runs/<id>/state.lock from its load to its
+# save, so concurrent writers (a stage's flag, the heartbeat's touch) lose nothing. 20 flag calls and 10 issue calls
+# at once, against a loop of 40 touch calls: without the lock about a third of the flags vanished with exit 0.
+created="$(printf '{%s}' "$IDEA_B" | python "$STATE_PY" new --runs "$RUNS" --id 0123456789ac)"
+RD2="$(python -c 'import json, sys; print(json.loads(sys.argv[1])["run_dir"])' "$created")"
+( for i in $(seq 40); do python "$STATE_PY" touch "$RD2" >/dev/null 2>&1; done ) &
+for i in $(seq 20); do python "$STATE_PY" flag "$RD2" 07-script "concurrent flag $i" >/dev/null 2>&1 & done
+for i in $(seq 10); do python "$STATE_PY" issue "$RD2" open +1 >/dev/null 2>&1 & done
+wait
+assert_eq "$(state_get "$RD2" flags | python -c 'import json, sys; f = json.load(sys.stdin); print(len(f), len({x["text"] for x in f}))')" "20 20" \
+  "lock: 20 concurrent flag calls against a touch loop keep all 20 flags"
+assert_eq "$(state_get "$RD2" issues.open)" "10" "lock: 10 concurrent issue calls count to 10"
+assert_file "$RD2/state.lock" "lock: runs/<id>/state.lock sits next to state.json"
+# a writer waits while another process holds the lock; with REELS_STATE_LOCK_WAIT it gives up with exit 2 instead
+rm -f "$SANDBOX/held"
+python - "$(mixed "$REPO_DIR/pipeline/lib")" "$RD2" "$SANDBOX_M/held" <<'PY' &
+import sys, time
+sys.path.insert(0, sys.argv[1])
+import state
+with state.StateLock(sys.argv[2]):
+    with open(sys.argv[3], "w") as f:
+        f.write("locked\n")
+    time.sleep(4)
+PY
+holder=$!
+wait_for locked "$SANDBOX/held" 10
+t0=$EPOCHREALTIME
+REELS_STATE_LOCK_WAIT=1 python "$STATE_PY" touch "$RD2" 2>"$SANDBOX/busy.err"; rc=$?
+assert_rc 2 $rc "lock: a writer gives up with exit 2 after REELS_STATE_LOCK_WAIT seconds while another process holds the lock"
+assert_grep "^state.py: the lock .*/state.lock stayed busy for 1s" "$SANDBOX/busy.err" "lock: the message names the lock file and the wait"
+python "$STATE_PY" touch "$RD2" >/dev/null 2>&1; rc=$?
+waited="$(python -c 'import sys; print(float(sys.argv[2]) - float(sys.argv[1]))' "$t0" "$EPOCHREALTIME")"
+assert_rc 0 $rc "lock: with the default wait the writer goes through once the holder is done"
+assert_true "lock: it waited for the holder (${waited%.*}s)" python -c 'import sys; sys.exit(0 if float(sys.argv[1]) >= 2.0 else 1)' "$waited"
+wait $holder 2>/dev/null
 
 assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS")" "1" "numbering: the first export is 1"
 mkdir -p "$SANDBOX/exports/3" "$SANDBOX/exports/7" "$SANDBOX/exports/notes"

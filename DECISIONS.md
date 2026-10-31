@@ -274,5 +274,20 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     real result (0 continue, 1 run ended, 2 stop) propagates; before, a run that ended inside the orphan path ran
     the stage once more. `runner_systemic_stop` takes several fix lines, numbered in STOPPED.md. state.py's
     `state_path` uses forward slashes, so its messages match the runner's paths in the logs.
+68. **Every state.json write holds an OS file lock on runs/<id>/state.lock** (M2 review 2, fix 1). Two processes
+    write state.json while a stage runs: the stage (`flag`, and from M3 on `issue`, `round`, `set`) and the
+    runner's heartbeat (`touch`). Each one loaded, changed and saved the whole file, so when two overlapped the
+    later save won and the earlier change vanished with exit 0 on both sides: a stage's NEEDS REVIEW flag could
+    disappear before the export (20 flags against 40 touches kept 17). Now every state.py command that may write
+    (pickup, next, stage-start, stage-done, stage-fail, reopen, flag, issue, round, set, touch, finish) runs inside
+    `StateLock`, which holds one locked byte of `state.lock` (msvcrt.locking on Windows, fcntl.flock elsewhere)
+    from its load to its save; export.py updates its export record the same way, from a fresh load. An OS lock
+    rather than the mkdir lock of ideas.txt (item 18) because the OS releases it when the holder exits, a kill -9
+    included, so there is no stale lock to detect and no wait before breaking one; the ideas and exports locks stay
+    as they are. Waiters poll every 20 ms for up to 30 s (REELS_STATE_LOCK_WAIT overrides it, for tests) and then
+    fail with exit 2, which `runner_state` turns into the systemic stop of item 67; EACCES when opening the lock
+    file (OneDrive or an antivirus holding it) is retried the same way. Read-only commands (summary, get,
+    unfinished) stay unlocked, because os.replace keeps every read whole. The lock file is never written and stays
+    in the run folder.
 
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.

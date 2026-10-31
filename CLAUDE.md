@@ -27,8 +27,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 - `pipeline/`: lib/ (bash and Python libraries), stages/ (one folder per stage: CONTRACT.md, schema.json, dummy.sh,
   and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
   instagram-agent-skill), knowledge/known-issues.md, tests/.
-- `runs/`: one working folder per idea (state.json, idea.txt, one subfolder per stage with its outputs, stage.log
-  and .done). `logs/`: runner.log, status.txt, history.txt, blocked.txt, limits.log,
+- `runs/`: one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
+  its outputs, stage.log and .done). `logs/`: runner.log, status.txt, history.txt, blocked.txt, limits.log,
   suggested-ideas.txt, sfx-usage.json, STOPPED.md.
 - `tools/analyze_refs.py`: reference video analyzer. `build/`, `build-runner.sh`: the automated build (temporary).
 
