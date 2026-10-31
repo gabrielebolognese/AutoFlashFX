@@ -10,7 +10,9 @@
 #      schedule with every field, the summary line, status.txt, no escape codes under NO_COLOR
 #   3. SIGKILL mid-stage, restart: the same run resumes at the same stage, earlier stages skipped, one export
 #   4. a crash planted between assembling and moving the export, and one right after the move: no duplicate, no gap
-#   5. drop, code error (blocked), FLAG and an invalid output: history, blocked.txt, numbering without gaps
+#   5. drop, code error, FLAG and an invalid output: history, blocked.txt, numbering without gaps. Since M3 a code
+#      error goes through the review and fix loop, so this section runs with the fake claude (tests/fakes) whose
+#      reviewer answers auto_apply no: the idea is blocked with the reviewer's reason and the runner moves on
 #   6. forever mode: IDLE lines, the NEW line from add-idea.sh, a second runner refused, SIGTERM
 #   7. a stage that is not built yet stops the runner (STOPPED.md) and keeps the idea; runner-status
 #   8. state.json damaged mid-run: one retry, then the systemic stop (ERROR, STOP, STOPPED.md with the run folder
@@ -327,25 +329,31 @@ assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/i
 
 # ----------------------------------------------------------------------------------------------------------------
 section "5. drop, code error, FLAG and invalid output"
-sandbox_init
+sandbox_init --with-pipeline   # the review loop reads and commits in the repo, so the repo is the sandbox copy
+fake_claude_on
+export FAKE_CLAUDE_REVIEW=no
+run_once_sb() {  # like run_once, with the sandbox's own run.sh (REELS_REPO = the sandbox)
+  local out="$1"; shift
+  ( cd "$SANDBOX" && env NO_COLOR=1 "$@" timeout 600 bash "$SANDBOX/run.sh" --once ) > "$out" 2>&1
+}
 printf '{%s}\n{%s}\n{%s}\n' "$IDEA_A" "$IDEA_B" "$IDEA_C" > "$SANDBOX/ideas.txt"
-run_once "$SANDBOX/paths.out" REELS_DUMMY_DROP=03-gate REELS_DUMMY_FAIL=10-build REELS_DUMMY_FLAG=07-script \
+run_once_sb "$SANDBOX/paths.out" REELS_DUMMY_DROP=03-gate REELS_DUMMY_FAIL=10-build REELS_DUMMY_FLAG=07-script \
   REELS_DUMMY_ONCE_FILE="$SANDBOX_M/once"; rc=$?
 OUT="$SANDBOX/paths.out"
 assert_rc 0 $rc "the runner continues past a drop and a block and exits 0"
 assert_grep "${ts_regex}DROP   idea \"Idea A: the gh CLI in 60 seconds, three ...\" dropped: facts do not hold \(dummy 03-gate\)\. Removed from ideas.txt$" "$OUT" "DROP line"
 assert_grep "${ts_regex}NEXT   idea 2/3 \"Idea B" "$OUT" "NEXT after the drop"
 assert_grep "${ts_regex}ERROR  S10 building visuals: exit 1: Traceback \(planted\): ValueError: dummy 10-build failed on purpose$" "$OUT" "ERROR line with the last log line"
-assert_grep "${ts_regex}BLOCK  idea \"Idea B: uv replaces pip, venv and pyenv ...\" blocked at S10: code error, exit 1: .*\. Moved to logs/blocked.txt$" "$OUT" "BLOCK line"
+assert_grep "${ts_regex}BLOCK  idea \"Idea B: uv replaces pip, venv and pyenv ...\" blocked at S10: environment problem: fake reviewer: exit 1: .*\. Moved to logs/blocked.txt$" "$OUT" "BLOCK line (the reviewer's verdict: only the user can fix it)"
 assert_grep "${ts_regex}NEXT   idea 3/3 \"Idea C" "$OUT" "NEXT after the block"
 assert_grep "${ts_regex}FLAG   needs review: dummy soft check failed in 07-script$" "$OUT" "FLAG line printed by the stage"
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the third idea exports as #1: no gap for dropped or blocked ideas"
 assert_grep "${ts_regex}IDLE   queue empty: this session 1 exported, 1 dropped, 1 blocked" "$OUT" "summary counts"
 assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "only exports/1"
 assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| dropped: facts do not hold \(dummy 03-gate\)$" "$SANDBOX/logs/history.txt" "history: dropped line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| blocked: code error, exit 1" "$SANDBOX/logs/history.txt" "history: blocked line"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| blocked: environment problem: fake reviewer: exit 1" "$SANDBOX/logs/history.txt" "history: blocked line"
 assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_C \| exported 1$" "$SANDBOX/logs/history.txt" "history: exported line"
-assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| code error, exit 1: .* \| runs/" "$SANDBOX/logs/blocked.txt" "blocked.txt: the reason line"
+assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: fake reviewer: exit 1: .* \| runs/" "$SANDBOX/logs/blocked.txt" "blocked.txt: the reason line"
 assert_grep "^\{$IDEA_B\}$" "$SANDBOX/logs/blocked.txt" "blocked.txt: the idea in braces, ready to re-add"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt is empty"
 assert_eq "$(ls "$SANDBOX/runs" | wc -l | tr -d ' ')" "3" "the dropped and blocked run folders are kept"
@@ -358,11 +366,13 @@ assert_grep "planted failure" "$(run_dirs | sed -n 2p)/10-build/stage.log" "stag
 
 : > "$SANDBOX/logs/blocked.txt"
 printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
-run_once "$SANDBOX/invalid.out" REELS_DUMMY_INVALID=05-hooks; rc=$?
+run_once_sb "$SANDBOX/invalid.out" REELS_DUMMY_INVALID=05-hooks; rc=$?
 assert_rc 0 $rc "an invalid output does not stop the runner"
 assert_grep "${ts_regex}ERROR  S5 picking hooks: invalid output: 05-hooks/hooks.json: \\$: 'hooks' is a required property$" "$SANDBOX/invalid.out" "ERROR line names the schema violation"
-assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S5: code error, invalid output" "$SANDBOX/invalid.out" "an invalid output blocks the idea (until M3)"
+assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S5: environment problem: fake reviewer: invalid output" "$SANDBOX/invalid.out" "an invalid output is a code error: reviewed, then blocked on the reviewer's verdict"
 assert_grep "^\{$IDEA_A\}$" "$SANDBOX/logs/blocked.txt" "blocked.txt gets the idea"
+fake_claude_off
+unset FAKE_CLAUDE_REVIEW
 
 # ----------------------------------------------------------------------------------------------------------------
 section "6. forever mode: IDLE, NEW, a second runner refused, SIGTERM"

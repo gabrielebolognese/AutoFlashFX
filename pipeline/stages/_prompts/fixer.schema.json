@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "fixer report (BUILD_SPEC.md 4.2)",
+  "type": "object",
+  "required": ["applied", "verify_passed", "files_changed", "summary", "known_issue"],
+  "properties": {
+    "applied": {"type": "boolean", "description": "the changes of F<n>.md were made"},
+    "verify_passed": {"type": "boolean", "description": "the verify command exited 0 after the changes"},
+    "files_changed": {"type": "array", "items": {"type": "string"}},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 120},
+    "known_issue": {"type": "string", "minLength": 1, "maxLength": 200, "description": "one line: symptom -> fix"},
+    "notes": {"type": "string"}
+  }
+}

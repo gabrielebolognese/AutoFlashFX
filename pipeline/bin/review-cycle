@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# review-cycle: one review and fix cycle (BUILD_SPEC.md 4.2), run by the runner as a background child so the
+# heartbeat keeps printing while the reviewer and the fixer work. Not meant to be run by hand.
+#   review-cycle <run_dir> <stage> <label> <n> <opus|fable> <cycle> <cap> <rc>
+# Reads errors/E<n>.msg (the error message) and errors/E<n>.cmd (the failed command), both written by the runner;
+# writes errors/E<n>.md, fixes/F<n>.md and fixes/F<n>.result.json. Its own output goes to errors/E<n>.log; its say
+# lines reach the terminal through fd 3 (REELS_SAY_FD=3), like a stage's.
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+source "$REELS_PIPELINE/lib/log.sh"
+source "$REELS_PIPELINE/lib/config.sh"
+source "$REELS_PIPELINE/lib/state.sh"
+source "$REELS_PIPELINE/lib/status.sh"
+source "$REELS_PIPELINE/lib/ai.sh"
+source "$REELS_PIPELINE/lib/review.sh"
+[ $# -ge 8 ] || { echo "usage: review-cycle <run_dir> <stage> <label> <n> <opus|fable> <cycle> <cap> <rc>" >&2; exit 1; }
+run_dir="$1" stage="$2" label="$3" n="$4" kind="$5" cycle="$6" cap="$7" rc="$8"
+msg="$(cat "$run_dir/errors/E$n.msg" 2>/dev/null)"
+cmd="$(cat "$run_dir/errors/E$n.cmd" 2>/dev/null)"
+result="$run_dir/fixes/F$n.result.json"
+trap '[ -f "$result" ] || review_write_result "$result" outcome=error reason="review-cycle ended without a result (see errors/E$n.log)"' EXIT
+review_cycle "$run_dir" "$stage" "$label" "$n" "$kind" "$cycle" "$cap" "$rc" "$msg" "$cmd"

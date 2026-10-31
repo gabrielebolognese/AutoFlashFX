@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "reviewer verdict (BUILD_SPEC.md 4.2, F<n>.md)",
+  "type": "object",
+  "required": ["root_cause", "class", "changes", "verify_command", "auto_apply", "user_action", "summary"],
+  "properties": {
+    "root_cause": {"type": "string", "minLength": 1, "description": "the exact reason, with file and line when it is code"},
+    "class": {"type": "string", "enum": ["pipeline bug", "bad model output", "environment problem", "external outage"]},
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "change"],
+        "properties": {
+          "file": {"type": "string", "description": "path relative to the repo root"},
+          "change": {"type": "string", "description": "what to change, with old and new text when short"}
+        }
+      }
+    },
+    "verify_command": {"type": "string", "description": "one bash command from the repo root; exit 0 only when fixed"},
+    "auto_apply": {"type": "string", "enum": ["yes", "no"]},
+    "user_action": {"type": "string", "description": "what only the user can do (empty when auto_apply is yes)"},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 120, "description": "one line: cause and fix"}
+  }
+}

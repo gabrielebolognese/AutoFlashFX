@@ -70,6 +70,29 @@
     "systemic_block_streak": 3
   },
 
+  "errors": {
+    "transient_backoff_seconds": [60, 240, 960],
+    "unparsed_limit_sleep_seconds": 1800,
+    "probe_every_seconds": 1800,
+    "repeated_signature_skip": 2,
+    "log_tail_lines": 200
+  },
+
+  "timeouts": {
+    "model_call_seconds": 3600,
+    "reviewer_seconds": 2400,
+    "fixer_seconds": 2400,
+    "verify_seconds": 900,
+    "probe_seconds": 300
+  },
+
+  "review": {
+    "reviewer_tools": "Read Glob Grep WebSearch WebFetch",
+    "fixer_tools": "Read Glob Grep Edit Write Bash",
+    "fixer_paths": ["pipeline", "motion-lib/candidates"],
+    "protected_paths": ["ideas.txt", "library", "styles", "exports"]
+  },
+
   "runner": {
     "poll_seconds": 120,
     "status_every_seconds": 300,

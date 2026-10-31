@@ -1,5 +1,6 @@
-# pipeline/lib/runner.sh: the video runner's loop (BUILD_SPEC.md sections 3, 4.3, 6, 7 and 8). Sourced by run.sh
-# after common.sh, log.sh, config.sh, ideas.sh, preflight.sh, history.sh, state.sh, status.sh and export.sh.
+# pipeline/lib/runner.sh: the video runner's loop (BUILD_SPEC.md sections 3, 4, 6, 7 and 8). Sourced by run.sh
+# after common.sh, log.sh, config.sh, ideas.sh, preflight.sh, history.sh, state.sh, status.sh, export.sh, ai.sh
+# (with limits.sh and errors.sh) and review.sh.
 #
 #   runner_main            the loop: take the first idea (or resume the unfinished run), run the stages in order,
 #                          export, drop or block, next idea; when the queue is empty: exit with --once (ONCE=1),
@@ -21,6 +22,13 @@
 # The runner stops on its own only through runner_systemic_stop (STOP line plus logs/STOPPED.md). A state.json that
 # cannot be read or written mid-run (OneDrive or an antivirus holding the file, a damaged file) goes through
 # runner_state: one retry after STATE_RETRY_SECONDS, then the systemic stop; the idea stays in ideas.txt.
+#
+# Code errors (BUILD_SPEC.md 4.2, M3): runner_code_error prints ERROR and runs the review and fix loop of
+# pipeline/lib/review.sh through the child script pipeline/bin/review-cycle (so the heartbeat keeps printing):
+# FIXED restarts the stage, a verdict that needs the user blocks the idea, and the same error blocking
+# caps.systemic_block_streak ideas in a row is the systemic stop (logs/.block-streak keeps the streak across
+# restarts; an export or a drop resets it). Usage limits and transient errors never reach the runner: ai() waits
+# and retries inside the stage (LIMIT, RESUME and RETRY lines come from there).
 
 RUNNER_LOCKED=0
 CHILD_PID=""
@@ -93,13 +101,7 @@ runner_on_exit() {
 }
 
 runner_sleep() {  # runner_sleep <seconds> [what]: scaled by REELS_SLEEP_SCALE; 0 means fast-forward (log only)
-  local s="$1" what="${2:-}"
-  case "$SLEEP_SCALE" in
-    0|0.0) say INFO "fast-forward: skipping a ${s}s wait${what:+ ($what)}"; return 0 ;;
-    1|1.0) ;;
-    *) s="$(awk -v s="$s" -v k="$SLEEP_SCALE" 'BEGIN { v = s * k; if (v < 0.05) v = 0.05; printf "%.3f", v }')" ;;
-  esac
-  sleep "$s"
+  reels_sleep "$@"
 }
 
 runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>" ["<fix 2>" ...]: numbered fix lines
@@ -204,8 +206,8 @@ runner_next_text() {  # the "-> next" part of the STEP line
   esac
 }
 
-runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> -> 0 continue, 1 run ended, 2 stop
-  local stage="$1" label="${2:-$1}" activity="${3:-working}" attempts="${4:-0}" script rc res
+runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> [status] -> 0 continue, 1 run ended, 2 stop
+  local stage="$1" label="${2:-$1}" activity="${3:-working}" attempts="${4:-0}" status="${5:-}" script rc res
   script="$(runner_stage_script "$stage")"
   if [ ! -f "$script" ]; then
     runner_systemic_stop "stage $stage is not built yet ($(basename "$script") missing in pipeline/stages/$stage)" \
@@ -216,7 +218,11 @@ runner_run_stage() {  # runner_run_stage <stage> <label> <activity> <attempts> -
   runner_adopt_orphan "$stage" "$label" "$activity"; rc=$?
   [ "$rc" = 3 ] || return "$rc"   # 3: no orphan (or it left nothing valid), run the stage; else the stage's result
   if [ "$attempts" -gt 0 ]; then
-    say INFO "$label $activity: attempt $((attempts + 1)) (the previous one was interrupted)"
+    if [ "$status" = failed ]; then
+      say INFO "$label $activity: attempt $((attempts + 1)) after the fix"
+    else
+      say INFO "$label $activity: attempt $((attempts + 1)) (the previous one was interrupted)"
+    fi
   fi
   runner_state update 0 state_stage_start "$RUN_DIR" "$stage" || return 2
   STAGE_STARTED="$EPOCHSECONDS"
@@ -276,7 +282,7 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
       fi
       reason="$(json_field "$res" errors.0 "output did not validate")"
       runner_code_error "$stage" "$label" "$activity" "$rc" "invalid output: $reason"
-      return 1
+      return $?
       ;;
     10)
       reason="$(runner_result_reason "$stage")"
@@ -292,20 +298,105 @@ runner_handle_stage_exit() {  # stage label activity rc -> 0 continue, 1 run end
       ;;
     *)
       runner_code_error "$stage" "$label" "$activity" "$rc" "exit $rc: $(runner_last_log_line "$RUN_DIR/$stage/stage.log")"
-      return 1
+      return $?
       ;;
   esac
 }
 
-runner_code_error() {  # stage label activity rc message. M3 puts the review and fix loop here (BUILD_SPEC.md 4.2).
-  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5"
+runner_code_error() {  # stage label activity rc message -> 0 restart the stage, 1 run ended (blocked), 2 stop
+  # The review and fix loop of BUILD_SPEC.md 4.2 (pipeline/lib/review.sh). Each cycle runs in the child
+  # pipeline/bin/review-cycle, polled like a stage, so the heartbeat keeps printing during the model calls.
+  local stage="$1" label="$2" activity="$3" rc="$4" msg="$5" sig cmd n crc result model_name
+  local outcome reason summary commit class root_cause user_action fatal
   say ERROR "$label $activity: $msg"
   state_stage_fail "$RUN_DIR" "$stage" "$rc" "$msg" >/dev/null
   ISSUES_OPEN=$((ISSUES_OPEN + 1))
   state_py issue "$RUN_DIR" open +1 >/dev/null 2>&1
-  # Until the review and fix loop exists (M3), a code error blocks the idea so the runner moves on and keeps the
-  # idea in logs/blocked.txt for a re-add.
-  runner_block "$stage" "$label" "code error, $msg (no automatic fix before M3)"
+  sig="$(error_signature "$msg")"
+  review_note_failure "$RUN_DIR" "$stage" "$sig"
+  if [ "$stage" = 14-export ] && [ "$activity" = exporting ]; then
+    cmd="python pipeline/lib/export.py run --run-dir $RUN_DIR (pipeline/lib/export.sh export_run)"
+  else
+    cmd="bash $(runner_stage_script "$stage") $RUN_DIR"
+  fi
+  mkdir -p "$RUN_DIR/errors" "$RUN_DIR/fixes"
+  while :; do
+    review_decide "$RUN_DIR" "$stage"
+    case "$REVIEW_KIND" in
+      block)
+        runner_block_error "$stage" "$label" "$REVIEW_REASON: $msg" "$sig"
+        return $?
+        ;;
+      fable)
+        model_name="$(cfg models.reviewer_escalation.model fable)"
+        say ESCAL "$label still failing after $REVIEW_DONE $(plural "$REVIEW_DONE" review), escalating to $model_name"
+        set_activity "error in $label: escalated review ($model_name)"
+        ;;
+      *)
+        model_name="$(cfg models.reviewer.model opus)"
+        set_activity "error in $label: reviewing (cycle $REVIEW_CYCLE/$REVIEW_CAP, $model_name)"
+        ;;
+    esac
+    n="$REVIEW_N"
+    printf '%s' "$msg" > "$RUN_DIR/errors/E$n.msg"
+    printf '%s' "$cmd" > "$RUN_DIR/errors/E$n.cmd"
+    rm -f "$RUN_DIR/fixes/F$n.result.json"
+    STAGE_STARTED="$EPOCHSECONDS"
+    REELS_SAY_FD=3 bash "$REELS_PIPELINE/bin/review-cycle" "$RUN_DIR" "$stage" "$label" "$n" "$REVIEW_KIND" \
+      "$REVIEW_CYCLE" "$REVIEW_CAP" "$rc" 3>&1 >>"$RUN_DIR/errors/E$n.log" 2>&1 &
+    CHILD_PID=$!
+    runner_wait_child "$CHILD_PID"; crc=$?
+    CHILD_PID=""
+    result="$(cat "$RUN_DIR/fixes/F$n.result.json" 2>/dev/null)"
+    [ -n "$result" ] || result="{\"outcome\": \"error\", \"reason\": \"review-cycle exited $crc without a result (see errors/E$n.log)\"}"
+    outcome=""; reason=""; summary=""; commit=""; class=""; root_cause=""; user_action=""; fatal=""
+    eval "$(json_eval "$result" outcome=outcome reason=reason summary=summary commit=commit class=class root_cause=root_cause user_action=user_action fatal=fatal)"
+    review_record "$RUN_DIR" "$stage" "$REVIEW_KIND" "$n" "${outcome:-error}"
+    case "$outcome" in
+      fixed)
+        say FIXED "$label: ${summary:-fix F$n applied}${commit:+ (commit $commit)}, restarting stage"
+        ISSUES_FIXED=$((ISSUES_FIXED + 1))
+        [ "$ISSUES_OPEN" -gt 0 ] && ISSUES_OPEN=$((ISSUES_OPEN - 1))
+        state_py issue "$RUN_DIR" fixed +1 >/dev/null 2>&1
+        state_py issue "$RUN_DIR" open -1 >/dev/null 2>&1
+        review_restart_note "$RUN_DIR" "$stage" "$msg" "$n" "${summary:-fix F$n applied}" "$commit"
+        set_activity "$activity"
+        return 0
+        ;;
+      no_auto)
+        runner_block_error "$stage" "$label" "${class:-needs the user}: ${root_cause:-$reason}${user_action:+. Needs you: $user_action}" "$sig"
+        return $?
+        ;;
+      *)
+        if [ "$fatal" = 1 ] || [ "$fatal" = true ]; then
+          runner_block_error "$stage" "$label" "cannot review it: ${reason:-the review call failed}" "$sig"
+          return $?
+        fi
+        say WARN "$label: review cycle E$n ($REVIEW_KIND) did not fix it: ${reason:-no reason given}"
+        ;;
+    esac
+  done
+}
+
+runner_block_error() {  # stage label reason signature -> 1 run ended, 2 systemic stop (the streak reached the cap)
+  # Only code-error blocks count toward the streak: an export or a drop resets it (runner_finalize, runner_drop),
+  # a quality block (a stage's exit 20) leaves it alone. The file survives a restart; a systemic stop clears it.
+  local stage="$1" label="$2" reason="$3" sig="$4" file="$REELS_LOGS/.block-streak" prev_sig="" count=0 cap rest
+  runner_block "$stage" "$label" "$reason"
+  cap="$(cfg caps.systemic_block_streak 3)"
+  [ -f "$file" ] && { read -r prev_sig count rest < "$file"; } 2>/dev/null
+  case "$count" in ''|*[!0-9]*) count=0 ;; esac
+  if [ -n "$sig" ] && [ "$sig" = "$prev_sig" ]; then count=$((count + 1)); else count=1; fi
+  printf '%s %s %s\n' "$sig" "$count" "$label" > "$file"
+  if [ "$count" -ge "$cap" ]; then
+    rm -f "$file"
+    runner_systemic_stop "the same error blocked $count ideas in a row at $label: $reason" \
+      "Read the reviewer's verdicts in runs/$RUN_ID/fixes/F*.md (root cause, class, and what only you can do when auto_apply was no) and the reports in runs/$RUN_ID/errors/E*.md." \
+      "Fix the cause yourself: install the missing tool or key, free the disk, or correct the code under pipeline/ (the automatic fixer could not)." \
+      "Re-add the blocked ideas: paste the braces from logs/blocked.txt into bash pipeline/bin/add-idea.sh (or into a Claude Code session in this folder)."
+    return 2
+  fi
+  return 1
 }
 
 # ------------------------------------------------------------------ outcomes
@@ -324,6 +415,7 @@ runner_drop() {  # stage reason
   history_add dropped "$IDEA_TEXT" "$reason"
   state_finish "$RUN_DIR" dropped "$reason" "$stage" >/dev/null
   SESSION_DROPPED=$((SESSION_DROPPED + 1))
+  rm -f "$REELS_LOGS/.block-streak"
 }
 
 runner_block() {  # stage label reason
@@ -336,7 +428,7 @@ runner_block() {  # stage label reason
   SESSION_BLOCKED=$((SESSION_BLOCKED + 1))
 }
 
-runner_do_export() {  # -> 0 exported (state holds the number), 1 run ended
+runner_do_export() {  # -> 0 exported (state holds the number), 1 run ended, 2 stop, 3 fixed (try again)
   local out rc number
   STAGE_STARTED="$EPOCHSECONDS"
   set_activity "exporting"
@@ -350,8 +442,9 @@ runner_do_export() {  # -> 0 exported (state holds the number), 1 run ended
       exit 137
       ;;
     *)
-      runner_code_error "14-export" "S14" "exporting" "$rc" "export failed: $(runner_last_log_line "$RUN_DIR/export.err")"
-      return 1
+      runner_code_error "14-export" "S14" "exporting" "$rc" "export failed: $(runner_last_log_line "$RUN_DIR/export.err")"; rc=$?
+      [ "$rc" = 0 ] && return 3   # fixed: the loop runs 14-export and the export again
+      return $rc
       ;;
   esac
 }
@@ -363,8 +456,10 @@ runner_finalize() {  # the export is in exports/N: remove the idea, history line
   history_add exported "$IDEA_TEXT" "$number"
   fin="$(state_finish "$RUN_DIR" exported "exported #$number" "" "$number")"
   elapsed="$(json_field "$fin" elapsed 0)"
-  say DONE "exported #$number -> exports/$number/ ($(fmt_min "$elapsed"), $ISSUES_FIXED issues fixed)"
+  say DONE "exported #$number -> exports/$number/ ($(fmt_min "$elapsed"), $ISSUES_FIXED $(plural "$ISSUES_FIXED" issue) fixed)"
   SESSION_EXPORTED=$((SESSION_EXPORTED + 1))
+  rm -f "$REELS_LOGS/.block-streak"
+  git -C "$REELS_REPO" rev-parse HEAD > "$REELS_LOGS/.last-good-sha" 2>/dev/null || true
 }
 
 # ------------------------------------------------------------------ one run
@@ -413,26 +508,29 @@ runner_process_run() {  # -> 0 run ended (any outcome), 2 systemic stop requeste
   fi
   set_activity "starting"
   rc=0
-  local nx_stage nx_label nx_activity nx_attempts nx_number
+  local nx_stage nx_label nx_activity nx_attempts nx_number nx_status
   NEXT_PHASE=""
   while true; do
     if [ -n "$NEXT_PHASE" ]; then  # left by the last stage-done
       phase="$NEXT_PHASE"; nx_stage="$NEXT_STAGE"; nx_label="$NEXT_LABEL"; nx_activity="$NEXT_ACTIVITY"
-      nx_attempts="$NEXT_ATTEMPTS"; nx_number="$NEXT_NUMBER"
+      nx_attempts="$NEXT_ATTEMPTS"; nx_number="$NEXT_NUMBER"; nx_status=""
       NEXT_PHASE=""
     else
       runner_state read 0 state_next "$RUN_DIR" || { rc=2; break; }
       nxt="$STATE_OUT"
-      eval "$(json_eval "$nxt" phase=phase nx_stage=stage nx_label=label nx_activity=activity nx_attempts=attempts nx_number=number)"
+      eval "$(json_eval "$nxt" phase=phase nx_stage=stage nx_label=label nx_activity=activity nx_attempts=attempts nx_number=number nx_status=stage_status)"
     fi
     case "${phase:-finished}" in
       stage)
-        runner_run_stage "$nx_stage" "$nx_label" "$nx_activity" "$nx_attempts"; rc=$?
+        runner_run_stage "$nx_stage" "$nx_label" "$nx_activity" "$nx_attempts" "$nx_status"; rc=$?
         [ "$rc" = 0 ] || break
         ;;
       export)
-        runner_do_export || { rc=1; break; }
-        NEXT_PHASE=""  # ask state.py for the number
+        runner_do_export; rc=$?
+        case "$rc" in
+          0|3) NEXT_PHASE=""; rc=0 ;;  # ask state.py for the number (or run the fixed export again)
+          *) break ;;
+        esac
         ;;
       finalize)
         runner_finalize "$nx_number"
@@ -482,10 +580,12 @@ runner_main() {
   POLL_SECONDS="${REELS_POLL_SECONDS:-$(cfg runner.poll_seconds 120)}"
   HEARTBEAT_EVERY="${REELS_STATUS_EVERY:-$(cfg runner.status_every_seconds 300)}"
   TICK_SECONDS="${REELS_TICK_SECONDS:-1}"
-  SLEEP_SCALE="${REELS_SLEEP_SCALE:-$(cfg runner.sleep_scale 1)}"
   mkdir -p "$REELS_RUNS" "$REELS_EXPORTS"
 
   rm -f "$REELS_LOGS/.new-ideas"   # the banner shows the queue; NEW lines start after it
+  if [ ! -s "$REELS_LOGS/.last-good-sha" ]; then  # the baseline for the error reports' git diff (review.sh)
+    git -C "$REELS_REPO" rev-parse HEAD > "$REELS_LOGS/.last-good-sha" 2>/dev/null || rm -f "$REELS_LOGS/.last-good-sha"
+  fi
   if [ -d "$REELS_LOCKS/exports" ]; then
     rm -rf "$REELS_LOCKS/exports"  # only a runner takes it, and this is the only runner: a leftover from a crash
     say WARN "removed a leftover exports lock from a previous runner"

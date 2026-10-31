@@ -8,8 +8,9 @@
 # Status: logs/status.txt holds the latest line, logs/runner.log the whole timeline
 # (bash pipeline/bin/runner-status prints both).
 #
-# Build status: M2 (runner core). The loop, the state machine, resume, exports numbering, history and every
-# status line exist; the stages themselves arrive from M3 on. Until then run it with dummy stages:
+# Build status: M3 (error system). The loop, the state machine, resume, exports numbering, history, every status
+# line, usage limit waits, transient retries and the review and fix loop exist; the real stages arrive from M4 on.
+# Until then run it with dummy stages:
 #   REELS_DUMMY=all bash run.sh --once
 set -u
 REELS_RUN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -22,6 +23,8 @@ source "$REELS_PIPELINE/lib/history.sh"
 source "$REELS_PIPELINE/lib/state.sh"
 source "$REELS_PIPELINE/lib/status.sh"
 source "$REELS_PIPELINE/lib/export.sh"
+source "$REELS_PIPELINE/lib/ai.sh"
+source "$REELS_PIPELINE/lib/review.sh"
 source "$REELS_PIPELINE/lib/runner.sh"
 
 ONCE=0

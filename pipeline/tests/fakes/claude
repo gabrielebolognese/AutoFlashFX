@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# The fake claude CLI for tests: put this folder first on PATH (PATH="$REPO/pipeline/tests/fakes:$PATH") and ai()
+# calls it instead of the real claude. Modes and the call log: see claude.py next to this file.
+exec "${REELS_PY:-python}" "$(dirname "${BASH_SOURCE[0]}")/claude.py" "$@"

@@ -9,6 +9,11 @@
 #   sandbox_cleanup                  remove it (also run by the EXIT trap)
 #   fast_mode                        REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1
 #                                    REELS_TICK_SECONDS=0.2 REELS_DUMMY_SECONDS=0.3 (unless already set)
+#   fake_claude_on                   put pipeline/tests/fakes first on PATH (POSIX form: a C:/ entry is invisible to
+#                                    Git Bash) and point FAKE_CLAUDE_LOG and FAKE_CLAUDE_STATE into the sandbox;
+#                                    fails loudly when `command -v claude` is not the fake. fake_claude_off restores
+#                                    PATH; fake_claude_reset clears the log and the counters
+#   dummy_except STAGE               the REELS_DUMMY list of every stage but that one
 #   pass / fail "text"               count and print a PASS or FAIL line
 #   assert_eq got expected "name"    assert_ne, assert_rc expected actual "name"
 #   assert_true "name" cmd args...   assert_false
@@ -60,12 +65,64 @@ sandbox_init() {
   : > "$SANDBOX/ideas.txt"
   export REELS_ROOT="$SANDBOX_M"
   if [ "${1:-}" = "--with-pipeline" ]; then
+    # a copy of the code as its own git repo, so a fixer commits there and never in the real repo; the style text
+    # files and .gitattributes come along because the preflight and the line-ending rules need them
     cp -r "$REPO_DIR/pipeline" "$SANDBOX/pipeline"
+    rm -rf "$SANDBOX"/pipeline/lib/__pycache__ "$SANDBOX"/pipeline/tests/fakes/__pycache__
     cp "$REPO_DIR/run.sh" "$SANDBOX/run.sh"
+    cp "$REPO_DIR/.gitattributes" "$SANDBOX/.gitattributes" 2>/dev/null || true
+    mkdir -p "$SANDBOX/styles/paper-cards" "$SANDBOX/motion-lib/candidates"
+    cp "$REPO_DIR"/styles/paper-cards/*.md "$SANDBOX/styles/paper-cards/" 2>/dev/null || true
+    : > "$SANDBOX/motion-lib/candidates/.gitkeep"
+    printf 'runs/
+exports/
+logs/
+.locks/
+__pycache__/
+*.pyc
+library/voice/
+' > "$SANDBOX/.gitignore"
     git -C "$SANDBOX" init -q
-    git -C "$SANDBOX" add -A
-    git -C "$SANDBOX" -c user.name=test -c user.email=test@localhost commit -q -m "sandbox"
+    git -C "$SANDBOX" config user.name "test"
+    git -C "$SANDBOX" config user.email "test@localhost"
+    git -C "$SANDBOX" add -A 2>/dev/null
+    git -C "$SANDBOX" commit -q -m "sandbox" 2>/dev/null
   fi
+}
+
+FAKES_DIR="$TESTS_DIR/fakes"
+PATH_BEFORE_FAKE=""
+FAKE_DIR=""
+
+fake_claude_on() {
+  [ -n "$PATH_BEFORE_FAKE" ] || PATH_BEFORE_FAKE="$PATH"
+  export PATH="$FAKES_DIR:$PATH_BEFORE_FAKE"
+  # the log and the counters live outside the sandbox: inside it the fixer's tree guard would see the log grow
+  # during a fixer call and put it back (an untracked file outside pipeline/ that changed)
+  [ -n "$FAKE_DIR" ] || FAKE_DIR="$(mixed "$(mktemp -d)")"
+  export FAKE_CLAUDE_LOG="$FAKE_DIR/fake-claude.log"
+  export FAKE_CLAUDE_STATE="$FAKE_DIR/fake-claude-state"
+  fake_claude_reset
+  if [ "$(command -v claude)" != "$FAKES_DIR/claude" ]; then
+    printf 'FATAL: the fake claude is not first on PATH (command -v claude = %s)
+' "$(command -v claude)"
+    exit 2
+  fi
+}
+
+fake_claude_off() {
+  if [ -n "$PATH_BEFORE_FAKE" ]; then export PATH="$PATH_BEFORE_FAKE"; fi
+  unset FAKE_CLAUDE_LOG FAKE_CLAUDE_STATE FAKE_CLAUDE_MODE FAKE_CLAUDE_SCRIPT FAKE_CLAUDE_REVIEW FAKE_CLAUDE_FIX FAKE_CLAUDE_REPEAT FAKE_CLAUDE_TAMPER_FILE
+}
+
+fake_claude_reset() {
+  rm -rf "${FAKE_CLAUDE_STATE:-/nonexistent}" 2>/dev/null
+  mkdir -p "${FAKE_CLAUDE_STATE:-/tmp/fake-claude-state}"
+  : > "${FAKE_CLAUDE_LOG:-/dev/null}"
+}
+
+dummy_except() {  # dummy_except <stage key> -> the REELS_DUMMY list of every other stage
+  python "$REPO_DIR/pipeline/lib/state.py" stages | cut -f1 | grep -v -x -- "$1" | paste -sd,
 }
 
 sandbox_cleanup() {
@@ -84,4 +141,9 @@ test_summary() {
   [ "$FAIL_N" -eq 0 ]
 }
 
-trap sandbox_cleanup EXIT
+tests_cleanup() {
+  sandbox_cleanup
+  if [ -n "$FAKE_DIR" ] && [ -z "${KEEP_SANDBOX:-}" ]; then rm -rf "$FAKE_DIR"; fi
+}
+
+trap tests_cleanup EXIT
