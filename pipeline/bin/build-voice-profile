@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# build-voice-profile: build library/profile/voice.md and library/profile/account.md (BUILD_SPEC.md 2.3, M5).
+#
+#   bash pipeline/bin/build-voice-profile [--force] [--no-model] [--memo FILE] [--quiet]
+#
+# With library/voice/memo.* (wav, m4a, mp3, ogg, flac, webm; a 5 to 10 minute voice memo): the memo is transcribed
+# with faster-whisper on CPU, the script model drafts voice.md (on the vendored instagram-agent-skill template)
+# and account.md from the transcript, keeping the user's real English, and the code appends 3 to 5 verbatim
+# excerpts and the measured words per minute.
+# Without a memo: voice.md is the template with [FILL IN] placeholders and account.md a placeholder draft (the
+# build adds a HUMAN_TODO), but the pace and the excerpts are still measured from library/voice/reference_long.wav
+# or reference.wav when one exists (the user's real speech, so the pipeline has a real words-per-minute figure).
+# The measured pace (from at least 30 s of speech) is written into config.json voice.wpm as well.
+#
+# Existing files are never overwritten without --force (the user curates library/profile/). The transcription
+# runs under the first interpreter that imports faster_whisper: config paths.venv_python, then the `python` line of
+# library/voice/engine.txt, then `python`. Working files go to logs/voice-profile/. --no-model skips the model
+# call (the template is used even with a memo). Exit 0 when the files exist afterwards, 2 on a file error.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/log.sh"
+source "$LIB/config.sh"
+source "$LIB/state.sh"
+source "$LIB/status.sh"
+source "$LIB/ai.sh"
+
+force=0; no_model=0; memo_arg=""; quiet=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --force) force=1; shift ;;
+    --no-model) no_model=1; shift ;;
+    --memo) memo_arg="$2"; shift 2 ;;
+    --quiet) quiet=1; shift ;;
+    -h|--help) sed -n '2,22p' "$0"; exit 0 ;;
+    *) echo "build-voice-profile: unknown option $1" >&2; exit 1 ;;
+  esac
+done
+note() { [ "$quiet" = 1 ] || printf '%s\n' "$*"; }
+
+PROFILE_DIR="$REELS_ROOT/$(cfg paths.profile library/profile)"
+VOICE_DIR="$REELS_ROOT/$(cfg paths.voice_dir library/voice)"
+VENDOR="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)"
+TEMPLATE="$VENDOR/templates/voice.md"
+WORK="$REELS_LOGS/voice-profile"
+VP="$LIB/voiceprofile.py"
+mkdir -p "$PROFILE_DIR" "$WORK"
+TODAY="$(date +%Y-%m-%d)"
+
+# the interpreter that has faster-whisper
+whisper_py=""
+candidates=()
+venv_py="$(cfg paths.venv_python .venv-tts/Scripts/python.exe)"
+case "$venv_py" in /*|[A-Za-z]:*) candidates+=("$venv_py") ;; *) candidates+=("$REELS_REPO/$venv_py") ;; esac
+if [ -f "$VOICE_DIR/engine.txt" ]; then
+  eng_py="$(tr -d '\r' < "$VOICE_DIR/engine.txt" | sed -n 's/^[[:space:]]*python[[:space:]]*=[[:space:]]*//p' | head -n 1)"
+  [ -n "$eng_py" ] && candidates+=("$eng_py")
+fi
+candidates+=("$REELS_PY")
+for c in "${candidates[@]}"; do
+  [ -n "$c" ] || continue
+  if "$c" -c "import faster_whisper" >/dev/null 2>&1; then whisper_py="$c"; break; fi
+done
+
+# the recording: a memo, else the long reference, else the reference
+memo=""; sample=""; sample_label=""
+if [ -n "$memo_arg" ]; then
+  memo="$memo_arg"
+else
+  for ext in wav m4a mp3 ogg flac webm mp4 aac; do
+    for f in "$VOICE_DIR"/memo.$ext "$VOICE_DIR"/memo*.$ext; do
+      [ -f "$f" ] && { memo="$f"; break 2; }
+    done
+  done
+fi
+if [ -n "$memo" ]; then
+  sample="$memo"; sample_label="library/voice/$(basename "$memo")"
+elif [ -f "$VOICE_DIR/reference_long.wav" ]; then
+  sample="$VOICE_DIR/reference_long.wav"; sample_label="library/voice/reference_long.wav"
+elif [ -f "$VOICE_DIR/reference.wav" ]; then
+  sample="$VOICE_DIR/reference.wav"; sample_label="library/voice/reference.wav"
+fi
+
+measure_file=""; words_file=""
+if [ -n "$sample" ] && [ -n "$whisper_py" ]; then
+  words_file="$WORK/$(basename "${sample%.*}").words.json"
+  note "transcribing $sample_label with faster-whisper ($(basename "$(dirname "$(dirname "$whisper_py")")") interpreter, CPU)..."
+  if timeout -k 30 "$(cfg timeouts.transcribe_seconds 1800)" "$whisper_py" "$VP" transcribe "$sample" --out "$words_file" \
+      --model "$(cfg tts.whisper_model small.en)" --language en > "$WORK/transcribe.log" 2>&1; then
+    measure_file="$WORK/$(basename "${sample%.*}").measure.json"
+    "$REELS_PY" "$VP" measure --words "$words_file" --out "$measure_file" > "$WORK/measure.out" 2>&1 \
+      || { note "WARN: the measurement failed (see $WORK/measure.out)"; measure_file=""; }
+  else
+    note "WARN: the transcription failed (see $WORK/transcribe.log); the profile is built without the measured pace"
+    words_file=""
+  fi
+elif [ -n "$sample" ]; then
+  note "WARN: no interpreter with faster-whisper found (checked: ${candidates[*]}); the pace and the excerpts are not measured"
+else
+  note "no recording found under $VOICE_DIR (memo.*, reference_long.wav or reference.wav): the pace is not measured"
+fi
+
+answer=""
+if [ -n "$memo" ] && [ "$no_model" = 0 ] && [ -n "$words_file" ] && [ -f "$words_file" ]; then
+  transcript="$("$REELS_PY" -c 'import json, sys
+sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+d = json.load(open(sys.argv[1], encoding="utf-8-sig"))
+print(chr(10).join("[" + str(int(s["start"])) + "s] " + s["text"] for s in d.get("segments", [])))' "$words_file")"
+  duration="$("$REELS_PY" -c 'import json, sys; print(int(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("duration", 0)))' "$words_file")"
+  prompt="$WORK/prompt-voice-profile.md"
+  "$REELS_PY" "$LIB/prompt.py" render "$REELS_PIPELINE/stages/_prompts/voice-profile.md" --out "$prompt" \
+    --file "TEMPLATE=$TEMPLATE" --set "TRANSCRIPT=$transcript" --set "MEMO_NAME=$sample_label" --set "DURATION=$duration" \
+    || { echo "build-voice-profile: cannot render the prompt" >&2; exit 2; }
+  note "drafting voice.md and account.md from the memo with the script model ($(cfg models.script.model opus))..."
+  if ai script "$WORK" "$prompt" --schema "$REELS_PIPELINE/stages/_prompts/voice-profile.schema.json" --tools "" \
+      --timeout "$(cfg timeouts.profile_seconds 1200)" --name voice-profile; then
+    answer="$AI_OUT"
+  else
+    note "WARN: the model call failed (${AI_CLASS:-error}: ${AI_ERROR:-no detail}); using the template with placeholders"
+  fi
+fi
+
+compose_args=(--template "$TEMPLATE" --date "$TODAY")
+[ -n "$answer" ] && compose_args+=(--answer "$answer" --memo-name "$sample_label")
+[ -n "$measure_file" ] && compose_args+=(--measure "$measure_file" --source "$sample_label")
+voice_out="$PROFILE_DIR/voice.md"; account_out="$PROFILE_DIR/account.md"
+if [ -f "$voice_out" ] && [ "$force" = 0 ]; then
+  note "kept $voice_out (it exists; use --force to rebuild it)"
+else
+  res="$("$REELS_PY" "$VP" compose --out "$voice_out" "${compose_args[@]}")" || exit 2
+  note "wrote $voice_out ($(json_field "$res" from_model false | sed 's/true/drafted from the memo/; s/false/template with placeholders/'), pace $(json_field "$res" wpm 0) wpm, $(json_field "$res" excerpts 0) excerpts)"
+fi
+if [ -f "$account_out" ] && [ "$force" = 0 ]; then
+  note "kept $account_out (it exists; use --force to rebuild it)"
+else
+  acc_args=(--date "$TODAY"); [ -n "$answer" ] && acc_args+=(--answer "$answer")
+  "$REELS_PY" "$VP" account --out "$account_out" "${acc_args[@]}" >/dev/null || exit 2
+  note "wrote $account_out"
+fi
+
+if [ -n "$measure_file" ]; then
+  wpm="$("$REELS_PY" -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); print(int(d.get("wpm", 0) or 0))' "$measure_file")"
+  speech="$("$REELS_PY" -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); print(int(float(d.get("speech_seconds", 0))))' "$measure_file")"
+  if [ "${wpm:-0}" -ge 80 ] && [ "${wpm:-0}" -le 260 ] && [ "${speech:-0}" -ge 30 ]; then
+    "$REELS_PY" "$VP" set-wpm --config "$REELS_CONFIG" --wpm "$wpm" >/dev/null && note "config.json voice.wpm = $wpm (measured from $speech s of speech in $sample_label)"
+  else
+    note "the measured pace ($wpm wpm over $speech s) is too short or out of range to set config.json voice.wpm"
+  fi
+fi
+if [ -z "$memo" ]; then
+  note "NEXT STEP (you): record a 5 to 10 minute voice memo about who you are, who you talk to, what you believe and what you sell, save it as library/voice/memo.wav (or .m4a, .mp3) and run: bash pipeline/bin/build-voice-profile --force. Or fill the [FILL IN] lines of library/profile/voice.md and account.md by hand."
+fi
+exit 0

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/prompts/voice-profile",
+  "title": "voice-profile: the model's draft of voice.md and account.md from the memo transcript (BUILD_SPEC.md 2.3)",
+  "type": "object",
+  "required": ["voice_md", "account_md", "notes"],
+  "properties": {
+    "voice_md": {"type": "string"},
+    "account_md": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}
