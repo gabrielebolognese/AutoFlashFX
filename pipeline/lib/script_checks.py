@@ -359,9 +359,12 @@ def read_pronunciations(path: str) -> list[list[str]]:
 def apply_pronunciations(text: str, items: list[list[str]]) -> tuple[str, list[str]]:
     applied: list[str] = []
     for word, say in items:
-        pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(word) + r"(?![A-Za-z0-9])", re.I)
+        pattern = re.compile(r"(?<![A-Za-z0-9\[])" + re.escape(word) + r"(?![A-Za-z0-9]|\]\()", re.I)
         if pattern.search(text):
-            text = pattern.sub(say, text)
+            if say.startswith("/") and say.endswith("/") and len(say) > 2:  # Kokoro's inline phonemes (M7): [word](/phonemes/)
+                text = pattern.sub(lambda m, s=say: f"[{m.group(0)}]({s})", text)
+            else:
+                text = pattern.sub(say, text)
             applied.append(f"{word} -> {say}")
     return text, applied
 

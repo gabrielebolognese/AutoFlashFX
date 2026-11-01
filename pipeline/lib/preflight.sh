@@ -5,7 +5,10 @@
 #                     diagnosis and the exact fix, prints a STOP line and returns 3 (a systemic failure).
 #
 # Entry fields in preflight.require:
-#   check: command | python_module | file | disk | shell
+#   check: command | python_module | file | disk | shell | voice
+#                 voice (M7): pipeline/lib/voiceover.py engine-check, the voice config of library/voice/engine.txt:
+#                 its interpreter exists and imports kokoro, one interpreter imports faster_whisper; the check's
+#                 notes (a missing engine.txt, another engine named, missing lines) are warnings
 #   name          command or module name
 #   min_version   command: the first X.Y[.Z] of "<name> --version" must be at least this
 #   path          file: relative to the repo, or to the state root when in_root is true
@@ -51,7 +54,7 @@ preflight_write_stopped() {  # args: "problem|fix" ...
 preflight_run() {
   local failures=() warnings=() modules=() module_levels=() module_fixes=()
   local n_tools=0 n_files=0 free_gb=""
-  local check name path in_root min_version min_free_gb cmd level fix problem have full
+  local check name path in_root min_version min_free_gb cmd level fix problem have full vout vrc vline
   local sep=$'\x1f'
   while IFS="$sep" read -r check name path in_root min_version min_free_gb cmd level fix; do
     [ -z "$check" ] && continue
@@ -84,6 +87,18 @@ preflight_run() {
         ;;
       shell)
         (eval "$cmd") >/dev/null 2>&1 </dev/null || problem="'$cmd' failed"
+        ;;
+      voice)
+        vout="$("$REELS_PY" "$REELS_PIPELINE/lib/voiceover.py" engine-check 2>&1 </dev/null)"; vrc=$?
+        while IFS= read -r vline; do
+          case "$vline" in "WARN: "*) warnings+=("${vline#WARN: }") ;; esac
+        done <<<"$vout"
+        if [ "$vrc" != 0 ]; then
+          problem="$(printf '%s\n' "$vout" | grep -v -E '^(WARN: |ok: )' | head -n 1)"
+          [ -n "$problem" ] || problem="the voice engine check failed (exit $vrc)"
+        else
+          n_tools=$((n_tools + 1))
+        fi
         ;;
       *)
         problem="unknown preflight check type '$check' in config.json"

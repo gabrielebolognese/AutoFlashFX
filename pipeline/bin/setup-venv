@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# setup-venv: the Python environments of the voiceover stage, only when something is missing (BUILD_SPEC.md M7).
+#
+#   bash pipeline/bin/setup-venv [--check] [--whisper] [--kokoro] [--force]
+#
+# With no option: --check plus whatever is missing. Everything is CPU only (no CUDA builds, no GPU assumed).
+#   --check     report which interpreter voices the reels (library/voice/engine.txt, or the defaults) and which one
+#               transcribes (config tts.whisper_python, the voice interpreter, .venv-tts, python), and exit 0 when
+#               both import their package, 1 otherwise. Never installs anything.
+#   --whisper   create .venv-tts/ (config paths.venv_python, inside the project, ignored by git) on Python 3.11 with
+#               uv, holding faster-whisper, soundfile and numpy only (no TTS engine). Used when no interpreter
+#               imports faster_whisper.
+#   --kokoro    create the kokoro environment at config paths.kokoro_python (outside the project, the default of
+#               BUILD_SPEC.md 2.5) on Python 3.11 with uv: torch from the CPU wheel index, kokoro, soundfile,
+#               numpy. Used only when library/voice/engine.txt is missing and that interpreter does not exist yet;
+#               when engine.txt exists its interpreter is the user's and nothing is installed (spec M7).
+#   --force     rebuild the chosen environment even when it exists.
+# uv is installed with `python -m pip install uv` when missing; it downloads CPython 3.11 itself (no admin rights).
+# Versions are recorded in pipeline/knowledge/venv-versions.txt.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+
+do_check=0; do_whisper=0; do_kokoro=0; force=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --check) do_check=1 ;;
+    --whisper) do_whisper=1 ;;
+    --kokoro) do_kokoro=1 ;;
+    --force) force=1 ;;
+    -h|--help) sed -n '2,22p' "$0"; exit 0 ;;
+    *) echo "setup-venv: unknown option $1" >&2; exit 1 ;;
+  esac
+  shift
+done
+auto=0
+if [ "$do_check" = 0 ] && [ "$do_whisper" = 0 ] && [ "$do_kokoro" = 0 ]; then do_check=1; auto=1; fi
+
+VO="$LIB/voiceover.py"
+venv_rel="$(cfg paths.venv_python .venv-tts/Scripts/python.exe)"
+case "$venv_rel" in /*|[A-Za-z]:*) VENV_PY="$venv_rel" ;; *) VENV_PY="$REELS_REPO/$venv_rel" ;; esac
+VENV_DIR="$(dirname "$(dirname "$VENV_PY")")"
+KOKORO_PY="$(cfg paths.kokoro_python C:/Users/there/venvs/kokoro/Scripts/python.exe)"
+KOKORO_DIR="$(dirname "$(dirname "$KOKORO_PY")")"
+VERSIONS="$REELS_REPO/$(dirname "$(cfg paths.known_issues pipeline/knowledge/known-issues.md)")/venv-versions.txt"
+
+ensure_uv() {
+  if ! "$REELS_PY" -m uv --version >/dev/null 2>&1; then
+    echo "installing uv (python -m pip install uv) ..."
+    "$REELS_PY" -m pip install --quiet uv || { echo "setup-venv: pip install uv failed" >&2; exit 2; }
+  fi
+}
+
+record() {  # record <label> <python>
+  local py="$2" label="$1"
+  mkdir -p "$(dirname "$VERSIONS")"
+  {
+    printf '%s | %s | %s | %s\n' "$(date '+%Y-%m-%d %H:%M')" "$label" "$py" "$("$py" --version 2>&1 | head -n 1)"
+    "$py" -m pip list --format=freeze 2>/dev/null | grep -i -E '^(torch|kokoro|misaki|faster-whisper|faster_whisper|ctranslate2|soundfile|numpy|onnxruntime)=' | sed 's/^/    /'
+  } >> "$VERSIONS"
+}
+
+make_whisper() {
+  if [ -f "$VENV_PY" ] && [ "$force" = 0 ] && "$VENV_PY" -c "import faster_whisper" >/dev/null 2>&1; then
+    echo "kept $VENV_DIR (it imports faster_whisper; --force rebuilds it)"; return 0
+  fi
+  ensure_uv
+  echo "creating $VENV_DIR (Python 3.11, faster-whisper, soundfile, numpy; CPU only) ..."
+  rm -rf "$VENV_DIR"
+  "$REELS_PY" -m uv venv --python 3.11 "$VENV_DIR" || { echo "setup-venv: uv venv failed" >&2; exit 2; }
+  "$REELS_PY" -m uv pip install --python "$VENV_PY" faster-whisper soundfile numpy || { echo "setup-venv: uv pip install failed" >&2; exit 2; }
+  "$VENV_PY" -c "import faster_whisper, soundfile, numpy; print('faster-whisper', faster_whisper.__version__)" || exit 2
+  record "whisper venv" "$VENV_PY"
+}
+
+make_kokoro() {
+  if [ -f "$KOKORO_PY" ] && [ "$force" = 0 ] && "$KOKORO_PY" -c "import kokoro" >/dev/null 2>&1; then
+    echo "kept $KOKORO_DIR (it imports kokoro; --force rebuilds it)"; return 0
+  fi
+  ensure_uv
+  echo "creating $KOKORO_DIR (Python 3.11, torch CPU, kokoro, soundfile, numpy) ..."
+  rm -rf "$KOKORO_DIR"
+  mkdir -p "$(dirname "$KOKORO_DIR")"
+  "$REELS_PY" -m uv venv --python 3.11 "$KOKORO_DIR" || { echo "setup-venv: uv venv failed" >&2; exit 2; }
+  "$REELS_PY" -m uv pip install --python "$KOKORO_PY" --index-url https://download.pytorch.org/whl/cpu torch || { echo "setup-venv: torch (CPU) install failed" >&2; exit 2; }
+  "$REELS_PY" -m uv pip install --python "$KOKORO_PY" kokoro soundfile numpy || { echo "setup-venv: kokoro install failed" >&2; exit 2; }
+  "$KOKORO_PY" -c "import kokoro, torch; print('kokoro', kokoro.__version__, 'torch', torch.__version__, 'cuda', torch.cuda.is_available())" || exit 2
+  record "kokoro venv" "$KOKORO_PY"
+}
+
+rc=0
+if [ "$do_check" = 1 ]; then
+  out="$("$REELS_PY" "$VO" engine-check 2>&1)"; crc=$?
+  printf '%s\n' "$out"
+  if [ "$crc" != 0 ]; then
+    rc=1
+    if [ "$auto" = 1 ]; then
+      case "$out" in *"faster_whisper"*) do_whisper=1 ;; esac
+      engine_file="$REELS_ROOT/$(cfg paths.voice_dir library/voice)/engine.txt"
+      if [ ! -f "$engine_file" ] && ! [ -f "$KOKORO_PY" ]; then do_kokoro=1; fi
+      case "$out" in *"cannot import kokoro"*|*"does not exist"*) [ -f "$engine_file" ] && echo "library/voice/engine.txt exists: its interpreter is yours, nothing is installed here (BUILD_SPEC.md M7); fix the python line or run setup-venv --kokoro and point engine.txt at $KOKORO_PY" ;; esac
+    fi
+  fi
+fi
+[ "$do_kokoro" = 1 ] && { make_kokoro && rc=0; }
+[ "$do_whisper" = 1 ] && { make_whisper && rc=0; }
+if [ "$do_whisper" = 1 ] || [ "$do_kokoro" = 1 ]; then
+  "$REELS_PY" "$VO" engine-check; rc=$?
+fi
+exit $rc

@@ -47,7 +47,8 @@ STATS="$lib_dir/.hooks.stats.json"
 VENDOR_HOOKS="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)/hooks.json"
 [ -f "$INDEX" ] || stage_fail "library/.hooks.index.json is missing after index-hooks"
 
-# the voice profile: how the user sounds and the measured pace (voice.md wins over config voice.wpm)
+# the voice profile: how the user sounds. The pace comes from config voice.wpm (the reel voice, Kokoro af_bella
+# after silence tightening, measured in M7); voice.md's Pace line is the user's own and only a fallback.
 voice=""; voice_text=""
 if voice="$(profile_file voice.md)"; then
   voice_text="$(tr -d '\r' < "$voice")"
@@ -63,7 +64,7 @@ if account="$(profile_file account.md)"; then
     flag_once "library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption"
   fi
 fi
-wpm="$("$REELS_PY" "$LIB/hooks.py" wpm --voice "${voice:-/nonexistent}" --default "$(cfg voice.wpm 150)")"
+wpm="$(cfg voice.wpm "")"; [ -n "$wpm" ] || wpm="$("$REELS_PY" "$LIB/hooks.py" wpm --voice "${voice:-/nonexistent}" --default 150)"  # config voice.wpm: the reel voice's pace (M7)
 max_sec="$(cfg hooks.spoken_max_seconds 3)"
 limits="$("$REELS_PY" "$LIB/hooks.py" limits --wpm "$wpm" --max-words "$(cfg hooks.spoken_max_words 8)" --max-seconds "$max_sec")"
 max_words="$(json_field "$limits" max_words 7)"

@@ -33,8 +33,8 @@ runner_banner() {
   local version style primary fallback queue sfx_map sfx_count="not built" sha=""
   version="$(cfg version 0.0.0)"
   style="$(cfg style paper-cards)"
-  primary="$(cfg tts.primary unknown)"
-  fallback="$(cfg tts.fallback none)"
+  primary="$("$REELS_PY" "$REELS_PIPELINE/lib/voiceover.py" engine --brief 2>/dev/null)"; [ -n "$primary" ] || primary="unknown"
+  fallback="none"  # one voice per reel, no fallback (BUILD_SPEC.md 2.5)
   queue="$(ideas_count 2>/dev/null || echo 0)"
   queue="${queue:-0}"
   sfx_map="$REELS_REPO/$(cfg sfx.map styles/sfx/sfx-map.json)"
@@ -44,7 +44,7 @@ m = json.load(open(sys.argv[1], encoding="utf-8-sig"))
 print(len(m.get("files", [])), "files")' "$sfx_map" 2>/dev/null || echo "unreadable")"
   fi
   sha="$(git -C "$REELS_REPO" rev-parse --short HEAD 2>/dev/null || true)"
-  say START "reels autopilot v${version}${sha:+ (${sha})} | queue: $queue $(plural "$queue" idea) | style: $style | voice: $primary (fallback $fallback) | sfx map: $sfx_count"
+  say START "reels autopilot v${version}${sha:+ (${sha})} | queue: $queue $(plural "$queue" idea) | style: $style | voice: $primary | sfx map: $sfx_count"
   say INFO "root: $REELS_ROOT | mode: $([ "${ONCE:-0}" = 1 ] && echo "once (stops when the queue is empty)" || echo "forever (Ctrl+C stops it, a restart resumes)")${REELS_DUMMY:+ | dummy stages: $REELS_DUMMY}"
   if [ "$queue" -gt 0 ]; then
     local n=0 id text

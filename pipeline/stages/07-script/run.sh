@@ -131,7 +131,7 @@ fi
 pron_file="$(profile_file pronunciations.txt || true)"
 pron_text="$(grep -v -E '^\s*(#|$)' "${pron_file:-/nonexistent}" 2>/dev/null | tr -d '\r' || true)"
 [ -n "$pron_text" ] || pron_text="(none: library/profile/pronunciations.txt lists no word yet; say tool names the way the brief suggests)"
-wpm="$("$REELS_PY" "$LIB/hooks.py" wpm --voice "${voice:-/nonexistent}" --default "$(cfg voice.wpm 150)")"
+wpm="$(cfg voice.wpm "")"; [ -n "$wpm" ] || wpm="$("$REELS_PY" "$LIB/hooks.py" wpm --voice "${voice:-/nonexistent}" --default 150)"  # config voice.wpm: the reel voice's pace (M7)
 plan_res="$(py setup --config "$REELS_CONFIG" --brief "$brief" --judge "$judge" --expansion "$exp_json" --voice "${voice:-}" \
   --pronunciations "${pron_file:-}" --tweaks "$style_dir/tweaks.md" --style "$style_dir/style.md" --wpm "$wpm" --rounds "$ROUNDS" \
   --idea-id "$IDEA_ID" --idea-text "$IDEA_TEXT" --out "$PLAN")" || stage_fail "script_checks.py setup failed (judge.json without a winner?)"

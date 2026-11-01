@@ -1,50 +1,68 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/08-voiceover/words.json",
-  "title": "08-voiceover words.json (first version, M2)",
+  "title": "08-voiceover words.json (M7): every spoken word of the reel with its timestamps in vo.wav, per beat",
   "type": "object",
-  "required": [
-    "engine",
-    "duration_ms",
-    "words"
-  ],
+  "required": ["engine", "voice", "sample_rate", "duration_ms", "beats", "words"],
   "properties": {
-    "engine": {
-      "type": "string"
+    "written_by": {"type": "string"},
+    "engine": {"type": "string", "enum": ["kokoro", "dummy"]},
+    "voice": {"type": "string", "minLength": 1},
+    "sample_rate": {"type": "integer", "enum": [48000]},
+    "duration_ms": {"type": "number", "minimum": 0},
+    "wpm": {"type": "number", "minimum": 0},
+    "whisper_model": {"type": "string"},
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "start_ms", "end_ms"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "type": {"type": "string"},
+          "start_ms": {"type": "number", "minimum": 0},
+          "end_ms": {"type": "number", "minimum": 0},
+          "words": {"type": "integer", "minimum": 0},
+          "wer_pct": {"type": ["number", "null"], "minimum": 0},
+          "status": {"type": "string", "enum": ["ok", "flag", "block", "pending"]},
+          "estimate_s": {"type": "number", "minimum": 0},
+          "seconds": {"type": ["number", "null"], "minimum": 0}
+        }
+      }
     },
-    "sample_rate": {
-      "type": "integer"
+    "breath": {
+      "type": ["object", "null"],
+      "required": ["after", "start_ms", "end_ms"],
+      "properties": {
+        "after": {"type": "string"},
+        "start_ms": {"type": "number", "minimum": 0},
+        "end_ms": {"type": "number", "minimum": 0},
+        "seconds": {"type": "number", "minimum": 0}
+      }
     },
-    "duration_ms": {
-      "type": "number",
-      "minimum": 0
+    "loudness": {
+      "type": "object",
+      "properties": {
+        "lufs": {"type": ["number", "null"]},
+        "true_peak_dbtp": {"type": ["number", "null"]}
+      }
     },
     "words": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": [
-          "word",
-          "start_ms",
-          "end_ms",
-          "beat"
-        ],
+        "required": ["word", "start_ms", "end_ms", "beat"],
         "properties": {
-          "word": {
-            "type": "string"
-          },
-          "start_ms": {
-            "type": "number"
-          },
-          "end_ms": {
-            "type": "number"
-          },
-          "beat": {
-            "type": "string"
-          }
+          "word": {"type": "string", "minLength": 1},
+          "start_ms": {"type": "number", "minimum": 0},
+          "end_ms": {"type": "number", "minimum": 0},
+          "beat": {"type": "string", "minLength": 1},
+          "heard": {"type": "string"}
         }
       }
-    }
+    },
+    "flags": {"type": "array", "items": {"type": "string"}}
   }
 }

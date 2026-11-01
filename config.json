@@ -21,23 +21,22 @@
   },
 
   "tts": {
-    "primary": "chatterbox",
-    "fallback": "kokoro",
-    "gap_ms": 160,
-    "gap_ms_range": [120, 200],
-    "whisper_model": "small.en",
-    "engines": {
-      "chatterbox": {"seed": 42, "exaggeration_hook": 0.7, "exaggeration_body": 0.5, "cfg_weight": 0.5, "clones": true},
-      "kokoro":     {"voice": "am_adam", "speed_hook": 1.05, "speed_body": 1.0, "clones": false},
-      "qwen3-tts":  {"installed": false, "clones": true}
-    }
+    "device": "cpu",
+    "whisper_model": "small",
+    "whisper_python": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
+    "whisper_pad_s": 0.5,
+    "wer_fail_pct": 3,
+    "wer_flag_max_pct": 8,
+    "overrun_pct": 15,
+    "overrun_min_s": 0.4,
+    "lead_s": 0.05,
+    "tail_s": 0.2
   },
 
   "voice": {
-    "wpm": 195,
+    "wpm": 176,
     "loudness_lufs": -14,
-    "true_peak_dbtp": -1.5,
-    "reference": "library/voice/reference.wav"
+    "true_peak_dbtp": -1.5
   },
 
   "sfx": {
@@ -155,6 +154,9 @@
     "checks_seconds": 900,
     "pick_seconds": 900,
     "transcribe_seconds": 1800,
+    "tts_seconds": 1800,
+    "align_seconds": 1800,
+    "loudness_seconds": 300,
     "profile_seconds": 1200,
     "reviewer_seconds": 2400,
     "fixer_seconds": 2400,
@@ -198,7 +200,8 @@
     "golden": "golden",
     "vendor": "pipeline/vendor/ig-agent-skill",
     "known_issues": "pipeline/knowledge/known-issues.md",
-    "venv_python": ".venv-tts/Scripts/python.exe"
+    "venv_python": ".venv-tts/Scripts/python.exe",
+    "kokoro_python": "C:/Users/there/venvs/kokoro/Scripts/python.exe"
   },
 
   "preflight": {
@@ -212,6 +215,7 @@
       {"check": "command", "name": "git", "fix": "install Git for Windows from git-scm.com"},
       {"check": "python_module", "name": "jsonschema", "fix": "bash pipeline/bin/setup-python"},
       {"check": "python_module", "name": "playwright", "level": "warn", "fix": "bash pipeline/bin/setup-python (installs playwright and its Chromium; without it the research stage takes no screenshots)"},
+      {"check": "voice", "fix": "write library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"},
       {"check": "file", "path": "styles/paper-cards/style.md", "fix": "restore it: git checkout -- styles/paper-cards/style.md"},
       {"check": "file", "path": "styles/paper-cards/tweaks.md", "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"},
       {"check": "file", "path": "styles/paper-cards/vocabulary.md", "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"},
