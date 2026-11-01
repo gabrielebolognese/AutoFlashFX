@@ -3,8 +3,10 @@
 Built in M4 (the folder, this contract, schema.json and dummy.sh date from M2). Spec: BUILD_SPEC.md section 5, S4.
 
 ## Purpose
-When the gate fails on P, S or C: research more, rewrite expansion.md with a better angle that keeps the idea's
-core topic, then the idea goes back to S3. The stage starts as "skipped" in state.json and runs only when the gate
+When the gate fails on P, S or C, or F fails for wording (a statement of the expansion that facts.md does not back
+while the core claim is verified, DECISIONS.md 112): research more, rewrite expansion.md with a better angle that
+keeps the idea's core topic (or with the unbacked statements removed or reworded from facts.md), then the idea
+goes back to S3. The stage starts as "skipped" in state.json and runs only when the gate
 reopened it (03-gate/reopen.txt, applied by state.py stage-done). Session A resumed with the research tools
 (config research.tools, research.allowed and research.denied, as in 01-research: the read-only gh forms and the
 screenshot tool pre-approved, the gh forms that write denied) and the gate's verdict in the prompt.
@@ -21,8 +23,9 @@ screenshot tool pre-approved, the gh forms that write denied) and the gate's ver
 ## Outputs (in runs/<id>/04-angle/)
 - angle.json is the primary output: the stage is done when it validates against schema.json and the runner has
   written .done (pipeline/lib/state.py stage-done). Fields: round, gate_round, previous_scores {P, S, C, F},
-  previous_failing, change (what the new angle does differently), keeps_core_topic (true: a false answer drops the
-  idea instead), new_claims (how many claims were appended to facts.md), expansion_chars, written, checked.
+  previous_failing, previous_F_kind ("wording" or "core" when F failed, else ""), change (what the new angle does
+  differently), keeps_core_topic (true: a false answer drops the idea instead), new_claims (how many claims were
+  appended to facts.md), expansion_chars, written, checked.
 - angle-<round>.json: a copy per round.
 - 02-expansion/expansion.md and expansion.json rewritten (written_by "04-angle round N", round N), the previous
   version kept as 02-expansion/expansion-r<N-1>.md.
@@ -42,6 +45,9 @@ screenshot tool pre-approved, the gh forms that write denied) and the gate's ver
 - the rewritten expansion obeys the same rules as S2 (expansion.py: first-person problem, named identity, keyword
   in capitals, NEW deliverable described, 2 to 6 pointers to verified claims, 500 to 1500 characters), asked again
   with the exact problems up to research.expansion_tries times, then written anyway with a NEEDS REVIEW flag
+- an F failure of kind wording is repaired from facts.md: the prompt names it ("Failing: F (wording)"), quotes
+  the gate's F evidence and asks, before anything else, for each quoted statement to be removed, reworded from a
+  verified claim or researched and added to new_claims; the gate then scores the result like any other round
 - the activity text is "finding a better angle (round N/2)"
 - no em dash in any output file: the model's `change` text is cleaned (reels_undash) as soon as it is read, before
   it reaches angle.json, angle-<round>.json, the drop reason or the next round's prompt

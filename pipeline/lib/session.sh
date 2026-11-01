@@ -40,6 +40,9 @@ session_seed() {
     echo "## The latest gate verdict (03-gate/gate.json)"; echo
     echo "- round: $(json_field "$gate" round "?")"
     echo "- scores: P $(json_field "$gate" scores.P "?"), S $(json_field "$gate" scores.S "?"), C $(json_field "$gate" scores.C "?"), F $(json_field "$gate" F "?")"
+    if [ "$(json_field "$gate" F "")" = fail ]; then
+      echo "- F failed for: $(json_field "$gate" F_kind "core") (core: the idea does not hold; wording: a statement of the expansion is not in facts.md)"
+    fi
     echo "- decision: $(json_field "$gate" decision "?")"
     echo "- reason: $(undash "$(json_field "$gate" reason "")")"
     echo "- evidence P: $(undash "$(json_field "$gate" evidence.P "")")"

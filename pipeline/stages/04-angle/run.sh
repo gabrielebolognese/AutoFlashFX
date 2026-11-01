@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # run.sh for 04-angle (Angle research, S4): BUILD_SPEC.md section 5, S4. Runs only when the gate asked for it
-# (03-gate reopened this stage through reopen.txt). Session A resumed with the research tools again (config
-# research.tools, research.allowed and research.denied: the read-only gh forms and the screenshot tool, the gh
-# forms that write denied), given the gate's verdict; the model answers with a new expansion plus what
-# it changed, whether the core topic is kept and any new claims it researched (model.schema.json). New claims are
+# (03-gate reopened this stage through reopen.txt: P, S or C below 2, or F failing for wording, a statement of the
+# expansion that facts.md does not back while the idea holds, DECISIONS.md 112). Session A resumed with the
+# research tools again (config research.tools, research.allowed and research.denied: the read-only gh forms and
+# the screenshot tool, the gh forms that write denied), given the gate's verdict (and, for a wording failure, a
+# section asking for the quoted statements to be removed, reworded from facts.md or researched); the model answers
+# with a new expansion plus what it changed, whether the core topic is kept and any new claims it researched
+# (model.schema.json). New claims are
 # appended to facts.md and research.json (numbering on), the expansion is checked and composed by
 # pipeline/lib/expansion.py exactly as in S2 (with the same retry loop), angle.json (the primary output) and a
 # copy angle-<round>.json are written, and reopen.txt names 03-gate so the gate scores the rewritten expansion.
@@ -37,11 +40,26 @@ exp_dir="$RUN_DIR/02-expansion"
 [ -f "$facts" ] || stage_fail "01-research/facts.md is missing"
 [ -f "$exp_dir/expansion.md" ] || stage_fail "02-expansion/expansion.md is missing"
 gate="$(cat "$gate_file")"
-gP=""; gS=""; gC=""; gF=""; g_reason=""; g_hint=""; g_failing=""; g_round=""; eP=""; eS=""; eC=""; eF=""
-eval "$(json_eval "$gate" gP=scores.P gS=scores.S gC=scores.C gF=F g_reason=model_reason g_hint=angle_hint g_failing=failing g_round=round eP=evidence.P eS=evidence.S eC=evidence.C eF=evidence.F)"
+gP=""; gS=""; gC=""; gF=""; gFk=""; g_reason=""; g_hint=""; g_failing=""; g_round=""; eP=""; eS=""; eC=""; eF=""
+eval "$(json_eval "$gate" gP=scores.P gS=scores.S gC=scores.C gF=F gFk=F_kind g_reason=model_reason g_hint=angle_hint g_failing=failing g_round=round eP=evidence.P eS=evidence.S eC=evidence.C eF=evidence.F)"
 [ -n "$g_reason" ] || g_reason="$(json_field "$gate" reason "")"
 scores_text="P${gP:-?} S${gS:-?} C${gC:-?} F ${gF:-?}"
 failing_text="$(printf '%s' "${g_failing:-[]}" | tr -d '[]"' | tr ',' ' ')"
+# an F failure of kind wording (DECISIONS.md 112): the gate quoted statements of the expansion that facts.md does
+# not back while the core claim is verified; the prompt names it and asks for the repair before anything else
+failing_prompt="${failing_text:-none}"
+f_repair=""
+if [ "$gF" = fail ] && [ "$gFk" = wording ]; then
+  failing_prompt="${failing_prompt/F/F (wording)}"
+  f_repair="## F failed for wording: fix this first
+
+The gate found statements in the expansion that facts.md does not back (quoted word for word in the F evidence
+above). The idea itself holds: the core claim is verified. For each such statement, remove it, or reword it to say
+exactly what a verified claim says (quote the claim's own words: the install steps as the docs give them, a font
+or a color named as the claim names it), or research it now and add the claim to new_claims with its URL. Add no
+statement that no verified claim backs: one unbacked statement fails F again and costs this idea its last rounds.
+"
+fi
 [ -f "$exp_dir/expansion-r$((n - 1)).md" ] || cp "$exp_dir/expansion.md" "$exp_dir/expansion-r$((n - 1)).md"
 
 previous=""
@@ -74,11 +92,11 @@ next_claim=$(( $("$REELS_PY" "$LIB/research.py" claims --run-dir "$RUN_DIR" | "$
 
 prompt="$OUT/prompt-angle-r$n.md"
 render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "@FACTS=$facts" "@EXPANSION=$exp_dir/expansion.md" \
-  "GATE_SCORES=$scores_text" "GATE_FAILING=${failing_text:-none}" "GATE_REASON=$g_reason" \
+  "GATE_SCORES=$scores_text" "GATE_FAILING=$failing_prompt" "GATE_REASON=$g_reason" \
   "GATE_EVIDENCE=- P: $eP
 - S: $eS
 - C: $eC
-- F: $eF" "GATE_HINT=$g_hint" "PREVIOUS_ANGLES=$previous" "DELIVERABLES=$deliv_text" "ACCOUNT=$account_text" \
+- F: $eF" "GATE_HINT=$g_hint" "F_REPAIR=$f_repair" "PREVIOUS_ANGLES=$previous" "DELIVERABLES=$deliv_text" "ACCOUNT=$account_text" \
   "ROUND=$n" "CAP=$cap" "MIN=$min_chars" "MAX=$max_chars" "MAX_ASSETS=$max_assets" "NEXT_CLAIM=$next_claim" \
   "NOTE=$(stage_note_section)" || stage_fail "cannot render pipeline/stages/04-angle/prompt.md"
 
@@ -118,16 +136,17 @@ done
 [ "$ok" = true ] || flag_once "expansion.md (angle round $n) breaks a rule after $tries tries: $(json_field "$errors" 0 "unknown" | cut -c1-140)"
 
 chars="$(json_field "$result" chars 0)"
-"$REELS_PY" - "$OUT" "$n" "$g_round" "$gP" "$gS" "$gC" "$gF" "$change" "$added_total" "$chars" "$TODAY" "$failing_text" <<'EOF'
+"$REELS_PY" - "$OUT" "$n" "$g_round" "$gP" "$gS" "$gC" "$gF" "$change" "$added_total" "$chars" "$TODAY" "$failing_text" "$gFk" <<'EOF'
 import json, os, sys
-out, n, g_round, p, s, c, f, change, added, chars, today, failing = sys.argv[1:13]
+out, n, g_round, p, s, c, f, change, added, chars, today, failing, f_kind = sys.argv[1:14]
 def num(v):
     try:
         return int(v)
     except (TypeError, ValueError):
         return None
 record = {"round": int(n), "gate_round": num(g_round), "previous_scores": {"P": num(p), "S": num(s), "C": num(c), "F": f},
-          "previous_failing": failing.split(), "change": change, "keeps_core_topic": True, "new_claims": int(added),
+          "previous_failing": failing.split(), "previous_F_kind": f_kind if f == "fail" else "",
+          "change": change, "keeps_core_topic": True, "new_claims": int(added),
           "expansion_chars": int(chars), "written": "02-expansion/expansion.md", "checked": today}
 for name in ("angle.json", f"angle-{n}.json"):
     with open(os.path.join(out, name), "w", encoding="utf-8", newline="\n") as fh:

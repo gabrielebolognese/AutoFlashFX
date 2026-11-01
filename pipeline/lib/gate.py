@@ -4,17 +4,21 @@
   gate.py decide --run-dir RUN --model-out FILE --round R --angles-done N --cap C --core-status S --today D
                  [--idea TEXT]
       the model's structured output (pipeline/stages/03-gate/model.schema.json) holds the scores P, S, C (0 to 3)
-      with quoted evidence, its F verdict, a reason, an angle hint and, rarely, a different-topic suggestion.
-      The rules of spec S3, applied here so they never depend on the model's mood:
-        - F fails whatever the model said when the research found the idea's core claim false or could not
-          verify it (--core-status); F failing drops the idea at once
+      with quoted evidence, its F verdict with its kind (F_kind: "core" when the idea itself does not hold,
+      "wording" when a statement of the expansion is not in facts.md while the idea holds without it), a reason,
+      an angle hint and, rarely, a different-topic suggestion.
+      The rules of spec S3, applied here so they never depend on the model's mood (DECISIONS.md 100 and 112):
+        - F fails with kind core whatever the model said when the research found the idea's core claim false or
+          could not verify it (--core-status); an F fail of kind core drops the idea at once ("facts don't hold")
         - pass: P, S and C at least 2 and F ok
         - the model says only a different topic would work: drop, with the suggestion for logs/suggested-ideas.txt
-        - P, S or C failing with angle rounds left (--angles-done below --cap): decision angle
+        - P, S or C failing, or F failing for wording, with angle rounds left (--angles-done below --cap):
+          decision angle (S4 rewrites the expansion: a better angle, or the unbacked statements removed or
+          reworded from facts.md)
         - no rounds left: drop ("still failing after N angle rounds")
       Writes 03-gate/gate.json (the primary output) and a copy gate-<round>.json; prints one JSON line with
-      decision, scores_text ("P3 S2 C3 F ok"), failing_text ("S1"), reason (the drop reason or the pass note),
-      suggested_idea and angle_hint.
+      decision, scores_text ("P3 S2 C3 F ok"), failing_text ("S1", "F wording", "S1 F wording"), reason (the drop
+      reason or the pass note), suggested_idea, angle_hint and F_kind.
   gate.py suggest --logs DIR --idea TEXT --suggestion TEXT [--source STAGE]
       appends the suggestion to logs/suggested-ideas.txt (a comment line, then the suggestion in braces, ready to
       paste into add-idea.sh); never writes ideas.txt
@@ -38,6 +42,7 @@ from errors import undash  # noqa: E402
 
 STAGE = "03-gate"
 LETTERS = ("P", "S", "C")
+F_KINDS = ("core", "wording")
 
 
 def winpath(path: str) -> str:
@@ -83,6 +88,12 @@ def cmd_decide(args) -> int:
     raw_evidence = model.get("evidence") if isinstance(model.get("evidence"), dict) else {}
     evidence = {k: text(raw_evidence.get(k)) for k in LETTERS + ("F",)}
     model_f = "ok" if text(model.get("F")).lower() == "ok" else "fail"
+    # the kind of F failure the model found: "core" (the idea does not hold) or "wording" (a statement of the
+    # expansion is not in facts.md, the idea holds without it); a missing or unknown kind on a fail is read as
+    # core, the spec's strict default
+    model_kind = text(model.get("F_kind")).lower()
+    if model_kind not in F_KINDS:
+        model_kind = "core" if model_f == "fail" else ""
     core_status = (args.core_status or "unverified").lower()
     core_note = ""
     research_path = os.path.join(run_dir, "01-research", "research.json")
@@ -91,23 +102,36 @@ def cmd_decide(args) -> int:
             core_note = text(load_json(research_path).get("core_claim", {}).get("note"))
         except (OSError, ValueError, AttributeError):
             core_note = ""
-    f_verdict = model_f if core_status == "verified" else "fail"
+    if core_status != "verified":
+        f_verdict, f_kind = "fail", "core"      # code-forced: a false or unverified core claim is never a wording slip
+    elif model_f == "fail":
+        f_verdict, f_kind = "fail", model_kind
+    else:
+        f_verdict, f_kind = "ok", ""
     model_reason = text(model.get("reason"))
     angle_hint = text(model.get("angle_hint"))
     different_topic = bool(model.get("different_topic"))
     suggested = text(model.get("suggested_idea"))
-    failing = [f"{k}{scores[k]}" for k in LETTERS if scores[k] < 2]
+    failing_letters = [f"{k}{scores[k]}" for k in LETTERS if scores[k] < 2]
+    failing = failing_letters + (["F"] if f_verdict == "fail" else [])
+    failing_text = " ".join(failing_letters + ([f"F {f_kind}"] if f_verdict == "fail" else []))
     scores_text = f"P{scores['P']} S{scores['S']} C{scores['C']} F {f_verdict}"
-    passed = not failing and f_verdict == "ok"
+    passed = not failing_letters and f_verdict == "ok"
+    wording_fail = f_verdict == "fail" and f_kind == "wording"
+    if wording_fail and not angle_hint:
+        angle_hint = ("remove or reword the statements of the expansion that facts.md does not back: "
+                      + (evidence["F"] or model_reason or "see the gate's F evidence"))
+    short_fail = "; ".join(([" ".join(failing_letters) + " below 2"] if failing_letters else [])
+                           + (["a statement of the expansion is not in facts.md"] if wording_fail else []))
 
-    if f_verdict == "fail":
+    if f_verdict == "fail" and f_kind == "core":
         decision = "drop"
         if core_status != "verified":
             why = f"the idea's core claim is {core_status}" + (f" ({core_note[:160].rstrip()})" if core_note else "")
             if model_reason:
                 why += f"; {model_reason}"
         else:
-            why = model_reason or evidence["F"] or "a claim the reel would make is not in facts.md"
+            why = model_reason or evidence["F"] or "the tool does not do what the idea assumes"
         reason = f"facts don't hold ({scores_text}): {why}"
     elif passed:
         decision = "pass"
@@ -118,22 +142,24 @@ def cmd_decide(args) -> int:
                   "; suggestion written to logs/suggested-ideas.txt")
     elif args.angles_done < args.cap:
         decision = "angle"
-        reason = model_reason or f"{' '.join(failing)} below 2"
+        reason = model_reason or short_fail
     else:
         decision = "drop"
         rounds = "round" if args.angles_done == 1 else "rounds"
-        reason = f"still failing after {args.angles_done} angle {rounds} ({scores_text}): {model_reason or ' '.join(failing) + ' below 2'}"
+        reason = f"still failing after {args.angles_done} angle {rounds} ({scores_text}): {model_reason or short_fail}"
 
     gate = {
         "round": args.round,
         "scores": scores,
         "F": f_verdict,
+        "F_kind": f_kind,
         "pass": passed,
         "decision": decision,
         "evidence": evidence,
         "reason": reason,
         "model_reason": model_reason,
         "model_F": model_f,
+        "model_F_kind": model_kind,
         "failing": failing,
         "angle_hint": angle_hint,
         "different_topic": different_topic,
@@ -148,9 +174,9 @@ def cmd_decide(args) -> int:
     os.makedirs(out_dir, exist_ok=True)
     save_json(os.path.join(out_dir, "gate.json"), gate)
     save_json(os.path.join(out_dir, f"gate-{args.round}.json"), gate)
-    print(json.dumps({"decision": decision, "scores_text": scores_text, "failing_text": " ".join(failing),
+    print(json.dumps({"decision": decision, "scores_text": scores_text, "failing_text": failing_text,
                       "reason": reason, "suggested_idea": gate["suggested_idea"], "angle_hint": angle_hint,
-                      "scores": scores, "F": f_verdict}, ensure_ascii=False))
+                      "scores": scores, "F": f_verdict, "F_kind": f_kind}, ensure_ascii=False))
     return 0
 
 

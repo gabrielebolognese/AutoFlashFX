@@ -17,10 +17,12 @@ the rules of spec S3 never depend on the model.
 
 ## Outputs (in runs/<id>/03-gate/)
 - gate.json is the primary output: the stage is done when it validates against schema.json and the runner has
-  written .done (pipeline/lib/state.py stage-done). Fields: round, scores {P, S, C}, F (ok or fail), pass,
-  decision (pass, angle or drop), evidence {P, S, C, F} (quotes), reason (the pass note or the drop reason with the
-  scores), model_reason, model_F, failing (for example ["S1"]), angle_hint, different_topic, suggested_idea,
-  angles_done, angle_cap, core_claim_status, checked, decided_at.
+  written .done (pipeline/lib/state.py stage-done). Fields: round, scores {P, S, C}, F (ok or fail), F_kind (""
+  when F is ok, "core" when the idea does not hold, "wording" when a statement of the expansion is not in
+  facts.md while the idea holds), pass, decision (pass, angle or drop), evidence {P, S, C, F} (quotes), reason
+  (the pass note or the drop reason with the scores), model_reason, model_F, model_F_kind, failing (for example
+  ["S1"], or ["F"] when F fails), angle_hint, different_topic, suggested_idea, angles_done, angle_cap,
+  core_claim_status, checked, decided_at.
 - gate-<round>.json: a copy per round (the history the next rounds and the angle stage read).
 - prompt-gate-rN.md: the rendered prompt; calls/: the model calls (ai.sh).
 - reopen.txt naming 04-angle when the decision is angle (consumed by state.py stage-done).
@@ -30,8 +32,14 @@ the rules of spec S3 never depend on the model.
   (P3 S1 C3 F ok): ...".
 
 ## Invariants
-- F fails when the research found the core claim false or unverified, whatever the model answered; F failing
-  drops the idea at once (exit 10)
+- F fails with kind core when the research found the core claim false or unverified, whatever the model answered;
+  an F fail of kind core (the idea does not hold: the tool does not do what the idea assumes, it is deprecated,
+  the core claim cannot be verified) drops the idea at once (exit 10)
+- an F fail of kind wording (a statement of the expansion that facts.md does not back, while the core claim is
+  verified and the idea holds without it) is treated like a failing P, S or C: an angle round while rounds are
+  left (the ANGLE line "gate failed (F wording): finding a better angle, round 1/2"; the angle stage removes or
+  rewords the quoted statements), else a drop "still failing after N angle rounds" (DECISIONS.md 112); a fail
+  without a kind is read as core
 - pass: P, S and C at least 2 and F ok: the GATE line "passed (P3 S2 C3 F ok)"
 - P, S or C failing with angle rounds left (angles done below caps.angle_rounds): decision angle, the ANGLE line
   "gate failed (S1): finding a better angle, round 1/2", 04-angle reopened through reopen.txt; the gate runs again

@@ -41,15 +41,25 @@ This is gate round {{ROUND}} (at most {{CAP}} angle rounds are allowed before th
   little vaguely; 1 = a vague promise ("more tips") or a deliverable that does not match the reel; 0 = none.
 - F, facts: "ok" when every factual statement in the expansion (the problem, the solution, the takeaway, the one
   specific true thing, what the deliverable says about the tool) is backed by a claim marked verified in facts.md
-  and the core claim is verified; "fail" when any statement is not in facts.md, rests on an unverified or false
-  claim, or when the tool does not do what the idea assumes or is deprecated. Quote the statement that fails.
+  and the core claim is verified; "fail" when any statement is not in facts.md, says more than its claim says (an
+  added detail, a skipped step, a count or an adjective the claim does not state), rests on an unverified or false
+  claim, or when the tool does not do what the idea assumes or is deprecated. Quote every statement that fails,
+  word for word, in the F evidence.
+- F_kind, what kind of F failure it is ("none" when F is ok):
+  - "core": the idea itself does not hold. The tool does not do what the idea assumes, it is deprecated, the core
+    claim is unverified or false, or the solution or the one specific true thing rests on a false or unverified
+    claim and no verified claim in facts.md could replace it. The idea is dropped.
+  - "wording": the idea holds (the core claim is verified and the reel could be made from the verified claims
+    alone), but a statement of the expansion is not in facts.md or goes beyond its claim. Removing that statement,
+    or rewording it from a verified claim, would make F ok. The expansion is rewritten and scored again.
 
 ## Also give
 
 - reason: one or two sentences, the main strength or the main weakness, in plain words (it is printed in the log
   and, on a drop, in the history line).
-- angle_hint: when P, S or C is below 2, what a better angle inside the same topic should change (the angle stage
-  reads it); empty when everything passes.
+- angle_hint: when P, S or C is below 2, what a better angle inside the same topic should change; when F fails for
+  wording, which statements to remove or reword and which claim of facts.md to use instead (the angle stage reads
+  it); empty when everything passes.
 - different_topic: true only when you are sure that no angle inside the idea's own topic can bring every failing
   criterion to 2 (the topic itself has no real problem, no sharer or no deliverable); suggested_idea then describes
   the different idea that would work (one or two sentences, no braces). Otherwise false and "".
@@ -57,10 +67,12 @@ This is gate round {{ROUND}} (at most {{CAP}} angle rounds are allowed before th
 ## Rules
 
 - Quote the evidence: short quotes from expansion.md or facts.md, with the claim number when it is a claim.
-- Be strict on F and fair on P, S and C. Do not reward length or enthusiasm.
+- Be strict on F and fair on P, S and C. Do not reward length or enthusiasm. On F_kind, answer "core" only when
+  the idea itself cannot stand on the verified claims; a statement that can simply be removed or reworded is
+  "wording".
 - Never use an em dash in your answer.
 
 ## Your answer
 
-Only this JSON object: {scores: {P, S, C}, F: "ok" | "fail", evidence: {P, S, C, F}, reason, angle_hint,
-different_topic, suggested_idea}
+Only this JSON object: {scores: {P, S, C}, F: "ok" | "fail", F_kind: "none" | "core" | "wording", evidence: {P, S,
+C, F}, reason, angle_hint, different_topic, suggested_idea}

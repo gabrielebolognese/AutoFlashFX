@@ -79,7 +79,10 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 - Status: done (2026-11-01); review 1 fixed the same day (build/M4/fixes-1.md: the angle stage cleans the model's
   `change` text before angle.json is written, and the research model's gh rules are the read-only forms with the
   writing forms denied, DECISIONS.md 110 and 111; pipeline/tests/probe-gh-rules.sh probes the rules with the
-  real probe model). The test has four sections: 1 and 2 run without a model (the units and the whole
+  real probe model); review 2 fixed the same day (build/M4/fixes-2.md: an F fail of kind wording, a statement of
+  the expansion that facts.md does not back while the core claim is verified, goes to S4 as an angle round
+  instead of dropping the idea; only an F fail of kind core drops at once, DECISIONS.md 112). The test has four
+  sections: 1 and 2 run without a model (the units and the whole
   angle loop through run.sh with the fake claude answering from fixtures, about a minute), 3 and 4 call the real
   research, expansion and gate models on the test idea and on a deliberately false idea (15 to 30 minutes).
 - Test command: `bash pipeline/tests/test-m4.sh` (`M4_SECTIONS="1 2"` for the fake-only sections;
@@ -101,7 +104,7 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   with `session_call A research <stage_dir> <prompt> ...` (the reseed covers a missing session), the brief needs
   facts.md, expansion.json (keyword, deliverable, identity) and gate.json; `stage_begin` and friends in
   stage.sh; prompts start with "# Role: <role>" and "# Stage: <key>" so the fake can answer by stage.
-  DECISIONS.md 95 to 109. Report: build/M4/report.md.
+  DECISIONS.md 95 to 112. Report: build/M4/report.md.
 
 ## M5 Profile and hooks (S5, S6)
 - Status: not started

@@ -3,7 +3,7 @@
   "$id": "https://instagramreels.local/stages/03-gate/model-output",
   "title": "03-gate: the gate model's structured answer (BUILD_SPEC.md S3); gate.py decide applies the rules and writes gate.json",
   "type": "object",
-  "required": ["scores", "F", "evidence", "reason", "angle_hint", "different_topic", "suggested_idea"],
+  "required": ["scores", "F", "F_kind", "evidence", "reason", "angle_hint", "different_topic", "suggested_idea"],
   "properties": {
     "scores": {
       "type": "object",
@@ -15,6 +15,7 @@
       }
     },
     "F": {"type": "string", "enum": ["ok", "fail"]},
+    "F_kind": {"type": "string", "enum": ["none", "core", "wording"]},
     "evidence": {
       "type": "object",
       "required": ["P", "S", "C", "F"],

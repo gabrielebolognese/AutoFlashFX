@@ -1,0 +1,15 @@
+{
+  "scores": {"P": 3, "S": 3, "C": 3},
+  "F": "fail",
+  "F_kind": "wording",
+  "evidence": {
+    "P": "\"I build landing pages with Claude Code and every one of them looks like the same AI template\": a felt first-person pain, answered by one install",
+    "S": "\"if you ship client sites with Claude Code\" plus a takeaway that names the defaults the skill bans: forwardable on its own",
+    "C": "SKILL with a concrete checklist deliverable",
+    "F": "\"one folder in ~/.claude/skills\" says more than claim 3, which gives two places (~/.claude/skills/ or a project's .claude/skills/) and no count; \"the same font\" is not in any claim: claim 4 says common fonts. The core claim is verified and the idea holds without these words."
+  },
+  "reason": "Fixture gate: two statements of the expansion are not in facts.md; the idea holds without them.",
+  "angle_hint": "Fixture gate hint: reword the install sentence from claim 3 and the font detail from claim 4, or drop them.",
+  "different_topic": false,
+  "suggested_idea": ""
+}

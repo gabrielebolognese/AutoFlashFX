@@ -47,7 +47,10 @@ five parts the gate will score. Answer with only the JSON object described at th
   total. Aim for about 800: problem up to 140 characters, solution up to 220, share_identity up to 80, takeaway up
   to 180, deliverable up to 150, one_true_thing up to 160, evidence notes up to 60 each. Count before you answer:
   a long answer is sent back to you to cut.
-- Only facts from facts.md, only verified ones. No invented numbers, no superlatives you cannot source.
+- Only facts from facts.md, only verified ones, in the claim's own words: when a statement rests on a claim, keep
+  that claim's wording (the install steps exactly as the docs give them, a font or a color named as the claim
+  names it) and add no detail, step count or adjective the claim does not state. No invented numbers, no
+  superlatives you cannot source. One statement the gate cannot find in facts.md fails F and costs an angle round.
 - Plain spoken English, short sentences. Never use an em dash: commas, colons or periods instead.
 
 ## Your answer

@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # run.sh for 03-gate (Idea gate, S3): BUILD_SPEC.md section 5, S3. A fresh session B with the gate model every
-# round, no tools. The model scores P, S and C (0 to 3) with quoted evidence and gives its F verdict
-# (model.schema.json); pipeline/lib/gate.py applies the rules: F fails whatever the model said when the research
-# found the core claim false or unverified (drop at once); pass when P, S and C are at least 2 and F is ok; a
-# different-topic verdict drops with a suggestion in logs/suggested-ideas.txt; otherwise an angle round while
-# caps.angle_rounds allows it, else drop. Decision angle: the ANGLE line and <stage>/reopen.txt naming 04-angle
+# round, no tools. The model scores P, S and C (0 to 3) with quoted evidence and gives its F verdict with its kind
+# (model.schema.json); pipeline/lib/gate.py applies the rules: F fails with kind core whatever the model said when
+# the research found the core claim false or unverified, and an F fail of kind core drops at once; pass when P, S
+# and C are at least 2 and F is ok; a different-topic verdict drops with a suggestion in logs/suggested-ideas.txt;
+# otherwise (P, S or C below 2, or F failing for wording: a statement of the expansion that facts.md does not back
+# while the idea holds, DECISIONS.md 112) an angle round while caps.angle_rounds allows it, else drop. Decision
+# angle: the ANGLE line and <stage>/reopen.txt naming 04-angle
 # (state.py stage-done reopens it in the same write that marks this stage done); 04-angle reopens this stage when it
 # is done, so the gate runs again on the rewritten expansion. Decision drop: exit 10 with the scores in the reason.
 #   bash pipeline/stages/03-gate/run.sh <run_dir>      (started by the runner)
@@ -52,7 +54,8 @@ for path in sorted(glob.glob(os.path.join(run_dir, "03-gate", "gate-*.json"))):
     except (OSError, ValueError):
         continue
     s = g.get("scores", {})
-    parts.append(f"gate round {g.get('round')}: P{s.get('P')} S{s.get('S')} C{s.get('C')} F {g.get('F')}, decision {g.get('decision')}, reason: {g.get('model_reason') or g.get('reason')}")
+    kind = f" ({g.get('F_kind')})" if g.get("F") == "fail" and g.get("F_kind") else ""
+    parts.append(f"gate round {g.get('round')}: P{s.get('P')} S{s.get('S')} C{s.get('C')} F {g.get('F')}{kind}, decision {g.get('decision')}, reason: {g.get('model_reason') or g.get('reason')}")
 for path in sorted(glob.glob(os.path.join(run_dir, "04-angle", "angle-*.json"))):
     try:
         a = json.load(open(path, encoding="utf-8-sig"))

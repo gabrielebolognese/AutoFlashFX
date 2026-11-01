@@ -1,6 +1,7 @@
 {
   "scores": {"P": 3, "S": 3, "C": 3},
   "F": "ok",
+  "F_kind": "none",
   "evidence": {
     "P": "\"I build landing pages with Claude Code and every one of them looks like the same AI template\": a felt first-person pain, answered by one install",
     "S": "\"if you are a freelancer shipping client landing pages with Claude Code\" plus a takeaway that names the three banned defaults: forwardable on its own",

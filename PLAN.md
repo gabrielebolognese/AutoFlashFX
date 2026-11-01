@@ -227,7 +227,9 @@ Creates:
   spec S2, plus expansion.json for the checks.
 - `pipeline/stages/03-gate/...`: fresh session B with the gate model, gate.json (P, S, C, F with quoted evidence,
   pass or fail, reason), the decision rules (pass; P, S or C failing goes to S4 for at most 2 rounds; F failing drops
-  at once; a different-topic angle drops and writes logs/suggested-ideas.txt).
+  at once; a different-topic angle drops and writes logs/suggested-ideas.txt). Since M4 review 2: F failing drops
+  at once when the idea's facts fail (kind core); an F fail caused by a statement of the expansion that facts.md
+  does not back, with the core claim verified (kind wording), goes to S4 like a failing P, S or C (DECISIONS.md 112).
 - `pipeline/stages/04-angle/...`: session A resumed with gate.json, rewrites expansion.md, back to S3.
 - `pipeline/lib/session.sh`: session ids per run in state.json, resume, and the reseed fallback (a new session
   seeded with facts.md, expansion.md and the latest gate feedback) when resuming fails.

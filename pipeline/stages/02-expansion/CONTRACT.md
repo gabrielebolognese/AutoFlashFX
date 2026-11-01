@@ -40,6 +40,8 @@ pipeline/lib/expansion.py checks the rules and composes expansion.md in one fixe
 - 2 to 6 evidence pointers, each naming a claim of facts.md that is marked verified
 - expansion.md is between research.expansion_chars (500 and 1500 characters)
 - the core topic of the idea is kept (a rule of the prompt; the gate checks the result)
+- every statement keeps its claim's wording, with no detail the claim does not give (a rule of the prompt; the
+  gate's F checks it, and a slip with the core claim verified goes to S4 as a wording repair, DECISIONS.md 112)
 - no em dash in any output file
 
 ## Exit codes

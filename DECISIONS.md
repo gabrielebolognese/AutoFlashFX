@@ -751,3 +751,44 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     calls carry the read-only allow rules and none of `Bash(gh *)`, `Bash(gh:*)` or a bare Bash, and that the deny
     rules are passed; section 3 prints the Bash calls the real research call had refused and asserts that none of
     them was a read-only gh form.
+
+### M4 review 2 fixes (2026-11-01)
+112. **An F fail of the expansion's wording is repaired by an angle round; only an F fail of the idea's facts
+    drops at once (M4 review 2, fix 1).** Spec S3 says "F failing (the tool does not do what the idea assumes, it
+    is deprecated, or the claims cannot be verified): drop immediately", and items 95 and 100 read it literally:
+    any F fail the model gave dropped the idea. In review 2's run the gate model failed F on the test idea because
+    the expansion said "serif" (the article names Inter, a sans-serif) and "one command adds" (the docs describe a
+    scope step): two slips of the pipeline's own writing model (S2), while the research had verified the core
+    claim; the same idea had passed F in the report's run, in review 1 and in fixes 1. The idea was deleted from
+    ideas.txt over a sentence S4 exists to rewrite, and the acceptance test passed or failed by chance. The
+    reading recorded here: the spec's three reasons are faults of the idea (the tool, its status, its
+    verifiability), a statement that can simply be removed from the expansion is not one, so "drop immediately"
+    applies to the idea's facts and not to a wording slip the pipeline can fix. If the user wants the literal
+    reading, the change is one line in gate.py (read kind wording as core; build/HUMAN_TODO.md M4).
+    How: the gate model now says what kind of F failure it found (F_kind in model.schema.json and the prompt):
+    "core" when the idea does not hold (the tool does not do what the idea assumes, it is deprecated, the core
+    claim is unverified or false, or the solution or the one specific true thing rests on a false or unverified
+    claim that no verified claim could replace), "wording" when a statement of the expansion is not in facts.md
+    or says more than its claim says while the idea holds without it, "none" when F is ok. gate.py decide: a false
+    or unverified core claim is still code-forced to F fail with kind core, and an F fail of kind core drops at
+    once ("facts don't hold (P S C F fail): ...") exactly as before; an F fail of kind wording with the core
+    verified is treated like a failing P, S or C: decision angle while angle rounds are left (the ANGLE line
+    "gate failed (F wording): finding a better angle, round 1/2", or "S1 F wording" when both fail), else a drop
+    "still failing after N angle rounds (P3 S3 C3 F fail): ...". A fail without a kind (a malformed answer; the
+    schema requires the field) is read as core, the spec's strict default. The repair runs in S4 and not in a new
+    step because S4 is the spec's own "rewrites expansion.md, then the idea goes back to S3", it already has
+    session A, the research tools and the gate's quoted evidence, and caps.angle_rounds bounds it without a new
+    counter: the angle prompt gets a section "F failed for wording: fix this first" (remove each quoted
+    statement, or reword it from a verified claim, or research it and add the claim to new_claims), its verdict
+    line reads "Failing: F (wording)", the gate's angle_hint names the statements (gate.py builds one from the F
+    evidence when the model left it empty), gate.json carries F_kind and model_F_kind and lists F in failing,
+    angle.json records previous_F_kind, the next gate round's history shows "F fail (wording)" and the reseed's
+    gate section says what F failed for. The S2 and S4 prompts now ask for the claim's own wording (the install
+    steps exactly as the docs give them, a font or a color named as the claim names it, no added detail, step
+    count or adjective), so the slip happens less often in the first place. Tests: test-m4 section 1 (gate.py:
+    wording with the core verified is an angle, no round left a drop with the scores, a false or unverified core
+    drops whatever the kind, kind core drops, no kind drops, S1 plus wording names both, the built angle hint),
+    section 2 (the fake gate fails F for wording on round 1 and passes on round 2: ANGLE, GATE "passed (P3 S3 C3
+    F ok) after 1 angle round", DONE, no DROP; the angle prompt holds the repair section and the quoted
+    statement; the run folder is taken from the START line because ls here sorts "<id>-2" before "<id>"), and
+    section 3 run three times in a row with the real models (build/M4/fixes-2.md has the lines of each run).
