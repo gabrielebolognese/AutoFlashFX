@@ -3,7 +3,8 @@
 # Tests never touch the real queue, runs, exports or logs: sandbox_init creates a temporary state root and exports
 # REELS_ROOT so every script writes there. KEEP_SANDBOX=1 keeps the folder for inspection.
 #
-#   sandbox_init [--with-pipeline]   new temporary root with config.json, library text files, an empty ideas.txt;
+#   sandbox_init [--with-pipeline]   new temporary root with config.json (voice.wpm set to SANDBOX_WPM when that is
+#                                    exported), library text files, an empty ideas.txt;
 #                                    --with-pipeline also copies pipeline/ and run.sh and runs git init (so a fixer
 #                                    can commit there). Sets SANDBOX (POSIX path) and SANDBOX_M (C:/ form).
 #   sandbox_cleanup                  remove it (also run by the EXIT trap)
@@ -61,6 +62,9 @@ sandbox_init() {
   SANDBOX_M="$(mixed "$SANDBOX")"
   mkdir -p "$SANDBOX/library/profile" "$SANDBOX/logs"
   cp "$REPO_DIR/config.json" "$SANDBOX/config.json"
+  # SANDBOX_WPM pins config voice.wpm in the sandbox (M5 and M6: their frozen fixtures and asserted numbers were
+  # made at the user's 195 wpm; since M7 the repo's voice.wpm is the reel voice's measured pace)
+  if [ -n "${SANDBOX_WPM:-}" ]; then python "$REPO_DIR/pipeline/lib/voiceprofile.py" set-wpm --config "$SANDBOX_M/config.json" --wpm "$SANDBOX_WPM" >/dev/null; fi
   cp "$REPO_DIR/library/hooks.txt" "$SANDBOX/library/hooks.txt"
   cp "$REPO_DIR"/library/profile/*.txt "$SANDBOX/library/profile/" 2>/dev/null || true
   cp "$REPO_DIR"/library/profile/*.md "$SANDBOX/library/profile/" 2>/dev/null || true
@@ -72,6 +76,7 @@ sandbox_init() {
     cp -r "$REPO_DIR/pipeline" "$SANDBOX/pipeline"
     rm -rf "$SANDBOX"/pipeline/lib/__pycache__ "$SANDBOX"/pipeline/tests/fakes/__pycache__
     cp "$REPO_DIR/run.sh" "$SANDBOX/run.sh"
+    mkdir -p "$SANDBOX/tools"; cp "$REPO_DIR"/tools/*.py "$SANDBOX/tools/" 2>/dev/null || true   # tools/voice.py: the voiceover's engine code (M7)
     cp "$REPO_DIR/.gitattributes" "$SANDBOX/.gitattributes" 2>/dev/null || true
     mkdir -p "$SANDBOX/styles/paper-cards" "$SANDBOX/motion-lib/candidates"
     cp "$REPO_DIR"/styles/paper-cards/*.md "$SANDBOX/styles/paper-cards/" 2>/dev/null || true

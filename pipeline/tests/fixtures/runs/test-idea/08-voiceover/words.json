@@ -1,0 +1,853 @@
+{
+ "written_by": "08-voiceover",
+ "engine": "kokoro",
+ "voice": "af_bella",
+ "sample_rate": 48000,
+ "duration_ms": 41470,
+ "wpm": 176,
+ "whisper_model": "small",
+ "beats": [
+  {
+   "id": "b1",
+   "type": "hook",
+   "start_ms": 50,
+   "end_ms": 2460,
+   "words": 8,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 2.53,
+   "seconds": 2.41
+  },
+  {
+   "id": "b2",
+   "type": "stake",
+   "start_ms": 3460,
+   "end_ms": 6540,
+   "words": 10,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 2.99,
+   "seconds": 3.08
+  },
+  {
+   "id": "b3",
+   "type": "comparison",
+   "start_ms": 6640,
+   "end_ms": 11290,
+   "words": 12,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 4.14,
+   "seconds": 4.65
+  },
+  {
+   "id": "b4",
+   "type": "mechanism",
+   "start_ms": 11390,
+   "end_ms": 15030,
+   "words": 9,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.91,
+   "seconds": 3.64
+  },
+  {
+   "id": "b5",
+   "type": "comparison",
+   "start_ms": 15130,
+   "end_ms": 18760,
+   "words": 11,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.91,
+   "seconds": 3.63
+  },
+  {
+   "id": "b6",
+   "type": "number",
+   "start_ms": 18860,
+   "end_ms": 22630,
+   "words": 11,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.45,
+   "seconds": 3.77
+  },
+  {
+   "id": "b7",
+   "type": "mechanism",
+   "start_ms": 22730,
+   "end_ms": 26790,
+   "words": 13,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.68,
+   "seconds": 4.06
+  },
+  {
+   "id": "b8",
+   "type": "proof",
+   "start_ms": 26890,
+   "end_ms": 30020,
+   "words": 9,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 4.14,
+   "seconds": 3.13
+  },
+  {
+   "id": "b9",
+   "type": "step",
+   "start_ms": 30120,
+   "end_ms": 34650,
+   "words": 13,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 4.6,
+   "seconds": 4.53
+  },
+  {
+   "id": "b10",
+   "type": "payoff",
+   "start_ms": 34750,
+   "end_ms": 37640,
+   "words": 12,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.22,
+   "seconds": 2.89
+  },
+  {
+   "id": "b11",
+   "type": "ask",
+   "start_ms": 37740,
+   "end_ms": 41270,
+   "words": 10,
+   "wer_pct": 0.0,
+   "status": "ok",
+   "estimate_s": 3.68,
+   "seconds": 3.53
+  }
+ ],
+ "breath": {
+  "after": "b1",
+  "start_ms": 2460,
+  "end_ms": 3460,
+  "seconds": 1.0
+ },
+ "loudness": {
+  "lufs": -14.41,
+  "true_peak_dbtp": -1.6
+ },
+ "words": [
+  {
+   "word": "Why",
+   "start_ms": 50,
+   "end_ms": 170,
+   "beat": "b1"
+  },
+  {
+   "word": "your",
+   "start_ms": 170,
+   "end_ms": 290,
+   "beat": "b1"
+  },
+  {
+   "word": "Claude",
+   "start_ms": 290,
+   "end_ms": 610,
+   "beat": "b1"
+  },
+  {
+   "word": "Code",
+   "start_ms": 610,
+   "end_ms": 790,
+   "beat": "b1"
+  },
+  {
+   "word": "cards",
+   "start_ms": 790,
+   "end_ms": 1210,
+   "beat": "b1"
+  },
+  {
+   "word": "all",
+   "start_ms": 1210,
+   "end_ms": 1590,
+   "beat": "b1"
+  },
+  {
+   "word": "look",
+   "start_ms": 1590,
+   "end_ms": 1810,
+   "beat": "b1"
+  },
+  {
+   "word": "identical.",
+   "start_ms": 1810,
+   "end_ms": 2310,
+   "beat": "b1"
+  },
+  {
+   "word": "You",
+   "start_ms": 3460,
+   "end_ms": 3560,
+   "beat": "b2"
+  },
+  {
+   "word": "ship",
+   "start_ms": 3560,
+   "end_ms": 3780,
+   "beat": "b2"
+  },
+  {
+   "word": "Claude",
+   "start_ms": 3780,
+   "end_ms": 4140,
+   "beat": "b2"
+  },
+  {
+   "word": "Code",
+   "start_ms": 4140,
+   "end_ms": 4340,
+   "beat": "b2"
+  },
+  {
+   "word": "client",
+   "start_ms": 4340,
+   "end_ms": 4660,
+   "beat": "b2"
+  },
+  {
+   "word": "sites.",
+   "start_ms": 4660,
+   "end_ms": 4960,
+   "beat": "b2"
+  },
+  {
+   "word": "Clients",
+   "start_ms": 5300,
+   "end_ms": 5580,
+   "beat": "b2"
+  },
+  {
+   "word": "spot",
+   "start_ms": 5580,
+   "end_ms": 5860,
+   "beat": "b2"
+  },
+  {
+   "word": "it",
+   "start_ms": 5860,
+   "end_ms": 6000,
+   "beat": "b2"
+  },
+  {
+   "word": "instantly.",
+   "start_ms": 6000,
+   "end_ms": 6340,
+   "beat": "b2"
+  },
+  {
+   "word": "Anthropic's",
+   "start_ms": 6640,
+   "end_ms": 7000,
+   "beat": "b3"
+  },
+  {
+   "word": "skill",
+   "start_ms": 7000,
+   "end_ms": 7320,
+   "beat": "b3"
+  },
+  {
+   "word": "file",
+   "start_ms": 7320,
+   "end_ms": 7660,
+   "beat": "b3"
+  },
+  {
+   "word": "names",
+   "start_ms": 7660,
+   "end_ms": 8020,
+   "beat": "b3"
+  },
+  {
+   "word": "it:",
+   "start_ms": 8020,
+   "end_ms": 8200,
+   "beat": "b3"
+  },
+  {
+   "word": "rounded",
+   "start_ms": 8340,
+   "end_ms": 8640,
+   "beat": "b3"
+  },
+  {
+   "word": "cards,",
+   "start_ms": 8640,
+   "end_ms": 9000,
+   "beat": "b3"
+  },
+  {
+   "word": "one",
+   "start_ms": 9420,
+   "end_ms": 9600,
+   "beat": "b3"
+  },
+  {
+   "word": "radius,",
+   "start_ms": 9600,
+   "end_ms": 10060,
+   "beat": "b3"
+  },
+  {
+   "word": "same",
+   "start_ms": 10260,
+   "end_ms": 10500,
+   "beat": "b3"
+  },
+  {
+   "word": "grey",
+   "start_ms": 10500,
+   "end_ms": 10780,
+   "beat": "b3"
+  },
+  {
+   "word": "shadow.",
+   "start_ms": 10780,
+   "end_ms": 11140,
+   "beat": "b3"
+  },
+  {
+   "word": "It's",
+   "start_ms": 11390,
+   "end_ms": 11570,
+   "beat": "b4"
+  },
+  {
+   "word": "not",
+   "start_ms": 11570,
+   "end_ms": 11690,
+   "beat": "b4"
+  },
+  {
+   "word": "your",
+   "start_ms": 11690,
+   "end_ms": 11810,
+   "beat": "b4"
+  },
+  {
+   "word": "fault.",
+   "start_ms": 11810,
+   "end_ms": 12090,
+   "beat": "b4"
+  },
+  {
+   "word": "Anthropic",
+   "start_ms": 12350,
+   "end_ms": 12850,
+   "beat": "b4"
+  },
+  {
+   "word": "calls",
+   "start_ms": 12850,
+   "end_ms": 13310,
+   "beat": "b4"
+  },
+  {
+   "word": "it",
+   "start_ms": 13310,
+   "end_ms": 13490,
+   "beat": "b4"
+  },
+  {
+   "word": "distributional",
+   "start_ms": 13490,
+   "end_ms": 14290,
+   "beat": "b4"
+  },
+  {
+   "word": "convergence.",
+   "start_ms": 14290,
+   "end_ms": 14790,
+   "beat": "b4"
+  },
+  {
+   "word": "Even",
+   "start_ms": 15130,
+   "end_ms": 15290,
+   "beat": "b5"
+  },
+  {
+   "word": "Anthropic's",
+   "start_ms": 15290,
+   "end_ms": 15910,
+   "beat": "b5"
+  },
+  {
+   "word": "terracotta",
+   "start_ms": 15910,
+   "end_ms": 16430,
+   "beat": "b5"
+  },
+  {
+   "word": "on",
+   "start_ms": 16430,
+   "end_ms": 16590,
+   "beat": "b5"
+  },
+  {
+   "word": "cream",
+   "start_ms": 16590,
+   "end_ms": 16870,
+   "beat": "b5"
+  },
+  {
+   "word": "is",
+   "start_ms": 16870,
+   "end_ms": 17230,
+   "beat": "b5"
+  },
+  {
+   "word": "flagged",
+   "start_ms": 17230,
+   "end_ms": 17850,
+   "beat": "b5"
+  },
+  {
+   "word": "as",
+   "start_ms": 17850,
+   "end_ms": 17970,
+   "beat": "b5"
+  },
+  {
+   "word": "an",
+   "start_ms": 17970,
+   "end_ms": 18090,
+   "beat": "b5"
+  },
+  {
+   "word": "AI",
+   "start_ms": 18090,
+   "end_ms": 18330,
+   "beat": "b5"
+  },
+  {
+   "word": "look.",
+   "start_ms": 18330,
+   "end_ms": 18670,
+   "beat": "b5"
+  },
+  {
+   "word": "One",
+   "start_ms": 18860,
+   "end_ms": 19040,
+   "beat": "b6"
+  },
+  {
+   "word": "accented",
+   "start_ms": 19040,
+   "end_ms": 19600,
+   "beat": "b6"
+  },
+  {
+   "word": "headline",
+   "start_ms": 19600,
+   "end_ms": 19900,
+   "beat": "b6"
+  },
+  {
+   "word": "word.",
+   "start_ms": 19900,
+   "end_ms": 20300,
+   "beat": "b6"
+  },
+  {
+   "word": "All",
+   "start_ms": 20540,
+   "end_ms": 20620,
+   "beat": "b6"
+  },
+  {
+   "word": "caps",
+   "start_ms": 20620,
+   "end_ms": 20840,
+   "beat": "b6"
+  },
+  {
+   "word": "labels.",
+   "start_ms": 20840,
+   "end_ms": 21260,
+   "beat": "b6"
+  },
+  {
+   "word": "Fake",
+   "start_ms": 21560,
+   "end_ms": 21700,
+   "beat": "b6"
+  },
+  {
+   "word": "one,",
+   "start_ms": 21700,
+   "end_ms": 21960,
+   "beat": "b6"
+  },
+  {
+   "word": "two,",
+   "start_ms": 22080,
+   "end_ms": 22200,
+   "beat": "b6"
+  },
+  {
+   "word": "three.",
+   "start_ms": 22260,
+   "end_ms": 22520,
+   "beat": "b6"
+  },
+  {
+   "word": "With",
+   "start_ms": 22730,
+   "end_ms": 22830,
+   "beat": "b7"
+  },
+  {
+   "word": "it",
+   "start_ms": 22830,
+   "end_ms": 22930,
+   "beat": "b7"
+  },
+  {
+   "word": "on,",
+   "start_ms": 22930,
+   "end_ms": 23150,
+   "beat": "b7"
+  },
+  {
+   "word": "Claude",
+   "start_ms": 23510,
+   "end_ms": 23750,
+   "beat": "b7"
+  },
+  {
+   "word": "plans",
+   "start_ms": 23750,
+   "end_ms": 23990,
+   "beat": "b7"
+  },
+  {
+   "word": "four",
+   "start_ms": 23990,
+   "end_ms": 24270,
+   "beat": "b7"
+  },
+  {
+   "word": "to",
+   "start_ms": 24270,
+   "end_ms": 24370,
+   "beat": "b7"
+  },
+  {
+   "word": "six",
+   "start_ms": 24370,
+   "end_ms": 24590,
+   "beat": "b7"
+  },
+  {
+   "word": "hex",
+   "start_ms": 24590,
+   "end_ms": 24770,
+   "beat": "b7"
+  },
+  {
+   "word": "colors,",
+   "start_ms": 24770,
+   "end_ms": 25230,
+   "beat": "b7"
+  },
+  {
+   "word": "reviews,",
+   "start_ms": 25450,
+   "end_ms": 25750,
+   "beat": "b7"
+  },
+  {
+   "word": "then",
+   "start_ms": 25750,
+   "end_ms": 26230,
+   "beat": "b7"
+  },
+  {
+   "word": "codes.",
+   "start_ms": 26230,
+   "end_ms": 26590,
+   "beat": "b7"
+  },
+  {
+   "word": "Anthropic",
+   "start_ms": 26890,
+   "end_ms": 27270,
+   "beat": "b8"
+  },
+  {
+   "word": "verified.",
+   "start_ms": 27270,
+   "end_ms": 27810,
+   "beat": "b8"
+  },
+  {
+   "word": "Over",
+   "start_ms": 28050,
+   "end_ms": 28170,
+   "beat": "b8"
+  },
+  {
+   "word": "a",
+   "start_ms": 28170,
+   "end_ms": 28310,
+   "beat": "b8"
+  },
+  {
+   "word": "million",
+   "start_ms": 28310,
+   "end_ms": 28530,
+   "beat": "b8"
+  },
+  {
+   "word": "installs",
+   "start_ms": 28790,
+   "end_ms": 29410,
+   "beat": "b8"
+  },
+  {
+   "word": "as",
+   "start_ms": 29410,
+   "end_ms": 29510,
+   "beat": "b8"
+  },
+  {
+   "word": "of",
+   "start_ms": 29510,
+   "end_ms": 29590,
+   "beat": "b8"
+  },
+  {
+   "word": "November.",
+   "start_ms": 29590,
+   "end_ms": 29930,
+   "beat": "b8"
+  },
+  {
+   "word": "Type",
+   "start_ms": 30120,
+   "end_ms": 30320,
+   "beat": "b9"
+  },
+  {
+   "word": "slash",
+   "start_ms": 30320,
+   "end_ms": 30580,
+   "beat": "b9"
+  },
+  {
+   "word": "plugin",
+   "start_ms": 30580,
+   "end_ms": 31160,
+   "beat": "b9"
+  },
+  {
+   "word": "install",
+   "start_ms": 31160,
+   "end_ms": 31560,
+   "beat": "b9"
+  },
+  {
+   "word": "frontend",
+   "start_ms": 31560,
+   "end_ms": 32180,
+   "beat": "b9"
+  },
+  {
+   "word": "design",
+   "start_ms": 32180,
+   "end_ms": 32540,
+   "beat": "b9"
+  },
+  {
+   "word": "at",
+   "start_ms": 32540,
+   "end_ms": 32820,
+   "beat": "b9"
+  },
+  {
+   "word": "claude",
+   "start_ms": 32820,
+   "end_ms": 33180,
+   "beat": "b9"
+  },
+  {
+   "word": "plugins",
+   "start_ms": 33180,
+   "end_ms": 33560,
+   "beat": "b9"
+  },
+  {
+   "word": "official.",
+   "start_ms": 33560,
+   "end_ms": 34000,
+   "beat": "b9"
+  },
+  {
+   "word": "Pick",
+   "start_ms": 34120,
+   "end_ms": 34260,
+   "beat": "b9"
+  },
+  {
+   "word": "a",
+   "start_ms": 34260,
+   "end_ms": 34380,
+   "beat": "b9"
+  },
+  {
+   "word": "scope.",
+   "start_ms": 34380,
+   "end_ms": 34560,
+   "beat": "b9"
+  },
+  {
+   "word": "Then",
+   "start_ms": 34750,
+   "end_ms": 34830,
+   "beat": "b10"
+  },
+  {
+   "word": "it",
+   "start_ms": 34830,
+   "end_ms": 34910,
+   "beat": "b10"
+  },
+  {
+   "word": "turns",
+   "start_ms": 34910,
+   "end_ms": 35130,
+   "beat": "b10"
+  },
+  {
+   "word": "on",
+   "start_ms": 35130,
+   "end_ms": 35330,
+   "beat": "b10"
+  },
+  {
+   "word": "by",
+   "start_ms": 35330,
+   "end_ms": 35550,
+   "beat": "b10"
+  },
+  {
+   "word": "itself",
+   "start_ms": 35550,
+   "end_ms": 35930,
+   "beat": "b10"
+  },
+  {
+   "word": "when",
+   "start_ms": 35930,
+   "end_ms": 36230,
+   "beat": "b10"
+  },
+  {
+   "word": "you",
+   "start_ms": 36230,
+   "end_ms": 36330,
+   "beat": "b10"
+  },
+  {
+   "word": "ask",
+   "start_ms": 36330,
+   "end_ms": 36610,
+   "beat": "b10"
+  },
+  {
+   "word": "for",
+   "start_ms": 36610,
+   "end_ms": 36770,
+   "beat": "b10"
+  },
+  {
+   "word": "frontend",
+   "start_ms": 36770,
+   "end_ms": 37250,
+   "beat": "b10"
+  },
+  {
+   "word": "work.",
+   "start_ms": 37250,
+   "end_ms": 37530,
+   "beat": "b10"
+  },
+  {
+   "word": "Comment",
+   "start_ms": 37740,
+   "end_ms": 37980,
+   "beat": "b11"
+  },
+  {
+   "word": "TELLS",
+   "start_ms": 37980,
+   "end_ms": 38260,
+   "beat": "b11"
+  },
+  {
+   "word": "below.",
+   "start_ms": 38260,
+   "end_ms": 38620,
+   "beat": "b11"
+  },
+  {
+   "word": "I'll",
+   "start_ms": 38900,
+   "end_ms": 39000,
+   "beat": "b11"
+  },
+  {
+   "word": "send",
+   "start_ms": 39000,
+   "end_ms": 39220,
+   "beat": "b11"
+  },
+  {
+   "word": "the",
+   "start_ms": 39220,
+   "end_ms": 39360,
+   "beat": "b11"
+  },
+  {
+   "word": "checklist.",
+   "start_ms": 39360,
+   "end_ms": 39720,
+   "beat": "b11"
+  },
+  {
+   "word": "Ditch",
+   "start_ms": 40040,
+   "end_ms": 40280,
+   "beat": "b11"
+  },
+  {
+   "word": "identical",
+   "start_ms": 40280,
+   "end_ms": 40600,
+   "beat": "b11"
+  },
+  {
+   "word": "cards.",
+   "start_ms": 40600,
+   "end_ms": 41060,
+   "beat": "b11"
+  }
+ ],
+ "flags": []
+}

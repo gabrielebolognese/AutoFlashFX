@@ -1,0 +1,5 @@
+{
+ "spoken": "Type the plugin install command for frontend design in Claude Code. Pick a scope.",
+ "display": "Type the /plugin install command for frontend-design in Claude Code. Pick a scope.",
+ "notes": "named the command in plain words instead of reading the at-sign and the slash (a fake answer for test-m7: 14 words, so one misheard word stays under 8 percent)"
+}

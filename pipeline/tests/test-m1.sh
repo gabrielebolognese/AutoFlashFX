@@ -212,7 +212,7 @@ rm -f "$SANDBOX/logs/runner.log" "$SANDBOX/logs/status.txt"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/run.sh" --once ) > "$SANDBOX/run.out" 2>&1; rc=$?
 assert_rc 0 $rc "bash run.sh --once exits 0"
 assert_grep '^\[[0-9]{2}:[0-9]{2}\] READY  preflight ok: [0-9]+ tools, [0-9]+ python packages, [0-9]+ files' "$SANDBOX/run.out" "preflight line"
-assert_grep '^\[[0-9]{2}:[0-9]{2}\] START  reels autopilot v[0-9]+\.[0-9]+\.[0-9]+.* \| queue: 0 ideas \| style: paper-cards \| voice: chatterbox \(fallback kokoro\) \| sfx map: not built$' "$SANDBOX/run.out" "banner: version, queue, style, voice engine, sfx map"
+assert_grep '^\[[0-9]{2}:[0-9]{2}\] START  reels autopilot v[0-9]+\.[0-9]+\.[0-9]+.* \| queue: 0 ideas \| style: paper-cards \| voice: kokoro af_bella \| sfx map: not built$' "$SANDBOX/run.out" "banner: version, queue, style, voice engine, sfx map"
 assert_grep '^\[[0-9]{2}:[0-9]{2}\] IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked' "$SANDBOX/run.out" "the summary line when the queue is empty"
 assert_not_grep $'\x1b' "$SANDBOX/run.out" "NO_COLOR output has no escape codes"
 assert_file "$SANDBOX/logs/runner.log" "logs/runner.log written"

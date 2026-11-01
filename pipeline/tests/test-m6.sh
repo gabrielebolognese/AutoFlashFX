@@ -20,6 +20,7 @@
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$REPO_DIR"
+export SANDBOX_WPM="${SANDBOX_WPM:-195}"  # the frozen fixtures and the asserted numbers were made at 195 wpm (M7 made config voice.wpm the reel voice's pace)
 STATE_PY="$REPO_DIR/pipeline/lib/state.py"
 SC="$REPO_DIR/pipeline/lib/script_checks.py"
 VENDOR="$REPO_DIR/pipeline/vendor/ig-agent-skill"

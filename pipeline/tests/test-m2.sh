@@ -182,7 +182,7 @@ took=$(( EPOCHSECONDS - t0 ))
 plain "$SANDBOX/run2.ts" > "$SANDBOX/run2.out"
 OUT="$SANDBOX/run2.out"
 assert_rc 0 $rc "run.sh --once exits 0 when the queue empties (${took}s for 2 ideas)"
-assert_grep "${ts_regex}START  reels autopilot v[0-9.]+.* \| queue: 2 ideas \| style: paper-cards \| voice: chatterbox \(fallback kokoro\) \| sfx map: not built$" "$OUT" "banner"
+assert_grep "${ts_regex}START  reels autopilot v[0-9.]+.* \| queue: 2 ideas \| style: paper-cards \| voice: kokoro af_bella \| sfx map: not built$" "$OUT" "banner"
 assert_grep "${ts_regex}QUEUE  1\. Idea A: the gh CLI" "$OUT" "queue listing: 1."
 assert_grep "${ts_regex}QUEUE  2\. Idea B: uv replaces pip" "$OUT" "queue listing: 2."
 assert_grep "${ts_regex}START  idea 1/2 \"Idea A: the gh CLI in 60 seconds, three ...\" -> runs/20[0-9-]+_[0-9]{4}_idea-a-the-gh-cli$" "$OUT" "START line: position, text cut at 40, run folder"
