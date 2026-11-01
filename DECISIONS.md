@@ -1388,3 +1388,172 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 191. **Earlier milestones touched by M8:** config.json (M1: sfx.build and the preflight entry), the banner
     assertions in test-m1 and test-m2 (M2: the repo's map exists now, so `sfx map: N files` is accepted beside
     `not built`), pipeline/stages/11-sfx/CONTRACT.md (M2: the map's contract for M11).
+
+## M9 Motion library (2026-11-01)
+
+### tokens.json
+192. **tokens.json is derived by script, not by a model.** PLAN.md M9 planned the structured tables by script and the
+    rest by the checks model; pipeline/lib/tokens.py reads everything with explicit rules (one regex per field, over
+    the markdown with its wrapped lines joined) and `verify` proves that every number and hex in tokens.json appears
+    in style.md or tweaks.md (exempt: the source hashes, the date, the font metrics measured from the font files, the
+    builder's version numbers). A deterministic parser keeps the tokens identical run after run and the test free of
+    model calls; when the user rewords a line, the build fails naming the field and the pattern (exit 2) instead of
+    guessing. The schema is pipeline/lib/tokens.schema.json (PLAN.md put it under styles/, which is the user's folder;
+    only tokens.json goes there). build-tokens also writes motion-lib/assets/tokens.css, the same values as CSS
+    custom properties that every component links.
+193. **The in-force lines of tweaks.md win, PROPOSED lines are ignored, and an accepted proposal changes the tokens by
+    itself:** tokens.py knows the six proposals by their bold titles (Caption position, Right side captions, Hook
+    header, Length, Accent-filled cards, 3D) and reads each one's numbers only when its line no longer starts with
+    PROPOSED (tokens.json `in_force`). Today captions sit at y 1480 with the safe-zone exception (the Caption box line
+    in force); removing the word PROPOSED from the Caption position bullet moves them to y 1332 and drops the
+    exception at the next build (test-m9 section 1 proves it).
+194. **The 15 open questions of style.md, decided with the rule of item 32** (5 of 7 motion refs; else what both look
+    refs agree on; else v02), written in tokens.json `open_questions`:
+    1 caption cap center y 1480 (tweaks.md in force; the proposal would make it 1332); 2 caption line at most 620 px
+    wide, x 230 to 850 (tweaks.md Right side); 3 scene change B, an animated exit (fade with blur over 4 frames, or a
+    fall or a push) then the next scene enters (both look refs; the motion refs split 3, 3, 1); 4 end-card keyword
+    typed, 2 frames per letter (both look refs); 5 kicker top y 253 (v02); 6 kicker cap 21 px (v02); 7 dot spacing
+    43.5 px (v02: 54 px is in v01, v03, v07 and v08, four videos, under the 5 of 7); 8 lower-right glow warm #F0D9C7
+    (v02); 9 no doodles (v02); 10 hero cards straight, only fans, stacks and the end card tilt (v02); 11 headline word
+    by word, 3 frames per word, plain fade (both look refs); 12 caption words a plain fade over 4 frames (both look
+    refs); 13 honesty labels kept as a small light chip (item 33); 14 no second color (v02); 15 true peak -1.5 dBTP
+    (BUILD_SPEC.md S8 and S11). HUMAN_TODO asks the user to accept or change them.
+195. **Where the style gives a range, the tokens keep the range and the components use one value from it:** the chip
+    pop overshoot 2 percent of "1 to 3", the badge overshoot 16 percent and the tile 13 of "13 to 16", the mascot
+    delay 4 frames of "4 to 7", the end-card stagger 6 of "5 to 6", the caption box rise 9 px of "9 to 12", the chunk
+    fade-out 2 frames of "2 to 3", the count-up 27.5 frames (the median). frame-match accepts the range where the
+    style states one.
+196. **The script's beat types are mapped to the library's components by judgment** (tokens.py BEAT_TYPES, tokens.json
+    `beat_map`), because style.md's beat map names beats by content (proof / number, the tool, how it works, data,
+    options) and script.json by function (hook, stake, number, tool, step, comparison, proof, mechanism,
+    before-after, pain-payoff, payoff, ask). `any` lists what every beat may use (the canvas, the captions, the mascot,
+    the moves). S9's validator (M10) reads this map; the catalog's beat_types are its inverse.
+
+### The library
+197. **Every component is a HyperFrames scene file mounted as a sub-composition** (motion-lib/compositions/<id>.html:
+    the variables declared on the file's `<html data-composition-variables>`, everything else inside `<template>`,
+    the root `<div id="root" data-composition-id="<id>">`, a paused GSAP timeline registered inline). Two findings
+    from the runtime (hyperframe.runtime.iife.js) shape the files: the declared defaults are read from the file's
+    document element, so the declaration must sit on `<html>`, not on the root div; and the per-mount
+    `getVariables()` and `__timelines` registry exist only inside the inline scene script (a scoped window), so the
+    shared library assets/paper-cards.js takes the raw variables as an argument and never registers a timeline. One
+    file can be mounted many times with different `data-variable-values`; the runtime maps the registered key to
+    the host. An apostrophe inside the single-quoted declaration cuts the attribute short (found with "card's title");
+    catalog.py refuses one.
+198. **Flat layering, not nested scenes.** Every component is a full-frame 1080x1920 transparent layer that places its
+    element with x, y and w props; a reel's index.html mounts the paper canvas once, then one host per component
+    instance with absolute data-start and data-duration, z-index for the stacking, the caption line once over the
+    body beats, and the voice as `<audio id="vo">`. Scenes are a grouping in the plan (data-scene on the hosts).
+    HyperFrames reads one level of nesting for its timeline tools and forbids transforms on a host (.clip) from the
+    root timeline, so a scene's exit cannot be animated from outside: every component takes `exit` (fade-blur, fall,
+    push, cut) and `exit_at` props instead, and the plan's transitions become those props on the leaving scene's
+    components (golden.py apply_transitions).
+199. **The shared code:** assets/paper-cards.css (the fonts as @font-face over the OFL files in assets/fonts, the card,
+    chips, pills, badges, type classes, the caption boxes, the logo rules) and assets/paper-cards.js (PC: the moves
+    enter, pop, flyIn, exit, countUp, typeInto, strike, the mascot's pixel art, the honesty chip, a seeded PRNG, the
+    event registry). Fonts: Inter Tight (grotesk, 800), Instrument Serif Italic (the headline phrase and the stat
+    unit), Space Grotesk (kicker, chrome), JetBrains Mono (code), Caveat (handwritten), downloaded once from the
+    google/fonts repository with their OFL texts. GSAP 3.15.0 and Three.js r159 (three.min.js, the last UMD build)
+    are vendored under assets/vendor from the pinned npm packages (package.json; `bash pipeline/bin/setup-node`
+    refreshes them). The linked stylesheets are not scoped per composition (only `<style>` blocks are), so
+    tokens.css's `:root` variables reach every mount; a scene root may only be styled by `#root` (lint
+    subcomposition_root_styled_by_class), so each file styles its own root.
+200. **The 27 components:** the 24 items of vocabulary.md (card 1, stat-number 2, end-card 3, mascot 4, dark-chip 5,
+    light-chip 6, caption-line 7, pop 8, check-badge 9, window-card 10, terminal-card 11, chart-card 12, thumb-grid
+    13, logo-tile 14, strike-through 15, fly-in 16, chat-card 17, progress-bar 18, camera-move 19, headline 20,
+    exit-move 21, handwritten-callout 22, speech-bubble 23, table-card 24), plus paper-canvas (the background,
+    data-no-timeline), dm-card (the CTA's DM notification card of tweaks.md Branding: a surface card with the round
+    avatar-dark.png at 112 px or more, the sender and one message line) and hero-3d (Three.js through the hf-seek
+    protocol). The move items (1, 8, 16, 21) exist both as shared PC functions used by every component and as their
+    own demo compositions, so frame-match can measure each move alone and the gallery can show it.
+201. **Logos are image files with their aspect ratio locked:** every logo spot (logo-tile's image and second_image,
+    end-card's lockup, dm-card's avatar, headline's kicker_mark, table-card's logos_json) takes a path and renders an
+    `<img>` with object-fit contain inside a box whose size the component sets; nothing redraws, recolors or
+    stretches it; the tile around a logo keeps the style's shadow, the image gets none. The plan writes paths as
+    brand/<path under library/brand> (checked against brand.json) or research/<file>; golden.py copies them under the
+    project's assets/ and rewrites the props. The DM avatar sits in a 120 px circle (its bolt 586 of 1024 px tall
+    keeps over 64 px), the lockup defaults to 360 px wide (300 minimum).
+202. **The hook breath and the first frame:** the headline shows the accent mark (the brand slot) at frame 0 so frame 0
+    is never empty paper, the kicker words fade in one by one from 0.05 s, the headline words land on their spoken
+    times (words_json from words.json) and the set piece (hero-3d or another hero) starts 60 ms before the breath so
+    its landing sits inside it.
+203. **Captions as one component for the whole body:** caption-line takes every chunk with its words' times (chunks_json,
+    local seconds) and lays each chunk out at its final width, so a word appears in its own place when spoken; the
+    chunk ends a frame before the next chunk's first word whatever the plan says; a chunk wider than 620 px is scaled
+    down and reported (caption_overflow event) rather than overflowing the zone. The chunker
+    pipeline/lib/motion/captions.py (1 to 4 words, a break at a sentence end, a clause end after two words, a pause
+    of 150 ms or more, the word limit; emphasis words from script.json, at most 3 per chunk) made the golden's chunks
+    and is 9b's baseline.
+204. **Sound events are declared per component in catalog.json** (META in pipeline/lib/motion/catalog.py: event name,
+    frame offset from the component's start or a formula over its props, duration where it has one, the cue type it
+    takes in S11 or null for a visual change with no sound of its own) and registered at runtime by the moves
+    (window.__pcEvents with local seconds; the harness reads them). M10's events.py computes the absolute times from
+    the plan and the catalog.
+205. **The hf-seek clock is the root's time.** Inside a mounted scene the Three.js listener receives the root time, not
+    the clip's local time, so hero-3d takes a clip_start prop (its data-start) and golden.py sets it; without it a
+    3D clip mounted later in the reel would show its end state at its start.
+
+### frame-match (DECISIONS.md 29, made precise)
+206. **Measured in a Playwright harness, not through HyperFrames' render.** pipeline/lib/motion/harness.py builds a
+    standalone page per component (the file's own template content, GSAP, a shim for window.__timelines and
+    getVariables, the paper canvas behind) and seeks the GSAP timeline frame by frame while dispatching hf-seek the
+    way the runtime does, reading opacity, position, size, scale and text of the tracked elements every frame. The
+    DOM numbers are exact where PNG analysis would guess; the real runtime is exercised by `npx hyperframes check`,
+    the snapshots and the golden render. One Chromium per run (hardware ANGLE, from motion-lib/webgl.json).
+207. **Durations are measured by fitting, not by a threshold:** an expo-out tween is within a pixel long before it ends,
+    so the matcher fits the element's curve against the move's ease (expo.out, power3.out, power2.out; ease-in for
+    exits) over durations around the expected one and takes the best; the fit's residual must stay within 10 percent
+    of the distance. Opacity frames are the first frame at 0.99 or more; a pop's frames end at the first frame back at
+    scale 1 within 0.0002 (GSAP lands exactly), a count-up's at the first frame showing the final text, typing by the
+    frames per character between the first change and the last. Tolerances: 1 frame, 10 percent, the style's ranges
+    where it states one (expectations.py).
+208. **The reference correlation compares shapes.** The 30 fps strips (styles/paper-cards/analysis/<vXX>/extra/s30_*.png,
+    cells of equal size in rows of 8 under a 16 px label band) show other things moving too, so strips.py measures
+    the change curve inside the region that changes most at the peak frame, finds the move window by walking back
+    from the peak while the change stays over a fifth of it, resamples both windows to 12 points and takes the
+    Pearson correlation; a component passes with r of 0.5 or more on its best strip (none assigned: the numbers alone
+    decide). On this PC the 25 components with a strip correlate at 0.57 to 0.99 (frame-match.md); the strips are
+    not in git, so on another machine the numbers alone decide.
+209. **Pass and fail:** a component passes when every check passes, the best strip correlates and its page logs no
+    error; `--apply` moves a failing file to motion-lib/candidates/ (a passing candidate comes back) and writes the
+    result into catalog.json. All 27 pass today, so candidates/ holds only .gitkeep; the catalog check and the
+    gallery regenerate the showreel index.html from catalog.json so a move never leaves a dangling mount.
+
+### Gallery, WebGL, golden
+210. **The gallery is static HTML** (motion-lib/gallery/index.html, built by pipeline/bin/gallery): one 540x960 still
+    per component (taken in the harness at a telling moment, tracked in git for the visual director), what it does,
+    its props, sound events, beat types and frame-match result, and a Play button that loads gallery/play/<id>.html,
+    the harness page plus a looping clock (eyes only; renders never use it). The showreel motion-lib/index.html is
+    generated from the catalog's demo props (every component once, in a row over the canvas) and is what
+    `npx hyperframes check` and `snapshot` run on.
+211. **WebGL on this PC: both paths work.** pipeline/bin/webgl-test (motion/webgl.py) found hardware ANGLE through D3D11
+    on the AMD Radeon integrated GPU (WebGL 2) and SwiftShader (Vulkan, software) both drawing the hero-3d canvas
+    in the harness, and HyperFrames rendering the 3D composition with `--browser-gpu` and with `--no-browser-gpu`.
+    motion-lib/webgl.json records harness_gpu hardware and render_flag --browser-gpu; frame-match and the gallery
+    read the first, S10 (M10) the second. `check` and `snapshot` run in the system Chrome, but `render` captures
+    with chrome-headless-shell, which HyperFrames downloads into ~/.cache/hyperframes on its first run (about 150 MB,
+    slow on this connection); a render killed during that download leaves .chrome.install.lock behind and every
+    later render waits on it, so setup-node runs `browser ensure` itself and clears a stale lock first. Should neither work on another machine, webgl is false there and the
+    component shows its 2D card (data-webgl=0) for S10 to flag NEEDS REVIEW.
+212. **The golden reel is compiled from a plan, not hand-coded** (pipeline/lib/motion/golden.py): the merged plan of
+    pipeline/stages/09-plan/schema.json (scenes with component instances and props, captions, cards, labels,
+    transitions, branding) becomes the project golden/test-idea/project/ (the library's compositions and assets
+    copied in, one host per instance, the captions once, the voice), checked with `npx hyperframes check --json`,
+    rendered with the frozen vo.wav, probed with ffprobe (1080x1920, 30 fps, the voice's length within 0.2 s, an audio
+    stream) and summarized in contact-sheet.png (one still per scene plus the breath) and README.md. The plan itself
+    is written by goldenplan.py from the frozen script.json and words.json with a hand-made design per beat (DESIGN:
+    the component, its props, the spoken word it lands on), so the design is by hand and the timings follow the
+    voice. S10 can start from the same compiler. The project's fonts, vendor files and voice copy are ignored by git
+    (copies of motion-lib and the fixture); golden.mp4 and the per-run reports too.
+213. **The golden's branding follows tweaks.md:** the solution is external (the frontend-design plugin) with no logo
+    asset, so the hook's kicker mark is the neutral accent dot and no FlashFX asset appears before the CTA; the CTA
+    scene mounts the end card with lockup-gradient-on-light.png (300 px, under the mascot row at y 1170) and the DM
+    card with avatar-dark.png landing on the word TELLS at y 1305, kept inside x 110 to 850 so no text enters the
+    right rail of the lower half; golden.py's plan check enforces the CTA's avatar and lockup and rejects a brand/
+    asset outside the CTA unless the plan says the solution is FlashFX.
+214. **Earlier milestones touched by M9:** .gitignore (M0: the harness, render and golden copies), config.json (M1: a
+    warn-level preflight entry for styles/paper-cards/tokens.json, hard from M10 on when the visual stages need it,
+    so no sandbox test of M2 or M3 stops on a missing file), package.json created at the root with the pins
+    (hyperframes 0.8.226, gsap 3.15.0, three 0.159.0; `bash pipeline/bin/setup-node` installs them, refreshes the
+    vendored copies, checks Chrome and ffmpeg through `hyperframes doctor` and installs the HyperFrames skill pack
+    for the M10 builder sessions).

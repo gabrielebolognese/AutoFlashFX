@@ -5,7 +5,7 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M8 Sound effects memory map: done (2026-11-01). Next: M9 Motion library. The build is driven by
+- M9 Motion library: done (2026-11-01). Next: M10 Visual stages (S9, S10). The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
@@ -31,11 +31,19 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   SFX-MAP.md, overrides.txt once, previews/ and .cache/; the indexer prompt _prompts/classify-sfx.md; a no-op
   when the folder, overrides.txt and the settings are unchanged, so S11 can run it at every start),
   pipeline/bin/setup-venv (the whisper venv or the kokoro venv when one is missing; `--check` only reports),
+  the motion library of M9: pipeline/bin/build-tokens (styles/paper-cards/tokens.json and motion-lib/assets/tokens.css
+  from style.md plus tweaks.md, pipeline/lib/tokens.py), motion-lib/ (a HyperFrames project: compositions/<id>.html for
+  the 24 vocabulary items plus paper-canvas, dm-card and hero-3d, assets/, catalog.json, the showreel index.html,
+  gallery/ with the stills, the players, index.html and frame-match.md, webgl.json), the tools under
+  pipeline/lib/motion/ run as `python pipeline/lib/motion <command>` behind pipeline/bin/frame-match, gallery,
+  webgl-test and render-golden (golden/test-idea/: plan.json, project/, contact-sheet.png, README.md; golden.mp4 is
+  rebuilt), the merged plan schema pipeline/stages/09-plan/schema.json, package.json with the pinned hyperframes,
+  gsap and three (pipeline/bin/setup-node),
   pipeline/bin/vendor-run and the vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/ (MIT,
   pinned in its VERSION file; beats.py, humanize.py and detect.py are also imported as modules by
-  script_checks.py). Run every test with `bash pipeline/tests/run-all.sh` (about 97 minutes; test-m3 section 4,
+  script_checks.py). Run every test with `bash pipeline/tests/run-all.sh` (about 105 minutes; test-m3 section 4,
   test-m4 sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3 and test-m7 section 3 make real model or
-  engine calls, test-m8 makes none; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` is the fake-only M7 test).
+  engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` is the fake-only M7 test).
 - The stages S9a to S14 (run.sh in each stage folder) arrive from M10 on, so `bash run.sh` alone stops with
   logs/STOPPED.md at S9a. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
   `REELS_DUMMY=9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge,

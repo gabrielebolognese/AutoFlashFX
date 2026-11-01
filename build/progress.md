@@ -253,9 +253,43 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   sound events use the same twelve names). DECISIONS.md 178 to 191. Report: build/M8/report.md.
 
 ## M9 Motion library
-- Status: not started
-- Test command: `bash pipeline/tests/test-m9.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has six sections, none calls a model: 1 tokens (a sandbox copy of style.md and
+  tweaks.md: build, schema, the cross-check against the sources, the no-op rebuild, a touched tweaks.md, an accepted
+  PROPOSED line), 2 the library (`npx hyperframes lint` and `check --json` on motion-lib/, the catalog against the
+  files, the logo spots' aspect ratios measured in the harness, one still per component), 3 frame-match (every
+  component in compositions/ passes against vocabulary.md and the reference strips; the gallery page with a still
+  and a player per component), 4 the golden reel (plan.json against the plan schema, the render at 1080x1920 30 fps
+  within 0.2 s of vo.wav with audio, the contact sheet, the CTA branding), 5 the WebGL test, 6 the em dash scan.
+  80 checks pass in about 8 minutes (frame-match about 4 minutes, the golden render about 70 s, the WebGL test
+  about a minute); the first run on a machine also downloads chrome-headless-shell (about 150 MB).
+- Test command: `bash pipeline/tests/test-m9.sh` (`M9_SECTIONS="1 2"` for the quick sections; section 4 needs the
+  frozen vo.wav that test-m7 section 3 writes); `bash pipeline/tests/run-all.sh` runs M1 to M9, limits and the em
+  dash scan.
+- Notes: `bash pipeline/bin/build-tokens` (pipeline/lib/tokens.py, tokens.schema.json): styles/paper-cards/tokens.json
+  from style.md plus tweaks.md by explicit rules, every number cross-checked against the sources, the in-force
+  tweaks lines winning and PROPOSED lines ignored until the word is removed, the 15 open questions decided
+  (DECISIONS.md 192 to 196), plus motion-lib/assets/tokens.css. The library motion-lib/ is a HyperFrames project
+  (DECISIONS.md 197 to 205): compositions/<id>.html for the 24 vocabulary items plus paper-canvas, dm-card and
+  hero-3d (Three.js, hf-seek), the shared assets/paper-cards.css and .js, the OFL fonts, vendored gsap and three,
+  catalog.json (props from the declarations, beat types from tokens, sound events with frame offsets and cue types,
+  demo props, stills, frame-match results; `python pipeline/lib/motion catalog [--write]`), index.html the showreel
+  generated from the catalog. Tools under pipeline/lib/motion/ (run as `python pipeline/lib/motion <command>`):
+  harness.py (Playwright, seeks the component's timeline frame by frame and dispatches hf-seek), framematch.py with
+  expectations.py and strips.py (`bash pipeline/bin/frame-match`: 1 frame, 10 percent, strip correlation r >= 0.5,
+  `--apply` moves failures to candidates/; motion-lib/gallery/frame-match.md and .json), gallery.py
+  (`bash pipeline/bin/gallery`: stills, players, gallery/index.html, the showreel), webgl.py
+  (`bash pipeline/bin/webgl-test`: motion-lib/webgl.json, hardware ANGLE and SwiftShader both work here), captions.py
+  (the chunker), goldenplan.py and golden.py (`bash pipeline/bin/render-golden [--make-plan]`: golden/test-idea/
+  plan.json from the frozen script and words with the hand-made DESIGN, the project built from the library, check,
+  render, ffprobe, contact-sheet.png, README.md). The merged plan schema is pipeline/stages/09-plan/schema.json.
+  `bash pipeline/bin/setup-node` installs the pinned packages (package.json), refreshes the vendored copies, checks
+  Chrome and ffmpeg and installs the HyperFrames skills. Earlier milestones touched: config.json (a warn-level
+  preflight entry for tokens.json), .gitignore. Hooks for M10: catalog.json is the director's and builder's index
+  (props, beat_types, sound_events, demo, placement conventions); golden.py build_project is a plan-to-project
+  compiler S10 can start from; apply_transitions turns 9c's transitions into exit props; captions.chunk_words is 9b's
+  baseline; hero-3d needs clip_start; the brand paths convention brand/<path> and research/<file>; webgl.json
+  render_flag for 3D renders; events are declared in the catalog and registered at runtime (window.__pcEvents).
+  DECISIONS.md 192 to 214. Report: build/M9/report.md.
 
 ## M10 Visual stages (S9, S10)
 - Status: not started
