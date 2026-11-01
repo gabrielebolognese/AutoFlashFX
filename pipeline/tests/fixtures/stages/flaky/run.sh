@@ -5,8 +5,9 @@
 # FLAKY_MODE: reset (a network reset on stderr, transient), limit (a usage limit message, waited out), limit-new (a
 # limit message with a different reset time at every attempt), quoted-limit (a log line that quotes a usage limit,
 # then a JSONDecodeError traceback: the text is not a limit), traceback (a KeyError traceback whose frames echo a
-# source line with timeout=600: a code error, not a timeout), error (a code error). The attempt counter is
-# <run_dir>/10-build/.flaky-count. Usage: run.sh <run_dir>
+# source line with timeout=600: a code error, not a timeout), netdash (the Claude CLI's network message on this PC,
+# with its em dash: transient, and the dash must reach no line or file the runner composes), error (a code error).
+# The attempt counter is <run_dir>/10-build/.flaky-count. Usage: run.sh <run_dir>
 set -u
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)"
 source "$LIB/common.sh"
@@ -49,6 +50,9 @@ Traceback (most recent call last):
     beats = plan["beatz"]
 KeyError: 'beatz'
 TRACE
+      ;;
+    netdash)   # the CLI's wording with a real U+2014, built from its bytes so this file holds none (M3 review 3, fix 2)
+      printf "API Error: Can't reach the API server \xe2\x80\x94 check your internet or DNS (ENOTFOUND)\n" >&2
       ;;
     *)
       echo "TypeError: fetch failed" >&2

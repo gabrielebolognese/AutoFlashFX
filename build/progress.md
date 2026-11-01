@@ -44,7 +44,9 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 - Status: done (2026-10-31); reviews 1 and 2 fixed the same day (build/M3/fixes-1.md: a failed stage script is
   classified before any review, and a runner killed during a review cycle resumes the cycle, DECISIONS.md 88, 89;
   build/M3/fixes-2.md: the limit path of a failed stage script is bounded, and echoed traceback lines are not error
-  messages, DECISIONS.md 91, 92). The test has ten sections (one calls the real Opus reviewer and Sonnet fixer,
+  messages, DECISIONS.md 91, 92); review 3 fixed 2026-11-01 (build/M3/fixes-3.md: the classifier knows the network
+  wordings this PC really produces, and no external text carries an em dash into a runner line or file,
+  DECISIONS.md 93, 94). The test has ten sections (one calls the real Opus reviewer and Sonnet fixer,
   about 2 minutes); the whole suite (M1, M2, M3, limits, em dash scan) passes in about 30 minutes.
 - Test command: `bash pipeline/tests/test-m3.sh` (10 to 20 minutes; section 4 calls the real Opus reviewer and
   Sonnet fixer, `M3_SECTIONS="1 2 3 5 6 7 8 9 10"` runs everything else with the fake claude) plus
@@ -63,7 +65,10 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   systemic stop after 3 identical blocks (logs/.block-streak). Prompts and schemas in pipeline/stages/_prompts/.
   A failed stage script is classified before any review (limit: wait, at most errors.script_limit_retries times
   and never for a message that comes back unchanged right after its wait; transient: 60 s, 4 min, 16 min; else
-  the review loop), with the source lines that tracebacks echo stripped first (errors.py strip_echo).
+  the review loop), with the source lines that tracebacks echo stripped first (errors.py strip_echo). External text
+  (a CLI message, a tool's stderr, a model's words) never carries an em dash into a line or file the runner
+  composes: `say` cleans every terminal line and the composers call `reels_undash VAR` or `undash TEXT` (log.sh) or
+  errors.py `undash()`; stages from M4 on that write external text into their own files should do the same.
   Test knobs: REELS_SLEEP_SCALE=0 (fast-forward), REELS_PROBE_MAX, REELS_LIMIT_MARGIN, REELS_CLAUDE, the fake's
   FAKE_CLAUDE_* (pipeline/tests/fakes/claude.py). Hooks for M4: `ai <role> <stage_dir> <prompt> --session A
   --schema ...` returns 3 when the stored session is gone (reseed), `ai_restart_note <stage_dir>` gives the note

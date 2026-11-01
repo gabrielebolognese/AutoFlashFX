@@ -8,7 +8,9 @@
 # clock or zone: time only, weekday and time, date and time, a timezone in parentheses, an epoch after a |, plus the
 # rollovers (+1 day, +7 days, next year), a DST change inside the wait, the weekly kind, an unparseable limit and
 # text without a limit. Section 3: the signature and the classifier, including the texts a failed stage's log can
-# hold (tracebacks whose frames echo source lines, Node stack frames, timeout words that are settings, not errors).
+# hold (tracebacks whose frames echo source lines, Node stack frames, timeout words that are settings, not errors),
+# the network wordings this PC really produces (Claude Code's own, Windows Python, Chromium, gh, curl) and the em
+# dash of the CLI's network message, which the one-line message must not carry.
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 LIMITS="$REPO_DIR/pipeline/lib/limits.py"
@@ -185,6 +187,58 @@ printf 'curl: (28) Operation timed out after 30001 milliseconds with 0 bytes rec
 assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/curl.txt")" "transient timeout False False" "curl timed out is transient"
 printf 'render: timeout 600 s, 30 fps, connection timeout=30\nValueError: no beats\n' > "$tmp/cfg.txt"
 assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/cfg.txt")" "error  False False" "a timeout setting echoed in a log line is not a timeout"
+# the network errors this PC really produces (M3 review 3, fix 1): Claude Code's own messages (as the CLI's JSON
+# result with exit 1), Windows Python's exceptions, Chromium through Playwright, gh and curl are transient, each
+# with a short label; the words stay bounded so code errors stay code errors
+printf '{"type":"result","is_error":true,"result":"API Error: No response from API","session_id":"abc"}' > "$tmp/noresp.json"
+assert_eq "$(cls 1 "$tmp/noresp.json")" "transient network error False False" "Claude Code's 'No response from API' result is transient"
+printf '{"type":"result","is_error":true,"result":"API Error: Connection error.","session_id":"abc"}' > "$tmp/connerr.json"
+assert_eq "$(cls 1 "$tmp/connerr.json")" "transient network error False False" "the SDK's 'Connection error.' is transient"
+printf '{"type":"result","is_error":true,"result":"API Error: terminated","session_id":"abc"}' > "$tmp/term.json"
+assert_eq "$(cls 1 "$tmp/term.json")" "transient network error False False" "'API Error: terminated' is transient"
+printf '{"type":"result","is_error":true,"result":"API Error: Unable to connect to API (ConnectionRefused)","session_id":"abc"}' > "$tmp/cliref.json"
+assert_eq "$(cls 1 "$tmp/cliref.json")" "transient connection refused False False" "Claude Code's 'Unable to connect to API (ConnectionRefused)' is a refused connection"
+printf '{"type":"result","is_error":true,"result":"API Error: Unable to connect to API (FailedToOpenSocket)","session_id":"abc"}' > "$tmp/clisock.json"
+assert_eq "$(cls 1 "$tmp/clisock.json")" "transient network error False False" "Claude Code's 'Unable to connect to API (FailedToOpenSocket)' is a network error"
+printf '{"type":"result","is_error":true,"result":"API Error: Connection dropped (ECONNRESET)","session_id":"abc"}' > "$tmp/clidrop.json"
+assert_eq "$(cls 1 "$tmp/clidrop.json")" "transient connection reset False False" "Claude Code's 'Connection dropped (ECONNRESET)' is a connection reset"
+printf '{"type":"result","is_error":true,"result":"API Error: Connection closed mid-response. The response above may be incomplete.","session_id":"abc"}' > "$tmp/climid.json"
+assert_eq "$(cls 1 "$tmp/climid.json")" "transient stream interrupted False False" "Claude Code's 'Connection closed mid-response' is an interrupted stream"
+printf 'ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host\n' > "$tmp/w10054.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/w10054.txt")" "transient connection reset False False" "Windows Python: ConnectionResetError WinError 10054 is a connection reset"
+printf "requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))\n" > "$tmp/reqconn.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/reqconn.txt")" "transient connection reset False False" "requests' ConnectionError wrapping a reset is a connection reset"
+printf 'ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine\n' > "$tmp/w10053.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/w10053.txt")" "transient connection reset False False" "ConnectionAbortedError WinError 10053 is a connection reset"
+printf 'ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it\n' > "$tmp/w10061.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/w10061.txt")" "transient connection refused False False" "ConnectionRefusedError WinError 10061 is a refused connection"
+printf "urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))\n" > "$tmp/remote.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/remote.txt")" "transient connection reset False False" "urllib3's RemoteDisconnected is a connection reset"
+for code in CONNECTION_RESET NAME_NOT_RESOLVED INTERNET_DISCONNECTED TIMED_OUT CONNECTION_REFUSED NETWORK_CHANGED; do
+  printf 'Error: page.goto: net::ERR_%s at https://example.com/\n' "$code" > "$tmp/chromium.txt"
+  assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/chromium.txt")" "transient network error False False" "Chromium's net::ERR_$code is a network error"
+done
+printf 'error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n' > "$tmp/gh.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/gh.txt")" "transient network error False False" "gh's 'error connecting to' with its 'check your internet connection' line is a network error"
+printf 'curl: (6) Could not resolve host: example.com\n' > "$tmp/curl6.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/curl6.txt")" "transient network error False False" "curl's 'Could not resolve host' is a network error"
+printf "curl: (7) Failed to connect to example.com port 443 after 21047 ms: Couldn't connect to server\n" > "$tmp/curl7.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/curl7.txt")" "transient connection refused False False" "curl's 'Failed to connect to' is a refused connection"
+printf 'opened a connection to the TTS engine\nKeyError: %s\n' "'voice'" > "$tmp/plainconn.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/plainconn.txt")" "error  False False" "a plain 'connection' in a log line before a KeyError is a code error"
+printf 'error connecting to the database schema\nKeyError: %s\n' "'voice'" > "$tmp/ghalone.txt"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/ghalone.txt")" "error  False False" "'error connecting to' without gh's internet line is a code error"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/fnf.txt")" "error  False False" "FileNotFoundError is still a code error with the new wordings"
+assert_eq "$(cls 1 "$tmp/empty.json" "$tmp/keyerr.txt")" "error  False False" "the KeyError traceback is still a code error with the new wordings"
+# the em dash of the CLI's network message never reaches the one-line message (M3 review 3, fix 2)
+em=$'\xe2\x80\x94'
+printf '{"type":"result","is_error":true,"result":"API Error: Can%st reach the API server %s check your internet or DNS (ENOTFOUND)","session_id":"abc"}' "'" "$em" > "$tmp/dash.json"
+assert_eq "$(cls 1 "$tmp/dash.json")" "transient network error False False" "the CLI's 'Can't reach the API server' message is transient"
+msg="$(python "$ERRORS" classify --rc 1 --stdout "$tmp/dash.json" | python -c 'import json,sys; print(json.load(sys.stdin)["message"])')"
+assert_eq "$msg" "API Error: Can't reach the API server, check your internet or DNS (ENOTFOUND)" "its message has the em dash turned into a comma"
+assert_true "no U+2014 in the message" python -c 'import sys; sys.exit(1 if chr(0x2014) in sys.argv[1] else 0)' "$msg"
+printf 'step %s done\nRuntimeError: no beats %s check the plan\n' "$em" "$em" > "$tmp/dash.txt"
+assert_eq "$(python "$ERRORS" classify --rc 1 --stdout "$tmp/empty.json" --stderr "$tmp/dash.txt" | python -c 'import json,sys; print(json.load(sys.stdin)["message"])')" "RuntimeError: no beats, check the plan" "a stage's exception line with an em dash is cleaned the same way"
 rm -rf "$tmp"
 
 test_summary

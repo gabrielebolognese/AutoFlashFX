@@ -8,7 +8,10 @@ The classifier runs after every model call made by ai() (pipeline/lib/ai.sh), in
   ok            exit 0, a JSON result with is_error false
 Quality gate failures never reach this classifier: they are the stages' own loops. The same classifier reads the
 tail of a failed stage script's log (runner_stage_failed): strip_echo() drops the source lines that Python
-tracebacks and Node stack frames echo before any pattern runs, and a timeout has to look like an error.
+tracebacks and Node stack frames echo before any pattern runs, and a timeout has to look like an error. The
+one-line message never carries an em dash (undash(): it becomes ", "), because it travels into the ERROR line,
+state.json, history.txt, blocked.txt, STOPPED.md and E<n>.md, and no file or terminal line may hold one
+(BUILD_SPEC.md 0.7; the bash side is reels_undash in log.sh).
 
 Usage:
   errors.py classify --rc N [--stdout FILE] [--stderr FILE] [--tz ZONE] [--now EPOCH] [--margin S]
@@ -42,6 +45,14 @@ TRANSIENT_STATUS = {408, 409, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 
 # "temporary" alone is not an outage ("temporary file"). A timeout has to look like an error ("timed out",
 # TimeoutError, ETIMEDOUT, "timeout exceeded", exit 124 or 137), never the bare word: tracebacks echo source lines
 # such as `subprocess.run(cmd, timeout=600)` (DECISIONS.md 92), and strip_echo() below removes those lines first.
+# The network wordings are the ones this PC really produces (M3 review 3, fix 1; DECISIONS.md 93): Node's and
+# Linux's codes, Claude Code's own messages ("No response from API", "Can't reach the API server", "Unable to
+# connect to API (...)", "Connection dropped", the SDK's "Connection error." and "terminated"), Windows Python's
+# exceptions (ConnectionResetError with WinError 10054, ConnectionAbortedError, ConnectionRefusedError with WinError
+# 10061, RemoteDisconnected, "Connection aborted"), Chromium's net::ERR_* through Playwright, gh's "error connecting
+# to" together with its "check your internet connection" line, curl's "Could not resolve host" and "Failed to
+# connect to". Each code is word-bounded and each phrase whole, so KeyError, FileNotFoundError or a plain
+# "connection" in a log line stay code errors.
 STATUS_CONTEXT = r"(?:api error|http|status(?: code)?|error|code)[:= ]+"
 TIMEOUT_WORDS = (
     r"timed[ -]out"
@@ -53,6 +64,30 @@ TIMEOUT_WORDS = (
     r" timeout\b(?!\s*[=:]?\s*\d)"
     r"|deadline exceeded"
 )
+RESET_WORDS = (
+    r"\bECONNRESET\b|connection reset|socket hang up|\bEPIPE\b"
+    r"|\bConnectionResetError\b|\bConnectionAbortedError\b|\bBrokenPipeError\b|\bRemoteDisconnected\b"
+    r"|connection aborted|forcibly closed by the remote host|remote end closed connection"
+    r"|\b(?:WinError|Errno) 1005[34]\b|connection dropped"
+)
+REFUSED_WORDS = (
+    r"\bECONNREFUSED\b|connection refused|\bConnectionRefusedError\b|\bConnectionRefused\b|actively refused"
+    r"|\b(?:WinError|Errno) 10061\b|couldn.t connect to server|failed to connect to\b"
+)
+NETWORK_WORDS = (
+    r"\bEAI_AGAIN\b|\bENOTFOUND\b|getaddrinfo|network error|fetch failed|network is unreachable|\bENETUNREACH\b"
+    r"|\bEHOSTUNREACH\b|\bENETDOWN\b"
+    r"|no response from api|can.t reach the api server|unable to connect to api|\bFailedToOpenSocket\b"
+    r"|\bconnection error\.|api error: terminated\b"
+    r"|\bnet::ERR_(?:CONNECTION_\w+|NAME_NOT_RESOLVED|INTERNET_DISCONNECTED|NETWORK_\w+|TIMED_OUT|ADDRESS_UNREACHABLE"
+    r"|EMPTY_RESPONSE|PROXY_CONNECTION_FAILED|SOCKET_NOT_CONNECTED)\b"
+    r"|could not resolve host|error connecting to\b(?=(?s:.*)check your internet connection)"
+    r"|\bConnectionError\b|\bNewConnectionError\b|\bNameResolutionError\b|max retries exceeded"
+)
+STREAM_WORDS = (
+    r"stream (was )?(interrupted|closed)|incomplete (response|chunked)"
+    r"|connection closed mid-response|the response stopped arriving|response above may be incomplete"
+)
 TRANSIENT_PATTERNS = [
     (r"overloaded", "overloaded"),
     (STATUS_CONTEXT + r"529\b", "overloaded"),
@@ -60,12 +95,12 @@ TRANSIENT_PATTERNS = [
     (r"too many requests|" + STATUS_CONTEXT + r"429\b", "rate limit"),
     (r"retry[- _]?after", "rate limit"),
     (TIMEOUT_WORDS, "timeout"),
-    (r"\bECONNRESET\b|connection reset|socket hang up|\bEPIPE\b", "connection reset"),
-    (r"\bECONNREFUSED\b|connection refused", "connection refused"),
-    (r"\bEAI_AGAIN\b|\bENOTFOUND\b|getaddrinfo|network error|fetch failed|network is unreachable|\bENETUNREACH\b", "network error"),
+    (RESET_WORDS, "connection reset"),
+    (REFUSED_WORDS, "connection refused"),
+    (NETWORK_WORDS, "network error"),
     (r"internal server error|server_error|api_error|" + STATUS_CONTEXT + r"50[0-4]\b|bad gateway|service unavailable|gateway timeout", "server error"),
     (r"temporarily unavailable|try again later|temporary (?:error|failure|problem|outage)|temporarily (?:overloaded|down)", "temporary error"),
-    (r"stream (was )?(interrupted|closed)|incomplete (response|chunked)", "stream interrupted"),
+    (STREAM_WORDS, "stream interrupted"),
 ]
 FATAL_PATTERNS = [
     r"not logged in", r"run /login", r"please log in", r"authentication[_ ]failed", r"invalid api key",
@@ -155,6 +190,21 @@ def last_line(text: str, limit: int = 220) -> str:
     return lines[-1][:limit] if lines else ""
 
 
+EM_DASH = chr(0x2014)  # built from the code points so this file never contains one
+EN_DASH = chr(0x2013)
+
+
+def undash(text: str) -> str:
+    """An em dash becomes ", " whatever the spaces around it, one at either end is dropped; an en dash between spaces
+    is treated the same and one inside a word (a range of numbers) becomes a hyphen. The same rules as reels_undash
+    in log.sh (M3 review 3, fix 2)."""
+    if EM_DASH not in text and EN_DASH not in text:
+        return text
+    text = re.sub(r"\s+" + EN_DASH + r"\s+", " " + EM_DASH + " ", text).replace(EN_DASH, "-")
+    text = re.sub(r"^\s*" + EM_DASH + r"+\s*|\s*" + EM_DASH + r"+\s*$", "", text)
+    return re.sub(r"\s*" + EM_DASH + r"+\s*", ", ", text)
+
+
 def signature(text: str) -> str:
     t = text.strip()
     t = re.sub(r"\d{4}-\d{2}-\d{2}[ T_]\d{2}:?\d{2}(:?\d{2})?", " ", t)      # timestamps
@@ -168,6 +218,12 @@ def signature(text: str) -> str:
 
 
 def classify(rc: int, stdout: str, stderr: str, tz: str, now_epoch: int, margin: int) -> dict:
+    out = classify_raw(rc, stdout, stderr, tz, now_epoch, margin)
+    out["message"] = undash(out["message"])   # the one-line message goes into lines and files that may hold no em dash
+    return out
+
+
+def classify_raw(rc: int, stdout: str, stderr: str, tz: str, now_epoch: int, margin: int) -> dict:
     data = parse_result(stdout)
     session_id = data.get("session_id") if data else None
     is_error = bool(data.get("is_error")) if data else None

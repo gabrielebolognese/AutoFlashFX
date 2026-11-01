@@ -9,12 +9,17 @@
 #                                                     paste into add-idea.sh
 #   history_counts [YYYY-MM-DD]                       prints "exported dropped blocked" for that day (default today)
 #
-# The date is "YYYY-MM-DD HH:MM" in local time. The idea text is the normalized one-line text.
+# The date is "YYYY-MM-DD HH:MM" in local time. The idea text is the normalized one-line text. Every field is
+# cleaned of em dashes before it is written (reels_undash, log.sh): a reason may quote a CLI message or a model's
+# words, and no file of this project may hold one (BUILD_SPEC.md 0.7).
+
+declare -F reels_undash >/dev/null 2>&1 || source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/log.sh"
 
 history_file() { printf '%s' "$REELS_LOGS/history.txt"; }
 
 history_add() {
   local kind="$1" idea="$2" detail="$3" stamp line file
+  reels_undash idea; reels_undash detail
   file="$(history_file)"
   mkdir -p "$REELS_LOGS"
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1
@@ -34,6 +39,7 @@ history_add() {
 
 blocked_add() {
   local raw="$1" stage="$2" reason="$3" run_dir="${4:-}" stamp rel
+  reels_undash raw; reels_undash reason
   mkdir -p "$REELS_LOGS"
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1
   rel="${run_dir#"$REELS_ROOT"/}"

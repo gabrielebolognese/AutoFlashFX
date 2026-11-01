@@ -5,7 +5,7 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M3 Error system: done (2026-10-31; review fixes in build/M3/fixes-1.md and fixes-2.md). Next: M4 Research,
+- M3 Error system: done (2026-10-31; review fixes in build/M3/fixes-1.md to fixes-3.md). Next: M4 Research,
   expansion, gate, angle (S1 to S4). The build is driven by `bash build-runner.sh`; its log is build/build.log and
   its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
@@ -68,7 +68,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   waited out and retried inside the stage (ai.sh), a failed stage script by the runner itself (LIMIT, RESUME,
   RETRY lines; DECISIONS.md 88). A runner restarted during a review cycle resumes that cycle (DECISIONS.md 89).
 - **Never write an em dash** in any file, prompt, caption, script or terminal message. Use commas, colons, periods
-  or parentheses.
+  or parentheses. External text that the runner prints or writes (a CLI message, a tool's stderr, a model's words)
+  may contain one: `say` cleans every terminal line, and anything else composed from such text goes through
+  `reels_undash VAR` or `undash TEXT` (pipeline/lib/log.sh) or errors.py's `undash()` first.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and
   transcription use `.venv-tts/Scripts/python.exe` (Python 3.11).
 - **Shell:** Git Bash. Every text file is LF (.gitattributes: `* text=auto eol=lf`); scripts use GNU date.

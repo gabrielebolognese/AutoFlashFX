@@ -520,3 +520,52 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     traceback ending in TimeoutExpired, the Node setDefaultTimeout line, Node frames, an echoed `raise
     ConnectionError("read ECONNRESET")`, curl's "timed out", a config echo) and test-m3 section 9 (the traceback
     fixture: ERROR at once, no RETRY, one review).
+
+### M3 review 3 fixes (2026-11-01)
+93. **The classifier knows the network wordings this PC really produces (M3 review 3, fix 1).** The transient
+    patterns knew Node's and Linux's wording (ECONNRESET, "connection reset", ENOTFOUND, getaddrinfo) but not
+    Windows Python's, Chromium's, gh's, curl's or Claude Code's own, so a network blip in a stage script or a model
+    call was a code error at once: a review (whose own call may fail the same way), most likely an "external
+    outage, auto_apply no" verdict, a blocked idea, and three in a row a systemic stop. errors.py now groups the
+    wordings by label: "connection reset" (ECONNRESET, "connection reset", "socket hang up", EPIPE,
+    ConnectionResetError, ConnectionAbortedError, BrokenPipeError, RemoteDisconnected, "Connection aborted",
+    "forcibly closed by the remote host", "remote end closed connection", WinError or Errno 10053 and 10054,
+    "connection dropped"); "connection refused" (ECONNREFUSED, "connection refused", ConnectionRefusedError, the
+    CLI's bare ConnectionRefused, "actively refused", WinError or Errno 10061, curl's "Couldn't connect to server"
+    and "Failed to connect to"); "network error" (EAI_AGAIN, ENOTFOUND, getaddrinfo, "network error", "fetch
+    failed", ENETUNREACH, EHOSTUNREACH, ENETDOWN, Claude Code's "No response from API", "Can't reach the API
+    server", "Unable to connect to API", FailedToOpenSocket, the SDK's "Connection error." and "API Error:
+    terminated", Chromium's net::ERR_CONNECTION_*, NAME_NOT_RESOLVED, INTERNET_DISCONNECTED, NETWORK_*, TIMED_OUT,
+    ADDRESS_UNREACHABLE, EMPTY_RESPONSE, PROXY_CONNECTION_FAILED and SOCKET_NOT_CONNECTED, curl's "Could not
+    resolve host", gh's "error connecting to" only together with its "check your internet connection" line,
+    Python's ConnectionError, NewConnectionError and NameResolutionError, urllib3's "Max retries exceeded");
+    "stream interrupted" gains the CLI's "Connection closed mid-response", "The response stopped arriving" and
+    "response above may be incomplete". Every code is word-bounded and every phrase whole, so KeyError,
+    FileNotFoundError, a plain "connection" in a log line or "error connecting to" without gh's second line stay
+    code errors. The wordings come from this PC's own Claude Code session logs ("Can't reach the API server" 117
+    times, "Unable to connect to API (ENOTFOUND)" 32, "(ConnectionRefused)" 13, "(FailedToOpenSocket)" 10,
+    "Connection dropped (ECONNRESET)" 6, "No response from API", "Connection closed mid-response"). Tested by
+    test-limits.sh section 3 (one check per wording, the CLI ones as a JSON result with exit 1, plus the negatives)
+    and test-m3 section 3 ("No response from API" through ai(): RETRY, then the retry succeeds).
+94. **No external text carries an em dash into a line or file the runner composes (M3 review 3, fix 2).**
+    BUILD_SPEC.md 0.7 forbids the em dash in any file or terminal message, and the Claude CLI's network message on
+    this PC contains one ("Can't reach the API server (em dash) check your internet or DNS (ENOTFOUND)"): copied
+    verbatim it reached the ERROR and BLOCK lines, logs/runner.log, status.txt, history.txt, blocked.txt,
+    state.json, E<n>.md and the reviewer prompt (F<n>.md and the known-issues line were already cleaned). Now
+    log.sh defines REELS_EM_DASH and REELS_EN_DASH from their UTF-8 bytes (the source stays clean), reels_undash VAR
+    (in place) and undash TEXT: an em dash becomes ", " whatever the spaces around it, one at either end is
+    dropped, an en dash between spaces is treated the same and one inside a word (a range of numbers) becomes a
+    hyphen. say() cleans every line it prints (terminal, runner.log, status.txt, a stage's own say lines
+    included), and the composers clean their text before writing: runner_last_log_line (so the message that becomes
+    the ERROR line, state.json, E<n>.msg, the fixer prompt and the restart note is clean), errors.py's undash() on
+    the classifier's message (the same rules in Python; ai()'s AI_ERROR and error.json come from it, and
+    ai_write_error and the schema-retry errors are cleaned as well), history_add and blocked_add (every field, the
+    idea's braces copy included), runner_write_stopped (STOPPED.md), runner_drop and runner_block (the reason, which
+    may be a model's text), review_error_file's "- error:" line, review_restart_note, review_write_result (a verify
+    log line in F<n>.result.json) and limits_log. The verbatim log excerpts inside E<n>.md (the stage.log tail, a
+    call's stderr) and the raw call files under calls/ stay as they are: they are evidence for the reviewer. Tested
+    by test-m3 section 9 (the flaky fixture's netdash mode prints the CLI's message with a real U+2014 at every
+    attempt: three RETRY lines, the ERROR line with a comma, BLOCK, then a byte scan of the runner output,
+    runner.log, status.txt, history.txt, blocked.txt, state.json, E1.msg, F1.md, F1.result.json and E1.md's error
+    line finds no U+2014 while stage.log and E1.md's log excerpt still hold it), test-m3 section 3 (the same message
+    through ai(): AI_ERROR, runner.log and error.json clean) and test-limits.sh (the classifier's message).

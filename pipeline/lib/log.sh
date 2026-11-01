@@ -7,9 +7,35 @@
 #   fmt_min SECONDS        "31 min" (or "43s" under a minute), for the DONE line
 #   cut_text TEXT [N]      the text cut at N characters (default 40) with "..." when it was longer
 #   plural N word          word or words
+#   reels_undash VAR       rewrite the variable in place: an em dash (U+2014) becomes ", " whatever the spaces
+#                          around it ("a, b"), one at either end is dropped; an en dash (U+2013) between spaces is
+#                          treated the same, one inside a word (a range of numbers) becomes a hyphen
+#   undash TEXT            the same, printed
 #
 # Colors: ANSI when the output is a terminal and NO_COLOR is unset. A stage script runs with its stdout in its
 # own stage.log and the runner's terminal on fd 3 (REELS_SAY_FD=3), so its say lines still reach the screen.
+#
+# No file or terminal line of this project may contain an em dash (BUILD_SPEC.md 0.7), but external text does: the
+# Claude CLI's network message on this PC ("Can't reach the API server (em dash) check your internet or DNS"), a
+# tool's stderr, a model's answer. say() cleans every line it prints, and the composers of one-line messages
+# (runner_last_log_line, errors.py, history.txt, blocked.txt, STOPPED.md, E<n>.md's error line) clean their text
+# before it is written (M3 review 3, fix 2). The characters are built from their UTF-8 bytes so this file stays clean.
+
+REELS_EM_DASH=$'\xe2\x80\x94'   # U+2014
+REELS_EN_DASH=$'\xe2\x80\x93'   # U+2013
+
+reels_undash() {  # reels_undash VAR (the variable's name; its value is rewritten in place)
+  local __ud="${!1}" __em="$REELS_EM_DASH" __en="$REELS_EN_DASH"
+  [[ "$__ud" == *"$__em"* || "$__ud" == *"$__en"* ]] || return 0
+  __ud="${__ud// $__en / $__em }"; __ud="${__ud//$__en/-}"
+  while [[ "$__ud" == *" $__em"* ]]; do __ud="${__ud// $__em/$__em}"; done
+  while [[ "$__ud" == *"$__em "* ]]; do __ud="${__ud//$__em /$__em}"; done
+  while [[ "$__ud" == *"$__em$__em"* ]]; do __ud="${__ud//$__em$__em/$__em}"; done
+  __ud="${__ud#"$__em"}"; __ud="${__ud%"$__em"}"
+  printf -v "$1" '%s' "${__ud//$__em/, }"
+}
+
+undash() { local __u="$1"; reels_undash __u; printf '%s' "$__u"; }
 
 reels_tag_color() {
   case "$1" in
@@ -25,6 +51,7 @@ reels_tag_color() {
 say() {
   local tag="$1"; shift
   local text="$*" stamp plain fd="${REELS_SAY_FD:-1}"
+  reels_undash text   # external text (a CLI message, a log line, a model's words) may carry an em dash
   printf -v stamp '%(%H:%M)T' -1
   printf -v plain '[%s] %-6s %s' "$stamp" "$tag" "$text"
   if [ "$fd" != "1" ] && ! { true >&"$fd"; } 2>/dev/null; then fd=1; fi

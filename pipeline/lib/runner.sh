@@ -40,6 +40,11 @@
 # review and which cycle E<n> is pending, errors/E<n>.pid names the cycle's child, and runner_resume_review adopts
 # a child that still runs, takes the verdict of one that finished, or runs the interrupted cycle again (same E<n>,
 # no Opus cycle lost, the stage is not run again).
+#
+# External text never carries an em dash into a line or file the runner composes (BUILD_SPEC.md 0.7; M3 review 3,
+# fix 2): say() cleans every line it prints, and runner_last_log_line, errors.py, history.txt, blocked.txt,
+# STOPPED.md, the drop and block reasons and the error line of E<n>.md clean their text first (reels_undash in
+# log.sh). The verbatim log excerpts inside E<n>.md stay as they are: they are evidence for the reviewer.
 
 RUNNER_LOCKED=0
 CHILD_PID=""
@@ -122,6 +127,7 @@ reels_wait_tick() {  # limits.sh calls this between the 60 s chunks of the runne
 runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>" ["<fix 2>" ...]: numbered fix lines
   local title="$1" diagnosis="$2" n=1 fix
   shift 2
+  reels_undash title; reels_undash diagnosis
   mkdir -p "$REELS_LOGS"
   {
     echo "# Runner stopped: $title"
@@ -133,7 +139,7 @@ runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>"
     echo "- $diagnosis"
     echo
     echo "## Fix"
-    for fix in "$@"; do echo "$n. $fix"; n=$((n + 1)); done
+    for fix in "$@"; do reels_undash fix; echo "$n. $fix"; n=$((n + 1)); done
     echo
     echo "Then start the runner again: bash run.sh"
   } > "$REELS_LOGS/STOPPED.md"
@@ -214,9 +220,11 @@ runner_log_attempt() {  # runner_log_attempt <stage>: this attempt's part of sta
   tail -c +$((offset + 1)) "$log"
 }
 
-runner_last_log_line() {  # the last non-empty line of a stage log, trimmed, for the ERROR line
+runner_last_log_line() {  # the last non-empty line of a stage log, trimmed, for the ERROR line (no em dash: the
+                          # line becomes the message in state.json, E<n>.md, history.txt, blocked.txt, STOPPED.md)
   local file="$1" line=""
   [ -f "$file" ] && line="$(grep -v '^[[:space:]]*$' "$file" | tail -n 1 | tr -d '\r')"
+  reels_undash line
   line="${line:0:160}"
   printf '%s' "${line:-no output}"
 }
@@ -625,6 +633,7 @@ runner_remove_idea() {
 
 runner_drop() {  # stage reason
   local stage="$1" reason="$2"
+  reels_undash reason   # a stage's reason may quote a model's text
   say DROP "idea \"$(cut_text "$IDEA_TEXT" 40)\" dropped: $reason. Removed from ideas.txt"
   runner_remove_idea
   history_add dropped "$IDEA_TEXT" "$reason"
@@ -635,6 +644,7 @@ runner_drop() {  # stage reason
 
 runner_block() {  # stage label reason
   local stage="$1" label="$2" reason="$3"
+  reels_undash reason   # the reviewer's verdict or a stage's reason may hold an em dash
   say BLOCK "idea \"$(cut_text "$IDEA_TEXT" 40)\" blocked at $label: $reason. Moved to logs/blocked.txt"
   runner_remove_idea
   blocked_add "$IDEA_RAW" "$label" "$reason" "$RUN_DIR"

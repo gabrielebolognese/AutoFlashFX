@@ -28,8 +28,9 @@
 #       --name NAME        a suffix for the call files (calls/NNN-NAME.json)
 #       --no-protect       skip the protected files snapshot (tests)
 #     Sets: AI_CALL (the NNN.json path), AI_RESULT (the result text), AI_SESSION (the session id), AI_OUT (the
-#     structured output file, or ""), AI_CLASS (ok, error, limit, transient), AI_ERROR (the one-line message),
-#     AI_DETAIL (a short label), AI_FATAL (1 when the reviewer would hit the same wall: login, key, unknown option).
+#     structured output file, or ""), AI_CLASS (ok, error, limit, transient), AI_ERROR (the one-line message, never
+#     with an em dash: errors.py and ai_write_error clean it, BUILD_SPEC.md 0.7), AI_DETAIL (a short label),
+#     AI_FATAL (1 when the reviewer would hit the same wall: login, key, unknown option).
 #     Returns 0 on success; 1 on a code error (<stage_dir>/error.json written: class, message, detail, signature,
 #     call, rc, role, model, fatal, resume_failed); 3 when the --resume or --session session no longer exists
 #     (error.json too; the stored session is cleared so the caller can start a fresh one).
@@ -87,6 +88,7 @@ ai_restart_note() {
 }
 
 ai_write_error() {  # ai_write_error <stage_dir> <class> <message> <detail> <call> <rc> <role> <model> <fatal> <resume_failed>
+  local __msg="$3"; reels_undash __msg; set -- "$1" "$2" "$__msg" "${@:4}"   # no em dash in error.json
   "$REELS_PY" - "$@" <<'EOF'
 import hashlib, json, os, re, sys, time
 d = dict(zip(("stage_dir", "class", "message", "detail", "call", "rc", "role", "model", "fatal", "resume_failed"), sys.argv[1:]))
@@ -255,6 +257,7 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
             errs="$("$REELS_PY" "$REELS_PIPELINE/bin/validate-json" "$schema" "$AI_OUT" 2>&1 | head -n 8)" || true
             [ "$("$REELS_PY" "$REELS_PIPELINE/bin/validate-json" "$schema" "$AI_OUT" >/dev/null 2>&1; echo $?)" = 0 ] && errs=""
           fi
+          reels_undash errs   # the validator quotes the model's values
           if [ -n "$errs" ]; then
             if [ "$schema_retry" = 0 ] && [ -n "$sid" ]; then
               schema_retry=1

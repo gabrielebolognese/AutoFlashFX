@@ -352,6 +352,24 @@ fake_claude_reset; : > "$LOG"
 FAKE_CLAUDE_SCRIPT="$SANDBOX_M/script.txt" drive indexer --tools "" --timeout 2
 assert_rc 0 "$DRIVE_RC" "a call killed by the timeout is retried"
 assert_grep "${ts_regex}RETRY  temporary error \(timeout\), retrying in 60s \(try 1/3\)$" "$LOG" "RETRY names the timeout"
+# the network wordings this PC produces are transient through ai() too (M3 review 3, fix 1), and the em dash of the
+# Claude CLI's network message never reaches AI_ERROR, the RETRY and ERROR lines or error.json (fix 2)
+fake_claude_reset; : > "$LOG"; rm -f "$SD/error.json"
+printf 'error:API Error: No response from API\nok\n' > "$SANDBOX/script.txt"
+FAKE_CLAUDE_SCRIPT="$SANDBOX_M/script.txt" drive indexer --tools ""
+assert_rc 0 "$DRIVE_RC" "Claude Code's 'No response from API' is retried, then the call succeeds"
+assert_grep "${ts_regex}RETRY  temporary error \(network error\), retrying in 60s \(try 1/3\)$" "$LOG" "RETRY names the network error"
+assert_eq "$(fake_calls)" "2" "two calls: the failed one and the retry"
+fake_claude_reset; : > "$LOG"; rm -f "$SD/error.json"
+em=$'\xe2\x80\x94'
+printf "error:API Error: Can't reach the API server %s check your internet or DNS (ENOTFOUND)\n" "$em" > "$SANDBOX/script.txt"
+FAKE_CLAUDE_SCRIPT="$SANDBOX_M/script.txt" drive indexer --tools ""
+assert_rc 1 "$DRIVE_RC" "the CLI's network message at every try is a code error after the three retries"
+assert_eq "$(field error)" "temporary error persisted after 3 retries (network error): API Error: Can't reach the API server, check your internet or DNS (ENOTFOUND)" "AI_ERROR carries the message with a comma where the CLI had the em dash"
+assert_true "the CLI really answered with the em dash (the raw call file holds U+2014)" python -c 'import sys; sys.exit(0 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 1)' "$(field call)"
+assert_true "no U+2014 in runner.log or error.json" python -c '
+import sys
+sys.exit(1 if any(bytes([0xE2, 0x80, 0x94]) in open(p, "rb").read() for p in sys.argv[1:]) else 0)' "$LOG" "$SD/error.json"
 unset REELS_SLEEP_SCALE
 fi
 
@@ -774,6 +792,35 @@ assert_grep "${ts_regex}BLOCK  idea \"Idea A.*\" blocked at S10: " "$OUT" "BLOCK
 assert_eq "$(event_tags "$OUT")" "ERROR,BLOCK" "the order is ERROR, BLOCK"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "1" "state: the stage ran once (no transient retry)"
 assert_eq "$(state_get "$RD" errors.10-build.transient_tries 0)" "0" "state: no transient try"
+
+# the Claude CLI's network message on this PC holds an em dash (M3 review 3, fix 2): the stage prints it at every
+# attempt (transient: three retries, then the code error and the review), and no line or file the runner composes
+# keeps the dash, while the verbatim log excerpt inside E1.md may
+sandbox_init --with-pipeline
+fake_claude_on
+install_stage flaky 10-build
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+run_once "$SANDBOX/netdash.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=netdash FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
+OUT="$SANDBOX/netdash.out"
+RD="$(run_dirs | head -n 1)"
+assert_rc 0 $rc "the runner ends on its own"
+assert_eq "$(grep -c -E "${ts_regex}RETRY  temporary error \(network error\)" "$OUT")" "3" "three RETRY lines name the network error"
+assert_grep "${ts_regex}ERROR  S10 building visuals: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your internet or DNS \(ENOTFOUND\)$" "$OUT" "the ERROR line reads the message with a comma where the CLI had the em dash"
+assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: environment problem: fake reviewer: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your int" "$OUT" "the BLOCK line too (the fake reviewer quotes the first 120 characters of the error line)"
+assert_eq "$(event_tags "$OUT")" "RETRY,RETRY,RETRY,ERROR,BLOCK" "the order is RETRY, RETRY, RETRY, ERROR, BLOCK"
+assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call after the retries"
+assert_true "the stage really printed the em dash (stage.log holds U+2014)" python -c 'import sys; sys.exit(0 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 1)' "$RD/10-build/stage.log"
+for f in "$OUT" "$SANDBOX/logs/runner.log" "$SANDBOX/logs/status.txt" "$SANDBOX/logs/history.txt" "$SANDBOX/logs/blocked.txt" \
+         "$RD/state.json" "$RD/errors/E1.msg" "$RD/fixes/F1.md" "$RD/fixes/F1.result.json"; do
+  assert_true "no U+2014 in $(basename "$f")" python -c 'import sys; sys.exit(1 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 0)' "$f"
+done
+assert_true "no U+2014 in the error line of E1.md" python -c '
+import sys
+line = next((l for l in open(sys.argv[1], "rb").read().split(b"\n") if l.startswith(b"- error: ")), b"")
+sys.exit(1 if (not line or bytes([0xE2, 0x80, 0x94]) in line) else 0)' "$RD/errors/E1.md"
+assert_grep "^- error: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your internet or DNS \(ENOTFOUND\)$" "$RD/errors/E1.md" "E1.md's error line reads the cleaned message"
+assert_true "E1.md still shows the stage's verbatim line to the reviewer (U+2014 in the log excerpt)" python -c 'import sys; sys.exit(0 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 1)' "$RD/errors/E1.md"
+assert_grep "blocked: environment problem: fake reviewer: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your int" "$SANDBOX/logs/history.txt" "history.txt has the cleaned reason"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------

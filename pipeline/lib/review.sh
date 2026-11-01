@@ -121,11 +121,13 @@ review_record() {  # RUN_DIR STAGE KIND N OUTCOME
 }
 
 review_restart_note() {  # RUN_DIR STAGE "MSG" N "SUMMARY" "COMMIT"
+  local msg="$3" summary="$5"
+  reels_undash msg; reels_undash summary   # the summary is the reviewer's text
   cat > "$1/$2/restart-note.md" <<EOF
 # Restart note (written by the runner after an automatic fix)
 
-The previous attempt of this stage failed: $3
-Fix F$4 applied${6:+ (commit $6)}: $5
+The previous attempt of this stage failed: $msg
+Fix F$4 applied${6:+ (commit $6)}: $summary
 The outputs of the failed attempt may be incomplete: start again from the stage's inputs. If you resume a model
 session, tell it in one line what failed and what was fixed.
 EOF
@@ -133,8 +135,12 @@ EOF
 
 # ------------------------------------------------------------------ child side
 
-review_write_result() {  # FILE key=value ...
-  "$REELS_PY" - "$@" <<'EOF'
+review_write_result() {  # FILE key=value ... (the values cleaned of em dashes: a verify log line or a model's text)
+  local file="$1" pair
+  local -a pairs=()
+  shift
+  for pair in "$@"; do reels_undash pair; pairs+=("$pair"); done
+  "$REELS_PY" - "$file" "${pairs[@]}" <<'EOF'
 import json, sys
 out = {}
 for pair in sys.argv[2:]:
@@ -149,6 +155,7 @@ review_error_file() {  # RUN_DIR STAGE N RC "MSG" "CMD"
   local run_dir="$1" stage="$2" n="$3" rc="$4" msg="$5" cmd="$6"
   local file="$run_dir/errors/E$n.md" tail_n stage_log="$run_dir/$stage/stage.log"
   local contract="$REELS_PIPELINE/stages/$stage/CONTRACT.md" lastgood="" attempts call
+  reels_undash msg   # the "- error:" line; the verbatim log excerpts below stay as they are (evidence for the reviewer)
   tail_n="$(cfg errors.log_tail_lines 200)"
   attempts="$(state_get "$run_dir" "stages.$stage.attempts" "?" 2>/dev/null)"
   [ -f "$REELS_LOGS/.last-good-sha" ] && { read -r lastgood < "$REELS_LOGS/.last-good-sha"; } 2>/dev/null
@@ -266,6 +273,7 @@ review_cycle() {  # RUN_DIR STAGE LABEL N KIND CYCLE CAP RC "MSG" "CMD"
   local run_dir="$1" stage="$2" label="$3" n="$4" kind="$5" cycle="$6" cap="$7" rc="$8" msg="$9" cmd="${10}"
   local errors="$run_dir/errors" fixes="$run_dir/fixes" result="$run_dir/fixes/F$n.result.json"
   local role model_name known prompt fprompt allowed p verify vrc sha line
+  reels_undash msg
   mkdir -p "$errors" "$fixes"
   review_error_file "$run_dir" "$stage" "$n" "$rc" "$msg" "$cmd"
   if [ "$kind" = fable ]; then role=reviewer_escalation; else role=reviewer; fi

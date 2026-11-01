@@ -110,8 +110,10 @@ reels_wait_until() {  # reels_wait_until <epoch> [what] [activity prefix]
 }
 
 limits_log() {
+  local __text="$*"
+  reels_undash __text   # the quoted limit message is external text
   mkdir -p "$REELS_LOGS" 2>/dev/null || return 0
-  printf '%(%Y-%m-%d %H:%M:%S)T | %s\n' -1 "$*" >> "$REELS_LOGS/limits.log"
+  printf '%(%Y-%m-%d %H:%M:%S)T | %s\n' -1 "$__text" >> "$REELS_LOGS/limits.log"
 }
 
 limit_margin() { printf '%s' "${REELS_LIMIT_MARGIN:-$(cfg runner.limit_margin_seconds 120)}"; }
