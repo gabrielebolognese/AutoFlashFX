@@ -1,0 +1,17 @@
+{
+ "hooks": [
+  {"template_id": "v03", "family": "myth-contrarian", "spoken": "Nobody tells you Claude Code has frontend-design.", "on_screen": "CLAUDE CODE HAS A DESIGN SKILL", "marker": "Claude Code", "marker_kind": "tool"},
+  {"template_id": "v02", "family": "mistake-warning", "spoken": "Stop using all-caps labels. Anthropic says so.", "on_screen": "STOP THE ALL-CAPS LABELS", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v16", "family": "how-to-system", "spoken": "Nobody tells you clients spot AI sites.", "on_screen": "CLIENTS SPOT AI SITES", "marker": "AI sites", "marker_kind": "tool"},
+  {"template_id": "v07", "family": "mistake-warning", "spoken": "Your AI site looks fake. One fix.", "on_screen": "ONE FIX", "marker": "One fix", "marker_kind": "number"},
+  {"template_id": "v09", "family": "how-to-system", "spoken": "Your rounded cards scream AI. One plugin.", "on_screen": "ONE PLUGIN", "marker": "One plugin", "marker_kind": "number"},
+  {"template_id": "v24", "family": "tools-listicle", "spoken": "Install frontend-design in Claude Code today.", "on_screen": "INSTALL IT TODAY", "marker": "Claude Code", "marker_kind": "tool"},
+  {"template_id": "v18", "family": "how-to-system", "spoken": "Anthropic says purple gradients scream AI.", "on_screen": "PURPLE GRADIENTS SCREAM AI", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v10", "family": "how-to-system", "spoken": "Anthropic flags its own terracotta as AI.", "on_screen": "EVEN ANTHROPIC'S TERRACOTTA", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v19", "family": "mistake-warning", "spoken": "Your SaaS card layout screams AI.", "on_screen": "SAAS CARDS ARE A TELL", "marker": "SaaS", "marker_kind": "tool"},
+  {"template_id": "v23", "family": "myth-contrarian", "spoken": "One plugin, Claude stops designing like AI.", "on_screen": "ONE PLUGIN", "marker": "One plugin", "marker_kind": "number"},
+  {"template_id": "v11", "family": "tools-listicle", "spoken": "Without frontend-design, every AI site looks identical.", "on_screen": "EVERY AI SITE LOOKS IDENTICAL", "marker": "frontend-design", "marker_kind": "tool"},
+  {"template_id": "v13", "family": "transformation", "spoken": "Clients spot your AI site before pitching.", "on_screen": "SPOTTED BEFORE THE PITCH", "marker": "AI site", "marker_kind": "tool"}
+ ],
+ "notes": "fake fixture for the M5 regeneration test: 12 hooks of which only 3 score 50 or more in hookscore.py"
+}

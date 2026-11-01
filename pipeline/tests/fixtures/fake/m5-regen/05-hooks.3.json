@@ -1,0 +1,15 @@
+{
+ "hooks": [
+  {"template_id": "v07", "family": "mistake-warning", "spoken": "Stop pasting purple gradients. Anthropic lists them.", "on_screen": "PURPLE GRADIENTS ARE A TELL", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v09", "family": "how-to-system", "spoken": "Steal Anthropic's list of 5 AI tells.", "on_screen": "STEAL THE 5 AI TELLS", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v24", "family": "tools-listicle", "spoken": "Steal the skill 1,134,112 developers installed.", "on_screen": "1,134,112 DEVELOPERS HAVE IT", "marker": "1,134,112", "marker_kind": "number"},
+  {"template_id": "v18", "family": "how-to-system", "spoken": "Claude Code plans colors before writing code.", "on_screen": "PLAN FIRST, THEN CODE", "marker": "Claude Code", "marker_kind": "tool"},
+  {"template_id": "v10", "family": "how-to-system", "spoken": "Your Claude site has 5 AI tells.", "on_screen": "5 AI TELLS ON YOUR SITE", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v14", "family": "mistake-warning", "spoken": "Stop designing with Claude before installing frontend-design.", "on_screen": "INSTALL THIS FIRST", "marker": "frontend-design", "marker_kind": "tool"},
+  {"template_id": "v26", "family": "tools-listicle", "spoken": "Your Claude Code site has 5 tells.", "on_screen": "5 TELLS ON YOUR SITE", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v17", "family": "tools-listicle", "spoken": "Stop blaming Claude. Install frontend-design first.", "on_screen": "INSTALL FRONTEND-DESIGN FIRST", "marker": "frontend-design", "marker_kind": "tool"},
+  {"template_id": "v06", "family": "transformation", "spoken": "Your gradients cost you clients. Anthropic agrees.", "on_screen": "GRADIENTS COST YOU CLIENTS", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v05", "family": "transformation", "spoken": "Without frontend-design, Claude designs like 2024.", "on_screen": "2024 DESIGN, EVERY TIME", "marker": "2024", "marker_kind": "number"}
+ ],
+ "notes": "fake fixture for the M5 regeneration test: 10 replacement hooks that pass hookscore.py"
+}

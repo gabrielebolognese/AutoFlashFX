@@ -313,6 +313,7 @@ fi
 if want 2; then
 section "2. the angle loop with the fake claude: S4 runs, the round counter reaches 2, then the idea is dropped"
 sandbox_init --with-pipeline
+rm -f "$SANDBOX/library/profile/account.md"   # M5 drafted the file; this section tests the flag for a missing one
 fake_claude_on
 mkdir -p "$SANDBOX/fixtures"
 cp "$FAKE_M4"/*.json "$SANDBOX/fixtures/"

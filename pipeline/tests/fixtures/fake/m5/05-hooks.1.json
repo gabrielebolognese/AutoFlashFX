@@ -1,0 +1,19 @@
+{
+ "hooks": [
+  {"template_id": "v03", "family": "myth-contrarian", "spoken": "Nobody tells you Claude Code has frontend-design.", "on_screen": "CLAUDE CODE HAS A DESIGN SKILL", "marker": "Claude Code", "marker_kind": "tool"},
+  {"template_id": "v02", "family": "mistake-warning", "spoken": "Stop using all-caps labels. Anthropic says so.", "on_screen": "STOP THE ALL-CAPS LABELS", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v07", "family": "mistake-warning", "spoken": "Stop pasting purple gradients. Anthropic lists them.", "on_screen": "PURPLE GRADIENTS ARE A TELL", "marker": "Anthropic", "marker_kind": "tool"},
+  {"template_id": "v09", "family": "how-to-system", "spoken": "Steal Anthropic's list of 5 AI tells.", "on_screen": "STEAL THE 5 AI TELLS", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v24", "family": "tools-listicle", "spoken": "Steal the skill 1,134,112 developers installed.", "on_screen": "1,134,112 DEVELOPERS HAVE IT", "marker": "1,134,112", "marker_kind": "number"},
+  {"template_id": "v18", "family": "how-to-system", "spoken": "Claude Code plans colors before writing code.", "on_screen": "PLAN FIRST, THEN CODE", "marker": "Claude Code", "marker_kind": "tool"},
+  {"template_id": "v10", "family": "how-to-system", "spoken": "Your Claude site has 5 AI tells.", "on_screen": "5 AI TELLS ON YOUR SITE", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v19", "family": "mistake-warning", "spoken": "Stop shipping AI sites clients spot instantly.", "on_screen": "CLIENTS SPOT AI SITES", "marker": "instantly", "marker_kind": "time"},
+  {"template_id": "v23", "family": "myth-contrarian", "spoken": "1,134,112 installs: Claude's frontend-design skill.", "on_screen": "1,134,112 INSTALLS", "marker": "1,134,112", "marker_kind": "number"},
+  {"template_id": "v11", "family": "tools-listicle", "spoken": "5 AI design tells Anthropic itself lists.", "on_screen": "5 TELLS, FROM ANTHROPIC", "marker": "5", "marker_kind": "number"},
+  {"template_id": "v13", "family": "transformation", "spoken": "Two passes, zero generic pages: frontend-design.", "on_screen": "PLAN, REVIEW, THEN CODE", "marker": "Two", "marker_kind": "number"},
+  {"template_id": "v14", "family": "mistake-warning", "spoken": "Stop designing with Claude before installing frontend-design.", "on_screen": "INSTALL THIS FIRST", "marker": "frontend-design", "marker_kind": "tool"},
+  {"template_id": "v05", "family": "transformation", "spoken": "Without frontend-design, Claude designs like 2024.", "on_screen": "2024 DESIGN, EVERY TIME", "marker": "2024", "marker_kind": "number"},
+  {"template_id": "v17", "family": "tools-listicle", "spoken": "Stop blaming Claude. Install frontend-design first.", "on_screen": "INSTALL FRONTEND-DESIGN FIRST", "marker": "frontend-design", "marker_kind": "tool"}
+ ],
+ "notes": "fake fixture for the M5 tests: 14 hooks from 5 families, each under 8 words, every spoken line scores 50 or more in hookscore.py"
+}

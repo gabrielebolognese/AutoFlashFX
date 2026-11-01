@@ -1,0 +1,16 @@
+{
+ "comparisons": [
+  {"n": 1, "winner": "W", "why": "fake judge: W is more concrete and stops the scroll"},
+  {"n": 2, "winner": "W", "why": "fake judge: W again, same reason in the other order"},
+  {"n": 3, "winner": "W", "why": "fake judge: W sets up the problem faster"},
+  {"n": 4, "winner": "W", "why": "fake judge: W, the on-screen line reads in one glance"},
+  {"n": 5, "winner": "W", "why": "fake judge: W is credible and specific"},
+  {"n": 6, "winner": "W", "why": "fake judge: W fits the voice better"},
+  {"n": 7, "winner": "X", "why": "fake judge: X names the pain, Y does not"},
+  {"n": 8, "winner": "X", "why": "fake judge: X, same in the other order"},
+  {"n": 9, "winner": "X", "why": "fake judge: X over Z, Z is generic"},
+  {"n": 10, "winner": "X", "why": "fake judge: X over Z again"},
+  {"n": 11, "winner": "Y", "why": "fake judge: Y over Z, a real marker"},
+  {"n": 12, "winner": "Y", "why": "fake judge: Y over Z in the other order too"}
+ ]
+}

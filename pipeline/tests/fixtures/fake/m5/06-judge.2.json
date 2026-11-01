@@ -1,0 +1,9 @@
+{
+ "ranking": ["A", "C", "B", "F", "E", "D", "H", "G", "J", "I", "L", "K", "N", "M", "P", "O", "R", "Q", "T", "S"],
+ "notes": [
+  {"label": "A", "note": "fake judge, ranking 2: the viewer sees their own site in it"},
+  {"label": "C", "note": "fake judge, ranking 2: close second, very specific"},
+  {"label": "B", "note": "fake judge, ranking 2: fits the voice"},
+  {"label": "F", "note": "fake judge, ranking 2: fine, a bit generic"}
+ ]
+}

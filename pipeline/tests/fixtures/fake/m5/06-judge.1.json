@@ -1,0 +1,9 @@
+{
+ "ranking": ["C", "A", "F", "B", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"],
+ "notes": [
+  {"label": "C", "note": "fake judge, ranking 1: concrete marker and a clear promise"},
+  {"label": "A", "note": "fake judge, ranking 1: strong but slightly longer"},
+  {"label": "F", "note": "fake judge, ranking 1: good on-screen line"},
+  {"label": "B", "note": "fake judge, ranking 1: credible, less surprising"}
+ ]
+}
