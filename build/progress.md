@@ -108,8 +108,10 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 
 ## M5 Profile and hooks (S5, S6)
 - Status: done (2026-11-01). The test has four sections: 1 and 2 run without a model (the units, then S5 and S6
-  through run.sh with the fake claude from the frozen M4 outputs, including the regeneration path, about three
-  minutes), 3 and 4 call the real indexer, research and judge models (10 to 20 minutes).
+  through run.sh with the fake claude from the frozen M4 outputs, including the regeneration path: 198 checks in
+  about four minutes), 3 and 4 call the real indexer, research and judge models (34 checks; the index call about
+  30 s, the S5 and S6 run about 6.5 minutes). M1, M2, M3 (limits), M4 sections 1 and 2 and the em dash scan pass
+  with it.
 - Test command: `bash pipeline/tests/test-m5.sh` (`M5_SECTIONS="1 2"` for the fake-only sections; `M5_FREEZE=1`
   also adds the real 05-hooks and 06-judge outputs to pipeline/tests/fixtures/runs/test-idea/);
   `bash pipeline/tests/run-all.sh` runs M1 to M5, limits and the em dash scan (about 65 minutes).
