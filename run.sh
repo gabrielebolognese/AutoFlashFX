@@ -8,7 +8,7 @@
 # Status: logs/status.txt holds the latest line, logs/runner.log the whole timeline
 # (bash pipeline/bin/runner-status prints both).
 #
-# Build status: M4 (research, expansion, gate, angle). The loop, the state machine, resume, exports numbering,
+# Build status: M5 (profile, hooks, judge). The loop, the state machine, resume, exports numbering,
 # history, every status line, usage limit waits, transient retries, the review and fix loop and the real stages S1
 # to S4 exist; S5 to S14 arrive from M5 on, so `bash run.sh` stops with logs/STOPPED.md at S5. Until then:
 #   REELS_DUMMY=all bash run.sh --once                                   the whole loop with dummy stages

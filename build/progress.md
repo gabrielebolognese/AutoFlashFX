@@ -107,9 +107,38 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   DECISIONS.md 95 to 112. Report: build/M4/report.md.
 
 ## M5 Profile and hooks (S5, S6)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m5.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has four sections: 1 and 2 run without a model (the units, then S5 and S6
+  through run.sh with the fake claude from the frozen M4 outputs, including the regeneration path, about three
+  minutes), 3 and 4 call the real indexer, research and judge models (10 to 20 minutes).
+- Test command: `bash pipeline/tests/test-m5.sh` (`M5_SECTIONS="1 2"` for the fake-only sections; `M5_FREEZE=1`
+  also adds the real 05-hooks and 06-judge outputs to pipeline/tests/fixtures/runs/test-idea/);
+  `bash pipeline/tests/run-all.sh` runs M1 to M5, limits and the em dash scan (about 65 minutes).
+- Notes: pipeline/vendor/ig-agent-skill/ (hookscore.py, beats.py, hooks.json, humanize.py, detect.py, slop.json,
+  caption.py, LICENSE, templates/voice.md, pinned in VERSION; run them with pipeline/bin/vendor-run).
+  pipeline/bin/index-hooks with pipeline/lib/hooks.py: library/.hooks.index.json (id = sha1 of the normalized
+  line, family and fit from one batched indexer call for the new ids only, nothing called when hooks.txt is
+  unchanged), hooks.lint.txt, .hooks.stats.json, hooks.suggested.txt. pipeline/bin/build-voice-profile with
+  pipeline/lib/voiceprofile.py: library/profile/voice.md and account.md (drafts with [FILL IN] placeholders until
+  a memo exists; the pace, 195 wpm, and 5 verbatim excerpts measured from reference_long.wav with faster-whisper
+  under engine.txt's interpreter; config voice.wpm set from it). S5 (pipeline/stages/05-hooks: run.sh, prompt.md,
+  prompt-brief.md, prompt-regenerate.md, model.schema.json, brief.schema.json): session A resumed, or seeded at
+  once when no id is stored (session.sh --seed-if-new), the template shortlist (24, every family, win-rate
+  weighted, fit preferred), 12 to 20 hooks checked by hooks.py (cap min(8, ceil(wpm x 3 / 60) - 1) spoken
+  words, 6 on-screen, a concrete marker, known template ids), then brief.md (2000 to 3000 tokens as words x 1.3);
+  `run.sh <run_dir> --regenerate feedback.json` is the judge's one regeneration. S6 (pipeline/stages/06-judge:
+  run.sh, prompt-rank.md, prompt-pair.md, rank.schema.json, pair.schema.json) with pipeline/lib/judge.py: the
+  hookscore filter (under 50 or a dealbreaker out; fewer than 4 left: S5 regenerates once), two independent
+  rankings with different shuffles merged by Borda, the top 4 pairwise in both orders in one call, judge.json
+  (winner, runner-up, reasons, the whole trail), the stats update. Config: hooks.*, judge.*, timeouts
+  index_seconds, hooks_seconds, brief_seconds, judge_seconds, transcribe_seconds, profile_seconds. Earlier
+  milestones touched: session.sh (--seed-if-new), test-m4.sh section 2 (removes the sandbox's account.md so its
+  "missing account.md" flag assertion keeps its premise now that M5 drafted the file), config.json, the dummies
+  and schemas of 05-hooks and 06-judge. Not built: PLAN.md's setup-venv (engine.txt's interpreter already has
+  faster-whisper; M7 decides). Hooks for M6: 05-hooks/brief.md and 06-judge/judge.json (winner = hook 1,
+  runner_up = hook 2) are frozen under pipeline/tests/fixtures/runs/test-idea/; voice.md's Pace line is the wpm
+  (hooks.py wpm), the vendored beats.py, humanize.py, detect.py and caption.py run through vendor-run;
+  write_retry_prompt and the quality-loop pattern of S5 (check in Python, re-ask with the exact problems, flag on
+  the last try) are the model for S7's checks. DECISIONS.md 113 to 138. Report: build/M5/report.md.
 
 ## M6 Script (S7)
 - Status: not started

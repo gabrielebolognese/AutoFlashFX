@@ -5,32 +5,42 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M4 Research, expansion, gate, angle (S1 to S4): done (2026-11-01). Next: M5 Profile and hooks (S5, S6). The
-  build is driven by `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in
-  build/M<n>/.
+- M5 Profile and hooks (S5, S6): done (2026-11-01). Next: M6 Script (S7). The build is driven by
+  `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
   folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh, pipeline/bin/runner-status,
   the error system (pipeline/lib/ai.sh for every model call, limits.py and limits.sh for usage limits, errors.py
   for the classifier, review.sh with pipeline/bin/review-cycle for the reviewer and fixer loop, the prompts in
   pipeline/stages/_prompts/, pipeline/knowledge/known-issues.md), the tests in pipeline/tests/ (with a fake claude
-  in tests/fakes/), the real stages S1 to S4 (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle: run.sh,
-  prompt.md, model.schema.json for the model's answer, schema.json for the stage's file) on the shared stage
-  library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost), prompt.py, research.py, expansion.py,
-  gate.py, and pipeline/bin/screenshot (Playwright, headless Chromium). Run every test with
-  `bash pipeline/tests/run-all.sh` (about 50 minutes; test-m3 section 4 and test-m4 sections 3 and 4 make real
-  model calls; `M4_SECTIONS="1 2" bash pipeline/tests/test-m4.sh` is the fake-only M4 test).
-- The stages S5 to S14 (run.sh in each stage folder) arrive from M5 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S5. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=5,6,7,8,9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion and gate with
-  dummy stages after them.
+  in tests/fakes/), the real stages S1 to S6 (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle,
+  05-hooks, 06-judge: run.sh, prompt*.md, model schemas for the model's answers, schema.json for the stage's file)
+  on the shared stage library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost or when no id is
+  stored), prompt.py, research.py, expansion.py, gate.py, hooks.py (the hooks index, lint, stats, shortlist and
+  checks), judge.py (hookscore filter, Borda, pairwise), voiceprofile.py, pipeline/bin/screenshot (Playwright,
+  headless Chromium), pipeline/bin/index-hooks (library/.hooks.index.json, hooks.lint.txt, .hooks.stats.json,
+  hooks.suggested.txt), pipeline/bin/build-voice-profile (library/profile/voice.md and account.md),
+  pipeline/bin/vendor-run and the vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/
+  (MIT, pinned in its VERSION file). Run every test with `bash pipeline/tests/run-all.sh` (about 65 minutes;
+  test-m3 section 4, test-m4 sections 3 and 4 and test-m5 sections 3 and 4 make real model calls;
+  `M5_SECTIONS="1 2" bash pipeline/tests/test-m5.sh` is the fake-only M5 test).
+- The stages S7 to S14 (run.sh in each stage folder) arrive from M6 on, so `bash run.sh` alone stops with
+  logs/STOPPED.md at S7. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
+  `REELS_DUMMY=7,8,9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks and
+  judge with dummy stages after them.
 
 ## Folder map
 - `ideas.txt`: the idea queue (one idea per `{...}` block). `run.sh`: the video runner. `config.json`: models, engines,
   caps, paths.
 - `exports/N/`: finished reels (`N.mp4`, `Ncaptions.txt`, `Nhook2.mp4`).
 - `library/`: curated by the user: hooks.txt, profile/ (account.md, voice.md, deliverables.txt, pronunciations.txt),
-  voice/ (reference.wav, memo.*).
+  voice/ (reference.wav, reference_long.wav, engine.txt, memo.*). Derived by the pipeline, never edited by hand:
+  .hooks.index.json and hooks.lint.txt (ignored by git), .hooks.stats.json (the judge's picks and wins; commit it
+  when you want a snapshot), hooks.suggested.txt (new hook shapes the model noticed; move them into hooks.txt
+  yourself). `bash pipeline/bin/index-hooks` rebuilds the index when hooks.txt changed;
+  `bash pipeline/bin/build-voice-profile [--force]` rebuilds voice.md and account.md (from library/voice/memo.*
+  when it exists, else the template with [FILL IN] placeholders plus the pace measured from the reference
+  recordings).
 - `styles/paper-cards/`: the look (style.md, tweaks.md, vocabulary.md, tokens.json, refs/, analysis/).
   `styles/sfx/`: the sound effects pack and its map (sfx-map.json, SFX-MAP.md, overrides.txt).
 - `motion-lib/`: approved HyperFrames components, candidates/, gallery/. `golden/`: example reels for the visual
@@ -85,8 +95,10 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   may contain one: `say` cleans every terminal line, and anything else composed from such text goes through
   `reels_undash VAR` or `undash TEXT` (pipeline/lib/log.sh) or errors.py's `undash()` first.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and
-  transcription use `.venv-tts/Scripts/python.exe` (Python 3.11). `bash pipeline/bin/setup-python` installs the
-  packages (jsonschema, playwright) and Playwright's Chromium.
+  transcription run under the interpreter named in library/voice/engine.txt (the user's chatterbox venv, Python
+  3.11, which has faster-whisper too); `.venv-tts/Scripts/python.exe` is only a fallback location when it exists.
+  `bash pipeline/bin/setup-python` installs the packages (jsonschema, playwright) and Playwright's Chromium.
+  The vendored scripts run through `bash pipeline/bin/vendor-run <script.py> ...` (python -I -X utf8).
 - **Shell:** Git Bash. Every text file is LF (.gitattributes: `* text=auto eol=lf`); scripts use GNU date.
 - **Tool limits:** the Bash tool's command string fails above roughly 8 KB here, so write long files with the
   Write tool instead of a heredoc; the tool also collapses `\\` to `\` inside heredocs. Check line endings with

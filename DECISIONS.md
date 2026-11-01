@@ -792,3 +792,160 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     F ok) after 1 angle round", DONE, no DROP; the angle prompt holds the repair section and the quoted
     statement; the run folder is taken from the START line because ls here sorts "<id>-2" before "<id>"), and
     section 3 run three times in a row with the real models (build/M4/fixes-2.md has the lines of each run).
+
+## M5 (2026-11-01)
+
+### Vendored tools
+113. **Vendored at commit d03c56bb598be770c60b201f94237e5d1a4268a6 (2026-09-13)**, fetched with `gh api` (raw
+    content at that commit) rather than copied from ~/.claude/skills: the installed skills hold the same bytes with
+    CRLF endings, and the pinned fetch is what VERSION records. LICENSE and templates/voice.md come along.
+    pipeline/bin/vendor-run runs a vendored script with `python -I -X utf8 <script>`: isolated mode so a stray
+    module next to the input can never shadow a standard one, and UTF-8 forced on the command line because -I
+    implies -E, which ignores PYTHONUTF8. detect.py, humanize.py and slop.json contain em dashes; the scan skips
+    pipeline/vendor/ (item 4) and nothing of theirs is copied into a file of ours.
+
+### The hooks index (pipeline/bin/index-hooks, pipeline/lib/hooks.py)
+114. **The id hashes the normalized text:** NFC, em dash to comma, straight quotes, the surrounding quotes
+    stripped, whitespace collapsed, lower case; sha1, first 10 hex. So fixing an em dash into a comma, a case fix
+    or re-quoting a line keeps its stats, while any wording change gives a new id (the spec's "stats survive adding
+    and deleting other lines"). A duplicate line is indexed once and listed in the lint.
+115. **The cache:** the index keeps source_sha1 of the file (CR stripped) and the classification per id. An
+    unchanged file with nothing unclassified means no model call and no rewrite ("a second run makes no model
+    call"); a changed file sends only the ids not classified yet to one batched indexer call and keeps the rest by
+    id; an id the model skipped stays "unclassified" and is asked again at the next run. The call's files live
+    under logs/index-hooks/calls/, because ai() wants a stage folder and the index is not a run stage.
+116. **The lint** (library/hooks.lint.txt, for the user, never read by the runner): a broken blank by heuristics
+    (a preposition or article followed by punctuation or the end of the line, a preposition followed by an adverb
+    and a word as in "progress in actually looks", a lone or triple underscore), em dash lines, duplicates, and
+    the model's grammar note per hook (issue, under 15 words; the real indexer also named the two lost blanks).
+117. **The stats** (library/.hooks.stats.json, keyed by template id: the hooks.txt ids and the vendor ids v01 to
+    v26): picked, won, scores (the last 20 normalized Borda scores), last_picked, last_won, text. Win rate =
+    (won + 1) / (picked + 2): 0.5 with no data, which is the spec's "uniform at first". The judge wrapper updates
+    it after judge.json is written, never the model.
+118. **The vendor's 26 formulas are mapped to the six families by judgment** (hooks.py VENDOR_FAMILY), with
+    fits_problem_solution false for the pure story shapes (Cost Confession, Insider Leak, The Flop Record,
+    Mid-Sentence Start, The Reveal, Someone Else's Result).
+
+### S5 Hooks
+119. **The shortlist is code, the hooks are the model's.** hooks.py shortlist offers config hooks.shortlist (24)
+    templates: the hooks.txt lines (minus broken blanks and duplicates) plus the 26 vendor shapes; at least
+    hooks.per_family (2) per family when the pool has them (a weighted sample inside the family), the rest a
+    weighted sample without replacement; weight = win rate x (1 for a fit template, hooks.fit_weight_other 0.35
+    otherwise); seeded by the idea id, so a restart offers the same list and different ideas get different ones.
+    The model writes 12 to 20 hooks from the list (it may skip a template) and the code enforces the counts, the
+    families and the template ids. A personal-story angle: the prompt tells the model to prefer the story
+    families then; every family is on the list anyway.
+120. **The spoken cap** is min(8, ceil(wpm x 3 / 60) - 1) words: "8 words or fewer, under 3 seconds" at 150 wpm
+    means 7 words (8 words would take 3.2 s), at the measured 195 wpm 8. Words are counted as the vendor's
+    hookscore counts them (letters, digits, $ % ' and hyphens; "1,134,112" is one word, "1.1.1" is three, as it is
+    spoken). The cap, the wpm and the seconds per hook are written into hooks.json.
+121. **The marker check:** the marker must be quoted from the spoken line and look like a number (a digit or a
+    number word), a time (a time word) or a name (an uppercase letter or a non-letter character: Claude Code,
+    frontend-design, SKILL.md, /plugin). marker_kind is recorded, but any passing rule accepts the hook.
+122. **The quality loop:** hooks.py check returns the exact problems per hook (the cap with the wpm, the on-screen
+    cap, the marker, an unknown template_id, an unknown family, a repeated line) and the global ones (count,
+    families); the stage asks again in the same session up to hooks.tries (3) times; the last try writes the valid
+    hooks with a NEEDS REVIEW flag, and fewer than hooks.min_for_judge (4) valid hooks blocks the idea (exit 20):
+    a model that cannot write four valid hooks is not a code error for the reviewer.
+123. **The brief** is a second call in session A with a structured answer (brief_markdown, video_type,
+    suggested_tones). Tokens are measured as words x 1.3 against config hooks.brief_tokens (2000 to 3000); the
+    stage composes a header (idea, keyword, deliverable, identity, video type, tones, where hook 1 comes from)
+    that counts toward the total; up to hooks.brief_tries (3) asks, then written with a flag. The brief is written
+    before the judge runs, so it is hook-agnostic: the script takes hook 1 from judge.json.
+124. **A session key with no stored id is seeded at once** (session.sh session_call --seed-if-new): when state.json
+    holds no sessions.A (the earlier stages ran in another process, the run was built from frozen fixtures as the
+    test does, state.json was rebuilt), the first call is already the seeded one (facts.md, expansion.md, the gate
+    verdict, then the task), with an INFO line, instead of talking to a blank session. S5 uses it; the reseed
+    after a lost session (item 96) is unchanged.
+125. **The regeneration is a call into S5, not a reopen.** When the judge's hookscore filter leaves fewer than
+    judge.min_survivors hooks, 06-judge runs `05-hooks/run.sh <run_dir> --regenerate feedback.json` once (marker
+    06-judge/regenerated.json, so a rerun never regenerates twice): S5 resumes session A with the survivors and
+    the failures (score, dealbreakers, weakest check), asks for min_hooks - survivors + 4 replacements (capped by
+    max_hooks), merges the survivors with the valid new hooks (the previous file kept as
+    hooks-before-regenerate.json) and does not rewrite the brief. reopen.txt would have made S6 end its attempt
+    and S5 run again as a stage; the spec wants the judge to continue in the same pass with the best available.
+126. **Profile drafts are flags:** S5 records once per run that voice.md or account.md is still a draft (a [FILL IN]
+    in its body; the intro paragraph that explains the placeholders does not count) and that a missing voice.md
+    means default voice assumptions. The research stages keep their own flag for a missing account.md (item 102);
+    the account.md draft carries the working assumption those stages used, so their prompts lose nothing.
+127. **New hook shapes** the model notices while writing the hooks (an opening it wanted and no template offered)
+    go to library/hooks.suggested.txt through the wrapper (suggested_shapes in the answer, optional, cleaned,
+    deduplicated, with a dated comment line), never to hooks.txt; the user moves them by hand (spec 2.2).
+
+### S6 Hook judge
+128. **Three independent judge calls** (no --session): two rankings with different seeded shuffles (idea id plus
+    ":1" and ":2") so the second ranking never sees the first, which is what cancels position bias, then the
+    pairwise call. "Fresh session C" is read as fresh sessions: a resumed session would carry the first ranking
+    into the second.
+129. **Borda and pairwise, precisely:** a hook at position p of n earns n - 1 - p points per ranking, ties by the
+    first ranking's order; the top judge.top_n (4) are labeled W, X, Y, Z and compared in both orders (12
+    comparisons in one call); the winner has the most pairwise wins, ties by Borda points, then by hookscore; the
+    runner-up is the next one. A ranking with missing or unknown labels is read leniently (unknown ignored, missing
+    appended in label order, a WARN line); a comparison whose winner is not one of its two labels is ignored
+    (a WARN line when not every comparison was answered). judge.py decides all of this; the model only ranks and
+    compares.
+130. **The hookscore filter:** a score under judge.min_hookscore (50) or any dealbreaker is out; fewer than
+    judge.min_survivors (4) triggers the one regeneration; after it the judge continues with the survivors when at
+    least 2 passed, else with the top 4 by score (dealbreaker-free first), the spec's "best available"; fewer than
+    2 hooks at all blocks the idea. hookscore.py runs through `python -I -X utf8` on a temp file with one spoken
+    line per line and the scores are mapped back by order (hookscore skips empty lines; a count mismatch falls
+    back to matching by text).
+131. **judge.json keeps the whole trail:** winner and runner_up (the full hook plus hookscore, Borda points and
+    pairwise wins), reasons (the pairwise reasons the winner earned, the ranking notes on both, the counts),
+    filtered_out with the filter's reason, hookscore per hook, candidates and how they were chosen, both rankings
+    (the order shown, the ranking, the notes, complete or not), borda, top, pairwise, pairwise_wins, regenerated,
+    calls and checked. The stats update comes after the file is written, so a crash never counts a pick without
+    its verdict.
+
+### Profile (pipeline/bin/build-voice-profile, pipeline/lib/voiceprofile.py)
+132. **No memo yet, so voice.md is the vendor template with placeholders and account.md a placeholder draft.**
+    voice.md keeps the template's headings and fields with `[FILL IN: hint]` after each (the vendor's intro
+    replaced by ours, wrapped hints joined, the template's double-brace "your number" mention reworded so no file
+    of ours holds a double-brace placeholder); account.md carries the spec's sections plus the working assumption
+    the research stages used so far (a generic developer-tools audience), so their prompts keep a useful text while
+    the user fills it in. HUMAN_TODO added. With a memo (library/voice/memo.wav, .m4a, .mp3, .ogg, .flac, .webm)
+    the script transcribes it, the script model (opus) drafts both files from the transcript on the template (keep
+    the user's English, fix only real errors, [FILL IN] for what the memo did not say) and the code appends the
+    excerpts and the pace. The script is re-runnable and never overwrites an existing file without --force.
+133. **The pace and the excerpts are measured anyway, from the user's real speech:** library/voice/reference_long.wav
+    (66.6 s) transcribed with faster-whisper (small, CPU, int8, 23 s) gives 195 words per minute (216 words in
+    66.4 s, no pause over 1.5 s) and 5 verbatim excerpts, written into voice.md; config voice.wpm was set to 195
+    because at least 30 s of speech were measured. The spec's "measured words per minute" normally comes from the
+    memo; the long reference is the same voice at reel energy, so the number is real, and HUMAN_TODO says how to
+    override it if the read was faster than the user's reel delivery.
+134. **The whisper interpreter is the one in library/voice/engine.txt; no .venv-tts is created.** That interpreter
+    (C:/Users/there/venvs/chatterbox/Scripts/python.exe, Python 3.11) already has faster-whisper 1.2.1 and the
+    small model cached, and spec M7 says to install nothing when engine.txt exists. build-voice-profile tries
+    config paths.venv_python, then engine.txt's `python` line, then `python`, and uses the first that imports
+    faster_whisper. The model: config tts.whisper_model (small.en) from the local cache, else "small" from the cache
+    (what tools/voice.py uses), else a download of the configured one; never a surprise download when something
+    is cached. PLAN.md's pipeline/bin/setup-venv (the whisper-only .venv-tts) is therefore not built in M5; M7
+    decides whether it is needed at all. Correction to item 6 and CLAUDE.md: transcription runs under engine.txt's
+    interpreter, .venv-tts is a fallback location when it exists.
+135. **The pace measure:** words divided by the span from the first word to the last, minus the part of every
+    pause over 1.5 s, per minute (the raw rate is kept next to it); the excerpts are whole whisper segments of 10
+    to 45 words, 3 to 5 of them spread over the recording, verbatim. At runtime voice.md's Pace line wins over
+    config voice.wpm (hooks.py wpm), and build-voice-profile also writes the measured value into config voice.wpm
+    (a regex edit that keeps the file's layout), so beats.py (M6) and the hooks agree.
+
+### Tests, fixtures and earlier milestones
+136. **test-m5.sh:** sections 1 and 2 with the fake claude (the units; S5 and S6 through run.sh from the frozen M4
+    outputs, with the run built by state.py new plus stage-start and stage-done per frozen stage, so the runner
+    resumes it at S5; the regeneration path with a hooks fixture of which only 3 of 12 pass hookscore and a
+    replacement fixture of 10), section 3 the real indexer over the real hooks.txt, section 4 the real S5 and S6
+    (M5_FREEZE=1 adds 05-hooks and 06-judge to the frozen fixtures). pipeline/tests/fixtures/fake/m5 and
+    m5-regen hold the model-shaped answers; the brief is kept as markdown (brief.md) and turned into the JSON
+    answer at test time, the index answer is generated from the sandbox's hooks.txt ids. The fixture hooks have 7
+    spoken words or fewer, so they pass at any measured pace.
+137. **Earlier milestones touched by M5:** session.sh (--seed-if-new, M4); test-m4.sh section 2 removes the
+    sandbox's account.md before its run, because M5 drafted the file and that section asserts the flag for a
+    missing one (M4); config.json (hooks, judge, the new timeouts, voice.wpm 195; M1); the dummies and schemas of
+    05-hooks and 06-judge (M2); pipeline/vendor/.gitkeep removed (M1). One real haiku call was wasted by a quoting
+    bug in index-hooks found in the first real run (the hooks list rendered empty, the whole index came back
+    unclassified); the test now asserts that the prompt lists every id and that nothing stays unclassified.
+138. **Windows and bash notes found in M5:** a `python -` script fed by a heredoc cannot also read a pipe (the
+    heredoc is its stdin), so a generator that needs both takes a file; `\"` inside a single-quoted `python -c`
+    string reaches Python as a backslash and is a syntax error, so such strings are built by concatenation and the
+    data travels as an argument; `python -I` ignores PYTHONUTF8 (it implies -E), hence `-X utf8` next to it; the
+    Bash tool's command limit bit again when a 12 KB heredoc was pasted (the command was cut and nothing ran), so
+    long appends go through a file written with the Write tool.
