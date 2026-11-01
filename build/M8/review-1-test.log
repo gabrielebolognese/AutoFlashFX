@@ -1,0 +1,171 @@
+
+== 1. a synthetic pack in the sandbox: measurements, classes, exclusions, cache, pools, previews, overrides, rebuilds (fake indexer) ==
+PASS  13 synthetic wav files generated with ffmpeg
+PASS  --check exits 1 before any map exists
+PASS  --check says why
+PASS  build-sfx-map exits 0 on the synthetic pack (9 lines of output)
+PASS  every file is measured on the first build
+PASS  one batched indexer call, then one more for the id the first answer skipped
+PASS  the call's role is indexer
+PASS  the indexer model from config
+PASS  no tools
+PASS  a JSON schema is passed
+PASS  sfx-map.json written next to the pack
+PASS  SFX-MAP.md written
+PASS  overrides.txt created with its header
+PASS  the header explains ban:
+PASS  the header explains pin:
+PASS  the second call is announced
+PASS  sfx-map.json validates against pipeline/lib/sfx/map.schema.json
+PASS  14 audio files in the map (13 wav plus the broken mp3)
+PASS  every audio file is in the map or excluded with a reason (ok: 14 files, 3 excluded)
+PASS  every measured field is present for every mapped file (ok)
+PASS  the call files live under logs/build-sfx-map/calls/
+PASS  the prompt lists the unclear file with its folder, name and measurements
+PASS  only the 2 unclear files went to the model
+PASS  a 0.3 s noise swoosh is a fast whoosh
+PASS  a 1.6 s swell is a slow whoosh
+PASS  click-a is a click by rule
+PASS  ding-bell is a success sound by rule
+PASS  boom-hit is an impact by rule
+PASS  keyboard-typing is typing by rule
+PASS  clipped-pop.wav is excluded as clipped
+PASS  silent.wav is excluded as silent
+PASS  broken.mp3 is excluded as undecodable
+PASS  3 files excluded
+PASS  mystery-tone was classified by the model
+PASS  with the model's confidence
+PASS  odd-thing (confidence 0.3) waits for approval
+PASS  one file in the waiting list
+PASS  a waiting file is in no pool
+PASS  SFX-MAP.md names the model-classified file
+PASS  SFX-MAP.md lists the clipped file with its reason
+PASS  SFX-MAP.md lists the waiting file with the model's guess
+PASS  fast-whoosh is in the transition_fast pool
+PASS  fast-whoosh is in the attention pool
+PASS  slow-whoosh is in the transition_slow pool
+PASS  slow-whoosh is not in the transition_fast pool
+PASS  the ui_click pool holds the 4 clicks
+PASS  ding-bell is in the success pool
+PASS  mystery-tone is in the success pool (the model's answer)
+PASS  boom-hit is in the stamp pool
+PASS  boom-hit is in the hook_hit pool
+PASS  keyboard-typing is in the typing pool
+PASS  the clipped file is in no pool
+PASS  no pool exceeds 8 sounds
+PASS  short pools are named (the synthetic pack is small)
+PASS  pool entries carry a fit
+PASS  the normalized cache copy exists (.cache/69523d20c1-click-a.wav)
+PASS  the cache copy is 48 kHz with the file's channel count
+PASS  the cache copy peaks at -12 dBFS (measured -12.0)
+PASS  gain_db = -12 - peak_dbfs (-7.56 = -12 - (-4.44))
+PASS  13 cache copies (none for the undecodable file)
+PASS  the undecodable file has no cache copy
+PASS  no em dash in the map, SFX-MAP.md and overrides.txt
+PASS  previews/ui_click.wav exists
+PASS  previews/ui_click.txt exists
+PASS  previews/transition_fast.wav exists
+PASS  previews/transition_fast.txt exists
+PASS  previews/success.wav exists
+PASS  previews/success.txt exists
+PASS  no preview for an empty pool (negative)
+PASS  the ui_click preview is 4 trimmed clicks 1 s apart (about 3.2 s, got 3.26 s)
+PASS  the ui_click listing has 4 lines
+PASS  the listing's first sound is the pool's first
+PASS  the second sound starts about 1 s after the first ends
+PASS  a rebuild of an unchanged pack exits 0
+PASS  and says it is up to date
+PASS  and makes no model call
+PASS  and leaves sfx-map.json byte for byte as it was
+PASS  and is fast
+PASS  --check exits 0 on a current map
+PASS  a rebuild after a ban exits 0
+PASS  the overrides change is the reason
+PASS  nothing is re-measured
+PASS  no model call for an overrides change (cached answers)
+PASS  the banned click left the ui_click pool
+PASS  the ui_click pool has 3 clicks now
+PASS  the file is marked banned
+PASS  the ban matched a file
+PASS  SFX-MAP.md lists the ban
+PASS  another rebuild is a no-op
+PASS  and the ban holds
+PASS  a forced rebuild exits 0
+PASS  a forced rebuild measures every file again
+PASS  and still makes no model call (the answers are cached)
+PASS  the ban holds through a forced rebuild
+PASS  the model's classification survives a forced rebuild
+PASS  a rebuild after pins exits 0
+PASS  the pinned click is first in the ui_click pool
+PASS  and marked pinned
+PASS  the pinned waiting file is first in the number pool
+PASS  and no longer waits
+PASS  the waiting list is empty
+PASS  the unknown line is reported
+PASS  SFX-MAP.md shows the unknown line
+PASS  the preview listing starts with the pinned sound
+PASS  pins hold through another rebuild (no-op)
+PASS  the pin is still first
+PASS  --check exits 1 after a file was added
+PASS  --check names the change
+PASS  a rebuild after a new file exits 0
+PASS  only the new file is measured
+PASS  15 files in the map
+PASS  the new click joined the ui_click pool
+PASS  a clear new file needs no model call
+PASS  a rebuild after a removed file exits 0
+PASS  the removed file left the map
+PASS  no entry for the removed file
+PASS  its cache copy was pruned
+PASS  a failed indexer call exits 1 (a code error for the calling stage)
+PASS  and says so
+PASS  one call was attempted
+PASS  --no-model builds without the model
+PASS  and warns about the unclassified file
+PASS  one file not classified yet
+PASS  it is the new unclear file
+PASS  SFX-MAP.md lists it under not classified yet
+PASS  --check exits 1 while a file waits for the model
+PASS  --check says so
+PASS  --no-model again is a no-op
+PASS  the next run with the model exits 0
+PASS  and asks only about the pending file
+PASS  nothing left unclassified
+PASS  the pending file joined its pool
+
+== 2. the repo's map of styles/sfx/ (built with the real indexer model, committed): coverage, pools, previews, no-op rebuild ==
+PASS  styles/sfx/sfx-map.json exists (committed)
+PASS  styles/sfx/SFX-MAP.md exists
+PASS  styles/sfx/overrides.txt exists
+PASS  the map validates against map.schema.json
+PASS  every audio file under styles/sfx/ is in the map or excluded with a reason (ok: 106 files, 13 excluded)
+PASS  counts.files matches the folder (106)
+PASS  every measured field is present for every mapped file (ok)
+PASS  every excluded file has a reason (13 excluded)
+PASS  no pool exceeds 8 sounds
+PASS  every cue type has a pool of at least 3 sounds, or build/HUMAN_TODO.md names it as short ( typing:2(HUMAN_TODO) negative:2(HUMAN_TODO))
+PASS  short_pools in the map matches the pools
+PASS  the map was classified with the indexer model (model answers present)
+PASS  no em dash in the map, SFX-MAP.md and overrides.txt
+PASS  SFX-MAP.md records the thresholds
+PASS  SFX-MAP.md lists the excluded files
+PASS  bash pipeline/bin/build-sfx-map on the unchanged styles/sfx/ exits 0 (sfx map up to date (106 audio files, no change in styles/sfx/, no model call))
+PASS  and makes no model call
+PASS  and leaves the committed map as it is
+PASS  --check exits 0: the committed map is current
+PASS  previews/transition_slow.wav and .txt exist, 8 sounds listed
+PASS  previews/transition_fast.wav and .txt exist, 8 sounds listed
+PASS  previews/attention.wav and .txt exist, 8 sounds listed
+PASS  previews/hero_enter.wav and .txt exist, 8 sounds listed
+PASS  previews/ui_click.wav and .txt exist, 8 sounds listed
+PASS  previews/stamp.wav and .txt exist, 4 sounds listed
+PASS  previews/number.wav and .txt exist, 8 sounds listed
+PASS  previews/success.wav and .txt exist, 3 sounds listed
+PASS  previews/typing.wav and .txt exist, 2 sounds listed
+PASS  previews/negative.wav and .txt exist, 2 sounds listed
+PASS  previews/hook_hit.wav and .txt exist, 8 sounds listed
+PASS  previews/notification.wav and .txt exist, 4 sounds listed
+PASS  no em dash in the preview listings
+
+test-m8.sh: 164 passed, 0 failed
+EXIT=0
