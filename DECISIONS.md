@@ -677,8 +677,9 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 107. **Frozen fixtures and the fake's stage fixtures.** pipeline/tests/fixtures/runs/test-idea/ (written by
     `M4_FREEZE=1 bash pipeline/tests/test-m4.sh`) holds the real outputs of the test idea: research.json,
     facts.md, numbers.json, assets.json with the PNG screenshots and their sidecars, expansion.json and .md,
-    gate.json and gate-*.json, the model's structured answers (calls/*.out.json) and idea.txt; M5 starts from them
-    (and exercises the reseed, since no session exists). .gitignore's runs/, exports/, logs/ and .locks/ are now
+    gate.json and gate-*.json, the model's structured answers (calls/*.out.json, cleaned of em dashes when frozen:
+    the stages clean what they render, not the raw answers, and no file of the repo may hold one) and idea.txt;
+    M5 starts from them (and exercises the reseed, since no session exists). .gitignore's runs/, exports/, logs/ and .locks/ are now
     anchored to the root (/runs/) so the fixtures folder is tracked. pipeline/tests/fixtures/fake/m4/ holds
     model-shaped answers (01-research.json, 02-expansion.json, 03-gate.json scoring S1, 04-angle.json, and the
     variants pass and false) that the fake claude serves by the prompt's "# Stage: <key>" line
@@ -689,8 +690,12 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     reopen resets attempts; M2), ai.sh (--allow; M3), the fake claude (fixtures by stage; M3), tests/lib.sh (the
     profile's .md files copied into the sandbox, dummy_after; M1), config.json (research, the new timeouts, the
     playwright warn check; M1), setup-python and requirements.txt (playwright and its Chromium; M1), .gitignore
-    (anchored folders; M0), the dummies of 01-research and 03-gate (the refined schemas; M2). The M1 to M3 tests
-    pass unchanged.
+    (anchored folders; M0), the dummies of 01-research and 03-gate (the refined schemas; M2). One earlier test
+    changed because its premise did: test-m2 section 7 expected the runner to stop at S1 ("not built yet") when
+    run without REELS_DUMMY; with the real S1 in place that started a real research call and timed out. The
+    section now finds the first stage without a run.sh (05-hooks today), runs the built stages as dummies and
+    expects the stop there, and skips itself once every stage exists, so later milestones do not break it again.
+    Everything else in M1 to M3 passes unchanged.
 109. **Windows notes found in M4:** the Bash tool's heredoc backslash collapsing bit again (a Python patch with a
     literal `\r` became a carriage return and matched nothing), so patches that need a backslash go through the
     Edit tool; a `/dev/null` path handed to Windows Python is not a file, so "no file" is passed as /nonexistent

@@ -416,15 +416,29 @@ fi
 
 # ----------------------------------------------------------------------------------------------------------------
 section "7. a stage that is not built yet, and runner-status"
+# The first stage without a run.sh (S1 to S4 exist since M4; later milestones move this forward). The stages before
+# it run as dummies, so no real model is ever called here; when every stage exists the section is skipped.
+MISSING_STAGE=""; BUILT_DUMMIES=""; MISSING_ACTIVITY=""; BUILT_N=0
+while IFS=$'\t' read -r key label activity output initial; do
+  if [ -f "$REPO_DIR/pipeline/stages/$key/run.sh" ]; then
+    BUILT_DUMMIES="${BUILT_DUMMIES:+$BUILT_DUMMIES,}$key"; BUILT_N=$((BUILT_N + 1)); continue
+  fi
+  MISSING_STAGE="$key"; MISSING_ACTIVITY="$activity"; break
+done < <(python "$STATE_PY" stages)
+if [ -z "$MISSING_STAGE" ]; then
+  pass "every stage has a run.sh: the not-built-yet stop no longer applies (section skipped)"
+else
 sandbox_init
 printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
-( cd "$SANDBOX" && env -u REELS_DUMMY NO_COLOR=1 timeout 120 bash "$REPO_DIR/run.sh" --once ) > "$SANDBOX/stop.out" 2>&1; rc=$?
-assert_rc 3 $rc "a missing real stage is a systemic stop (exit 3)"
-assert_grep "${ts_regex}STOP   systemic failure: stage 01-research is not built yet \(run.sh missing in pipeline/stages/01-research\)\. See logs/STOPPED.md$" "$SANDBOX/stop.out" "STOP line"
+( cd "$SANDBOX" && env REELS_DUMMY="$BUILT_DUMMIES" NO_COLOR=1 timeout 120 bash "$REPO_DIR/run.sh" --once ) > "$SANDBOX/stop.out" 2>&1; rc=$?
+assert_rc 3 $rc "a missing real stage ($MISSING_STAGE) is a systemic stop (exit 3)"
+assert_grep "${ts_regex}STOP   systemic failure: stage $MISSING_STAGE is not built yet \(run.sh missing in pipeline/stages/$MISSING_STAGE\)\. See logs/STOPPED.md$" "$SANDBOX/stop.out" "STOP line"
 assert_file "$SANDBOX/logs/STOPPED.md" "STOPPED.md written"
 assert_grep "REELS_DUMMY=all bash run.sh --once" "$SANDBOX/logs/STOPPED.md" "STOPPED.md gives the exact fix"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "1" "the idea stays in ideas.txt"
 assert_eq "$(state_get "$(run_dirs | head -n 1)" status)" "running" "the run stays unfinished"
+# the stages done before the stop (04-angle stays skipped when the dummy gate passes, so this is not BUILT_N)
+done_before_resume="$(python "$STATE_PY" summary "$(run_dirs | head -n 1)" | python -c 'import json, sys; print(json.load(sys.stdin)["stages_done"])')"
 status_out="$(bash "$REPO_DIR/pipeline/bin/runner-status" 5)"
 assert_true "runner-status: says the runner is not running" grep -q "^runner: not running" <<<"$status_out"
 assert_true "runner-status: shows the status line" grep -q "^status: \[.*STOP   systemic failure" <<<"$status_out"
@@ -433,8 +447,10 @@ assert_true "runner-status: shows the log tail" grep -q "^last 5 lines of logs/r
 run_once "$SANDBOX/stop2.out"; rc=$?
 assert_rc 0 $rc "a later start with dummy stages resumes the kept run"
 assert_grep "removed logs/STOPPED.md" "$SANDBOX/stop2.out" "the successful start removes STOPPED.md"
-assert_grep "resumed at researching facts, 0 stages done" "$SANDBOX/stop2.out" "the kept run is resumed from its first stage"
+plural_stage="stages"; [ "$done_before_resume" = 1 ] && plural_stage="stage"
+assert_grep "resumed at $MISSING_ACTIVITY, $done_before_resume $plural_stage done" "$SANDBOX/stop2.out" "the kept run is resumed at the stage that was missing"
 assert_grep "${ts_regex}DONE   exported #1" "$SANDBOX/stop2.out" "and exported"
+fi
 
 # ----------------------------------------------------------------------------------------------------------------
 section "8. state.json damaged mid-run: one retry, then the systemic stop with STOPPED.md"

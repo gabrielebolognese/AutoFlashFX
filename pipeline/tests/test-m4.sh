@@ -468,6 +468,32 @@ if [ -n "${M4_FREEZE:-}" ] && [ "$rc" = 0 ] && [ "$(json_get "$G/gate.json" pass
     mkdir -p "$FR/$st/calls"
     cp "$RD/$st"/calls/*.out.json "$FR/$st/calls/" 2>/dev/null || true
   done
+  # the model's raw answers may hold em dashes (the rendered files are cleaned by the stages, the raw answers are
+  # not): no file of this repo may hold one, so the frozen copies are cleaned the same way
+  python - "$FR" <<'PYEOF'
+import json, os, sys
+sys.path.insert(0, os.path.join(os.getcwd(), "pipeline", "lib"))  # the test runs from the repo root
+from errors import undash
+def clean(x):
+    if isinstance(x, str): return undash(x)
+    if isinstance(x, list): return [clean(v) for v in x]
+    if isinstance(x, dict): return {k: clean(v) for k, v in x.items()}
+    return x
+em = bytes([0xE2, 0x80, 0x94])
+for dp, _, names in os.walk(sys.argv[1]):
+    for name in names:
+        path = os.path.join(dp, name)
+        data = open(path, "rb").read()
+        if em not in data:
+            continue
+        if name.endswith(".json"):
+            with open(path, "w", encoding="utf-8", newline="\n") as fh:
+                json.dump(clean(json.loads(data.decode("utf-8-sig"))), fh, ensure_ascii=False, indent=1)
+                fh.write("\n")
+        else:
+            with open(path, "w", encoding="utf-8", newline="\n") as fh:
+                fh.write(undash(data.decode("utf-8-sig")))
+PYEOF
   cp "$RD/idea.txt" "$FR/idea.txt"
   python "$STATE_PY" summary "$RD" > "$FR/state.summary.json" 2>/dev/null || true
   rm -rf "$FR/04-angle" 2>/dev/null && [ -f "$RD/04-angle/angle.json" ] && { mkdir -p "$FR/04-angle"; cp "$RD/04-angle/angle"*.json "$FR/04-angle/"; }

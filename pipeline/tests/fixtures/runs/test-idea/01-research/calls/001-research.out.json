@@ -101,7 +101,7 @@
    "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
    "tier": "primary",
    "status": "verified",
-   "note": "SKILL.md: \"Where the brief pins down a visual direction, follow it exactly — the brief's own words always win, including when it asks for one of these looks.\""
+   "note": "SKILL.md: \"Where the brief pins down a visual direction, follow it exactly, the brief's own words always win, including when it asks for one of these looks.\""
   }
  ],
  "numbers": [
@@ -163,7 +163,7 @@
   },
   {
    "name": "Palette size the skill asks for",
-   "value": "4–6 named hex values",
+   "value": "4-6 named hex values",
    "unit": "colors",
    "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
    "note": "Part of the design-plan pass."
