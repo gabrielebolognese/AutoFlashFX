@@ -259,7 +259,15 @@ def main(argv: list[str]) -> int:
         if m:
             key = m.group(1)
             nth = counter("stage:" + key) + 1
-            for cand in (f"{key}.{nth}.json", f"{key}.json"):
+            candidates = []
+            t = re.search(r"^# Task: (\S+)", prompt, re.M)
+            if t:  # a stage whose calls differ by task (M6: S7's write, cut, claims, pick, rewrite): <key>.<task>.<n>.json first
+                task = t.group(1)
+                nth_task = counter(f"stage:{key}:{task}") + 1
+                candidates += [f"{key}.{task}.{nth_task}.json", f"{key}.{task}.json"]
+                record["task"] = task
+            candidates += [f"{key}.{nth}.json", f"{key}.json"]
+            for cand in candidates:
                 path = os.path.join(fixtures, cand)
                 if os.path.isfile(path):
                     mode = "fixture:" + path

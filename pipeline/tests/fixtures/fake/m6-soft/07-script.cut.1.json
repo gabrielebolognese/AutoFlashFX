@@ -1,0 +1,78 @@
+{
+ "beats": [
+  {
+   "id": "b1",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "card": "IDENTICAL CARDS LOOK AI"
+  },
+  {
+   "id": "b2",
+   "display": "If you ship client sites with Claude Code, you know.",
+   "spoken": "If you ship client sites with Claude Code, you know.",
+   "card": "You know the look"
+  },
+  {
+   "id": "b3",
+   "display": "Rounded cards again. Same shadow, rgba(0,0,0,.1).",
+   "spoken": "Rounded cards again. Same soft grey shadow.",
+   "card": "rgba(0,0,0,.1)"
+  },
+  {
+   "id": "b4",
+   "display": "Anthropic calls it distributional convergence: every model lands on the same page.",
+   "spoken": "Anthropic calls it distributional convergence: every model lands on the same page.",
+   "card": "distributional convergence"
+  },
+  {
+   "id": "b5",
+   "display": "I read the frontend-design skill. It names tells.",
+   "spoken": "I read the frontend design skill. It names tells.",
+   "card": "frontend-design skill"
+  },
+  {
+   "id": "b6",
+   "display": "One of them is Anthropic's own terracotta, #D97757, on a cream background.",
+   "spoken": "One of them is Anthropic's own terracotta on a cream background.",
+   "card": "#D97757 is an AI tell"
+  },
+  {
+   "id": "b7",
+   "display": "All-caps labels. Arrows on buttons. Fake 01 02 03.",
+   "spoken": "All caps labels. Arrows on buttons. Fake step numbers.",
+   "card": "01 / 02 / 03"
+  },
+  {
+   "id": "b8",
+   "display": "With it on, Claude first plans 4 to 6 colours, then reviews the whole plan for anything generic, then codes.",
+   "spoken": "With it on, Claude first plans four to six colours, then reviews the whole plan for anything generic, then codes.",
+   "card": "PLAN, REVIEW, CODE"
+  },
+  {
+   "id": "b9",
+   "display": "One command: /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "One command, slash plugin install frontend design at claude plugins official.",
+   "card": "/plugin install frontend-design@claude-plugins-official"
+  },
+  {
+   "id": "b10",
+   "display": "Pick a scope. It's on by itself for your frontend work.",
+   "spoken": "Pick a scope. It's on by itself for your frontend work.",
+   "card": "Turns on by itself"
+  },
+  {
+   "id": "b11",
+   "display": "Anthropic verified it. Over a million installs.",
+   "spoken": "Anthropic verified it. Over a million installs.",
+   "card": "1,134,112 installs"
+  },
+  {
+   "id": "b12",
+   "display": "Comment TELLS and I'll send the checklist, so nothing looks identical.",
+   "spoken": "Comment TELLS and I'll send the checklist, so nothing looks identical.",
+   "card": "Comment TELLS"
+  }
+ ],
+ "ask_line": "Comment TELLS and I'll send the checklist, so nothing looks identical.",
+ "notes": "cut, but one beat stayed long"
+}

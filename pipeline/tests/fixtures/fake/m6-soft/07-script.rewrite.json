@@ -1,0 +1,165 @@
+{
+ "tone": "insider",
+ "beats": [
+  {
+   "id": "b1",
+   "type": "hook",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "emphasis": [
+    "identical"
+   ],
+   "card": "IDENTICAL CARDS LOOK AI",
+   "facts": []
+  },
+  {
+   "id": "b2",
+   "type": "stake",
+   "display": "If you ship client sites with Claude Code, you know.",
+   "spoken": "If you ship client sites with Claude Code, you know.",
+   "emphasis": [
+    "client sites"
+   ],
+   "card": "You know the look",
+   "facts": []
+  },
+  {
+   "id": "b3",
+   "type": "comparison",
+   "display": "Rounded cards again. Same shadow, rgba(0,0,0,.1).",
+   "spoken": "Rounded cards again. Same soft grey shadow.",
+   "emphasis": [
+    "Same shadow"
+   ],
+   "card": "rgba(0,0,0,.1)",
+   "facts": [
+    "facts.md#6"
+   ]
+  },
+  {
+   "id": "b4",
+   "type": "mechanism",
+   "display": "Anthropic calls it distributional convergence: every model lands on the same page.",
+   "spoken": "Anthropic calls it distributional convergence: every model lands on the same page.",
+   "emphasis": [
+    "distributional convergence"
+   ],
+   "card": "distributional convergence",
+   "facts": [
+    "facts.md#13"
+   ]
+  },
+  {
+   "id": "b5",
+   "type": "tool",
+   "display": "I read the frontend-design skill. It names tells.",
+   "spoken": "I read the frontend design skill. It names tells.",
+   "emphasis": [
+    "names tells"
+   ],
+   "card": "frontend-design skill",
+   "facts": [
+    "facts.md#7"
+   ]
+  },
+  {
+   "id": "b6",
+   "type": "number",
+   "display": "One of them is Anthropic's own terracotta, #D97757, on a cream background.",
+   "spoken": "One of them is Anthropic's own terracotta on a cream background.",
+   "emphasis": [
+    "#D97757"
+   ],
+   "card": "#D97757 is an AI tell",
+   "facts": [
+    "facts.md#5"
+   ]
+  },
+  {
+   "id": "b7",
+   "type": "comparison",
+   "display": "All-caps labels. Arrows on buttons. Fake 01 02 03.",
+   "spoken": "All caps labels. Arrows on buttons. Fake step numbers.",
+   "emphasis": [
+    "All-caps labels"
+   ],
+   "card": "01 / 02 / 03",
+   "facts": [
+    "facts.md#7"
+   ]
+  },
+  {
+   "id": "b8",
+   "type": "mechanism",
+   "display": "With it on, Claude first plans 4 to 6 colours, then reviews the whole plan for anything generic, then codes.",
+   "spoken": "With it on, Claude first plans four to six colours, then reviews the whole plan for anything generic, then codes.",
+   "emphasis": [
+    "plans",
+    "reviews"
+   ],
+   "card": "PLAN, REVIEW, CODE",
+   "facts": [
+    "facts.md#9"
+   ]
+  },
+  {
+   "id": "b9",
+   "type": "step",
+   "display": "One command: /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "One command, slash plugin install frontend design at claude plugins official.",
+   "emphasis": [
+    "One command"
+   ],
+   "card": "/plugin install frontend-design@claude-plugins-official",
+   "facts": [
+    "facts.md#2"
+   ]
+  },
+  {
+   "id": "b10",
+   "type": "payoff",
+   "display": "Pick a scope. It's on by itself for your frontend work.",
+   "spoken": "Pick a scope. It's on by itself for your frontend work.",
+   "emphasis": [
+    "by itself",
+    "turns itself on"
+   ],
+   "card": "Turns on by itself",
+   "facts": [
+    "facts.md#4"
+   ]
+  },
+  {
+   "id": "b11",
+   "type": "proof",
+   "display": "Anthropic verified it. Over a million installs.",
+   "spoken": "Anthropic verified it. Over a million installs.",
+   "emphasis": [
+    "million installs"
+   ],
+   "card": "1,134,112 installs",
+   "facts": [
+    "facts.md#14"
+   ]
+  },
+  {
+   "id": "b12",
+   "type": "ask",
+   "display": "Comment TELLS and I'll send the checklist, so nothing looks identical.",
+   "spoken": "Comment TELLS and I'll send the checklist, so nothing looks identical.",
+   "emphasis": [
+    "TELLS"
+   ],
+   "card": "Comment TELLS",
+   "facts": []
+  }
+ ],
+ "ask": {
+  "keyword": "TELLS",
+  "line": "Comment TELLS and I'll send the checklist, so nothing looks identical."
+ },
+ "hook2": {
+  "spoken": "Five AI looks to avoid. One is Anthropic's."
+ },
+ "notes": "the long beat is still there"
+}

@@ -1,0 +1,164 @@
+{
+ "tone": "warning",
+ "beats": [
+  {
+   "id": "b1",
+   "type": "hook",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "emphasis": [
+    "identical"
+   ],
+   "card": "IDENTICAL CARDS LOOK AI",
+   "facts": []
+  },
+  {
+   "id": "b2",
+   "type": "stake",
+   "display": "If you build landing pages with Claude Code for clients, they see it too.",
+   "spoken": "If you build landing pages with Claude Code for clients, they see it too.",
+   "emphasis": [
+    "clients see it"
+   ],
+   "card": "Clients see it",
+   "facts": []
+  },
+  {
+   "id": "b3",
+   "type": "comparison",
+   "display": "That SaaS card kit again. The same corners, the same rgba(0,0,0,.1) shadow on everything.",
+   "spoken": "That SaaS card kit again. The same corners, the same soft grey shadow on everything.",
+   "emphasis": [
+    "Same corners"
+   ],
+   "card": "rgba(0,0,0,.1)",
+   "facts": [
+    "facts.md#6"
+   ]
+  },
+  {
+   "id": "b4",
+   "type": "mechanism",
+   "display": "Anthropic's own article blames distributional convergence: left to itself, every model drifts to the same page.",
+   "spoken": "Anthropic's own article blames distributional convergence: left to itself, every model drifts to the same page.",
+   "emphasis": [
+    "distributional convergence"
+   ],
+   "card": "distributional convergence",
+   "facts": [
+    "facts.md#13"
+   ]
+  },
+  {
+   "id": "b5",
+   "type": "tool",
+   "display": "Here's the warning. Their own frontend-design skill now lists all of these as tells.",
+   "spoken": "Here's the warning. Their own frontend design skill now lists all of these as tells.",
+   "emphasis": [
+    "tells"
+   ],
+   "card": "frontend-design skill",
+   "facts": [
+    "facts.md#7"
+   ]
+  },
+  {
+   "id": "b6",
+   "type": "number",
+   "display": "Even Anthropic's own terracotta, #D97757, on a cream background counts as a tell.",
+   "spoken": "Even Anthropic's own terracotta on a cream background counts as a tell.",
+   "emphasis": [
+    "#D97757"
+   ],
+   "card": "#D97757 is a tell",
+   "facts": [
+    "facts.md#5"
+   ]
+  },
+  {
+   "id": "b7",
+   "type": "comparison",
+   "display": "All-caps labels everywhere. Arrows on every button. 01 02 03 for show.",
+   "spoken": "All caps labels everywhere. Arrows on every button. Numbered steps for show.",
+   "emphasis": [
+    "for show"
+   ],
+   "card": "01 / 02 / 03",
+   "facts": [
+    "facts.md#7"
+   ]
+  },
+  {
+   "id": "b8",
+   "type": "mechanism",
+   "display": "Install it and Claude first plans 4 to 6 colours, then reviews, then codes.",
+   "spoken": "Install it and Claude first plans four to six colours, then reviews, then codes.",
+   "emphasis": [
+    "plans",
+    "reviews"
+   ],
+   "card": "PLAN, REVIEW, CODE",
+   "facts": [
+    "facts.md#9"
+   ]
+  },
+  {
+   "id": "b9",
+   "type": "step",
+   "display": "The whole command: /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "The whole command, slash plugin install frontend design at claude plugins official.",
+   "emphasis": [
+    "command"
+   ],
+   "card": "/plugin install frontend-design@claude-plugins-official",
+   "facts": [
+    "facts.md#2"
+   ]
+  },
+  {
+   "id": "b10",
+   "type": "payoff",
+   "display": "Pick a scope. It's on by itself after that, for any frontend work.",
+   "spoken": "Pick a scope. It's on by itself after that, for any frontend work.",
+   "emphasis": [
+    "by itself"
+   ],
+   "card": "Turns on by itself",
+   "facts": [
+    "facts.md#4"
+   ]
+  },
+  {
+   "id": "b11",
+   "type": "proof",
+   "display": "Anthropic verified it, and it already has over a million installs.",
+   "spoken": "Anthropic verified it, and it already has over a million installs.",
+   "emphasis": [
+    "million installs"
+   ],
+   "card": "1,134,112 installs",
+   "facts": [
+    "facts.md#14"
+   ]
+  },
+  {
+   "id": "b12",
+   "type": "ask",
+   "display": "Comment TELLS and I'll send you the full checklist before your next identical site.",
+   "spoken": "Comment TELLS and I'll send you the full checklist before your next identical site.",
+   "emphasis": [
+    "TELLS"
+   ],
+   "card": "Comment TELLS",
+   "facts": []
+  }
+ ],
+ "ask": {
+  "keyword": "TELLS",
+  "line": "Comment TELLS and I'll send you the full checklist before your next identical site."
+ },
+ "hook2": {
+  "spoken": "Five AI looks to avoid. One is Anthropic's."
+ },
+ "notes": "warning draft: the heads-up version"
+}

@@ -1,0 +1,5 @@
+{
+ "spoken": "One command, the plugin install line on screen. Pick a scope.",
+ "display": "One command: /plugin install frontend-design@claude-plugins-official. Pick a scope.",
+ "notes": "named the command instead of spelling it"
+}

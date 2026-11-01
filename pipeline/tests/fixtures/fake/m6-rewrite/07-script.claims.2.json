@@ -1,0 +1,97 @@
+{
+ "claims": [
+  {
+   "beat": "b3",
+   "claim": "the SaaS card kit: identical rounded cards and the same rgba(0,0,0,.1) shadow are a tell",
+   "status": "supported",
+   "facts": [
+    6
+   ],
+   "note": "claim 6, trait 4 of the calibration list"
+  },
+  {
+   "beat": "b4",
+   "claim": "Anthropic blames distributional convergence for models landing on the same page",
+   "status": "supported",
+   "facts": [
+    13
+   ],
+   "note": "claim 13, the November 2025 article"
+  },
+  {
+   "beat": "b5",
+   "claim": "the frontend-design skill lists the tells by name",
+   "status": "supported",
+   "facts": [
+    5,
+    6,
+    7
+   ],
+   "note": "claims 5 to 7"
+  },
+  {
+   "beat": "b6",
+   "claim": "the skill lists Anthropic's own terracotta #D97757 on cream as an AI look",
+   "status": "supported",
+   "facts": [
+    5
+   ],
+   "note": "claim 5"
+  },
+  {
+   "beat": "b7",
+   "claim": "all-caps labels, an arrow on button text and 01 / 02 / 03 markers on non-sequences are tells",
+   "status": "supported",
+   "facts": [
+    7
+   ],
+   "note": "claim 7"
+  },
+  {
+   "beat": "b8",
+   "claim": "the skill makes Claude plan 4 to 6 colors, review the plan, then code",
+   "status": "supported",
+   "facts": [
+    9
+   ],
+   "note": "claim 9"
+  },
+  {
+   "beat": "b9",
+   "claim": "the install command is /plugin install frontend-design@claude-plugins-official",
+   "status": "supported",
+   "facts": [
+    2
+   ],
+   "note": "claim 2"
+  },
+  {
+   "beat": "b10",
+   "claim": "after a scope is picked the skill activates automatically for frontend work",
+   "status": "supported",
+   "facts": [
+    4
+   ],
+   "note": "claim 4 and the pitfall about the scope prompt"
+  },
+  {
+   "beat": "b11",
+   "claim": "Anthropic verified, over a million installs",
+   "status": "supported",
+   "facts": [
+    14
+   ],
+   "note": "claim 14: 1,134,112 installs on 2026-11-01"
+  },
+  {
+   "beat": "b11",
+   "claim": "the skill has over a million installs",
+   "status": "overstated",
+   "facts": [
+    14
+   ],
+   "note": "facts.md#14 gives 1,134,112 installs on the Claude marketplace page as of 2026-11-01; say 'over a million installs as of November 2026'"
+  }
+ ],
+ "summary": "one statement says more than the facts back"
+}

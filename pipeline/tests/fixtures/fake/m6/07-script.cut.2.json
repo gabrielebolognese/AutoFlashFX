@@ -1,0 +1,78 @@
+{
+ "beats": [
+  {
+   "id": "b1",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "card": "IDENTICAL CARDS LOOK AI"
+  },
+  {
+   "id": "b2",
+   "display": "If you build landing pages with Claude Code, clients see it too.",
+   "spoken": "If you build landing pages with Claude Code, clients see it too.",
+   "card": "Clients see it"
+  },
+  {
+   "id": "b3",
+   "display": "That SaaS card kit. Same corners, same rgba(0,0,0,.1) shadow.",
+   "spoken": "That SaaS card kit. Same corners, same soft grey shadow.",
+   "card": "rgba(0,0,0,.1)"
+  },
+  {
+   "id": "b4",
+   "display": "Anthropic's article blames distributional convergence: every model drifts to the same page.",
+   "spoken": "Anthropic's article blames distributional convergence: every model drifts to the same page.",
+   "card": "distributional convergence"
+  },
+  {
+   "id": "b5",
+   "display": "Here's the warning. Their frontend-design skill lists these as tells.",
+   "spoken": "Here's the warning. Their frontend design skill lists these as tells.",
+   "card": "frontend-design skill"
+  },
+  {
+   "id": "b6",
+   "display": "Even Anthropic's terracotta, #D97757, on cream counts as a tell.",
+   "spoken": "Even Anthropic's own terracotta on cream counts as a tell.",
+   "card": "#D97757 is a tell"
+  },
+  {
+   "id": "b7",
+   "display": "All-caps labels. Arrows on buttons. 01 02 03 for show.",
+   "spoken": "All caps labels. Arrows on buttons. Numbered steps for show.",
+   "card": "01 / 02 / 03"
+  },
+  {
+   "id": "b8",
+   "display": "Install it and Claude plans 4 to 6 colours, reviews, then codes.",
+   "spoken": "Install it and Claude plans four to six colours, reviews, then codes.",
+   "card": "PLAN, REVIEW, CODE"
+  },
+  {
+   "id": "b9",
+   "display": "The command: /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "The command, slash plugin install frontend design at claude plugins official.",
+   "card": "/plugin install frontend-design@claude-plugins-official"
+  },
+  {
+   "id": "b10",
+   "display": "Pick a scope. It's on by itself after that.",
+   "spoken": "Pick a scope. It's on by itself after that.",
+   "card": "Turns on by itself"
+  },
+  {
+   "id": "b11",
+   "display": "Anthropic verified it. Over a million installs.",
+   "spoken": "Anthropic verified it. Over a million installs.",
+   "card": "1,134,112 installs"
+  },
+  {
+   "id": "b12",
+   "display": "Comment TELLS and I'll send the checklist before your next identical site.",
+   "spoken": "Comment TELLS and I'll send the checklist before your next identical site.",
+   "card": "Comment TELLS"
+  }
+ ],
+ "ask_line": "Comment TELLS and I'll send the checklist before your next identical site.",
+ "notes": "cut filler, kept every value"
+}

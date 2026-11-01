@@ -1,0 +1,18 @@
+{
+ "order": [
+  "b",
+  "a"
+ ],
+ "texts": {
+  "1": "[hook] Why your Claude Code cards all look identical.\n[stake] Send clients the preview link and they'll know Claude Code built it.\n[comparison] Same rounded cards. Same rgba(0,0,0,.1) shadow. One radius.\n[comparison] Headlines: one accented word, all-caps labels, an arrow on buttons.\n[proof] Anthropic flags them all in SKILL.md, updated September 2026.\n[comparison] It also warns against cream with terracotta, #D97757, Anthropic's own accent.\n[mechanism] Unguided, models converge. Anthropic calls it distributional convergence.\n[mechanism] It makes Claude plan first, review for anything generic, then code.\n[step] Fix it. Run /plugin install frontend-design@claude-plugins-official.\n[payoff] Pick a scope, and it runs by itself on every frontend request.\n[ask] Comment TELLS now. I'll send the checklist before another identical launch.",
+  "2": "[hook] Why your Claude Code cards all look identical.\n[stake] You ship Claude Code client sites. Clients spot it instantly.\n[comparison] Anthropic's SKILL.md names it: rounded cards, one radius, same rgba(0,0,0,.1) shadow.\n[mechanism] It's not your fault. Anthropic calls it distributional convergence.\n[comparison] Even Anthropic's #D97757 terracotta on cream is flagged as an AI look.\n[number] One accented headline word. All-caps labels. Fake 01, 02, 03.\n[mechanism] With it on, Claude plans 4 to 6 hex colors, reviews, then codes.\n[proof] Anthropic verified. 1,134,112 installs as of November 2026.\n[step] Type /plugin install frontend-design@claude-plugins-official. Pick a scope.\n[payoff] Then it turns on by itself when you ask for frontend work.\n[ask] Comment TELLS below. I'll send the checklist. Ditch identical cards."
+ },
+ "checks": {
+  "1": "about 35.1 s, 110 words, detect.py 70.6; failing checks: facts: b10: the claim 'It runs by itself on every frontend request' says more than facts.md backs | detect: detect.py scores 71 (needs 70 overall and 55 on every check): BURSTINESS 54 (variation 0.4",
+  "2": "about 36.3 s, 114 words, detect.py 79.9; failing checks: beats: b3 runs 4.3 s (14 words); no beat may run over 4 s: split it or cut it to 13 words"
+ },
+ "tones": {
+  "1": "warning",
+  "2": "insider"
+ }
+}
