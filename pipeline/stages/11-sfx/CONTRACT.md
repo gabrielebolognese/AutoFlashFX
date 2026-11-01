@@ -30,6 +30,16 @@ Assign cue types to events.json with the deterministic rules of BUILD_SPEC.md S1
 ## Model and session
 No model. Script pipeline/bin/mix-sfx.
 
+## The sfx map (M8)
+styles/sfx/sfx-map.json is built by `bash pipeline/bin/build-sfx-map` (pipeline/lib/sfx/, BUILD_SPEC.md 2.6): run it
+at the start of this stage, like 05-hooks runs index-hooks; it is a no-op when styles/sfx/ and overrides.txt are
+unchanged (no measuring, no model call) and exits 1 when its one indexer call fails (a code error for this stage).
+Pick from `pools[<cue type>]` (best fit first, pinned files first of all, at most 8): each entry has `path`
+(relative to styles/sfx/), `cache` (the normalized 48 kHz 16-bit copy under styles/sfx/.cache/, peak at -12 dBFS,
+same timeline as the original), `gain_db` (already applied in the cache copy), `onset_s` and `peak_s` (place a
+whoosh by `peak_s`, everything else by `onset_s`), `end_s`, `effective_s`, `pad_start_s` and `pad_end_s`. A pool can
+be empty or short (`short_pools`); a missing or empty map means voice only plus a NEEDS REVIEW flag.
+
 ## dummy.sh
 `bash pipeline/stages/11-sfx/dummy.sh <run_dir>` writes fake outputs that validate against schema.json, sleeps
 REELS_DUMMY_SECONDS (default 1) and honors the planted REELS_DUMMY_FAIL, REELS_DUMMY_DROP, REELS_DUMMY_BLOCK,

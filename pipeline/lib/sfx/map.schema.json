@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/styles/sfx/sfx-map.json",
+  "title": "styles/sfx/sfx-map.json: the sound effects memory map (BUILD_SPEC.md 2.6, M8)",
+  "type": "object",
+  "required": ["version", "built", "source", "folder_sha1", "overrides_sha1", "settings_sha1", "settings", "cue_types",
+               "counts", "short_pools", "pools", "waiting", "excluded", "overrides", "files"],
+  "properties": {
+    "version": {"type": "integer"},
+    "built": {"type": "string"},
+    "source": {"type": "string"},
+    "folder_sha1": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "model": {"type": "string"},
+    "counts": {
+      "type": "object",
+      "required": ["files", "mapped", "excluded", "waiting", "by_cue_type"],
+      "properties": {
+        "files": {"type": "integer"}, "mapped": {"type": "integer"}, "excluded": {"type": "integer"},
+        "waiting": {"type": "integer"}, "by_cue_type": {"type": "object"}
+      }
+    },
+    "short_pools": {"type": "array", "items": {"type": "string"}},
+    "pools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "required": ["id", "path", "cache", "gain_db", "onset_s", "peak_s", "end_s", "fit", "pinned"],
+          "properties": {
+            "id": {"type": "string", "pattern": "^[0-9a-f]{10}$"},
+            "path": {"type": "string"},
+            "cache": {"type": "string"},
+            "gain_db": {"type": "number"},
+            "onset_s": {"type": "number"},
+            "peak_s": {"type": "number"},
+            "end_s": {"type": "number"},
+            "fit": {"type": "number", "minimum": 0, "maximum": 1},
+            "pinned": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "waiting": {"type": "array", "items": {"type": "object", "required": ["id", "path", "cue_types", "confidence"]}},
+    "excluded": {
+      "type": "array",
+      "items": {"type": "object", "required": ["id", "path", "reason"], "properties": {"reason": {"type": "string", "minLength": 1}}}
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "folder", "name", "ext", "size", "mtime", "measure_version", "decode_error", "cache",
+                     "tags", "candidates", "excluded", "waiting", "banned", "pinned", "pooled"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[0-9a-f]{10}$"},
+          "path": {"type": "string", "minLength": 1},
+          "decode_error": {"type": ["string", "null"]},
+          "cache": {"type": ["string", "null"]},
+          "excluded": {"type": ["string", "null"]},
+          "waiting": {"type": "boolean"},
+          "banned": {"type": "boolean"},
+          "pinned": {"type": "array", "items": {"type": "string"}},
+          "pooled": {"type": "array", "items": {"type": "string"}},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "candidates": {"type": "object"}
+        }
+      }
+    }
+  }
+}

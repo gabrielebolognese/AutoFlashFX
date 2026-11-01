@@ -51,7 +51,24 @@
     "min_db_under_voice": 8,
     "attention_interval_s": [8, 12],
     "slow_transition_ms": 400,
-    "sync_tolerance_ms": 33
+    "sync_tolerance_ms": 33,
+    "build": {
+      "pool_size": [5, 8],
+      "min_pool": 3,
+      "min_confidence": 0.6,
+      "min_fit": 0.25,
+      "preview_gap_s": 1.0,
+      "whoosh": {"fast_max_s": 0.35, "fast_sharp_max_s": 0.6, "sharp_attack_s": 0.08,
+                 "slow_min_s": 0.8, "swell_attack_s": 0.2, "long_min_s": 1.5},
+      "quality": {"clip_runs": 10, "min_snr_db": 30, "min_snr_duration_s": 0.5,
+                  "too_long_factor": 2, "max_effective_s": 5, "silent_dbfs": -60},
+      "cue_windows": {
+        "transition_slow": [0.4, 2.5], "transition_fast": [0.08, 0.8], "attention": [0.08, 0.7],
+        "hero_enter": [0.03, 0.7], "ui_click": [0.01, 0.4], "stamp": [0.05, 1.0], "number": [0.01, 0.35],
+        "success": [0.1, 1.8], "typing": [0.4, 30], "negative": [0.08, 1.8], "hook_hit": [0.2, 2.5],
+        "notification": [0.15, 2.5]
+      }
+    }
   },
 
   "lengths": {
@@ -216,6 +233,7 @@
       {"check": "python_module", "name": "jsonschema", "fix": "bash pipeline/bin/setup-python"},
       {"check": "python_module", "name": "playwright", "level": "warn", "fix": "bash pipeline/bin/setup-python (installs playwright and its Chromium; without it the research stage takes no screenshots)"},
       {"check": "voice", "fix": "write library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"},
+      {"check": "file", "path": "styles/sfx/sfx-map.json", "level": "warn", "fix": "bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW)"},
       {"check": "file", "path": "styles/paper-cards/style.md", "fix": "restore it: git checkout -- styles/paper-cards/style.md"},
       {"check": "file", "path": "styles/paper-cards/tweaks.md", "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"},
       {"check": "file", "path": "styles/paper-cards/vocabulary.md", "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"},

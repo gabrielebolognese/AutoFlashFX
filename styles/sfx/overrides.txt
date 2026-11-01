@@ -1,0 +1,17 @@
+# styles/sfx/overrides.txt: your word on the sound effects map (BUILD_SPEC.md 2.6).
+# pipeline/bin/build-sfx-map reads this file at every rebuild and never rewrites it. Paths are relative to
+# styles/sfx/ with forward slashes, exactly as sfx-map.json and SFX-MAP.md print them (a bare file name works when
+# it is unique in the pack). Lines starting with # are comments.
+#
+#   ban: <path>                   never use this file, for any cue type
+#   pin: <cue type>: <path>       put this file first in that cue type's pool; this also approves a file the model
+#                                 was unsure about (the "waiting" list of SFX-MAP.md) and overrides its duration window
+#
+# Cue types: transition_slow transition_fast attention hero_enter ui_click stamp number success typing negative
+# hook_hit notification.
+# Listen first: styles/sfx/previews/<cue type>.wav plays that pool 1 second apart, in the order listed in
+# styles/sfx/previews/<cue type>.txt. After editing this file run: bash pipeline/bin/build-sfx-map
+#
+# Examples (remove the leading # to activate):
+# ban: Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3
+# pin: hook_hit: Vine Boom.mp3

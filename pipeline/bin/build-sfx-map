@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+# build-sfx-map: build the sound effects memory map of styles/sfx/ (BUILD_SPEC.md 2.6). Run it by hand after
+# adding sounds; the sound stage (S11, M11) runs it before picking sounds; it is fast when nothing changed.
+#
+#   bash pipeline/bin/build-sfx-map [--force] [--reclassify] [--no-model] [--quiet] [--check] [--dir DIR]
+#
+#   --force        measure every file again (the map's cached measurements are dropped)
+#   --reclassify   ask the indexer model again about every unclear file (cached answers are dropped)
+#   --no-model     never call the model: unclear files stay "not classified yet" until a run with the model
+#   --check        only report whether the map is current (exit 0) or needs a rebuild (exit 1)
+#   --dir DIR      another pack folder (tests); the map, SFX-MAP.md, overrides.txt, previews/ and .cache/ go there
+#
+# Steps (pipeline/lib/sfx/sfxmap.py): plan (folder hash, overrides hash, settings hash: nothing changed means no
+# work and no model call), measure (ffmpeg plus numpy on the new and changed files only; the normalized 48 kHz
+# copies under .cache/), classify-plan (rules first; the unclear files go to one batched indexer call, their
+# cached answers are reused), build (overrides.txt, the quality filter, the pools, sfx-map.json, SFX-MAP.md, the
+# previews). The call's files go to logs/build-sfx-map/calls/.
+# Exit 0 (up to date or rebuilt), 1 when the model call failed (a code error for the calling stage), 2 when the
+# pack folder is missing or a step failed.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/log.sh"
+source "$LIB/config.sh"
+source "$LIB/state.sh"
+source "$LIB/status.sh"
+source "$LIB/ai.sh"
+
+force=0; reclassify=0; no_model=0; quiet=0; check=0; dir=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --force) force=1 ;;
+    --reclassify) reclassify=1 ;;
+    --no-model) no_model=1 ;;
+    --quiet) quiet=1 ;;
+    --check) check=1 ;;
+    --dir) dir="${2:-}"; shift ;;
+    -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "build-sfx-map: unknown option $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+note() { [ "$quiet" = 1 ] || printf '%s\n' "$*"; }
+
+SFX_PY="$LIB/sfx/sfxmap.py"
+if [ -n "$dir" ]; then
+  [ -d "$dir" ] || { echo "build-sfx-map: the pack folder $dir is missing" >&2; exit 2; }
+  PACK="$(reels_mixed "$(cd "$dir" && pwd)")"
+  MAP="$PACK/sfx-map.json"
+else
+  PACK="$REELS_REPO/$(cfg paths.sfx_dir styles/sfx)"
+  MAP="$REELS_REPO/$(cfg sfx.map styles/sfx/sfx-map.json)"
+fi
+[ -d "$PACK" ] || { echo "build-sfx-map: the sound pack folder $PACK is missing (BUILD_SPEC.md 2.6: styles/sfx/ with the sound files)" >&2; exit 2; }
+WORK="$REELS_LOGS/build-sfx-map"
+mkdir -p "$WORK"
+PROMPTS="$REELS_PIPELINE/stages/_prompts"
+label="$(basename "$PACK")"; case "$PACK" in */styles/sfx) label="styles/sfx" ;; esac
+
+if [ "$check" = 1 ]; then
+  "$REELS_PY" "$SFX_PY" check --dir "$PACK" --map "$MAP" --config "$REELS_CONFIG"
+  exit $?
+fi
+
+plan_args=()
+[ "$force" = 1 ] && plan_args+=(--force)
+[ "$reclassify" = 1 ] && plan_args+=(--reclassify)
+plan="$("$REELS_PY" "$SFX_PY" plan --dir "$PACK" --map "$MAP" --config "$REELS_CONFIG" "${plan_args[@]}")" || { echo "build-sfx-map: the plan step failed" >&2; exit 2; }
+unchanged=""; reason=""; n_files=""; pending=""
+eval "$(json_eval "$plan" unchanged=unchanged reason=reason n_files=n_files pending=pending_model)"
+if [ "$unchanged" = true ] && { [ "${pending:-0}" = 0 ] || [ "$no_model" = 1 ]; }; then
+  note "sfx map up to date ($n_files audio files, no change in $label/, no model call)"
+  exit 0
+fi
+note "building the sfx map of $label/: $reason"
+
+measure_args=()
+[ "$force" = 1 ] && measure_args+=(--force)
+[ "$reclassify" = 1 ] && measure_args+=(--reclassify)
+if [ "$quiet" = 1 ]; then
+  "$REELS_PY" "$SFX_PY" measure --dir "$PACK" --map "$MAP" --config "$REELS_CONFIG" --work "$WORK" "${measure_args[@]}" >/dev/null || { echo "build-sfx-map: the measure step failed" >&2; exit 2; }
+else
+  "$REELS_PY" "$SFX_PY" measure --dir "$PACK" --map "$MAP" --config "$REELS_CONFIG" --work "$WORK" "${measure_args[@]}" || { echo "build-sfx-map: the measure step failed" >&2; exit 2; }
+fi
+
+classify_args=()
+[ "$reclassify" = 1 ] && classify_args+=(--reclassify)
+prompt="$WORK/prompt-classify.md"
+res="$("$REELS_PY" "$SFX_PY" classify-plan --work "$WORK" --config "$REELS_CONFIG" --template "$PROMPTS/classify-sfx.md" --out "$prompt" "${classify_args[@]}")" \
+  || { echo "build-sfx-map: the classify step failed" >&2; exit 2; }
+n_unclear=""; ids="[]"
+eval "$(json_eval "$res" n_unclear=n_unclear)"
+ids="$(json_field "$res" ids '[]')"
+answers=(); calls=0
+if [ "${n_unclear:-0}" -gt 0 ] && [ "$no_model" = 0 ]; then
+  pending_ids="$ids"; round=1
+  while :; do
+    n_pending="$("$REELS_PY" -c 'import json, sys; print(len(json.loads(sys.argv[1])))' "$pending_ids")"
+    note "classifying $n_pending unclear sound file(s) by name and measurements with the indexer model ($(cfg models.indexer.model haiku))$([ "$round" -gt 1 ] && printf ', call %s' "$round")..."
+    if ! ai indexer "$WORK" "$prompt" --schema "$PROMPTS/classify-sfx.schema.json" --tools "" \
+        --timeout "$(cfg timeouts.index_seconds 600)" --name "classify$([ "$round" -gt 1 ] && printf -- '-%s' "$round")" --activity "$(get_activity)"; then
+      echo "build-sfx-map: the indexer call failed (${AI_CLASS:-error}): ${AI_ERROR:-no detail}" >&2
+      exit 1
+    fi
+    calls=$((calls + 1))
+    answers+=(--answer "$AI_OUT")
+    # the ids the model skipped (a long list can lose a few) are asked once more; the rest wait for the next run
+    pending_ids="$("$REELS_PY" -c 'import json, sys
+sys.stdout.reconfigure(newline="\n")
+done = {str(f.get("id")) for f in json.load(open(sys.argv[2], encoding="utf-8-sig")).get("files", []) if isinstance(f, dict)}
+print(json.dumps([i for i in json.loads(sys.argv[1]) if i not in done]))' "$pending_ids" "$AI_OUT")"
+    n_missing="$("$REELS_PY" -c 'import json, sys; print(len(json.loads(sys.argv[1])))' "$pending_ids")"
+    [ "$n_missing" -gt 0 ] || break
+    if [ "$round" -ge 2 ]; then
+      note "WARN: $n_missing file(s) stayed unclassified after 2 calls; they are asked again at the next run"
+      break
+    fi
+    round=2
+    only="$("$REELS_PY" -c 'import json, sys; print(",".join(json.loads(sys.argv[1])))' "$pending_ids")"
+    prompt="$WORK/prompt-classify-2.md"
+    "$REELS_PY" "$SFX_PY" classify-plan --work "$WORK" --config "$REELS_CONFIG" --template "$PROMPTS/classify-sfx.md" --out "$prompt" --only "$only" >/dev/null \
+      || { echo "build-sfx-map: the classify step failed" >&2; exit 2; }
+  done
+elif [ "${n_unclear:-0}" -gt 0 ]; then
+  note "WARN: $n_unclear unclear file(s) left unclassified (--no-model); they wait for the next run with the model"
+fi
+
+build_args=(--dir "$PACK" --map "$MAP" --config "$REELS_CONFIG" --work "$WORK" --model "$(cfg models.indexer.model haiku)" --calls "$calls")
+[ ${#answers[@]} -gt 0 ] && build_args+=("${answers[@]}")
+res="$("$REELS_PY" "$SFX_PY" build "${build_args[@]}")" || { echo "build-sfx-map: the build step failed" >&2; exit 2; }
+files=""; mapped=""; excluded=""; waiting=""; unclassified=""; short=""; unknown=""; created=""
+eval "$(json_eval "$res" files=files mapped=mapped excluded=excluded waiting=waiting unclassified=unclassified unknown=unknown_overrides created=overrides_created)"
+short="$(json_field "$res" short_pools '[]')"
+note "sfx map rebuilt: $files audio files, $mapped mapped, $excluded excluded, $waiting waiting for approval, $unclassified not classified yet -> $label/sfx-map.json, SFX-MAP.md, previews/"
+[ "$created" = true ] && note "created $label/overrides.txt (ban: path, pin: cue type: path)"
+if [ "$short" != "[]" ]; then
+  note "WARN: short pools (fewer than $(cfg sfx.build.min_pool 3) sounds): $(printf '%s' "$short" | tr -d '[]"' | tr ',' ' ')"
+fi
+[ "${unknown:-0}" != 0 ] && note "WARN: $unknown line(s) of overrides.txt not understood or unmatched (see SFX-MAP.md)"
+exit 0
