@@ -1,0 +1,2 @@
+# hooks.suggested.txt: new hook shapes the pipeline noticed (BUILD_SPEC.md 2.2).
+# One per line, like hooks.txt. Move the ones you like into hooks.txt yourself; the runner never reads this file.

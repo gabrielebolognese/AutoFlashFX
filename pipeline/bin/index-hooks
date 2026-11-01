@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# index-hooks: rebuild the hooks index (BUILD_SPEC.md 2.2). Runs before every hooks stage (05-hooks/run.sh calls
+# it) and can be run by hand.
+#
+#   bash pipeline/bin/index-hooks [--force] [--quiet]
+#
+# Reads library/hooks.txt (under the state root, never edited) and keeps:
+#   library/.hooks.index.json   one entry per hook line: id (first 10 hex of sha1 of the normalized text), family
+#                               (tools-listicle, how-to-system, mistake-warning, myth-contrarian, story-confession,
+#                               transformation), fits_problem_solution, blanks, the model's issue note
+#   library/hooks.lint.txt      broken blanks, grammar problems, duplicates, em dashes (for the user; never read)
+#   library/.hooks.stats.json   created empty when missing (the judge stage updates it)
+#   library/hooks.suggested.txt created empty when missing (new hook shapes noticed during research)
+# The family and the fit come from one batched call to the indexer model (config models.indexer), through ai(),
+# for the hooks not classified yet (new ids). When the file's hash is unchanged and every hook is classified,
+# nothing is called and nothing is rewritten. Ids survive adding and deleting other lines, so a line that moved
+# keeps its classification and its stats. The call's files go to logs/index-hooks/calls/.
+# Exit 0 (up to date or rebuilt), 1 when the model call failed (a code error for the calling stage), 2 when
+# library/hooks.txt is missing.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/log.sh"
+source "$LIB/config.sh"
+source "$LIB/state.sh"
+source "$LIB/status.sh"
+source "$LIB/ai.sh"
+
+force=0; quiet=0
+for a in "$@"; do
+  case "$a" in
+    --force) force=1 ;;
+    --quiet) quiet=1 ;;
+    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+    *) echo "index-hooks: unknown option $a" >&2; exit 1 ;;
+  esac
+done
+note() { [ "$quiet" = 1 ] || printf '%s\n' "$*"; }
+
+HOOKS_FILE="$REELS_ROOT/$(cfg paths.hooks library/hooks.txt)"
+LIB_DIR="$REELS_ROOT/$(cfg paths.library library)"
+INDEX="$LIB_DIR/.hooks.index.json"
+LINT="$LIB_DIR/hooks.lint.txt"
+STATS="$LIB_DIR/.hooks.stats.json"
+SUGGESTED="$LIB_DIR/hooks.suggested.txt"
+WORK="$REELS_LOGS/index-hooks"
+[ -f "$HOOKS_FILE" ] || { echo "index-hooks: $HOOKS_FILE is missing (one hook per line, __ marks the blank)" >&2; exit 2; }
+mkdir -p "$WORK"
+
+plan_args=()
+[ "$force" = 1 ] && plan_args=(--force)
+plan="$("$REELS_PY" "$LIB/hooks.py" index-plan --file "$HOOKS_FILE" --index "$INDEX" "${plan_args[@]}")" || exit 2
+unchanged=""; total=""; to_classify="[]"
+eval "$(json_eval "$plan" unchanged=unchanged total=total)"
+to_classify="$(json_field "$plan" to_classify '[]')"
+n_new="$(printf '%s' "$to_classify" | "$REELS_PY" -c 'import json, sys; print(len(json.load(sys.stdin)))')"
+if [ "$unchanged" = true ]; then
+  note "hooks index up to date ($total hooks, no change in library/hooks.txt, no model call)"
+  exit 0
+fi
+
+answers=()
+if [ "$n_new" -gt 0 ]; then
+  # one batched call; the ids the model skipped (a long list can lose a few) are asked once more, the rest wait
+  # for the next run (index-plan asks again for anything still unclassified)
+  pending="$to_classify"; round=1
+  while :; do
+    prompt="$WORK/prompt-index.md"; [ "$round" -gt 1 ] && prompt="$WORK/prompt-index-$round.md"
+    hooks_text="$("$REELS_PY" -c 'import json, sys
+sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+for h in json.loads(sys.argv[1]):
+    print("- id " + h["id"] + ": " + h["text"])' "$pending")"
+    [ -n "$hooks_text" ] || { echo "index-hooks: could not list the hooks to classify" >&2; exit 2; }
+    "$REELS_PY" "$LIB/prompt.py" render "$REELS_PIPELINE/stages/_prompts/index-hooks.md" --out "$prompt" --set "HOOKS=$hooks_text" \
+      || { echo "index-hooks: cannot render the prompt" >&2; exit 1; }
+    n_pending="$("$REELS_PY" -c 'import json, sys; print(len(json.loads(sys.argv[1])))' "$pending")"
+    note "classifying $n_pending hook(s) with the indexer model ($(cfg models.indexer.model haiku))$([ "$round" -gt 1 ] && printf ', call %s' "$round")..."
+    if ! ai indexer "$WORK" "$prompt" --schema "$REELS_PIPELINE/stages/_prompts/index-hooks.schema.json" --tools "" \
+        --timeout "$(cfg timeouts.index_seconds 600)" --name "index$([ "$round" -gt 1 ] && printf -- '-%s' "$round")" --activity "$(get_activity)"; then
+      echo "index-hooks: the indexer call failed (${AI_CLASS:-error}): ${AI_ERROR:-no detail}" >&2
+      exit 1
+    fi
+    answers+=(--answer "$AI_OUT")
+    pending="$("$REELS_PY" -c 'import json, sys
+sys.stdout.reconfigure(newline="\n")
+fams = {"tools-listicle", "how-to-system", "mistake-warning", "myth-contrarian", "story-confession", "transformation"}
+done = {h.get("id") for h in json.load(open(sys.argv[2], encoding="utf-8-sig")).get("hooks", []) if isinstance(h, dict) and h.get("family") in fams}
+print(json.dumps([h for h in json.loads(sys.argv[1]) if h["id"] not in done]))' "$pending" "$AI_OUT")"
+    n_missing="$("$REELS_PY" -c 'import json, sys; print(len(json.loads(sys.argv[1])))' "$pending")"
+    [ "$n_missing" -gt 0 ] || break
+    if [ "$round" -ge 2 ]; then
+      note "WARN: $n_missing hook(s) stayed unclassified after 2 calls; they are asked again at the next run"
+      break
+    fi
+    round=2
+  done
+fi
+write_args=(--file "$HOOKS_FILE" --index "$INDEX" --lint "$LINT" --stats "$STATS" --suggested "$SUGGESTED" --model "$(cfg models.indexer.model haiku)")
+[ ${#answers[@]} -gt 0 ] && write_args+=("${answers[@]}")
+res="$("$REELS_PY" "$LIB/hooks.py" index-write "${write_args[@]}")" || { echo "index-hooks: cannot write the index" >&2; exit 2; }
+classified=""; unclassified=""; lint_n=""
+eval "$(json_eval "$res" total=total classified=classified unclassified=unclassified lint_n=lint)"
+note "hooks index rebuilt: $total hooks, $classified classified, $unclassified unclassified, $lint_n lint line(s) -> library/.hooks.index.json, library/hooks.lint.txt"
+exit 0

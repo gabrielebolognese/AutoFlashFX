@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/prompts/index-hooks",
+  "title": "index-hooks: the indexer model's batched classification of library/hooks.txt (BUILD_SPEC.md 2.2)",
+  "type": "object",
+  "required": ["hooks"],
+  "properties": {
+    "hooks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "family", "fits_problem_solution", "issue"],
+        "properties": {
+          "id": {"type": "string"},
+          "family": {"type": "string", "enum": ["tools-listicle", "how-to-system", "mistake-warning", "myth-contrarian", "story-confession", "transformation"]},
+          "fits_problem_solution": {"type": "boolean"},
+          "issue": {"type": "string"}
+        }
+      }
+    }
+  }
+}
