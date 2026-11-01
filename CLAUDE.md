@@ -5,35 +5,42 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M6 Script (S7): done (2026-11-01). Next: M7 Voiceover (S8). The build is driven by
+- M7 Voiceover (S8): done (2026-11-01). Next: M8 Sound effects memory map. The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
-  preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
-  folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh, pipeline/bin/runner-status,
-  the error system (pipeline/lib/ai.sh for every model call, limits.py and limits.sh for usage limits, errors.py
-  for the classifier, review.sh with pipeline/bin/review-cycle for the reviewer and fixer loop, the prompts in
-  pipeline/stages/_prompts/, pipeline/knowledge/known-issues.md), the tests in pipeline/tests/ (with a fake claude
-  in tests/fakes/), the real stages S1 to S7 (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle,
-  05-hooks, 06-judge, 07-script: run.sh, prompt*.md, model schemas for the model's answers, schema.json for the
-  stage's file) on the shared stage library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost or
-  when no id is stored), prompt.py, research.py, expansion.py, gate.py, hooks.py (the hooks index, lint, stats,
-  shortlist and checks), judge.py (hookscore filter, Borda, pairwise), script_checks.py (the script stage: the
-  plan, the drafts, the cut, every check, the claims merge, the pick, script.json, S8's one-line rewrite),
-  voiceprofile.py, pipeline/bin/screenshot (Playwright, headless Chromium), pipeline/bin/index-hooks
-  (library/.hooks.index.json, hooks.lint.txt, .hooks.stats.json, hooks.suggested.txt),
-  pipeline/bin/build-voice-profile (library/profile/voice.md and account.md), pipeline/bin/vendor-run and the
-  vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/ (MIT, pinned in its VERSION file;
-  beats.py, humanize.py and detect.py are also imported as modules by script_checks.py). Run every test with
-  `bash pipeline/tests/run-all.sh` (about 85 minutes; test-m3 section 4, test-m4 sections 3 and 4, test-m5
-  sections 3 and 4 and test-m6 section 3 make real model calls; `M6_SECTIONS="1 2" bash pipeline/tests/test-m6.sh`
-  is the fake-only M6 test).
-- The stages S8 to S14 (run.sh in each stage folder) arrive from M7 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S8. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=8,9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge
-  and script with dummy stages after them. The script stage (S7) writes runs/<id>/07-script/script.json: beats
-  with a display track (captions) and a spoken track (the voice), the ask, hook 2's lines, the checks, the pick;
-  `bash pipeline/stages/07-script/run.sh <run_dir> --rewrite-line <beat> --reason "<why>"` rewrites one line in
-  simpler words (S8's ladder).
+  preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
+  faster_whisper), the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py,
+  history.sh), one folder per stage under pipeline/stages/ with CONTRACT.md, schema.json and dummy.sh,
+  pipeline/bin/runner-status, the error system (pipeline/lib/ai.sh for every model call, limits.py and limits.sh
+  for usage limits, errors.py for the classifier, review.sh with pipeline/bin/review-cycle for the reviewer and
+  fixer loop, the prompts in pipeline/stages/_prompts/, pipeline/knowledge/known-issues.md), the tests in
+  pipeline/tests/ (with a fake claude and fake voice workers in tests/fakes/), the real stages S1 to S8
+  (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle, 05-hooks, 06-judge, 07-script, 08-voiceover:
+  run.sh, prompt*.md where a model is called, model schemas, schema.json for the stage's file) on the shared stage
+  library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost or when no id is stored), prompt.py,
+  research.py, expansion.py, gate.py, hooks.py (the hooks index, lint, stats, shortlist and checks), judge.py
+  (hookscore filter, Borda, pairwise), script_checks.py (the script stage: the plan, the drafts, the cut, every
+  check, the claims merge, the pick, script.json, S8's one-line rewrite), voiceover.py (the voiceover stage:
+  engine.txt, pronunciations, the word error rate, the ladder, the assembly, loudness, words.json) with the
+  workers pipeline/lib/tts/kokoro_worker.py (Kokoro through tools/voice.py, under engine.txt's interpreter) and
+  whisper_worker.py (faster-whisper, CPU int8), voiceprofile.py, pipeline/bin/screenshot (Playwright, headless
+  Chromium), pipeline/bin/index-hooks (library/.hooks.index.json, hooks.lint.txt, .hooks.stats.json,
+  hooks.suggested.txt), pipeline/bin/build-voice-profile (library/profile/voice.md and account.md),
+  pipeline/bin/setup-venv (the whisper venv or the kokoro venv when one is missing; `--check` only reports),
+  pipeline/bin/vendor-run and the vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/ (MIT,
+  pinned in its VERSION file; beats.py, humanize.py and detect.py are also imported as modules by
+  script_checks.py). Run every test with `bash pipeline/tests/run-all.sh` (about 95 minutes; test-m3 section 4,
+  test-m4 sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3 and test-m7 section 3 make real model or
+  engine calls; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` is the fake-only M7 test).
+- The stages S9a to S14 (run.sh in each stage folder) arrive from M10 on, so `bash run.sh` alone stops with
+  logs/STOPPED.md at S9a. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
+  `REELS_DUMMY=9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge,
+  script and voiceover with dummy stages after them. The voiceover stage (S8) writes runs/<id>/08-voiceover/vo.wav
+  (48 kHz mono, -14 LUFS), vo_hook2.wav, words.json (every spoken word with start and end ms and its beat; the
+  beats' windows; the breath after the hook), words_hook2.json and voiceover.json (the trail: every line's
+  attempts, transcriptions, word error rates, respellings and rewrites, the timings, the pace). The voice is
+  Kokoro af_bella from library/voice/engine.txt (the defaults of BUILD_SPEC.md 2.5 when that file is missing or
+  names another engine), never another engine or voice; config voice.wpm (176) is its measured pace.
 
 ## Folder map
 - `ideas.txt`: the idea queue (one idea per `{...}` block). `run.sh`: the video runner. `config.json`: models, engines,
@@ -100,11 +107,15 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   or parentheses. External text that the runner prints or writes (a CLI message, a tool's stderr, a model's words)
   may contain one: `say` cleans every terminal line, and anything else composed from such text goes through
   `reels_undash VAR` or `undash TEXT` (pipeline/lib/log.sh) or errors.py's `undash()` first.
-- **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech and
-  transcription run under the interpreter named in library/voice/engine.txt (the user's chatterbox venv, Python
-  3.11, which has faster-whisper too); `.venv-tts/Scripts/python.exe` is only a fallback location when it exists.
-  `bash pipeline/bin/setup-python` installs the packages (jsonschema, playwright) and Playwright's Chromium.
-  The vendored scripts run through `bash pipeline/bin/vendor-run <script.py> ...` (python -I -X utf8).
+- **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech runs
+  under the interpreter named in library/voice/engine.txt (the kokoro venv, Python 3.11; the defaults of
+  BUILD_SPEC.md 2.5 point at C:/Users/there/venvs/kokoro/Scripts/python.exe) and transcription under config
+  tts.whisper_python (the user's chatterbox venv, Python 3.11, which has faster-whisper), else the first of the
+  voice interpreter, `.venv-tts/Scripts/python.exe` and `python` that imports faster_whisper; `bash
+  pipeline/bin/setup-venv --check` reports both. `bash pipeline/bin/setup-python` installs the packages (jsonschema,
+  playwright) and Playwright's Chromium. The vendored scripts run through `bash pipeline/bin/vendor-run <script.py>
+  ...` (python -I -X utf8). A Windows Python's bare `bash` is the WSL launcher: run.sh exports REELS_BASH for
+  Python code that must call a bash script.
 - **Shell:** Git Bash. Every text file is LF (.gitattributes: `* text=auto eol=lf`); scripts use GNU date.
 - **Tool limits:** the Bash tool's command string fails above roughly 8 KB here, so write long files with the
   Write tool instead of a heredoc; the tool also collapses `\\` to `\` inside heredocs. Check line endings with

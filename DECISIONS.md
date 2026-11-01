@@ -1124,3 +1124,154 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     follows the first stage without a run.sh by itself (08-voiceover now). Bash note found in M6: in one `local a=$1
     b="x$a"` statement every word is expanded before any assignment, so `$a` is the outer value and, under set -u,
     an unbound variable; such a value gets its own line.
+
+## M7 (2026-11-01)
+
+### The voice config and the interpreters
+161. **library/voice/engine.txt is the only source of voice settings, and kokoro af_bella the only engine and
+    voice.** pipeline/lib/voiceover.py `engine` reads the file (`key = value`, comments, CRLF) and fills every
+    missing line from the block of BUILD_SPEC.md 2.5 (engine kokoro, python C:/Users/there/venvs/kokoro/Scripts/
+    python.exe, voice af_bella, lang a, speed 1.0, silence_threshold_db -40, min_pause_s 0.3, keep_pause_s 0.1,
+    breath_after_hook_s 1.0). A missing file means the whole block (the spec's "otherwise" case) and a warning at
+    preflight and in the stage log. A file that names another engine (today's file still says `engine = turbo`
+    with the chatterbox venv, written before the spec moved to Kokoro) is treated the same way: this pipeline
+    never runs chatterbox, turbo or qwen, so the kokoro defaults apply, the preflight prints the exact sentence to
+    rewrite, and a HUMAN_TODO asks for the rewrite. Neither case stops the runner (the spec's build rule: use the
+    default, keep going, ask in HUMAN_TODO); a missing or broken interpreter does (the next item). The default
+    interpreter path lives in config paths.kokoro_python (where setup-venv --kokoro would install it), because it
+    is an install location, not a voice setting. REELS_ENGINE_FILE overrides the file's path in tests.
+162. **The preflight check `voice`** (config preflight.require, pipeline/lib/preflight.sh) runs `voiceover.py
+    engine-check`: the effective interpreter exists and imports kokoro (a real `python -c "import kokoro"`, about
+    10 s because it imports torch) and one interpreter imports faster_whisper. A failure is a systemic stop with
+    the problem named ("C:/nowhere/python.exe does not exist", "... cannot import kokoro (ModuleNotFoundError)")
+    and the fix from config.json; the notes of item 161 are warnings. With REELS_TTS_WORKER or
+    REELS_WHISPER_WORKER set (the fakes) the import checks are skipped and announced.
+163. **Transcription runs in the first interpreter that imports faster_whisper**, tried in this order: env
+    REELS_WHISPER_PYTHON, config tts.whisper_python, the voice interpreter, config paths.venv_python (.venv-tts),
+    `python`. config tts.whisper_python is set to the user's chatterbox venv (C:/Users/there/venvs/chatterbox/
+    Scripts/python.exe, Python 3.11, faster-whisper 1.2.1, the "small" model cached), the interpreter M5 already
+    used; the kokoro venv has no faster-whisper and spec M7 says to install nothing when engine.txt exists.
+    `bash pipeline/bin/setup-venv` builds .venv-tts (uv, Python 3.11, faster-whisper only) when no interpreter
+    has it, and `--kokoro` builds the default kokoro venv when engine.txt is missing and that interpreter does
+    not exist; `--check` only reports. Neither install branch ran in this build (nothing was missing): they are
+    straightforward uv commands but untested, which the report says.
+164. **config tts shrank to the stage's own knobs:** device cpu, whisper_model "small" (what is cached; the
+    worker tries the configured name from the cache, then "small" from the cache, then a download), whisper_python,
+    whisper_pad_s 0.5, wer_fail_pct 3, wer_flag_max_pct 8, overrun_pct 15, overrun_min_s 0.4, lead_s 0.05, tail_s
+    0.2. The chatterbox, turbo and qwen settings, gap_ms and voice.reference are gone (spec M7); the timeouts
+    tts_seconds 1800, align_seconds 1800 and loudness_seconds 300 were added. The runner banner shows the engine
+    and voice from engine.txt ("voice: kokoro af_bella"), no fallback.
+
+### The stage
+165. **Python orchestrates, bash relays.** pipeline/stages/08-voiceover/run.sh is thin: it runs `voiceover.py run`
+    and turns its relay lines into runner actions ("@@ACTIVITY" to set_activity, also echoed as "activity: ..."
+    into stage.log, "@@SAY TAG" to say, "@@FLAG" to flag_once, "@@ERROR" to the stage_fail message), then maps
+    the exit code (0 done, 20 block with the reason from voiceover.json, else a code error). The ladder with its
+    per-line loops and batches is far easier in Python than in bash; the engine and the transcriber are
+    separate worker scripts (pipeline/lib/tts/kokoro_worker.py, whisper_worker.py) because they run in other
+    interpreters (Python 3.11 venvs) than the stage (3.13). A worker gets a job JSON, prints progress lines
+    (LINE i/n, TIGHTEN i/n, FILE i/n) that become the heartbeat's activity, and writes a result JSON; its stderr
+    (torch warnings) goes to stage.log with a prefix. A worker is killed after the config timeout
+    (tts_seconds, align_seconds) and that is a code error, like a non-zero exit.
+166. **Generation, per line, exactly as tools/voice.py does it:** the text is split into sentences
+    (voice.sentences), each sentence is one Engine.say call, the sentences are joined with min_pause_s + 0.05 s of
+    silence so every sentence boundary is a pause the tightener catches, then voice.tighten runs on the line
+    with lead 0 and tail 0 (pauses of min_pause_s or longer below silence_threshold_db cut to keep_pause_s,
+    shorter pauses kept, the edges removed). The stage inserts the exact silences when it joins the lines: 0.05
+    s lead, keep_pause_s between beats, breath_after_hook_s after the hook beat (the first beat, type hook), 0.2
+    s tail, all from the 24 kHz 16-bit line files (numpy and the wave module, no soundfile on 3.13). Every
+    attempt's line file is kept under 08-voiceover/lines/ (b9.a2.wav is the second attempt of b9).
+167. **Pronunciations:** pronunciations.txt entries are applied to the spoken track as whole words in any case
+    (the same rule as S7's), a value between slashes becoming Kokoro's inline phonemes `[word](/phonemes/)`
+    (checked in the probe: `[Claude](/klɔd/)` is read as klɔd). S7's apply_pronunciations got the same slash
+    rule and a guard against wrapping twice, so a reel's spoken track carries the markup from S7 on and S8's
+    second application is a no-op. The markup is stripped for every comparison and never reaches words.json.
+168. **The word error rate compares what the voice was told with what faster-whisper heard, after a normalizer
+    built from what the first real run showed:** lowercase, punctuation and apostrophes dropped, hyphens, slashes
+    and underscores split into words ("plug-in" and "plug -in" become "plug in"), digits written out (1,134,000
+    as words; a year as "twenty twenty six" when the line says it that way, else the cardinal), ordinals, "%"
+    and "$", a few aliases (ok, vs, etc), British spellings mapped to American and a few homophones to one
+    form (grey/gray, their/there, your/you're), inline phonemes as the word. A block where the joined letters
+    are equal on both sides counts as a match (plugin / plug in, F X / FX), and a one-to-one replacement that
+    differs only by a plural or possessive s counts as a match too (whisper hears "Anthropic's" as "Anthropic"
+    and "card" as "cards"). Everything else is an error (substitutions, deletions, insertions, standard WER over
+    the reference words). The first real run (the frozen test-idea script, 12 lines) had exactly one failing
+    line before this normalizer, b3 at 16.7 percent, both "errors" being grey/gray and Anthropic's/Anthropic;
+    with it every line is at 0 percent. The alignment of the comparison also gives the timestamps: each
+    reference word takes the time of the whisper word it matched, a joined block splits the span by letters,
+    an unheard word gets the gap between its neighbours.
+169. **The ladder, in the spec's order and never a different voice:** (1) the misheard words are respelled by
+    rule (auto_respell: camelCase split, an acronym of 2 to 5 capitals letter by letter, digits in words, dots,
+    slashes, at-signs and dashes named or dropped: FlashFX becomes Flash F X, GPT4 becomes G P T four,
+    add-idea.sh becomes add idea dot sh); a plain word has no rule and the step is skipped with a log line. The
+    respelling is applied to this reel's text only (voiceover.json keeps it); pronunciations.txt is never
+    edited. (2) One rewrite through `07-script/run.sh --rewrite-line <beat> --reason ...` (the script model, in
+    session D when it still exists), then a regeneration; exit 4 (no usable line) is logged and the line stays;
+    any other failure is a code error of S8. (3) Still over 3 percent: a NEEDS REVIEW flag at 8 percent or
+    under ("voice: line b9 is misheard by faster-whisper (WER 7.1%: scope -> xx) after no respelling rule,
+    rewritten by S7: ...; listen to vo.wav"), a block above it ("voice: line b9 cannot be said clearly by
+    af_bella (WER 14.3%: ...) after ..."). Hook 2 stops after step 1 with a flag (it has no beat to rewrite
+    and the alternate clip is secondary). Every step is one batched worker call for all the lines it touches.
+170. **The per-line estimate is spread by syllables, not words.** The 15 percent overrun check compares a beat's
+    tightened length with words / config voice.wpm as the spec says, but a line of long words ("distributional
+    convergence") runs 20 percent over that while the reel as a whole is on pace. So the estimate of a line is
+    its syllables divided by the script's own average syllables per word, at voice.wpm: the total stays words /
+    wpm and the time moves to the lines that need it (a vowel-group count with a silent-e rule, good enough for
+    timing). A beat over by more than overrun_pct and by more than overrun_min_s (0.4 s) is rewritten once
+    through S7 ("make it shorter"), regenerated (and respelled once if the new line is misheard), then flagged
+    when it still runs over. A line is rewritten at most once in a run, by whichever check comes first.
+171. **Loudness is gain plus a light limiter, re-measured.** Two-pass loudnorm alone lands at -15.1 LUFS on
+    Kokoro's voice: its peaks sit 16 dB above its loudness, the true-peak ceiling binds and loudnorm drops into
+    dynamic mode. So voiceover.loudness_normalize applies `volume=G dB, alimiter=limit=<-1.5 dBTP minus a
+    margin>:attack=3:release=100:level=0` to the 24 kHz assembly, resamples to 48 kHz mono 16-bit, measures
+    again (loudnorm's print_format=json as the meter) and repeats with the corrected gain, up to 5 passes,
+    until the integrated loudness is within 0.4 LU of -14 and the true peak at or under -1.5 dBTP (3 passes on
+    the test idea: -14.2 LUFS, -1.6 dBTP). A result outside 1 LU or over the ceiling is a flag, not a failure.
+    Hook 2 goes through the same chain on its own file.
+172. **words.json comes from the per-line transcriptions, offset by the timeline,** not from a second pass over
+    the whole file: the assembly is a pure concatenation of the tightened line files plus exact silences, and
+    the loudness chain changes gain only, so a line's timestamps plus its start in the assembly are the
+    timestamps in vo.wav (nothing is tightened after the alignment). Each entry is the spoken track's word
+    (not the respelled or phoneme form), with "heard" when whisper heard something else, its beat id and start
+    and end in ms; beats[] gives every beat's window in vo.wav, breath the silence after the hook, loudness the
+    measured values, wpm the pace measured on this reel. Every file given to whisper is padded with 0.5 s of
+    silence at both ends (a line that starts at its first sample is heard better); the pad is subtracted.
+173. **Measured on this PC (the frozen test-idea script, 11 beats plus hook 2, 118 spoken words):** Kokoro
+    imports and loads in about 12 s (torch), then synthesizes at 0.40x real time (66.7 s of raw voice in 26.6 s;
+    a 36 s reel takes about 25 s of synthesis plus the load), tightening is instant (the 12 lines went from
+    66.7 s to 41.7 s, 14 pauses shortened). faster-whisper small (int8, CPU) loads in 2 s and takes about 3 s
+    per line whatever its length (36 s for the 12 lines); the whole stage runs in about 2 minutes without a
+    rewrite. af_bella's pace after tightening is 176 words per minute counting the 0.1 s gaps between beats
+    (180 on the speech alone), against the user's own 195: config voice.wpm is now 176 (S5's spoken cap stays
+    8 words, S7's word targets drop by a tenth), and voice.md's Pace line stays the user's.
+174. **S5 and S7 now time with config voice.wpm first** (the reel voice), falling back to voice.md's Pace line
+    only when the config has no value; until M7 voice.md won. The M5 and M6 tests pin the sandbox's voice.wpm
+    to 195 (SANDBOX_WPM in pipeline/tests/lib.sh) because their frozen fixtures and asserted numbers were made
+    at that pace.
+
+### Tests, fakes, earlier milestones
+175. **The fakes mirror the workers' job contract:** pipeline/tests/fakes/kokoro_worker.py turns every word
+    into a tone burst (72 percent tone, 28 percent silence, a 0.45 s pause after a sentence end, 0.25 s of
+    leading and 0.5 s of trailing silence) sized from the estimate the job carries, then runs the real
+    tools/voice.py tighten, so the timeline, the tightening and the loudness chain are exercised for real;
+    FAKE_TTS_MODE crash and hang, FAKE_TTS_SLOW per line. pipeline/tests/fakes/whisper_worker.py "hears" the
+    text the job carries with evenly spaced timestamps, unless FAKE_WHISPER_GARBLE (id:target:attempts) replaces
+    a word by "xx" for the first n transcriptions of that line. REELS_TTS_WORKER, REELS_TTS_PYTHON,
+    REELS_WHISPER_WORKER and REELS_WHISPER_PYTHON plug them in. The sandbox of --with-pipeline tests now copies
+    tools/ (voice.py is pipeline code since M7).
+176. **test-m7.sh** has three sections: units (engine.txt, WER, respelling, pronunciations, silences, the
+    preflight's voice check), the fake paths through the runner (the happy path with the exact timeline, the
+    ladder with a respelled acronym, a rewritten word and a slow line, the flag path at 7.1 percent, the block
+    path at 14.3 percent, the crash and the hang as code errors) and the real run on the frozen script (the
+    files, loudness, words.json, the silence rule, 5 spot checks, the per-line WER, the speed and pace, the
+    length against the estimate; M7_FREEZE=1 copies the JSON outputs to the fixtures, the wavs stay untracked).
+    pipeline/tests/fixtures/fake/m7/07-script.rewrite-line.json is a 14-word rewrite so one garbled word stays
+    under 8 percent.
+177. **Earlier milestones touched by M7:** config.json (M1), the banner in status.sh and its assertions in
+    test-m1 and test-m2 (M2), preflight.sh's new check type (M1), S5's and S7's pace source (M5, M6),
+    script_checks.apply_pronunciations' slash rule and double-wrap guard (M6), tests/lib.sh (tools/ in the
+    sandbox, SANDBOX_WPM), the 08-voiceover schema, dummy and contract (M2). Windows notes found in M7: a bare
+    `bash` run from a Windows Python is System32\bash.exe (the WSL launcher, "Class not registered" without
+    WSL), so run.sh exports REELS_BASH (its own $BASH in C:/ form) and voiceover.py falls back to Git's usual
+    paths; a Windows Python cannot open /tmp/... paths (use C:/ forms in Python, /tmp only in bash); the kokoro
+    venv's python needs PYTHONUTF8=1 to print phoneme strings (the workers' environment sets it).

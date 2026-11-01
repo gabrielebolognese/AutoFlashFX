@@ -172,9 +172,51 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   pipeline/tests/fixtures/runs/test-idea/07-script/. DECISIONS.md 139 to 160. Report: build/M6/report.md.
 
 ## M7 Voiceover (S8)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m7.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has three sections: 1 and 2 run without the engine or a model (48 unit
+  checks: engine.txt, the word error rate and its normalizer, the respelling rules, pronunciations, silences, the
+  preflight's voice check; then S8 through run.sh with the fake engine and fake transcriber from the frozen M6
+  outputs: the happy path with the exact timeline, the ladder with a respelled acronym, a rewritten word and a
+  slow line, the flag path, the block path, the engine crash and the engine hang as code errors, the dummy
+  stage: 68 checks in about 6 minutes), 3 runs the real Kokoro af_bella and faster-whisper on the frozen script
+  (23 checks, the real S8 took 1 min 47 s: synthesis at 0.45x real time plus 12 s to load Kokoro, alignment 41 s, loudness 5 passes; 139 checks pass in about 12 minutes). M1, M2 (alone on a quiet machine), M3 (the fake sections and limits), M4 sections 1 and 2,
+  M5 sections 1 and 2, M6 sections 1 and 2 and the em dash scan pass with it.
+- Test command: `bash pipeline/tests/test-m7.sh` (`M7_SECTIONS="1 2"` for the fake-only sections; `M7_FREEZE=1`
+  also copies the real 08-voiceover JSON outputs into pipeline/tests/fixtures/runs/test-idea/, the wavs stay out
+  of git); `bash pipeline/tests/run-all.sh` runs M1 to M7, limits and the em dash scan (about 95 minutes).
+- Notes: pipeline/stages/08-voiceover (run.sh, CONTRACT.md, schema.json, dummy.sh) on pipeline/lib/voiceover.py
+  (engine, engine-check, run, wer, pronounce, respell, silences, energy, measure) and the workers
+  pipeline/lib/tts/kokoro_worker.py (tools/voice.py Engine, sentences and tighten under engine.txt's interpreter)
+  and whisper_worker.py (faster-whisper small, CPU int8, under config tts.whisper_python). run.sh relays the
+  Python's "@@ACTIVITY", "@@SAY", "@@FLAG" and "@@ERROR" lines to the runner and maps the exit code (0 done, 20
+  block, else a code error). The voice config: library/voice/engine.txt with the defaults of BUILD_SPEC.md 2.5 for
+  missing lines, the defaults alone when the file is missing or names another engine (today's file says turbo:
+  HUMAN_TODO), kokoro af_bella only, never a fallback; the preflight check `voice` (engine-check) stops the runner
+  when the interpreter is missing or cannot import kokoro or no interpreter imports faster_whisper. The stage:
+  pronunciations.txt first (a respelling, or `/phonemes/` as Kokoro's `[word](/phonemes/)`), one batched worker
+  call per step, every line tightened with voice.tighten (lead and tail 0) and joined with 0.05 s lead, 0.1 s
+  gaps, the 1.0 s breath after the hook beat, 0.2 s tail; every line transcribed (0.5 s padding) and compared
+  with the normalizer of DECISIONS.md 168 (split and joined words, digits, years, British spellings, possessives);
+  the ladder (respelling by rule, one rewrite through `07-script/run.sh --rewrite-line`, flag at 8 percent or
+  under, block above; hook 2 flags only); the 15 percent overrun check on a syllable-spread estimate at config
+  voice.wpm (one rewrite, then a flag); loudness by gain plus limiter re-measured to -14 LUFS and -1.5 dBTP (48
+  kHz mono 16-bit); words.json from the per-line transcriptions offset by the timeline (the spoken track's words
+  with "heard" where whisper differed, the beats' windows, the breath, the pace); voiceover.json the full trail.
+  Measured: Kokoro 0.40x real time plus 12 s to load, whisper about 3 s per line, pace 176 wpm after tightening
+  (config voice.wpm set to it; S5 and S7 now read config voice.wpm first, voice.md's Pace line is the fallback;
+  the M5 and M6 tests pin their sandbox at 195 with SANDBOX_WPM). Config: tts (device, whisper_model small,
+  whisper_python, whisper_pad_s, wer_fail_pct 3, wer_flag_max_pct 8, overrun_pct 15, overrun_min_s 0.4, lead_s,
+  tail_s; the chatterbox, turbo and qwen settings, gap_ms and voice.reference removed), voice.wpm 176, timeouts
+  tts_seconds, align_seconds, loudness_seconds, paths.kokoro_python, the preflight voice entry. Earlier
+  milestones touched: config.json (M1), preflight.sh's check type and the banner in status.sh with its assertions
+  in test-m1 and test-m2 (M1, M2), S5's and S7's pace source (M5, M6), script_checks.apply_pronunciations (M6),
+  tests/lib.sh (tools/ copied into the sandbox, SANDBOX_WPM), the 08-voiceover schema, dummy and contract (M2).
+  Fakes: pipeline/tests/fakes/kokoro_worker.py and whisper_worker.py (REELS_TTS_WORKER, REELS_TTS_PYTHON,
+  REELS_WHISPER_WORKER, REELS_WHISPER_PYTHON; FAKE_TTS_MODE, FAKE_TTS_SLOW, FAKE_WHISPER_GARBLE), the fixture
+  pipeline/tests/fixtures/fake/m7/07-script.rewrite-line.json. Not exercised: pipeline/bin/setup-venv's install
+  branches (nothing was missing). Hooks for M8 to M10: 08-voiceover/words.json (beats[].start_ms and end_ms, the
+  breath window, words[] with beat ids) and vo.wav are the timeline S9 snaps to; the frozen JSON outputs of the
+  test idea are under pipeline/tests/fixtures/runs/test-idea/08-voiceover/ (vo.wav regenerated by running the
+  stage or test-m7 section 3). DECISIONS.md 161 to 177. Report: build/M7/report.md.
 
 ## M8 Sound effects memory map
 - Status: not started
