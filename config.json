@@ -237,6 +237,7 @@
       {"check": "file", "path": "styles/paper-cards/style.md", "fix": "restore it: git checkout -- styles/paper-cards/style.md"},
       {"check": "file", "path": "styles/paper-cards/tweaks.md", "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"},
       {"check": "file", "path": "styles/paper-cards/vocabulary.md", "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"},
+      {"check": "file", "path": "styles/paper-cards/tokens.json", "level": "warn", "fix": "bash pipeline/bin/build-tokens (derives tokens.json from style.md plus tweaks.md; the visual stages need it from M10 on)"},
       {"check": "file", "path": "library/hooks.txt", "in_root": true, "fix": "restore it: git checkout -- library/hooks.txt (one hook per line, __ marks the blank)"},
       {"check": "disk", "min_free_gb": 10, "fix": "free at least 10 GB on the drive that holds the repo (renders live in runs/ and exports/)"},
       {"check": "shell", "cmd": "gh auth status", "level": "warn", "fix": "gh auth login (the research stage needs it from M4 on)"}

@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# build-tokens: derive styles/paper-cards/tokens.json from style.md plus tweaks.md (BUILD_SPEC.md 2.4) and the CSS
+# variables file motion-lib/assets/tokens.css that every library component links. A no-op when neither source
+# changed (their sha1 is kept in tokens.json). The in-force lines of tweaks.md win; PROPOSED lines are ignored
+# until the word PROPOSED is removed. The rules live in pipeline/lib/tokens.py.
+#
+#   bash pipeline/bin/build-tokens [--force] [--check] [--verify] [--quiet] [--style-dir DIR] [--out FILE] [--css FILE]
+#
+#   --force      rebuild even when the sources are unchanged
+#   --check      only report: exit 0 when tokens.json is current, 1 when a rebuild is needed
+#   --verify     only cross-check: every number and color of tokens.json appears in style.md or tweaks.md (exit 1 if not)
+#   --style-dir  another style folder (tests); --out and --css: other output paths (tests)
+# Exit 0 (current or rebuilt), 1 (--check: stale; --verify: a problem), 2 when a rule finds nothing in the sources
+# (the message names the field and the pattern: the user reworded a line of style.md or tweaks.md).
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+
+force=0; check=0; verify=0; quiet=0; style_dir=""; out=""; css=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --force) force=1 ;;
+    --check) check=1 ;;
+    --verify) verify=1 ;;
+    --quiet) quiet=1 ;;
+    --style-dir) style_dir="${2:-}"; shift ;;
+    --out) out="${2:-}"; shift ;;
+    --css) css="${2:-}"; shift ;;
+    -h|--help) sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "build-tokens: unknown option $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+[ -n "$style_dir" ] || style_dir="$REELS_REPO/$(cfg paths.style_dir styles/paper-cards)"
+[ -n "$out" ] || out="$REELS_REPO/$(cfg paths.tokens styles/paper-cards/tokens.json)"
+if [ -z "$css" ]; then
+  css="$REELS_REPO/$(cfg paths.motion_lib motion-lib)/assets/tokens.css"
+fi
+style_dir="$(reels_mixed "$style_dir")"
+fonts_dir="$REELS_REPO/$(cfg paths.motion_lib motion-lib)/assets/fonts"
+TOK="$LIB/tokens.py"
+
+if [ "$check" = 1 ]; then
+  "$REELS_PY" "$TOK" check --style-dir "$style_dir" --tokens "$out"
+  exit $?
+fi
+if [ "$verify" = 1 ]; then
+  "$REELS_PY" "$TOK" verify --style-dir "$style_dir" --tokens "$out"
+  exit $?
+fi
+args=(build --style-dir "$style_dir" --out "$out" --css "$css" --fonts-dir "$fonts_dir")
+[ "$force" = 1 ] && args+=(--force)
+res="$("$REELS_PY" "$TOK" "${args[@]}")" || { rc=$?; echo "build-tokens: failed (exit $rc)" >&2; exit $rc; }
+if [ "$quiet" != 1 ]; then
+  rebuilt="$("$REELS_PY" -c 'import json, sys; d = json.loads(sys.argv[1]); print("yes" if d.get("rebuilt") else "no")' "$res")"
+  reason="$("$REELS_PY" -c 'import json, sys; print(json.loads(sys.argv[1]).get("reason", ""))' "$res")"
+  if [ "$rebuilt" = yes ]; then
+    echo "tokens rebuilt ($reason) -> $out and $css"
+  else
+    echo "tokens up to date ($reason)"
+  fi
+fi
+exit 0

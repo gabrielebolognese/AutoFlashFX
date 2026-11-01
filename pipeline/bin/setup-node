@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# setup-node: install the Node packages the pipeline needs (hyperframes, gsap, three, pinned in package.json), check
+# that HyperFrames finds Chrome and ffmpeg, and install the HyperFrames skills for the builder sessions (M10).
+# Safe to run again.
+#   bash pipeline/bin/setup-node [--skip-skills] [--check]
+#   --check        only report (node version, the packages, hyperframes doctor), install nothing
+#   --skip-skills  do not run `npx hyperframes skills update` (it writes the skill pack under ~/.claude/skills)
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+skip_skills=0; check=0
+for a in "$@"; do
+  case "$a" in
+    --skip-skills) skip_skills=1 ;;
+    --check) check=1 ;;
+    -h|--help) sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "setup-node: unknown option $a" >&2; exit 2 ;;
+  esac
+done
+cd "$REELS_REPO" || exit 2
+if ! command -v node >/dev/null 2>&1; then
+  echo "setup-node: node is missing: install Node 22 LTS from nodejs.org" >&2; exit 1
+fi
+node_ok="$(node -e 'process.stdout.write(parseInt(process.versions.node.split(".")[0], 10) >= 22 ? "yes" : "no")')"
+if [ "$node_ok" != yes ]; then
+  echo "setup-node: node $(node --version) is too old: HyperFrames needs Node 22 or newer" >&2; exit 1
+fi
+if [ "$check" = 1 ]; then
+  echo "node $(node --version), npm $(npm --version 2>/dev/null)"
+  for p in hyperframes gsap three; do
+    v="$(node -e "try{process.stdout.write(require('./node_modules/$p/package.json').version)}catch(e){process.stdout.write('missing')}")"
+    echo "$p: $v"
+  done
+  npx hyperframes doctor --json 2>/dev/null | "$REELS_PY" -c '
+import json, sys
+raw = sys.stdin.read(); i = raw.find("{")
+d = json.loads(raw[i:]) if i >= 0 else {}
+for c in d.get("checks", []):
+    if c.get("name") in ("Chrome", "FFmpeg", "FFprobe", "Node.js", "Version"):
+        print(f"{c[\"name\"]}: {\"ok\" if c.get(\"ok\") else \"MISSING\"} ({c.get(\"detail\", \"\")})")'
+  exit 0
+fi
+if [ -f package-lock.json ]; then
+  npm ci --no-audit --no-fund || { echo "setup-node: npm ci failed" >&2; exit 1; }
+else
+  npm install --no-audit --no-fund || { echo "setup-node: npm install failed" >&2; exit 1; }
+fi
+# the vendored copies the library links (motion-lib/assets/vendor/): refreshed from node_modules so they match the pins
+mkdir -p motion-lib/assets/vendor
+cp node_modules/gsap/dist/gsap.min.js motion-lib/assets/vendor/gsap.min.js
+cp node_modules/three/build/three.min.js motion-lib/assets/vendor/three.min.js
+cp node_modules/three/LICENSE motion-lib/assets/vendor/three-LICENSE.txt
+# The render browser: `check` and `snapshot` use the system Chrome, but `render` captures with chrome-headless-shell,
+# which HyperFrames downloads into ~/.cache/hyperframes on first use (about 150 MB). Installing it here keeps the
+# first render from stalling on the download (a killed download leaves ~/.cache/hyperframes/.chrome.install.lock
+# behind; remove the lock folder and the .chrome-staging-* folder and run this again).
+if [ -d "$HOME/.cache/hyperframes/.chrome.install.lock" ] && ! pgrep -f hyperframes >/dev/null 2>&1; then
+  echo "setup-node: removing a stale browser install lock"
+  rm -rf "$HOME/.cache/hyperframes/.chrome.install.lock" "$HOME"/.cache/hyperframes/.chrome-staging-*
+fi
+npx hyperframes browser ensure || { echo "setup-node: the browser download failed (npx hyperframes browser ensure); run again with network" >&2; exit 1; }
+if [ "$skip_skills" != 1 ]; then
+  # the HyperFrames skill pack for the builder sessions (BUILD_SPEC.md S10, PLAN.md M9): /hyperframes, /hyperframes-cli ...
+  npx hyperframes skills update >/dev/null 2>&1 || echo "setup-node: WARN: the skills update failed (the builder sessions run without the HyperFrames skills until it succeeds)"
+fi
+echo "setup-node: ok (node $(node --version), hyperframes $(node -e "process.stdout.write(require('./node_modules/hyperframes/package.json').version)"))"

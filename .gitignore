@@ -14,6 +14,9 @@ venv/
 
 # Node (HyperFrames, Puppeteer)
 node_modules/
+motion-lib/.harness/
+motion-lib/renders/
+golden/*/project/renders/
 out/
 dist/
 .hyperframes/
@@ -59,3 +62,17 @@ build/limits.log
 build/*/batches/
 build/check.*
 voicetests/
+
+# The golden reel: the render and the per-run reports are rebuilt by render-golden; the project's fonts and vendor
+# files are copies of motion-lib/assets
+golden/*/golden.mp4
+golden/*/render.json
+golden/*/probe.json
+golden/*/check.json
+golden/*/project/assets/fonts/
+golden/*/project/assets/vendor/
+golden/*/project/assets/vo.wav
+golden/*/project/.hyperframes/
+golden/*/project/renders/
+golden/*/.sheet/
+motion-lib/.hyperframes/

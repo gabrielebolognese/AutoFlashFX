@@ -1,0 +1,19 @@
+{
+  "name": "instagramreels",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node packages of the instagramReels pipeline: HyperFrames (renders), GSAP and Three.js (vendored into motion-lib/assets/vendor by pipeline/bin/setup-node). Pinned; upgrade by hand (DECISIONS.md 26).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "check": "npx hyperframes check motion-lib",
+    "lint": "npx hyperframes lint motion-lib",
+    "gallery": "bash pipeline/bin/gallery",
+    "frame-match": "bash pipeline/bin/frame-match",
+    "golden": "bash pipeline/bin/render-golden"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "hyperframes": "0.8.226",
+    "three": "0.159.0"
+  }
+}
