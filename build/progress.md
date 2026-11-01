@@ -76,7 +76,10 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   Report: build/M3/report.md.
 
 ## M4 Research, expansion, gate, angle (S1 to S4)
-- Status: done (2026-11-01). The test has four sections: 1 and 2 run without a model (the units and the whole
+- Status: done (2026-11-01); review 1 fixed the same day (build/M4/fixes-1.md: the angle stage cleans the model's
+  `change` text before angle.json is written, and the research model's gh rules are the read-only forms with the
+  writing forms denied, DECISIONS.md 110 and 111; pipeline/tests/probe-gh-rules.sh probes the rules with the
+  real probe model). The test has four sections: 1 and 2 run without a model (the units and the whole
   angle loop through run.sh with the fake claude answering from fixtures, about a minute), 3 and 4 call the real
   research, expansion and gate models on the test idea and on a deliberately false idea (15 to 30 minutes).
 - Test command: `bash pipeline/tests/test-m4.sh` (`M4_SECTIONS="1 2"` for the fake-only sections;

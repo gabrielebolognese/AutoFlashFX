@@ -43,9 +43,11 @@ Hint for a better angle: {{GATE_HINT}}
   reach 2 on every failing criterion, set keeps_core_topic to false and put the different idea that would work in
   suggested_idea (one or two sentences, no braces); the idea is then dropped and the suggestion is saved for the
   account's owner.
-- You may research more with WebSearch, WebFetch, `gh ...` and `bash pipeline/bin/screenshot <url> <name>` (the
-  rules of the research stage apply: one command per Bash call, no pipes, never write files yourself, never get
-  around a site that blocks automation, at most {{MAX_ASSETS}} screenshots in total). Put every new fact you will
+- You may research more with WebSearch, WebFetch, the read-only gh forms of the research stage (`gh repo view`,
+  `gh release list`, `gh release view`, `gh api repos/...` without a method or field flag; every other gh command is
+  refused) and `bash pipeline/bin/screenshot <url> <name>` (the rules of the research stage apply: one command per
+  Bash call, no pipes, never write files yourself, never get around a site that blocks automation, at most
+  {{MAX_ASSETS}} screenshots in total). Put every new fact you will
   cite in new_claims with its URL, tier and status; they are appended to facts.md and you can point to them in
   evidence by the number they will get: the next free number is {{NEXT_CLAIM}}, then {{NEXT_CLAIM}} plus one, in
   the order you list them.

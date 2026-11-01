@@ -282,6 +282,17 @@ fake_claude_on
 mkdir -p "$SANDBOX/fixtures"
 cp "$FAKE_M4"/*.json "$SANDBOX/fixtures/"
 export FAKE_CLAUDE_FIXTURES="$SANDBOX_M/fixtures"
+# the angle fixture's "change" gets two em dashes in the sandbox copy (never in the repo file): the stage must clean
+# the model's words before they reach angle.json, angle-<n>.json, the drop reason and the next round's prompt
+python - "$SANDBOX_M/fixtures/04-angle.json" <<'EOF'
+import json, sys
+path = sys.argv[1]
+a = json.load(open(path, encoding="utf-8"))
+em = chr(0x2014)
+a["change"] = ("The share line now names the three banned defaults" + em + "so it survives without the video " + em
+               + " and the identity is narrower: freelancers who ship client landing pages.")
+json.dump(a, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+EOF
 printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
 run_once "$SANDBOX/drop.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/drop.out"; RD="$(first_run)"
@@ -322,6 +333,8 @@ assert_eq "$(json_get "$RD/01-research/research.json" counts.claims)" "8" "resea
 assert_grep "^- facts.md#8: " "$RD/02-expansion/expansion.md" "expansion.md: the new claim is cited"
 assert_grep "^\[[0-9:]+\] INFO   S4: angle round 2/2, 0 new claims" "$SANDBOX/logs/runner.log" "INFO: the second angle round added nothing new"
 assert_grep "^\[[0-9:]+\] INFO   S4: angle round 1/2, 1 new claim, expansion [0-9]+ chars: The share line now names" "$SANDBOX/logs/runner.log" "INFO: the first angle round added the new claim"
+assert_eq "$(json_get "$RD/04-angle/angle-1.json" change)" "The share line now names the three banned defaults, so it survives without the video, and the identity is narrower: freelancers who ship client landing pages." "angle-1.json: the em dashes the model wrote in \"change\" became commas before the file was written"
+no_emdash_in "angle.json, angle-1.json, angle-2.json and the second round's prompt hold no em dash" "$RD/04-angle/angle.json" "$RD/04-angle/angle-1.json" "$RD/04-angle/angle-2.json" "$RD/04-angle/prompt-angle-r2.md"
 # the model calls: S1, S2, S3, S4, S3, S4, S3; session A for the research model, a fresh session for every gate
 calls="$(fake_calls_json)"
 assert_eq "$(python -c 'import json, sys; print(",".join(c["stage"] for c in json.loads(sys.argv[1])))' "$calls")" "01-research,02-expansion,03-gate,04-angle,03-gate,04-angle,03-gate" "the fake answered the stages in order"
@@ -333,8 +346,20 @@ assert_eq "$(fake_field 3 resume)$(fake_field 5 resume)$(fake_field 7 resume)" "
 assert_eq "$(fake_field 3 model)" "$(python -c 'import json; print(json.load(open("config.json"))["models"]["gate"]["model"])')" "the gate uses the gate model from config"
 assert_eq "$(fake_field 1 model)" "$(python -c 'import json; print(json.load(open("config.json"))["models"]["research"]["model"])')" "the research uses the research model from config"
 assert_eq "$(fake_field 1 tools)" '["WebSearch,WebFetch,Read,Bash"]' "S1: the research tools"
-assert_true "S1: Bash is approved only for gh and the screenshot tool" python -c 'import json, sys
-allowed = json.loads(sys.argv[1]); sys.exit(0 if "Bash(gh *)" in allowed and "Bash(bash pipeline/bin/screenshot *)" in allowed and "Bash" not in allowed else 1)' "$(fake_field 1 allowed)"
+assert_true "S1 and S4: Bash is approved only for the read-only gh forms and the screenshot tool, never for every gh command" python -c 'import json, sys
+calls = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8") if l.strip()]
+ok = True
+for n in (1, 4, 6):
+    allowed = calls[n - 1]["allowed"]
+    ok = ok and all(r in allowed for r in ("Bash(gh repo view *)", "Bash(gh release list *)", "Bash(gh release view *)", "Bash(gh api repos/*)", "Bash(bash pipeline/bin/screenshot *)"))
+    ok = ok and "Bash" not in allowed and not any(r.startswith(("Bash(gh *", "Bash(gh:*", "Bash(gh*")) for r in allowed)
+sys.exit(0 if ok else 1)' "$FAKE_CLAUDE_LOG"
+assert_true "S1 and S4: the gh forms that write are denied (auth, gist, clone, download, the writing verbs, gh api with a method or field flag)" python -c 'import json, sys
+calls = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8") if l.strip()]
+need = {"Bash(gh auth *)", "Bash(gh gist *)", "Bash(gh repo clone *)", "Bash(gh release download *)", "Bash(gh * create *)",
+        "Bash(gh * delete *)", "Bash(gh * comment *)", "Bash(gh api* -X*)", "Bash(gh api* --method*)", "Bash(gh api* -f*)",
+        "Bash(gh api* -F*)", "Bash(gh api* --field*)", "Bash(gh api* --raw-field*)", "Bash(gh api* --input*)"}
+sys.exit(0 if all(need <= set(calls[n - 1]["disallowed"]) for n in (1, 4, 6)) else 1)' "$FAKE_CLAUDE_LOG"
 assert_eq "$(fake_field 3 tools)" '[""]' "S3: the gate has no tools"
 assert_eq "$(fake_field 2 tools)" '[""]' "S2: the expansion has no tools"
 assert_true "S1: the protected files are denied" grep -q 'Edit(ideas.txt)' <<<"$(fake_field 1 disallowed)"
@@ -455,6 +480,19 @@ assert_true "state.json: sessions.A is stored" test -n "$(state_get "$RD" sessio
 sid1="$(python -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("session_id", ""))' "$R/calls/001-research.json")"
 assert_grep "^resume: $sid1$" "$E/calls/001-expansion-1.meta" "S2 resumed S1's session (session A)"
 assert_grep "^resume: $" "$G/calls/001-gate-r1.meta" "S3 ran in a fresh session"
+# the narrowed gh rules (DECISIONS.md 111) must not refuse a read-only gh command: the CLI's result lists every
+# Bash call the permission system refused (permission_denials)
+printf '    Bash calls the permission system refused in S1: %s\n' "$(python -c 'import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8-sig"))
+print(json.dumps([str((x.get("tool_input") or {}).get("command", "")) for x in (d.get("permission_denials") or []) if x.get("tool_name") == "Bash"]))' "$R/calls/001-research.json")"
+printf '    numbers whose source is on github.com: %s\n' "$(python -c 'import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8-sig")); print(", ".join(k for k, v in d.items() if "github.com" in str(v.get("url", ""))) or "none")' "$R/numbers.json")"
+assert_true "S1: the permission rules refused no read-only gh command" python -c 'import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8-sig"))
+cmds = [str((x.get("tool_input") or {}).get("command", "")) for x in (d.get("permission_denials") or []) if x.get("tool_name") == "Bash"]
+mutating = (" -X", " --method", " -f", " -F", " --field", " --raw-field", " --input")
+bad = [c for c in cmds if c.startswith(("gh repo view", "gh release list", "gh release view", "gh api repos/")) and not any(m in c for m in mutating)]
+sys.exit(1 if bad else 0)' "$R/calls/001-research.json"
 no_emdash_in "no em dash in the stage files" "$R/facts.md" "$R/research.json" "$E/expansion.md" "$E/expansion.json" "$G/gate.json" "$SANDBOX/logs/runner.log" "$SANDBOX/logs/history.txt"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
 assert_grep "exported 1$" "$SANDBOX/logs/history.txt" "history: exported"

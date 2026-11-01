@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # run.sh for 04-angle (Angle research, S4): BUILD_SPEC.md section 5, S4. Runs only when the gate asked for it
 # (03-gate reopened this stage through reopen.txt). Session A resumed with the research tools again (config
-# research.tools and research.allowed), given the gate's verdict; the model answers with a new expansion plus what
+# research.tools, research.allowed and research.denied: the read-only gh forms and the screenshot tool, the gh
+# forms that write denied), given the gate's verdict; the model answers with a new expansion plus what
 # it changed, whether the core topic is kept and any new claims it researched (model.schema.json). New claims are
 # appended to facts.md and research.json (numbering on), the expansion is checked and composed by
 # pipeline/lib/expansion.py exactly as in S2 (with the same retry loop), angle.json (the primary output) and a
@@ -81,19 +82,16 @@ render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "@FAC
   "ROUND=$n" "CAP=$cap" "MIN=$min_chars" "MAX=$max_chars" "MAX_ASSETS=$max_assets" "NEXT_CLAIM=$next_claim" \
   "NOTE=$(stage_note_section)" || stage_fail "cannot render pipeline/stages/04-angle/prompt.md"
 
-allow_args=()
-while IFS= read -r rule; do [ -n "$rule" ] && allow_args+=(--allow "$rule"); done < <(cfg_list research.allowed)
-[ ${#allow_args[@]} -gt 0 ] || allow_args=(--allow WebSearch --allow WebFetch --allow Read --allow "Bash(gh *)" --allow "Bash(bash pipeline/bin/screenshot *)")
-
+research_call_args   # --tools, the --allow rules (read-only gh forms, the screenshot tool), the --deny rules (gh forms that write)
 try=1; ok=false; result=""; errors="[]"; added_total=0; change=""
 while :; do
   force=()
   [ "$try" -ge "$tries" ] && force=(--force)
-  session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" \
-    --tools "$(cfg research.tools 'WebSearch WebFetch Read Bash')" "${allow_args[@]}" \
+  session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
     --timeout "$(cfg timeouts.angle_seconds 2700)" --name "angle-r$n-try$try" \
     --activity "finding a better angle (round $n/$cap)" || stage_ai_failed
   change="$(json_file_field "$AI_OUT" change "")"
+  reels_undash change   # the model's words go into angle.json, the drop reason and the next round's prompt: no em dash (CLAUDE.md)
   if [ "$(json_file_field "$AI_OUT" keeps_core_topic true)" = false ]; then
     suggestion="$(json_file_field "$AI_OUT" suggested_idea "")"
     if [ -n "$suggestion" ]; then

@@ -4,8 +4,13 @@ Built in M4 (the folder, this contract, schema.json and dummy.sh date from M2). 
 
 ## Purpose
 Get the facts right as of today (not virality: the user validated the idea before writing it). Session A with the
-research model; tools WebSearch, WebFetch, Read and Bash restricted to `gh ...` and `bash pipeline/bin/screenshot`
-(config research.tools and research.allowed). The model answers with one JSON object (model.schema.json) and
+research model; tools WebSearch, WebFetch, Read and Bash restricted to the read-only gh forms the spec names
+(`gh repo view ...`, `gh release list ...`, `gh release view ...`, `gh api repos/...` without a method or field flag)
+and `bash pipeline/bin/screenshot`; the gh forms that act on the account or the disk (auth, gist, clone, download,
+the verbs that write, `gh api` with -X, --method, -f, -F, --field, --raw-field or --input) are denied by rule, so a
+prompt injected in a fetched page cannot act on the user's GitHub login (config research.tools, research.allowed
+and research.denied, applied by research_call_args in pipeline/lib/stage.sh; DECISIONS.md 111). The model answers
+with one JSON object (model.schema.json) and
 pipeline/lib/research.py writes the files below from it, so their format never depends on the model.
 
 ## Inputs
@@ -42,8 +47,9 @@ pipeline/lib/research.py writes the files below from it, so their format never d
 - primary sources first: official repo and docs, then the vendor's blog, then press, forums last
 - no getting around sites that block automated access: pipeline/bin/screenshot reports a block and saves nothing,
   and the prompt forbids workarounds
-- the model never writes files itself: it may only run gh and the screenshot tool (which writes only inside the
-  runs folder); ai() denies and guards the protected files (ideas.txt, library/, styles/, exports/)
+- the model never writes files itself: it may only run the read-only gh forms and the screenshot tool (which writes
+  only inside the runs folder); the gh forms that write are denied by rule (a deny rule wins over an allow rule in
+  every permission mode); ai() denies and guards the protected files (ideas.txt, library/, styles/, exports/)
 - no em dash in any output file (research.py cleans every text)
 - the session id of session A is stored in state.json (sessions.A) for S2, S4 and S5; when the session no longer
   exists on a later resume, session_call starts a new one seeded with facts.md, expansion.md and the latest gate

@@ -36,9 +36,13 @@ as of today, {{TODAY}}. Not virality: the account's owner validated the idea bef
 
 - WebSearch and WebFetch for the web. Bash only for these two commands, one command per Bash call, no pipes, no
   chaining with && or ;, no redirections:
-  - `gh ...` for GitHub data, for example `gh repo view owner/name --json stargazerCount,pushedAt,description,latestRelease,licenseInfo`,
-    `gh api repos/owner/name/readme -H "Accept: application/vnd.github.raw"`, `gh release list -R owner/name --limit 5`,
-    `gh api "repos/owner/name/commits?per_page=1"`.
+  - gh for GitHub data, read-only and only in these four forms: `gh repo view owner/name --json stargazerCount,pushedAt,description,latestRelease,licenseInfo`
+    (without --json it prints the README), `gh release list -R owner/name --limit 5`,
+    `gh release view -R owner/name --json tagName,publishedAt,body` and `gh api repos/owner/name/...` for the rest,
+    for example `gh api repos/owner/name/readme -H "Accept: application/vnd.github.raw"` or
+    `gh api repos/owner/name/commits?per_page=1 --jq '.[0].commit.committer.date'` (the endpoint without quotes).
+    Every other gh command is refused, and so is `gh api` with -X, --method, -f, -F, --field, --raw-field or
+    --input: you only read, never create, edit, comment, clone or download anything.
   - `bash pipeline/bin/screenshot <url> <short-name>` for a screenshot (1080 px wide, saved under
     {{ASSETS_DIR}}). It prints one JSON line: ok true with the file name, or ok false with the reason. When a site
     blocks automated access (ok false, blocked true) nothing is saved and you do not try another way around it.

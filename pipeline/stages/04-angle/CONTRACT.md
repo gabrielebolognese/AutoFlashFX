@@ -6,7 +6,8 @@ Built in M4 (the folder, this contract, schema.json and dummy.sh date from M2). 
 When the gate fails on P, S or C: research more, rewrite expansion.md with a better angle that keeps the idea's
 core topic, then the idea goes back to S3. The stage starts as "skipped" in state.json and runs only when the gate
 reopened it (03-gate/reopen.txt, applied by state.py stage-done). Session A resumed with the research tools
-(config research.tools and research.allowed) and the gate's verdict in the prompt.
+(config research.tools, research.allowed and research.denied, as in 01-research: the read-only gh forms and the
+screenshot tool pre-approved, the gh forms that write denied) and the gate's verdict in the prompt.
 
 ## Inputs
 - 03-gate/gate.json (the failing scores, the quoted evidence, the reason, the angle hint) and the earlier
@@ -42,7 +43,8 @@ reopened it (03-gate/reopen.txt, applied by state.py stage-done). Session A resu
   in capitals, NEW deliverable described, 2 to 6 pointers to verified claims, 500 to 1500 characters), asked again
   with the exact problems up to research.expansion_tries times, then written anyway with a NEEDS REVIEW flag
 - the activity text is "finding a better angle (round N/2)"
-- no em dash in any output file
+- no em dash in any output file: the model's `change` text is cleaned (reels_undash) as soon as it is read, before
+  it reaches angle.json, angle-<round>.json, the drop reason or the next round's prompt
 
 ## Exit codes
 0 done (the primary output must validate against schema.json; the runner then writes .done), 10 drop the idea

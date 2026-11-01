@@ -663,7 +663,8 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     writes, no clones) while the protected files stay denied and guarded by protect.py. Read is included so the
     model can open a screenshot it took and see that it shows the page. No --max-turns on the research call (a
     max-turns stop would come back as an error, not a result); timeouts.research_seconds (2700) bounds it, and a
-    timeout kill is a transient error with its three retries.
+    timeout kill is a transient error with its three retries. The gh rules of this item were narrowed to the
+    read-only forms, with the writing forms denied, by item 111 (M4 review 1).
 105. **The expansion and the gate run without tools** (`--tools ""`): the research is in session A's context for
     S2 and facts.md is inlined for both, so a one-turn answer is enough and nothing can be fetched or written.
     Timeouts: research_seconds and angle_seconds 2700, expansion_seconds and gate_seconds 900.
@@ -701,3 +702,52 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     Edit tool; a `/dev/null` path handed to Windows Python is not a file, so "no file" is passed as /nonexistent
     and the readers treat any OSError as an empty list; `python -m http.server` in the test serves the local pages
     the screenshot checks need (no network in section 1).
+
+### M4 review 1 fixes (2026-11-01)
+110. **The angle stage cleans the model's `change` text before anything is composed from it (M4 review 1, fix
+    1).** 04-angle/run.sh read the model's `change` field with json_file_field (json_field does not clean) and the
+    Python heredoc wrote it verbatim into angle.json and angle-<n>.json; the drop reason and the INFO line were
+    cleaned by stage_drop and say, and the next round's prompt by prompt.py, so the two JSON files were the one
+    path where a model's em dash reached a file (the rule of item 95 and CLAUDE.md; the gate and research models
+    do write them, item 107). The fix is `reels_undash change` right after the field is read, so every use (the
+    files, the drop reason, the "Earlier angle rounds" section of the next prompt) gets the cleaned text.
+    test-m4 section 2 plants two em dashes in the sandbox copy of the 04-angle fixture's change (chr(0x2014) in
+    the test, so the repo file stays clean) and asserts that angle-1.json holds the comma form and that
+    angle.json, angle-1.json, angle-2.json and prompt-angle-r2.md hold no U+2014.
+111. **The research model's gh access is read-only by rule, with the writing forms denied (M4 review 1, fix 2).**
+    Item 104's `Bash(gh *)` pre-approved every gh subcommand with the user's logged-in gh account (token scopes
+    gist, repo, workflow) for a model that reads untrusted pages through WebFetch: a prompt injected in a fetched
+    page could have published a gist or opened an issue, and an explicit allow rule skips auto mode's classifier.
+    Now config research.allowed lists only the read-only forms spec S1 names, `Bash(gh repo view *)` (the README
+    too, without --json), `Bash(gh release list *)`, `Bash(gh release view *)` and `Bash(gh api repos/*)`, plus
+    WebSearch, WebFetch, Read and the screenshot tool; the new config research.denied lists the forms that act on
+    the account or the disk: `gh auth`, `gh gist`, `gh repo clone`, `gh release download`, the verbs that write as
+    `Bash(gh * <verb> *)` (create, delete, edit, comment, merge, close, reopen, review, fork, sync, transfer, lock,
+    upload, run, rerun, cancel, set, add, archive, rename) and `gh api` with a method or a field flag as
+    `Bash(gh api* -X*)`, `--method`, `-f`, `-F`, `--field`, `--raw-field` and `--input` (the flag in any position:
+    `gh api* -X*` needs the space before the flag, so a repository named foo-Xbar is not caught, and `* create *`
+    needs the space after the verb, so `--json createdAt` is not caught). Both lists travel through
+    research_call_args (stage.sh, shared by S1 and S4, with the same lists as defaults when config lacks them) and
+    ai()'s new repeatable `--deny RULE` option (the space-separated `--disallow` cannot carry a rule with spaces,
+    item 104). Deny rules although the allow list is narrow: in auto mode a command outside the rules goes to the
+    classifier, which is a judgement, while a deny rule resolves first in every mode and applies to every
+    subcommand of a compound command (the Claude Code permissions reference: a `*` matches any text, a rule
+    matches the whole command, deny wins over allow, and `:*` is the same as a trailing ` *`, so the colon forms
+    of item 104 were dropped). Probed on 2026-11-01 with pipeline/tests/probe-gh-rules.sh (haiku, 16 commands,
+    each harmless even if executed: a missing file, a missing endpoint, a repository that does not exist). In
+    auto mode through ai(), the production path, the six read-only forms ran (`gh repo view cli/cli --json
+    stargazerCount` gave 46828 stars, `gh release list`, `gh release view`, `gh api repos/cli/cli`, `gh api
+    repos/cli/cli/commits?per_page=1` quoted and unquoted) and the ten writing forms were refused by the
+    permission system ("Permission to use Bash with command gh gist create ... has been denied": gist create,
+    api -X POST, api -f, api --method DELETE, auth status, label create, repo clone, release download, workflow
+    run, and the compound `gh repo view ... && gh gist create ...`), all listed in the result's permission_denials.
+    In manual mode with the same rules (anything outside the allow rules refused) the same ten were refused and
+    the read-only forms ran, except the quoted endpoint `gh api "repos/cli/cli/commits?per_page=1"`, which
+    `Bash(gh api repos/*)` does not match because the quote comes before repos/ (in auto mode the classifier had
+    let it through): the research prompt's example is the unquoted form and says so. Known limits, from the same
+    reference: a deny rule does not match the program by path or inside `sh -c`, so a wrapper falls to the
+    classifier; the prompt keeps forbidding every other command and the protected files stay denied and guarded
+    by protect.py. test-m4 section 2 asserts from the fake claude's log that the research call and both angle
+    calls carry the read-only allow rules and none of `Bash(gh *)`, `Bash(gh:*)` or a bare Bash, and that the deny
+    rules are passed; section 3 prints the Bash calls the real research call had refused and asserts that none of
+    them was a read-only gh form.

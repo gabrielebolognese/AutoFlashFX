@@ -22,6 +22,8 @@
 #                          "Bash(gh *)"); when --allow or --allowed is given the --tools list is not pre-approved
 #                          by itself, so a bare tool name (Bash) must be listed to be approved without rules
 #       --disallow "rules" extra --disallowedTools rules (the protected files below are always denied)
+#       --deny RULE        one more --disallowedTools rule, verbatim (repeatable; for rules with spaces such as
+#                          "Bash(gh gist *)"); a deny rule wins over every allow rule in every permission mode
 #       --add-dir DIR      extra working directory (repeatable)
 #       --cwd DIR          where the call runs (default: the repo root)
 #       --timeout S        seconds before the call is killed (default timeouts.model_call_seconds; a kill is a
@@ -148,7 +150,7 @@ ai() {
   shift 3
   local schema="" resume="" session_key="" tools="__default__" allowed="" disallow="" timeout_s="" activity=""
   local cwd="" max_turns="" protect=1 name=""
-  local -a add_dirs=() allow_extra=()
+  local -a add_dirs=() allow_extra=() deny_extra=()
   while [ $# -gt 0 ]; do
     case "$1" in
       --schema) schema="$2"; shift 2 ;;
@@ -158,6 +160,7 @@ ai() {
       --allowed) allowed="$2"; shift 2 ;;
       --allow) allow_extra+=("$2"); shift 2 ;;
       --disallow) disallow="$2"; shift 2 ;;
+      --deny) deny_extra+=("$2"); shift 2 ;;
       --add-dir) add_dirs+=("$2"); shift 2 ;;
       --timeout) timeout_s="$2"; shift 2 ;;
       --activity) activity="$2"; shift 2 ;;
@@ -195,6 +198,7 @@ ai() {
   [ ${#allow_list[@]} -gt 0 ] && allow_args=(--allowedTools "${allow_list[@]}")
   local -a deny_list; mapfile -t deny_list < <(ai_protected_rules)
   if [ -n "$disallow" ]; then local -a extra; read -r -a extra <<<"$disallow"; deny_list+=("${extra[@]}"); fi
+  [ ${#deny_extra[@]} -gt 0 ] && deny_list+=("${deny_extra[@]}")
   deny_args=(--disallowedTools "${deny_list[@]}")
   local d; for d in "${add_dirs[@]}"; do dir_args+=(--add-dir "$d"); done
   if [ -n "$schema" ]; then

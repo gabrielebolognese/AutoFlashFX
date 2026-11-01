@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # run.sh for 01-research (Research, S1): BUILD_SPEC.md section 5, S1. Session A with the research model
-# (config models.research), tools WebSearch, WebFetch, Read and Bash restricted to `gh ...` and
-# `bash pipeline/bin/screenshot ...` (config research.allowed). The model answers with one JSON object
+# (config models.research), tools WebSearch, WebFetch, Read and Bash restricted to the read-only gh forms (gh repo
+# view, gh release list, gh release view, gh api repos/...) and `bash pipeline/bin/screenshot ...`, with the gh forms
+# that write denied (config research.allowed and research.denied, research_call_args in pipeline/lib/stage.sh).
+# The model answers with one JSON object
 # (model.schema.json); pipeline/lib/research.py turns it into research.json (the primary output, schema.json),
 # facts.md, numbers.json and assets.json, merging the screenshots the model took into assets/.
 #   bash pipeline/stages/01-research/run.sh <run_dir>      (started by the runner)
@@ -39,12 +41,8 @@ render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "ACCO
   "ASSETS_DIR=$OUT/assets" "MAX_ASSETS=$max_assets" "NOTE=$(stage_note_section)" \
   || stage_fail "cannot render pipeline/stages/01-research/prompt.md"
 
-allow_args=()
-while IFS= read -r rule; do [ -n "$rule" ] && allow_args+=(--allow "$rule"); done < <(cfg_list research.allowed)
-[ ${#allow_args[@]} -gt 0 ] || allow_args=(--allow WebSearch --allow WebFetch --allow Read --allow "Bash(gh *)" --allow "Bash(bash pipeline/bin/screenshot *)")
-
-session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" \
-  --tools "$(cfg research.tools 'WebSearch WebFetch Read Bash')" "${allow_args[@]}" \
+research_call_args   # --tools, the --allow rules (read-only gh forms, the screenshot tool), the --deny rules (gh forms that write)
+session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
   --timeout "$(cfg timeouts.research_seconds 2700)" --name research --activity "researching facts" \
   || stage_ai_failed
 

@@ -21,6 +21,11 @@
 #                                                    @KEY=path inlines a file; a missing placeholder is an error
 #   stage_note_section                               the restart note as a prompt section (empty when there is none)
 #   cfg_list <key>                                   a config list, one item per line (for --allow rules)
+#   research_call_args                               fill RESEARCH_CALL_ARGS with the research model's tool options for
+#                                                    ai(): --tools (config research.tools), one --allow per rule of
+#                                                    research.allowed (the read-only gh forms, the screenshot tool) and
+#                                                    one --deny per rule of research.denied (the gh forms that write);
+#                                                    the defaults below apply when a key is missing or empty
 #   count_glob <pattern>                             how many files match the glob
 #   json_file_field <file> <key> [default]           json_field over a file's content
 #
@@ -134,6 +139,35 @@ except ValueError:
     items = []
 for item in items if isinstance(items, list) else []:
     print(item)'
+}
+
+# The research model's tools (S1 and S4; BUILD_SPEC.md S1, DECISIONS.md 104 and 111). Pre-approved: the web tools,
+# Read, the read-only gh forms the spec names (repo view, README, releases, stars, last commit) and the screenshot
+# tool. Denied, because the model reads untrusted pages with the user's gh login: the gh forms that act on the
+# account or the disk (auth, gist, clone, download, the verbs that write, gh api with a method or a field flag,
+# which turns a read into a mutation). A deny rule wins over an allow rule in every permission mode and applies to
+# every subcommand of a compound command; a `*` matches any text, "gh api* -X*" covers the flag in any position.
+# config research.allowed and research.denied replace these lists; an empty or missing list falls back to them.
+RESEARCH_TOOLS_DEFAULT="WebSearch WebFetch Read Bash"
+RESEARCH_ALLOWED_DEFAULT=(WebSearch WebFetch Read "Bash(gh repo view *)" "Bash(gh release list *)" "Bash(gh release view *)"
+  "Bash(gh api repos/*)" "Bash(bash pipeline/bin/screenshot *)")
+RESEARCH_DENIED_DEFAULT=("Bash(gh auth *)" "Bash(gh gist *)" "Bash(gh repo clone *)" "Bash(gh release download *)"
+  "Bash(gh * create *)" "Bash(gh * delete *)" "Bash(gh * edit *)" "Bash(gh * comment *)" "Bash(gh * merge *)"
+  "Bash(gh * close *)" "Bash(gh * reopen *)" "Bash(gh * review *)" "Bash(gh * fork *)" "Bash(gh * sync *)"
+  "Bash(gh * transfer *)" "Bash(gh * lock *)" "Bash(gh * upload *)" "Bash(gh * run *)" "Bash(gh * rerun *)"
+  "Bash(gh * cancel *)" "Bash(gh * set *)" "Bash(gh * add *)" "Bash(gh * archive *)" "Bash(gh * rename *)"
+  "Bash(gh api* -X*)" "Bash(gh api* --method*)" "Bash(gh api* -f*)" "Bash(gh api* -F*)" "Bash(gh api* --field*)"
+  "Bash(gh api* --raw-field*)" "Bash(gh api* --input*)")
+RESEARCH_CALL_ARGS=()
+research_call_args() {
+  local rule n
+  RESEARCH_CALL_ARGS=(--tools "$(cfg research.tools "$RESEARCH_TOOLS_DEFAULT")")
+  n=0
+  while IFS= read -r rule; do [ -n "$rule" ] || continue; RESEARCH_CALL_ARGS+=(--allow "$rule"); n=$((n + 1)); done < <(cfg_list research.allowed)
+  if [ "$n" -eq 0 ]; then for rule in "${RESEARCH_ALLOWED_DEFAULT[@]}"; do RESEARCH_CALL_ARGS+=(--allow "$rule"); done; fi
+  n=0
+  while IFS= read -r rule; do [ -n "$rule" ] || continue; RESEARCH_CALL_ARGS+=(--deny "$rule"); n=$((n + 1)); done < <(cfg_list research.denied)
+  if [ "$n" -eq 0 ]; then for rule in "${RESEARCH_DENIED_DEFAULT[@]}"; do RESEARCH_CALL_ARGS+=(--deny "$rule"); done; fi
 }
 
 count_glob() {
