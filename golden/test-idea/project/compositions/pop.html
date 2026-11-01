@@ -1,0 +1,53 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":440},
+  {"id":"y","type":"number","label":"Top (px)","default":820},
+  {"id":"kind","type":"enum","label":"What pops","default":"pill","options":[{"value":"pill","label":"keyword pill"},{"value":"badge","label":"round badge with an icon"},{"value":"tile","label":"rounded tile with an icon"},{"value":"chip","label":"light chip"}]},
+  {"id":"text","type":"string","label":"Text (pill, chip)","default":"LINK"},
+  {"id":"icon","type":"enum","label":"Icon (badge, tile)","default":"star","options":[{"value":"star","label":"star"},{"value":"check","label":"check"},{"value":"bolt","label":"bolt"},{"value":"dot","label":"dot"},{"value":"play","label":"play"}]},
+  {"id":"size","type":"number","label":"Badge or tile size (px)","default":160},
+  {"id":"overshoot","type":"number","label":"Overshoot (0.02 pills and cards, 0.13 to 0.16 icons and badges)","default":0.02},
+  {"id":"frames","type":"number","label":"Pop frames (3 to 15)","default":7},
+  {"id":"enter_at","type":"number","label":"Pop at (s)","default":0},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* pop (vocabulary.md 8): brings small things in with a little spring: badges, logo tiles, keyword pills, small chips.
+       Scale from about 0.5 to a peak, then back to 1 (back-out); opacity reaches 1 in the first 4 frames. Icons and
+       badges overshoot 13 to 16 percent, pills and cards 1 to 3 percent, over 3 to 15 frames. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #pop-el.badge { border-radius: 50%; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
+    #pop-el.tile { border-radius: 36px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); display: flex; align-items: center; justify-content: center; }
+    #pop-el svg { width: 52%; height: 52%; }
+  </style>
+  <div id="root" data-composition-id="pop" data-width="1080" data-height="1920">
+    <div id="pop-el" class="pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 440, y: 820, kind: "pill", text: "LINK", icon: "star", size: 160, overshoot: 0.02, frames: 7, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var el = document.getElementById("pop-el");
+      var icons = {
+        star: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5 5.9 21l1.5-6.8L2.2 9.5l6.9-.7z"/></svg>',
+        check: '<svg viewBox="0 0 24 24" fill="none" stroke="#289C5C" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+        bolt: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
+        dot: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="#DC6532"/></svg>',
+        play: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>'
+      };
+      if (v.kind === "pill") { el.className = "pc-el pc-keyword-pill"; el.textContent = v.text; }
+      else if (v.kind === "chip") { el.className = "pc-el pc-light-chip"; el.textContent = v.text; }
+      else { el.className = "pc-el " + v.kind; el.style.width = v.size + "px"; el.style.height = v.size + "px"; el.innerHTML = icons[v.icon] || icons.star; }
+      PC.place(el, { x: v.x, y: v.y });
+      var tl = gsap.timeline({ paused: true });
+      PC.pop(tl, el, v.enter_at, { overshoot: v.overshoot, frames: v.frames, from: 0.5 });
+      PC.exit(tl, el, v.exit_at, v.exit);
+      window.__timelines["pop"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

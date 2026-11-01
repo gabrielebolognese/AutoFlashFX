@@ -1,0 +1,74 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"y","type":"number","label":"Top (px)","default":560},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"h","type":"number","label":"Height (px, 0 = auto)","default":0},
+  {"id":"title","type":"string","label":"Title bar text","default":"terminal"},
+  {"id":"lines_json","type":"string","label":"Lines as JSON: [{\"text\":\"$ /plugin install ...\",\"color\":\"paper|accent|success|muted\"}]","default":"[{\"text\":\"/plugin install frontend-design@claude-plugins-official\",\"color\":\"accent\"},{\"text\":\"Installing frontend-design...\",\"color\":\"muted\"},{\"text\":\"Installed. Scope: user\",\"color\":\"success\"}]"},
+  {"id":"mode","type":"enum","label":"Typing or lines","default":"type","options":[{"value":"type","label":"type each line"},{"value":"lines","label":"lines appear whole"}]},
+  {"id":"chars_per_frame","type":"number","label":"Typed characters per frame (type mode)","default":2},
+  {"id":"line_gap_frames","type":"number","label":"Frames between lines","default":6},
+  {"id":"start_delay_frames","type":"number","label":"Frames after the card lands before the first line","default":8},
+  {"id":"prompt","type":"string","label":"Prompt sign before the first line","default":"$ "},
+  {"id":"font_px","type":"number","label":"Mono font size (px)","default":30},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* terminal-card (vocabulary.md 11, Terminal or code card that types): shows the prompt or the code being written: a
+       dark window card with colored mono text; lines appear one by one, a rewrite types 1.7 to 2.6 characters per
+       frame (v04), here 2 per frame. The typing segment is a sound event (typing, trimmed to its length). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #tc { overflow: hidden; display: flex; flex-direction: column; }
+    #tc-body { padding: 30px 40px 36px; font-family: "JetBrains Mono", monospace; font-weight: 500; line-height: 1.45; color: #F3E9E1; min-height: 160px; }
+    .tc-line { white-space: pre-wrap; word-break: break-all; min-height: 1.45em; }
+    .tc-line.accent { color: #F2A07B; } .tc-line.success { color: #7DD39A; } .tc-line.muted { color: #B9ABA1; } .tc-line.paper { color: #F3E9E1; }
+    .tc-caret { display: inline-block; width: 0.55em; height: 1.1em; background: #F2A07B; vertical-align: -0.15em; margin-left: 2px; }
+  </style>
+  <div id="root" data-composition-id="terminal-card" data-width="1080" data-height="1920">
+    <div id="tc" class="pc-card-dark pc-el">
+      <div class="pc-chrome pc-chrome-dark"><span class="pc-dot a"></span><span class="pc-dot b"></span><span class="pc-dot c"></span><span id="tc-title" class="pc-chrome-title"></span></div>
+      <div id="tc-body"></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 560, w: 900, h: 0, title: "terminal", lines_json: [], mode: "type", chars_per_frame: 2, line_gap_frames: 6, start_delay_frames: 8,
+        prompt: "$ ", font_px: 30, enter_at: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var tc = document.getElementById("tc"), body = document.getElementById("tc-body");
+      PC.place(tc, v);
+      document.getElementById("tc-title").textContent = v.title;
+      body.style.fontSize = v.font_px + "px";
+      PC.honesty(tc, v.honesty, { top: 88, right: 24 });
+      var lines = (Array.isArray(v.lines_json) ? v.lines_json : []).map(function (l, i) {
+        var el = PC.el("div", "tc-line " + (l.color || "paper"), body); el.id = "tc-line-" + i;
+        return { el: el, text: (i === 0 && v.prompt ? v.prompt : "") + (l.text || "") };
+      });
+      var tl = gsap.timeline({ paused: true });
+      var landAt = PC.enter(tl, tc, v.enter_at, { rise: 38 });
+      var t = landAt + PC.f(v.start_delay_frames);
+      lines.forEach(function (l, i) {
+        if (v.mode === "type") {
+          var end = PC.typeInto(tl, l.el, l.text, t, { framesPerChar: 1 / Math.max(0.25, v.chars_per_frame) });
+          t = end + PC.f(v.line_gap_frames);
+        } else {
+          tl.set(l.el, { textContent: l.text }, t);
+          tl.fromTo(l.el, { opacity: 0 }, { opacity: 1, duration: PC.f(2), ease: "none" }, t);
+          PC.event("line", t, { el: l.el.id });
+          t += PC.f(v.line_gap_frames);
+        }
+      });
+      lines.forEach(function (l) { if (v.mode !== "type") l.el.textContent = ""; });
+      PC.exit(tl, tc, v.exit_at, v.exit);
+      window.__timelines["terminal-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# render-golden: build and render the golden reel (BUILD_SPEC.md M9): the merged plan of golden/test-idea/plan.json
+# (planned by hand from the frozen script.json and words.json of the test idea, regenerated with --make-plan) becomes
+# a HyperFrames project built from motion-lib/ (golden/test-idea/project/), checked with `npx hyperframes check`,
+# rendered with the frozen voice to golden/test-idea/golden.mp4 (ignored by git), probed with ffprobe, and summarized
+# in contact-sheet.png and README.md. The code: pipeline/lib/motion/golden.py and goldenplan.py.
+#
+#   bash pipeline/bin/render-golden [--make-plan] [--no-render] [--quality draft|looks|delivery] [--out DIR]
+#                                   [--fixtures DIR] [--gpu auto|software|hardware]
+#   --make-plan   regenerate plan.json from the frozen script and words first
+#   --no-render   build and check the project only
+#   --out DIR     another output folder (tests); --fixtures DIR another frozen test-idea folder
+# Exit 0 when the plan validates, the project checks, the render probes clean (1080x1920, 30 fps, the voice's
+# length within 0.2 s, an audio stream); 1 on a plan or project problem; 2 on a render problem.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+make_plan=0; out=""; fixtures=""; pass=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --make-plan) make_plan=1 ;;
+    --out) out="${2:-}"; shift ;;
+    --fixtures) fixtures="${2:-}"; shift ;;
+    -h|--help) sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) pass+=("$1") ;;
+  esac
+  shift
+done
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+[ -n "$out" ] || out="$REELS_REPO/$(cfg paths.golden golden)/test-idea"
+[ -n "$fixtures" ] || fixtures="$REELS_PIPELINE/tests/fixtures/runs/test-idea"
+out="$(reels_mixed "$out")"; fixtures="$(reels_mixed "$fixtures")"
+mkdir -p "$out"
+script="$fixtures/07-script/script.json"; words="$fixtures/08-voiceover/words.json"; voice="$fixtures/08-voiceover/vo.wav"
+assets="$fixtures/01-research/assets"
+for f in "$script" "$words"; do [ -f "$f" ] || { echo "render-golden: missing $f" >&2; exit 1; }; done
+if [ ! -f "$voice" ]; then
+  echo "render-golden: the frozen voice $voice is missing (git ignores wav files): run bash pipeline/tests/test-m7.sh section 3 once, or M7_SECTIONS=3" >&2
+  exit 1
+fi
+[ -f "$REELS_MOTION_LIB/catalog.json" ] || "$REELS_PY" "$LIB/motion" catalog --write >/dev/null || exit 1
+if [ "$make_plan" = 1 ] || [ ! -f "$out/plan.json" ]; then
+  "$REELS_PY" "$LIB/motion" golden-plan --script "$script" --words "$words" --out "$out/plan.json" || exit 1
+fi
+exec "$REELS_PY" "$LIB/motion" golden --plan "$out/plan.json" --out "$out" --voice "$voice" --words "$words" --assets "$assets" --brand "$REELS_REPO/library/brand" "${pass[@]}"

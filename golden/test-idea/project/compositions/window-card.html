@@ -1,0 +1,71 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"y","type":"number","label":"Top (px)","default":420},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"h","type":"number","label":"Height (px)","default":760},
+  {"id":"title","type":"string","label":"Title bar text (a site or app name)","default":"claude.com/plugins"},
+  {"id":"kind","type":"enum","label":"Light or dark window","default":"light","options":[{"value":"light","label":"light"},{"value":"dark","label":"dark"}]},
+  {"id":"image","type":"string","label":"Content image (a research screenshot under assets/...)","default":""},
+  {"id":"image_fit","type":"enum","label":"Image fit","default":"cover-top","options":[{"value":"cover-top","label":"cover, top"},{"value":"contain","label":"contain"}]},
+  {"id":"lines_json","type":"string","label":"Text lines as JSON when there is no image","default":"[]"},
+  {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"fly-in","label":"fly-in from below"},{"value":"none","label":"none"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"mascot","type":"string","label":"Mascot prop on the top-right corner (empty = none)","default":""},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* window-card (vocabulary.md 10): shows the tool or a site: a card with a surface-chrome title bar and 3 traffic-light
+       dots, the content a real screenshot (research assets) or text lines. Enters with the card move (1) or a fly-in (16). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #wc { overflow: hidden; display: flex; flex-direction: column; }
+    #wc-body { flex: 1 1 auto; min-height: 0; position: relative; background: var(--c-surface); }
+    #wc.dark #wc-body { background: #1C1511; }
+    #wc-img { display: none; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    #wc-img.contain { object-fit: contain; }
+    #wc-lines { display: none; padding: 34px 40px; font-weight: 600; font-size: 32px; line-height: 1.35; white-space: pre-wrap; }
+    #wc.dark #wc-lines { color: #F3E9E1; font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 28px; }
+    #wc-mascot { position: absolute; display: none; }
+  </style>
+  <div id="root" data-composition-id="window-card" data-width="1080" data-height="1920">
+    <div id="wc" class="pc-card pc-el">
+      <div id="wc-chrome" class="pc-chrome"><span class="pc-dot a"></span><span class="pc-dot b"></span><span class="pc-dot c"></span><span id="wc-title" class="pc-chrome-title"></span></div>
+      <div id="wc-body"><img id="wc-img" alt=""><div id="wc-lines"></div></div>
+    </div>
+    <div id="wc-mascot" class="pc-mascot pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 420, w: 900, h: 760, title: "", kind: "light", image: "", image_fit: "cover-top", lines_json: [], enter: "rise", enter_at: 0,
+        mascot: "", honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wc = document.getElementById("wc"), chrome = document.getElementById("wc-chrome"), img = document.getElementById("wc-img"), lines = document.getElementById("wc-lines");
+      PC.place(wc, v);
+      document.getElementById("wc-title").textContent = v.title;
+      if (v.kind === "dark") { wc.classList.add("dark"); chrome.classList.add("pc-chrome-dark"); }
+      if (v.image) { img.src = v.image; img.style.display = "block"; if (v.image_fit === "contain") img.classList.add("contain"); }
+      else { lines.style.display = "block"; lines.textContent = (Array.isArray(v.lines_json) ? v.lines_json : []).join("\n"); }
+      PC.honesty(wc, v.honesty, { top: 88, right: 24 });
+      var tl = gsap.timeline({ paused: true });
+      var landAt = v.enter_at;
+      if (v.enter === "rise") landAt = PC.enter(tl, wc, v.enter_at, { rise: 38 });
+      else if (v.enter === "fly-in") landAt = PC.flyIn(tl, wc, v.enter_at, { dy: 870, tilt: 2.4, frames: 16 });
+      else tl.set(wc, { opacity: 1 }, 0);
+      if (v.mascot) {
+        var m = document.getElementById("wc-mascot");
+        m.innerHTML = PC.mascotSVG(v.mascot, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
+        m.style.display = "block"; m.style.left = (v.x + v.w - 47) + "px"; m.style.top = (v.y - 32) + "px";
+        PC.mascotEnter(tl, m, landAt);
+        PC.exit(tl, m, v.exit_at, v.exit);
+      }
+      PC.exit(tl, wc, v.exit_at, v.exit);
+      window.__timelines["window-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

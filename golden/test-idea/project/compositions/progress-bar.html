@@ -1,0 +1,65 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":120},
+  {"id":"y","type":"number","label":"Top (px)","default":860},
+  {"id":"w","type":"number","label":"Width (px)","default":840},
+  {"id":"label","type":"string","label":"Label above the bar","default":"Installing frontend-design"},
+  {"id":"value","type":"number","label":"Fill percent (0 to 100)","default":100},
+  {"id":"in_card","type":"boolean","label":"Inside a surface card","default":true},
+  {"id":"fill_frames","type":"number","label":"Fill frames","default":6},
+  {"id":"check","type":"boolean","label":"A check badge pops when the bar is full","default":true},
+  {"id":"check_frames","type":"number","label":"Check pop frames","default":3},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"fill_at","type":"number","label":"Fill starts (s)","default":0.5},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* progress-bar (vocabulary.md 18, Progress or meter bar): something finishing or a usage value. The bar fills over
+       6 frames, then a check badge pops over 3 frames (v01 0:33.4). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #pb { padding: 30px 36px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; }
+    #pb.bare { padding: 0; background: none; box-shadow: none; }
+    #pb-row { display: flex; align-items: center; gap: 20px; }
+    #pb-label { font-weight: 700; font-size: 30px; flex: 1 1 auto; }
+    #pb-track { height: 26px; border-radius: 999px; background: var(--c-surface-chrome); box-shadow: inset 0 0 0 1px var(--c-card-edge); overflow: hidden; }
+    #pb-fill { height: 100%; width: 100%; border-radius: 999px; background: var(--c-accent); transform-origin: 0% 50%; }
+    #pb-check { width: 64px; height: 64px; border-width: 5px; flex: 0 0 auto; }
+    #pb-check svg { width: 34px; height: 34px; }
+    #pb-pct { font-weight: 800; font-size: 30px; font-variant-numeric: tabular-nums; min-width: 90px; text-align: right; }
+  </style>
+  <div id="root" data-composition-id="progress-bar" data-width="1080" data-height="1920">
+    <div id="pb" class="pc-card pc-el">
+      <div id="pb-row"><span id="pb-label"></span><span id="pb-pct">0%</span><span id="pb-check" class="pc-check-badge"></span></div>
+      <div id="pb-track"><div id="pb-fill"></div></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 120, y: 860, w: 840, label: "", value: 100, in_card: true, fill_frames: 6, check: true, check_frames: 3, enter_at: 0, fill_at: 0.5, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var pb = document.getElementById("pb"), fill = document.getElementById("pb-fill"), check = document.getElementById("pb-check"), pct = document.getElementById("pb-pct");
+      PC.place(pb, { x: v.x, y: v.y, w: v.w });
+      if (!v.in_card) pb.classList.add("bare");
+      document.getElementById("pb-label").textContent = v.label;
+      check.innerHTML = PC.checkSVG();
+      var tl = gsap.timeline({ paused: true });
+      var landAt = PC.enter(tl, pb, v.enter_at, { rise: 38 });
+      var at = Math.max(landAt, v.fill_at);
+      var target = Math.max(0, Math.min(100, v.value)) / 100;
+      tl.fromTo(fill, { scaleX: 0 }, { scaleX: target, duration: PC.f(v.fill_frames), ease: "power2.out" }, at);
+      PC.countUp(tl, pct, at, { to: v.value, frames: v.fill_frames, suffix: "%", ease: "power2.out" });
+      PC.event("fill", at, { el: "pb-fill", end: at + PC.f(v.fill_frames) });
+      if (v.check && target >= 0.999) {
+        PC.pop(tl, check, at + PC.f(v.fill_frames) - PC.f(1), { overshoot: 0.16, frames: v.check_frames, from: 0.3 });
+        PC.event("check", at + PC.f(v.fill_frames) - PC.f(1), { el: "pb-check" });
+      } else gsap.set(check, { opacity: 0 });
+      PC.exit(tl, pb, v.exit_at, v.exit);
+      window.__timelines["progress-bar"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

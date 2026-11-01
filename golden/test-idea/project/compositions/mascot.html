@@ -1,0 +1,61 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":880},
+  {"id":"y","type":"number","label":"Top (px)","default":520},
+  {"id":"prop","type":"enum","label":"Prop","default":"clapper","options":[{"value":"clapper","label":"clapperboard"},{"value":"star","label":"star"},{"value":"film","label":"film strip"},{"value":"play","label":"play icon"},{"value":"grid","label":"grid icon"},{"value":"check","label":"check"}]},
+  {"id":"move","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise from below (v02)"},{"value":"pop","label":"pop (v01)"},{"value":"hop","label":"hop (v09)"},{"value":"walk","label":"walk in from the left (v03)"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"frames","type":"number","label":"Entrance frames","default":4},
+  {"id":"scale","type":"number","label":"Scale (1 = 85 x 58 px)","default":1},
+  {"id":"flip","type":"boolean","label":"Face left","default":false},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* mascot (vocabulary.md 4): the recurring pixel creature, about 85 x 58 px, body in the mascot color, one prop. It
+       perches on a corner of the scene's main element (the plan places it at x, y overlapping the edge) and enters 4
+       frames after the card lands, rising from below over 4 frames (v02); on the end card it walks or hops. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #ms-wrap { transform-origin: 50% 100%; }
+    #ms-wrap.flip svg { transform: scaleX(-1); }
+  </style>
+  <div id="root" data-composition-id="mascot" data-width="1080" data-height="1920">
+    <div id="ms-wrap" class="pc-mascot pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 880, y: 520, prop: "clapper", move: "rise", enter_at: 0, frames: 4, scale: 1, flip: false, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var m = document.getElementById("ms-wrap");
+      m.innerHTML = PC.mascotSVG(v.prop, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
+      PC.place(m, { x: v.x, y: v.y });
+      if (v.scale !== 1) { m.style.width = (85 * v.scale) + "px"; m.style.height = (58 * v.scale) + "px"; }
+      if (v.flip) m.classList.add("flip");
+      var tl = gsap.timeline({ paused: true });
+      var at = v.enter_at;
+      if (v.move === "pop") {
+        PC.pop(tl, m, at, { overshoot: 0.16, frames: Math.max(3, v.frames), from: 0.4 });
+      } else if (v.move === "hop") {
+        // hop 72 up and back over 11 frames, 5 up and 6 down (v09)
+        tl.fromTo(m, { opacity: 0 }, { opacity: 1, duration: PC.f(2), ease: "none" }, at);
+        tl.fromTo(m, { y: 0 }, { y: -72, duration: PC.f(5), ease: "power2.out" }, at);
+        tl.to(m, { y: 0, duration: PC.f(6), ease: "power2.in" }, at + PC.f(5));
+        PC.event("mascot", at, { el: "ms-wrap", move: "hop" });
+      } else if (v.move === "walk") {
+        tl.fromTo(m, { x: -260, opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
+        tl.to(m, { x: 0, duration: PC.f(14), ease: "power2.out" }, at);
+        tl.to(m, { y: -5, duration: PC.f(3), ease: "power1.inOut", yoyo: true, repeat: 3 }, at);
+        PC.event("mascot", at, { el: "ms-wrap", move: "walk" });
+      } else {
+        tl.fromTo(m, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(v.frames), ease: "power2.out" }, at);
+        PC.event("mascot", at, { el: "ms-wrap", move: "rise" });
+      }
+      PC.exit(tl, m, v.exit_at, v.exit);
+      window.__timelines["mascot"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

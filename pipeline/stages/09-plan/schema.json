@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09-plan/plan.json",
+  "title": "The merged visual plan: the animations pass (9a), the text pass (9b) and the transitions pass (9c) in one file (BUILD_SPEC.md S9; defined in M9 for the golden reel, shared with M10)",
+  "type": "object",
+  "required": ["plan_version", "style", "fps", "duration_ms", "scenes", "captions", "transitions", "branding"],
+  "properties": {
+    "plan_version": {"const": 1},
+    "style": {"type": "string"},
+    "idea_id": {"type": "string"},
+    "source": {"type": "string", "description": "who wrote the plan: golden-plan, 09a+09b+09c, a fixture"},
+    "fps": {"const": 30},
+    "duration_ms": {"type": "integer", "minimum": 1000, "description": "the voice's length: the root composition's duration"},
+    "voice": {"type": "string", "description": "the voiceover file the plan is timed to (vo.wav)"},
+    "solution": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["flashfx", "external", "method", "none"]},
+        "name": {"type": "string"},
+        "url": {"type": "string"},
+        "logo": {"type": ["string", "null"], "description": "the tool's logo among the research assets (research/<file>), or null"}
+      }
+    },
+    "tracker": {"type": "object", "required": ["enabled"], "properties": {"enabled": {"type": "boolean"}}},
+    "branding": {
+      "type": "object",
+      "required": ["cta_scene", "dm_avatar", "lockup"],
+      "properties": {
+        "cta_scene": {"type": "string", "description": "the scene of the ask: it carries the DM card and the end card's lockup"},
+        "dm_avatar": {"type": "string", "pattern": "^brand/", "description": "brand/mark/avatar-dark.png"},
+        "lockup": {"type": "string", "pattern": "^brand/lockup/", "description": "the lockup variant matching the surface (light: paper and white cards)"},
+        "brand_slot": {"type": ["string", "null"], "description": "what the brand slots show: brand/<mark> when the solution is FlashFX, research/<logo> for a tool, null for the neutral icon"},
+        "flashfx_allowed_outside_cta": {"type": "boolean"}
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "beat", "beat_type", "start_ms", "end_ms", "components"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "beat": {"type": "string"},
+          "beat_type": {"enum": ["hook", "stake", "number", "tool", "step", "comparison", "proof", "mechanism", "before-after", "pain-payoff", "payoff", "ask"]},
+          "start_ms": {"type": "integer", "minimum": 0},
+          "end_ms": {"type": "integer", "minimum": 1},
+          "set_piece": {"type": "boolean"},
+          "hook_set_piece": {"type": "boolean", "description": "the element that lands inside the hook breath"},
+          "honesty_label": {"enum": [null, "mock", "sourced"]},
+          "emphasis_hits": {
+            "type": "array",
+            "items": {"type": "object", "required": ["word", "ms", "effect"],
+                      "properties": {"word": {"type": "string"}, "ms": {"type": "integer"}, "effect": {"type": "string"}}}
+          },
+          "components": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["id", "component", "start_ms", "end_ms", "props"],
+              "properties": {
+                "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "unique across the plan: the host id in the project"},
+                "component": {"type": "string", "description": "a catalog.json component id"},
+                "start_ms": {"type": "integer", "minimum": 0},
+                "end_ms": {"type": "integer", "minimum": 1},
+                "props": {"type": "object", "description": "the component's declared variables; times in seconds local to start_ms; images as brand/<path> or research/<file>"},
+                "z": {"type": "integer"},
+                "role": {"enum": ["hero", "support", "label", "brand-slot", "logo", "set-piece", "cta", "notification", "text"]},
+                "honesty_label": {"enum": [null, "mock", "sourced"]},
+                "assets": {"type": "array", "items": {"type": "string"}, "description": "the brand/ and research/ paths the props use"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "captions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["start_ms", "end_ms", "words"],
+        "properties": {
+          "scene": {"type": "string"},
+          "start_ms": {"type": "integer"},
+          "end_ms": {"type": "integer"},
+          "words": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {"type": "object", "required": ["word", "start_ms", "end_ms"],
+                      "properties": {"word": {"type": "string"}, "start_ms": {"type": "integer"}, "end_ms": {"type": "integer"}, "emphasis": {"type": "boolean"}}}
+          }
+        }
+      }
+    },
+    "cards": {
+      "type": "array",
+      "items": {"type": "object", "required": ["scene", "text"],
+                "properties": {"scene": {"type": "string"}, "component": {"type": "string"}, "text": {"type": "string"}, "zone": {"type": "string"}}}
+    },
+    "labels": {
+      "type": "array",
+      "items": {"type": "object", "required": ["scene", "text", "kind"],
+                "properties": {"scene": {"type": "string"}, "text": {"type": "string"}, "kind": {"enum": ["honesty", "tag", "kicker"]}}}
+    },
+    "transitions": {
+      "type": "array",
+      "items": {"type": "object", "required": ["from", "to", "type", "duration_ms"],
+                "properties": {"from": {"type": "string"}, "to": {"type": "string"}, "type": {"enum": ["fade-blur", "fall", "push", "cut"]}, "duration_ms": {"type": "integer", "minimum": 0}}}
+    },
+    "notes": {"type": "string"}
+  }
+}

@@ -1,0 +1,78 @@
+<html data-composition-variables='[
+         {"id":"x","type":"number","label":"Left (px)","default":120},
+         {"id":"y","type":"number","label":"Top (px)","default":700},
+         {"id":"value","type":"number","label":"The number","default":1134112},
+         {"id":"decimals","type":"number","label":"Decimals","default":0},
+         {"id":"prefix","type":"string","label":"Prefix","default":""},
+         {"id":"suffix","type":"string","label":"Suffix (after the digits)","default":""},
+         {"id":"unit","type":"string","label":"Unit word","default":"installs"},
+         {"id":"container","type":"enum","label":"Container","default":"pill","options":[{"value":"pill","label":"pill"},{"value":"chip","label":"chip"}]},
+         {"id":"icon","type":"enum","label":"Icon (pill)","default":"none","options":[{"value":"none","label":"none"},{"value":"download","label":"download"},{"value":"star","label":"star"},{"value":"comment","label":"comment"},{"value":"play","label":"play"}]},
+         {"id":"sub_label","type":"string","label":"Sub label (chip)","default":""},
+         {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+         {"id":"count_frames","type":"number","label":"Count-up frames","default":27.5},
+         {"id":"count_delay_frames","type":"number","label":"Frames after the landing before the count starts","default":0},
+         {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+         {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+         {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+       ]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* stat-number (vocabulary.md 2, Stat number with count-up): a number that proves the point, counting from 0 with
+       ease-out over 27.5 frames after its container entered (1). Containers: the white pill (168 tall, icon, number,
+       unit in accent; v01) or the chip (141 tall, number plus serif-italic unit, a sub-label pill under it; v02). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #stat-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+    #stat { display: inline-flex; align-items: center; gap: 22px; padding: 0 46px; white-space: nowrap; }
+    #stat.pill { height: var(--stat-pill-h); border-radius: 999px; }
+    #stat.chip { height: var(--stat-chip-h); border-radius: 40px; }
+    #stat-icon { display: none; width: 64px; height: 64px; }
+    #stat-icon svg { width: 100%; height: 100%; display: block; }
+    #stat-unit.pill { color: var(--c-accent); font-weight: 800; font-size: 44px; }
+    #stat-unit.chip { color: var(--c-unit-serif); font-size: 60px; }
+    #stat-sub { display: none; height: 56px; font-size: 28px; padding: 0 22px; margin-left: 30px; }
+  </style>
+  <div id="root" data-composition-id="stat-number" data-width="1080" data-height="1920">
+    <div id="stat-wrap" class="pc-el">
+      <div id="stat" class="pc-card">
+        <span id="stat-icon"></span>
+        <span id="stat-num" class="pc-stat">0</span>
+        <span id="stat-unit" class="pc-serif"></span>
+      </div>
+      <div id="stat-sub" class="pc-light-chip"></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 120, y: 700, value: 1134112, decimals: 0, prefix: "", suffix: "", unit: "installs", container: "pill", icon: "none",
+        sub_label: "", enter_at: 0, count_frames: 27.5, count_delay_frames: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("stat-wrap"), stat = document.getElementById("stat"), num = document.getElementById("stat-num");
+      var unit = document.getElementById("stat-unit");
+      PC.place(wrap, { x: v.x, y: v.y });
+      stat.classList.add(v.container);
+      unit.classList.add(v.container);
+      if (v.container === "pill") unit.classList.remove("pc-serif");
+      unit.textContent = v.unit;
+      var icons = {
+        download: '<svg viewBox="0 0 24 24" fill="none" stroke="#DC6532" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>',
+        star: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5 5.9 21l1.5-6.8L2.2 9.5l6.9-.7z"/></svg>',
+        comment: '<svg viewBox="0 0 24 24" fill="none" stroke="#DC6532" stroke-width="2.4" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+        play: '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>'
+      };
+      if (v.container === "pill" && icons[v.icon]) { var ic = document.getElementById("stat-icon"); ic.innerHTML = icons[v.icon]; ic.style.display = "inline-block"; }
+      if (v.container === "chip" && v.sub_label) { var sub = document.getElementById("stat-sub"); sub.textContent = v.sub_label; sub.style.display = "inline-flex"; }
+      PC.honesty(stat, v.honesty, { top: -22, right: 24 });
+
+      var tl = gsap.timeline({ paused: true });
+      var landAt = PC.enter(tl, wrap, v.enter_at, { rise: 38 });
+      PC.countUp(tl, num, landAt + PC.f(v.count_delay_frames), { to: v.value, frames: v.count_frames, decimals: v.decimals, prefix: v.prefix, suffix: v.suffix });
+      PC.exit(tl, wrap, v.exit_at, v.exit);
+      window.__timelines["stat-number"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

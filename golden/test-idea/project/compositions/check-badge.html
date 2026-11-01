@@ -1,0 +1,76 @@
+<html data-composition-variables='[
+  {"id":"mode","type":"enum","label":"Badge or checklist","default":"badge","options":[{"value":"badge","label":"one check badge"},{"value":"list","label":"a checklist card with ticks"}]},
+  {"id":"x","type":"number","label":"Left (px)","default":498},
+  {"id":"y","type":"number","label":"Top (px)","default":860},
+  {"id":"size","type":"number","label":"Badge size (px)","default":84},
+  {"id":"w","type":"number","label":"List card width (px)","default":760},
+  {"id":"items_json","type":"string","label":"Checklist items as JSON","default":"[\"Plan the palette\",\"Review the layout\",\"Then code\"]"},
+  {"id":"tick_frames","type":"number","label":"Frames per tick","default":3},
+  {"id":"tick_gap_frames","type":"number","label":"Frames between ticks","default":4},
+  {"id":"overshoot","type":"number","label":"Badge pop overshoot","default":0.16},
+  {"id":"pop_frames","type":"number","label":"Badge pop frames","default":12},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"ticks_at","type":"number","label":"First tick at (s, list mode)","default":0.4},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* check-badge (vocabulary.md 9, Check badge and checklist ticks): marks done or yes. A success circle with a white
+       check and a white ring that pops (0.2 to 1.16 to 1 over 6 plus 6 frames, v03), or a checklist card whose ticks pop
+       1 to 3 frames each, 4 to 6 frames apart (v06, v07). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #cb-list { padding: 30px 40px; box-sizing: border-box; display: none; flex-direction: column; gap: 18px; }
+    .cb-row { display: flex; align-items: center; gap: 22px; font-weight: 700; font-size: 34px; }
+    .cb-tick { width: 52px; height: 52px; border-radius: 50%; background: var(--c-success); border: 4px solid #FFFFFF; box-shadow: 0 6px 12px -3px rgba(40, 156, 92, 0.35); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .cb-tick svg { width: 28px; height: 28px; }
+    .cb-tick-slot { width: 52px; height: 52px; border-radius: 50%; box-shadow: inset 0 0 0 3px var(--c-card-edge); flex: 0 0 auto; position: relative; }
+    .cb-tick-slot .cb-tick { position: absolute; left: -4px; top: -4px; }
+  </style>
+  <div id="root" data-composition-id="check-badge" data-width="1080" data-height="1920">
+    <div id="cb-badge" class="pc-check-badge pc-el"></div>
+    <div id="cb-list" class="pc-card pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ mode: "badge", x: 498, y: 860, size: 84, w: 760, items_json: [], tick_frames: 3, tick_gap_frames: 4, overshoot: 0.16, pop_frames: 12,
+        enter_at: 0, ticks_at: 0.4, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var badge = document.getElementById("cb-badge"), list = document.getElementById("cb-list");
+      var tl = gsap.timeline({ paused: true });
+      if (v.mode === "list") {
+        badge.style.display = "none";
+        list.style.display = "flex";
+        PC.place(list, { x: v.x, y: v.y, w: v.w });
+        var items = Array.isArray(v.items_json) ? v.items_json : [];
+        var ticks = items.map(function (text, i) {
+          var row = PC.el("div", "cb-row", list);
+          var slot = PC.el("div", "cb-tick-slot", row);
+          var tick = PC.el("div", "cb-tick", slot); tick.id = "cb-tick-" + i; tick.innerHTML = PC.checkSVG();
+          PC.el("span", "", row, text);
+          return tick;
+        });
+        var landAt = PC.enter(tl, list, v.enter_at, { rise: 38 });
+        ticks.forEach(function (tick, i) {
+          var at = Math.max(v.ticks_at, landAt) + PC.f(v.tick_gap_frames) * i;
+          PC.pop(tl, tick, at, { overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2 });
+          PC.event("check", at, { el: tick.id });
+        });
+        PC.exit(tl, list, v.exit_at, v.exit);
+      } else {
+        list.style.display = "none";
+        badge.innerHTML = PC.checkSVG();
+        badge.style.width = v.size + "px"; badge.style.height = v.size + "px";
+        PC.place(badge, { x: v.x, y: v.y });
+        PC.pop(tl, badge, v.enter_at, { overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 });
+        PC.event("check", v.enter_at, { el: "cb-badge" });
+        PC.exit(tl, badge, v.exit_at, v.exit);
+      }
+      window.__timelines["check-badge"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>
