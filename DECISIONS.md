@@ -1282,3 +1282,109 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     WSL), so run.sh exports REELS_BASH (its own $BASH in C:/ form) and voiceover.py falls back to Git's usual
     paths; a Windows Python cannot open /tmp/... paths (use C:/ forms in Python, /tmp only in bash); the kokoro
     venv's python needs PYTHONUTF8=1 to print phoneme strings (the workers' environment sets it).
+
+## M8 Sound effects memory map (2026-11-01)
+
+178. **The sfx map is built by pipeline/bin/build-sfx-map over pipeline/lib/sfx/** (common.py, measure.py,
+    classify.py, overrides.py, pools.py, previews.py, writemap.py and sfxmap.py as the CLI). The same split as
+    M7: Python does the work in four steps (plan, measure, classify-plan, build), bash relays their lines and
+    makes the one indexer call through ai() between classify-plan and build (the call's files under
+    logs/build-sfx-map/calls/). Exit 0 up to date or rebuilt, 1 when the model call failed (a code error for the
+    stage that called it), 2 when the pack folder is missing or a step failed.
+179. **Measurements with ffmpeg plus numpy, no other package:** ffprobe for codec, channels, rate and depth;
+    ffmpeg decodes the first audio stream (cover art skipped) to 48 kHz float32 in memory; numpy computes the
+    sample peak, the full-scale runs, the 5 ms RMS envelope (onset = the first frame within 30 dB of the loudest
+    frame and 10 dB over the quietest 5 percent of frames, peak time = the loudest frame, attack, the tail to
+    40 dB under, the end, the effective duration, the silence padding under -60 dBFS) and the spectral centroid;
+    one more ffmpeg pass with ebur128 and 2 s of silence padding gives the integrated LUFS and the true peak
+    (sounds shorter than the 400 ms gating block measure too; silence falls under the gate). The 106 files take 8
+    to 12 s with 4 threads.
+180. **The noise floor is measured where there is no sound:** the median 20 ms frame level of the lead-in before
+    the onset (at least two frames) plus the last 50 ms when the sound ended 100 ms or more before the end of the
+    file; unknown (null) when the sound fills the file, so a long fade or a trimmed tone never counts as noise.
+    The first version used the 5th percentile of all frames and excluded two clean synthetic tones with linear
+    fades; that number is kept as floor_p5_db for information only.
+181. **Whoosh speed thresholds, tuned on the pack (spec 2.6 item 2):** fast when the effective sound is 0.35 s or
+    shorter, or 0.6 s or shorter with an attack of 0.08 s or shorter; slow when it is 0.8 s or longer with an
+    attack of 0.2 s or longer (a gradual swell), or 1.5 s or longer whatever the attack; medium otherwise. On this
+    pack the fast ones measure 0.10 to 0.35 s with attacks of 0.02 to 0.12 s, the slow ones have attacks of 0.2 to
+    0.8 s or run 1.5 s and longer (the SlowMo 05 and jet whooshes: a short attack and a 2.5 to 3 s tail); counts
+    fast 17, medium 12, slow 29 (excluded files included). config sfx.build.whoosh holds the numbers.
+182. **Quality filter thresholds (spec 2.6 item 5):** clipped = 10 or more runs of 3 consecutive samples at or
+    over 0.985 of full scale (the four files with 19 to 46 runs go; 1 to 9 runs are noted, not excluded, so the
+    hot mp3 masters with true peaks up to +2.9 dBTP stay); high noise floor = the floor within 30 dB of the peak
+    on files of 0.5 s or longer (only the 16 s rewind); far too long = more than 5 s of effective sound (typing
+    excepted) or more than twice a cue type's upper window; silent = peak under -60 dBFS; decode errors. A pinned
+    file overrides every reason but a decode error. 13 of 106 files are excluded, each with its reason in
+    SFX-MAP.md.
+183. **Rules before the model (spec 2.6 item 3).** The file name's words (digits split from letters, camelCase
+    split; the folder only as a hint for the model) map to nine categories: whoosh (whoosh, woosh, swoosh, swoos,
+    swish, whip, wind, air, blow), click (click, mouse), pop, typing (typing, keyboard, writing), success (ding,
+    chime, bell), notification (notification, message, discord, ping), negative (error, erro, buzz, scratch),
+    impact (boom, thud, hit, impact, slam, punch, kick, bass), tick (tick, counter, count). Each category gives
+    ranked cue type candidates with a category fit: whoosh by speed (fast: transition_fast 1.0 and attention 1.0;
+    medium: transition_fast 0.6, transition_slow 0.6, attention 0.5; slow: transition_slow 1.0), any whoosh with
+    0.5 s or more of sound and an attack of 0.2 s or less also hook_hit 0.5, a whip crack also stamp 0.5; click:
+    ui_click 1.0, number 0.7, hero_enter 0.5; pop: hero_enter 1.0, ui_click 0.5, number 0.4; success: success 1.0,
+    notification 0.5; notification: notification 1.0, success 0.4; negative 1.0; impact: stamp 1.0, hook_hit 0.9;
+    tick: number 1.0, ui_click 0.6. classify.RULES_VERSION is part of the settings hash, so a rule change rebuilds
+    the pools without a model call.
+184. **Unclear files go to the indexer model in one batched call:** a name no rule understands (the Ui Sound
+    folder, "sound-1", page flips, risers, the cash register) or one the measurements contradict (a 2.8 s "pop"),
+    never a file a measurement already excludes. The prompt pipeline/stages/_prompts/classify-sfx.md lists folder,
+    name, duration, effective sound, attack, tail, peak, LUFS, brightness (the centroid in words), channels and
+    the rule guess; the answer (classify-sfx.schema.json) gives 0 to 3 cue types best first (category fit 1.0,
+    0.8, 0.6), tags, a confidence and a note. Answers are cached in the map per file (kept while path, size and
+    date are unchanged); an id the model skipped is asked once more in the same run, then at the next run.
+    Confidence under 0.6 (config sfx.build.min_confidence) means waiting: out of every pool until the user pins
+    the file. On this pack: 27 files asked in one 20 s haiku call, 12 waiting, 4 "fit nothing" (two risers, the
+    drum roll, the page flip sequence), the rest placed.
+185. **Fit and pools (spec 2.6 item 6):** fit = category fit x duration fit (1 inside the cue type's window, 0 at
+    twice the upper bound and at zero length, linear between) x attack fit (sharp cue types hero_enter, ui_click,
+    stamp, number: 1.0 under 30 ms, 0.8 under 80 ms, else 0.5; transition_slow: 1.0 from 200 ms, 0.8 from 100 ms,
+    else 0.6; the rest any) x quality (minus 0.02 per full-scale run up to 0.15, minus 0.1 when the floor is
+    within 45 dB of the peak) x the model's confidence (rules count 1.0). A pool keeps the files with fit 0.25 or
+    more, best first, pinned files first of all, at most 8 (sfx.build.pool_size); under 3 is short (HUMAN_TODO:
+    typing and negative on this pack). Windows in seconds of effective sound (sfx.build.cue_windows):
+    transition_slow 0.4 to 2.5, transition_fast 0.08 to 0.8, attention 0.08 to 0.7, hero_enter 0.03 to 0.7,
+    ui_click 0.01 to 0.4, stamp 0.05 to 1.0, number 0.01 to 0.35, success 0.1 to 1.8, typing 0.4 to 30, negative
+    0.08 to 1.8, hook_hit 0.2 to 2.5, notification 0.15 to 2.5.
+186. **Normalization and the cache (spec 2.6 item 4):** gain = -12 dBFS minus the sample peak (the true peak is
+    in the map; 12 dB of headroom covers inter-sample peaks), the copy written straight from the decoded samples
+    as 48 kHz 16-bit PCM with the file's channel count (1 or 2) under styles/sfx/.cache/<id>-<slug>.wav, on the
+    same timeline as the original (onset and peak times apply to both; the silence padding is kept, S11 places by
+    onset or peak). The originals never change; copies of removed files are pruned.
+187. **Rebuild logic (spec 2.6 item 9):** the plan compares the folder hash (relative paths, sizes, dates), the
+    hash of overrides.txt's effective lines and the settings hash (config sfx.build plus normalize_peak_dbfs,
+    MAP_VERSION, MEASURE_VERSION, RULES_VERSION) with the map's, and checks that every cache copy and preview
+    exists; all equal means nothing is done and nothing is called. A changed folder re-measures only new and
+    changed files (the others keep their numbers and their model answer); an overrides or settings change redoes
+    the pools, the map, the report and the previews from the cached numbers in about a second. Options: --check
+    (exit 0 current, 1 rebuild needed, also while a file waits for the model), --force (measure everything
+    again), --reclassify (ask the model again), --no-model (unclear files listed as "not classified yet" and
+    asked at the next run with the model), --dir (another pack folder; tests).
+188. **Outputs and who reads them:** styles/sfx/sfx-map.json (tracked: files[] with every measurement,
+    classification, fit, model answer, exclusion, ban and pins; pools; excluded; waiting; unclassified;
+    overrides; settings; counts), SFX-MAP.md (tracked), overrides.txt (created once with its header, never
+    rewritten, tracked), previews/ and .cache/ (ignored). The banner's "sfx map: N files" counts files[]. The
+    preflight gains a warn-level file check for the map (the runner continues and S11 flags a reel without a
+    map, spec S11); a hard check would stop every sandbox test whose repo copy has no styles/sfx. S11 (M11) runs
+    build-sfx-map at its start the way S5 runs index-hooks (the contract in pipeline/stages/11-sfx/CONTRACT.md);
+    run.sh does not, so a runner start never calls a model.
+189. **Previews (spec 2.6 item 8):** every pool's sounds from the cache copies, trimmed to the audible part (20 ms
+    kept at each end) and spaced 1 s apart (sfx.build.preview_gap_s), stereo when any sound is stereo, as one
+    48 kHz 16-bit WAV per cue type, with a .txt listing each sound, when it starts, its fit, gain and origin.
+    Regenerated whenever missing (they are not in git), removed when a pool empties.
+190. **test-m8.sh (no real model call):** section 1 builds a synthetic pack with ffmpeg lavfi in the sandbox (4
+    clicks, a fast and a slow noise whoosh, a clipped sine, a silent file, a decaying ding, a low boom, a tremolo
+    typing bed, two unclear tones, a text file named .mp3) with the fake claude answering from fixtures served by
+    "# Stage: build-sfx-map" (the second fixture answers the id the first skipped): measurements and fields,
+    classes, exclusions, the cache copies at -12 dBFS, the pools, the previews, the no-op rebuild, ban and pin
+    through rebuilds, an unknown override line, a new and a removed file, --check, the failed call and
+    --no-model. Section 2 checks the committed map of styles/sfx/: coverage, fields, no pool over 8, every cue
+    type 3 or more or named in build/HUMAN_TODO.md, previews, and a rebuild with the fake claude in error mode
+    that must make no call and leave the map as it is. The real indexer ran once in the build; its answers live
+    in the committed map.
+191. **Earlier milestones touched by M8:** config.json (M1: sfx.build and the preflight entry), the banner
+    assertions in test-m1 and test-m2 (M2: the repo's map exists now, so `sfx map: N files` is accepted beside
+    `not built`), pipeline/stages/11-sfx/CONTRACT.md (M2: the map's contract for M11).

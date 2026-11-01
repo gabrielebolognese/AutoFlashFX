@@ -221,9 +221,36 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   one run; review 1 fix 1, build/M7/fixes-1.md). DECISIONS.md 161 to 177. Report: build/M7/report.md.
 
 ## M8 Sound effects memory map
-- Status: not started
-- Test command: `bash pipeline/tests/test-m8.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has two sections, neither calls a model: 1 builds a synthetic pack with
+  ffmpeg in the sandbox and drives build-sfx-map through every path with the fake claude answering the indexer
+  call from fixtures (the model path with the retry for a skipped id, the no-op rebuild, ban and pin through
+  rebuilds, a new and a removed file, --check, the failed call, --no-model); 2 checks the committed map of
+  styles/sfx/ (coverage, fields, pools, previews, a no-op rebuild with the fake claude in error mode). 164 checks
+  pass in about 90 seconds. M1 (96 checks) and the em dash scan pass with it; M2 was run for its banner
+  assertion.
+- Test command: `bash pipeline/tests/test-m8.sh` (`M8_SECTIONS="1"` or `"2"` for one section);
+  `bash pipeline/tests/run-all.sh` runs M1 to M8, limits and the em dash scan (about 97 minutes).
+- Notes: `bash pipeline/bin/build-sfx-map [--force] [--reclassify] [--no-model] [--check] [--quiet] [--dir DIR]`
+  over pipeline/lib/sfx/ (common.py, measure.py: ffprobe, ffmpeg decode to 48 kHz float, numpy envelope
+  analysis, ebur128 loudness and true peak, the normalized cache copy; classify.py: name rules, whoosh speed,
+  the prompt lines and the model answers; overrides.py: ban and pin; pools.py: the quality filter, fit, pools;
+  previews.py; writemap.py: sfx-map.json and SFX-MAP.md; sfxmap.py: the CLI steps plan, measure,
+  classify-plan, build, check). The pack styles/sfx/ (106 files): 93 mapped, 13 excluded with reasons, 12
+  waiting for the user's pin (model confidence under 0.6), 27 files classified by one haiku call (cached in the
+  map), pools of 8 for the whoosh, click, pop and number cue types, stamp 4, notification 4, success 3, typing 2
+  and negative 2 (short: HUMAN_TODO). Thresholds in config sfx.build (DECISIONS.md 181, 182, 185). A rebuild of
+  an unchanged folder is a no-op (folder hash, overrides hash, settings hash) and never calls a model; a changed
+  folder measures only the new and changed files. Outputs: styles/sfx/sfx-map.json, SFX-MAP.md, overrides.txt
+  (tracked), previews/<cue type>.wav and .txt, .cache/<id>-<slug>.wav (ignored). The prompt
+  pipeline/stages/_prompts/classify-sfx.md with classify-sfx.schema.json; the map's schema
+  pipeline/lib/sfx/map.schema.json. Earlier milestones touched: config.json (sfx.build, the warn-level preflight
+  entry for the map), test-m1 and test-m2 (the banner accepts `sfx map: N files`), 11-sfx/CONTRACT.md (the map's
+  contract for M11). Hooks for M11: run `bash pipeline/bin/build-sfx-map --quiet` at the start of S11 (exit 1 =
+  the indexer call failed, a code error; a missing map = voice only plus a flag); pick from `pools[<cue>]` (best
+  fit first, pinned first), place whooshes by `peak_s` and the rest by `onset_s`, mix the `cache` copy (gain
+  already applied, peak -12 dBFS, same timeline as the original); `short_pools` lists the thin ones. Hooks for
+  M9: the cue type names and descriptions live in pipeline/lib/sfx/common.py CUE_TYPES (the components' declared
+  sound events use the same twelve names). DECISIONS.md 178 to 191. Report: build/M8/report.md.
 
 ## M9 Motion library
 - Status: not started
