@@ -4,8 +4,10 @@
 # and the real faster-whisper; sections 1 and 2 use the fake workers in pipeline/tests/fakes (no engine, no model).
 #   bash pipeline/tests/test-m7.sh                    everything (5 to 15 minutes, dominated by the real S8)
 #   M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh  only those sections (no engine, no model, a few minutes)
-#   M7_FREEZE=1 bash pipeline/tests/test-m7.sh        also copy the real 08-voiceover JSON outputs into
-#                                                    pipeline/tests/fixtures/runs/test-idea/ (the wavs stay out of git)
+#   M7_FREEZE=1 bash pipeline/tests/test-m7.sh        also copy the real 08-voiceover outputs (words.json,
+#                                                    words_hook2.json, voiceover.json, vo.wav, vo_hook2.wav) into
+#                                                    pipeline/tests/fixtures/runs/test-idea/; the wavs stay out of git
+#                                                    (*.wav) and section 3 adds them whenever they are missing
 #
 # Covers (BUILD_SPEC.md section 12, M7, and PLAN.md M7):
 #   1. units, no engine: engine.txt parsing (the full block, missing lines, a missing file, another engine, bad
@@ -381,6 +383,7 @@ fi
 # ----------------------------------------------------------------------------------------------------------------
 if want 3; then
 section "3. S8 on the frozen script with the real Kokoro and faster-whisper (a few minutes)"
+fails_before_3="$FAIL_N"
 sandbox_init --with-pipeline
 fake_claude_off; fake_voice_off
 mkdir -p "$SANDBOX/library/voice"
@@ -477,12 +480,48 @@ sys.exit(0 if abs(got - est) / est <= 0.15 or w.get("flags") else 1)
 EOF
 assert_rc 0 $? "the total length is within 15 percent of the estimate at the configured pace (or the run carries a flag)"
 no_emdash_in "no em dash in the stage files" "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/stage.log" "$SANDBOX/logs/runner.log"
-if [ -n "${M7_FREEZE:-}" ] && [ -f "$S/words.json" ]; then
-  rm -rf "$FROZEN/08-voiceover"; mkdir -p "$FROZEN/08-voiceover"
-  cp "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$FROZEN/08-voiceover/" 2>/dev/null
-  printf 'frozen 08-voiceover JSON outputs added by M7_FREEZE=1 bash pipeline/tests/test-m7.sh on %s from %s (vo.wav and vo_hook2.wav are not tracked: run the stage to regenerate them)\n' "$(date '+%Y-%m-%d %H:%M')" "$(basename "$RD")" >> "$FROZEN/README.txt"
-  pass "frozen: 08-voiceover JSON outputs copied to pipeline/tests/fixtures/runs/test-idea/"
+# The frozen 08-voiceover fixtures (PLAN.md M7; M9 and M10 render the golden reel against them) are the five outputs
+# of one run: words.json, words_hook2.json, voiceover.json, vo.wav and vo_hook2.wav. The wavs are ignored by git
+# (*.wav), so a fresh clone has only the JSON: when the section 3 run passed, the wavs are added whenever they are
+# missing (alone when the run's words.json and words_hook2.json equal the frozen ones, else all five files together,
+# so the audio and the timestamps always come from the same run); M7_FREEZE=1 refreshes all five.
+FROZEN_VO="$FROZEN/08-voiceover"
+same_json() { python -c 'import json, sys; sys.exit(0 if json.load(open(sys.argv[1], encoding="utf-8")) == json.load(open(sys.argv[2], encoding="utf-8")) else 1)' "$1" "$2" 2>/dev/null; }
+if [ "$FAIL_N" -eq "$fails_before_3" ] && [ -f "$S/words.json" ] && [ -f "$S/words_hook2.json" ] && [ -f "$S/voiceover.json" ] && [ -f "$S/vo.wav" ] && [ -f "$S/vo_hook2.wav" ]; then
+  freeze=""
+  if [ -n "${M7_FREEZE:-}" ]; then freeze=all
+  elif [ ! -f "$FROZEN_VO/vo.wav" ] || [ ! -f "$FROZEN_VO/vo_hook2.wav" ]; then
+    if same_json "$FROZEN_VO/words.json" "$S/words.json" && same_json "$FROZEN_VO/words_hook2.json" "$S/words_hook2.json"; then freeze=wavs; else freeze=all; fi
+  fi
+  case "$freeze" in
+    all)
+      rm -rf "$FROZEN_VO"; mkdir -p "$FROZEN_VO"
+      cp "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/vo.wav" "$S/vo_hook2.wav" "$FROZEN_VO/"
+      printf 'frozen 08-voiceover outputs added by %sbash pipeline/tests/test-m7.sh on %s from %s (vo.wav and vo_hook2.wav are kept out of git by *.wav; test-m7 section 3 regenerates them when they are missing)\n' "${M7_FREEZE:+M7_FREEZE=1 }" "$(date '+%Y-%m-%d %H:%M')" "$(basename "$RD")" >> "$FROZEN/README.txt"
+      pass "frozen: the five 08-voiceover outputs (JSON and wavs) copied to pipeline/tests/fixtures/runs/test-idea/${M7_FREEZE:+ (M7_FREEZE)}"
+      [ -n "${M7_FREEZE:-}" ] || printf '    NOTE: the frozen wavs were missing and this run%ss words.json differs from the frozen one, so the JSON fixtures were refreshed too: commit pipeline/tests/fixtures/runs/test-idea/08-voiceover/ (git status shows the change)\n' "'" ;;
+    wavs)
+      cp "$S/vo.wav" "$S/vo_hook2.wav" "$FROZEN_VO/"
+      pass "frozen: vo.wav and vo_hook2.wav added to pipeline/tests/fixtures/runs/test-idea/08-voiceover/ (this run's words.json equals the frozen one)" ;;
+  esac
 fi
+# whatever happened above, the fixture must be usable by M9 and M10: both wavs present and as long as their words.json says
+frozen_check="$(python - "$FROZEN_VO" <<'EOF_FROZEN'
+import json, os, sys, wave
+d = sys.argv[1]; bad = []; out = []
+for wav, js in (("vo.wav", "words.json"), ("vo_hook2.wav", "words_hook2.json")):
+    wp, jp = os.path.join(d, wav), os.path.join(d, js)
+    if not os.path.isfile(wp): bad.append(f"{wav} missing"); continue
+    if not os.path.isfile(jp): bad.append(f"{js} missing"); continue
+    with wave.open(wp, "rb") as w: ms = round(w.getnframes() * 1000 / w.getframerate())
+    want = json.load(open(jp, encoding="utf-8"))["duration_ms"]
+    out.append(f"{wav} {ms} ms, {js} says {want} ms")
+    if abs(ms - want) > 10: bad.append(f"{wav} is {ms} ms but {js} says {want} ms")
+print("; ".join(out + bad))
+sys.exit(1 if bad else 0)
+EOF_FROZEN
+)"; rc=$?
+assert_rc 0 $rc "the frozen fixtures hold vo.wav and vo_hook2.wav as long as their words.json says, within 10 ms ($frozen_check; rerun with M7_FREEZE=1 to refresh all five)"
 fi
 
 test_summary

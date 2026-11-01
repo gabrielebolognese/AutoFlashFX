@@ -12,7 +12,7 @@
   "breath_after_hook_s": 1.0
  },
  "engine_file": {
-  "path": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/library/voice/engine.txt",
+  "path": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/library/voice/engine.txt",
   "status": "defaults-unsupported",
   "notes": [
    "library/voice/engine.txt names engine 'turbo'; this pipeline voices every reel with kokoro af_bella (BUILD_SPEC.md 2.5) and uses the defaults (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook) until the file is rewritten with the kokoro block"
@@ -21,8 +21,8 @@
  "interpreters": {
   "tts": "C:/Users/there/venvs/kokoro/Scripts/python.exe",
   "whisper": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
-  "tts_worker": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/pipeline/lib/tts/kokoro_worker.py",
-  "whisper_worker": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/pipeline/lib/tts/whisper_worker.py"
+  "tts_worker": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/pipeline/lib/tts/kokoro_worker.py",
+  "whisper_worker": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/pipeline/lib/tts/whisper_worker.py"
  },
  "whisper_model": "small",
  "thresholds": {
@@ -48,7 +48,7 @@
     {
      "attempt": 1,
      "tts": "Why your Claude Code cards all look identical.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b1.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b1.a1.wav",
      "duration_s": 2.41,
      "raw_s": 3.45,
      "wer_pct": 0.0,
@@ -66,7 +66,7 @@
    "heard": [],
    "duration_s": 2.41,
    "raw_s": 3.45,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b1.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b1.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Why your Claude Code cards all look identical.",
@@ -91,11 +91,11 @@
     {
      "word": "Claude",
      "start": 0.24,
-     "end": 0.56
+     "end": 0.54
     },
     {
      "word": "code",
-     "start": 0.56,
+     "start": 0.54,
      "end": 0.74
     },
     {
@@ -130,11 +130,11 @@
     {
      "attempt": 1,
      "tts": "You ship Claude Code client sites. Clients spot it instantly.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b2.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b2.a1.wav",
      "duration_s": 3.08,
      "raw_s": 5.325,
      "wer_pct": 0.0,
-     "heard": "You ship Claude Code client sites. Clients spot it instantly.",
+     "heard": "You ship Claude code client sites. Clients spot it instantly.",
      "misheard": [],
      "steps": []
     }
@@ -148,7 +148,7 @@
    "heard": [],
    "duration_s": 3.08,
    "raw_s": 5.325,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b2.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b2.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "You ship Claude Code client sites. Clients spot it instantly.",
@@ -158,7 +158,7 @@
    "estimate_s": 2.99,
    "shortened": 1,
    "removed_s": 2.245,
-   "heard_text": "You ship Claude Code client sites. Clients spot it instantly.",
+   "heard_text": "You ship Claude code client sites. Clients spot it instantly.",
    "transcript": [
     {
      "word": "You",
@@ -176,7 +176,7 @@
      "end": 0.68
     },
     {
-     "word": "Code",
+     "word": "code",
      "start": 0.68,
      "end": 0.88
     },
@@ -203,11 +203,11 @@
     {
      "word": "it",
      "start": 2.4,
-     "end": 2.54
+     "end": 2.52
     },
     {
      "word": "instantly.",
-     "start": 2.54,
+     "start": 2.52,
      "end": 2.88
     }
    ]
@@ -222,7 +222,7 @@
     {
      "attempt": 1,
      "tts": "Anthropic's skill file names it: rounded cards, one radius, same grey shadow.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b3.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b3.a1.wav",
      "duration_s": 4.65,
      "raw_s": 6.075,
      "wer_pct": 0.0,
@@ -240,7 +240,7 @@
    "heard": [],
    "duration_s": 4.65,
    "raw_s": 6.075,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b3.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b3.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Anthropic's skill file names it: rounded cards, one radius, same grey shadow.",
@@ -279,17 +279,17 @@
     },
     {
      "word": "Rounded",
-     "start": 1.7,
+     "start": 1.72,
      "end": 2.0
     },
     {
      "word": "cards,",
      "start": 2.0,
-     "end": 2.36
+     "end": 2.34
     },
     {
      "word": "one",
-     "start": 2.78,
+     "start": 2.76,
      "end": 2.96
     },
     {
@@ -324,7 +324,7 @@
     {
      "attempt": 1,
      "tts": "It's not your fault. Anthropic calls it distributional convergence.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b4.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b4.a1.wav",
      "duration_s": 3.64,
      "raw_s": 5.825,
      "wer_pct": 0.0,
@@ -342,7 +342,7 @@
    "heard": [],
    "duration_s": 3.64,
    "raw_s": 5.825,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b4.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b4.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "It's not your fault. Anthropic calls it distributional convergence.",
@@ -372,16 +372,16 @@
     {
      "word": "fault.",
      "start": 0.42,
-     "end": 0.7
+     "end": 0.72
     },
     {
      "word": "Anthropic",
      "start": 0.96,
-     "end": 1.46
+     "end": 1.48
     },
     {
      "word": "calls",
-     "start": 1.46,
+     "start": 1.48,
      "end": 1.92
     },
     {
@@ -397,7 +397,7 @@
     {
      "word": "convergence.",
      "start": 2.9,
-     "end": 3.4
+     "end": 3.42
     }
    ]
   },
@@ -411,7 +411,7 @@
     {
      "attempt": 1,
      "tts": "Even Anthropic's terracotta on cream is flagged as an AI look.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b5.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b5.a1.wav",
      "duration_s": 3.63,
      "raw_s": 4.95,
      "wer_pct": 0.0,
@@ -429,7 +429,7 @@
    "heard": [],
    "duration_s": 3.63,
    "raw_s": 4.95,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b5.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b5.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Even Anthropic's terracotta on cream is flagged as an AI look.",
@@ -508,7 +508,7 @@
     {
      "attempt": 1,
      "tts": "One accented headline word. All caps labels. Fake one, two, three.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b6.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b6.a1.wav",
      "duration_s": 3.77,
      "raw_s": 7.3,
      "wer_pct": 0.0,
@@ -526,7 +526,7 @@
    "heard": [],
    "duration_s": 3.77,
    "raw_s": 7.3,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b6.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b6.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "One accented headline word. All caps labels. Fake one, two, three.",
@@ -546,11 +546,11 @@
     {
      "word": "accented",
      "start": 0.18,
-     "end": 0.74
+     "end": 0.72
     },
     {
      "word": "headline",
-     "start": 0.74,
+     "start": 0.72,
      "end": 1.04
     },
     {
@@ -571,7 +571,7 @@
     {
      "word": "labels.",
      "start": 1.98,
-     "end": 2.4
+     "end": 2.38
     },
     {
      "word": "Fake",
@@ -585,7 +585,7 @@
     },
     {
      "word": "two,",
-     "start": 3.22,
+     "start": 3.2,
      "end": 3.34
     },
     {
@@ -605,7 +605,7 @@
     {
      "attempt": 1,
      "tts": "With it on, Claude plans four to six hex colors, reviews, then codes.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b7.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b7.a1.wav",
      "duration_s": 4.06,
      "raw_s": 5.275,
      "wer_pct": 0.0,
@@ -623,7 +623,7 @@
    "heard": [],
    "duration_s": 4.06,
    "raw_s": 5.275,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b7.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b7.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "With it on, Claude plans four to six hex colors, reviews, then codes.",
@@ -712,11 +712,11 @@
     {
      "attempt": 1,
      "tts": "Anthropic verified. Over a million installs as of November.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b8.a1.wav",
-     "duration_s": 3.13,
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b8.a1.wav",
+     "duration_s": 3.12,
      "raw_s": 5.775,
      "wer_pct": 0.0,
-     "heard": "Anthropic verified, over a million, installs as of November.",
+     "heard": "Anthropic Verified over a million installs as of November.",
      "misheard": [],
      "steps": []
     }
@@ -728,9 +728,9 @@
    "wer_pct": 0.0,
    "misheard": [],
    "heard": [],
-   "duration_s": 3.13,
+   "duration_s": 3.12,
    "raw_s": 5.775,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b8.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b8.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Anthropic verified. Over a million installs as of November.",
@@ -739,8 +739,8 @@
    "syllables": 18,
    "estimate_s": 4.14,
    "shortened": 2,
-   "removed_s": 2.645,
-   "heard_text": "Anthropic verified, over a million, installs as of November.",
+   "removed_s": 2.655,
+   "heard_text": "Anthropic Verified over a million installs as of November.",
    "transcript": [
     {
      "word": "Anthropic",
@@ -748,44 +748,44 @@
      "end": 0.38
     },
     {
-     "word": "verified,",
+     "word": "Verified",
      "start": 0.38,
-     "end": 0.92
+     "end": 1.02
     },
     {
      "word": "over",
-     "start": 1.16,
-     "end": 1.28
+     "start": 1.02,
+     "end": 1.26
     },
     {
      "word": "a",
-     "start": 1.28,
-     "end": 1.42
+     "start": 1.26,
+     "end": 1.4
     },
     {
-     "word": "million,",
-     "start": 1.42,
+     "word": "million",
+     "start": 1.4,
      "end": 1.64
     },
     {
      "word": "installs",
-     "start": 1.9,
-     "end": 2.52
+     "start": 1.64,
+     "end": 2.5
     },
     {
      "word": "as",
-     "start": 2.52,
-     "end": 2.62
+     "start": 2.5,
+     "end": 2.6
     },
     {
      "word": "of",
-     "start": 2.62,
+     "start": 2.6,
      "end": 2.7
     },
     {
      "word": "November.",
      "start": 2.7,
-     "end": 3.04
+     "end": 3.02
     }
    ]
   },
@@ -799,7 +799,7 @@
     {
      "attempt": 1,
      "tts": "Type slash plugin install frontend design at claude plugins official. Pick a scope.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b9.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b9.a1.wav",
      "duration_s": 4.53,
      "raw_s": 6.9,
      "wer_pct": 0.0,
@@ -817,7 +817,7 @@
    "heard": [],
    "duration_s": 4.53,
    "raw_s": 6.9,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b9.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b9.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Type slash plugin install frontend design at claude plugins official. Pick a scope.",
@@ -832,11 +832,11 @@
     {
      "word": "Type",
      "start": 0.0,
-     "end": 0.2
+     "end": 0.18
     },
     {
      "word": "slash",
-     "start": 0.2,
+     "start": 0.18,
      "end": 0.46
     },
     {
@@ -852,11 +852,11 @@
     {
      "word": "install",
      "start": 1.04,
-     "end": 1.44
+     "end": 1.4
     },
     {
      "word": "frontend",
-     "start": 1.44,
+     "start": 1.4,
      "end": 2.06
     },
     {
@@ -916,7 +916,7 @@
     {
      "attempt": 1,
      "tts": "Then it turns on by itself when you ask for frontend work.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b10.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b10.a1.wav",
      "duration_s": 2.89,
      "raw_s": 4.15,
      "wer_pct": 0.0,
@@ -934,7 +934,7 @@
    "heard": [],
    "duration_s": 2.89,
    "raw_s": 4.15,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b10.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b10.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Then it turns on by itself when you ask for frontend work.",
@@ -1023,7 +1023,7 @@
     {
      "attempt": 1,
      "tts": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b11.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b11.a1.wav",
      "duration_s": 3.53,
      "raw_s": 6.975,
      "wer_pct": 0.0,
@@ -1041,7 +1041,7 @@
    "heard": [],
    "duration_s": 3.53,
    "raw_s": 6.975,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/b11.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/b11.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
@@ -1115,7 +1115,7 @@
     {
      "attempt": 1,
      "tts": "Five AI looks to avoid. One is Anthropic's.",
-     "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/hook2.a1.wav",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/hook2.a1.wav",
      "duration_s": 2.43,
      "raw_s": 4.725,
      "wer_pct": 0.0,
@@ -1133,7 +1133,7 @@
    "heard": [],
    "duration_s": 2.43,
    "raw_s": 4.725,
-   "wav": "C:/Users/there/AppData/Local/Temp/tmp.sJFxFqZLgk/runs/2026-11-01_1350_claude-codes-frontend-design-skill/08-voiceover/lines/hook2.a1.wav",
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.yyPB5fXCLd/runs/2026-11-01_1436_claude-codes-frontend-design-skill/08-voiceover/lines/hook2.a1.wav",
    "flag_text": "",
    "steps": [],
    "tts": "Five AI looks to avoid. One is Anthropic's.",
@@ -1189,24 +1189,24 @@
   }
  ],
  "timing": {
-  "tts_wall_s": 52.27,
-  "tts_load_s": 15.68,
-  "tts_synth_s": 35.05,
-  "tts_tighten_s": 0.09,
-  "align_wall_s": 44.81,
-  "align_model_load_s": 1.78,
-  "loudness_s": 5.75,
+  "tts_wall_s": 41.24,
+  "tts_load_s": 11.45,
+  "tts_synth_s": 28.45,
+  "tts_tighten_s": 0.05,
+  "align_wall_s": 38.01,
+  "align_model_load_s": 1.57,
+  "loudness_s": 5.88,
   "rewrite_s": 0.0,
-  "total_s": 103.64,
+  "total_s": 85.87,
   "audio_raw_s": 66.72,
-  "speed_x_realtime": 0.525,
+  "speed_x_realtime": 0.426,
   "calls": 2
  },
  "pace": {
   "wpm": 176,
   "wpm_speech_only": 180,
   "words": 118,
-  "speech_s": 39.32,
+  "speech_s": 39.31,
   "gaps_s": 1.0
  },
  "timeline": [
@@ -1263,29 +1263,29 @@
    "id": "b8",
    "type": "proof",
    "start_ms": 26890,
-   "end_ms": 30020,
+   "end_ms": 30010,
    "start_s": 26.89
   },
   {
    "id": "b9",
    "type": "step",
-   "start_ms": 30120,
-   "end_ms": 34650,
-   "start_s": 30.12
+   "start_ms": 30110,
+   "end_ms": 34640,
+   "start_s": 30.11
   },
   {
    "id": "b10",
    "type": "payoff",
-   "start_ms": 34750,
-   "end_ms": 37640,
-   "start_s": 34.75
+   "start_ms": 34740,
+   "end_ms": 37630,
+   "start_s": 34.74
   },
   {
    "id": "b11",
    "type": "ask",
-   "start_ms": 37740,
-   "end_ms": 41270,
-   "start_s": 37.74
+   "start_ms": 37730,
+   "end_ms": 41260,
+   "start_s": 37.73
   }
  ],
  "breath": {
@@ -1297,34 +1297,34 @@
  "loudness": {
   "vo": {
    "input": {
-    "lufs": -24.97,
-    "true_peak_dbtp": -4.35,
+    "lufs": -24.98,
+    "true_peak_dbtp": -4.73,
     "lra": 2.0,
-    "threshold": -35.06
+    "threshold": -35.05
    },
-   "lufs": -14.41,
+   "lufs": -14.35,
    "true_peak_dbtp": -1.6,
-   "gain_db": 13.51,
-   "passes": 5,
+   "gain_db": 13.66,
+   "passes": 6,
    "limiter_db": -3.15,
    "ok": true
   },
   "hook2": {
    "input": {
     "lufs": -25.64,
-    "true_peak_dbtp": -7.12,
+    "true_peak_dbtp": -7.48,
     "lra": 0.0,
     "threshold": -35.64
    },
-   "lufs": -14.2,
-   "true_peak_dbtp": -1.71,
-   "gain_db": 12.41,
+   "lufs": -14.19,
+   "true_peak_dbtp": -1.91,
+   "gain_db": 12.38,
    "passes": 2,
    "limiter_db": -2.3,
    "ok": true
   }
  },
- "duration_s": 41.47,
+ "duration_s": 41.46,
  "flags": [],
  "verdict": {
   "status": "ok",

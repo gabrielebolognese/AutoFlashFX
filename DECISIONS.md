@@ -1264,9 +1264,16 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     ladder with a respelled acronym, a rewritten word and a slow line, the flag path at 7.1 percent, the block
     path at 14.3 percent, the crash and the hang as code errors) and the real run on the frozen script (the
     files, loudness, words.json, the silence rule, 5 spot checks, the per-line WER, the speed and pace, the
-    length against the estimate; M7_FREEZE=1 copies the JSON outputs to the fixtures, the wavs stay untracked).
-    pipeline/tests/fixtures/fake/m7/07-script.rewrite-line.json is a 14-word rewrite so one garbled word stays
-    under 8 percent.
+    length against the estimate). The frozen 08-voiceover fixtures are the five outputs of one run (words.json,
+    words_hook2.json, voiceover.json, vo.wav, vo_hook2.wav): M7_FREEZE=1 refreshes all five; the wavs stay out of
+    git (*.wav) and section 3 adds them whenever they are missing, alone when the run's words.json equals the
+    frozen one and together with the JSON otherwise, so the frozen audio and timestamps always come from the same
+    run, and every full run asserts that both wavs are there and as long as their words.json says (M9 and M10
+    render the golden reel against them; build/M7/review-1.md fix 1). The same-run rule is not theory: the fix
+    batch's real run of the same script differed from the build's by 10 ms in total (b8 ended 10 ms earlier) and
+    moved 58 of 118 word timestamps by up to 260 ms (faster-whisper's word boundaries), so audio and timestamps
+    from different runs never mix. pipeline/tests/fixtures/fake/m7/07-script.rewrite-line.json is a 14-word
+    rewrite so one garbled word stays under 8 percent.
 177. **Earlier milestones touched by M7:** config.json (M1), the banner in status.sh and its assertions in
     test-m1 and test-m2 (M2), preflight.sh's new check type (M1), S5's and S7's pace source (M5, M6),
     script_checks.apply_pronunciations' slash rule and double-wrap guard (M6), tests/lib.sh (tools/ in the

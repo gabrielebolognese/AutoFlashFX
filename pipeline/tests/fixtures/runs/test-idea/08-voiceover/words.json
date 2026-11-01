@@ -3,7 +3,7 @@
  "engine": "kokoro",
  "voice": "af_bella",
  "sample_rate": 48000,
- "duration_ms": 41470,
+ "duration_ms": 41460,
  "wpm": 176,
  "whisper_model": "small",
  "beats": [
@@ -88,18 +88,18 @@
    "id": "b8",
    "type": "proof",
    "start_ms": 26890,
-   "end_ms": 30020,
+   "end_ms": 30010,
    "words": 9,
    "wer_pct": 0.0,
    "status": "ok",
    "estimate_s": 4.14,
-   "seconds": 3.13
+   "seconds": 3.12
   },
   {
    "id": "b9",
    "type": "step",
-   "start_ms": 30120,
-   "end_ms": 34650,
+   "start_ms": 30110,
+   "end_ms": 34640,
    "words": 13,
    "wer_pct": 0.0,
    "status": "ok",
@@ -109,8 +109,8 @@
   {
    "id": "b10",
    "type": "payoff",
-   "start_ms": 34750,
-   "end_ms": 37640,
+   "start_ms": 34740,
+   "end_ms": 37630,
    "words": 12,
    "wer_pct": 0.0,
    "status": "ok",
@@ -120,8 +120,8 @@
   {
    "id": "b11",
    "type": "ask",
-   "start_ms": 37740,
-   "end_ms": 41270,
+   "start_ms": 37730,
+   "end_ms": 41260,
    "words": 10,
    "wer_pct": 0.0,
    "status": "ok",
@@ -136,7 +136,7 @@
   "seconds": 1.0
  },
  "loudness": {
-  "lufs": -14.41,
+  "lufs": -14.35,
   "true_peak_dbtp": -1.6
  },
  "words": [
@@ -155,12 +155,12 @@
   {
    "word": "Claude",
    "start_ms": 290,
-   "end_ms": 610,
+   "end_ms": 590,
    "beat": "b1"
   },
   {
    "word": "Code",
-   "start_ms": 610,
+   "start_ms": 590,
    "end_ms": 790,
    "beat": "b1"
   },
@@ -239,12 +239,12 @@
   {
    "word": "it",
    "start_ms": 5860,
-   "end_ms": 6000,
+   "end_ms": 5980,
    "beat": "b2"
   },
   {
    "word": "instantly.",
-   "start_ms": 6000,
+   "start_ms": 5980,
    "end_ms": 6340,
    "beat": "b2"
   },
@@ -280,19 +280,19 @@
   },
   {
    "word": "rounded",
-   "start_ms": 8340,
+   "start_ms": 8360,
    "end_ms": 8640,
    "beat": "b3"
   },
   {
    "word": "cards,",
    "start_ms": 8640,
-   "end_ms": 9000,
+   "end_ms": 8980,
    "beat": "b3"
   },
   {
    "word": "one",
-   "start_ms": 9420,
+   "start_ms": 9400,
    "end_ms": 9600,
    "beat": "b3"
   },
@@ -341,18 +341,18 @@
   {
    "word": "fault.",
    "start_ms": 11810,
-   "end_ms": 12090,
+   "end_ms": 12110,
    "beat": "b4"
   },
   {
    "word": "Anthropic",
    "start_ms": 12350,
-   "end_ms": 12850,
+   "end_ms": 12870,
    "beat": "b4"
   },
   {
    "word": "calls",
-   "start_ms": 12850,
+   "start_ms": 12870,
    "end_ms": 13310,
    "beat": "b4"
   },
@@ -371,7 +371,7 @@
   {
    "word": "convergence.",
    "start_ms": 14290,
-   "end_ms": 14790,
+   "end_ms": 14810,
    "beat": "b4"
   },
   {
@@ -449,12 +449,12 @@
   {
    "word": "accented",
    "start_ms": 19040,
-   "end_ms": 19600,
+   "end_ms": 19580,
    "beat": "b6"
   },
   {
    "word": "headline",
-   "start_ms": 19600,
+   "start_ms": 19580,
    "end_ms": 19900,
    "beat": "b6"
   },
@@ -479,7 +479,7 @@
   {
    "word": "labels.",
    "start_ms": 20840,
-   "end_ms": 21260,
+   "end_ms": 21240,
    "beat": "b6"
   },
   {
@@ -496,7 +496,7 @@
   },
   {
    "word": "two,",
-   "start_ms": 22080,
+   "start_ms": 22060,
    "end_ms": 22200,
    "beat": "b6"
   },
@@ -593,259 +593,259 @@
   {
    "word": "verified.",
    "start_ms": 27270,
-   "end_ms": 27810,
+   "end_ms": 27910,
    "beat": "b8"
   },
   {
    "word": "Over",
-   "start_ms": 28050,
-   "end_ms": 28170,
+   "start_ms": 27910,
+   "end_ms": 28150,
    "beat": "b8"
   },
   {
    "word": "a",
-   "start_ms": 28170,
-   "end_ms": 28310,
+   "start_ms": 28150,
+   "end_ms": 28290,
    "beat": "b8"
   },
   {
    "word": "million",
-   "start_ms": 28310,
+   "start_ms": 28290,
    "end_ms": 28530,
    "beat": "b8"
   },
   {
    "word": "installs",
-   "start_ms": 28790,
-   "end_ms": 29410,
+   "start_ms": 28530,
+   "end_ms": 29390,
    "beat": "b8"
   },
   {
    "word": "as",
-   "start_ms": 29410,
-   "end_ms": 29510,
+   "start_ms": 29390,
+   "end_ms": 29490,
    "beat": "b8"
   },
   {
    "word": "of",
-   "start_ms": 29510,
+   "start_ms": 29490,
    "end_ms": 29590,
    "beat": "b8"
   },
   {
    "word": "November.",
    "start_ms": 29590,
-   "end_ms": 29930,
+   "end_ms": 29910,
    "beat": "b8"
   },
   {
    "word": "Type",
-   "start_ms": 30120,
-   "end_ms": 30320,
+   "start_ms": 30110,
+   "end_ms": 30290,
    "beat": "b9"
   },
   {
    "word": "slash",
-   "start_ms": 30320,
-   "end_ms": 30580,
+   "start_ms": 30290,
+   "end_ms": 30570,
    "beat": "b9"
   },
   {
    "word": "plugin",
-   "start_ms": 30580,
-   "end_ms": 31160,
+   "start_ms": 30570,
+   "end_ms": 31150,
    "beat": "b9"
   },
   {
    "word": "install",
-   "start_ms": 31160,
-   "end_ms": 31560,
+   "start_ms": 31150,
+   "end_ms": 31510,
    "beat": "b9"
   },
   {
    "word": "frontend",
-   "start_ms": 31560,
-   "end_ms": 32180,
+   "start_ms": 31510,
+   "end_ms": 32170,
    "beat": "b9"
   },
   {
    "word": "design",
-   "start_ms": 32180,
-   "end_ms": 32540,
+   "start_ms": 32170,
+   "end_ms": 32530,
    "beat": "b9"
   },
   {
    "word": "at",
-   "start_ms": 32540,
-   "end_ms": 32820,
+   "start_ms": 32530,
+   "end_ms": 32810,
    "beat": "b9"
   },
   {
    "word": "claude",
-   "start_ms": 32820,
-   "end_ms": 33180,
+   "start_ms": 32810,
+   "end_ms": 33170,
    "beat": "b9"
   },
   {
    "word": "plugins",
-   "start_ms": 33180,
-   "end_ms": 33560,
+   "start_ms": 33170,
+   "end_ms": 33550,
    "beat": "b9"
   },
   {
    "word": "official.",
-   "start_ms": 33560,
-   "end_ms": 34000,
+   "start_ms": 33550,
+   "end_ms": 33990,
    "beat": "b9"
   },
   {
    "word": "Pick",
-   "start_ms": 34120,
-   "end_ms": 34260,
+   "start_ms": 34110,
+   "end_ms": 34250,
    "beat": "b9"
   },
   {
    "word": "a",
-   "start_ms": 34260,
-   "end_ms": 34380,
+   "start_ms": 34250,
+   "end_ms": 34370,
    "beat": "b9"
   },
   {
    "word": "scope.",
-   "start_ms": 34380,
-   "end_ms": 34560,
+   "start_ms": 34370,
+   "end_ms": 34550,
    "beat": "b9"
   },
   {
    "word": "Then",
-   "start_ms": 34750,
-   "end_ms": 34830,
+   "start_ms": 34740,
+   "end_ms": 34820,
    "beat": "b10"
   },
   {
    "word": "it",
-   "start_ms": 34830,
-   "end_ms": 34910,
+   "start_ms": 34820,
+   "end_ms": 34900,
    "beat": "b10"
   },
   {
    "word": "turns",
-   "start_ms": 34910,
-   "end_ms": 35130,
+   "start_ms": 34900,
+   "end_ms": 35120,
    "beat": "b10"
   },
   {
    "word": "on",
-   "start_ms": 35130,
-   "end_ms": 35330,
+   "start_ms": 35120,
+   "end_ms": 35320,
    "beat": "b10"
   },
   {
    "word": "by",
-   "start_ms": 35330,
-   "end_ms": 35550,
+   "start_ms": 35320,
+   "end_ms": 35540,
    "beat": "b10"
   },
   {
    "word": "itself",
-   "start_ms": 35550,
-   "end_ms": 35930,
+   "start_ms": 35540,
+   "end_ms": 35920,
    "beat": "b10"
   },
   {
    "word": "when",
-   "start_ms": 35930,
-   "end_ms": 36230,
+   "start_ms": 35920,
+   "end_ms": 36220,
    "beat": "b10"
   },
   {
    "word": "you",
-   "start_ms": 36230,
-   "end_ms": 36330,
+   "start_ms": 36220,
+   "end_ms": 36320,
    "beat": "b10"
   },
   {
    "word": "ask",
-   "start_ms": 36330,
-   "end_ms": 36610,
+   "start_ms": 36320,
+   "end_ms": 36600,
    "beat": "b10"
   },
   {
    "word": "for",
-   "start_ms": 36610,
-   "end_ms": 36770,
+   "start_ms": 36600,
+   "end_ms": 36760,
    "beat": "b10"
   },
   {
    "word": "frontend",
-   "start_ms": 36770,
-   "end_ms": 37250,
+   "start_ms": 36760,
+   "end_ms": 37240,
    "beat": "b10"
   },
   {
    "word": "work.",
-   "start_ms": 37250,
-   "end_ms": 37530,
+   "start_ms": 37240,
+   "end_ms": 37520,
    "beat": "b10"
   },
   {
    "word": "Comment",
-   "start_ms": 37740,
-   "end_ms": 37980,
+   "start_ms": 37730,
+   "end_ms": 37970,
    "beat": "b11"
   },
   {
    "word": "TELLS",
-   "start_ms": 37980,
-   "end_ms": 38260,
+   "start_ms": 37970,
+   "end_ms": 38250,
    "beat": "b11"
   },
   {
    "word": "below.",
-   "start_ms": 38260,
-   "end_ms": 38620,
+   "start_ms": 38250,
+   "end_ms": 38610,
    "beat": "b11"
   },
   {
    "word": "I'll",
-   "start_ms": 38900,
-   "end_ms": 39000,
+   "start_ms": 38890,
+   "end_ms": 38990,
    "beat": "b11"
   },
   {
    "word": "send",
-   "start_ms": 39000,
-   "end_ms": 39220,
+   "start_ms": 38990,
+   "end_ms": 39210,
    "beat": "b11"
   },
   {
    "word": "the",
-   "start_ms": 39220,
-   "end_ms": 39360,
+   "start_ms": 39210,
+   "end_ms": 39350,
    "beat": "b11"
   },
   {
    "word": "checklist.",
-   "start_ms": 39360,
-   "end_ms": 39720,
+   "start_ms": 39350,
+   "end_ms": 39710,
    "beat": "b11"
   },
   {
    "word": "Ditch",
-   "start_ms": 40040,
-   "end_ms": 40280,
+   "start_ms": 40030,
+   "end_ms": 40270,
    "beat": "b11"
   },
   {
    "word": "identical",
-   "start_ms": 40280,
-   "end_ms": 40600,
+   "start_ms": 40270,
+   "end_ms": 40590,
    "beat": "b11"
   },
   {
    "word": "cards.",
-   "start_ms": 40600,
-   "end_ms": 41060,
+   "start_ms": 40590,
+   "end_ms": 41050,
    "beat": "b11"
   }
  ],
