@@ -416,6 +416,7 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
 2026-10-31: no fallback voice. Only Gabriele's cloned voice; failures retry, then block the idea.
 2026-11-01: reel voice = Kokoro af_bella, single voice, no fallback; silence tightened per beat (-40 dB, pauses of 0.3s or more cut to 0.1s, 1.0s breath after the hook). am_puck saved in library/voice/engine-puck.txt for later.
+2026-11-01: reels are problem-first; the solution is FlashFX, an external tool or repo, or a method, chosen per reel by the pipeline (rules in account.md).
 
 ### M3 review 1 fixes (2026-10-31)
 88. **A failed stage script is classified before any review (M3 review 1, fix 2).** BUILD_SPEC.md section 4 says

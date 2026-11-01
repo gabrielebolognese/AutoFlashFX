@@ -8,6 +8,9 @@ generated in code (motion graphics and 3D written as code, never AI video genera
 render, export. A Git Bash runner processes ideas one after another, indefinitely, and stops on its own only for
 a systemic failure (section 4).
 
+Reels are problem-first, not ads: each reel solves one real problem for the viewer with the best solution available
+(FlashFX, an external tool or GitHub repo, or a method with no product), chosen per reel in S2.
+
 I am the only user. It runs on my Windows PC with Git Bash. I start the runner and walk away.
 
 ### Hardware
@@ -123,13 +126,15 @@ runs/, exports/, logs/, styles/*/refs/, styles/*/analysis/, styles/sfx/ audio fi
 
 ### 2.3 library/profile/
 
-- account.md: who the account is for, the audience's problems, topics in and out, what I sell, my brand mark file.
+- account.md: who the account is for, the audience's problems, topics in and out, what I sell, my brand mark file,
+  and the content strategy ("Content strategy": the problem-first rules and the balance target between FlashFX,
+  external tools and methods).
 - voice.md: built from the template in the instagram-agent-skill repo (templates/voice.md): who I am, what I sound
-  like, my positions, off limits, proof I can use, the ask. Plus 3 to 5 verbatim excerpts of my real speech and my
-  measured words per minute. Build it from library/voice/memo.* (a 5 to 10 minute voice memo, transcribed with
-  faster-whisper). Keep my real English (I am not a native speaker): fix only real errors, never polish my phrasing
-  into native idioms. If there is no memo yet, draft it from the template with clear placeholders and add a
-  HUMAN_TODO.
+  like, my positions, off limits, proof I can use, how I promote, the ask. Plus 3 to 5 verbatim excerpts of my real
+  speech and my measured words per minute. Build it from library/voice/memo.* (a 5 to 10 minute voice memo,
+  transcribed with faster-whisper). Keep my real English (I am not a native speaker): fix only real errors, never
+  polish my phrasing into native idioms. If there is no memo yet, draft it from the template with clear placeholders
+  and add a HUMAN_TODO.
 - deliverables.txt: one per line, `KEYWORD | what they get | link`, or `to create` instead of a link.
 - pronunciations.txt: one per line, `word = how to say it`, for example `FlashFX = flash F X`.
 
@@ -330,7 +335,9 @@ On any failed call or script, classify in this order:
 - logs/runner.log: the readable timeline (every terminal line from section 7, plus details).
 - logs/status.txt: the latest status line, overwritten, so an interactive Claude Code session can answer "what is
   the runner doing?".
-- logs/history.txt: `date | idea | exported N`, or `dropped: reason`, or `blocked: reason`.
+- logs/history.txt: `date | idea | solution | exported N`, or `dropped: reason`, or `blocked: reason` in place of
+  `exported N`. solution is the reel's solution type (flashfx, external or method; `-` when the idea ended before S2
+  chose one), so S2 can see the balance.
 - logs/limits.log: every limit wait with its target time.
 
 ## 5. Pipeline stages
@@ -362,25 +369,43 @@ that it counts as a code error.
     width, each with URL and date.
   - pitfalls: requirements, costs, what does not work.
   - "one specific true thing" candidates: the concrete number, result or demo the reel can stand on.
+  - solution candidates: the best available ways to solve the idea's problem (external tools and GitHub repos with
+    name and URL, methods with no product), each with its sources. When the idea names its solution, research that
+    one first.
 - Rules: never invent anything; if a key fact cannot be verified, say so; do not get around sites that block
   automated access.
 
 ### S2 Expansion (session A, model: research)
 - Write 02-expansion/expansion.md, 500 to 1500 characters, containing:
   - the viewer's problem as one first-person sentence, and the solution
+  - the solution decision with its reason: `flashfx`, `external` (name and URL from facts.md) or `method` (also
+    written to 02-expansion/solution.json: type, name, url, reason, for the later stages and the history line)
   - the share driver: a specific identity ("if you edit reels for clients") plus a takeaway worth forwarding
-  - the comment keyword and its deliverable: from deliverables.txt, or a concretely described new one marked NEW
+  - the comment keyword and its deliverable, following the solution: FLASH for FlashFX, LINK for an external tool
+    or repo (the deliverable is its link), otherwise the deliverable that fits, from deliverables.txt or a
+    concretely described new one marked NEW
   - the one specific true thing
   - evidence lines pointing to facts.md
+- Choosing the solution follows account.md's content strategy:
+  - if the idea names the solution, use it
+  - FlashFX only when it genuinely solves the problem and every FlashFX claim is in voice.md "Proof I can use"
+  - otherwise the best solution in facts.md: an external tool or repo, or a method
+  - read the recent lines of logs/history.txt (their solution types) to keep the balance target in account.md
+  - when account.md has no content strategy yet, use these rules with no balance target
 
 ### S3 Idea gate (fresh session B, model: gate)
 - Score 0 to 3, quoting the evidence:
   - **P**, problem to solution
   - **S**, share driver
   - **C**, comment trigger (keyword plus a realistic deliverable)
-  - **F**, facts: every claim the reel will make is in facts.md, and the core fact is verified
-- Pass: P, S and C at least 2, and F passes.
+  - **F**, facts: every claim the reel will make is in facts.md (claims about FlashFX: in voice.md "Proof I can
+    use"), and the core fact is verified
+  - **H**, honesty (pass or fail): the chosen solution really solves the stated problem, and FlashFX is not forced
+    (it fails when FlashFX is chosen where it does not solve the problem, or with a claim missing from "Proof I can
+    use")
+- Pass: P, S and C at least 2, F passes and H passes.
 - P, S or C failing: go to S4, at most 2 rounds.
+- H failing: not a drop. Go to S4 to pick the better solution, inside the same 2 angle rounds.
 - F failing (the tool does not do what the idea assumes, it is deprecated, or the claims cannot be verified): drop
   immediately.
 - Still failing after 2 angle rounds: drop.
@@ -391,6 +416,8 @@ that it counts as a code error.
 
 ### S4 Angle research (session A resumed, model: research)
 - Gets gate.json. Can research more. Rewrites expansion.md, then the idea goes back to S3.
+- When H failed, it decides the solution again with the S2 rules (the better solution for the problem, and the
+  keyword that follows it) and rewrites solution.json.
 
 ### S5 Hooks (session A resumed, model: research)
 - Inputs: library/.hooks.index.json, the stats file, and the vendor hooks.json (26 formulas, as extra shapes).
@@ -415,8 +442,13 @@ that it counts as a code error.
    reasons. Update the stats.
 
 ### S7 Script (fresh session D, model: script; cut pass: model cut)
-- Inputs: brief.md, facts.md, hook 1, voice.md, pronunciations.txt, the style's beat map, the length rules in
-  tweaks.md.
+- Inputs: brief.md, facts.md, solution.json, hook 1, voice.md, pronunciations.txt, the style's beat map, the length
+  rules in tweaks.md.
+- **The solution:**
+  - when the solution is not FlashFX, the script does not mention FlashFX
+  - when it is FlashFX, show it solving the problem with no ad language (no pitch, no hype), the way any other tool
+    would be shown
+  - never say or imply the reel itself was made in FlashFX (reels are rendered with HyperFrames)
 - **Structure:**
   1. hook, 0 to 2s, with the spoken line and the on-screen line written separately
   2. stake, 2 to 7s: the viewer's pain with a specific identity (this is the share driver)
@@ -435,13 +467,15 @@ that it counts as a code error.
     length
   - vendor humanize.py, then detect.py must PASS (overall 70 or more, no check under 55)
   - zero `{{placeholders}}`
-  - every claim maps to facts.md (checks model)
+  - every claim maps to facts.md, or to voice.md "Proof I can use" for FlashFX (checks model)
   - one ask only, and all 3 requirements present
+  - the solution rules: no FlashFX mention unless the solution is flashfx (scripted); no ad language and nothing
+    implying the reel was made in FlashFX (checks model)
 - **Pick:** a pairwise judge chooses between the two drafts ("would he say this out loud to a friend?"), with the
   voice.md excerpts as reference.
 - **Loop:** up to 3 rewrite rounds with the failing checks as feedback. Hard failures still there after 3 rounds
-  (facts, placeholders, a missing requirement): block the idea. Soft failures (detect score, timing within 15%):
-  continue with a NEEDS REVIEW flag.
+  (facts, placeholders, a missing requirement, a broken solution rule): block the idea. Soft failures (detect
+  score, timing within 15%): continue with a NEEDS REVIEW flag.
 - Output: 07-script/script.json. Each beat has: type, display, spoken, emphasis words, and the on-screen card text
   (6 words or fewer).
 
@@ -592,6 +626,8 @@ An invalid pass gets one retry with the validator errors, then the review path.
 ### S14 Caption and export
 - Write the caption from the brief and the script: the first line is the hook, in 125 characters or fewer (where the
   feed cuts it off); one ask (the keyword); at most 5 hashtags.
+- The caption follows the same solution rules as S7 (no FlashFX mention unless the solution is FlashFX, no ad
+  language, never implying the reel was made in FlashFX).
 - Run the vendor caption.py lint and humanize.py on it.
 - Export as described in section 8.
 
@@ -653,7 +689,7 @@ When there is no idea:
 ```
 [14:00] START  idea 2/5 "Claude Code's frontend-design skill..." -> runs/2026-10-31_1400_frontend-design
 [14:03] STEP   researching facts done (2m51s) -> expanding idea
-[14:09] GATE   passed (P3 S2 C3 F ok)
+[14:09] GATE   passed (P3 S2 C3 F ok H ok)
 [14:09] ANGLE  gate failed (S1): finding a better angle, round 1/2
 [14:23] FLAG   needs review: soft script check failed (detect 64)
 [14:31] LIMIT  session limit hit, resuming at 15:47 (+2 min margin)
@@ -694,6 +730,9 @@ HASHTAGS
 COMMENT KEYWORD
 <KEYWORD> -> DM them: <deliverable> <link>
 <only when the deliverable doesn't exist yet: NEW deliverable to create before posting: ...>
+
+SOLUTION
+<flashfx | external: name link | method>
 
 HOOKS
 N.mp4 uses: "<hook 1>"
@@ -818,8 +857,13 @@ Keep it short and current:
   - Test: on the test idea's draft, every sound lands within 1 frame of its event, loudness passes, the edit review
     runs, and a planted [text] issue routes back to 9b and the stages after it run again.
 - **M12 Final render, caption, export, end to end (S13, S14).**
+  - Also builds the problem-first solution choice into the stages built in M4 and M6: S1's solution candidates, S2's
+    solution decision and keyword, S3's honesty check H, S4's new pick, S7's solution rules; plus the SOLUTION block
+    (section 8) and the solution type in history lines (4.3).
   - Test: the test idea produces exports/1/1.mp4, 1captions.txt and 1hook2.mp4, every ffprobe check passes, and the
-    idea is gone from ideas.txt.
+    idea is gone from ideas.txt. 1captions.txt has the SOLUTION block and the history line has the solution type. A
+    fixture idea with a forced FlashFX solution goes to S4 and comes back with another solution (not dropped); with
+    a non-FlashFX solution, script.json and the caption never mention FlashFX.
 - **M13 Hardening.**
   - Test: 3 ideas back to back, unattended; a simulated limit in the middle of a run; the logs and status lines tell
     the full story.

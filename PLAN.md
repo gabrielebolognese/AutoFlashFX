@@ -151,7 +151,7 @@ Creates:
 - `pipeline/lib/export.sh`: assemble in `runs/<id>/export/`, compute N under `.locks/exports` as the highest number
   in exports/ plus 1, move the folder into `exports/N/` in one step, write the history line, remove the idea.
 - `pipeline/lib/history.sh`: logs/history.txt lines (`date | idea | exported N`, `dropped: reason`,
-  `blocked: reason`), logs/blocked.txt.
+  `blocked: reason`; M12 adds the solution type, spec 4.3), logs/blocked.txt.
 - `pipeline/stages/<every stage>/dummy.sh`, a first `CONTRACT.md` and `schema.json` per stage (the real content
   arrives with each stage's milestone, but the folder set and the schema file names are fixed here).
 - `pipeline/bin/runner-status` (prints logs/status.txt and the last 20 lines of runner.log).
@@ -547,6 +547,14 @@ Creates:
   through M2's export.sh (assemble, number, move in one step, delete the idea, history line).
 - `run.sh` wired end to end with the real stages as the default (`REELS_DUMMY` unset).
 - Activities "rendering final video", "rendering hook 2 clip", "writing caption", "exporting #7"; the DONE line.
+- Problem-first reels (spec section 0, S1 to S4, S7, S14), retrofitted into the stages of M4 and M6: S1's solution
+  candidates in facts.md; S2's solution decision with its reason in expansion.md and `02-expansion/solution.json`
+  (type flashfx, external or method, name, url, reason), chosen by account.md's content strategy and the recent
+  solution types in logs/history.txt, with the keyword that follows it (FLASH, LINK, or the deliverable that fits);
+  S3's honesty check H (the solution solves the problem, FlashFX not forced; a fail goes to S4 inside the 2 angle
+  rounds, never a drop); S4's new pick; S7's and the caption's solution rules (no FlashFX mention unless chosen, no
+  ad language, never implying the reel was made in FlashFX) as checks; the SOLUTION block in Ncaptions.txt;
+  history.sh lines with the solution type (`date | idea | solution | exported N`, `-` before S2).
 - Tests: `pipeline/tests/test-m12.sh`.
 
 Acceptance test: `bash pipeline/tests/test-m12.sh`
@@ -554,10 +562,12 @@ Acceptance test: `bash pipeline/tests/test-m12.sh`
   `exports/1/1.mp4`, `exports/1/1captions.txt` and `exports/1/1hook2.mp4`.
 - ffprobe: 1080x1920, 30 fps, h264 High profile, yuv420p, aac at 48000 Hz, duration equal to vo.wav within 0.2 s;
   loudness -14 LUFS plus or minus 1 and true peak at most -1.5 dBTP; the hook 2 clip is 3.5 s or shorter with audio.
-- 1captions.txt has the sections CAPTION, HASHTAGS (5 or fewer), COMMENT KEYWORD, HOOKS, FACTS AND SOURCES and RUN
-  in order, NEEDS REVIEW only when state.json has flags, the first line is hook 1 and is 125 characters or fewer,
-  caption.py reports no FAIL, no em dash anywhere.
-- The idea is gone from ideas.txt, history.txt has its exported line, the run folder is kept.
+- 1captions.txt has the sections CAPTION, HASHTAGS (5 or fewer), COMMENT KEYWORD, SOLUTION, HOOKS, FACTS AND
+  SOURCES and RUN in order, NEEDS REVIEW only when state.json has flags, the first line is hook 1 and is 125
+  characters or fewer, caption.py reports no FAIL, no em dash anywhere.
+- The idea is gone from ideas.txt, history.txt has its exported line with the solution type, the run folder is kept.
+- With the fake claude: an idea with a forced FlashFX solution fails H, goes to S4 and comes back with another
+  solution (never dropped for it); with a non-FlashFX solution, script.json and the caption never mention FlashFX.
 - Runtime: 1 to 3 hours (the full pipeline, CPU voice, real reviews).
 
 ## M13 Hardening
