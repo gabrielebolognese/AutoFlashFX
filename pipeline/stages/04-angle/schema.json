@@ -1,26 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/04-angle/angle.json",
-  "title": "04-angle angle.json (first version, M2)",
+  "title": "04-angle angle.json (M4): one angle round, written by the stage after the expansion was rewritten",
   "type": "object",
-  "required": [
-    "round",
-    "change",
-    "keeps_core_topic"
-  ],
+  "required": ["round", "change", "keeps_core_topic"],
   "properties": {
-    "round": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "previous_scores": {
-      "type": "object"
-    },
-    "change": {
-      "type": "string"
-    },
-    "keeps_core_topic": {
-      "type": "boolean"
-    }
+    "round": {"type": "integer", "minimum": 1},
+    "gate_round": {},
+    "previous_scores": {"type": "object"},
+    "previous_failing": {"type": "array", "items": {"type": "string"}},
+    "change": {"type": "string"},
+    "keeps_core_topic": {"type": "boolean"},
+    "new_claims": {"type": "integer", "minimum": 0},
+    "expansion_chars": {"type": "integer"},
+    "written": {"type": "string"},
+    "checked": {"type": "string"}
   }
 }

@@ -569,3 +569,130 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     runner.log, status.txt, history.txt, blocked.txt, state.json, E1.msg, F1.md, F1.result.json and E1.md's error
     line finds no U+2014 while stage.log and E1.md's log excerpt still hold it), test-m3 section 3 (the same message
     through ai(): AI_ERROR, runner.log and error.json clean) and test-limits.sh (the classifier's message).
+
+## M4 (2026-11-01)
+
+### Stages S1 to S4
+95. **The model scores and writes fields; the code decides and renders the files.** Every M4 stage has two
+    schemas: model.schema.json (what the model answers with `--json-schema`, kept to types, enums and required
+    lists, because the CLI's structured-output validator is not given patterns or lengths) and schema.json (the
+    stage's primary output, validated by the runner). pipeline/lib/research.py, expansion.py and gate.py render
+    research.json, facts.md, numbers.json, assets.json, expansion.json, expansion.md and gate.json from the model's
+    answer, so the format never depends on the model, every text is cleaned of em dashes at the source
+    (errors.undash) and of CR characters, and the rules of spec S2 and S3 (the pass thresholds, F forced to fail on
+    a false or unverified core claim, the angle cap, the different-topic drop) live in Python with unit tests
+    (test-m4 section 1). A stage's own quality loop (an expansion that breaks a rule) asks the model again in the
+    same session with the exact problems; only a model call that fails or an answer still invalid after ai()'s one
+    schema retry is a code error.
+96. **Session A and the reseed (pipeline/lib/session.sh).** `session_call KEY ROLE STAGE_DIR PROMPT [ai options]`
+    wraps ai() with `--session A`; when ai() returns 3 (the stored session no longer exists) it forgets the id and
+    calls again in a new session whose prompt starts with the prompt's own header lines (# Role, # Stage), then the
+    run's memory (the idea, facts.md, expansion.md, the latest gate verdict as a list of scores, evidence and the
+    angle hint), then the task itself. S1, S2 and S4 use it; S1 too, so a re-run after an automatic fix resumes the
+    session with the restart note in the prompt instead of researching from zero. The gate (S3) never passes
+    --session: a fresh session B each round, as the spec asks.
+97. **facts.md numbering is stable and every numbered claim has a source.** research.py sorts the claims once
+    (verified before unverified before false; within a status primary, vendor, press, forum; the model's order
+    otherwise), numbers them, and the expansion's evidence pointers are facts.md#n. The angle stage's new claims are
+    appended with the next numbers (research.py append-claims, deduplicated on the text, or the text plus the URL)
+    and nothing is ever renumbered, so earlier pointers stay right. A claim without an http(s) URL is moved to the
+    "Unverified or unsourced" section instead of being numbered, which is what makes "every claim line carries a
+    URL and a checked date" true by construction; a number without a URL goes the same way.
+98. **The angle loop is driven by files, not by counters, and handed over through reopen.txt.** The gate round is
+    1 plus the number of 04-angle/angle-*.json files; the angle round is the number of 03-gate/gate-*.json files
+    whose decision is angle; state.json rounds.angle is set (not incremented) by the angle stage. A stage run again
+    after a crash or an automatic fix computes the same round and overwrites the same files. The handover: a stage
+    that wants other stages to run again writes their keys to <stage>/reopen.txt and state.py stage-done reopens
+    them (pending, .done removed, attempts back to 0, the round counted in the record's "reopened") in the same
+    write that marks the stage done, so a crash between "gate done" and "angle pending" cannot happen; stage-start
+    removes a reopen.txt left by an earlier attempt. The gate names 04-angle, the angle stage names 03-gate, and the
+    runner needs no stage-specific code (M11's fix routing will use the same file). The runner's "attempt N (the
+    previous one was interrupted)" line therefore counts the attempts of the current round only.
+99. **expansion.md is composed, not written by the model.** One fixed layout (a title line, Problem, Solution,
+    "Share driver: <identity>. Takeaway worth forwarding: <takeaway>", "Comment keyword: <KEYWORD>. Deliverable
+    (existing): ... (link)" or "(NEW, to create)", One specific true thing, and one "- facts.md#n: note" line per
+    pointer), so the gate always reads the same shape and the length is measured here. expansion.py checks: one
+    first-person sentence for the problem (I, my, me; no second sentence), an identity of at least two words, a
+    keyword of 3 to 20 letters or digits written in capitals, 2 to 6 pointers each naming a claim marked verified,
+    and 500 to 1500 characters (config research.expansion_chars). A keyword that is not in deliverables.txt is NEW
+    whatever the model said; one that is in the file is existing with the file's link and its "what". A failed
+    check is asked again in the same session with the exact problems and numbers ("cut about 140 characters"),
+    research.expansion_tries (3) times; the last try is written anyway with a NEEDS REVIEW flag (rule_errors in
+    expansion.json), never an error.
+100. **The gate's decision rules are code (gate.py decide).** F fails whatever the model answered when
+    research.json says the core claim is false or unverified (the spec's "the tool does not do what the idea
+    assumes, or the claims cannot be verified"), and F failing drops at once; pass is P, S and C at least 2 with F
+    ok; a different_topic verdict with a suggested idea drops and writes the suggestion; otherwise an angle round
+    while the angle rounds done are below caps.angle_rounds, else a drop. The model is told in its prompt that it
+    does not decide, only scores with quoted evidence, and the score levels 0 to 3 are spelled out for each
+    criterion so rounds are comparable. Drop reasons carry the scores in the spec's form: "facts don't hold (P2 S2
+    C2 F fail): ...", "still failing after 2 angle rounds (P3 S1 C3 F ok): ...", "no angle keeps the core topic
+    (...): ...; suggestion written to logs/suggested-ideas.txt" (the core claim's note is cut at 160 characters in
+    the reason). The GATE line is "passed (P3 S2 C3 F ok)" plus "after N angle round(s)" when there were any, the
+    ANGLE line "gate failed (S1): finding a better angle, round 1/2" (the letters below 2 with their scores).
+101. **logs/suggested-ideas.txt** (gate.py suggest) gets a comment line (date, the stage, the idea it came from)
+    and the suggestion in braces with inner braces turned into parentheses, so a block can be pasted into
+    add-idea.sh as it is; the file is never read by the runner and ideas.txt is never written by a stage. Both the
+    gate (different_topic) and the angle stage (keeps_core_topic false) write it before the drop.
+102. **A missing profile file is a flag, recorded once.** library/profile/account.md does not exist yet (M5 drafts
+    it): S1, S2 and S4 continue with default audience assumptions and call flag_once (stage.sh), which records the
+    NEEDS REVIEW flag in state.json only when the same text is not there yet, so a run prints one FLAG line
+    although three stages notice; the export's NEEDS REVIEW section carries it (M12). An empty or missing
+    deliverables.txt means every keyword is NEW, without a flag (HUMAN_TODO M1 already asks for the file).
+
+### Research tools
+103. **Screenshots: pipeline/bin/screenshot over pipeline/lib/screenshot.py (Playwright 1.64, Chromium 156,
+    installed by setup-python).** A 1080x1920 viewport by default (the reel's own aspect) and --full-page capped at
+    4 screens; NN-name.png plus a NN-name.json sidecar (url, final_url, title, status, size, captured). The output
+    folder must be inside the runs folder of the state root ($REELS_RUNS, else $REELS_ROOT/runs; the system temp
+    folder only when neither is set), so the model cannot write anywhere else through it; the same URL in the same
+    folder is reused (--again forces a new capture). A 401, 403, 429 or 503, or a bot-check page (title or body
+    with "Just a moment", "Verify you are human", "Access denied", "captcha" and the like, on a short page) is
+    reported as blocked and nothing is saved: plain headless Chromium, no user agent spoofing, no stealth plugin,
+    as spec S1 demands. Exit codes 0 saved or reused, 2 blocked, 3 Playwright missing, 4 the page did not load, 1
+    refused. Playwright is a warn-level preflight item: a PC without the browser makes worse reels (no real page
+    to show), not a stopped runner; the research stage prints a WARN line when no screenshot was saved.
+104. **Research tools and permission rules.** The research model (S1 and S4) gets `--tools "WebSearch WebFetch
+    Read Bash"` and explicit allow rules from config research.allowed (WebSearch, WebFetch, Read, `Bash(gh *)`,
+    `Bash(gh:*)`, `Bash(bash pipeline/bin/screenshot *)` and its colon form) through the new repeatable `--allow
+    RULE` option of ai(): a rule with a space cannot travel in the space-separated --allowed string, and when
+    --allow or --allowed is given the --tools list is no longer pre-approved wholesale, so a bare Bash is never
+    approved. Probed with haiku on 2026-11-01: both rule syntaxes are accepted and gh runs without a prompt; auto
+    mode's own classifier also lets a harmless `echo` through, so the rules guarantee gh and the screenshot tool
+    rather than fence everything else, and the prompt forbids other commands (one command per call, no pipes, no
+    writes, no clones) while the protected files stay denied and guarded by protect.py. Read is included so the
+    model can open a screenshot it took and see that it shows the page. No --max-turns on the research call (a
+    max-turns stop would come back as an error, not a result); timeouts.research_seconds (2700) bounds it, and a
+    timeout kill is a transient error with its three retries.
+105. **The expansion and the gate run without tools** (`--tools ""`): the research is in session A's context for
+    S2 and facts.md is inlined for both, so a one-turn answer is enough and nothing can be fetched or written.
+    Timeouts: research_seconds and angle_seconds 2700, expansion_seconds and gate_seconds 900.
+
+### Tests and fixtures
+106. **The false idea fixture** (pipeline/tests/fixtures/ideas/false-idea.txt) is an ffmpeg flag that does not
+    exist (`--make-reel`), chosen so the core claim is false with no partial truth to angle toward: the research
+    marks the core claim false, gate.py forces F to fail, and the drop happens at the first gate with "facts don't
+    hold (P S C F fail)". An idea whose nearest true feature is a different topic would also drop, but through the
+    slower angle path, which is not what the acceptance test wants to time.
+107. **Frozen fixtures and the fake's stage fixtures.** pipeline/tests/fixtures/runs/test-idea/ (written by
+    `M4_FREEZE=1 bash pipeline/tests/test-m4.sh`) holds the real outputs of the test idea: research.json,
+    facts.md, numbers.json, assets.json with the PNG screenshots and their sidecars, expansion.json and .md,
+    gate.json and gate-*.json, the model's structured answers (calls/*.out.json) and idea.txt; M5 starts from them
+    (and exercises the reseed, since no session exists). .gitignore's runs/, exports/, logs/ and .locks/ are now
+    anchored to the root (/runs/) so the fixtures folder is tracked. pipeline/tests/fixtures/fake/m4/ holds
+    model-shaped answers (01-research.json, 02-expansion.json, 03-gate.json scoring S1, 04-angle.json, and the
+    variants pass and false) that the fake claude serves by the prompt's "# Stage: <key>" line
+    (FAKE_CLAUDE_FIXTURES=<dir>, with <key>.<n>.json for the n-th call of that stage), so the whole angle loop runs
+    through run.sh in about a minute without a model: two rounds then the drop, a pass on round 2 that continues to
+    the export, an F failure, a different-topic verdict.
+108. **Earlier milestones touched by M4:** state.py (reopen.txt applied in stage-done, cleared in stage-start,
+    reopen resets attempts; M2), ai.sh (--allow; M3), the fake claude (fixtures by stage; M3), tests/lib.sh (the
+    profile's .md files copied into the sandbox, dummy_after; M1), config.json (research, the new timeouts, the
+    playwright warn check; M1), setup-python and requirements.txt (playwright and its Chromium; M1), .gitignore
+    (anchored folders; M0), the dummies of 01-research and 03-gate (the refined schemas; M2). The M1 to M3 tests
+    pass unchanged.
+109. **Windows notes found in M4:** the Bash tool's heredoc backslash collapsing bit again (a Python patch with a
+    literal `\r` became a carriage return and matched nothing), so patches that need a backslash go through the
+    Edit tool; a `/dev/null` path handed to Windows Python is not a file, so "no file" is passed as /nonexistent
+    and the readers treat any OSError as an empty list; `python -m http.server` in the test serves the local pages
+    the screenshot checks need (no network in section 1).

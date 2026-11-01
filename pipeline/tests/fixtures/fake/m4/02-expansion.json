@@ -1,0 +1,15 @@
+{
+  "problem": "I build landing pages with Claude Code and every one of them looks like the same AI template.",
+  "solution": "Install the frontend-design skill: one folder in ~/.claude/skills, and Claude Code stops reaching for its defaults (the same font, the purple gradient, the centered hero) on every page it builds.",
+  "share_identity": "if you ship client sites with Claude Code",
+  "takeaway": "copy one skill folder once and every page you generate after that stops looking generated",
+  "keyword": "SKILL",
+  "deliverable": "the install command plus a before and after checklist of the defaults the skill bans",
+  "deliverable_status": "new",
+  "one_true_thing": "One folder copied into ~/.claude/skills changes every frontend Claude Code builds",
+  "evidence": [
+    {"fact": 1, "note": "the skill is published in anthropics/skills"},
+    {"fact": 3, "note": "it installs by copying the folder"},
+    {"fact": 4, "note": "the defaults it steers away from"}
+  ]
+}

@@ -8,10 +8,12 @@
 # Status: logs/status.txt holds the latest line, logs/runner.log the whole timeline
 # (bash pipeline/bin/runner-status prints both).
 #
-# Build status: M3 (error system). The loop, the state machine, resume, exports numbering, history, every status
-# line, usage limit waits, transient retries and the review and fix loop exist; the real stages arrive from M4 on.
-# Until then run it with dummy stages:
-#   REELS_DUMMY=all bash run.sh --once
+# Build status: M4 (research, expansion, gate, angle). The loop, the state machine, resume, exports numbering,
+# history, every status line, usage limit waits, transient retries, the review and fix loop and the real stages S1
+# to S4 exist; S5 to S14 arrive from M5 on, so `bash run.sh` stops with logs/STOPPED.md at S5. Until then:
+#   REELS_DUMMY=all bash run.sh --once                                   the whole loop with dummy stages
+#   REELS_DUMMY=5,6,7,8,9a,9b,9c,10,11,12,13,14 bash run.sh --once       the real research, expansion and gate,
+#                                                                        dummy stages after them
 set -u
 REELS_RUN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$REELS_RUN_DIR/pipeline/lib/common.sh"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# screenshot: capture a real web page as a research asset (BUILD_SPEC.md section 5, S1). A wrapper over
+# pipeline/lib/screenshot.py (Playwright, headless Chromium, 1080 px wide), which never gets around a site that
+# blocks automated access and only writes inside the runs folder.
+#   bash pipeline/bin/screenshot <url> <name> [--out-dir DIR] [--width 1080] [--height 1920] [--full-page] [--again]
+# The folder is --out-dir or $REELS_ASSETS_DIR (the research stage exports it). Prints one JSON line.
+# Exit 0 saved or reused, 2 blocked by the site, 3 Playwright missing, 4 the page could not be loaded, 1 usage.
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+exec "$REELS_PY" "$REELS_PIPELINE/lib/screenshot.py" "$@"

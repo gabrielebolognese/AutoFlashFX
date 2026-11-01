@@ -76,9 +76,29 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   Report: build/M3/report.md.
 
 ## M4 Research, expansion, gate, angle (S1 to S4)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m4.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has four sections: 1 and 2 run without a model (the units and the whole
+  angle loop through run.sh with the fake claude answering from fixtures, about a minute), 3 and 4 call the real
+  research, expansion and gate models on the test idea and on a deliberately false idea (15 to 30 minutes).
+- Test command: `bash pipeline/tests/test-m4.sh` (`M4_SECTIONS="1 2"` for the fake-only sections;
+  `M4_FREEZE=1` also rewrites the frozen fixtures under pipeline/tests/fixtures/runs/test-idea/);
+  `bash pipeline/tests/run-all.sh` runs M1 to M4, limits and the em dash scan (about 50 minutes).
+- Notes: the real stages pipeline/stages/{01-research,02-expansion,03-gate,04-angle}/run.sh with prompt.md,
+  model.schema.json (the model's answer) and schema.json (the stage's file); the shared stage library
+  pipeline/lib/stage.sh (stage_begin, stage_drop, stage_fail, flag_once, render_prompt, write_retry_prompt),
+  pipeline/lib/session.sh (session A with the reseed after a lost session), pipeline/lib/prompt.py (templates),
+  research.py, expansion.py, gate.py (the files and the decisions), pipeline/lib/screenshot.py behind
+  pipeline/bin/screenshot (Playwright, headless Chromium, 1080 px, blocked sites reported, writes only under
+  runs/). The handover of the angle loop goes through <stage>/reopen.txt, applied by state.py stage-done in the
+  same write that marks the stage done; the rounds are derived from the gate-*.json and angle-*.json files.
+  Config: research (tools, allowed rules, max_assets, expansion_chars, expansion_tries), timeouts.research_seconds,
+  angle_seconds, expansion_seconds, gate_seconds, screenshot_seconds, the warn-level playwright preflight item.
+  Event lines GATE and ANGLE; drop reasons carry the scores. Frozen fixtures of the test idea under
+  pipeline/tests/fixtures/runs/test-idea/ (research, expansion, gate, the model answers under calls/); the fake's
+  stage fixtures under pipeline/tests/fixtures/fake/m4/ (FAKE_CLAUDE_FIXTURES). Hooks for M5: S5 resumes session A
+  with `session_call A research <stage_dir> <prompt> ...` (the reseed covers a missing session), the brief needs
+  facts.md, expansion.json (keyword, deliverable, identity) and gate.json; `stage_begin` and friends in
+  stage.sh; prompts start with "# Role: <role>" and "# Stage: <key>" so the fake can answer by stage.
+  DECISIONS.md 95 to 109. Report: build/M4/report.md.
 
 ## M5 Profile and hooks (S5, S6)
 - Status: not started

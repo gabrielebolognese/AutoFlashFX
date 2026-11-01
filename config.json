@@ -60,6 +60,17 @@
     "list_s": [45, 75]
   },
 
+  "research": {
+    "tools": "WebSearch WebFetch Read Bash",
+    "allowed": ["WebSearch", "WebFetch", "Read", "Bash(gh *)", "Bash(gh:*)",
+                "Bash(bash pipeline/bin/screenshot *)", "Bash(bash pipeline/bin/screenshot:*)"],
+    "max_assets": 6,
+    "screenshot_width": 1080,
+    "screenshot_height": 1920,
+    "expansion_chars": [500, 1500],
+    "expansion_tries": 3
+  },
+
   "caps": {
     "angle_rounds": 2,
     "script_rounds": 3,
@@ -82,6 +93,11 @@
 
   "timeouts": {
     "model_call_seconds": 3600,
+    "research_seconds": 2700,
+    "angle_seconds": 2700,
+    "expansion_seconds": 900,
+    "gate_seconds": 900,
+    "screenshot_seconds": 60,
     "reviewer_seconds": 2400,
     "fixer_seconds": 2400,
     "verify_seconds": 900,
@@ -137,6 +153,7 @@
       {"check": "command", "name": "gh", "fix": "winget install GitHub.cli, then gh auth login"},
       {"check": "command", "name": "git", "fix": "install Git for Windows from git-scm.com"},
       {"check": "python_module", "name": "jsonschema", "fix": "bash pipeline/bin/setup-python"},
+      {"check": "python_module", "name": "playwright", "level": "warn", "fix": "bash pipeline/bin/setup-python (installs playwright and its Chromium; without it the research stage takes no screenshots)"},
       {"check": "file", "path": "styles/paper-cards/style.md", "fix": "restore it: git checkout -- styles/paper-cards/style.md"},
       {"check": "file", "path": "styles/paper-cards/tweaks.md", "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"},
       {"check": "file", "path": "styles/paper-cards/vocabulary.md", "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"},

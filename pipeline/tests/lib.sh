@@ -14,6 +14,7 @@
 #                                    fails loudly when `command -v claude` is not the fake. fake_claude_off restores
 #                                    PATH; fake_claude_reset clears the log and the counters
 #   dummy_except STAGE               the REELS_DUMMY list of every stage but that one
+#   dummy_after STAGE                the REELS_DUMMY list of every stage after that one
 #   pass / fail "text"               count and print a PASS or FAIL line
 #   assert_eq got expected "name"    assert_ne, assert_rc expected actual "name"
 #   assert_true "name" cmd args...   assert_false
@@ -62,6 +63,7 @@ sandbox_init() {
   cp "$REPO_DIR/config.json" "$SANDBOX/config.json"
   cp "$REPO_DIR/library/hooks.txt" "$SANDBOX/library/hooks.txt"
   cp "$REPO_DIR"/library/profile/*.txt "$SANDBOX/library/profile/" 2>/dev/null || true
+  cp "$REPO_DIR"/library/profile/*.md "$SANDBOX/library/profile/" 2>/dev/null || true
   : > "$SANDBOX/ideas.txt"
   export REELS_ROOT="$SANDBOX_M"
   if [ "${1:-}" = "--with-pipeline" ]; then
@@ -123,6 +125,10 @@ fake_claude_reset() {
 
 dummy_except() {  # dummy_except <stage key> -> the REELS_DUMMY list of every other stage
   python "$REPO_DIR/pipeline/lib/state.py" stages | cut -f1 | grep -v -x -- "$1" | paste -sd,
+}
+
+dummy_after() {  # dummy_after <stage key> -> the REELS_DUMMY list of every stage after that one (the real ones run up to it)
+  python "$REPO_DIR/pipeline/lib/state.py" stages | cut -f1 | awk -v s="$1" '$0 > s' | paste -sd,
 }
 
 sandbox_cleanup() {

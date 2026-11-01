@@ -1,69 +1,44 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/03-gate/gate.json",
-  "title": "03-gate gate.json (first version, M2)",
+  "title": "03-gate gate.json (M4): the scores with quoted evidence and the decision, written by pipeline/lib/gate.py",
   "type": "object",
-  "required": [
-    "round",
-    "scores",
-    "F",
-    "pass",
-    "decision",
-    "reason"
-  ],
+  "required": ["round", "scores", "F", "pass", "decision", "evidence", "reason", "failing", "angles_done", "angle_cap", "core_claim_status"],
   "properties": {
-    "round": {
-      "type": "integer",
-      "minimum": 1
-    },
+    "round": {"type": "integer", "minimum": 1},
     "scores": {
       "type": "object",
-      "required": [
-        "P",
-        "S",
-        "C"
-      ],
+      "required": ["P", "S", "C"],
       "properties": {
-        "P": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 3
-        },
-        "S": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 3
-        },
-        "C": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 3
-        }
+        "P": {"type": "integer", "minimum": 0, "maximum": 3},
+        "S": {"type": "integer", "minimum": 0, "maximum": 3},
+        "C": {"type": "integer", "minimum": 0, "maximum": 3}
       }
     },
-    "F": {
-      "type": "string",
-      "enum": [
-        "ok",
-        "fail"
-      ]
-    },
-    "pass": {
-      "type": "boolean"
-    },
-    "decision": {
-      "type": "string",
-      "enum": [
-        "pass",
-        "angle",
-        "drop"
-      ]
-    },
+    "F": {"type": "string", "enum": ["ok", "fail"]},
+    "pass": {"type": "boolean"},
+    "decision": {"type": "string", "enum": ["pass", "angle", "drop"]},
     "evidence": {
-      "type": "object"
+      "type": "object",
+      "required": ["P", "S", "C", "F"],
+      "properties": {
+        "P": {"type": "string"},
+        "S": {"type": "string"},
+        "C": {"type": "string"},
+        "F": {"type": "string"}
+      }
     },
-    "reason": {
-      "type": "string"
-    }
+    "reason": {"type": "string", "minLength": 1},
+    "model_reason": {"type": "string"},
+    "model_F": {"type": "string"},
+    "failing": {"type": "array", "items": {"type": "string"}},
+    "angle_hint": {"type": "string"},
+    "different_topic": {"type": "boolean"},
+    "suggested_idea": {"type": "string"},
+    "angles_done": {"type": "integer", "minimum": 0},
+    "angle_cap": {"type": "integer", "minimum": 0},
+    "core_claim_status": {"type": "string", "enum": ["verified", "false", "unverified"]},
+    "checked": {"type": "string"},
+    "decided_at": {"type": "string"}
   }
 }

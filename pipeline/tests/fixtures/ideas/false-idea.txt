@@ -1,0 +1,4 @@
+A deliberately false idea for the M4 acceptance test (BUILD_SPEC.md section 12, M4): ffmpeg has no such flag,
+so the research must find the core claim false and the gate must drop the idea with the reason.
+
+{ffmpeg 8 added a "--make-reel" flag: one command turns any landscape video into a finished 9:16 reel with burned-in captions and a music bed. Show the command and a before and after.}

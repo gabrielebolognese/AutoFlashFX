@@ -18,6 +18,9 @@
 #       --tools "A B C"    the tools available to the call (--tools, comma or space separated; "" = none) and, unless
 #                          --allowed is given, the same list pre-approved with --allowedTools
 #       --allowed "rules"  explicit --allowedTools rules (space separated, for example "Read Edit(pipeline/**)")
+#       --allow RULE       one more --allowedTools rule, verbatim (repeatable; for rules with spaces such as
+#                          "Bash(gh *)"); when --allow or --allowed is given the --tools list is not pre-approved
+#                          by itself, so a bare tool name (Bash) must be listed to be approved without rules
 #       --disallow "rules" extra --disallowedTools rules (the protected files below are always denied)
 #       --add-dir DIR      extra working directory (repeatable)
 #       --cwd DIR          where the call runs (default: the repo root)
@@ -145,7 +148,7 @@ ai() {
   shift 3
   local schema="" resume="" session_key="" tools="__default__" allowed="" disallow="" timeout_s="" activity=""
   local cwd="" max_turns="" protect=1 name=""
-  local -a add_dirs=()
+  local -a add_dirs=() allow_extra=()
   while [ $# -gt 0 ]; do
     case "$1" in
       --schema) schema="$2"; shift 2 ;;
@@ -153,6 +156,7 @@ ai() {
       --session) session_key="$2"; shift 2 ;;
       --tools) tools="$2"; shift 2 ;;
       --allowed) allowed="$2"; shift 2 ;;
+      --allow) allow_extra+=("$2"); shift 2 ;;
       --disallow) disallow="$2"; shift 2 ;;
       --add-dir) add_dirs+=("$2"); shift 2 ;;
       --timeout) timeout_s="$2"; shift 2 ;;
@@ -183,12 +187,12 @@ ai() {
   local -a tool_args=() allow_args=() deny_args=() dir_args=() schema_args=()
   if [ "$tools" != "__default__" ]; then
     tool_args=(--tools "$(printf '%s' "$tools" | tr ' ' ',' | tr -s ',')")
-    [ -n "$allowed" ] || allowed="$(printf '%s' "$tools" | tr ',' ' ')"
+    if [ -z "$allowed" ] && [ ${#allow_extra[@]} -eq 0 ]; then allowed="$(printf '%s' "$tools" | tr ',' ' ')"; fi
   fi
-  if [ -n "$allowed" ]; then
-    local -a allow_list; read -r -a allow_list <<<"$allowed"
-    [ ${#allow_list[@]} -gt 0 ] && allow_args=(--allowedTools "${allow_list[@]}")
-  fi
+  local -a allow_list=()
+  if [ -n "$allowed" ]; then read -r -a allow_list <<<"$allowed"; fi
+  if [ ${#allow_extra[@]} -gt 0 ]; then allow_list+=("${allow_extra[@]}"); allowed="${allow_list[*]}"; fi
+  [ ${#allow_list[@]} -gt 0 ] && allow_args=(--allowedTools "${allow_list[@]}")
   local -a deny_list; mapfile -t deny_list < <(ai_protected_rules)
   if [ -n "$disallow" ]; then local -a extra; read -r -a extra <<<"$disallow"; deny_list+=("${extra[@]}"); fi
   deny_args=(--disallowedTools "${deny_list[@]}")

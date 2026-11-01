@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # setup-python: install the Python packages the pipeline needs on the system Python (3.13, requirements.txt).
-# Safe to run again. Later milestones extend requirements.txt (playwright and its Chromium in M4).
+# Safe to run again. Installs playwright and its Chromium too (M4; REELS_SKIP_CHROMIUM=1 skips the browser download).
 #   bash pipeline/bin/setup-python
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
@@ -11,4 +11,9 @@ if ! "$REELS_PY" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 
 fi
 "$REELS_PY" -m pip install --disable-pip-version-check -r "$REELS_REPO/requirements.txt" || exit 1
 "$REELS_PY" -c 'import jsonschema' || exit 1
-echo "setup-python: ok ($("$REELS_PY" --version 2>&1))"
+"$REELS_PY" -c 'import playwright' || exit 1
+if [ -z "${REELS_SKIP_CHROMIUM:-}" ]; then
+  # the headless Chromium that pipeline/bin/screenshot drives (about 150 MB, downloaded once into the Playwright cache)
+  "$REELS_PY" -m playwright install chromium || { echo "setup-python: the Chromium download failed; run it again later (the research stage takes no screenshots until then)" >&2; exit 1; }
+fi
+echo "setup-python: ok ($("$REELS_PY" --version 2>&1), playwright $("$REELS_PY" -c 'import playwright, importlib.metadata as m; print(m.version("playwright"))' 2>/dev/null))"

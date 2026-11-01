@@ -1,0 +1,14 @@
+{
+  "scores": {"P": 2, "S": 2, "C": 2},
+  "F": "fail",
+  "evidence": {
+    "P": "a plausible pain",
+    "S": "an identity and a takeaway",
+    "C": "a keyword with a deliverable",
+    "F": "the core claim is false: facts.md marks it false"
+  },
+  "reason": "Fixture gate: the tool does not do what the idea assumes.",
+  "angle_hint": "",
+  "different_topic": false,
+  "suggested_idea": ""
+}

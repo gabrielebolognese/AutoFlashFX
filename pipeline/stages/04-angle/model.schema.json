@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/04-angle/model-output",
+  "title": "04-angle: the model's structured answer (BUILD_SPEC.md S4): the expansion fields plus the change, the core topic check and new claims",
+  "type": "object",
+  "required": ["change", "keeps_core_topic", "suggested_idea", "new_claims", "problem", "solution", "share_identity", "takeaway", "keyword", "deliverable", "deliverable_status", "one_true_thing", "evidence"],
+  "properties": {
+    "change": {"type": "string"},
+    "keeps_core_topic": {"type": "boolean"},
+    "suggested_idea": {"type": "string"},
+    "new_claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "url", "tier", "status"],
+        "properties": {
+          "claim": {"type": "string"},
+          "url": {"type": "string"},
+          "tier": {"type": "string", "enum": ["primary", "vendor", "press", "forum"]},
+          "status": {"type": "string", "enum": ["verified", "unverified", "false"]},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "problem": {"type": "string"},
+    "solution": {"type": "string"},
+    "share_identity": {"type": "string"},
+    "takeaway": {"type": "string"},
+    "keyword": {"type": "string"},
+    "deliverable": {"type": "string"},
+    "deliverable_status": {"type": "string", "enum": ["existing", "new"]},
+    "one_true_thing": {"type": "string"},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fact", "note"],
+        "properties": {
+          "fact": {"type": "integer"},
+          "note": {"type": "string"}
+        }
+      }
+    }
+  }
+}

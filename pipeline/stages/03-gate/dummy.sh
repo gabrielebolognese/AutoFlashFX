@@ -14,6 +14,8 @@ cat > "$OUT/gate.json" <<'JSON'
 {"round": 1, "scores": {"P": 3, "S": 2, "C": 3}, "F": "ok", "pass": true, "decision": "pass",
  "evidence": {"P": "one first-person problem sentence", "S": "names an identity", "C": "SKILL with a described deliverable",
               "F": "both claims point to facts.md"},
- "reason": "dummy gate: passes"}
+ "reason": "dummy gate: passes", "model_reason": "dummy gate: passes", "model_F": "ok", "failing": [],
+ "angle_hint": "", "different_topic": false, "suggested_idea": "", "angles_done": 0, "angle_cap": 2,
+ "core_claim_status": "verified", "checked": "2026-01-01", "decided_at": "2026-01-01 00:00"}
 JSON
 dummy_end

@@ -13,6 +13,9 @@ Mode selection:
   FAKE_CLAUDE_STATE=<dir>     counters (default: next to the log, else the system temp folder)
   FAKE_CLAUDE_DELAY=<seconds> every answering call (ok, echo, review, fix, fixture, bad-json) sleeps this long after
                               it was logged, so a test can kill the runner while a reviewer is still working
+  FAKE_CLAUDE_FIXTURES=<dir>  in auto mode, a prompt whose header has a "# Stage: <key>" line is answered with the
+                              file <dir>/<key>.<n>.json (n = the number of this call for that stage, 1-based) when it
+                              exists, else <dir>/<key>.json, as a fixture (the real stages of M4 on, without a model)
 
 Modes:
   ok | ok:<text>              a success result ("ok" or the text)
@@ -250,6 +253,19 @@ def main(argv: list[str]) -> int:
             with open(path, "a", encoding="utf-8", newline="\n") as f:
                 f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
+    fixtures = winpath(os.environ.get("FAKE_CLAUDE_FIXTURES", ""))
+    if mode == "auto" and fixtures:
+        m = re.search(r"^# Stage: (\S+)", prompt, re.M)
+        if m:
+            key = m.group(1)
+            nth = counter("stage:" + key) + 1
+            for cand in (f"{key}.{nth}.json", f"{key}.json"):
+                path = os.path.join(fixtures, cand)
+                if os.path.isfile(path):
+                    mode = "fixture:" + path
+                    record["mode"] = mode
+                    record["stage"] = key
+                    break
     if mode == "auto":
         if role == "reviewer":
             mode = "review:" + os.environ.get("FAKE_CLAUDE_REVIEW", "yes")

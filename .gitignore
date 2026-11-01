@@ -20,11 +20,11 @@ dist/
 .env
 .env.*
 
-# Runner state (BUILD_SPEC.md section 1)
-runs/
-exports/
-logs/
-.locks/
+# Runner state (BUILD_SPEC.md section 1), anchored to the root: pipeline/tests/fixtures/runs/ holds frozen test data
+/runs/
+/exports/
+/logs/
+/.locks/
 library/voice/*
 !library/voice/README.txt
 library/.hooks.index.json
@@ -58,3 +58,4 @@ build/*.log
 build/limits.log
 build/*/batches/
 build/check.*
+voicetests/

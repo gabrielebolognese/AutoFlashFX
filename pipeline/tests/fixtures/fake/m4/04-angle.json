@@ -1,0 +1,21 @@
+{
+  "change": "The share line now names the three banned defaults so it survives without the video, and the identity is narrower: freelancers who ship client landing pages.",
+  "keeps_core_topic": true,
+  "suggested_idea": "",
+  "new_claims": [
+    {"claim": "The skill's SKILL.md tells Claude Code to pick a distinctive font pairing instead of the usual system fonts", "url": "https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md", "tier": "primary", "status": "verified", "note": "fixture"}
+  ],
+  "problem": "I ship client landing pages with Claude Code and clients can tell they were generated.",
+  "solution": "Install the frontend-design skill: one folder in ~/.claude/skills, and Claude Code stops reaching for its defaults (the same font, the purple gradient, the centered hero) on every page it builds.",
+  "share_identity": "if you are a freelancer shipping client landing pages with Claude Code",
+  "takeaway": "one skill folder bans the three tells of an AI page: the default font, the purple gradient, the centered hero",
+  "keyword": "SKILL",
+  "deliverable": "the install command plus a before and after checklist of the defaults the skill bans",
+  "deliverable_status": "new",
+  "one_true_thing": "One folder copied into ~/.claude/skills changes every frontend Claude Code builds",
+  "evidence": [
+    {"fact": 1, "note": "the skill is published in anthropics/skills"},
+    {"fact": 4, "note": "the defaults it steers away from"},
+    {"fact": 8, "note": "the font pairing rule (the new claim)"}
+  ]
+}

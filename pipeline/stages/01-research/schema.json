@@ -1,60 +1,79 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/01-research/research.json",
-  "title": "01-research research.json (first version, M2)",
+  "title": "01-research research.json (M4): the research, written by pipeline/lib/research.py from the model's answer",
   "type": "object",
-  "required": [
-    "idea_id",
-    "checked",
-    "claims",
-    "one_true_thing"
-  ],
+  "required": ["idea_id", "checked", "core_claim", "claims", "numbers", "pitfalls", "one_true_thing", "assets", "unverified"],
   "properties": {
-    "idea_id": {
-      "type": "string"
-    },
-    "checked": {
-      "type": "string"
+    "idea_id": {"type": "string"},
+    "idea": {"type": "string"},
+    "checked": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "stage": {"type": "string"},
+    "core_claim": {
+      "type": "object",
+      "required": ["text", "status", "note"],
+      "properties": {
+        "text": {"type": "string"},
+        "status": {"type": "string", "enum": ["verified", "false", "unverified"]},
+        "note": {"type": "string"}
+      }
     },
     "claims": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "claim",
-          "url",
-          "checked"
-        ],
+        "required": ["n", "claim", "url", "tier", "status", "checked"],
         "properties": {
-          "claim": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string"
-          },
-          "checked": {
-            "type": "string"
-          }
+          "n": {"type": "integer", "minimum": 1},
+          "claim": {"type": "string", "minLength": 1},
+          "url": {"type": "string", "pattern": "^https?://"},
+          "tier": {"type": "string", "enum": ["primary", "vendor", "press", "forum"]},
+          "status": {"type": "string", "enum": ["verified", "unverified", "false"]},
+          "checked": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+          "note": {"type": "string"},
+          "added_by": {"type": "string"}
         }
       }
     },
     "numbers": {
-      "type": "object"
-    },
-    "pitfalls": {
-      "type": "array",
-      "items": {
-        "type": "string"
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["value", "url", "checked"],
+        "properties": {
+          "name": {"type": "string"},
+          "value": {},
+          "unit": {"type": "string"},
+          "url": {"type": "string", "pattern": "^https?://"},
+          "checked": {"type": "string"},
+          "note": {"type": "string"}
+        }
       }
     },
-    "one_true_thing": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
+    "pitfalls": {"type": "array", "items": {"type": "string"}},
+    "one_true_thing": {"type": "array", "items": {"type": "string"}},
+    "unverified": {"type": "array", "items": {"type": "string"}},
     "assets": {
-      "type": "array"
-    }
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "url", "captured"],
+        "properties": {
+          "file": {"type": "string"},
+          "name": {"type": "string"},
+          "url": {"type": "string"},
+          "final_url": {"type": "string"},
+          "title": {"type": "string"},
+          "captured": {"type": "string"},
+          "checked": {"type": "string"},
+          "width": {},
+          "height": {},
+          "what": {"type": "string"}
+        }
+      }
+    },
+    "summary": {"type": "string"},
+    "sources": {"type": "object"},
+    "counts": {"type": "object"}
   }
 }

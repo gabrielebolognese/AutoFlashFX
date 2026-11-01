@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/01-research/model-output",
+  "title": "01-research: the research model's structured answer (BUILD_SPEC.md S1); research.py finish turns it into research.json",
+  "type": "object",
+  "required": ["core_claim", "claims", "numbers", "pitfalls", "one_true_thing", "assets", "unverified", "summary"],
+  "properties": {
+    "core_claim": {
+      "type": "object",
+      "required": ["text", "status", "note"],
+      "properties": {
+        "text": {"type": "string"},
+        "status": {"type": "string", "enum": ["verified", "false", "unverified"]},
+        "note": {"type": "string"}
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "url", "tier", "status"],
+        "properties": {
+          "claim": {"type": "string"},
+          "url": {"type": "string"},
+          "tier": {"type": "string", "enum": ["primary", "vendor", "press", "forum"]},
+          "status": {"type": "string", "enum": ["verified", "unverified", "false"]},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "value", "url"],
+        "properties": {
+          "name": {"type": "string"},
+          "value": {"type": "string"},
+          "unit": {"type": "string"},
+          "url": {"type": "string"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "pitfalls": {"type": "array", "items": {"type": "string"}},
+    "one_true_thing": {"type": "array", "items": {"type": "string"}},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "what"],
+        "properties": {"name": {"type": "string"}, "what": {"type": "string"}}
+      }
+    },
+    "unverified": {"type": "array", "items": {"type": "string"}},
+    "summary": {"type": "string"}
+  }
+}

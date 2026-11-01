@@ -13,7 +13,11 @@ Stage table (the single source of truth for the stage order, labels, default act
   key              label  activity                      output         initial status
   01-research      S1     researching facts             research.json  pending
   ...              (see STAGES below)
-04-angle starts as "skipped": the gate reopens it (state.py reopen) only when an angle round is needed.
+04-angle starts as "skipped": the gate reopens it only when an angle round is needed. A stage that wants other
+stages to run again after it writes their keys, one per line, to <run>/<stage>/reopen.txt: "stage-done" reopens
+them (status pending, .done removed, attempts back to 0 for the new round, the round counted in "reopened") in
+the same write that marks the stage done, so a crash between the two cannot leave the run half-way (the gate names 04-angle, the angle stage names 03-gate, M4; the review loop of
+M11 will use it for its fix routing). "stage-start" removes a reopen.txt left by an earlier attempt.
 
 A stage is done when its primary JSON output validates against pipeline/stages/<stage>/schema.json and the
 marker <run>/<stage>/.done exists (both written by "stage-done"). "next" re-checks the marker, so a stage whose
@@ -30,8 +34,9 @@ Usage:
   state.py summary RUN_DIR                              JSON: idea, status, elapsed, counters, next phase
   state.py next RUN_DIR                                 JSON {phase: stage|export|finalize|finished, stage, ...}
   state.py stage-start RUN_DIR STAGE [--pid N]          mark running, attempts + 1; prints JSON {attempts, started}
-  state.py stage-done RUN_DIR STAGE --schemas DIR       validate the output, write .done, mark done; prints JSON
-                                                        {ok, errors, seconds, next_stage, next_activity, ...}
+  state.py stage-done RUN_DIR STAGE --schemas DIR       validate the output, write .done, mark done, reopen the
+                                                        stages named in <stage>/reopen.txt; prints JSON
+                                                        {ok, errors, seconds, next_stage, next_activity, reopened, ...}
   state.py stage-fail RUN_DIR STAGE --exit N [--reason TEXT]
   state.py reopen RUN_DIR STAGE...                      back to pending (removes .done), for the gate and review loops
   state.py flag RUN_DIR STAGE TEXT                      append a NEEDS REVIEW flag
@@ -483,6 +488,9 @@ def cmd_stage_start(args) -> int:
     done_marker = os.path.join(args.run_dir, args.stage, ".done")
     if os.path.exists(done_marker):
         os.remove(done_marker)
+    stale = os.path.join(args.run_dir, args.stage, "reopen.txt")
+    if os.path.exists(stale):
+        os.remove(stale)
     save(args.run_dir, state)
     out = stage_info(args.stage)
     out.update({"attempts": rec["attempts"], "started": now})
@@ -520,6 +528,41 @@ def validate_output(schemas_dir: str, run_dir: str, stage: str) -> list[str]:
     return errors
 
 
+def reopen_stage(state: dict, run_dir: str, key: str) -> None:
+    """Back to pending for another round: .done removed, attempts restart at 0 (the runner reads attempts as the
+    tries of the current round), the round counted in "reopened"."""
+    rec = state["stages"][key]
+    rec.update({"status": "pending", "finished": None, "exit_code": None, "error": None, "pid": None,
+                "attempts": 0, "reopened": int(rec.get("reopened") or 0) + 1})
+    marker = os.path.join(run_dir, key, ".done")
+    if os.path.exists(marker):
+        os.remove(marker)
+
+
+def apply_reopen_file(state: dict, run_dir: str, stage: str) -> list[str]:
+    """Reopen the stages named in <stage>/reopen.txt (one key per line) and remove the file. The caller saves."""
+    path = os.path.join(run_dir, stage, "reopen.txt")
+    if not os.path.isfile(path):
+        return []
+    try:
+        with open(path, encoding="utf-8-sig") as f:
+            wanted = [line.strip() for line in f if line.strip()]
+    except OSError:
+        wanted = []
+    reopened = []
+    for key in wanted:
+        if key not in state["stages"] or key == stage:
+            print(f"state.py: {stage}/reopen.txt names {key!r}, which is not another stage; ignored", file=sys.stderr)
+            continue
+        reopen_stage(state, run_dir, key)
+        reopened.append(key)
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    return reopened
+
+
 @locked
 def cmd_stage_done(args) -> int:
     state = load(args.run_dir)
@@ -542,9 +585,10 @@ def cmd_stage_done(args) -> int:
                 "error": None, "pid": None})
     state["current_stage"] = None
     state["timing"]["last_seen"] = now
+    reopened = apply_reopen_file(state, args.run_dir, args.stage)
     nxt = next_phase(state, args.run_dir)
     save(args.run_dir, state)
-    emit({"ok": True, "errors": [], "seconds": seconds, "attempts": rec["attempts"],
+    emit({"ok": True, "errors": [], "seconds": seconds, "attempts": rec["attempts"], "reopened": reopened,
           "next_phase": nxt["phase"], "next_stage": nxt.get("stage"), "next_activity": nxt.get("activity"),
           "next_label": nxt.get("label"), "next_attempts": nxt.get("attempts", 0),
           "export_number": state["export"].get("number"),
@@ -575,11 +619,7 @@ def cmd_reopen(args) -> int:
     for stage in args.stages:
         if stage not in state["stages"]:
             raise StateError(f"unknown stage {stage}")
-        rec = state["stages"][stage]
-        rec.update({"status": "pending", "finished": None, "exit_code": None, "error": None, "pid": None})
-        marker = os.path.join(args.run_dir, stage, ".done")
-        if os.path.exists(marker):
-            os.remove(marker)
+        reopen_stage(state, args.run_dir, stage)
     save(args.run_dir, state)
     emit({"reopened": args.stages, "next": next_phase(state, args.run_dir)})
     return 0
