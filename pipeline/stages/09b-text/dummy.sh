@@ -12,9 +12,13 @@ source "$LIB/dummy.sh"
 dummy_begin "${1:?usage: dummy.sh <run_dir>}" 09b-text plan.json
 cat > "$OUT/plan.json" <<'JSON'
 {"pass": "text",
- "cards": [{"scene": "s1", "text": "Your AI site looks fake", "zone": "center"}, {"scene": "s3", "text": "Comment SKILL", "zone": "lower"}],
- "captions": [{"start_ms": 0, "end_ms": 800, "words": ["Your", "AI", "site"], "emphasis": null},
-              {"start_ms": 810, "end_ms": 1500, "words": ["looks", "fake"], "emphasis": "fake"}],
- "labels": [{"scene": "s3", "text": "mock", "kind": "honesty"}]}
+ "captions": [{"scene": "s2", "start_ms": 1500, "end_ms": 2300, "words": [{"word": "Your", "start_ms": 1500, "end_ms": 1700, "emphasis": false}, {"word": "AI", "start_ms": 1700, "end_ms": 1900, "emphasis": false}, {"word": "site", "start_ms": 1900, "end_ms": 2200, "emphasis": false}]},
+              {"scene": "s2", "start_ms": 2310, "end_ms": 3400, "words": [{"word": "looks", "start_ms": 2310, "end_ms": 2600, "emphasis": false}, {"word": "fake.", "start_ms": 2600, "end_ms": 3000, "emphasis": true}]}],
+ "overrides": [{"scene": "s2", "component": "s2-card-1", "prop": "title", "text": "Clients spot it"}],
+ "cards": [{"scene": "s1", "component": "s1-headline-1", "prop": "kicker", "text": "AI SITES", "zone": "hero", "words": 2},
+           {"scene": "s2", "component": "s2-card-1", "prop": "title", "text": "Clients spot it", "zone": "hero", "words": 3},
+           {"scene": "s3", "component": "s3-end-card-1", "prop": "keyword", "text": "SKILL", "zone": "hero", "words": 1}],
+ "labels": [{"scene": "s1", "component": "s1-headline-1", "text": "AI SITES", "kind": "kicker"}],
+ "notes": "dummy text pass"}
 JSON
 dummy_end

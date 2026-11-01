@@ -265,7 +265,7 @@
     "body": "It's not your fault.",
     "enter": "rise",
     "exit": "push",
-    "exit_at": 3.54
+    "exit_at": 3.473
    }
   },
   {
@@ -294,7 +294,7 @@
     "arrow": "up-left",
     "arrow_len": 140,
     "exit": "push",
-    "exit_at": 2.06
+    "exit_at": 1.993
    }
   },
   {
@@ -526,7 +526,7 @@
     "honesty": "sourced",
     "enter": "rise",
     "exit": "push",
-    "exit_at": 3.02
+    "exit_at": 2.953
    }
   },
   {
@@ -567,7 +567,7 @@
     "container": "pill",
     "honesty": "sourced",
     "exit": "push",
-    "exit_at": 2.0
+    "exit_at": 1.933
    }
   },
   {

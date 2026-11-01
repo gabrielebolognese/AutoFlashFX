@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09b-text/model.json",
+  "title": "The visual director's answer for the text pass (S9b): the caption chunks as word groups, the card texts it changes, the labels",
+  "type": "object",
+  "required": ["chunks", "cards"],
+  "properties": {
+    "chunks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["words"],
+        "properties": {
+          "words": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"type": "string"}, "description": "the next spoken body words, exactly as written in the timeline, in order"},
+          "emphasis": {"type": "array", "items": {"type": "string"}, "description": "the words of this chunk that get the accent box (0 to 3)"}
+        }
+      },
+      "description": "every spoken word of the body beats (not the hook, not the ask), in order, grouped 1 to 4 per chunk"
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component", "prop", "text"],
+        "properties": {
+          "component": {"type": "string", "description": "the instance id from the scenes list (s2-card-1)"},
+          "prop": {"type": "string", "description": "the text prop: title, body, text, kicker, keyword, line1, line2, message, label, unit, items_json or lines_json (lines separated by |)"},
+          "text": {"type": "string"}
+        }
+      },
+      "description": "the on-screen texts you change (the rest keep the animations pass's draft)"
+    },
+    "labels": {
+      "type": "array",
+      "items": {"type": "object", "required": ["scene", "kind", "text"], "properties": {"scene": {"type": "string"}, "kind": {"type": "string", "enum": ["tag", "kicker"]}, "text": {"type": "string"}}},
+      "description": "small tags worth noting per scene (the honesty labels come from the components themselves)"
+    },
+    "notes": {"type": "string"}
+  }
+}

@@ -5,10 +5,12 @@
 #                     diagnosis and the exact fix, prints a STOP line and returns 3 (a systemic failure).
 #
 # Entry fields in preflight.require:
-#   check: command | python_module | file | disk | shell | voice
+#   check: command | python_module | file | disk | shell | voice | brand
 #                 voice (M7): pipeline/lib/voiceover.py engine-check, the voice config of library/voice/engine.txt:
 #                 its interpreter exists and imports kokoro, one interpreter imports faster_whisper; the check's
 #                 notes (a missing engine.txt, another engine named, missing lines) are warnings
+#                 brand (M10): library/brand/brand.json under the repo parses and every asset it lists exists with
+#                 its use_on, width and height (BUILD_SPEC.md 2.7)
 #   name          command or module name
 #   min_version   command: the first X.Y[.Z] of "<name> --version" must be at least this
 #   path          file: relative to the repo, or to the state root when in_root is true
@@ -87,6 +89,37 @@ preflight_run() {
         ;;
       shell)
         (eval "$cmd") >/dev/null 2>&1 </dev/null || problem="'$cmd' failed"
+        ;;
+      brand)
+        # M10 (BUILD_SPEC.md 2.7): library/brand/brand.json under the repo parses and every asset it lists exists
+        vout="$("$REELS_PY" - "$REELS_REPO" 2>&1 <<'PYEOF'
+import json, os, sys
+repo = sys.argv[1]
+path = os.path.join(repo, "library", "brand", "brand.json")
+if not os.path.isfile(path):
+    print("library/brand/brand.json is missing"); sys.exit(1)
+try:
+    data = json.load(open(path, encoding="utf-8-sig"))
+except ValueError as exc:
+    print(f"library/brand/brand.json is not valid JSON ({exc})"); sys.exit(1)
+assets = data.get("assets") or []
+if not assets:
+    print("library/brand/brand.json lists no assets"); sys.exit(1)
+missing = [a.get("path", "?") for a in assets if not os.path.isfile(os.path.join(repo, a.get("path", "")))]
+bad = [a.get("path", "?") for a in assets if a.get("use_on") not in ("light", "dark", "both") or not a.get("width") or not a.get("height")]
+if missing:
+    print("brand.json lists files that do not exist: " + ", ".join(missing[:5])); sys.exit(1)
+if bad:
+    print("brand.json entries without use_on, width or height: " + ", ".join(bad[:5])); sys.exit(1)
+print(f"ok: {len(assets)} brand assets")
+PYEOF
+)"; vrc=$?
+        if [ "$vrc" != 0 ]; then
+          problem="$(printf '%s\n' "$vout" | head -n 1)"
+          [ -n "$problem" ] || problem="the brand kit check failed (exit $vrc)"
+        else
+          n_files=$((n_files + 1))
+        fi
         ;;
       voice)
         vout="$("$REELS_PY" "$REELS_PIPELINE/lib/voiceover.py" engine-check 2>&1 </dev/null)"; vrc=$?

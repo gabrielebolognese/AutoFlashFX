@@ -15,6 +15,7 @@ venv/
 # Node (HyperFrames, Puppeteer)
 node_modules/
 motion-lib/.harness/
+.harness/
 motion-lib/renders/
 golden/*/project/renders/
 out/

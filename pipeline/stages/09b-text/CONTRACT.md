@@ -1,34 +1,37 @@
 # 09b-text: Visual plan, text pass (S9b)
 
-First version written in M2: the folder set, this contract, schema.json and dummy.sh are fixed here; M10
-builds the real stage (run.sh and prompt.md) and refines the schema. Spec: BUILD_SPEC.md section 5, S9b.
+Built in M10. Spec: BUILD_SPEC.md section 5, S9 9b; DECISIONS.md 215 to 232.
 
 ## Purpose
-Every on-screen card's text (6 words or fewer), the caption chunks (1 to 4 words) with their emphasis word, labels and tags, each inside tokens.json zones and timed to words.json.
+Every on-screen card's text (6 words or fewer), the caption chunks (1 to 4 words, each word timed to words.json,
+the emphasis words), the labels and tags. The visual_director groups the words and writes the texts;
+pipeline/lib/visual/plan9.py times the chunks from words.json (the words and their order never change; a chunk
+wider than the caption line is split), turns the texts into prop overrides of the 9a instances and derives the
+honesty labels from the components.
 
 ## Inputs
 - 09a-animations/plan.json, 07-script/script.json, 08-voiceover/words.json
-- styles/paper-cards/tokens.json
+- styles/paper-cards/tokens.json (caption limits, the font for the width), style.md and tweaks.md
+- the digests in 09b-text/digest/ (timeline.md, scenes.md, chunks.md: the baseline chunks)
 
 ## Outputs (in runs/<id>/09b-text/)
-- plan.json is the primary output: the stage is done when it validates against schema.json and the runner has
-  written .done (pipeline/lib/state.py stage-done). An invalid output gets one retry with the validation errors
-  inside the stage; after that it counts as a code error.
-- plan.json: pass text, cards (scene, text, zone), captions (start_ms, end_ms, words, emphasis), labels
-- stage.log: everything the stage printed (its `say` lines also reach the terminal through fd 3).
-- result.json with a `reason` when the stage exits 10 (drop) or 20 (block).
+- plan.json is the primary output (schema.json from pass-schemas.py): pass text, captions[] (scene, start_ms,
+  end_ms, words[] with word, start_ms, end_ms, emphasis), overrides[] (scene, component, prop, text: the card texts
+  the pass changed), cards[] (every on-screen text after the overrides: scene, component, prop, text, zone, words),
+  labels[] (honesty, tag, kicker), notes.
+- plan.candidate.json, prompt.md, prompt-retry.md, calls/, digest/, stage.log as in 09a.
 
-## Invariants
-- cards 6 words or fewer, caption chunks 1 to 4 words
-- every element inside a tokens.json zone
+## Invariants (plan_validate.py, parts captions)
+- chunks of 1 to 4 words, at most 3 emphasis words, never wider than tokens.json zones.caption.max_width, every
+  caption word a spoken word of words.json at that time, in order, none during the hook headline or on the end card
+- title-like props 6 words or fewer (config visual.title_max_words), body props 14 or fewer
+- a component showing mock or sourced data has its honesty label in labels
 
 ## Exit codes
-0 done (the primary output must validate against schema.json; the runner then writes .done), 10 drop the idea (reason in result.json), 20 block the idea (reason in result.json), anything else is a code error and goes to the review and fix loop (BUILD_SPEC.md 4.2, built in M3).
+0 done, 10 drop, 20 block, anything else a code error.
 
 ## Model and session
-Fresh session. Model: config models.visual_director.
+Fresh visual_director session (config models.visual_director), one retry with the exact errors.
 
 ## dummy.sh
-`bash pipeline/stages/09b-text/dummy.sh <run_dir>` writes fake outputs that validate against schema.json, sleeps
-REELS_DUMMY_SECONDS (default 1) and honors the planted REELS_DUMMY_FAIL, REELS_DUMMY_DROP, REELS_DUMMY_BLOCK,
-REELS_DUMMY_FLAG and REELS_DUMMY_INVALID lists (see pipeline/lib/dummy.sh). No model calls.
+Writes a small valid text plan; honors the planted REELS_DUMMY_* lists.

@@ -12,6 +12,7 @@ source "$LIB/dummy.sh"
 dummy_begin "${1:?usage: dummy.sh <run_dir>}" 09c-transitions plan.json
 cat > "$OUT/plan.json" <<'JSON'
 {"pass": "transitions",
- "transitions": [{"from": "s1", "to": "s2", "type": "slide", "duration_ms": 300}, {"from": "s2", "to": "s3", "type": "cut", "duration_ms": 0}]}
+ "transitions": [{"from": "s1", "to": "s2", "type": "fade-blur", "duration_ms": 133}, {"from": "s2", "to": "s3", "type": "fall", "duration_ms": 333}],
+ "notes": "dummy transitions"}
 JSON
 dummy_end

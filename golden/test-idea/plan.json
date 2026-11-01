@@ -667,7 +667,7 @@
   {
    "scene": "s2",
    "start_ms": 3460,
-   "end_ms": 4340,
+   "end_ms": 4140,
    "words": [
     {
      "word": "You",
@@ -686,20 +686,20 @@
      "start_ms": 3780,
      "end_ms": 4140,
      "emphasis": false
-    },
-    {
-     "word": "Code",
-     "start_ms": 4140,
-     "end_ms": 4340,
-     "emphasis": false
     }
    ]
   },
   {
    "scene": "s2",
-   "start_ms": 4340,
+   "start_ms": 4140,
    "end_ms": 5300,
    "words": [
+    {
+     "word": "Code",
+     "start_ms": 4140,
+     "end_ms": 4340,
+     "emphasis": false
+    },
     {
      "word": "client",
      "start_ms": 4340,
@@ -717,7 +717,7 @@
   {
    "scene": "s2",
    "start_ms": 5300,
-   "end_ms": 6640,
+   "end_ms": 5980,
    "words": [
     {
      "word": "Clients",
@@ -736,7 +736,14 @@
      "start_ms": 5860,
      "end_ms": 5980,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s2",
+   "start_ms": 5980,
+   "end_ms": 6640,
+   "words": [
     {
      "word": "instantly.",
      "start_ms": 5980,
@@ -748,7 +755,7 @@
   {
    "scene": "s3",
    "start_ms": 6640,
-   "end_ms": 8020,
+   "end_ms": 7320,
    "words": [
     {
      "word": "Anthropic's",
@@ -761,7 +768,14 @@
      "start_ms": 7000,
      "end_ms": 7320,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 7320,
+   "end_ms": 8360,
+   "words": [
     {
      "word": "file",
      "start_ms": 7320,
@@ -773,14 +787,7 @@
      "start_ms": 7660,
      "end_ms": 8020,
      "emphasis": false
-    }
-   ]
-  },
-  {
-   "scene": "s3",
-   "start_ms": 8020,
-   "end_ms": 8360,
-   "words": [
+    },
     {
      "word": "it:",
      "start_ms": 8020,
@@ -830,7 +837,7 @@
   {
    "scene": "s3",
    "start_ms": 10260,
-   "end_ms": 11390,
+   "end_ms": 10780,
    "words": [
     {
      "word": "same",
@@ -843,7 +850,14 @@
      "start_ms": 10500,
      "end_ms": 10780,
      "emphasis": true
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 10780,
+   "end_ms": 11390,
+   "words": [
     {
      "word": "shadow.",
      "start_ms": 10780,
@@ -886,7 +900,7 @@
   {
    "scene": "s4",
    "start_ms": 12350,
-   "end_ms": 14290,
+   "end_ms": 13490,
    "words": [
     {
      "word": "Anthropic",
@@ -905,7 +919,14 @@
      "start_ms": 13310,
      "end_ms": 13490,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s4",
+   "start_ms": 13490,
+   "end_ms": 14290,
+   "words": [
     {
      "word": "distributional",
      "start_ms": 13490,
@@ -930,7 +951,7 @@
   {
    "scene": "s5",
    "start_ms": 15130,
-   "end_ms": 16590,
+   "end_ms": 15910,
    "words": [
     {
      "word": "Even",
@@ -943,7 +964,14 @@
      "start_ms": 15290,
      "end_ms": 15910,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s5",
+   "start_ms": 15910,
+   "end_ms": 16590,
+   "words": [
     {
      "word": "terracotta",
      "start_ms": 15910,
@@ -961,7 +989,7 @@
   {
    "scene": "s5",
    "start_ms": 16590,
-   "end_ms": 17970,
+   "end_ms": 17850,
    "words": [
     {
      "word": "cream",
@@ -980,20 +1008,20 @@
      "start_ms": 17230,
      "end_ms": 17850,
      "emphasis": false
-    },
-    {
-     "word": "as",
-     "start_ms": 17850,
-     "end_ms": 17970,
-     "emphasis": false
     }
    ]
   },
   {
    "scene": "s5",
-   "start_ms": 17970,
+   "start_ms": 17850,
    "end_ms": 18860,
    "words": [
+    {
+     "word": "as",
+     "start_ms": 17850,
+     "end_ms": 17970,
+     "emphasis": false
+    },
     {
      "word": "an",
      "start_ms": 17970,
@@ -1017,7 +1045,7 @@
   {
    "scene": "s6",
    "start_ms": 18860,
-   "end_ms": 20540,
+   "end_ms": 19580,
    "words": [
     {
      "word": "One",
@@ -1030,7 +1058,14 @@
      "start_ms": 19040,
      "end_ms": 19580,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 19580,
+   "end_ms": 20540,
+   "words": [
     {
      "word": "headline",
      "start_ms": 19580,
@@ -1136,7 +1171,7 @@
   {
    "scene": "s7",
    "start_ms": 23510,
-   "end_ms": 24370,
+   "end_ms": 24270,
    "words": [
     {
      "word": "Claude",
@@ -1155,20 +1190,20 @@
      "start_ms": 23990,
      "end_ms": 24270,
      "emphasis": false
-    },
-    {
-     "word": "to",
-     "start_ms": 24270,
-     "end_ms": 24370,
-     "emphasis": false
     }
    ]
   },
   {
    "scene": "s7",
-   "start_ms": 24370,
+   "start_ms": 24270,
    "end_ms": 25450,
    "words": [
+    {
+     "word": "to",
+     "start_ms": 24270,
+     "end_ms": 24370,
+     "emphasis": false
+    },
     {
      "word": "six",
      "start_ms": 24370,
@@ -1192,7 +1227,7 @@
   {
    "scene": "s7",
    "start_ms": 25450,
-   "end_ms": 26890,
+   "end_ms": 26230,
    "words": [
     {
      "word": "reviews,",
@@ -1205,7 +1240,14 @@
      "start_ms": 25750,
      "end_ms": 26230,
      "emphasis": true
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 26230,
+   "end_ms": 26890,
+   "words": [
     {
      "word": "codes.",
      "start_ms": 26230,
@@ -1217,14 +1259,21 @@
   {
    "scene": "s8",
    "start_ms": 26890,
-   "end_ms": 27910,
+   "end_ms": 27270,
    "words": [
     {
      "word": "Anthropic",
      "start_ms": 26890,
      "end_ms": 27270,
      "emphasis": true
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 27270,
+   "end_ms": 27910,
+   "words": [
     {
      "word": "verified.",
      "start_ms": 27270,
@@ -1236,7 +1285,7 @@
   {
    "scene": "s8",
    "start_ms": 27910,
-   "end_ms": 29390,
+   "end_ms": 28530,
    "words": [
     {
      "word": "Over",
@@ -1255,20 +1304,20 @@
      "start_ms": 28290,
      "end_ms": 28530,
      "emphasis": false
-    },
-    {
-     "word": "installs",
-     "start_ms": 28530,
-     "end_ms": 29390,
-     "emphasis": false
     }
    ]
   },
   {
    "scene": "s8",
-   "start_ms": 29390,
-   "end_ms": 30110,
+   "start_ms": 28530,
+   "end_ms": 29590,
    "words": [
+    {
+     "word": "installs",
+     "start_ms": 28530,
+     "end_ms": 29390,
+     "emphasis": false
+    },
     {
      "word": "as",
      "start_ms": 29390,
@@ -1280,7 +1329,14 @@
      "start_ms": 29490,
      "end_ms": 29590,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 29590,
+   "end_ms": 30110,
+   "words": [
     {
      "word": "November.",
      "start_ms": 29590,
@@ -1292,7 +1348,7 @@
   {
    "scene": "s9",
    "start_ms": 30110,
-   "end_ms": 31510,
+   "end_ms": 31150,
    "words": [
     {
      "word": "Type",
@@ -1311,26 +1367,33 @@
      "start_ms": 30570,
      "end_ms": 31150,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 31150,
+   "end_ms": 32170,
+   "words": [
     {
      "word": "install",
      "start_ms": 31150,
      "end_ms": 31510,
+     "emphasis": false
+    },
+    {
+     "word": "frontend",
+     "start_ms": 31510,
+     "end_ms": 32170,
      "emphasis": false
     }
    ]
   },
   {
    "scene": "s9",
-   "start_ms": 31510,
+   "start_ms": 32170,
    "end_ms": 33170,
    "words": [
-    {
-     "word": "frontend",
-     "start_ms": 31510,
-     "end_ms": 32170,
-     "emphasis": false
-    },
     {
      "word": "design",
      "start_ms": 32170,
@@ -1429,7 +1492,7 @@
   {
    "scene": "s10",
    "start_ms": 35320,
-   "end_ms": 36320,
+   "end_ms": 36220,
    "words": [
     {
      "word": "by",
@@ -1448,20 +1511,20 @@
      "start_ms": 35920,
      "end_ms": 36220,
      "emphasis": false
-    },
-    {
-     "word": "you",
-     "start_ms": 36220,
-     "end_ms": 36320,
-     "emphasis": false
     }
    ]
   },
   {
    "scene": "s10",
-   "start_ms": 36320,
-   "end_ms": 37920,
+   "start_ms": 36220,
+   "end_ms": 36760,
    "words": [
+    {
+     "word": "you",
+     "start_ms": 36220,
+     "end_ms": 36320,
+     "emphasis": false
+    },
     {
      "word": "ask",
      "start_ms": 36320,
@@ -1473,7 +1536,14 @@
      "start_ms": 36600,
      "end_ms": 36760,
      "emphasis": false
-    },
+    }
+   ]
+  },
+  {
+   "scene": "s10",
+   "start_ms": 36760,
+   "end_ms": 37920,
+   "words": [
     {
      "word": "frontend",
      "start_ms": 36760,
@@ -1632,7 +1702,7 @@
    "from": "s4",
    "to": "s5",
    "type": "push",
-   "duration_ms": 200
+   "duration_ms": 267
   },
   {
    "from": "s5",
@@ -1656,7 +1726,7 @@
    "from": "s8",
    "to": "s9",
    "type": "push",
-   "duration_ms": 200
+   "duration_ms": 267
   },
   {
    "from": "s9",

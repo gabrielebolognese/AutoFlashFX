@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/09a-animations/model.json",
+  "title": "The visual director's answer for the animations pass (S9a): one scene per script beat with its components, placed on spoken words; the code resolves the times, the branding and the ids",
+  "type": "object",
+  "required": ["scenes"],
+  "properties": {
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["beat", "components"],
+        "properties": {
+          "beat": {"type": "string", "description": "the script beat id (b1, b2, ...), one scene per beat in order"},
+          "set_piece": {"type": "boolean", "description": "a set piece scene (1 or 2 per reel; the hook's is the one landing in the breath)"},
+          "honesty": {"type": "string", "enum": ["none", "mock", "sourced"], "description": "what the scene's data is: sourced (real screenshot or verified number), mock (illustrative UI), none"},
+          "components": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["component", "props"],
+              "properties": {
+                "component": {"type": "string", "description": "a catalog id (card, window-card, dark-chip, ...)"},
+                "role": {"type": "string", "enum": ["hero", "support", "label", "brand-slot", "logo", "set-piece", "cta", "notification", "text"]},
+                "at": {"type": "string", "description": "when it starts: scene (the beat's first word), breath (the hook breath, set pieces only), word:<spoken word of this beat>, ms:<offset from the scene start>"},
+                "word_props": {"type": "object", "additionalProperties": {"type": "string"}, "description": "timing props that land on a spoken word of this beat, for example {\"strike_at\": \"flagged\", \"ticks_at\": \"plans\"}"},
+                "props": {"type": "object", "description": "the component's declared variables (catalog.md): positions, texts, images as research/<file> or brand/<path>, @brand-slot for the brand slot"}
+              }
+            }
+          },
+          "emphasis": {
+            "type": "array",
+            "items": {"type": "object", "required": ["word"], "properties": {"word": {"type": "string"}, "effect": {"type": "string"}}},
+            "description": "optional: the words that get a hit; the script's emphasis words by default"
+          }
+        }
+      }
+    },
+    "hook2": {
+      "type": "object",
+      "required": ["lines"],
+      "properties": {
+        "kicker": {"type": "string"},
+        "lines": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"type": "string"}, "description": "hook 2's display line split in 1 to 3 headline lines, the serif phrase between asterisks"},
+        "set_piece": {"type": "boolean"}
+      }
+    },
+    "wishlist": {
+      "type": "array",
+      "items": {"type": "object", "required": ["name", "does"], "properties": {"beat": {"type": "string"}, "name": {"type": "string"}, "does": {"type": "string"}}},
+      "description": "a component you wanted and the library lacks (the reel still uses library components; the builder flags it for the user)"
+    },
+    "notes": {"type": "string"}
+  }
+}

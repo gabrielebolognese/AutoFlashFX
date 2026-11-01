@@ -1,16 +1,118 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/09a-animations/plan.json",
-  "title": "09a-animations plan.json (first version, M2)",
+  "title": "09a-animations plan.json: the animations pass of the visual plan (BUILD_SPEC.md S9 9a; generated from 09-plan/schema.json by pass-schemas.py)",
   "type": "object",
   "required": [
     "pass",
-    "scenes"
+    "plan_version",
+    "fps",
+    "duration_ms",
+    "scenes",
+    "branding"
   ],
   "properties": {
     "pass": {
-      "type": "string",
       "const": "animations"
+    },
+    "plan_version": {
+      "const": 1
+    },
+    "style": {
+      "type": "string"
+    },
+    "idea_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "description": "who wrote the plan: golden-plan, 09a-animations, 09a+09b, 09a+09b+09c, a fixture"
+    },
+    "fps": {
+      "const": 30
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 1000,
+      "description": "the voice's length: the root composition's duration"
+    },
+    "voice": {
+      "type": "string",
+      "description": "the voiceover file the plan is timed to (vo.wav)"
+    },
+    "solution": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "flashfx",
+            "external",
+            "method",
+            "none"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "logo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "the tool's logo among the research assets (research/<file>), or null"
+        }
+      }
+    },
+    "tracker": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "branding": {
+      "type": "object",
+      "required": [
+        "cta_scene",
+        "dm_avatar",
+        "lockup"
+      ],
+      "properties": {
+        "cta_scene": {
+          "type": "string",
+          "description": "the scene of the ask: it carries the DM card and the end card's lockup"
+        },
+        "dm_avatar": {
+          "type": "string",
+          "pattern": "^brand/",
+          "description": "brand/mark/avatar-dark.png"
+        },
+        "lockup": {
+          "type": "string",
+          "pattern": "^brand/lockup/",
+          "description": "the lockup variant matching the surface (light: paper and white cards)"
+        },
+        "brand_slot": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "what the brand slots show: brand/<mark> when the solution is FlashFX, research/<logo> for a tool, null for the neutral icon"
+        },
+        "flashfx_allowed_outside_cta": {
+          "type": "boolean"
+        }
+      }
     },
     "scenes": {
       "type": "array",
@@ -20,49 +122,204 @@
         "required": [
           "id",
           "beat",
+          "beat_type",
           "start_ms",
           "end_ms",
-          "component"
+          "components"
         ],
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
           },
           "beat": {
             "type": "string"
           },
+          "beat_type": {
+            "enum": [
+              "hook",
+              "stake",
+              "number",
+              "tool",
+              "step",
+              "comparison",
+              "proof",
+              "mechanism",
+              "before-after",
+              "pain-payoff",
+              "payoff",
+              "ask"
+            ]
+          },
           "start_ms": {
-            "type": "number"
+            "type": "integer",
+            "minimum": 0
           },
           "end_ms": {
-            "type": "number"
-          },
-          "component": {
-            "type": "string"
-          },
-          "props": {
-            "type": "object"
-          },
-          "enter": {
-            "type": "string"
-          },
-          "exit": {
-            "type": "string"
-          },
-          "emphasis_hits": {
-            "type": "array"
+            "type": "integer",
+            "minimum": 1
           },
           "set_piece": {
             "type": "boolean"
           },
+          "hook_set_piece": {
+            "type": "boolean",
+            "description": "the element that lands inside the hook breath"
+          },
           "honesty_label": {
-            "type": [
-              "string",
-              "null"
+            "enum": [
+              null,
+              "mock",
+              "sourced"
             ]
+          },
+          "emphasis_hits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "word",
+                "ms",
+                "effect"
+              ],
+              "properties": {
+                "word": {
+                  "type": "string"
+                },
+                "ms": {
+                  "type": "integer"
+                },
+                "effect": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "components": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "component",
+                "start_ms",
+                "end_ms",
+                "props"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$",
+                  "description": "unique across the plan: the host id in the project"
+                },
+                "component": {
+                  "type": "string",
+                  "description": "a catalog.json component id"
+                },
+                "start_ms": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end_ms": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "props": {
+                  "type": "object",
+                  "description": "the component's declared variables; times in seconds local to start_ms; images as brand/<path> or research/<file>"
+                },
+                "z": {
+                  "type": "integer"
+                },
+                "role": {
+                  "enum": [
+                    "hero",
+                    "support",
+                    "label",
+                    "brand-slot",
+                    "logo",
+                    "set-piece",
+                    "cta",
+                    "notification",
+                    "text"
+                  ]
+                },
+                "honesty_label": {
+                  "enum": [
+                    null,
+                    "mock",
+                    "sourced"
+                  ]
+                },
+                "assets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "the brand/ and research/ paths the props use"
+                },
+                "at": {
+                  "type": "string",
+                  "description": "how 9a placed the start: scene, breath, word:<word> or ms:<offset>"
+                },
+                "land_ms": {
+                  "type": "integer",
+                  "description": "when the entrance has landed (start plus the move's frames)"
+                }
+              }
+            }
           }
         }
       }
+    },
+    "hook2": {
+      "type": "object",
+      "required": [
+        "lines"
+      ],
+      "description": "the alternate clip's headline (hook 2): the kicker and the headline lines, timed to words_hook2.json by S10",
+      "properties": {
+        "kicker": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "set_piece": {
+          "type": "boolean"
+        }
+      }
+    },
+    "wishlist": {
+      "type": "array",
+      "description": "components the director wanted and the library lacks (S10 flags them NEEDS REVIEW; the plan itself uses library components only)",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "does"
+        ],
+        "properties": {
+          "beat": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "does": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
     }
   }
 }

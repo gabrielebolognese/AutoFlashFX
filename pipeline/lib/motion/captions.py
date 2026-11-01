@@ -1,9 +1,9 @@
 """pipeline/lib/motion/captions.py: caption chunks from words.json (style.md Captions: 1 to 4 words per chunk, each
 word shown when spoken, 1 to 3 emphasis words per chunk on accent boxes). A deterministic chunker: it breaks at a
 sentence end, at a pause of pause_ms or more, at a beat boundary and at the word limit. The golden plan uses it;
-9b (M10) can use it as its baseline before the model refines the chunks.
+9b (M10) uses it as its baseline before the model refines the chunks, with the caption width limit (max_width, width_fn).
 
-  chunk_words(words, emphasis_terms, max_words=4, pause_ms=150) -> [{"start_ms", "end_ms", "scene"?, "words": [{"word", "start_ms", "end_ms", "emphasis"}]}]
+  chunk_words(words, emphasis_terms, max_words=4, pause_ms=150, max_width=None, width_fn=None) -> [{"start_ms", "end_ms", "scene"?, "words": [{"word", "start_ms", "end_ms", "emphasis"}]}]
       words: words.json entries [{"word", "start_ms", "end_ms", "beat"}] of one or more beats
       emphasis_terms: {beat id: ["term", ...]} from script.json (a term may be several words)
   to_component_chunks(chunks, clip_start_ms) -> the caption-line component's chunks_json (seconds local to the clip)
@@ -36,7 +36,11 @@ def emphasis_flags(words: list[dict], terms: list[str]) -> list[bool]:
     return flags
 
 
-def chunk_words(words: list[dict], emphasis_terms: dict | None, max_words: int = 4, pause_ms: int = 150, max_emphasis: int = 3) -> list[dict]:
+def chunk_words(words: list[dict], emphasis_terms: dict | None, max_words: int = 4, pause_ms: int = 150, max_emphasis: int = 3,
+                max_width: float | None = None, width_fn=None) -> list[dict]:
+    """max_width and width_fn (M10): a chunk also breaks before a word that would make the line wider than max_width
+    px, width_fn(words) giving the caption-line's width of a chunk (visual.common.caption_chunk_width); the
+    style caps the centered line at tokens.json zones.caption.max_width (620 px: tweaks.md Right side)."""
     chunks = []
     by_beat: dict[str, list[dict]] = {}
     order = []
@@ -54,9 +58,13 @@ def chunk_words(words: list[dict], emphasis_terms: dict | None, max_words: int =
             entry = {"word": w["word"], "start_ms": int(w["start_ms"]), "end_ms": int(w["end_ms"]), "emphasis": bool(flags[i])}
             cur.append(entry)
             nxt = ws[i + 1] if i + 1 < len(ws) else None
+            too_wide = False
+            if nxt is not None and max_width and width_fn:
+                nxt_entry = {"word": nxt["word"], "emphasis": bool(flags[i + 1])}
+                too_wide = width_fn(cur + [nxt_entry]) > max_width
             boundary = (nxt is None or len(cur) >= max_words or SENTENCE_END.search(w["word"]) is not None
                         or (nxt is not None and int(nxt["start_ms"]) - int(w["end_ms"]) >= pause_ms)
-                        or (CLAUSE_END.search(w["word"]) is not None and len(cur) >= 2))
+                        or (CLAUSE_END.search(w["word"]) is not None and len(cur) >= 2) or too_wide)
             if boundary:
                 em = [e for e in cur if e["emphasis"]]
                 for extra in em[max_emphasis:]:

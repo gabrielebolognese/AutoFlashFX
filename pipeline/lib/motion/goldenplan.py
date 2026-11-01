@@ -102,8 +102,9 @@ DESIGN = [
     ]},
 ]
 
-TRANSITIONS = [("s1", "s2", "fade-blur", 133), ("s2", "s3", "fall", 333), ("s3", "s4", "fade-blur", 133), ("s4", "s5", "push", 200),
-               ("s5", "s6", "fade-blur", 133), ("s6", "s7", "fall", 333), ("s7", "s8", "fade-blur", 133), ("s8", "s9", "push", 200),
+# the durations are the style's frames (tokens.json transitions): fade-blur 4, fall 10, push 6 out plus 2 empty (M10 aligned the push)
+TRANSITIONS = [("s1", "s2", "fade-blur", 133), ("s2", "s3", "fall", 333), ("s3", "s4", "fade-blur", 133), ("s4", "s5", "push", 267),
+               ("s5", "s6", "fade-blur", 133), ("s6", "s7", "fall", 333), ("s7", "s8", "fade-blur", 133), ("s8", "s9", "push", 267),
                ("s9", "s10", "fade-blur", 133), ("s10", "s11", "fall", 333)]
 
 
@@ -161,7 +162,13 @@ def build_plan(script: dict, words: dict, idea_id: str = "") -> dict:
                        "honesty_label": d.get("honesty"), "emphasis_hits": hits, "components": comps})
     labels.append({"scene": "s1", "text": "CLAUDE CODE SITES", "kind": "kicker"})
     body_words = [w for w in tl.words if w.get("beat") not in ("b1", "b11")]
-    chunks = captions.chunk_words(body_words, emphasis_terms)
+    toks = common.tokens()
+    try:
+        from visual.common import caption_chunk_width  # M10: chunks never wider than the caption line
+        max_w = float(toks["zones"]["caption"]["max_width"])
+        chunks = captions.chunk_words(body_words, emphasis_terms, max_width=max_w, width_fn=lambda ws: caption_chunk_width(ws, toks))
+    except Exception:
+        chunks = captions.chunk_words(body_words, emphasis_terms)
     scene_of_beat = {s["beat"]: s["id"] for s in scenes}
     for ch in chunks:
         ch["scene"] = scene_of_beat.get(ch["scene"], ch["scene"])

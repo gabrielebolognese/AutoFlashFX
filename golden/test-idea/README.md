@@ -2,7 +2,7 @@
 
 The example reel the visual director (S9) reads: plan.json is the merged visual plan (pipeline/stages/09-plan/schema.json), project/ the HyperFrames project built from it by pipeline/lib/motion/golden.py, golden.mp4 the render (ignored by git, rebuilt by `bash pipeline/bin/render-golden`), contact-sheet.png one still per scene.
 
-- Duration: 41460 ms, 11 scenes, 22 component instances, 32 caption chunks
+- Duration: 41460 ms, 11 scenes, 22 component instances, 42 caption chunks
 - Solution: external (frontend-design, the Claude Code plugin); branding: the CTA scene s11 carries the DM card (brand/mark/avatar-dark.png) and the lockup (brand/lockup/lockup-gradient-on-light.png); brand slot: None
 - Render: 1080x1920 at 30.0 fps, 41.47 s, audio aac 48000 Hz (the render time is in render.json)
 - HyperFrames check: ok, runtime warnings 1, contrast warnings 3, craft warnings 4
@@ -28,11 +28,11 @@ The example reel the visual director (S9) reads: plan.json is the merged visual 
 - s1 to s2: fade-blur (133 ms)
 - s2 to s3: fall (333 ms)
 - s3 to s4: fade-blur (133 ms)
-- s4 to s5: push (200 ms)
+- s4 to s5: push (267 ms)
 - s5 to s6: fade-blur (133 ms)
 - s6 to s7: fall (333 ms)
 - s7 to s8: fade-blur (133 ms)
-- s8 to s9: push (200 ms)
+- s8 to s9: push (267 ms)
 - s9 to s10: fade-blur (133 ms)
 - s10 to s11: fall (333 ms)
 
