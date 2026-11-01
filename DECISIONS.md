@@ -1557,3 +1557,137 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     (hyperframes 0.8.226, gsap 3.15.0, three 0.159.0; `bash pipeline/bin/setup-node` installs them, refreshes the
     vendored copies, checks Chrome and ffmpeg through `hyperframes doctor` and installs the HyperFrames skill pack
     for the M10 builder sessions).
+
+## M10 Visual stages (2026-11-01)
+
+### The three passes of S9
+215. **The model designs, the code composes and decides** (the pattern of M4 to M7). The visual director answers each
+    pass with a structured object (pipeline/stages/09?-*/model.schema.json): 9a one scene per beat with the
+    components, their props and where each one starts (`at`: scene, breath, word:<spoken word>, ms:<offset>;
+    `word_props` for timing props such as strike_at or ticks_at that land on a word); 9b the caption word groups, the
+    card texts it changes and the labels; 9c a transition type per scene pair. pipeline/lib/visual/plan9.py resolves
+    every time from words.json (so every start is a word boundary by construction), fills the defaults (the headline's
+    words_json from the beat's words, hero-3d starting visual.breath_set_piece_lead_ms 60 ms before the breath so its
+    landing sits inside it), applies the branding, derives the cards and labels, gives the transitions the style's
+    durations and validates. The model never writes a millisecond, an instance id or a brand path.
+216. **One retry with the exact problems in the same session, then the review path.** pipeline/lib/visual.sh
+    visual_pass_run (the shared body of the three stages) calls the director, composes, and on problems resumes the
+    session with write_retry_prompt's list; a second failure is stage_fail (a code error for BUILD_SPEC.md 4.2, as S9
+    says: "An invalid pass gets one retry with the validator errors, then the review path"). The rejected
+    composition stays in plan.candidate.json for the reviewer.
+217. **The validator is 19 named rules** (pipeline/lib/visual/plan_validate.py: schema, components, times,
+    first_change, breath, max_gap, distinct, repeat, beat_map, three_d, set_pieces, zones, captions, cards, assets,
+    honesty, branding, transitions, hook2), every threshold read from tokens.json, catalog.json, brand.json or config
+    visual.* (min_distinct_components 5, max_same_in_a_row 2, title_max_words 6, body_max_words 14,
+    snap_tolerance_ms 34, zone_tolerance_px 24, max_cut_share 0.34), reported as `rule=<name>: <message>` lines so a
+    test can assert the rule and the director's retry prompt can quote it; warnings never fail. 9a checks the scene
+    rules, 9b the caption, card and honesty rules, 9c and S10 everything. The fixtures of PLAN.md M10 are
+    pipeline/tests/fixtures/plans/good.json (the golden plan) and bad-<rule>.json written by make-bad.py, one per rule.
+218. **Zones at plan level are approximate footprints** (visual/common.py footprint: a box per component instance and
+    its text boxes, from the props and the style's font metrics); the exact pixel checks are S12's (M11). A hero
+    ending under tokens.json zones.hero.bottom_max is a warning, under zones.safe_bottom an error (the CTA's DM card
+    excepted: M9 placed it at y 1305 inside the caption band's exception); text reaching the right rail of the lower
+    half is estimated from the text boxes with visual.zone_tolerance_px.
+219. **Caption chunks never wider than the line.** The style caps the centered caption line at 620 px (tokens.json
+    zones.caption.max_width); at the caption size (Inter Tight 800, 67 px, measured with PIL from the library's own
+    font file: visual.common.text_width) most 4-word chunks are wider (the golden's chunker had 16 of 33 over the
+    limit and the caption-line scaled them down, the gap M9 noted). motion/captions.chunk_words now breaks by width
+    (max_width, width_fn), goldenplan.py uses it (the golden has 42 chunks), the 9b prompt tells the director the
+    limit in characters, and compose_text splits an overwide chunk the director sends instead of rejecting it (the
+    rule is mechanical; a note says so). The emphasis cap is tokens.json limits.caption.emphasis_per_chunk.
+220. **The branding is applied by code** (plan9.apply_branding, BUILD_SPEC.md S9 Branding, tweaks.md): the ask scene
+    always gets the end-card with brand.json's default lockup for light surfaces (lockup_w at least
+    tokens.json branding.lockup_min_width) and the dm-card with branding.cta's avatar (mark/avatar-dark.png) and
+    sender, both added with a note when the director left them out (the DM card landing on the keyword's word); the
+    brand slot token "@brand-slot" in a prop resolves to the FlashFX bolt (solution flashfx: brand.json defaults.mark),
+    the tool's logo (solution.json logo, else a research asset whose name or description says logo or icon) or ""
+    (the component's neutral icon); a brand/ asset outside the CTA is removed for a non-FlashFX solution and noted. A
+    run without 02-expansion/solution.json counts as not FlashFX (S2 writes it from M12 on). The surface under each
+    logo spot is fixed per component and prop (visual.common LOGO_SURFACES: light everywhere but a dark window card)
+    and the validator requires the asset's use_on to match it or be both.
+221. **The beat map gained window-card for comparison and before-after beats** (pipeline/lib/tokens.py BEAT_TYPES,
+    tokens.json rebuilt with --force, catalog.json rewritten): the golden's comparison beat shows the SKILL.md
+    screenshot in a window card, which the M9 map forbade; a comparison or a before-and-after often is a real
+    screenshot. The push transition lasts push_out_frames plus push_gap_frames (8 frames, 267 ms: the 6-frame push
+    and the 2 empty frames of v03) rather than the golden's 200 ms; the golden plan was aligned and re-rendered.
+222. **The prompts inline digests, not raw files** (plan9.run_digest into <stage>/digest/): timeline.md (every beat's
+    window, display and card text, emphasis and the words with their start ms, the breath, hook 2's words),
+    catalog.md (every approved component: what it does, its beats, props with types, defaults, options and IMAGE
+    marks, its sound events and still), golden.md (the example reel scene by scene), assets.md (the screenshots with
+    what they show), solution.md (the solution and the branding it implies, with the exact paths), scenes.md (the 9a
+    instances with their text props, for 9b), chunks.md (the baseline chunks, for 9b), transitions.md (the scene list
+    with the style's rules, for 9c); style.md, tweaks.md and tokens.json are inlined whole. The director has Read and
+    Glob (config visual.director_tools) so it can look at the stills, the contact sheet and the screenshots. A 9a
+    prompt is about 70 KB.
+223. **Hook 2's headline is the director's** (9a's answer field hook2: the kicker and the display line split in 1 to 3
+    lines, the serif phrase between asterisks; the hook2 rule requires its words to be the display line's). S10 builds
+    the alternate clip from the hook scene's components (project.hook2_plan): the headline with hook 2's lines and
+    words_hook2.json's times, every other component keeping its distance from the last spoken word, the clip
+    min(visual.hook2_max_s 3.5 s, last word plus visual.hook2_hold_ms 800 ms): 3.19 s on the test idea.
+224. **Structured output takes free-form objects:** the 9a schema's `props` is an open object; a probe call with the
+    haiku model through `--json-schema` returned the nested answer intact, so the design did not need flattened props.
+
+### S10
+225. **The project is compiled by code, the builder model is the repair step.** motion/golden.py build_project (M9's
+    plan-to-project compiler, now with an optional voice, a folder name, a meta id and a title) turns the merged plan
+    into 10-build/project/ in a second; the builder model (config builder, or builder_escalation when the plan has
+    visual.three_d_heavy_objects 3D objects or more or state.json rounds.review is 2 or more, M11's counter) is called
+    only when `npx hyperframes check --json` reports errors, with Read, Glob, Grep, Edit, Write and `npx hyperframes`
+    in the project folder as its working directory (so it cannot touch the library, the pipeline or the user's
+    folders), up to visual.build_fix_rounds (2) rounds, then a code error. On the test idea the check passes at once
+    and no builder call is made. Candidates (motion-lib/candidates/) are not written by S10 in this version: the
+    catalog requires a META entry in pipeline/lib/motion/catalog.py for every component file, so a model-written
+    candidate would break the library's checks and the gallery; the director's wishlist (a component it wanted and
+    the library lacks) becomes a NEEDS REVIEW flag and the reel uses library components (HUMAN_TODO).
+226. **events.json is read from the runtime, not computed from the catalog's formulas** (DECISIONS.md 204 planned the
+    formulas). The components register what they do and when on their mount (paper-cards.js PC.event into
+    window.__pcEvents, local seconds); pipeline/lib/visual/events.py mounts every instance of the built project with
+    its resolved props in the Playwright harness (motion/harness.py, the project folder as its library so the
+    screenshots and logos load; hero-3d with clip_start 0 because the harness seeks local times) and reads the
+    events; absolute ms = the host's data-start plus the local time. Every event that starts a visible change is
+    verified: a seek one frame before and one frame after must change the element's state (opacity by more than
+    0.01, since a cubic ease-in moves 0.016 in its first of 4 frames; position by 0.5 px; scale, rotation or text; a
+    canvas by its pixels, hero-3d draws from the hf-seek time; typing also at 2 frames after, because the first
+    letter appears on the second frame at 2 frames per character; a landing, a peak or an end of a move is the
+    moment a change stops and is not verified). PC.exit registers an exit under its move's name (the extra `type` key
+    of PC.event wins), so fade-blur, fall, push and cut events are normalized to "exit" with transition_type kept.
+    The scene changes come from the plan's transitions, at the next scene's start with transition_ms and the type
+    (verified when the leaving components' exits were). `npx hyperframes timeline --json` cross-checks that every
+    host starts where the plan says. On the test idea 108 events, 10 scene changes, 69 of 69 verified.
+227. **The draft is rendered at the composition's size and scaled down** (project.render_scaled): the HyperFrames CLI
+    accepts resolution presets only, so `render --quality draft` produces 1080x1920 and ffmpeg scales to 540x960
+    (lanczos, libx264 veryfast, crf visual.draft_crf 20, yuv420p, -an); the full-size file is deleted. The project has
+    no audio element (the spec's silent draft; S13 adds the mix), and S10 checks the probe: 540x960, 30 fps, no audio
+    stream, the plan's length within 0.2 s. On this PC the 41 s reel renders in about 60 s, the hook 2 clip in 20 s.
+228. **WebGL follows motion-lib/webgl.json:** render_flag (--browser-gpu here) goes to every render; webgl false
+    turns every hero-3d instance into a popping card with its label (project.replace_3d) and flags NEEDS REVIEW.
+229. **The preflight gained the brand kit and the visual files** (config preflight.require, pipeline/lib/preflight.sh):
+    a new check type `brand` (library/brand/brand.json under the repo parses, lists assets, every file exists with
+    use_on, width and height), styles/paper-cards/tokens.json now hard (M9 kept it a warning), motion-lib/catalog.json
+    and node_modules/hyperframes/package.json hard. The test sandboxes copy those four into every --with-pipeline
+    sandbox (pipeline/tests/lib.sh), so the M2 to M7 tests still pass their preflight; --with-visual (M10's test)
+    adds the library's compositions, assets and stills, the brand kit, the golden plan and contact sheet, and points
+    REELS_NODE_PREFIX at the real repo's node_modules (golden.npx_cmd and events.timeline_check read it).
+230. **The stage scripts relay the Python's lines like S8** (10-build/run.sh: @@ACTIVITY, @@SAY, @@FLAG, @@ERROR), and
+    the three pass stages print `activity: <text>` into their logs beside set_activity, so the tests can assert the
+    spec's activities ("planning animations", "validating plan", "planning text", "planning transitions", "building
+    visuals", "rendering draft").
+231. **The merged plan lives in two places:** 09c-transitions/merged.json (what 9c validated) and 10-build/plan.json
+    (the plan as compiled, with the transitions as exit props and any 3D replacement). S10 merges the three pass
+    files itself (plan_merge.merge_run), so a pass re-run by the review loop (M11) is picked up without 9c running
+    again; 9c writes merged.json for inspection. The pass schemas (09a/09b/09c schema.json) are generated from
+    pipeline/stages/09-plan/schema.json by pass-schemas.py so the parts stay one definition (the test checks they are
+    current).
+232. **Earlier milestones touched by M10:** motion/golden.py (build_project's optional voice, folder, meta id, title,
+    the npx prefix), motion/captions.py (the width limit), motion/goldenplan.py (the width-aware chunks, push 267 ms),
+    pipeline/lib/tokens.py BEAT_TYPES and the rebuilt tokens.json, tokens.css and catalog.json, motion/harness.py
+    (the measured element's tag), motion-lib/compositions/headline.html (ids on the word spans, so the word events
+    can be verified), golden/test-idea (plan and render regenerated, M9), the dummies, schemas and contracts of
+    09a-animations, 09b-text, 09c-transitions and 10-build (M2), config.json (M1: visual, timeouts plan_seconds,
+    build_seconds, check_seconds, events_seconds, render_draft_seconds, the preflight entries), pipeline/lib/preflight.sh
+    (M1), pipeline/tests/lib.sh (M1). No stage of M4 to M8 changed.
+233. **Windows and bash notes found in M10:** a heredoc fed to `python -` inside `$( ... )` must not also redirect
+    stdin from /dev/null (the first brand check did, and Python printed its banner as the "error"); a `/tmp/...` path
+    typed inside a Python heredoc is C:/tmp for Windows Python while the same path as a command-line argument is
+    converted by Git Bash, so scratch paths go through `cygpath -m` and in as arguments; a Bash tool command that
+    chains two quoted heredocs can fail to parse, so the longer patches went into a script file (build/M10/patch-events.py).

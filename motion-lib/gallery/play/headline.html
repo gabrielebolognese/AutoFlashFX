@@ -90,6 +90,7 @@ window.__pcEvents = [];
           var text = serif ? part.slice(1, -1) : part;
           text.split(/\s+/).filter(Boolean).forEach(function (w) {
             var span = PC.el("span", "pc-word" + (serif ? " pc-phrase" : ""), div, w);
+            span.id = "hl-" + wordEls.length;  // the id the word event names (events.json verifies it on screen)
             wordEls.push(span);
           });
         });

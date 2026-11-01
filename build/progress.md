@@ -292,9 +292,55 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   DECISIONS.md 192 to 214. Report: build/M9/report.md.
 
 ## M10 Visual stages (S9, S10)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m10.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has four sections: 1 the units (the validator fixtures: good.json passes, each
+  bad-<rule>.json fails naming its rule; the caption chunker's width limit; the pass schemas are current; the
+  preflight's brand check: 30 checks, seconds), 2 the four stages through the runner with the fake director from the
+  frozen M7 outputs (the plans validate, the merged plan passes the validator, the check passes, draft.mp4 540x960 30
+  fps silent within 0.2 s of the voice, hook2.mp4 3.2 s, events.json verified on screen, the timeline cross-check,
+  the activities and terminal lines; then the branding with a flashfx and an external solution.json, the flashfx reel
+  built and its logos measured as images with their aspect ratio locked: 92 checks in about 15 minutes, two builds with
+  renders; 2r the builder's repair loop with a planted broken component, the fake builder asked twice, then a code
+  error: 12 checks, about 3 minutes), 3 the real visual director and the build (43 checks; the real S9a, S9b, S9c and
+  S10 took 7 min 48 s: three director calls without a retry, 27 component instances, 46 caption chunks, the check ok
+  at once with no builder repair, 120 events with 79 of 79 verified, the draft rendered in 86 s), 4 the em dash scan.
+  178 checks pass in about 30 minutes. M1 (96 checks), M9 (80 checks), M2 and the em dash scan pass with it.
+- Test command: `bash pipeline/tests/test-m10.sh` (`M10_SECTIONS="1 2"` for the fake-only sections; `M10_FREEZE=1`
+  also refreshes the frozen 09a/09b/09c plans, the 10-build outputs and the fake director's answers under
+  pipeline/tests/fixtures/); `bash pipeline/tests/run-all.sh` runs M1 to M10, limits and the em dash scan (about
+  2 hours).
+- Notes: pipeline/stages/{09a-animations,09b-text,09c-transitions} (run.sh over pipeline/lib/visual.sh, prompt.md,
+  model.schema.json, schema.json from pipeline/stages/09-plan/pass-schemas.py, CONTRACT.md, dummy.sh) and
+  pipeline/stages/10-build (run.sh, prompt.md for the builder's repair, schema.json, CONTRACT.md, dummy.sh) on the
+  package pipeline/lib/visual/ (`python pipeline/lib/visual <command>`: digest, animations, text, transitions, merge,
+  validate, build, events, contact-sheet). The director designs, the code composes (plan9.py: times from words.json,
+  the branding by the solution, the chunks from the real words, the transitions' durations) and validates
+  (plan_validate.py: 19 named rules, thresholds from tokens.json, catalog.json, brand.json, config visual.*); one
+  retry with the exact problems, then the review path. S10 compiles the plan with motion/golden.py build_project,
+  checks it, calls the builder model only to repair a failing check (inside the project folder, visual.build_fix_rounds
+  rounds; builder_escalation for visual.three_d_heavy_objects 3D objects or state.json rounds.review >= 2), reads
+  events.json from the mounted components (events.py: absolute ms, the catalog's cue, verified one frame before and
+  after; the scene changes from the transitions; `npx hyperframes timeline` cross-check), renders the silent draft
+  (native render, ffmpeg to 540x960), the hook 2 clip and the contact sheet (pipeline/bin/contact-sheet). WebGL
+  missing: hero-3d becomes a card plus a NEEDS REVIEW flag. Config: visual.*, timeouts plan_seconds, build_seconds,
+  check_seconds, events_seconds, render_draft_seconds, the preflight entries (brand, tokens.json, catalog.json,
+  node_modules/hyperframes, all hard). Earlier milestones touched: motion/golden.py (an optional voice, folder, meta
+  id, title, REELS_NODE_PREFIX), motion/captions.py (max_width, width_fn), motion/goldenplan.py (width-aware chunks,
+  push 267 ms), tokens.py BEAT_TYPES (window-card for comparison and before-after) with tokens.json, tokens.css and
+  catalog.json rebuilt, motion/harness.py (the element's tag), motion-lib/compositions/headline.html (word span ids),
+  golden/test-idea regenerated (42 chunks), the M2 dummies, schemas and contracts of the four stages, config.json,
+  preflight.sh, tests/lib.sh (--with-visual; every --with-pipeline sandbox gets tokens.json, catalog.json, the brand
+  kit and node_modules/hyperframes/package.json so the earlier tests' preflight still passes). Fixtures: the frozen
+  09a/09b/09c plan.json, 09c merged.json, 10-build/{events.json,plan.json,build.json,check.json,contact-sheet.png,
+  project/index.html,project/instances.json,hook2/index.html,hook2/plan.json} under
+  pipeline/tests/fixtures/runs/test-idea/; the fake director's answers pipeline/tests/fixtures/fake/m10/
+  (09a-animations.json, 09b-text.json, 09c-transitions.json); the validator fixtures pipeline/tests/fixtures/plans/;
+  the solution fixtures pipeline/tests/fixtures/solutions/. Hooks for M11: 10-build/events.json is S11's input
+  (events with ms, type, cue, component, instance, scene, beat, scene_change, transition_ms, transition_type,
+  next_beat_type; the catalog's cue is a suggestion, the S11 rules decide; `end` on typing events), 10-build/plan.json
+  the compiled plan (the components' boxes and texts for S12's checks), 10-build/project/ the composition S12's
+  Puppeteer opens (index.html, compositions/, assets/, instances.json), draft.mp4 the silent 540x960 draft, the
+  review loop's fix routing reopens 09a/09b/09c or 08 through reopen.txt and S10 merges the pass files again;
+  state.json rounds.review drives the builder escalation. DECISIONS.md 215 to 233. Report: build/M10/report.md.
 
 ## M11 Sound effects pass and review loop (S11, S12)
 - Status: not started

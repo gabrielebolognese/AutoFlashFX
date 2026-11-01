@@ -5,7 +5,7 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M9 Motion library: done (2026-11-01). Next: M10 Visual stages (S9, S10). The build is driven by
+- M10 Visual stages: done (2026-11-01). Next: M11 Sound effects pass and review loop (S11, S12). The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
@@ -41,13 +41,29 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   gsap and three (pipeline/bin/setup-node),
   pipeline/bin/vendor-run and the vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/ (MIT,
   pinned in its VERSION file; beats.py, humanize.py and detect.py are also imported as modules by
-  script_checks.py). Run every test with `bash pipeline/tests/run-all.sh` (about 105 minutes; test-m3 section 4,
-  test-m4 sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3 and test-m7 section 3 make real model or
-  engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` is the fake-only M7 test).
-- The stages S9a to S14 (run.sh in each stage folder) arrive from M10 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S9a. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge,
-  script and voiceover with dummy stages after them. The voiceover stage (S8) writes runs/<id>/08-voiceover/vo.wav
+  script_checks.py), the visual stages of M10: S9a, S9b, S9c (pipeline/stages/09a-animations, 09b-text,
+  09c-transitions: run.sh over the shared pipeline/lib/visual.sh, prompt.md, model.schema.json, schema.json generated
+  from pipeline/stages/09-plan/schema.json by pass-schemas.py) and S10 (pipeline/stages/10-build: run.sh, prompt.md
+  for the builder's repair call, schema.json) on the package pipeline/lib/visual/ (run as `python pipeline/lib/visual
+  <command>`: digest, animations, text, transitions, merge, validate, build, events, contact-sheet; common.py the
+  timeline, text widths and footprints, plan9.py the three compositions, plan_merge.py, plan_validate.py the 19 named
+  rules, project.py the compile, check, draft render, hook 2 clip and contact sheet, events.py the events read from the
+  mounted components and verified on screen), pipeline/bin/contact-sheet, the preflight check `brand` (brand.json and
+  every file it lists). Run every test with `bash pipeline/tests/run-all.sh` (about 2 hours; test-m3 section 4,
+  test-m4 sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3, test-m7 section 3 and test-m10 section 3
+  make real model or engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes, test-m10 about 25
+  minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` and `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`
+  are the fake-only tests).
+- The stages S11 to S14 (run.sh in each stage folder) arrive from M11 on, so `bash run.sh` alone stops with
+  logs/STOPPED.md at S11. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
+  `REELS_DUMMY=11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge, script,
+  voiceover, visual plan and build with dummy stages after them. The visual stages (S9a, S9b, S9c) write
+  runs/<id>/09a-animations/plan.json (the scenes and components on the spoken words, the branding by the solution),
+  09b-text/plan.json (the caption chunks and card texts), 09c-transitions/plan.json and merged.json (the whole plan,
+  pipeline/stages/09-plan/schema.json), each with its prompt digests under digest/; S10 writes
+  runs/<id>/10-build/project/ (the HyperFrames project compiled from the plan), events.json (every sound event in
+  absolute ms, verified on screen), draft.mp4 (540x960, 30 fps, silent), hook2.mp4 (3.5 s at most), contact-sheet.png,
+  plan.json, build.json and check.json. The voiceover stage (S8) writes runs/<id>/08-voiceover/vo.wav
   (48 kHz mono, -14 LUFS), vo_hook2.wav, words.json (every spoken word with start and end ms and its beat; the
   beats' windows; the breath after the hook), words_hook2.json and voiceover.json (the trail: every line's
   attempts, transcriptions, word error rates, respellings and rewrites, the timings, the pace). The voice is
