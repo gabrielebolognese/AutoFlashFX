@@ -5,8 +5,9 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M10 Visual stages: done (2026-11-01). Next: M11 Sound effects pass and review loop (S11, S12). The build is driven by
-  `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
+- M11 Sound effects pass and review loop: done (2026-11-01). Next: M12 Final render, caption, export, end to end (S13,
+  S14). The build is driven by `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in
+  build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
   faster_whisper), the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py,
@@ -49,15 +50,35 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   timeline, text widths and footprints, plan9.py the three compositions, plan_merge.py, plan_validate.py the 19 named
   rules, project.py the compile, check, draft render, hook 2 clip and contact sheet, events.py the events read from the
   mounted components and verified on screen), pipeline/bin/contact-sheet, the preflight check `brand` (brand.json and
-  every file it lists). Run every test with `bash pipeline/tests/run-all.sh` (about 2 hours; test-m3 section 4,
-  test-m4 sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3, test-m7 section 3 and test-m10 section 3
-  make real model or engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes, test-m10 about 25
-  minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh` and `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`
-  are the fake-only tests).
-- The stages S11 to S14 (run.sh in each stage folder) arrive from M11 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S11. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge, script,
-  voiceover, visual plan and build with dummy stages after them. The visual stages (S9a, S9b, S9c) write
+  every file it lists), the sound pass of M11: S11 (pipeline/stages/11-sfx/run.sh over pipeline/lib/sfx/assign.py the
+  cue rules, pick.py the pool rotation with logs/sfx-usage.json, place.py, level.py, render_stem.py, verify.py,
+  audioio.py, mixsfx.py the orchestrator; pipeline/bin/mix-sfx runs it by hand), the review loop of M11: S12
+  (pipeline/stages/12-review/run.sh, prompt.md and model.schema.json for the qa editor, over the package
+  pipeline/lib/review/: `python pipeline/lib/review <command>`: mechanical (the built composition opened host by host in
+  the Playwright harness: zones, the right rail, fonts, overlaps, contrast, emphasis timing, the branding rules), style
+  (tools/analyze_refs.py on the mixed draft against styles/paper-cards/analysis: cadence, token colors, accent share,
+  loudness), audio (S11's verification, the voice transcribed from the mix, WER under 5 percent), filmstrips, prompt,
+  verdict and feedback (route.py: pass when every check passes and every score is at least 4, else each tagged issue
+  back to its owner through reopen.txt, every later stage again, 3 opus rounds then 2 fable rounds, then the export with
+  NEEDS REVIEW), the review notes the re-run passes read ({{REVIEW}} in the director prompts, S8's respelling of a quoted
+  word, S11's fewer and softer sounds), pipeline/tests/materialize-project.py (the frozen project folders rebuilt from
+  the plans). Run every test with `bash pipeline/tests/run-all.sh` (about 2.5 hours; test-m3 section 4, test-m4
+  sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3, test-m7 section 3, test-m10 section 3 and test-m11
+  section 4 make real model or engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes, test-m10
+  about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
+  `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh` and `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` are the
+  fake-only tests).
+- The stages S13 and S14 (run.sh in each stage folder) arrive from M12 on, so `bash run.sh` alone stops with
+  logs/STOPPED.md at S13. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
+  `REELS_DUMMY=13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge, script, voiceover,
+  visual plan, build, sound pass and review with dummy render and export after them. The sound stage (S11) writes
+  runs/<id>/11-sfx/cues.json (every sound: cue type, file, the event it sits on, placement, gains, the verification),
+  sfx_stem.wav, mix.wav (the audio S13 muxes), draft_mixed.mp4 (for the review), sound-map.txt (one readable line per
+  sound), and sfx_stem_hook2.wav, mix_hook2.wav for the alternate clip; it refreshes styles/sfx/sfx-map.json at its
+  start and records its picks in logs/sfx-usage.json. The review stage (S12) writes runs/<id>/12-review/review.json
+  (round, pass, verdict pass | fix | cap | flag, the scores, every tagged issue, the routing), mechanical.json,
+  style.json, audio.json, edit-r<n>.json, filmstrips/, prompt-r<n>.md, notes.md and feedback.json (what the re-run
+  stages read); state.json rounds.review counts the failed rounds. The visual stages (S9a, S9b, S9c) write
   runs/<id>/09a-animations/plan.json (the scenes and components on the spoken words, the branding by the solution),
   09b-text/plan.json (the caption chunks and card texts), 09c-transitions/plan.json and merged.json (the whole plan,
   pipeline/stages/09-plan/schema.json), each with its prompt digests under digest/; S10 writes

@@ -1,0 +1,6 @@
+== test-m1
+PASS  the removal is announced
+
+test-m1.sh: 96 passed, 0 failed
+== test-m7 fake sections
+test-m7.sh: 116 passed, 0 failed

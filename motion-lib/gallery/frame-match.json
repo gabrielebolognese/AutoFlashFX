@@ -1,5 +1,5 @@
 {
- "run": "2026-11-01T19:18:34",
+ "run": "2026-11-01T22:09:36",
  "results": [
   {
    "id": "camera-move",
@@ -134,8 +134,8 @@
      "type": "caption_overflow",
      "t": 0.2,
      "chunk": 0,
-     "width": 1080,
-     "scale": 0.6
+     "width": 775.140625,
+     "scale": 0.7998548650446492
     },
     {
      "type": "caption_word",
@@ -171,13 +171,6 @@
      "chunk": 0,
      "end": 1.4,
      "words": 4
-    },
-    {
-     "type": "caption_overflow",
-     "t": 1.45,
-     "chunk": 1,
-     "width": 1080,
-     "scale": 0.6
     },
     {
      "type": "caption_word",
@@ -1274,7 +1267,7 @@
    "correlation": {
     "best": {
      "strip": "v03/extra/s30_label_042.4.png",
-     "r": 0.937,
+     "r": 0.936,
      "ref_onset": 2,
      "cur_onset": 1,
      "frames": 7
@@ -1282,7 +1275,7 @@
     "strips": [
      {
       "strip": "v03/extra/s30_label_042.4.png",
-      "r": 0.937,
+      "r": 0.936,
       "ref_onset": 2,
       "cur_onset": 1,
       "frames": 7

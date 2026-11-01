@@ -1,6 +1,6 @@
 # frame-match: the library components against the style's numbers and the reference strips
 
-Run 2026-11-01 19:18 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png.
+Run 2026-11-01 22:09 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png.
 
 **27 pass, 0 fail** of 27 components.
 
@@ -20,7 +20,7 @@ Run 2026-11-01 19:18 by pipeline/bin/frame-match. Tolerances: 1 frame on timings
 | handwritten-callout | pass | 1/1 | none | none |
 | headline | pass | 3/3 | v02/extra/s30_hook.png | 0.929 |
 | hero-3d | pass | 2/2 | none | none |
-| light-chip | pass | 1/1 | v03/extra/s30_label_042.4.png | 0.937 |
+| light-chip | pass | 1/1 | v03/extra/s30_label_042.4.png | 0.936 |
 | logo-tile | pass | 6/6 | v08/extra/s30_003.8_logo_chain.png | 0.934 |
 | mascot | pass | 1/1 | v08/extra/s30_000.8_mascot_title.png | 0.975 |
 | paper-canvas | pass | 1/1 | none | none |
@@ -185,7 +185,7 @@ Strips: v02/extra/s30_hook.png r=0.929; v01/extra/s30_hook.png r=0.838; v03/extr
 |---|---|---|---|
 | fade: opacity frames | 4 frames | 4 | yes |
 
-Strips: v03/extra/s30_label_042.4.png r=0.937
+Strips: v03/extra/s30_label_042.4.png r=0.936
 
 ## logo-tile: pass
 

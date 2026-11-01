@@ -1691,3 +1691,185 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     typed inside a Python heredoc is C:/tmp for Windows Python while the same path as a command-line argument is
     converted by Git Bash, so scratch paths go through `cygpath -m` and in as arguments; a Bash tool command that
     chains two quoted heredocs can fail to parse, so the longer patches went into a script file (build/M10/patch-events.py).
+
+## M11 Sound effects pass and review loop (2026-11-01)
+
+### S11, the sound pass
+234. **Code only, in three layers (pipeline/lib/sfx/ behind pipeline/bin/mix-sfx and 11-sfx/run.sh):** assign.py turns
+    10-build/events.json into cue candidates with the spec's rules and accepts them by priority (mandatory, scene
+    changes, hero and number, ui, attention) and time, so the density trimming keeps the spec's order; pick.py rotates
+    inside the map's pools; place.py sets where each file starts and how much of it plays; level.py sets the gains;
+    render_stem.py mixes in numpy; verify.py measures the rendered stem; mixsfx.py orchestrates, corrects and writes
+    cues.json, sound-map.txt, the stem, the mix and draft_mixed.mp4. The stage script relays "@@" lines like S8 and S10
+    and refreshes the memory map first (bash pipeline/bin/build-sfx-map, a no-op when nothing changed; its indexer
+    call failing is a code error; REELS_SFX_NO_BUILD=1 skips it in tests).
+235. **Two readings of "sounds" in the density rule, recorded here because the spec's 4 per 10 s would otherwise drop
+    every signature sound of this reel:** a typing bed is a continuous sound, not a hit: it respects the 250 ms
+    spacing against other onsets but does not count toward the 4 hits per 10 s; and a series of the same mandatory cue
+    on one component within sfx.series_gap_ms (2 s: a checklist's ticks 667 ms apart) counts once and plays one file
+    (the first member's). Without these the three checklist ticks ate the window and the terminal's typing bed and
+    two scene changes were dropped. A hero that enters on the scene change itself would always lose to the whoosh
+    (the spacing rule), so its pop moves to its landing (the card's land event); on the test idea the transitions and
+    the mandatory cues still fill the budget and no hero pop survives: 17 sounds from 40 candidates (9 mandatory, 8
+    transitions), 23 dropped with their reasons in cues.json.
+236. **Calm beats for the slow whoosh:** config sfx.calm_beats = stake and pain-payoff (the spec's "stake, pain, story";
+    the pipeline has no story beat type). A cut (0 ms) is still a scene change and gets a fast whoosh.
+237. **Placement from the map's own measurements:** a whoosh (transition_slow, transition_fast, attention, hook_hit) is
+    placed so the map's peak_s lands on the event, everything else so onset_s lands on it; both were measured on the
+    cache copy's timeline (DECISIONS.md 186), so no file is re-analyzed at pick time. A file whose anchor comes later
+    than the event allows starts inside the file (offset_ms). A sound plays to its audible end (end_s plus 60 ms), a
+    typing bed to its segment's end (a shorter file plays once, never looped), and a tail that would run into the next
+    sound is cut sfx.tail_guard_ms (50) before that sound's audible start, with a 30 ms fade; the guard gives the next
+    onset a clean lead-in (the first version cut at the onset itself and the previous file's jangling tail was
+    measured as the onset).
+238. **The 8 dB rule against a local reference with a floor:** the voice's sample peak within sfx.voice_window_ms (600)
+    of the event, never taken lower than the reel's overall voice peak minus sfx.voice_floor_under_peak_db (12). The
+    floor keeps the hook_hit (it lands in the breath, a second of silence) and any sound in a pause from being pushed
+    into inaudibility; with it every sound still sits at least 8 dB under the loudest voice frame near it. The gain is
+    computed from the played segment's own peak (a typing bed cut from the middle of a file peaks lower than the file).
+    Mono stem and mix: one voice, one channel, the phone speaker the reels play on; a stereo file is averaged.
+239. **Verification on what was rendered, with definitions that survive real files:** the stem's 5 ms RMS envelope (the
+    map's own measure). A whoosh is in sync when the event falls inside the loudest stretch of its span (the frames
+    within 1 dB of the maximum): the jet whooshes have a plateau of 200 ms and the loudest frame moved by a grid
+    alignment, which made the first version oscillate by plus and minus 212 ms between passes. A non-whoosh's onset is
+    the first frame of its window (40 ms before to 150 ms after the event) within 30 dB of the sound's expected peak, or,
+    when something already sounds at the window's start (a bed, a tail), the strongest rise of 6 dB or more over the
+    20 ms before it. Unplanned sound: any stretch above -55 dBFS that no planned span (plus 40 ms) covers. The
+    corrections of a failed pass: a measured offset moves the file by the opposite amount, a sound over its voice cap
+    loses the excess plus 0.5 dB, a true peak over the ceiling lowers every sound, a loud mix lowers the stem; the mix
+    itself is touched last (volume plus alimiter with latency compensation) and only when the stem alone cannot fix the
+    loudness. Every sound is measured on an envelope aligned to its own first played sample (the map measured the
+    file from its first sample on the same 5 ms grid, so an untouched placement reads the frames the map read) and a
+    whoosh's peak is searched only within sfx.peak_search_ms (500) of its event: the first version read the reel's grid
+    over the whole span, where a grid shift and a neighbor's tail moved the loudest frame and a 2.8 s swoosh with an
+    0.8 s swell was "corrected" by 112 and then 888 ms until the stage failed (the cap test's round 4). A correction
+    never moves a sound by more than sfx.max_shift_ms (150); a sound that misses by more, or misses again after a shift,
+    swaps to the next unused file of its pool (placed and levelled again, the others keep their corrections) and, when
+    that fails too, is left out with a NEEDS REVIEW flag: a sound the renderer cannot verify is a file problem, not a
+    code error for the reviewer. Up to sfx.verify_passes (5) passes, then exit 3 and the review path. On the test idea
+    one correction (the cash register's soft onset measured 35 ms late) and everything within 10 ms; in the cap test's
+    fifth round a typing bed that read 75 and then 140 ms late was swapped for the pool's other file and passed.
+240. **Rotation and memory:** the pool order is best fit first (pinned first of all), the start offset is seeded per
+    reel (the idea id; plus the review round when the edit review asked for other sounds), never the same file twice
+    in a row for a cue type, the files used for the same cue in the last sfx.recent_reels (2) reels avoided while the
+    pool has others (logs/sfx-usage.json keeps the last 20 reels, this run's entry replaced on a re-run). A series plays
+    one file (235). The pools overlap (a ding sits in success and in notification), so a file already chosen for
+    another cue type of the reel is avoided while the pool has others, the one-off cue types choosing first: the
+    first real edit review caught the DM notification sharing its file with three success ticks.
+241. **The hook 2 clip gets its own sounds** (S13 muxes "its own voice and sounds"): the hook 2 project's events are
+    read with M10's events reader (no screen verification), the same rules apply with words_hook2.json and vo_hook2.wav,
+    the outputs are cues.json's hook2 block, sfx_stem_hook2.wav and mix_hook2.wav. A hook 2 project without its
+    compositions (the frozen fixtures keep only index.html) is skipped with a note, never a failed stage.
+242. **The edit review's [sfx] notes change the next pass** (assign.apply_feedback): another seed always; "clutter, busy,
+    too many, noisy" lowers max_per_10s by one, drops the attention whooshes and every sound by 3 dB; "loud, cover,
+    mask, drown" lowers every sound by 4 dB; "quiet, barely" raises them 3 dB (the voice rule still caps); a named
+    family (whoosh, click, ding, pop, typing) avoids the files of the previous pass. The applied changes are listed in
+    cues.json feedback_applied. Without a reaction a deterministic S11 would re-run identically five times.
+243. **Voice only when the map is missing or empty:** mix.wav is vo.wav, the stem silent, draft_mixed.mp4 still made,
+    cues.json has voice_only true and a verification that passes with nothing to verify, and the run is flagged NEEDS
+    REVIEW naming bash pipeline/bin/build-sfx-map (spec S11).
+
+### S12, the review loop
+244. **The mechanical checks run in M9's Playwright harness, not in Node puppeteer** (DECISIONS.md 39 planned
+    puppeteer): the built composition's hosts are read from 10-build/project/index.html (so a planted fault in the
+    project is caught, not what the plan says) and mounted one by one with their props, the paper canvas behind, the
+    same mount S10 verified the events in; no second browser toolchain, and the per-host page gives exact DOM numbers
+    at the composition's own 1080x1920 (the draft's half resolution only scales the video checks). The positions are
+    canvas coordinates, so overlaps and the right rail are judged across hosts at the same time.
+245. **Check times:** every beat settled (its start plus review.settle_ms 600, or its middle when shorter) and its middle,
+    every emphasis hit plus 150 ms (the box has faded in), every instance's landing plus 100 ms, the built CTA (its scene's
+    end minus 300 ms): 75 times on the test idea. Not the beat ends: the leaving elements are mid-fall there. Elements
+    under 0.5 effective opacity are not judged; contrast only at full opacity (a word mid-fade reads as a smear).
+246. **Text leaves and backgrounds from pixels:** a text leaf is an element with its own text node; its glyph box is a
+    Range over its content. The background behind it is the median of the screenshot pixels around and between the
+    glyphs (the box grown by 5 px, the pixels near the text's own color left out), which reads a caption word on its
+    accent box, a chip's text on its fill, a kicker on the paper, with no model of the component's CSS. Overlaps skip
+    an element and its own ancestor (a chip's accent word inside its text) and inset each box by a sixth of its height
+    (adjacent headline lines are 113 px apart with 122 px line boxes).
+247. **Contrast: 4.5:1, and review.contrast_display_min (2.7) for the style's display colors** (text in the accent family,
+    or text on an accent or success fill): the look's own kicker and serif phrase on paper measure 2.8 to 3.0 (M9's
+    HUMAN_TODO foresaw this; HyperFrames' own check warns at the same places). The exemption is by color, so body
+    text in ink never gets it.
+248. **Zones with two exceptions:** the caption line's words must sit in the caption band (x 230 to 850, within 180 px
+    above and 80 px below tokens.json zones.caption.center_y), the tweaks.md exception; the CTA's DM card's texts may
+    end inside the same band (DECISIONS.md 218 placed the card at y 1305). The right rail (the right 230 px of the lower
+    half) takes no text and no logo. Fonts: the first family of the computed font must be one of tokens.json's five;
+    sizes at or over review.min_font_px (24, the library's smallest reading text is 26 and the honesty chips carry
+    data-layout-ignore); a caption word under 90 percent of the caption size means the component scaled a chunk down.
+249. **Emphasis within 80 ms from the component's own events:** the caption line registers every word with its box
+    (PC.event caption_word, em); each plan emphasis hit matches the nearest boxed word of the same text, the error must
+    be within review.emphasis_tolerance_ms (80) and the boxed word must be visible at the check time; a hit in the hook
+    or the ask (no captions there) passes with a note.
+250. **Branding measured on the drawn image:** an img whose src is under assets/brand/ is a logo; brand.json gives its
+    type, use_on, content box and bolt height. object-fit contain locks the aspect ratio (else the box ratio must match
+    the file's within 2 percent); the drawn box inside the img box gives the lockup's width (300 or more), the bolt's
+    height (64 or more), the avatar's size (112 or more); the surface under it is the median of the pixels around the
+    box (light at luminance 0.5 or more) and must match use_on; its readable contrast is the better of the PNG's dark
+    and bright parts (the 5th and 95th percentile luminance of its opaque pixels) against the surface, 3:1 or more (a
+    black lockup on ink fails both the variant and this); clear space is a quarter of the bolt's height around the
+    content box, free of other elements' text and images. The CTA must show a lockup and the DM avatar; a logo outside
+    the CTA is a fault unless the solution is flashfx.
+251. **The style check reuses tools/analyze_refs.py** on draft_mixed.mp4 (into 12-review/analysis/) and compares the
+    hero zone's (middle band's) gap median and gap maximum with the references' range plus or minus 20 percent (the
+    nine summary.json files of styles/paper-cards/analysis; tokens.json pacing when the folder is missing: it is not in
+    git). The palette rule counts the 1 fps frames' non-image pixels within delta E 5 (CIE76) of the token colors plus
+    the gradients the look is made of (paper to the two glows and the corner, the card shadow to paper and surface,
+    white), the research screenshots and the logos masked with the boxes the mechanical pass measured at those
+    seconds; 98.6 percent on the test idea against the 90 required. The accent share uses the measure of
+    analysis/accent_share.txt (hue 8 to 30, saturation over 0.55, value over 0.7), logos excluded, under tokens.json
+    limits.accent_share_max_pct in every frame (2.9 percent at most here). The mixed draft's loudness is measured with
+    loudnorm, the true peak with review.aac_peak_tolerance_db (0.5) of room for the AAC encode.
+252. **The audio check** reads S11's verification and transcribes the mixed draft's audio (ffmpeg to 16 kHz, the same
+    whisper worker and interpreter resolution as S8, REELS_WHISPER_WORKER first) against the words S8 aligned
+    (words.json), with the voiceover's word error rate; under review.wer_max_pct (5). 0.0 percent on the test idea with
+    the real faster-whisper.
+253. **The edit review is one fresh qa call per round** with Read and Glob (it reads the images): the contact sheet, the
+    hook's 10 fps filmstrip and one per transition (pipeline/lib/review/filmstrip.py, 1 s of lead and 0.7 s after each
+    scene change), the second full frame of each look reference plus a third of v02, the scene table with the sounds
+    of each scene beside it and sound-map.txt whole, the requirements (the viewer's problem and the share line from
+    expansion.json, the keyword and the ask from script.json, the solution), what the code already verified, the earlier
+    rounds. Its structured answer: the eight scores, branding_natural with a note, tagged issues, a summary
+    (12-review/model.schema.json). An ad-feeling branding becomes an [animation] issue.
+254. **The verdict and the routing (route.py):** pass only when the three code checks pass and every score is at least
+    4. Otherwise every issue (the code's and, when the scores fail, the editor's) goes to the step its tag names and the
+    earliest owner reopens with every stage after it and 12-review itself through reopen.txt (state.py now lets a stage
+    name itself). A [voice] issue routes only when it names a word in quotes: the voice is deterministic, so S8 can
+    respell a named word (voiceover.apply_review_feedback reads 12-review/feedback.json) but cannot re-read an opinion;
+    other [voice] issues become NEEDS REVIEW flags. A failing round whose issues route nowhere exports with a flag. The
+    editor's issues from a passing round are kept as notes only.
+255. **Rounds and models:** state.json rounds.review counts the failed rounds; "reviewing: edit review (round n/5)" and
+    "fixing [tag] issues (round n plus 1, opus or fable)" follow caps.review_rounds_opus (3) and review_rounds_fable
+    (2): the visual passes call models.visual_director_escalation (fable, new in config.json) once rounds.review reaches
+    3, S10's builder keeps M10's rule (builder_escalation at rounds.review 2, DECISIONS.md 225). The round after the fifth
+    failure exports with a NEEDS REVIEW flag carrying the scores and the open issues (the captions file shows it through
+    the flags). The issue counters: a first failed round opens one issue, a later pass fixes it.
+256. **What a re-run pass learns:** 12-review/feedback.json (the issues by stage, the scores, the summary, the reopen
+    list); the three director prompts gained a {{REVIEW}} section (python pipeline/lib/review feedback --stage) that
+    quotes the issues routed to that pass, or says the pass runs again because an earlier one changed; S11 reacts as in
+    242; S8 respells quoted words. S10 learns nothing new: it compiles what the passes changed.
+257. **A result cache for the unchanged parts:** the mechanical checks are keyed by index.html, plan.json and the
+    project's compositions and assets (names, sizes, dates); the style check's visual parts by draft.mp4 and the image
+    boxes, its loudness measured again every round (the mix changes with every sound pass). An [sfx]-only fix round
+    therefore costs the sound pass, the transcription and the editor, not two minutes of identical screenshots and
+    frames (12-review/cache/, --no-cache to measure again).
+
+### Found on the way, earlier milestones touched
+258. **The caption line scaled every chunk to 60 percent** (motion-lib/compositions/caption-line.html compared the chunk's
+    1080 px block's scrollWidth with the 620 px limit, so every chunk hit the 0.6 floor; the golden reel and the M10
+    draft show 40 px captions where 67 px were specified). S12's mechanical check found it on its first run (every
+    caption word "scaled to 40 px"). The width is now a Range over the chunk's words. The frozen draft, hook 2 clip and
+    contact sheet of the test idea were rendered again, and so was the golden reel (M9's test runs render-golden; its
+    contact sheet, the gallery's players, still and frame-match report changed with it).
+259. **Earlier milestones touched by M11:** motion-lib/compositions/caption-line.html (M9, 258), pipeline/lib/state.py
+    (M2: a stage may reopen itself), pipeline/lib/visual.sh and the three director prompts (M10: {{REVIEW}}, the
+    escalated director), pipeline/lib/voiceover.py (M7: apply_review_feedback), config.json (M1: sfx.*, review.*,
+    timeouts sfx_seconds, mechanical_seconds, style_seconds, edit_review_seconds, models.visual_director_escalation;
+    rewritten by json.dumps, so its hand alignment is gone), pipeline/tests/lib.sh (M1: --with-review), the 11-sfx dummy
+    (M2: the new schema), pipeline/tests/fixtures/runs/test-idea/10-build (M10: the drafts and the contact sheet
+    rendered again). The frozen project folders are rebuilt from the plans by pipeline/tests/materialize-project.py
+    (the fixtures keep only index.html and instances.json), which also renders the drafts when the mp4 files are missing.
+260. **Windows and tool notes found in M11:** a long `python - <<'EOF'` heredoc in a Bash tool call can fail to parse
+    before anything runs (two of them did, with nothing applied), so the patches to earlier files went into
+    build/M11/patch-1.py and patch-2.py; a Windows Python calling bare `bash` reaches the WSL launcher ("Class not
+    registered"), so a patch script must not check bash syntax itself; ffmpeg 9's alimiter takes latency=1 so a limited
+    mix does not shift in time.

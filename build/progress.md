@@ -343,9 +343,40 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   state.json rounds.review drives the builder escalation. DECISIONS.md 215 to 233. Report: build/M10/report.md.
 
 ## M11 Sound effects pass and review loop (S11, S12)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m11.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has five sections: 1 the units (S11 on the frozen build: 17 sounds from 40 candidates, every rule of the spec and the verification on the rendered stem, the detector on a planted shift and a planted extra sound, an [sfx] review note changing the next pass, the voice-only path, the mechanical, style and audio checks on the clean draft, the seven planted faults each caught by its kind, the routing rules, the dummies: 89 checks, about 8 minutes), 2 S11 and S12 through the runner with the fake editor (the pass: the lines, the activities, review.json, the filmstrips and the prompt; then the planted [text] issue: 09b, 09c, S10, S11 and S12 run again with the review's notes and round 2 passes, the state and the log show it: 110 checks, about 11 minutes, two builds with renders), 3 the cap (an editor that always fails with an [sfx] issue: five rounds with the activities "fixing [sfx] issues (round 2, opus)" to "(round 5, fable)", the NEEDS REVIEW flag with the notes, the export: 28 checks, about 5 minutes), 4 the real editor and the real faster-whisper on the frozen draft (26 checks, about 5 minutes, 1 model call; the editor scored the test idea 3 on most criteria and listed 16 tagged issues, the code checks passed, the outputs are frozen), 5 the em dash scan (1 check). 254 checks pass (the sections were run separately, about 30 minutes in all). M1 (96 checks), M2 (220), M7's fake sections (116), M9 (80) and M10's fake sections (134) pass after the touches to their code; M9's run rendered the golden reel again with the fixed caption line.
+- Test command: `bash pipeline/tests/test-m11.sh` (`M11_SECTIONS="1 2 3"` for the fake-only sections; `M11_FREEZE=1` also
+  copies the real 11-sfx and 12-review JSON outputs into pipeline/tests/fixtures/runs/test-idea/); `bash
+  pipeline/tests/run-all.sh` runs M1 to M11, limits and the em dash scan (about 2.5 hours).
+- Notes: S11 is pipeline/stages/11-sfx/run.sh over pipeline/lib/sfx/{assign,pick,place,level,render_stem,verify,audioio,
+  mixsfx}.py (pipeline/bin/mix-sfx by hand): the cue rules of the spec on 10-build/events.json with the density read of
+  DECISIONS.md 235 (typing beds are not hits, a checklist's ticks count once, a hero on the scene change pops at its
+  landing), seeded per reel; the pools in rotation with logs/sfx-usage.json; whooshes by their measured peak, the rest by
+  their onset, typing trimmed, tails cut 50 ms before the next sound; gains from the map's normalization plus config
+  sfx.base_gain_db, capped 8 dB under the voice's local peak (floor: the overall peak minus 12 dB); the stem and the mix
+  in numpy, verified on the rendered files (33 ms, the whoosh plateau rule, the strongest-rise onset over a bed, no
+  unplanned sound, the 8 dB rule, -14 LUFS plus or minus 1, -1.5 dBTP) and corrected up to 3 passes; cues.json,
+  sfx_stem.wav, mix.wav, draft_mixed.mp4, sound-map.txt, the hook 2 clip's sounds; voice only plus a flag without a map;
+  the review's [sfx] notes change the next pass. S12 is pipeline/stages/12-review/run.sh over pipeline/lib/review/
+  (`python pipeline/lib/review mechanical|style|audio|filmstrips|prompt|verdict|feedback|strip`): the mechanical checks in
+  the Playwright harness host by host from the project's index.html (zones with the caption band exception, the right
+  rail, fonts and sizes, overlaps, off-canvas, contrast 4.5:1 and 2.7:1 for the style's accent words from the pixels
+  behind the glyphs, emphasis within 80 ms from the caption line's events, the branding rules with the surface measured
+  behind the hidden logo), the style check with tools/analyze_refs.py (cadence against the references, delta E 5 palette
+  share, accent share, loudness), the audio check (S11's verification, the mix transcribed, WER under 5), the editor
+  (config models.qa, a fresh session, Read and Glob on the contact sheet, the filmstrips, three reference stills, the
+  scene table and sound-map.txt; eight scores, branding_natural, tagged issues), the verdict and routing (pass at every
+  check and every score 4 or more; else the earliest owner and everything after it reopened through reopen.txt, S12
+  included; 3 opus rounds then 2 fable; then the export with NEEDS REVIEW; [voice] routes only with a quoted word), the
+  feedback to the re-run passes ({{REVIEW}} in the director prompts, S8's respelling, S11's adaptation), a result cache
+  for the unchanged checks. Earlier milestones touched: caption-line.html (M9: every chunk was scaled to 60 percent, found
+  by the new check; the drafts and the contact sheet of the frozen test idea were rendered again), card.html (a logo keeps
+  its aspect ratio), state.py (self reopen), visual.sh and the three director prompts, voiceover.py, config.json (sfx.*,
+  review.*, timeouts, models.visual_director_escalation), tests/lib.sh (--with-review). Fixtures: the fake editor's
+  answers pipeline/tests/fixtures/fake/{m11,m11-text,m11-sfx}/; the frozen projects are rebuilt from the plans by
+  pipeline/tests/materialize-project.py. Hooks for M12: 11-sfx/mix.wav and mix_hook2.wav are the audio S13 muxes (48 kHz
+  mono, -14 LUFS), 12-review/review.json and notes.md the review's verdict and notes (state.json flags carry the NEEDS
+  REVIEW text for the captions file), 10-build/project and hook2 the compositions to render at 1080x1920. DECISIONS.md
+  234 to 260. Report: build/M11/report.md.
 
 ## M12 Final render, caption, export, end to end (S13, S14)
 - Status: not started
