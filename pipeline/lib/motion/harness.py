@@ -91,7 +91,7 @@ MEASURE_JS = """
       try { const m = new DOMMatrixReadOnly(cs.transform); scale = Math.hypot(m.a, m.b); rotation = Math.atan2(m.b, m.a) * 180 / Math.PI; } catch (e) {}
       row[sel] = { x: r.left, y: r.top, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + r.height / 2,
                    opacity: Math.round(op * 1000) / 1000, scale: Math.round(scale * 10000) / 10000, rotation: Math.round(rotation * 100) / 100,
-                   text: (el.textContent || "").trim().slice(0, 80) };
+                   text: (el.textContent || "").trim().slice(0, 80), tag: el.tagName };
       if (el.tagName === "IMG") { row[sel].fit = cs.objectFit; row[sel].nw = el.naturalWidth; row[sel].nh = el.naturalHeight; }
     }
     rows.push(row);

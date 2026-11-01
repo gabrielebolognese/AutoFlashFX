@@ -1,49 +1,40 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/10-build/events.json",
-  "title": "10-build events.json (first version, M2)",
+  "title": "10-build events.json: every sound event of the built visuals in absolute ms (BUILD_SPEC.md S10; M10)",
   "type": "object",
-  "required": [
-    "duration_ms",
-    "events"
-  ],
+  "required": ["duration_ms", "events"],
   "properties": {
-    "composition": {
-      "type": "string"
-    },
-    "duration_ms": {
-      "type": "number"
-    },
+    "written_by": {"type": "string"},
+    "composition": {"type": "string"},
+    "duration_ms": {"type": "number"},
+    "fps": {"type": "number"},
+    "counts": {"type": "object"},
+    "verified": {"type": ["object", "null"], "properties": {"checked": {"type": "integer"}, "changed": {"type": "integer"}, "failed": {"type": "array"}}},
+    "timeline_check": {"type": ["object", "null"]},
+    "harness_errors": {"type": "array"},
     "events": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "ms",
-          "type",
-          "component",
-          "scene",
-          "scene_change"
-        ],
+        "required": ["ms", "type", "component", "scene", "scene_change"],
         "properties": {
-          "ms": {
-            "type": "number"
-          },
-          "type": {
-            "type": "string"
-          },
-          "component": {
-            "type": "string"
-          },
-          "scene": {
-            "type": "string"
-          },
-          "scene_change": {
-            "type": "boolean"
-          },
-          "transition_ms": {
-            "type": "number"
-          }
+          "ms": {"type": "number"},
+          "frame": {"type": "integer"},
+          "type": {"type": "string", "description": "the move's event: enter, land, pop, exit, typing, count_start, strike, check, notification, word, caption_word, scene_change, ..."},
+          "cue": {"type": ["string", "null"], "description": "the cue type the catalog gives the event (S11 decides), transition for a scene change, null for a visual change with no sound of its own"},
+          "component": {"type": "string"},
+          "instance": {"type": ["string", "null"]},
+          "scene": {"type": "string"},
+          "beat": {"type": "string"},
+          "el": {"type": ["string", "null"]},
+          "scene_change": {"type": "boolean"},
+          "transition_ms": {"type": "number"},
+          "transition_type": {"type": "string"},
+          "from_scene": {"type": "string"},
+          "next_beat_type": {"type": "string"},
+          "end": {"type": "number"},
+          "verified": {"type": ["boolean", "null"]}
         }
       }
     }

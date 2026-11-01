@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# contact-sheet: one still per beat of a reel draft, tiled with labels (BUILD_SPEC.md S12 reads it; S10 writes
+# 10-build/contact-sheet.png with it). Each scene of the plan gives a still at its start plus 0.3 s; the hook also
+# gives one inside the breath.
+#   bash pipeline/bin/contact-sheet <draft.mp4> <plan.json> <out.png>
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+[ $# -eq 3 ] || { sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+command -v ffmpeg >/dev/null 2>&1 || { echo "contact-sheet: ffmpeg is not on PATH" >&2; exit 1; }
+exec "$REELS_PY" "$LIB/visual" contact-sheet "$1" "$2" "$3"

@@ -178,8 +178,11 @@ def reset_dir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
 
-def build_project(plan: dict, out_dir: str, voice: str, brand_dir: str, assets_dir: str, lib: str, cat: dict) -> dict:
-    project = os.path.join(out_dir, "project")
+def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, assets_dir: str, lib: str, cat: dict,
+                  folder: str = "project", meta_id: str = "", title: str = "") -> dict:
+    """voice None (M10): a silent project, no <audio> element (S10's draft; S13 adds the mix). folder, meta_id and title
+    name the project folder under out_dir and its meta.json."""
+    project = os.path.join(out_dir, folder)
     reset_dir(project)
     shutil.copytree(os.path.join(lib, "compositions"), os.path.join(project, "compositions"), dirs_exist_ok=True)
     for name in ("fonts", "vendor"):
@@ -187,9 +190,10 @@ def build_project(plan: dict, out_dir: str, voice: str, brand_dir: str, assets_d
     for name in ("paper-cards.css", "paper-cards.js", "tokens.css"):
         shutil.copy2(os.path.join(lib, "assets", name), os.path.join(project, "assets", name))
     shutil.copy2(os.path.join(lib, "hyperframes.json"), os.path.join(project, "hyperframes.json"))
-    common.write_json(os.path.join(project, "meta.json"), {"id": "golden-" + plan.get("idea_id", "reel"), "name": "golden reel " + plan.get("idea_id", "")})
+    common.write_json(os.path.join(project, "meta.json"), {"id": meta_id or ("golden-" + plan.get("idea_id", "reel")), "name": title or ("golden reel " + plan.get("idea_id", ""))})
     os.makedirs(os.path.join(project, "assets"), exist_ok=True)
-    shutil.copy2(voice, os.path.join(project, "assets", "vo.wav"))
+    if voice:
+        shutil.copy2(voice, os.path.join(project, "assets", "vo.wav"))
     brand_index = brand_assets(brand_dir)
     used: list[str] = []
     apply_transitions(plan, cat)
@@ -228,7 +232,7 @@ def build_project(plan: dict, out_dir: str, voice: str, brand_dir: str, assets_d
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
-    <title>golden reel {html.escape(plan.get('idea_id', ''))}</title>
+    <title>{html.escape(title or ('golden reel ' + plan.get('idea_id', '')))}</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <style>
       html, body {{ margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; }}
@@ -236,11 +240,12 @@ def build_project(plan: dict, out_dir: str, voice: str, brand_dir: str, assets_d
     </style>
   </head>
   <body>
-    <!-- Built by pipeline/lib/motion/golden.py from plan.json: one host per component instance of the plan, over the
-         paper canvas, the captions once, the voice as audio. Edit plan.json and run render-golden again. -->
+    <!-- Built by pipeline/lib/motion/golden.py build_project from the merged plan: one host per component instance of the
+         plan, over the paper canvas, the captions once, the voice as audio when the project has one. Edit the plan and
+         build again (render-golden for the golden reel, the S10 stage for a run). -->
     <div id="root" data-composition-id="main" data-start="0" data-duration="{dur_s:.3f}" data-width="1080" data-height="1920">
 {chr(10).join(hosts)}
-      <audio id="vo" src="assets/vo.wav" data-start="0" data-volume="1"></audio>
+{'      <audio id="vo" src="assets/vo.wav" data-start="0" data-volume="1"></audio>' if voice else '      <!-- silent: no audio track in this project -->'}
     </div>
     <script>
       window.__timelines = window.__timelines || {{}};
@@ -257,7 +262,8 @@ def build_project(plan: dict, out_dir: str, voice: str, brand_dir: str, assets_d
 # ------------------------------------------------------------------------------------------------ check, render, probe
 
 def npx_cmd() -> list[str]:
-    return [("npx.cmd" if os.name == "nt" else "npx"), "--prefix", common.REPO, "hyperframes"]
+    # REELS_NODE_PREFIX (M10): the folder whose node_modules holds hyperframes (the tests' sandboxes point it at the real repo)
+    return [("npx.cmd" if os.name == "nt" else "npx"), "--prefix", os.environ.get("REELS_NODE_PREFIX") or common.REPO, "hyperframes"]
 
 
 def hf_json(args: list[str], cwd: str, timeout: int = 900) -> dict:
