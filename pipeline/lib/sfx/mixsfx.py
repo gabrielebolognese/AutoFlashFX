@@ -129,7 +129,7 @@ def verify_round(ctx: Ctx, cues: list[dict], voice: np.ndarray, segments: dict, 
     write_wav16(stem_path, stem, SR)
     write_wav16(mix_path, mix, SR)
     measured = measure_loudness(mix_path, target_i, target_tp, int(ctx.cfg("timeouts.loudness_seconds", 300)))
-    acc = verify.accuracy(cues, stem, SR, float(ctx.cfg("sfx.sync_tolerance_ms", 33)), duration_ms)
+    acc = verify.accuracy(cues, stem, SR, float(ctx.cfg("sfx.sync_tolerance_ms", 33)), duration_ms, float(ctx.cfg("sfx.peak_search_ms", 500)))
     vr = verify.voice_rule(cues, stem, SR, float(ctx.cfg("sfx.min_db_under_voice", 8)))
     ld = verify.loudness(measured, target_i, target_tp)
     res = {"pass": bool(acc["pass"] and vr["pass"] and ld["pass"]), "accuracy": acc, "voice_rule": vr, "loudness": ld,
@@ -137,14 +137,22 @@ def verify_round(ctx: Ctx, cues: list[dict], voice: np.ndarray, segments: dict, 
     return res, stem, mix
 
 
-def correct(cues: list[dict], res: dict, target_i: float, target_tp: float, corrections: list[str]) -> bool:
-    """Apply the corrections a failed verification asks for. Returns True when something changed."""
+def correct(cues: list[dict], res: dict, target_i: float, target_tp: float, corrections: list[str], max_shift_ms: float = 150.0) -> bool:
+    """Apply the corrections a failed verification asks for. Returns True when something changed. A sound that misses
+    by more than max_shift_ms, or misses again after a shift, is marked for a swap (run_clip picks it another file):
+    a disagreement that large means the file cannot be read on the stem the way the map read it."""
     changed = False
     by_id = {c["id"]: c for c in cues}
     for r in res["accuracy"]["results"]:
         if r["ok"] or r["error_ms"] is None:
             continue
         c = by_id[r["id"]]
+        if abs(float(r["error_ms"])) > max_shift_ms or c.get("_shifted"):
+            c["_swap"] = True
+            corrections.append(f"{c['id']} {c['cue_type']}: measured {r['error_ms']:+.0f} ms off{' again' if c.get('_shifted') else ''}: another file")
+            changed = True
+            continue
+        c["_shifted"] = True
         shift = -float(r["error_ms"])
         new_start = float(c["reel_start_ms"]) + shift
         if new_start < 0:
@@ -214,11 +222,28 @@ def run_clip(ctx: Ctx, label: str, events: list[dict], plan: dict, words: dict, 
         log(f"{label}: note: {n}")
     stem_path = f"{ctx.stage_dir}/{out_names['stem']}"
     mix_path = f"{ctx.stage_dir}/{out_names['mix']}"
-    passes = int(ctx.cfg("sfx.verify_passes", 3))
+    passes = int(ctx.cfg("sfx.verify_passes", 5))
+    max_shift = float(ctx.cfg("sfx.max_shift_ms", 150))
     corrections: list[str] = []
     res = None
     activity("verifying sound sync and loudness")
     mix_filter = ""
+    used_files = {c["file"] for c in cues}
+    gain_offset = float(a["settings"].get("gain_offset_db", 0.0))
+
+    def replace_or_drop(c: dict) -> str:
+        """The next unused file of the cue's pool; the sound is left out when the pool has no other."""
+        pool = [p for p in (pools.get(c["cue_type"]) or []) if p.get("cache") and p["path"] not in used_files and p["path"] != c["file"]]
+        if not pool or c.get("_swapped"):
+            return ""
+        entry = pool[0]
+        used_files.add(entry["path"])
+        c.update({"file": entry["path"], "cache": entry["cache"], "pick_note": "swapped: the first file could not be verified",
+                  "pool_entry": {k: entry.get(k) for k in ("id", "path", "cache", "gain_db", "duration_s", "onset_s", "peak_s", "end_s", "effective_s", "attack_s", "pad_start_s", "pad_end_s", "whoosh_speed", "fit", "pinned")},
+                  "_swapped": True})
+        c.pop("_shifted", None)
+        return entry["path"]
+
     for p in range(1, passes + 1):
         for c in cues:
             if c.pop("_reload", False):
@@ -232,8 +257,28 @@ def run_clip(ctx: Ctx, label: str, events: list[dict], plan: dict, words: dict, 
             break
         if p == passes:
             break
-        if not correct(cues, res, target_i, target_tp, corrections):
+        if not correct(cues, res, target_i, target_tp, corrections, max_shift):
             break
+        swaps = [c for c in cues if c.pop("_swap", False)]
+        if swaps:
+            for c in swaps:
+                new_file = replace_or_drop(c)
+                if new_file:
+                    corrections.append(f"{c['id']} {c['cue_type']}: now {os.path.basename(new_file)}")
+                else:
+                    dropped.append({**{k: v for k, v in c.items() if not k.startswith('_')}, "reason": "could not be verified in sync with two files of its pool"})
+                    flag(f"sound: the {c['cue_type']} at {c['ms'] / 1000:.2f} s could not be placed within {ctx.cfg('sfx.sync_tolerance_ms', 33)} ms with two files and was left out")
+                    corrections.append(f"{c['id']} {c['cue_type']}: left out")
+                    cues = [x for x in cues if x["id"] != c["id"]]
+                    segments.pop(c["id"], None)
+            # the swapped sound is placed and levelled again; the neighbors' trims follow
+            kept_starts = {c["id"]: (c["reel_start_ms"], c["offset_ms"]) for c in cues if not c.get("_swapped")}
+            cues = place.place(cues, int(duration_ms), ctx.config)
+            for c in cues:
+                if c["id"] in kept_starts and not c.get("_swapped"):
+                    c["reel_start_ms"], c["offset_ms"] = kept_starts[c["id"]]   # earlier corrections of the others stay
+            segments = {c["id"]: render_stem.load_segment(c, ctx.sfx_dir, segcache) for c in cues}
+            cues = level.levels(cues, {cid: peak_db(seg) for cid, seg in segments.items()}, profile, ctx.config, gain_offset)
     # the last resort for the mix's loudness: a limiter or a gain on the mix itself (the voice alone can sit over
     # the ceiling by the width of the encoder's rounding, or under the target)
     if res is not None and not res["loudness"]["pass"]:

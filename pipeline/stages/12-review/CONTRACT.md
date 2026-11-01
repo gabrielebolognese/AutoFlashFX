@@ -1,35 +1,59 @@
 # 12-review: Review and fix loop (S12)
 
-First version written in M2: the folder set, this contract, schema.json and dummy.sh are fixed here; M11
-builds the real stage (run.sh and prompt.md) and refines the schema. Spec: BUILD_SPEC.md section 5, S12.
+Built in M11 (the folder set, the first schema and dummy.sh came from M2). Spec: BUILD_SPEC.md section 5, S12;
+DECISIONS.md M11. Code: pipeline/lib/review/{common,mechanical,style_check,audio_check,filmstrip,edit,route}.py behind
+`python pipeline/lib/review <command>`; the prompt pipeline/stages/12-review/prompt.md with model.schema.json.
 
 ## Purpose
-Mechanical checks with Puppeteer at every beat and emphasis time, style conformance with tools/analyze_refs.py against the reference analysis, audio checks, then the edit review by a fresh qa session scoring 1 to 5 on eight criteria with tagged issues. Issues route back to the step that owns them.
+One review round of the complete draft: the mechanical checks on the built composition, the style conformance check
+on the mixed draft, the audio checks, then the edit review by a fresh qa session; a verdict that passes the reel to
+the render or sends each issue back to the step that owns it, every later step running again; caps, then the export
+with NEEDS REVIEW. The runner never stops here.
 
 ## Inputs
-- 10-build/project/, 11-sfx/draft_mixed.mp4 and sound-map.txt
-- styles/paper-cards/tokens.json and analysis/
-- 07-script/script.json, 08-voiceover/words.json
+- 10-build/project/ (index.html is the source of truth for what is on screen), 10-build/plan.json (scenes, emphasis
+  hits, landings), 10-build/events.json (the scene changes for the filmstrips), 10-build/contact-sheet.png, draft.mp4
+- 11-sfx/cues.json (S11's verification), draft_mixed.mp4, sound-map.txt
+- 08-voiceover/words.json (the spoken words, the intelligibility reference), 07-script/script.json, 02-expansion/expansion.json
+  (the requirements: the problem, the share line, the keyword), 02-expansion/solution.json when it exists
+- styles/paper-cards/tokens.json and analysis/ (the reference numbers and stills; tokens.json pacing when the analysis
+  folder is missing), library/brand/brand.json, motion-lib/catalog.json, tools/analyze_refs.py
+- config review.* (thresholds), caps.review_rounds_opus and review_rounds_fable, models.qa, timeouts
+- state.json rounds.review (the rounds done so far)
 
 ## Outputs (in runs/<id>/12-review/)
 - review.json is the primary output: the stage is done when it validates against schema.json and the runner has
-  written .done (pipeline/lib/state.py stage-done). An invalid output gets one retry with the validation errors
-  inside the stage; after that it counts as a code error.
-- review.json: round, mechanical, style, audio, edit_review (scores, issues with tags), pass
-- contact sheet, filmstrips and the check reports next to it
+  written .done. Fields: round, pass, verdict (pass | fix | cap | flag), mechanical, style and audio summaries, edit_review
+  (scores, issues, branding_natural, summary), issues[] (every issue with tag, text, stage, source), routing (owners,
+  reopen, the next activity and model), cap, flags.
+- review-r<n>.json and edit-r<n>.json per round, mechanical.json, style.json (with analysis/ from the analyzer),
+  audio.json (with transcribe/), filmstrips/ (hook.png, transition-NN.png), digest/ and prompt-r<n>.md (what the qa
+  model read), calls/ (the model's raw output), notes.md (the round in prose), feedback.json (what the re-run stages read:
+  the issues by stage; written only when the verdict is fix), reopen.txt (consumed by state.py stage-done).
+- state.json: rounds.review set to the failed round's number; the issue counters (a failed round opens one issue, a later
+  pass fixes it); the flags of a cap or flag verdict.
 - stage.log: everything the stage printed (its `say` lines also reach the terminal through fd 3).
-- result.json with a `reason` when the stage exits 10 (drop) or 20 (block).
 
 ## Invariants
-- pass when every score is at least 4
-- issues carry [voice], [animation], [text], [transition] or [sfx]
-- caps: 3 Opus rounds, 2 Fable rounds, then export with NEEDS REVIEW (never stop)
+- pass only when the mechanical, style and audio checks pass and every edit-review score is at least 4
+- every issue carries one of [voice], [animation], [text], [transition], [sfx]; the fix routing reopens the earliest owner
+  (08-voiceover, 09a-animations, 09b-text, 09c-transitions or 11-sfx), every stage after it and this stage
+- a [voice] issue routes only when it names a word in quotes (the voice is deterministic); otherwise it is a flag
+- caps: review_rounds_opus (3) rounds with the opus director and builder, then review_rounds_fable (2) with fable (the
+  visual passes switch to models.visual_director_escalation when rounds.review reaches review_rounds_opus; S10's
+  builder switches at 2, DECISIONS.md 225); the round after the last cap exports with NEEDS REVIEW and the notes
+- every pixel-based threshold is applied at the composition's size in the harness (exact) and scaled to the draft's
+  540x960 in the video checks
 
 ## Exit codes
-0 done (the primary output must validate against schema.json; the runner then writes .done), 10 drop the idea (reason in result.json), 20 block the idea (reason in result.json), anything else is a code error and goes to the review and fix loop (BUILD_SPEC.md 4.2, built in M3).
+0 done (whatever the verdict: the review loop is not an error), anything else a code error for the review and fix loop
+(BUILD_SPEC.md 4.2): a missing input, the harness or ffmpeg failing, no whisper interpreter, the qa call failing after
+ai()'s own retries.
 
 ## Model and session
-Fresh qa session per round (never the builder). Model: config models.qa.
+The edit review: config models.qa (opus), a fresh session per round, tools config review.qa_tools (Read, Glob: it reads
+the images), --json-schema model.schema.json, timeout timeouts.edit_review_seconds. Never the builder. The code checks
+call no model. REELS_REVIEW_SKIP_EDIT=1 (tests) skips the call: the code checks alone decide.
 
 ## dummy.sh
 `bash pipeline/stages/12-review/dummy.sh <run_dir>` writes fake outputs that validate against schema.json, sleeps

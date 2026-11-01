@@ -17,7 +17,7 @@ Stage table (the single source of truth for the stage order, labels, default act
 stages to run again after it writes their keys, one per line, to <run>/<stage>/reopen.txt: "stage-done" reopens
 them (status pending, .done removed, attempts back to 0 for the new round, the round counted in "reopened") in
 the same write that marks the stage done, so a crash between the two cannot leave the run half-way (the gate names 04-angle, the angle stage names 03-gate, M4; the review loop of
-M11 will use it for its fix routing). "stage-start" removes a reopen.txt left by an earlier attempt.
+M11 names the owner of each issue, every stage after it and itself). "stage-start" removes a reopen.txt left by an earlier attempt.
 
 A stage is done when its primary JSON output validates against pipeline/stages/<stage>/schema.json and the
 marker <run>/<stage>/.done exists (both written by "stage-done"). "next" re-checks the marker, so a stage whose
@@ -551,9 +551,11 @@ def apply_reopen_file(state: dict, run_dir: str, stage: str) -> list[str]:
         wanted = []
     reopened = []
     for key in wanted:
-        if key not in state["stages"] or key == stage:
-            print(f"state.py: {stage}/reopen.txt names {key!r}, which is not another stage; ignored", file=sys.stderr)
+        if key not in state["stages"]:
+            print(f"state.py: {stage}/reopen.txt names {key!r}, which is not a stage; ignored", file=sys.stderr)
             continue
+        # a stage may name itself (the review loop of M11 reopens 12-review with the steps it routes to): it is
+        # marked done first, then pending again for the next round, in the same write
         reopen_stage(state, run_dir, key)
         reopened.append(key)
     try:

@@ -1,0 +1,844 @@
+{
+ "written_by": "12-review",
+ "pass": true,
+ "issues": [],
+ "counts": {
+  "hosts": 28,
+  "texts": 397,
+  "images": 29,
+  "times": 75,
+  "screenshots": 213
+ },
+ "times": {
+  "370": [
+   "s1-headline-1 landed"
+  ],
+  "600": [
+   "beat b1 (hook) settled"
+  ],
+  "1730": [
+   "beat b1 middle"
+  ],
+  "1960": [
+   "emphasis identical."
+  ],
+  "2900": [
+   "s1-hero-3d-2 landed"
+  ],
+  "3830": [
+   "s2-thumb-grid-1 landed"
+  ],
+  "4060": [
+   "beat b2 (stake) settled"
+  ],
+  "5050": [
+   "beat b2 middle"
+  ],
+  "6130": [
+   "emphasis instantly."
+  ],
+  "6180": [
+   "s2-dark-chip-2 landed"
+  ],
+  "7010": [
+   "s3-window-card-1 landed"
+  ],
+  "7240": [
+   "beat b3 (comparison) settled"
+  ],
+  "9020": [
+   "beat b3 middle"
+  ],
+  "10410": [
+   "emphasis same"
+  ],
+  "10460": [
+   "s3-dark-chip-2 landed"
+  ],
+  "10650": [
+   "emphasis grey"
+  ],
+  "10930": [
+   "emphasis shadow."
+  ],
+  "11760": [
+   "s4-card-1 landed"
+  ],
+  "11990": [
+   "beat b4 (mechanism) settled"
+  ],
+  "13260": [
+   "beat b4 middle"
+  ],
+  "13640": [
+   "emphasis distributional"
+  ],
+  "13690": [
+   "s4-dark-chip-2 landed"
+  ],
+  "14440": [
+   "emphasis convergence."
+  ],
+  "15500": [
+   "s5-card-1 landed"
+  ],
+  "15730": [
+   "beat b5 (comparison) settled"
+  ],
+  "16060": [
+   "emphasis terracotta"
+  ],
+  "16280": [
+   "s5-strike-through-2 landed"
+  ],
+  "17000": [
+   "beat b5 middle"
+  ],
+  "19230": [
+   "s6-card-1 landed"
+  ],
+  "19240": [
+   "s6-dark-chip-2 landed"
+  ],
+  "19460": [
+   "beat b6 (number) settled"
+  ],
+  "20690": [
+   "emphasis All"
+  ],
+  "20740": [
+   "s6-dark-chip-3 landed"
+  ],
+  "20770": [
+   "emphasis caps"
+  ],
+  "20800": [
+   "beat b6 middle"
+  ],
+  "21760": [
+   "s6-dark-chip-4 landed"
+  ],
+  "22960": [
+   "s7-light-chip-1 landed"
+  ],
+  "23330": [
+   "beat b7 (mechanism) settled"
+  ],
+  "23880": [
+   "s7-check-badge-2 landed"
+  ],
+  "24120": [
+   "s7-mascot-3 landed"
+  ],
+  "24140": [
+   "emphasis four"
+  ],
+  "24420": [
+   "emphasis to"
+  ],
+  "24520": [
+   "emphasis six"
+  ],
+  "24810": [
+   "beat b7 middle"
+  ],
+  "25900": [
+   "emphasis then"
+  ],
+  "26380": [
+   "emphasis codes."
+  ],
+  "27040": [
+   "emphasis Anthropic"
+  ],
+  "27260": [
+   "s8-window-card-1 landed"
+  ],
+  "27420": [
+   "emphasis verified."
+  ],
+  "27490": [
+   "beat b8 (proof) settled"
+  ],
+  "27770": [
+   "s8-check-badge-2 landed"
+  ],
+  "28440": [
+   "emphasis million"
+  ],
+  "28500": [
+   "beat b8 middle"
+  ],
+  "28660": [
+   "s8-stat-number-3 landed"
+  ],
+  "30480": [
+   "s9-terminal-card-1 landed"
+  ],
+  "30710": [
+   "beat b9 (step) settled"
+  ],
+  "30720": [
+   "emphasis plugin"
+  ],
+  "31300": [
+   "emphasis install"
+  ],
+  "32420": [
+   "beat b9 middle"
+  ],
+  "34260": [
+   "emphasis Pick"
+  ],
+  "34340": [
+   "s9-light-chip-2 landed"
+  ],
+  "34520": [
+   "emphasis scope."
+  ],
+  "35110": [
+   "s10-card-1 landed"
+  ],
+  "35340": [
+   "beat b10 (payoff) settled"
+  ],
+  "35470": [
+   "emphasis by"
+  ],
+  "35690": [
+   "emphasis itself"
+  ],
+  "36040": [
+   "s10-check-badge-2 landed"
+  ],
+  "36240": [
+   "beat b10 middle"
+  ],
+  "36990": [
+   "s10-light-chip-3 landed"
+  ],
+  "38030": [
+   "s11-end-card-1 landed"
+  ],
+  "38120": [
+   "emphasis TELLS"
+  ],
+  "38330": [
+   "beat b11 (ask) settled"
+  ],
+  "38340": [
+   "s11-dm-card-2 landed"
+  ],
+  "39600": [
+   "beat b11 middle"
+  ],
+  "41160": [
+   "the CTA built"
+  ]
+ },
+ "fonts_seen": {
+  "Space Grotesk": 85,
+  "Inter Tight": 299,
+  "Instrument Serif": 2,
+  "JetBrains Mono": 7,
+  "Caveat": 4
+ },
+ "emphasis": {
+  "checked": 25,
+  "ok": 25,
+  "results": [
+   {
+    "word": "identical.",
+    "ms": 1810,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   },
+   {
+    "word": "instantly.",
+    "ms": 5980,
+    "box_ms": 5980,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "same",
+    "ms": 10260,
+    "box_ms": 10260,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "grey",
+    "ms": 10500,
+    "box_ms": 10500,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "shadow.",
+    "ms": 10780,
+    "box_ms": 10780,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "distributional",
+    "ms": 13490,
+    "box_ms": 13490,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "convergence.",
+    "ms": 14290,
+    "box_ms": 14290,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "terracotta",
+    "ms": 15910,
+    "box_ms": 15910,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "All",
+    "ms": 20540,
+    "box_ms": 20540,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "caps",
+    "ms": 20620,
+    "box_ms": 20620,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "four",
+    "ms": 23990,
+    "box_ms": 23990,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "to",
+    "ms": 24270,
+    "box_ms": 24270,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "six",
+    "ms": 24370,
+    "box_ms": 24370,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "then",
+    "ms": 25750,
+    "box_ms": 25750,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "codes.",
+    "ms": 26230,
+    "box_ms": 26230,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Anthropic",
+    "ms": 26890,
+    "box_ms": 26890,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "verified.",
+    "ms": 27270,
+    "box_ms": 27270,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "million",
+    "ms": 28290,
+    "box_ms": 28290,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "plugin",
+    "ms": 30570,
+    "box_ms": 30570,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "install",
+    "ms": 31150,
+    "box_ms": 31150,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Pick",
+    "ms": 34110,
+    "box_ms": 34110,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "scope.",
+    "ms": 34370,
+    "box_ms": 34370,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "by",
+    "ms": 35320,
+    "box_ms": 35320,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "itself",
+    "ms": 35540,
+    "box_ms": 35540,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "TELLS",
+    "ms": 37970,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   }
+  ]
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "solution": "none",
+  "lockup": {
+   "instance": "s11-end-card-1",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "lockup/lockup-gradient-on-light.png",
+   "type": "lockup",
+   "box": {
+    "x": 390.0,
+    "y": 1170.0,
+    "w": 300.0,
+    "h": 118.2
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 96.0,
+   "surface": "light",
+   "surface_luminance": 0.834,
+   "contrast": 17.67,
+   "clear_space_px": 24.0
+  },
+  "avatar": {
+   "instance": "s11-dm-card-2",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "mark/avatar-dark.png",
+   "type": "avatar",
+   "box": {
+    "x": 144.0,
+    "y": 1334.4,
+    "w": 120,
+    "h": 120.0
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 68.7,
+   "surface": "dark",
+   "surface_luminance": 0.007,
+   "contrast": 9.11,
+   "clear_space_px": 17.2
+  },
+  "logos": [
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 38030,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1321.7,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.054,
+    "contrast": 4.96,
+    "clear_space_px": 17.2
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 38120,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1333.6,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.008,
+    "contrast": 8.87,
+    "clear_space_px": 17.2
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 38330,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1334.4,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.2
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 38340,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1334.4,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.2
+   },
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1170.0,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.834,
+    "contrast": 17.67,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1334.4,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.2
+   },
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1170.0,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.834,
+    "contrast": 17.67,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 144.0,
+     "y": 1334.4,
+     "w": 120,
+     "h": 120.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 68.7,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.2
+   }
+  ],
+  "outside_cta": []
+ },
+ "images_by_time": {
+  "500": [],
+  "1500": [],
+  "2500": [],
+  "3500": [],
+  "4500": [],
+  "5500": [],
+  "6500": [],
+  "7500": [
+   [
+    90,
+    336,
+    900,
+    744,
+    "image"
+   ]
+  ],
+  "8500": [
+   [
+    90,
+    336,
+    900,
+    744,
+    "image"
+   ]
+  ],
+  "9500": [
+   [
+    90,
+    336,
+    900,
+    744,
+    "image"
+   ]
+  ],
+  "10500": [
+   [
+    90,
+    336,
+    900,
+    744,
+    "image"
+   ]
+  ],
+  "11500": [
+   [
+    142,
+    350,
+    796,
+    480,
+    "image"
+   ]
+  ],
+  "12500": [
+   [
+    142,
+    348,
+    796,
+    480,
+    "image"
+   ]
+  ],
+  "13500": [
+   [
+    142,
+    348,
+    796,
+    480,
+    "image"
+   ]
+  ],
+  "14500": [
+   [
+    142,
+    348,
+    796,
+    480,
+    "image"
+   ]
+  ],
+  "15500": [],
+  "16500": [],
+  "17500": [],
+  "18500": [],
+  "19500": [],
+  "20500": [],
+  "21500": [],
+  "22500": [],
+  "23500": [],
+  "24500": [],
+  "25500": [],
+  "26500": [],
+  "27500": [
+   [
+    90,
+    316,
+    900,
+    604,
+    "image"
+   ]
+  ],
+  "28500": [
+   [
+    90,
+    316,
+    900,
+    604,
+    "image"
+   ]
+  ],
+  "29500": [
+   [
+    90,
+    316,
+    900,
+    604,
+    "image"
+   ]
+  ],
+  "30500": [],
+  "31500": [],
+  "32500": [],
+  "33500": [],
+  "34500": [],
+  "35500": [],
+  "36500": [],
+  "37500": [],
+  "38500": [
+   [
+    144,
+    1334,
+    120,
+    120,
+    "logo"
+   ]
+  ],
+  "39500": [
+   [
+    390,
+    1170,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    144,
+    1334,
+    120,
+    120,
+    "logo"
+   ]
+  ],
+  "40500": [
+   [
+    390,
+    1170,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    144,
+    1334,
+    120,
+    120,
+    "logo"
+   ]
+  ]
+ },
+ "harness_errors": [],
+ "thresholds": {
+  "safe_top": 230.0,
+  "safe_bottom": 1440.0,
+  "margin_x": 60.0,
+  "caption_band": [
+   1300.0,
+   1560.0
+  ],
+  "right_rail_x": 850.0,
+  "min_font_px": 24.0,
+  "contrast": [
+   4.5,
+   2.7
+  ],
+  "emphasis_tolerance_ms": 80.0,
+  "lockup_min": 300.0,
+  "bolt_min": 64.0,
+  "avatar_min": 112.0
+ }
+}

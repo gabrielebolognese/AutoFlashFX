@@ -23,6 +23,7 @@ Answer with only the JSON object described at the end.
 {{STYLE}}
 
 {{NOTE}}
+{{REVIEW}}
 ## How to choose
 
 - One transition per consecutive scene pair, from the first scene to the last. Types: fade-blur (the default: the

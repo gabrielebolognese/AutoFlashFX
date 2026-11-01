@@ -1,0 +1,111 @@
+{
+ "scores": {
+  "stop": 3,
+  "hierarchy": 3,
+  "look": 4,
+  "variety": 3,
+  "sync": 4,
+  "sound": 4,
+  "generic": 3,
+  "requirements": 3
+ },
+ "branding_natural": true,
+ "branding_note": "",
+ "issues": [
+  {
+   "tag": "animation",
+   "scene": "s1",
+   "severity": "major",
+   "text": "Frame 1 of the hook (0.0 s) shows only a small orange dot on blank paper and the hero-3d does not arrive until 2.4 s, so make the hero visual (a row of identical rounded cards, for example) be on screen at frame 1 and build the headline around it."
+  },
+  {
+   "tag": "text",
+   "scene": "s1",
+   "severity": "major",
+   "text": "The planned on-screen hook 'IDENTICAL CARDS LOOK AI' never appears (the headline only restates the spoken line), so put that hook text on screen in s1 from 0.0 s."
+  },
+  {
+   "tag": "animation",
+   "scene": "s1",
+   "severity": "minor",
+   "text": "The hero-3d in s1 (2.4 s) is a generic tilted document icon that does not show 'identical cards', so replace it with stacked identical rounded cards with grey shadows that show the problem."
+  },
+  {
+   "tag": "animation",
+   "scene": "s2",
+   "severity": "major",
+   "text": "The s2 thumb-grid (3.5 to 6.6 s) shows video tiles with play buttons labelled 'client site', which read as placeholder video thumbnails, so swap them for mini website mockups that all share the same rounded card layout."
+  },
+  {
+   "tag": "animation",
+   "scene": "s3",
+   "severity": "major",
+   "text": "The SKILL.md screenshot in s3 (6.6 to 11.4 s) is illegible at this size and nothing on it is highlighted, so zoom into the line that lists the tells (rounded cards, one radius, grey shadow) and mark it as each phrase is spoken."
+  },
+  {
+   "tag": "animation",
+   "scene": "s5",
+   "severity": "major",
+   "text": "The 'Even Anthropic's palette' card in s5 sits empty from 15.2 to about 17 s and the strike-through is tiny hex text, so show two big swatches (#D97757 and #F4F1EA) when 'terracotta on cream' is said and strike them at 17.2 s."
+  },
+  {
+   "tag": "animation",
+   "scene": "s7",
+   "severity": "major",
+   "text": "s7 shows only the small 'frontend-design on' chip on an empty frame from 22.8 to about 24.6 s, so bring in the hero (the checklist card or the mascot) on 'With it on' to fill the frame."
+  },
+  {
+   "tag": "animation",
+   "scene": "s9",
+   "severity": "minor",
+   "text": "The terminal in s9 stays empty from 30.2 to 30.6 s and later the ILLUSTRATIVE badge covers the end of the typed command (34.1 s), so start typing on the cut and move the badge off the command line."
+  },
+  {
+   "tag": "animation",
+   "severity": "minor",
+   "text": "Almost every scene (s3 to s10) uses the same layout, a card pinned top-left with a small chip under it and a caption low on screen, so vary the framing with a centered hero, a full-bleed zoom or a split comparison in at least two scenes."
+  },
+  {
+   "tag": "animation",
+   "scene": "s4",
+   "severity": "minor",
+   "text": "In s4 (11.4 to 15.1 s) the 'It's not your fault' title is printed over the bottom of the blog screenshot and collides with its text, so give the title its own band above or below the screenshot."
+  },
+  {
+   "tag": "text",
+   "scene": "s9",
+   "severity": "minor",
+   "text": "In s9 every caption word gets an orange box ('slash', 'plugin', 'Pick a scope.'), which kills the emphasis, so box only one key word per chunk (for example 'scope')."
+  },
+  {
+   "tag": "text",
+   "scene": "s10",
+   "severity": "minor",
+   "text": "The s10 caption drops out at 35.3 s and comes back as a lone boxed 'by' at 35.4 s, so keep 'turns on by itself' together as one chunk."
+  },
+  {
+   "tag": "text",
+   "severity": "minor",
+   "text": "The share-line tell 'a → on button text' and the identity 'landing pages or client sites' never show on screen, so add the arrow tell as a fourth chip in s6 and put 'landing pages' on the s2 chip."
+  },
+  {
+   "tag": "sfx",
+   "scene": "s8",
+   "severity": "minor",
+   "text": "The cash-register ka-ching at 27.27 s sits on a verification checkmark, so use a soft ding on the check and move the ka-ching (if it stays at all) to the install stat-number landing."
+  },
+  {
+   "tag": "sfx",
+   "scene": "s1",
+   "severity": "minor",
+   "text": "The jet whoosh at 2.4 s on a small icon pop runs straight into the slow whoosh at 3.46 s, which gives two whooshes back to back, so swap the hook hit for a short pop or impact."
+  },
+  {
+   "tag": "transition",
+   "scene": "s2",
+   "severity": "minor",
+   "text": "The s1 to s2 fall leaves a nearly blank frame at 3.4 s, so overlap the incoming grid with the falling headline to keep something solid on screen."
+  }
+ ],
+ "summary": "The reel sits well on the paper-cards account: warm dotted paper, cream cards, orange caption boxes, the mascot and a FlashFX CTA that feels native. The captions follow the voice closely. It falls down on frame 1, which is almost empty, and on the hero visuals: the scenes lean on illegible screenshots, empty cards and placeholder play-button tiles, and every scene uses the same top-left card layout. Fix first: a strong full-frame hook visual with the 'IDENTICAL CARDS LOOK AI' text at 0.0 s, then real, readable visuals in s2, s3, s5 and s7."
+}

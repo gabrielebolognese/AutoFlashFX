@@ -1,7 +1,8 @@
 """verify.py: accuracy and loudness of the rendered stem and mix (BUILD_SPEC.md S11 step 5, M11).
 
-Accuracy is measured on the stem the way the map measured the files: a 5 ms RMS envelope. For a whoosh the loudest
-frame inside its played span must land on the event (the peak); for every other sound the onset, the first frame of
+Accuracy is measured on the stem the way the map measured the files: a 5 ms RMS envelope aligned to each sound's own
+first played sample (an untouched placement reads the frames the map read). For a whoosh the loudest frame within
+sfx.peak_search_ms (500) of the event must land on it (the peak); for every other sound the onset, the first frame of
 its window (40 ms before the event to 150 ms after) that reaches 30 dB under the sound's expected peak and rises
 6 dB over the 20 ms before it (so a click over a typing bed is still found at its own attack). Both within config
 sfx.sync_tolerance_ms (33 ms, one frame). Unplanned sound: any stretch of the stem above -55 dBFS that no planned sound
@@ -31,7 +32,7 @@ def _frame(ms: float) -> int:
     return int(ms / HOP_MS)
 
 
-def accuracy(cues: list[dict], stem: np.ndarray, sr: int, tol_ms: float, duration_ms: float) -> dict:
+def accuracy(cues: list[dict], stem: np.ndarray, sr: int, tol_ms: float, duration_ms: float, peak_search_ms: float = 500.0) -> dict:
     env = envelope_db(stem, sr, HOP_MS)
     results = []
     max_err = 0.0
@@ -45,41 +46,52 @@ def accuracy(cues: list[dict], stem: np.ndarray, sr: int, tol_ms: float, duratio
         method = "peak" if c["cue_type"] in WHOOSH_CUES else "onset"
         measured = None
         note = ""
-        if b > a:
+        # the sound's own envelope, aligned to its first played sample: the map measured the file from its first sample
+        # on the same 5 ms grid, so an untouched placement reads the same frames the map read
+        s0 = int(round(start * sr / 1000.0))
+        s1 = min(len(stem), int(round(end * sr / 1000.0)))
+        local = envelope_db(stem[s0:s1], sr, HOP_MS) if s1 - s0 >= 48 else np.array([])
+        t_of = lambda i: start + (i + 0.5) * HOP_MS  # noqa: E731  (the frame's center in reel ms)
+        if len(local):
             if method == "peak":
-                # the loudest frame of the span; a whoosh whose loudest stretch is a plateau (frames within 1 dB of the
-                # maximum) lands when the event falls inside that stretch: the nearest plateau frame is the measurement
-                seg = env[a:b]
+                # the loudest frame near the event (a neighbor's tail at the span's edge cannot win); a plateau (frames
+                # within 1 dB of the maximum) counts as the peak where the event falls inside it
+                lo = max(0, int((expected - peak_search_ms - start) / HOP_MS))
+                hi = min(len(local), int((expected + peak_search_ms - start) / HOP_MS) + 1)
+                if hi <= lo:
+                    lo, hi = 0, len(local)
+                seg = local[lo:hi]
                 mx = float(seg.max())
-                top = np.where(seg >= mx - PEAK_PLATEAU_DB)[0] + a
-                centers = (top + 0.5) * HOP_MS
+                top = np.where(seg >= mx - PEAK_PLATEAU_DB)[0] + lo
+                centers = np.array([t_of(i) for i in top])
                 j = int(np.argmin(np.abs(centers - expected)))
                 measured = float(centers[j])
                 if len(top) > 1:
                     note = f"plateau {round(float(centers[0]))}..{round(float(centers[-1]))} ms"
             else:
-                w0, w1 = max(a, _frame(expected - 40)), min(b, _frame(expected + 150) + 1)
+                w0 = max(0, int((expected - 40 - start) / HOP_MS))
+                w1 = min(len(local), int((expected + 150 - start) / HOP_MS) + 1)
                 thr = max(float(c.get("peak_dbfs", -20)) - ONSET_UNDER_PEAK_DB, FLOOR_DBFS)
                 if w1 > w0:
-                    if env[w0] >= thr:
+                    if local[w0] >= thr:
                         # something already sounds at the window's start (a bed, a tail): the onset is the strongest rise
                         best, best_rise = None, 0.0
                         for i in range(max(w0, 1), w1):
-                            prev = env[max(0, i - 4): i]
-                            rise = float(env[i] - prev.min()) if len(prev) else 0.0
-                            if env[i] >= thr and rise >= ONSET_RISE_DB and rise > best_rise:
+                            prev = local[max(0, i - 4): i]
+                            rise = float(local[i] - prev.min()) if len(prev) else 0.0
+                            if local[i] >= thr and rise >= ONSET_RISE_DB and rise > best_rise:
                                 best, best_rise = i, rise
                         if best is not None:
-                            measured = best * HOP_MS
+                            measured = start + best * HOP_MS
                             note = f"over a bed, rise {best_rise:.1f} dB"
                     else:
                         for i in range(w0, w1):
-                            if env[i] >= thr:
-                                measured = i * HOP_MS
+                            if local[i] >= thr:
+                                measured = start + i * HOP_MS
                                 break
                     if measured is None:
-                        i = int(np.argmax(env[w0:w1])) + w0
-                        measured = i * HOP_MS
+                        i = int(np.argmax(local[w0:w1])) + w0
+                        measured = start + i * HOP_MS
                         note = "no clear onset: the loudest frame of the window"
         err = None if measured is None else round(measured - expected, 1)
         ok = err is not None and abs(err) <= tol_ms

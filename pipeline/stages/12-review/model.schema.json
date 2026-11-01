@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/12-review/model.json",
+  "title": "The edit review's answer (S12, qa model): eight scores 1 to 5, whether the branding feels natural, every issue with its tag, a summary",
+  "type": "object",
+  "required": ["scores", "branding_natural", "issues", "summary"],
+  "properties": {
+    "scores": {
+      "type": "object",
+      "required": ["stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements"],
+      "properties": {
+        "stop": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does frame 1 stop the scroll"},
+        "hierarchy": {"type": "integer", "minimum": 1, "maximum": 5, "description": "hierarchy and legibility"},
+        "look": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does it match the look: would it sit on the same account as the reference stills"},
+        "variety": {"type": "integer", "minimum": 1, "maximum": 5, "description": "motion variety"},
+        "sync": {"type": "integer", "minimum": 1, "maximum": 5, "description": "sync with the voice"},
+        "sound": {"type": "integer", "minimum": 1, "maximum": 5, "description": "sound fit: does each sound fit its moment, nothing cluttering the voice"},
+        "generic": {"type": "integer", "minimum": 1, "maximum": 5, "description": "nothing looks generic"},
+        "requirements": {"type": "integer", "minimum": 1, "maximum": 5, "description": "the requirements are visible: the problem, the share line, the keyword"}
+      }
+    },
+    "branding_natural": {"type": "boolean", "description": "the FlashFX branding (the DM card, the lockup, the brand slot) feels like a natural part of the reel, not like an ad"},
+    "branding_note": {"type": "string", "description": "when branding_natural is false: what feels like an ad"},
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tag", "text"],
+        "properties": {
+          "tag": {"type": "string", "enum": ["voice", "animation", "text", "transition", "sfx"], "description": "the step that owns the fix: voice (the voiceover), animation (the scenes and components), text (captions and card texts), transition (how scenes leave and arrive), sfx (the sounds)"},
+          "text": {"type": "string", "description": "one concrete, actionable sentence: what is wrong, where (scene, time) and what would fix it"},
+          "scene": {"type": "string", "description": "the scene id (s3) when the issue sits in one"},
+          "severity": {"type": "string", "enum": ["major", "minor"]}
+        }
+      }
+    },
+    "summary": {"type": "string", "description": "two or three sentences: what works, what does not, what to change first"}
+  }
+}

@@ -30,6 +30,7 @@ labels. Answer with only the JSON object described at the end.
 {{TWEAKS}}
 
 {{NOTE}}
+{{REVIEW}}
 ## How to write
 
 - Captions: group every spoken word of the body beats (every beat except the hook and the ask), in order, exactly as

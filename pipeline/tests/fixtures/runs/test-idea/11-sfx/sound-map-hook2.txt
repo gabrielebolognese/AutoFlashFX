@@ -1,0 +1,2 @@
+# sound-map.txt: one line per sound: time, cue type, file, the visual event it sits on (gain, trims). Written by 11-sfx.
+  2.480s  hook_hit         SFX- Swoosh02.mp3                            hero-3d enters (h2-s1-hero-3d-2, scene h2)  (-4.8 dB)

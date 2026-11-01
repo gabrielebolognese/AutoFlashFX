@@ -12,7 +12,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
 source "$LIB/config.sh"
-run_dir="${1:?usage: mix-sfx <run_dir> [--out DIR] [--seed N] [--no-hook2]}"
+case "${1:-}" in -h|--help|"") sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac
+run_dir="$1"
 shift
 out=""; extra=()
 while [ $# -gt 0 ]; do

@@ -1,0 +1,9 @@
+{
+  "scores": {"stop": 4, "hierarchy": 4, "look": 4, "variety": 4, "sync": 5, "sound": 4, "generic": 4, "requirements": 4},
+  "branding_natural": true,
+  "branding_note": "",
+  "issues": [
+    {"tag": "text", "text": "The s6 dark chips read a little small on the phone-width still; a minor note, no change needed.", "scene": "s6", "severity": "minor"}
+  ],
+  "summary": "A clean paper-cards reel: the hook headline builds on the words, the real screenshots carry the proof beats, the CTA's DM card and lockup sit naturally. The sounds follow the scene changes without crowding the voice."
+}

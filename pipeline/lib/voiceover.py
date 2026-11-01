@@ -955,6 +955,7 @@ class Stage:
             self.lines.append(self.new_line("hook2", "hook2", "hook", hook2["spoken"]))
         else:
             self.flag("voice: script.json has no hook 2 line, so there is no vo_hook2.wav for the alternate clip")
+        self.apply_review_feedback()
         self.set_pace_shape()
         eng = self.engine
         n_beats = sum(1 for ln in self.lines if ln["kind"] == "beat")
@@ -966,6 +967,31 @@ class Stage:
                     f"{eng['keep_pause_s']:g} s below {eng['silence_threshold_db']:g} dB, {eng['breath_after_hook_s']:g} s breath after the hook"
                     f"{'; ' + str(len(self.entries)) + ' pronunciation' + ('s' if len(self.entries) != 1 else '') + ' from pronunciations.txt' if self.entries else ''}")
         log(f"voice interpreter: {self.tts_py}; whisper interpreter: {self.whisper_py} (model {self.whisper_model}); worker {self.tts_worker}")
+
+    def apply_review_feedback(self) -> None:
+        """The edit review (S12, M11) routes a [voice] issue here only when it names a word in quotes: that word gets a
+        respelling in every line that says it, before the first generation (the voice is deterministic, so a plain
+        re-run would change nothing)."""
+        fb = load_json(f"{self.run_dir}/12-review/feedback.json", None)
+        if not isinstance(fb, dict):
+            return
+        words: list[str] = []
+        for issue in (fb.get("by_stage") or {}).get("08-voiceover", []) or []:
+            for m in re.finditer(r"[\"“‘']([A-Za-z][A-Za-z0-9'.-]{1,30})[\"”’']", str(issue.get("text", ""))):
+                w = m.group(1).strip(".'")
+                if w and w.lower() not in [x.lower() for x in words]:
+                    words.append(w)
+        if not words:
+            return
+        hit = 0
+        for ln in self.lines:
+            for w in words:
+                if re.search(r"" + re.escape(w) + r"", ln["spoken"], re.IGNORECASE) and w not in ln["respellings"]:
+                    ln["respellings"][w] = auto_respell(w)
+                    hit += 1
+            self.refresh_text(ln)
+        if hit:
+            say("INFO", f"S8: the edit review named {len(words)} word{'s' if len(words) != 1 else ''} ({', '.join(words)}): respelled in {hit} line{'s' if hit != 1 else ''}")
 
     def new_line(self, lid: str, kind: str, btype: str, spoken: str) -> dict:
         ln = {"id": lid, "kind": kind, "type": btype, "spoken": clean(spoken), "respellings": {}, "attempts": [], "attempt": 0,

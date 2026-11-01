@@ -10,7 +10,9 @@
 #       schema model.schema.json; the digests pipeline/lib/visual digest writes into <stage>/digest/ fill the
 #       {{TIMELINE}}, {{CATALOG}}, {{GOLDEN}}, {{ASSETS}}, {{SOLUTION}}, {{SCENES}}, {{CHUNKS}} and {{TRANSITIONS}}
 #       placeholders ("(none)" when a pass has no such digest); {{STYLE}}, {{TWEAKS}}, {{VOCABULARY}} and {{TOKENS}}
-#       inline the style files, {{IDEA}} the idea, {{NOTE}} the runner's restart note.
+#       inline the style files, {{IDEA}} the idea, {{NOTE}} the runner's restart note, {{REVIEW}} the edit review's notes
+#       for this pass when the review loop (M11) sent the reel back (python pipeline/lib/review feedback; empty otherwise).
+#       After caps.review_rounds_opus failed review rounds the call goes to models.visual_director_escalation.
 
 [ -n "${REELS_VISUAL_LOADED:-}" ] && return 0
 REELS_VISUAL_LOADED=1
@@ -45,26 +47,31 @@ visual_pass_run() {
   local sol; sol="$(json_field "$dres" solution.type none)"
   # 2. the prompt
   local prompt="$OUT/prompt.md" f key
-  local -a ctx=("IDEA=$IDEA_TEXT" "@STYLE=$style_dir/style.md" "@TWEAKS=$style_dir/tweaks.md" "@VOCABULARY=$style_dir/vocabulary.md" "@TOKENS=$tokens" "NOTE=$(stage_note_section)")
+  local review_notes
+  review_notes="$($REELS_PY "$REELS_PIPELINE/lib/review" feedback --run-dir "$RUN_DIR" --stage "$stage" 2>/dev/null || true)"
+  local -a ctx=("IDEA=$IDEA_TEXT" "@STYLE=$style_dir/style.md" "@TWEAKS=$style_dir/tweaks.md" "@VOCABULARY=$style_dir/vocabulary.md" "@TOKENS=$tokens" "NOTE=$(stage_note_section)" "REVIEW=$review_notes")
   for key in TIMELINE CATALOG GOLDEN ASSETS SOLUTION SCENES CHUNKS TRANSITIONS; do
     f="$dg/$(printf '%s' "$key" | tr '[:upper:]' '[:lower:]').md"
     if [ -f "$f" ]; then ctx+=("@$key=$f"); else ctx+=("$key=(none)"); fi
   done
   render_prompt "$here/prompt.md" "$prompt" "${ctx[@]}" || stage_fail "cannot render pipeline/stages/$stage/prompt.md"
   # 3. the call, the composition, one retry with the exact problems
-  local tools timeout_s try=1 res rc sid=""
+  local tools timeout_s try=1 res rc sid="" role=visual_director review_round
   tools="$(cfg visual.director_tools "Read Glob")"
   timeout_s="$(cfg timeouts.plan_seconds 1800)"
-  say INFO "S9: $act for $(json_field "$dres" idea_id "$IDEA_ID") (solution $sol): asking the visual director"
+  # the review loop (M11): after caps.review_rounds_opus failed rounds the escalated director (fable) plans the fix
+  review_round="$(state_get "$RUN_DIR" rounds.review 0 2>/dev/null)"; case "$review_round" in ''|*[!0-9]*) review_round=0 ;; esac
+  if [ "$review_round" -ge "$(cfg caps.review_rounds_opus 3)" ] && cfg models.visual_director_escalation.model >/dev/null 2>&1; then role=visual_director_escalation; fi
+  say INFO "S9: $act for $(json_field "$dres" idea_id "$IDEA_ID") (solution $sol): asking the visual director$([ "$role" = visual_director_escalation ] && echo " ($(cfg models.visual_director_escalation.model), review round $review_round)")$([ -n "$review_notes" ] && echo " with the edit review's notes")"
   while :; do
     if [ -n "$sid" ]; then
-      ai visual_director "$OUT" "$prompt" --resume "$sid" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try" --activity "$act"; rc=$?
+      ai "$role" "$OUT" "$prompt" --resume "$sid" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try" --activity "$act"; rc=$?
       if [ "$rc" = 3 ]; then
         say WARN "S9: the director's session no longer exists ($(undash "${AI_ERROR:-no detail}")): asking again in a new one"
-        ai visual_director "$OUT" "$prompt" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try-fresh" --activity "$act"; rc=$?
+        ai "$role" "$OUT" "$prompt" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try-fresh" --activity "$act"; rc=$?
       fi
     else
-      ai visual_director "$OUT" "$prompt" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try" --activity "$act"; rc=$?
+      ai "$role" "$OUT" "$prompt" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try" --activity "$act"; rc=$?
     fi
     [ "$rc" = 0 ] || stage_ai_failed
     sid="$AI_SESSION"

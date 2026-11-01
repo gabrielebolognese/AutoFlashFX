@@ -1,0 +1,26 @@
+{
+ "written_by": "12-review",
+ "pass": true,
+ "issues": [],
+ "sfx": {
+  "pass": true,
+  "voice_only": false,
+  "passes": 2,
+  "max_error_ms": 5.0,
+  "lufs": -14.35,
+  "true_peak_dbtp": -1.6,
+  "sounds": 17
+ },
+ "intelligible": {
+  "wer_pct": 0.0,
+  "max_pct": 5.0,
+  "errors": 0,
+  "words": 118,
+  "misheard": [],
+  "heard": [],
+  "model": "small",
+  "python": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
+  "ok": true
+ },
+ "source": "11-sfx/draft_mixed.mp4"
+}

@@ -1,0 +1,9 @@
+{
+  "scores": {"stop": 4, "hierarchy": 4, "look": 4, "variety": 4, "sync": 4, "sound": 2, "generic": 4, "requirements": 4},
+  "branding_natural": true,
+  "branding_note": "",
+  "issues": [
+    {"tag": "sfx", "text": "The sounds are too many and too loud over the voice: a whoosh on every scene change plus the dings crowd the stake and the proof beats; use fewer sounds and softer ones.", "severity": "major"}
+  ],
+  "summary": "The picture is fine; the sound bed is busy and loud. Thin it out."
+}

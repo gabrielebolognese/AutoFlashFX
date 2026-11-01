@@ -4,7 +4,10 @@ Rotation inside a pool (best fit first, pinned files first of all), starting at 
 open with the same whoosh; never the same file twice in a row for a cue type; the files used for the same cue in the
 last config sfx.recent_reels (2) reels (logs/sfx-usage.json) are avoided while the pool has others. A short pool
 (typing, negative on this pack: 2 files) alternates its two files. A series (assign.py: the same mandatory cue on one
-component within two seconds, a checklist ticking) plays the file of its first member.
+component within two seconds, a checklist ticking) plays the file of its first member. A file already chosen for
+another cue type of the reel is avoided while the pool has others (the pools overlap: a ding that means success must
+not also be the CTA's notification; the first real edit review caught exactly that), the one-off cue types choosing
+first.
 
   pick(cues, pools, recent, seed, avoid_last=None, last_files=None) -> the cues with "file" (the pack path), "cache",
        "pool_entry" (the map's numbers), "pick_note"
@@ -67,7 +70,11 @@ def pick(cues: list[dict], pools: dict, recent: dict | None, seed: int, avoid_la
     by_cue: dict = {}
     for c in sorted(cues, key=lambda c: c["ms"]):
         by_cue.setdefault(c["cue_type"], []).append(c)
-    for cue_type, lst in by_cue.items():
+    used_elsewhere: set = set()   # files already chosen for another cue type of this reel: a ding that means success must not also be the DM notification
+    # the one-off cues choose first so the sounds that repeat (success, ui_click) rotate around them
+    order_types = sorted(by_cue, key=lambda k: (len(by_cue[k]), k))
+    for cue_type in order_types:
+        lst = by_cue[cue_type]
         pool = [p for p in (pools.get(cue_type) or []) if p.get("cache")]
         if not pool:
             for c in lst:
@@ -82,6 +89,11 @@ def pick(cues: list[dict], pools: dict, recent: dict | None, seed: int, avoid_la
         order = fresh if fresh else pool
         if not fresh and avoid:
             notes.append(f"{cue_type}: every file of the pool was used in the last reels; rotating through the pool anyway")
+        distinct = [p for p in order if p["path"] not in used_elsewhere]
+        if distinct:
+            order = distinct
+        elif used_elsewhere & {p["path"] for p in order}:
+            notes.append(f"{cue_type}: every file of its pool already serves another cue type in this reel")
         start = rng.randrange(len(order)) if len(order) > 1 else 0
         i = start
         prev = None
@@ -96,6 +108,7 @@ def pick(cues: list[dict], pools: dict, recent: dict | None, seed: int, avoid_la
                     entry = order[i % len(order)]
                 i += 1
             heads.setdefault(c["id"], entry)
+            used_elsewhere.add(entry["path"])
             c["file"] = entry["path"]
             c["cache"] = entry["cache"]
             c["pool_entry"] = {k: entry.get(k) for k in ("id", "path", "cache", "gain_db", "duration_s", "onset_s", "peak_s", "end_s", "effective_s", "attack_s", "pad_start_s", "pad_end_s", "whoosh_speed", "fit", "pinned")}

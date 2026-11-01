@@ -12,6 +12,9 @@
 #                                    (compositions, assets, catalog, webgl.json, the stills), styles/paper-cards/
 #                                    tokens.json, library/brand/, golden/test-idea/{plan.json, contact-sheet.png,
 #                                    README.md}; the Node packages stay in the real repo (REELS_NODE_PREFIX).
+#                                    --with-review (M11) also copies the reference analysis summaries and the look
+#                                    stills of styles/paper-cards/analysis (the sound pack stays in the real repo:
+#                                    REELS_SFX_DIR points at it).
 #   sandbox_cleanup                  remove it (also run by the EXIT trap)
 #   fast_mode                        REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1
 #                                    REELS_TICK_SECONDS=0.2 REELS_DUMMY_SECONDS=0.3 (unless already set)
@@ -75,9 +78,9 @@ sandbox_init() {
   cp "$REPO_DIR"/library/profile/*.md "$SANDBOX/library/profile/" 2>/dev/null || true
   : > "$SANDBOX/ideas.txt"
   export REELS_ROOT="$SANDBOX_M"
-  local with_pipeline=0 with_visual=0 a
+  local with_pipeline=0 with_visual=0 with_review=0 a
   for a in "$@"; do
-    case "$a" in --with-pipeline) with_pipeline=1 ;; --with-visual) with_pipeline=1; with_visual=1 ;; esac
+    case "$a" in --with-pipeline) with_pipeline=1 ;; --with-visual) with_pipeline=1; with_visual=1 ;; --with-review) with_pipeline=1; with_visual=1; with_review=1 ;; esac
   done
   if [ "$with_pipeline" = 1 ]; then
     # a copy of the code as its own git repo, so a fixer commits there and never in the real repo; the style text
@@ -104,6 +107,18 @@ sandbox_init() {
       mkdir -p "$SANDBOX/golden/test-idea"
       for f in plan.json contact-sheet.png README.md; do cp "$REPO_DIR/golden/test-idea/$f" "$SANDBOX/golden/test-idea/$f" 2>/dev/null || true; done
       export REELS_NODE_PREFIX="$(mixed "$REPO_DIR")"
+    fi
+    if [ "$with_review" = 1 ]; then
+      # what the review stage reads (M11): the reference analysis summaries and a few look stills (the folder is not
+      # in git: the real one is copied when it exists), tools/analyze_refs.py is already in tools/
+      local v
+      for v in "$REPO_DIR"/styles/paper-cards/analysis/v*/; do
+        [ -f "$v/summary.json" ] || continue
+        mkdir -p "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")"
+        cp "$v/summary.json" "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")/"
+        case "$(basename "$v")" in v01|v02) cp "$v"/full_*.png "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")/" 2>/dev/null || true ;; esac
+      done
+      cp "$REPO_DIR/styles/paper-cards/analysis/accent_share.txt" "$SANDBOX/styles/paper-cards/analysis/" 2>/dev/null || true
     fi
     printf 'runs/
 exports/

@@ -1,0 +1,126 @@
+{
+ "written_by": "12-review",
+ "pass": true,
+ "issues": [],
+ "video": "11-sfx/draft_mixed.mp4",
+ "size": [
+  540,
+  960
+ ],
+ "cadence": {
+  "draft": {
+   "events": 24,
+   "per_10s": 5.8,
+   "gap_median_s": 1.03,
+   "gap_p90_s": 3.55,
+   "gap_max_s": 4.33,
+   "first_event_s": 2.47
+  },
+  "reference": {
+   "source": "9 reference videos in C:/Users/there/AppData/Local/Temp/tmp.1aK19mz0ab/styles/paper-cards\\analysis",
+   "n": 9,
+   "gap_median_s": [
+    0.33,
+    1.3
+   ],
+   "gap_max_s": [
+    4.73,
+    7.07
+   ],
+   "per_10s": [
+    5.5,
+    7.1
+   ]
+  },
+  "checks": {
+   "gap_median_s": {
+    "value": 1.03,
+    "allowed": [
+     0.26,
+     1.56
+    ],
+    "ok": true
+   },
+   "gap_max_s": {
+    "value": 4.33,
+    "allowed": [
+     0.0,
+     8.48
+    ],
+    "ok": true
+   },
+   "per_10s": {
+    "value": 5.8,
+    "reference": [
+     5.5,
+     7.1
+    ],
+    "ok": true,
+    "note": "informational"
+   }
+  }
+ },
+ "palette": {
+  "frames": 41,
+  "share_within_delta_e_pct": 98.63,
+  "min_frame_share_pct": 94.9,
+  "delta_e": 5.0,
+  "min_share_pct": 90.0,
+  "palette_colors": 46,
+  "ok": true
+ },
+ "accent": {
+  "max_frame_share_pct": 2.92,
+  "median_frame_share_pct": 0.06,
+  "max_allowed_pct": 5.0,
+  "ok": true
+ },
+ "loudness": {
+  "lufs": -14.36,
+  "true_peak_dbtp": -1.61,
+  "target": [
+   -14.0,
+   -1.5
+  ],
+  "ok": true
+ },
+ "analyzer": {
+  "duration": 41.46,
+  "palette": [
+   [
+    "#F3ECE0",
+    32.6
+   ],
+   [
+    "#F0E4D7",
+    29.3
+   ],
+   [
+    "#EADACA",
+    20.5
+   ],
+   [
+    "#FBF7F5",
+    13.1
+   ],
+   [
+    "#1A100D",
+    2.2
+   ],
+   [
+    "#C2B6AB",
+    1.2
+   ],
+   [
+    "#6D6F62",
+    0.6
+   ],
+   [
+    "#D96E3E",
+    0.5
+   ]
+  ],
+  "accent": "#DD6C37",
+  "accent_share_pct": 0.54
+ }
+}

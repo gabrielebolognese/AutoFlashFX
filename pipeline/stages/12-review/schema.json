@@ -1,51 +1,32 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/12-review/review.json",
-  "title": "12-review review.json (first version, M2)",
+  "title": "12-review review.json: one review round of the draft (BUILD_SPEC.md S12; M11)",
   "type": "object",
-  "required": [
-    "round",
-    "pass",
-    "edit_review"
-  ],
+  "required": ["round", "pass", "edit_review"],
   "properties": {
-    "round": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "pass": {
-      "type": "boolean"
-    },
-    "mechanical": {
-      "type": "object"
-    },
-    "style": {
-      "type": "object"
-    },
-    "audio": {
-      "type": "object"
-    },
+    "written_by": {"type": "string"},
+    "round": {"type": "integer", "minimum": 1},
+    "pass": {"type": "boolean"},
+    "verdict": {"type": "string", "enum": ["pass", "fix", "cap", "flag"], "description": "pass: on to the render; fix: the owners reopened; cap: the rounds are used up, exported with NEEDS REVIEW; flag: nothing upstream can act, exported with NEEDS REVIEW"},
+    "mechanical": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}}},
+    "style": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}}},
+    "audio": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}, "wer_pct": {"type": ["number", "null"]}}},
     "edit_review": {
       "type": "object",
-      "required": [
-        "scores",
-        "issues"
-      ],
+      "required": ["scores", "issues"],
       "properties": {
-        "scores": {
-          "type": "object"
-        },
-        "issues": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "tag",
-              "text"
-            ]
-          }
-        }
+        "scores": {"type": "object", "properties": {"stop": {"type": "integer"}, "hierarchy": {"type": "integer"}, "look": {"type": "integer"}, "variety": {"type": "integer"}, "sync": {"type": "integer"}, "sound": {"type": "integer"}, "generic": {"type": "integer"}, "requirements": {"type": "integer"}}},
+        "issues": {"type": "array", "items": {"type": "object", "required": ["tag", "text"], "properties": {"tag": {"type": "string", "enum": ["voice", "animation", "text", "transition", "sfx"]}, "text": {"type": "string"}}}},
+        "branding_natural": {"type": "boolean"},
+        "summary": {"type": "string"},
+        "answered": {"type": "boolean"}
       }
-    }
+    },
+    "issues": {"type": "array", "items": {"type": "object", "required": ["tag", "text", "stage"], "properties": {"tag": {"type": "string", "enum": ["voice", "animation", "text", "transition", "sfx"]}, "text": {"type": "string"}, "stage": {"type": "string"}, "source": {"type": "string"}, "kind": {"type": "string"}, "scene": {"type": "string"}, "note_only": {"type": "boolean"}}}},
+    "routing": {"type": "object", "properties": {"owners": {"type": "array", "items": {"type": "string"}}, "reopen": {"type": "array", "items": {"type": "string"}}, "activity": {"type": "string"}, "next_model": {"type": "array"}}},
+    "cap": {"type": "object", "properties": {"reached": {"type": "boolean"}, "rounds_total": {"type": "integer"}}},
+    "flags": {"type": "array", "items": {"type": "string"}},
+    "summary": {"type": "object"}
   }
 }

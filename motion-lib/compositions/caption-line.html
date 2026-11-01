@@ -49,8 +49,11 @@
           var txt = PC.el("span", "pc-caption-text", span, wd.w);
           return { span: span, box: wd.em ? span.firstChild : null, t: typeof wd.t === "number" ? wd.t : chunk.start };
         });
-        // fit: a chunk wider than max_w scales down (the text plan should have split it; this keeps it inside the zone)
-        var width = div.scrollWidth;
+        // fit: a chunk wider than max_w scales down (the text plan should have split it; this keeps it inside the zone).
+        // The width is the words' own extent (a Range over the chunk's content): the chunk's block spans the whole
+        // 1080 px line, so its scrollWidth would scale every chunk (found by S12's mechanical check, M11).
+        var width = 0;
+        try { var rg = document.createRange(); rg.selectNodeContents(div); width = rg.getBoundingClientRect().width; } catch (e) { width = div.scrollWidth; }
         if (width > v.max_w && width > 0) {
           var k = Math.max(0.6, v.max_w / width);
           div.style.transform = "scale(" + k + ")";

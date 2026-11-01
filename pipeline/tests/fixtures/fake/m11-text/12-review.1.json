@@ -1,0 +1,10 @@
+{
+  "scores": {"stop": 4, "hierarchy": 3, "look": 4, "variety": 4, "sync": 4, "sound": 4, "generic": 4, "requirements": 4},
+  "branding_natural": true,
+  "branding_note": "",
+  "issues": [
+    {"tag": "text", "text": "Scene s4 at 11.4 s: the card title \"It's not your fault\" and the chip \"distributional convergence\" say the same thing twice; shorten the chip to the paper's own term and keep the title.", "scene": "s4", "severity": "major"},
+    {"tag": "text", "text": "Scene s2 at 6.0 s: the chunk \"instantly.\" stands alone as a one-word caption; group it with the words before it.", "scene": "s2", "severity": "minor"}
+  ],
+  "summary": "The visuals and the sounds hold up; the on-screen text in s4 doubles itself and one caption chunk is a lone word, which breaks the reading rhythm. Fix the text pass and the reel passes."
+}

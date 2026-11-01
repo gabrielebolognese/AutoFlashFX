@@ -46,6 +46,7 @@ object described at the end.
 {{TOKENS}}
 
 {{NOTE}}
+{{REVIEW}}
 ## How to plan
 
 - One scene per beat, in the script's order, every beat present. A scene runs from its beat's first word to the next
