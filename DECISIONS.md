@@ -415,6 +415,7 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 
 2026-10-31: CPU-only PC; voice = Chatterbox Turbo + Kokoro fallback, set by Gabriele in library/voice/engine.txt.
 2026-10-31: no fallback voice. Only Gabriele's cloned voice; failures retry, then block the idea.
+2026-11-01: reel voice = Kokoro af_bella, single voice, no fallback; silence tightened per beat (-40 dB, pauses of 0.3s or more cut to 0.1s, 1.0s breath after the hook). am_puck saved in library/voice/engine-puck.txt for later.
 
 ### M3 review 1 fixes (2026-10-31)
 88. **A failed stage script is classified before any review (M3 review 1, fix 2).** BUILD_SPEC.md section 4 says
@@ -949,3 +950,175 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     data travels as an argument; `python -I` ignores PYTHONUTF8 (it implies -E), hence `-X utf8` next to it; the
     Bash tool's command limit bit again when a 12 KB heredoc was pasted (the command was cut and nothing ran), so
     long appends go through a file written with the Write tool.
+
+## M6 (2026-11-01)
+
+### S7 Script: who decides what
+139. **The model writes, cuts, maps and picks; pipeline/lib/script_checks.py decides and composes.** Like the M4
+    and M5 stages (item 95): model.schema.json, cut.schema.json, claims.schema.json, pick.schema.json and
+    rewrite-line.schema.json hold the model answers (types, enums and required lists only); schema.json is the
+    stage's file. Every text from a model is cleaned (errors.undash, CR, curly quotes to straight) when it is read,
+    so no file of the run holds an em dash, and the rules of spec S7 (the structure, the two tracks, the length,
+    the hard and soft failures, the rounds) live in Python with unit tests (test-m6 section 1).
+140. **The vendored scripts are imported as modules, not run as subprocesses.** beats.py's analyse, words,
+    CONCRETE_RE and STOPWORDS, humanize.py's humanize and detect.py's run are called as they are (BUILD_SPEC.md
+    section 10: wrap them, do not change them), which gives their results as data in one process instead of a
+    dozen interpreter starts per draft; pipeline/bin/vendor-run stays for the command-line uses (hookscore in S6,
+    caption.py in M12). Found while wiring humanize.py: its comma cleanup turns `rgba(0,0,0,.1)` into
+    `rgba(0,0,0.1)`, so script_checks.humanize_text swaps code-like tokens (a digit followed by a comma, a dot or
+    a parenthesis inside the token, or an @, / or # in it) for placeholders before the call and puts them back
+    after, the way humanize.py itself protects URLs. The vendor's behavior is untouched; an exact value survives.
+141. **Per-beat timing counts the longer of the two tracks.** The voice reads the spoken track, so "one million one
+    hundred thirty-four thousand one hundred twelve" costs nine words there while the display shows 1,134,112; a
+    beat's seconds are max(display words, spoken words) / (wpm / 60), and the script's total is the larger of the
+    two track totals. beats.py's own analyse runs on the display track for the record (its notes are kept in the
+    report) because its concreteness regex needs digits and capitalized names; the hook cap (3 s), the beat cap
+    (4 s), the abstract run (3 beats with nothing concrete, by beats.py's CONCRETE_RE) and the loop (a non-stopword
+    of the hook in the last line, by beats.py's STOPWORDS) are computed per beat in script_checks.py so a message
+    can name the beat id; beats.py would have split a long beat at sentence ends and mis-numbered it. The
+    prompt tells the writer that a number written out or a command spelled out costs its spoken words.
+142. **Rounds: caps.script_rounds (3) counts the first write as round 1.** Spec S7's activity text "writing script
+    (draft 2/2, round 1/3)" names the first writing as round 1, so rounds 2 and 3 are the rewrites ("up to 3
+    rewrite rounds" read as 3 rounds in all). Round 1 writes both drafts, cuts each, humanizes and checks each
+    (the local checks and the claims check); the pick comes after round 1, as the spec orders (checks, pick, loop);
+    from round 2 only the picked draft is rewritten in session D with the failing checks as feedback, then
+    checked again (no second cut: the rewrite prompt gives the final word budget and says no cut pass follows).
+    A rewrite keeps the round-1 cut statistics of the draft it descends from (draft --previous), so script.json
+    always shows the cut. If the picked draft still fails a hard check after the last round and the other draft
+    passed every hard check in round 1, the other draft is used with a NEEDS REVIEW flag instead of a block; a
+    block comes only when neither draft can pass.
+143. **Hard and soft failures.** Hard (a block after the rounds): facts (an unsupported or overstated claim),
+    placeholders ({{...}}, [FILL IN ...], [INSERT ...], TBD, lorem ipsum, XX), a missing requirement (no stake
+    right after the hook, the share identity not named in the stake, the keyword missing from the ask or not the
+    expansion's keyword, the hook line changed), a second ask (follow, like, share, save, link in bio, subscribe,
+    notifications, tag, DM, or a second "comment"), the structure (no hook first, no ask last, too few body beats,
+    an unknown beat type), and the length more than script.length_tolerance_pct (15) outside the range. Soft (a
+    NEEDS REVIEW flag per check after the rounds, one FLAG line each): detect.py (overall under 70 or a check
+    under 55), the beats timing (the hook over 3 s, a beat over 4 s, 3 abstract beats in a row, no loop), the
+    stake over script.stake_max_s (5 s, the spec's seconds 2 to 7 after a hook of up to 3 s) or under 1 s, the
+    length within the tolerance, a card over 6 words or empty, a missing payoff, and a cut pass that did not land.
+    Spec S7 names facts, placeholders and a missing requirement as hard and detect and timing within 15 percent
+    as soft; the rest is placed by the same logic (what a viewer would notice as wrong versus what a reviewer
+    would polish). Rewrite rounds are triggered by any failure, hard or soft.
+
+### The writing, the cut and the pick
+144. **The writer overshoots by script.overshoot_pct (25) so the cut pass has something to cut.** From the
+    length range (25 to 40 s, or the list range) and the pace: final words = range x wpm / 60 (81 to 130 at 195
+    wpm), the write target = the range's middle x 1.25 (132) with a window of 8 percent either side (121 to 143).
+    The cut model gets the listing, the word counts, the target (80 percent of the draft, never under the final
+    minimum) and the tokens that must survive (every token with a digit, an @, a / or a #, a dotted name, plus the
+    keyword); cut-apply accepts 10 to 30 percent removed (script.cut_range_pct; 5 to 10 percent when the floor
+    stopped it), every beat kept in order, no empty track, no lost token; a miss is asked again once
+    (script.cut_tries 2) in the cut call's own session, and cut-best keeps the attempt that kept every token and
+    came closest to 20 percent, else the uncut draft with cut.ok false (a soft flag). The hook beat is never cut.
+145. **Tones: the brief's suggestions first, then the hook's family.** choose_tones takes the first two valid
+    tones of the brief header's "Suggested tones:" line (S5 writes it); with fewer than two, FAMILY_TONE maps hook
+    1's family (mistake-warning: warning, myth-contrarian: contrarian, story-confession: confession,
+    tools-listicle: insider, how-to-system: calm expert, transformation: insider) and the default order insider,
+    calm expert, warning, contrarian, confession fills the rest. Each tone has a one-line guide in the prompt;
+    confession asks for real first-person material and is only chosen when the brief suggests it or the hook is
+    a story. Draft A and draft B get the two tones in that order.
+146. **Session D holds both drafts and the rewrites.** Draft A opens the session with the self-contained prompt
+    (the idea, hook 1 and hook 2, the brief, facts.md, voice.md with its excerpts, pronunciations.txt, the beat
+    map, the rules); draft B resumes it with a short prompt (prompt-second.md: the other tone, "a different
+    script, not a paraphrase"), so the second draft is written knowing the first; a rewrite resumes it with the
+    failing checks and the current draft (prompt-rewrite.md). When the stored session is gone (ai() returns 3),
+    d_call forgets it and sends the self-contained prompt instead (prompt.md with an EXTRA section: the second
+    draft's note, or the rewrite's feedback and current draft), so nothing depends on the transcript. The cut
+    (models.cut) and the claims check (models.checks) run in fresh sessions; a cut retry resumes the cut call's
+    own session so "your previous answer" means something; the pick (models.judge) is fresh. Happy path: 7 calls.
+147. **The hook beat is the judge's.** Whatever the model wrote for beat 1, the draft normalizer sets its display
+    to hook 1's spoken line and its card to hook 1's on-screen line (judge.json winner); only its spoken track is
+    the model's (numbers in words, pronunciations). Hook 2's tracks go into script.json for the alternate clip
+    (display and card from judge.json's runner-up, the spoken track asked from the model in the same answer, with
+    the normalizer's fallback over the judge's line), so S8 and S10 read one file.
+148. **The spoken track is normalized by code after the model.** pronunciations.txt (`word = how to say it`,
+    longest first, whole words, case-insensitive) is applied, then every number is written out: thousands with
+    commas, decimals ("nine point one seven"), version strings, percentages, money ("four dollars ninety-nine"),
+    ordinals, clock times, units (s, ms, min, h, px, fps, k, KB, MB, GB), "1080x1920" as "by", dashed ranges as
+    "to", signed numbers, four-digit years 1900 to 2099 as years ("twenty twenty-six"), leading zeros digit by
+    digit ("oh one"), hex colors letter by letter and digit by digit ("D nine seven seven five seven"). The model
+    is told the same rules and does most of it; the normalizer catches leftovers and records every change
+    (spoken_changes). Digits left in a spoken line are information, not a failure: the display may legitimately
+    carry a value the voice names instead ("Anthropic's own terracotta" over #D97757), as the brief advised.
+149. **The claims check is a fresh checks-model call with a narrow definition of a claim.** The prompt gives
+    facts.md whole, the framing that needs no source (the viewer's problem, the share identity, the solution line,
+    hook 1, the ask, opinions and transitions) and the beats on both tracks; it answers one entry per factual
+    statement with supported (a verified claim says it in the same strength), overstated (facts.md backs a
+    weaker version) or unsupported (nothing, or only an unverified claim, backs it). Unsupported and overstated
+    are hard failures named by beat; the model's verdict is not used, only the statuses.
+150. **The pick is one judge call in a seeded order.** pick-data shuffles the two drafts with the idea id as the
+    seed (so no systematic position bias across reels), shows each as its display track with the beat types,
+    its tone and a one-line summary of its checks (information, not the verdict), the voice excerpts and the
+    profile, and asks the spec's question ("would he say this out loud to a friend?"). An answer that names no
+    draft takes the first one, with a WARN line. S6's two-orders scheme was not repeated: two drafts are one
+    comparison, and the loop fixes checks after the pick.
+
+### Inputs and checks
+151. **The length rule comes from tweaks.md's Length line when it is in force.** tweaks_length reads the first
+    "Length" bullet without the word PROPOSED, takes the "N to Ms" pair of the sentence that mentions list or
+    explainer as the list range and the other pair as the default (today 45 to 75 s and 25 to 40 s, the same as
+    config lengths, which is the fallback); the video type is the brief header's "Video type:" (S5 writes it, from
+    the brief model's answer), default when absent. plan.json records length_source.
+152. **The stake and the share identity.** The stake is the run of stake beats right after the hook: it must
+    exist (hard), last 1 to script.stake_max_s seconds (soft), and name the identity: at least two of the
+    identity's content words (expansion.json share_identity minus stopwords and words under 3 letters) must
+    appear in the stake beats (hard: the share line is one of the three requirements). The problem requirement is
+    the stake's presence; the keyword requirement is the expansion's keyword in the ask beat.
+153. **One ask, and the loop.** The ask beat (last, type ask) must say "comment" with the keyword; any beat with a
+    call-to-action pattern (follow, link in bio, save this, share this, subscribe, like this video, double tap,
+    notifications, tag someone, DM me) or a second "comment" is a second ask (hard). The loop word is the longest
+    non-stopword the hook and the ask share (beats.py's word list and stopwords); none is a soft failure and the
+    ask prompt asks for it.
+154. **detect.py scores the display track; humanize.py cleans every text but the hook's.** The display track
+    (one beat per line) is what a reader sees and what the vendor skill scores; the spoken track differs only by
+    numbers and pronunciations. humanize.py runs on display, spoken, card and hook 2's spoken line of every beat
+    except the hook beat's display and card (the judge's lines, already through hookscore), the changes are
+    counted and listed, the structural tells it reports are kept in the report as information, and check --write
+    stores the humanized draft so the claims check and the pick see the final text. The thresholds are config
+    script.detect_min_overall (70) and detect_min_check (55), the vendor's PASS; a failure's feedback names the
+    weak checks with a hint each (vary the sentence length, more names and numbers, the stock words, contractions
+    and "you"). Found while writing the fixtures and confirmed by the first real run (burstiness 29 to 38 after
+    three rounds, every sentence 8 to 12 words): detect.py's burstiness wants a variation of 0.55 across the
+    sentences of more than 2 words, which a reel script with a 13-word beat cap and a fixed 8-word hook reaches
+    only with a bimodal rhythm. So the prompt prescribes two beat shapes that alternate (shape A: one sentence of
+    12 or 13 words; shape B: two or three sentences of 3 or 4 words; the hook the only sentence of 5 to 11 words),
+    and when burstiness fails, script_checks.rhythm_advice names the beats whose sentences have the middle length
+    and the beats of the same shape in a row, so the rewrite prompt says exactly what to reshape. The fixture
+    script with that rhythm scores 75 on burstiness and 85 overall.
+155. **Cards and emphasis.** A card is 1 to script.card_max_words (6) words (counted as tokens with a letter or a
+    digit, like the hooks' on-screen cap); more or none is a soft failure, and schema.json's pattern rejects a
+    card of 7 or more whitespace tokens so a bad file never counts as done. Emphasis words that are not in the
+    display line are dropped at parse time, at most 3 kept.
+
+### Session, files, helpers
+156. **S8's one-line rewrite is `run.sh <run_dir> --rewrite-line <beat> [--reason ...]`** (prompt-rewrite-line.md,
+    rewrite-line.schema.json): the script model, in session D when it still exists, rewrites the beat's spoken
+    track in simpler, easier-to-say words (shorter or equal, no hex code read out, no slash or at-sign), the
+    normalizer applies pronunciations and numbers again, the display is updated where a word changed, and the
+    change is appended to script.json "rewrites" (beat, reason, before, after). Exit 0 rewritten, 4 when two
+    answers were unusable (script.json untouched), 1 on a code error; the activity text is "rewriting line b9".
+    The caller is M7's S8 ladder (BUILD_SPEC.md S8: "rewrite that line once through S7 in simpler words").
+157. **script.json keeps the whole trail:** both drafts (tone, file, cut), the pick (order, winner, reason), the
+    final checks report (hard, soft, info, detail per check with detect's five scores, the claims list, the
+    stake measure, the loop word, the humanize counts), rounds and rounds_log, the stage's flags, the
+    pronunciations and the spoken changes per beat, estimated_seconds (the longer track) next to target_seconds
+    (the range's middle), hook and hook2. The runner validates it against schema.json (beats of at least 4, ids
+    b<n>, the type enum, non-empty tracks, the card pattern, the tone enum, rounds at least 1).
+158. **The fake claude serves fixtures by task.** A prompt whose header has "# Task: <name>" under "# Stage:" is
+    answered from <dir>/<key>.<task>.<n>.json (n counted per stage and task) or <key>.<task>.json before the
+    stage-level files; M4 and M5 prompts have no task line and behave as before. stage.sh write_retry_prompt
+    takes an optional sixth argument, the task, for the same header. S7's prompts carry write, cut, claims,
+    pick, rewrite and rewrite-line. Fixtures: pipeline/tests/fixtures/scripts/{good, placeholder, two-asks,
+    abstract-run, long-beat}.json (model-shaped answers at their final length; the good one passes every check,
+    each bad one fails exactly its check), pipeline/tests/fixtures/fake/m6 (the two pre-cut drafts, their cuts,
+    the claims answer, the pick, the one-line rewrite), m6-rewrite (an overstated claim in round 1, fixed by the
+    rewrite), m6-block (an unsupported claim nobody fixes), m6-soft (a 6 s beat left after 3 rounds).
+159. **Config additions:** `script` (tones, overshoot_pct, cut_pct, cut_range_pct, cut_tries, detect_min_overall,
+    detect_min_check, hook_max_s, beat_max_s, stake_max_s, abstract_run, length_tolerance_pct, card_max_words,
+    min_body_beats) and the timeouts script_seconds 1800, cut_seconds 900, checks_seconds 900, pick_seconds 900.
+160. **Earlier milestones touched by M6:** stage.sh write_retry_prompt's task argument (M4), the fake claude's
+    task fixtures (M3), the first schema and dummy of 07-script refined (M2), config.json (M1). test-m2 section 7
+    follows the first stage without a run.sh by itself (08-voiceover now). Bash note found in M6: in one `local a=$1
+    b="x$a"` statement every word is expanded before any assignment, so `$a` is the outer value and, under set -u,
+    an unbound variable; such a value gets its own line.

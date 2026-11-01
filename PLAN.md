@@ -15,10 +15,10 @@ These are fixed now so that 13 fresh sessions build one coherent system.
   (`python3` is the Windows Store stub). Packages listed in `requirements.txt`, installed by
   `pipeline/bin/setup-python`.
 - Text to speech: tools/voice.py (the user's script), which runs the one engine named in `library/voice/engine.txt`
-  (Chatterbox Turbo, the user's cloned voice; no fallback voice) through its own interpreter, in the user's virtual
-  environment outside the project. Transcription (faster-whisper): a separate virtual environment `.venv-tts/` on
-  Python 3.11 (created by `pipeline/bin/setup-venv` with uv). Scripts call it by path: `.venv-tts/Scripts/python.exe`.
-  Everything runs on CPU (BUILD_SPEC section 0, Hardware).
+  (Kokoro with the stock voice af_bella, no cloning; one voice, no fallback voice) through its own interpreter, in
+  the user's virtual environment outside the project. Transcription (faster-whisper): a separate virtual environment
+  `.venv-tts/` on Python 3.11 (created by `pipeline/bin/setup-venv` with uv). Scripts call it by path:
+  `.venv-tts/Scripts/python.exe`. Everything runs on CPU (BUILD_SPEC section 0, Hardware).
 - Video: Node 22 with the npm package `hyperframes` (pinned in `package.json`) and `puppeteer` for the mechanical
   checks. `pipeline/bin/setup-node` runs `npm ci` and `npx hyperframes browser ensure`.
 - Nothing calls a model except through `ai()` in `pipeline/lib/ai.sh`.
@@ -320,47 +320,53 @@ Acceptance test: `bash pipeline/tests/test-m6.sh`
 
 Depends on: M6 (script.json), tools/voice.py and library/voice/engine.txt (both set up by the user). No model calls.
 The PC is CPU-only (integrated GPU, no NVIDIA, no CUDA): every engine runs on CPU, never with device "cuda". When
-engine.txt exists, no TTS engine is installed. Without it: chatterbox-tts, CPU-only, and its model weights (several
-GB, once). There is no fallback voice or engine: every reel is voiced only with the user's cloned voice.
+engine.txt exists, no TTS engine is installed. Without it: kokoro, CPU-only, and its small model weights (once). The
+voice is Kokoro's stock af_bella, no cloning. There is no fallback voice or engine: every reel is voiced only with
+af_bella.
 
 Creates:
 - `pipeline/bin/setup-venv`: installs uv with `python -m pip install uv` when missing, keeps `.venv-tts/` on Python
   3.11 for faster-whisper, soundfile and numpy (no TTS engine, no CUDA libraries); only when engine.txt is missing,
-  also creates one virtual environment outside the project with chatterbox-tts, CPU-only (torch from the CPU wheel
-  index); idempotent; records versions in `pipeline/knowledge/venv-versions.txt`.
-- `pipeline/lib/tts/`: `engine.py` (reads library/voice/engine.txt: engine, python, seed; config.json `tts` defaults
-  when it is missing; calls tools/voice.py through the engine's own interpreter; turbo, chatterbox original only if
-  engine.txt names it, no other engine), `synth.py` (beat by beat, hook energy higher: turbo cloned from
-  reference_hook.wav when it exists, chatterbox original through exaggeration; fixed gaps of `tts.gap_ms`, silence
-  trimming, seeds), `align.py` (faster-whisper word timestamps on CPU
-  with compute_type int8 into words.json with beat ids), `wer.py`, `loudness.py` (two-pass ffmpeg loudnorm to -14
-  LUFS, true peak at most -1.5 dBTP, measurement with ffmpeg ebur128).
-- `pipeline/stages/08-voiceover/{run.sh,CONTRACT.md,schema.json}`: the one engine of engine.txt, cloning from
-  `library/voice/reference.wav` (required, checked by the preflight), the speakability ladder that never switches
-  voice or engine (WER over 3%: that line with a new seed up to 3 times, then the whole voiceover with a new seed up
-  to 2 times, then one rewrite of the line through S7 in simpler words and a regeneration, then a NEEDS REVIEW flag
-  at 8% or less or a block above 8%), engine crashes and hangs as code errors (spec 4.2, then block), the 15%
-  overrun flag, hook 2's voice; outputs vo.wav, vo_hook2.wav, words.json, words_hook2.json.
+  also creates one virtual environment outside the project with kokoro, CPU-only (torch from the CPU wheel index);
+  idempotent; records versions in `pipeline/knowledge/venv-versions.txt`.
+- `pipeline/lib/tts/`: `engine.py` (reads library/voice/engine.txt: engine, python, voice, lang, speed and the
+  tightening values; the defaults of spec 2.5 when it is missing; calls tools/voice.py's Engine class through the
+  engine's own interpreter; kokoro only, no other engine), `synth.py` (pronunciations.txt applied first, as a
+  respelling or Kokoro's inline phonemes `[word](/phonemes/)`; beat by beat; tools/voice.py's tighten on each beat,
+  pauses of min_pause_s or longer below silence_threshold_db cut to keep_pause_s; beats joined with keep_pause_s,
+  breath_after_hook_s after the hook beat; leading silence 0.05s, trailing 0.2s), `align.py` (faster-whisper word
+  timestamps on CPU with compute_type int8, on the tightened audio, into words.json with beat ids; nothing is
+  tightened after alignment), `wer.py`, `loudness.py` (two-pass ffmpeg loudnorm to -14 LUFS, true peak at most
+  -1.5 dBTP, measurement with ffmpeg ebur128).
+- `pipeline/stages/08-voiceover/{run.sh,CONTRACT.md,schema.json}`: the one engine of engine.txt, the speakability
+  ladder that never switches voice or engine (WER over 3%: the misheard words' pronunciation fixed in this reel's
+  spoken text and the line regenerated, then one rewrite of the line through S7 in simpler words and a
+  regeneration, then a NEEDS REVIEW flag at 8% or less or a block above 8%), engine crashes and hangs as code errors
+  (spec 4.2, then block), the 15% overrun flag, hook 2's voice; outputs vo.wav, vo_hook2.wav, words.json,
+  words_hook2.json.
 - When engine.txt is missing: the HUMAN_TODO asking the user to write it.
-- config.json `tts` filled (device cpu, default engine turbo, settings read from engine.txt when it exists, no
-  fallback, gap_ms, whisper model), `preflight.require` gains engine.txt's interpreter (exists and imports its
-  engine in a one-line test), the venv and the voice reference.
-- Activities "generating voiceover (beat 4/9)", "regenerating line 4 (try 2/3)", "regenerating whole voiceover (try
-  1/2)", "rewriting line 4", "aligning words".
+- config.json `tts`: device cpu and the whisper model only (every voice setting comes from engine.txt; the
+  chatterbox, turbo and qwen settings and gap_ms are removed); `voice.wpm` set to af_bella's measured pace after
+  tightening; `preflight.require` gains engine.txt and its interpreter (exists and imports kokoro in a one-line
+  test) and the venv.
+- Activities "generating voiceover (beat 4/9)", "tightening silences", "aligning words", "fixing pronunciation (line
+  4)", "rewriting line 4".
 - Tests: `pipeline/tests/test-m7.sh`, a fake engine for the loop tests, frozen `08-voiceover/` fixtures (words.json
   and the wav files, the wavs kept out of git and regenerated by the test when missing).
 
 Acceptance test: `bash pipeline/tests/test-m7.sh`
 - From the frozen script.json: vo.wav and vo_hook2.wav exist (48 kHz, mono); words.json and words_hook2.json validate,
-  cover every beat with monotonic timestamps; every line's WER is 3% or under, or the retry, whole-voiceover and
-  rewrite path is visible in the stage log; integrated loudness -14 LUFS plus or minus 1 and true peak at most
-  -1.5 dBTP; beat gaps within the configured range; total length within 15% of the script estimate or flagged.
+  cover every beat with monotonic timestamps; every line's WER is 3% or under, or the pronunciation fix and rewrite
+  path is visible in the stage log; integrated loudness -14 LUFS plus or minus 1 and true peak at most -1.5 dBTP; no
+  pause longer than keep_pause_s remains except the hook breath (breath_after_hook_s) and the 0.2s tail; 5
+  spot-checked word timestamps line up with the audio; total length within 15% of the script estimate or flagged.
+- The preflight checks that engine.txt's interpreter can import kokoro.
 - Unit: wer.py on known pairs; with a fake engine that returns garbage, the ladder runs in order and ends in a NEEDS
   REVIEW flag (WER 8% or less) or a block (above 8%), never in another voice or engine; a fake engine that crashes
   goes to the code error path.
-- The measured generation speed is recorded in DECISIONS.md.
-- Runtime: about 1 to 3 minutes of generation per reel on CPU, so 5 to 15 minutes for the test; without engine.txt
-  the installs add 30 to 60 minutes to the first run.
+- The measured generation speed and af_bella's pace after tightening are recorded in DECISIONS.md.
+- Runtime: Kokoro generates a reel in well under a minute on CPU and alignment takes a few minutes, so 5 to 15
+  minutes for the test; without engine.txt the installs add 10 to 30 minutes to the first run.
 
 ## M8 Sound effects memory map (spec 2.6)
 
@@ -595,14 +601,14 @@ M8 could run any time after M3, M9 any time after M7; the runner builds them in 
 - The repo lives inside a OneDrive-synced folder: runs/ and exports/ will grow to gigabytes and OneDrive can hold
   file handles during renames. Every mv in the runner retries briefly; a HUMAN_TODO asks to exclude the folder from
   sync.
-- CPU-only PC (integrated GPU, no NVIDIA, no CUDA): Chatterbox Turbo and faster-whisper run on CPU, about 1 to 3
-  minutes of generation per reel, and renders are slow. Acceptable for an unattended runner: drafts render at
+- CPU-only PC (integrated GPU, no NVIDIA, no CUDA): Kokoro and faster-whisper run on CPU (Kokoro is fast, alignment
+  takes a few minutes per reel), and renders are slow. Acceptable for an unattended runner: drafts render at
   540x960, every step has a generous timeout and prints progress, and the engine choice is the user's, in
   library/voice/engine.txt.
 - Python version split: the TTS engine runs in the user's own virtual environment (engine.txt), faster-whisper in
   `.venv-tts` (3.11 via uv), everything else on the system 3.13.
-- Single voice: no fallback voice or engine, so a reel the cloned voice cannot speak cleanly is flagged (WER 8% or
-  less) or blocked, never voiced with something else.
+- Single voice: no fallback voice or engine, so a reel af_bella cannot speak cleanly (after the pronunciation fix
+  and one rewrite) is flagged (WER 8% or less) or blocked, never voiced with something else.
 - HyperFrames moves fast (0.8.x): the version is pinned in package.json and upgraded only by hand.
 - Style conflicts: style.md version 2 (no tracker, bare captions) wins over the spec's examples that mention a
   tracker; the plan schema keeps an optional tracker field for other styles.
