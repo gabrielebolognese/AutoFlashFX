@@ -118,7 +118,7 @@ sections, in the order of the test:
    call is the seeded one with the INFO line; the next resumes).
 2. S5 and S6 through run.sh with the fake claude (52 checks): a run built from the frozen M4 outputs resumes at
    S5 (`START ... (resumed at picking hooks, 3 stages done)`), session A is seeded, 14 hooks from 5 families,
-   brief.md of 2461 tokens, 14 of 14 through hookscore, judge.json with a winner and a runner-up, two complete
+   brief.md of 2534 tokens, 14 of 14 through hookscore, judge.json with a winner and a runner-up, two complete
    rankings with different shuffles, 12 pairwise results, the stats with one pick per template and the win, 6 model
    calls in order (indexer; research with a new session, research resuming it; three fresh judge calls), no tools,
    no em dash, the idea gone after the dummy export. Then the regeneration path: `WARN S6: only 3 of 12 hooks
