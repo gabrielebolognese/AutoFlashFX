@@ -1,50 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/11-sfx/cues.json",
-  "title": "11-sfx cues.json (first version, M2)",
+  "title": "11-sfx cues.json: the sounds of the reel (BUILD_SPEC.md S11; M11)",
   "type": "object",
-  "required": [
-    "cues",
-    "verification"
-  ],
+  "required": ["cues", "verification"],
   "properties": {
-    "seed": {
-      "type": "integer"
-    },
+    "written_by": {"type": "string"},
+    "round": {"type": "integer"},
+    "seed": {"type": "integer"},
+    "voice_only": {"type": "boolean"},
+    "reason": {"type": "string"},
+    "duration_ms": {"type": "number"},
+    "counts": {"type": "object"},
+    "candidates": {"type": "integer"},
+    "settings": {"type": "object"},
+    "feedback_applied": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "map": {"type": "object"},
     "cues": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "cue_type",
-          "ms",
-          "file",
-          "gain_db"
-        ],
+        "required": ["id", "cue_type", "ms", "file", "gain_db", "event", "reel_start_ms", "play_ms"],
         "properties": {
-          "event": {
-            "type": [
-              "integer",
-              "string"
-            ]
-          },
-          "cue_type": {
-            "type": "string"
-          },
-          "ms": {
-            "type": "number"
-          },
-          "file": {
-            "type": "string"
-          },
-          "gain_db": {
-            "type": "number"
-          }
+          "id": {"type": "string"},
+          "cue_type": {"type": "string", "enum": ["transition_slow", "transition_fast", "attention", "hero_enter", "ui_click", "stamp", "number", "success", "typing", "negative", "hook_hit", "notification"]},
+          "group": {"type": "string", "enum": ["mandatory", "transition", "hero", "ui", "attention"]},
+          "priority": {"type": "integer"},
+          "ms": {"type": "number", "description": "the event's time: where the whoosh's peak or the sound's onset lands"},
+          "end_ms": {"type": "number", "description": "typing: the segment's end"},
+          "event": {"type": "object", "required": ["ms", "type", "component", "scene", "scene_change"]},
+          "why": {"type": "string"},
+          "file": {"type": "string", "description": "the file in the pack (styles/sfx/...)"},
+          "cache": {"type": "string"},
+          "pool_entry": {"type": "object"},
+          "pick_note": {"type": "string"},
+          "anchor": {"type": "string", "enum": ["peak", "onset"]},
+          "anchor_s": {"type": "number"},
+          "reel_start_ms": {"type": "number", "description": "where the played part starts in the reel"},
+          "offset_ms": {"type": "number", "description": "how far into the file the played part starts"},
+          "play_ms": {"type": "number"},
+          "fade_out_ms": {"type": "number"},
+          "trim": {"type": "string"},
+          "base_gain_db": {"type": "number"},
+          "gain_offset_db": {"type": "number"},
+          "voice_ref_dbfs": {"type": "number"},
+          "voice_cap_dbfs": {"type": "number"},
+          "seg_peak_dbfs": {"type": "number"},
+          "target_peak_dbfs": {"type": "number"},
+          "capped_by_voice": {"type": "boolean"},
+          "gain_db": {"type": "number", "description": "the gain applied to the cache copy's samples"},
+          "peak_dbfs": {"type": "number", "description": "the sound's peak in the stem"}
         }
       }
     },
+    "dropped": {"type": "array", "items": {"type": "object", "required": ["cue_type", "ms", "reason"]}},
     "verification": {
-      "type": "object"
-    }
+      "type": "object",
+      "required": ["pass"],
+      "properties": {
+        "pass": {"type": "boolean"},
+        "passes": {"type": "integer"},
+        "accuracy": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "checked": {"type": "integer"}, "max_error_ms": {"type": "number"}, "tolerance_ms": {"type": "number"}, "results": {"type": "array"}, "unplanned": {"type": "array"}}},
+        "voice_rule": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "min_margin_db": {"type": ["number", "null"]}, "results": {"type": "array"}}},
+        "loudness": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "lufs": {"type": ["number", "null"]}, "true_peak_dbtp": {"type": ["number", "null"]}}},
+        "corrections": {"type": "array", "items": {"type": "string"}},
+        "mix_filter": {"type": "string"},
+        "note": {"type": "string"}
+      }
+    },
+    "files": {"type": "object"},
+    "hook2": {"type": ["object", "null"]},
+    "seconds": {"type": "number"}
   }
 }

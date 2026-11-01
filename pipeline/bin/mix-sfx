@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# mix-sfx: the sound effects pass of one run by hand (BUILD_SPEC.md S11; the stage pipeline/stages/11-sfx/run.sh calls
+# the same code). Assigns cue types to 10-build/events.json, picks files from styles/sfx/sfx-map.json, places,
+# levels, renders sfx_stem.wav, mix.wav and draft_mixed.mp4, verifies sync and loudness, writes cues.json and
+# sound-map.txt into <run_dir>/11-sfx (or --out DIR).
+#
+#   bash pipeline/bin/mix-sfx <run_dir> [--out DIR] [--seed N] [--no-hook2]
+#
+# Exit 0 done, 1 a code error, 3 the verification still failing after the corrections.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+run_dir="${1:?usage: mix-sfx <run_dir> [--out DIR] [--seed N] [--no-hook2]}"
+shift
+out=""; extra=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --out) out="${2:-}"; shift ;;
+    --seed) extra+=(--seed "${2:-0}"); shift ;;
+    --no-hook2) extra+=(--no-hook2) ;;
+    -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "mix-sfx: unknown option $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+run_dir="$(reels_mixed "$run_dir")"
+[ -n "$out" ] && out="$(reels_mixed "$out")"
+export REELS_SFX_DIR="${REELS_SFX_DIR:-$REELS_REPO/$(cfg paths.sfx_dir styles/sfx)}"
+"$REELS_PY" "$LIB/sfx/mixsfx.py" run --run-dir "$run_dir" ${out:+--stage-dir "$out"} "${extra[@]}" | sed -e 's/^@@SAY //' -e 's/^@@ACTIVITY /activity: /' -e 's/^@@FLAG /NEEDS REVIEW: /' -e 's/^@@ERROR /error: /'
+exit "${PIPESTATUS[0]}"

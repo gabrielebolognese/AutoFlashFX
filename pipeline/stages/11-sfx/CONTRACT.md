@@ -1,44 +1,57 @@
 # 11-sfx: Sound effects (S11)
 
-First version written in M2: the folder set, this contract, schema.json and dummy.sh are fixed here; M11
-builds the real stage (run.sh and prompt.md) and refines the schema. Spec: BUILD_SPEC.md section 5, S11.
+Built in M11 (the folder set, the first schema and dummy.sh came from M2). Spec: BUILD_SPEC.md section 5, S11;
+DECISIONS.md M11.
 
 ## Purpose
-Assign cue types to events.json with the deterministic rules of BUILD_SPEC.md S11 (mandatory cues, slow or fast transitions, hero and ui_click, attention gaps, density and spacing), pick files from the sfx map pools, place and level them, render the stem and the mixed draft, verify accuracy and loudness. No model.
+Attach sounds to the events of the built visuals (not to the plan, so the timing is exact): cue types by the
+deterministic rules of S11 (mandatory cues, slow or fast transitions, one hero sound per scene, ui clicks, attention
+whooshes in silent gaps, the density and spacing rules, nothing on the hook's first word but hook_hit), files from the
+memory map's pools in rotation, placement by peak (whooshes) or onset (the rest), levels under the voice, the stem and
+the mix rendered, verified and corrected. No model. Code: pipeline/lib/sfx/{assign,pick,place,level,render_stem,
+verify,audioio,mixsfx}.py behind pipeline/bin/mix-sfx.
 
 ## Inputs
-- 10-build/events.json, draft.mp4, 08-voiceover/vo.wav
-- styles/sfx/sfx-map.json, config sfx, logs/sfx-usage.json
+- 10-build/events.json (every event in absolute ms, with the catalog's cue suggestions), 10-build/plan.json (the
+  compiled plan: the hook's set piece, the scenes' beat types), 10-build/draft.mp4 (the silent 540x960 draft)
+- 08-voiceover/vo.wav (48 kHz mono, -14 LUFS), 08-voiceover/words.json (the first word, the ask beat)
+- for the hook 2 clip: 10-build/hook2/ (its project and plan.json), 08-voiceover/vo_hook2.wav and words_hook2.json
+- styles/sfx/sfx-map.json and the cache copies styles/sfx/.cache/ (REELS_SFX_DIR points at another pack folder in
+  tests), config sfx.* (base gains, density, spacing, the voice rule, the attention interval, the slow transition
+  threshold, the sync tolerance, calm_beats, verify_passes), logs/sfx-usage.json (the last reels' picks)
+- 12-review/feedback.json when the edit review routed [sfx] issues here (the next round picks other files and, when the
+  review found the sounds cluttering or loud, fewer and softer ones)
 
 ## Outputs (in runs/<id>/11-sfx/)
 - cues.json is the primary output: the stage is done when it validates against schema.json and the runner has
-  written .done (pipeline/lib/state.py stage-done). An invalid output gets one retry with the validation errors
-  inside the stage; after that it counts as a code error.
-- cues.json: seed, cues (event, cue_type, file, ms, gain_db), verification
-- sfx_stem.wav, draft_mixed.mp4, sound-map.txt (one readable line per sound)
+  written .done. Fields: seed, counts, cues[] (id, cue_type, group, ms, the event it sits on, file, placement:
+  reel_start_ms, offset_ms, play_ms, fade_out_ms, trim; levels: base_gain_db, voice_ref_dbfs, gain_db, peak_dbfs,
+  capped_by_voice), dropped[] (every candidate the rules removed, with the reason), verification (pass, passes,
+  accuracy, voice_rule, loudness, corrections), files, hook2 (the same for the alternate clip, or why it was skipped).
+- sfx_stem.wav (the sounds alone, 48 kHz mono), mix.wav (voice plus sounds, the audio S13 muxes), draft_mixed.mp4
+  (draft.mp4 with the mix, for S12), sound-map.txt (one readable line per sound: time, cue type, file, the visual
+  event, the gain and trims)
+- sfx_stem_hook2.wav, mix_hook2.wav, sound-map-hook2.txt for the hook 2 clip (when 10-build/hook2 exists)
+- logs/sfx-usage.json gains this reel's picks per cue type (the last 20 reels are kept)
 - stage.log: everything the stage printed (its `say` lines also reach the terminal through fd 3).
-- result.json with a `reason` when the stage exits 10 (drop) or 20 (block).
 
 ## Invariants
-- every planned sound within 33 ms of its event and no unplanned sound
-- the 8 dB rule, -14 LUFS plus or minus 1, true peak at most -1.5 dBTP
-- map missing or empty: voice only plus a NEEDS REVIEW flag
+- every planned sound within config sfx.sync_tolerance_ms (33 ms) of its event (the peak for whooshes, the onset for
+  the rest) on the rendered stem, and no sound the plan does not list
+- every sound's peak at least sfx.min_db_under_voice (8 dB) under the voice's peak around that moment (the voice's
+  overall peak minus 12 dB when the voice is quiet there)
+- the mix at voice.loudness_lufs plus or minus 1 LU, true peak at most voice.true_peak_dbtp
+- at most sfx.max_per_10s sounds in any 10 s, never two within sfx.min_spacing_ms, nothing on the hook's first word
+  but hook_hit, no attention whoosh in the first 2 s or during the ask
+- the map missing or empty: the voice alone (mix.wav is vo.wav, the stem silent) plus a NEEDS REVIEW flag
 
 ## Exit codes
-0 done (the primary output must validate against schema.json; the runner then writes .done), 10 drop the idea (reason in result.json), 20 block the idea (reason in result.json), anything else is a code error and goes to the review and fix loop (BUILD_SPEC.md 4.2, built in M3).
+0 done, anything else a code error for the review and fix loop (BUILD_SPEC.md 4.2): a missing input, a failing tool, the
+verification still failing after sfx.verify_passes correction passes, build-sfx-map's indexer call failing.
 
 ## Model and session
-No model. Script pipeline/bin/mix-sfx.
-
-## The sfx map (M8)
-styles/sfx/sfx-map.json is built by `bash pipeline/bin/build-sfx-map` (pipeline/lib/sfx/, BUILD_SPEC.md 2.6): run it
-at the start of this stage, like 05-hooks runs index-hooks; it is a no-op when styles/sfx/ and overrides.txt are
-unchanged (no measuring, no model call) and exits 1 when its one indexer call fails (a code error for this stage).
-Pick from `pools[<cue type>]` (best fit first, pinned files first of all, at most 8): each entry has `path`
-(relative to styles/sfx/), `cache` (the normalized 48 kHz 16-bit copy under styles/sfx/.cache/, peak at -12 dBFS,
-same timeline as the original), `gain_db` (already applied in the cache copy), `onset_s` and `peak_s` (place a
-whoosh by `peak_s`, everything else by `onset_s`), `end_s`, `effective_s`, `pad_start_s` and `pad_end_s`. A pool can
-be empty or short (`short_pools`); a missing or empty map means voice only plus a NEEDS REVIEW flag.
+No model. The map's rebuild at the start (bash pipeline/bin/build-sfx-map) makes the indexer call of BUILD_SPEC.md 2.6
+only when new unclear files appeared in styles/sfx/.
 
 ## dummy.sh
 `bash pipeline/stages/11-sfx/dummy.sh <run_dir>` writes fake outputs that validate against schema.json, sleeps
