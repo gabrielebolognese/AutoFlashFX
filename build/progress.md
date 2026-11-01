@@ -143,9 +143,33 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   the last try) are the model for S7's checks. DECISIONS.md 113 to 138. Report: build/M5/report.md.
 
 ## M6 Script (S7)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m6.sh` (planned)
-- Notes:
+- Status: done (2026-11-01). The test has three sections: 1 and 2 run without a model (the units of
+  script_checks.py and the fake's task fixtures, then S7 through run.sh with the fake claude from the frozen M5
+  outputs: the happy path, S8's one-line rewrite, a rewrite round, the block path and the soft path; 56 and 91
+  checks in about 8 minutes), 3 calls the real script, cut, checks and judge models on the test idea (15 checks;
+  the real S7 took 7 min 05 s, 9 calls, 2 rounds: 11 beats, 36.3 s, detect.py 82, 10 claims all supported). M1,
+  M2 (alone on a quiet machine), M3 (the fake sections and limits), M4 sections 1 and 2, M5 sections 1 and 2 and
+  the em dash scan pass with it.
+- Test command: `bash pipeline/tests/test-m6.sh` (`M6_SECTIONS="1 2"` for the fake-only sections; `M6_FREEZE=1`
+  also adds the real 07-script outputs to pipeline/tests/fixtures/runs/test-idea/);
+  `bash pipeline/tests/run-all.sh` runs M1 to M6, limits and the em dash scan (about 85 minutes).
+- Notes: pipeline/stages/07-script (run.sh, prompt.md, prompt-second.md, prompt-rewrite.md, prompt-cut.md,
+  prompt-claims.md, prompt-pick.md, prompt-rewrite-line.md, model.schema.json, cut.schema.json, claims.schema.json,
+  pick.schema.json, rewrite-line.schema.json, schema.json, CONTRACT.md) on pipeline/lib/script_checks.py (setup,
+  draft, cut-data, cut-apply, cut-best, check, claims-data, claims, feedback, pick-data, pick, compose,
+  rewrite-line-data, rewrite-line-apply, numbers, length-rule, tones, round-log; the vendored beats.py,
+  humanize.py and detect.py imported as modules, unchanged). Session D (the two drafts and the rewrites; a lost
+  session gets the self-contained prompt), the cut and the claims check in fresh sessions, the pick by the judge
+  model in a seeded order. Round 1 writes, cuts and checks both drafts, the pick follows, rounds 2 and 3 rewrite
+  the pick only; hard failures after the rounds block the idea unless the other draft passed (then a flag), soft
+  failures flag. Config: script.*, timeouts script_seconds, cut_seconds, checks_seconds, pick_seconds. Earlier
+  milestones touched: stage.sh write_retry_prompt's task argument (M4), the fake claude's "# Task:" fixtures
+  (M3), 07-script's schema and dummy (M2), config.json (M1). Hooks for M7: script.json beats[].spoken is the TTS
+  text (numbers written out, pronunciations applied; display is the caption text), beats[].seconds the estimate at
+  voice.md's pace, hook2.spoken the alternate clip's line, `bash pipeline/stages/07-script/run.sh <run_dir>
+  --rewrite-line <beat> --reason "<why>"` the one-line rewrite of S8's ladder (exit 0 rewritten, 4 unusable),
+  script.json "rewrites" its record; the frozen 07-script outputs of the test idea are under
+  pipeline/tests/fixtures/runs/test-idea/07-script/. DECISIONS.md 139 to 160. Report: build/M6/report.md.
 
 ## M7 Voiceover (S8)
 - Status: not started

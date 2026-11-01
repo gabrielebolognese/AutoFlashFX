@@ -5,7 +5,7 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M5 Profile and hooks (S5, S6): done (2026-11-01). Next: M6 Script (S7). The build is driven by
+- M6 Script (S7): done (2026-11-01). Next: M7 Voiceover (S8). The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight, the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py, history.sh), one
@@ -13,21 +13,27 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   the error system (pipeline/lib/ai.sh for every model call, limits.py and limits.sh for usage limits, errors.py
   for the classifier, review.sh with pipeline/bin/review-cycle for the reviewer and fixer loop, the prompts in
   pipeline/stages/_prompts/, pipeline/knowledge/known-issues.md), the tests in pipeline/tests/ (with a fake claude
-  in tests/fakes/), the real stages S1 to S6 (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle,
-  05-hooks, 06-judge: run.sh, prompt*.md, model schemas for the model's answers, schema.json for the stage's file)
-  on the shared stage library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost or when no id is
-  stored), prompt.py, research.py, expansion.py, gate.py, hooks.py (the hooks index, lint, stats, shortlist and
-  checks), judge.py (hookscore filter, Borda, pairwise), voiceprofile.py, pipeline/bin/screenshot (Playwright,
-  headless Chromium), pipeline/bin/index-hooks (library/.hooks.index.json, hooks.lint.txt, .hooks.stats.json,
-  hooks.suggested.txt), pipeline/bin/build-voice-profile (library/profile/voice.md and account.md),
-  pipeline/bin/vendor-run and the vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/
-  (MIT, pinned in its VERSION file). Run every test with `bash pipeline/tests/run-all.sh` (about 65 minutes;
-  test-m3 section 4, test-m4 sections 3 and 4 and test-m5 sections 3 and 4 make real model calls;
-  `M5_SECTIONS="1 2" bash pipeline/tests/test-m5.sh` is the fake-only M5 test).
-- The stages S7 to S14 (run.sh in each stage folder) arrive from M6 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S7. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=7,8,9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks and
-  judge with dummy stages after them.
+  in tests/fakes/), the real stages S1 to S7 (pipeline/stages/01-research, 02-expansion, 03-gate, 04-angle,
+  05-hooks, 06-judge, 07-script: run.sh, prompt*.md, model schemas for the model's answers, schema.json for the
+  stage's file) on the shared stage library pipeline/lib/stage.sh, session.sh (session A, reseeded when lost or
+  when no id is stored), prompt.py, research.py, expansion.py, gate.py, hooks.py (the hooks index, lint, stats,
+  shortlist and checks), judge.py (hookscore filter, Borda, pairwise), script_checks.py (the script stage: the
+  plan, the drafts, the cut, every check, the claims merge, the pick, script.json, S8's one-line rewrite),
+  voiceprofile.py, pipeline/bin/screenshot (Playwright, headless Chromium), pipeline/bin/index-hooks
+  (library/.hooks.index.json, hooks.lint.txt, .hooks.stats.json, hooks.suggested.txt),
+  pipeline/bin/build-voice-profile (library/profile/voice.md and account.md), pipeline/bin/vendor-run and the
+  vendored instagram-agent-skill scripts in pipeline/vendor/ig-agent-skill/ (MIT, pinned in its VERSION file;
+  beats.py, humanize.py and detect.py are also imported as modules by script_checks.py). Run every test with
+  `bash pipeline/tests/run-all.sh` (about 85 minutes; test-m3 section 4, test-m4 sections 3 and 4, test-m5
+  sections 3 and 4 and test-m6 section 3 make real model calls; `M6_SECTIONS="1 2" bash pipeline/tests/test-m6.sh`
+  is the fake-only M6 test).
+- The stages S8 to S14 (run.sh in each stage folder) arrive from M7 on, so `bash run.sh` alone stops with
+  logs/STOPPED.md at S8. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
+  `REELS_DUMMY=8,9a,9b,9c,10,11,12,13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge
+  and script with dummy stages after them. The script stage (S7) writes runs/<id>/07-script/script.json: beats
+  with a display track (captions) and a spoken track (the voice), the ask, hook 2's lines, the checks, the pick;
+  `bash pipeline/stages/07-script/run.sh <run_dir> --rewrite-line <beat> --reason "<why>"` rewrites one line in
+  simpler words (S8's ladder).
 
 ## Folder map
 - `ideas.txt`: the idea queue (one idea per `{...}` block). `run.sh`: the video runner. `config.json`: models, engines,
