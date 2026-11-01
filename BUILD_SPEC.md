@@ -20,17 +20,22 @@ My PC is CPU-only: an integrated GPU, no NVIDIA card, no CUDA.
 ### Build mode
 
 The build is automated by build-runner.sh (in the root). It runs one milestone (section 12) per batch, each batch a
-fresh Claude Code session: a build batch, then a review batch, then a fix batch whenever the review rejects, until
-the review approves. So in every batch:
+fresh Claude Code session: a build batch, then at most 2 lenient review batches, with a fix batch after each rejected
+review. After the second review the build moves on to the next milestone whatever the verdict, and the fixes nobody
+re-checked are listed in build/open-issues.md. Coding (build and fix batches) runs on Fable, and on Opus while Fable
+is at its usage limit. Speed matters more than polish: a review rejects only for a failing acceptance test, a crash
+or lost data, or something a later milestone needs. So in every batch:
 
-1. Read this file, CLAUDE.md, PLAN.md, DECISIONS.md, build/progress.md, build/HUMAN_TODO.md and
-   pipeline/knowledge/known-issues.md (when they exist). These files are your memory between batches.
+1. Read this file, CLAUDE.md, PLAN.md, DECISIONS.md, build/progress.md, build/HUMAN_TODO.md, build/open-issues.md
+   and pipeline/knowledge/known-issues.md (when they exist). These files are your memory between batches.
 2. Do only the milestone you were given. Touch earlier milestones only when this one depends on it, and say so in
    your report.
 3. Never wait for me and never ask questions: nobody is watching. When something needs me (recordings, approvals,
    links, choices), use the default given in this spec, keep going, and add a line to build/HUMAN_TODO.md
    (milestone, what I need to do, where).
-4. Run the milestone's acceptance test until it passes. Commit with clear messages.
+4. Run the milestone's acceptance test until it passes. Commit with clear messages. Every commit is pushed to
+   GitHub (origin, branch main) automatically by a git hook, so stay on main: never create or switch branches, and
+   never rewrite pushed history (no commit --amend, no rebase, no reset of commits, no force push).
 5. Decide everything else yourself and record each decision in DECISIONS.md.
 6. Keep CLAUDE.md (section 11) current.
 7. Never write an em dash in any file, prompt, caption, script or terminal message. Use commas, colons, periods or
