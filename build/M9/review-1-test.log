@@ -1,0 +1,124 @@
+
+== 1. tokens.json from style.md plus tweaks.md ==
+PASS  build-tokens builds in the sandbox
+PASS  the first build reports a rebuild
+PASS  tokens.json written
+PASS  tokens.css written
+PASS  tokens.json validates against pipeline/lib/tokens.schema.json
+PASS  every number and color of tokens.json appears in style.md or tweaks.md
+PASS  the tracker switch is off
+PASS  captions at y 1480 (tweaks.md Caption box in force)
+PASS  the caption band keeps its safe-zone exception
+PASS  kicker top 253 (open question 5: v02)
+PASS  dot spacing 43.5 (open question 7: v02)
+PASS  the accent color
+PASS  the enter move's 8 frames
+PASS  scene change B (open question 3)
+PASS  the accent cap from tweaks.md
+PASS  tokens.css carries the paper color
+PASS  a rebuild with unchanged sources is a no-op
+PASS  the check sees the touched tweaks.md
+PASS  a touched tweaks.md triggers a rebuild
+PASS  the accepted proposal is in force
+PASS  captions move to y 1332
+PASS  the safe-zone exception is dropped
+PASS  the accepted-proposal tokens still verify against the sources
+PASS  the repo's tokens.json is current
+PASS  the repo's tokens.json validates
+PASS  the repo's tokens.json verifies against the sources
+PASS  motion-lib/assets/tokens.css exists
+
+== 2. the library: lint, check, catalog, logo spots, stills ==
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  npx hyperframes check --json passes on motion-lib/
+PASS  the browser audits ran
+PASS  the catalog agrees with the component files
+PASS  vocabulary.md items 1 to 24 all have a component
+PASS  the DM notification card is in the catalog
+PASS  every component lists its props
+PASS  every component has beat types
+PASS  every component declares sound events
+PASS  every sound event cue is a known cue type
+PASS  every logo spot (tile, end card, DM avatar, kicker mark, table logos) takes an image path
+logo-tile ok box=160x160 drawn=160x193
+end-card ok box=360x142 drawn=360x142
+dm-card ok box=120x120 drawn=120x120
+headline ok box=30x30 drawn=30x36
+PASS  the logo tile keeps the bolt's aspect ratio
+PASS  the end card keeps the lockup's aspect ratio
+PASS  the DM avatar is a round image
+PASS  the kicker mark is an image
+PASS  logos are placed with object-fit contain (never stretched)
+PASS  the stills build
+PASS  every component renders a 540x960 still (27)
+
+== 3. frame-match against the style's numbers and the reference strips ==
+thumb-grid: pass (3/3 checks, strip r=0.746)
+window-card: pass (5/5 checks, strip r=0.976)
+frame-match: 27 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
+PASS  frame-match passes every component
+PASS  frame-match.md written
+PASS  frame-match.json written
+covered ok
+approved-pass ok
+md-rows ok
+candidates-listed ok
+strips 24
+PASS  every component in compositions/ was measured
+PASS  every component in compositions/ passes
+PASS  frame-match.md has a row per component
+PASS  the candidates (if any) are listed with their numbers
+PASS  the reference strips were correlated (analysis/ exists on this PC)
+PASS  the gallery page builds
+PASS  motion-lib/gallery/index.html exists
+PASS  the gallery shows one still per component
+PASS  the gallery has a player per component
+
+== 4. the golden reel ==
+golden plan: 11 scenes, 22 components, 32 caption chunks, 41460 ms -> C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea/plan.json
+project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (24 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png)
+hyperframes check: ok
+render: 79.5 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
+PASS  render-golden builds, checks, renders and probes clean
+PASS  golden/test-idea/plan.json exists
+PASS  plan.json validates against pipeline/stages/09-plan/schema.json
+PASS  golden.mp4 rendered
+PASS  the contact sheet exists
+PASS  README.md exists
+PASS  the project exists
+PASS  npx hyperframes check passed on the golden project
+size ok
+fps ok
+duration ok
+audio ok
+PASS  golden.mp4 is 1080x1920
+PASS  golden.mp4 is 30 fps
+PASS  golden.mp4 lasts as long as vo.wav (within 0.2 s)
+PASS  golden.mp4 has an audio stream
+dm ok
+lockup ok
+outside ok
+hook-set-piece ok
+captions ok
+PASS  the CTA scene has the FlashFX DM card with avatar-dark.png
+PASS  the CTA scene's end card carries a FlashFX lockup
+PASS  no FlashFX asset outside the CTA (the solution is not FlashFX)
+PASS  the hook has a set piece landing in the breath
+PASS  caption chunks of 1 to 4 words
+
+== 5. the WebGL test ==
+hyperframes browser-gpu: drew (0.0605)
+hyperframes no-browser-gpu: drew (0.0606)
+WebGL works: harness hardware (ANGLE (AMD, AMD Radeon(TM) Graphics (0x0000164C) Direct3D11 vs_5_0 ps_5_0, D3D11)), HyperFrames renders 3D with --browser-gpu -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/webgl.json
+PASS  webgl-test runs
+PASS  motion-lib/webgl.json written
+PASS  webgl.json has a verdict
+PASS  webgl.json names the harness mode
+PASS  webgl.json has a summary line
+
+== 6. no em dash in the files M9 wrote ==
+PASS  no em dash in the M9 files
+
+test-m9.sh: 80 passed, 0 failed
+exit 0
