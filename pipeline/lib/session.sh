@@ -60,12 +60,8 @@ session_forget() {
   state_set "$1" "sessions.$2=null" >/dev/null 2>&1 || true
 }
 
-session_call() {
-  local key="$1" role="$2" stage_dir="$3" prompt="$4" rc seed run_dir n
-  shift 4
-  ai "$role" "$stage_dir" "$prompt" --session "$key" "$@"; rc=$?
-  [ "$rc" = 3 ] || return $rc
-  run_dir="$(dirname "$stage_dir")"
+session_seed_prompt() {  # session_seed_prompt <run_dir> <stage_dir> <prompt_file> -> prints the path of the seeded prompt
+  local run_dir="$1" stage_dir="$2" prompt="$3" n seed
   mkdir -p "$stage_dir/calls"
   n="$(ai_next_number "$stage_dir/calls")"
   seed="$stage_dir/calls/$n-reseed.prompt.md"
@@ -76,9 +72,34 @@ session_call() {
     session_seed "$run_dir"
     grep -v -E '^# (Role|Stage): ' "$prompt" | tr -d '\r'
   } > "$seed"
+  printf '%s' "$seed"
+}
+
+session_call() {
+  # --seed-if-new (M5): when state.json holds no id for the key at all (the earlier stages ran in another run
+  # folder, the test started from frozen fixtures, state.json was rebuilt), the first call is already the seeded
+  # one, so a stage that expects the research in context (S5) never talks to a blank session. Not for S1, which
+  # is the session's first stage and has nothing to be seeded with.
+  local key="$1" role="$2" stage_dir="$3" prompt="$4" rc seed run_dir seed_if_new=0 a
+  shift 4
+  local -a rest=()
+  for a in "$@"; do
+    case "$a" in --seed-if-new) seed_if_new=1 ;; *) rest+=("$a") ;; esac
+  done
+  run_dir="$(dirname "$stage_dir")"
+  if [ "$seed_if_new" = 1 ] && [ -z "$(state_get "$run_dir" "sessions.$key" "" 2>/dev/null)" ]; then
+    seed="$(session_seed_prompt "$run_dir" "$stage_dir" "$prompt")"
+    say INFO "session $key has no stored id: starting a new one seeded with facts.md, expansion.md and the latest gate feedback"
+    ai "$role" "$stage_dir" "$seed" --session "$key" "${rest[@]}"; rc=$?
+    [ "$rc" = 3 ] && rc=1
+    return $rc
+  fi
+  ai "$role" "$stage_dir" "$prompt" --session "$key" "${rest[@]}"; rc=$?
+  [ "$rc" = 3 ] || return $rc
+  seed="$(session_seed_prompt "$run_dir" "$stage_dir" "$prompt")"
   say WARN "session $key no longer exists ($(undash "${AI_ERROR:-no detail}")): starting a new one seeded with facts.md, expansion.md and the latest gate feedback"
   session_forget "$run_dir" "$key"
-  ai "$role" "$stage_dir" "$seed" --session "$key" "$@"; rc=$?
+  ai "$role" "$stage_dir" "$seed" --session "$key" "${rest[@]}"; rc=$?
   [ "$rc" = 3 ] && rc=1   # a brand new session cannot be missing; treat a second 3 as a code error
   return $rc
 }

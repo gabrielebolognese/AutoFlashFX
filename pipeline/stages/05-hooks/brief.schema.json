@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/05-hooks/brief-output",
+  "title": "05-hooks: the model's structured answer for the brief (BUILD_SPEC.md S5: 2 to 3 thousand tokens, everything the script needs)",
+  "type": "object",
+  "required": ["brief_markdown", "video_type", "suggested_tones"],
+  "properties": {
+    "brief_markdown": {"type": "string"},
+    "video_type": {"type": "string", "enum": ["default", "list"]},
+    "suggested_tones": {"type": "array", "items": {"type": "string"}}
+  }
+}

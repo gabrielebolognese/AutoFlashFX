@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# vendor-run: run one of the vendored instagram-agent-skill scripts (pipeline/vendor/ig-agent-skill, MIT; see its
+# VERSION file) with the project's python, unchanged (BUILD_SPEC.md section 10: wrap them, do not change them).
+#   bash pipeline/bin/vendor-run hookscore.py hooks.txt --json
+#   bash pipeline/bin/vendor-run beats.py script.txt --wpm 158 --json
+#   bash pipeline/bin/vendor-run detect.py draft.txt --json
+# The interpreter runs in isolated mode (-I: no cwd or user site on sys.path, no PYTHON* environment) with UTF-8
+# forced (-X utf8), so a stray module next to the input can never shadow a standard one; the scripts find their own
+# lexicon (slop.json) next to themselves. Exit code: the script's own.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/../lib/common.sh"
+source "$HERE/../lib/config.sh"
+script="${1:?usage: vendor-run <script.py> [args...]}"
+shift
+VENDOR="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)"
+[ -f "$VENDOR/$script" ] || { echo "vendor-run: $VENDOR/$script does not exist" >&2; exit 2; }
+exec "$REELS_PY" -I -X utf8 "$VENDOR/$script" "$@"

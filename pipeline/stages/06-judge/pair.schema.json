@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/06-judge/pair-output",
+  "title": "06-judge: the judge model's pairwise comparisons of the top 4 in both orders (BUILD_SPEC.md S6)",
+  "type": "object",
+  "required": ["comparisons"],
+  "properties": {
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["n", "winner", "why"],
+        "properties": {
+          "n": {"type": "integer"},
+          "winner": {"type": "string"},
+          "why": {"type": "string"}
+        }
+      }
+    }
+  }
+}

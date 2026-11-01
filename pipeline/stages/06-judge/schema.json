@@ -1,81 +1,40 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/06-judge/judge.json",
-  "title": "06-judge judge.json (first version, M2)",
+  "title": "06-judge judge.json (M5): the winner (hook 1), the runner-up (hook 2), the reasons, the filter and the rankings",
   "type": "object",
-  "required": [
-    "winner",
-    "runner_up",
-    "reasons"
-  ],
+  "required": ["winner", "runner_up", "reasons"],
   "properties": {
     "winner": {
       "type": "object",
-      "required": [
-        "id",
-        "spoken",
-        "on_screen"
-      ],
+      "required": ["id", "spoken", "on_screen"],
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "spoken": {
-          "type": "string"
-        },
-        "on_screen": {
-          "type": "string"
-        },
-        "family": {
-          "type": "string"
-        },
-        "template_id": {
-          "type": "string"
-        },
-        "marker": {
-          "type": "string"
-        }
+        "id": {"type": "string"}, "spoken": {"type": "string"}, "on_screen": {"type": "string"},
+        "family": {"type": "string"}, "template_id": {"type": "string"}, "marker": {"type": "string"}
       }
     },
     "runner_up": {
       "type": "object",
-      "required": [
-        "id",
-        "spoken",
-        "on_screen"
-      ],
+      "required": ["id", "spoken", "on_screen"],
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "spoken": {
-          "type": "string"
-        },
-        "on_screen": {
-          "type": "string"
-        },
-        "family": {
-          "type": "string"
-        },
-        "template_id": {
-          "type": "string"
-        },
-        "marker": {
-          "type": "string"
-        }
+        "id": {"type": "string"}, "spoken": {"type": "string"}, "on_screen": {"type": "string"},
+        "family": {"type": "string"}, "template_id": {"type": "string"}, "marker": {"type": "string"}
       }
     },
-    "reasons": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "filtered_out": {
-      "type": "array"
-    },
-    "rankings": {
-      "type": "array"
-    }
+    "reasons": {"type": "array", "items": {"type": "string"}},
+    "criteria": {"type": "array", "items": {"type": "string"}},
+    "filtered_out": {"type": "array"},
+    "hookscore": {"type": "object"},
+    "hookscore_min": {"type": "number"},
+    "candidates": {"type": "array", "items": {"type": "string"}},
+    "candidates_mode": {"type": "string"},
+    "rankings": {"type": "array"},
+    "borda": {"type": "object"},
+    "top": {"type": "array", "items": {"type": "string"}},
+    "pairwise": {"type": "array"},
+    "pairwise_wins": {"type": "object"},
+    "regenerated": {"type": "boolean"},
+    "calls": {"type": "integer"},
+    "checked": {"type": "string"}
   }
 }

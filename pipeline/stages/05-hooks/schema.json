@@ -1,52 +1,40 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/05-hooks/hooks.json",
-  "title": "05-hooks hooks.json (first version, M2)",
+  "title": "05-hooks hooks.json (M5): the filled hooks, checked and composed by pipeline/lib/hooks.py check",
   "type": "object",
-  "required": [
-    "hooks"
-  ],
+  "required": ["hooks", "families"],
   "properties": {
-    "templates_considered": {
-      "type": "integer"
-    },
-    "families": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
+    "idea_id": {"type": "string"},
+    "written_by": {"type": "string"},
+    "checked": {"type": "string"},
+    "wpm": {"type": "number"},
+    "max_spoken_words": {"type": "integer"},
+    "templates_considered": {"type": "integer"},
+    "families": {"type": "array", "items": {"type": "string"}},
+    "rule_errors": {"type": "array", "items": {"type": "string"}},
+    "regenerated": {"type": "boolean"},
+    "notes": {"type": "string"},
+    "dropped": {"type": "array"},
     "hooks": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": [
-          "id",
-          "family",
-          "spoken",
-          "on_screen",
-          "marker"
-        ],
+        "required": ["id", "template_id", "family", "spoken", "on_screen", "marker"],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "template_id": {
-            "type": "string"
-          },
-          "family": {
-            "type": "string"
-          },
-          "spoken": {
-            "type": "string"
-          },
-          "on_screen": {
-            "type": "string"
-          },
-          "marker": {
-            "type": "string"
-          }
+          "id": {"type": "string"},
+          "template_id": {"type": "string"},
+          "template": {"type": "string"},
+          "template_source": {"type": "string"},
+          "family": {"type": "string"},
+          "spoken": {"type": "string"},
+          "on_screen": {"type": "string"},
+          "marker": {"type": "string"},
+          "marker_kind": {"type": "string"},
+          "spoken_words": {"type": "integer"},
+          "spoken_seconds": {"type": "number"},
+          "on_screen_words": {"type": "integer"}
         }
       }
     }

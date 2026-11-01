@@ -34,7 +34,7 @@
   },
 
   "voice": {
-    "wpm": 150,
+    "wpm": 195,
     "loudness_lufs": -14,
     "true_peak_dbtp": -1.5,
     "reference": "library/voice/reference.wav"
@@ -80,6 +80,28 @@
     "expansion_tries": 3
   },
 
+  "hooks": {
+    "shortlist": 24,
+    "per_family": 2,
+    "fit_weight_other": 0.35,
+    "min_hooks": 12,
+    "max_hooks": 20,
+    "min_families": 3,
+    "min_for_judge": 4,
+    "spoken_max_words": 8,
+    "spoken_max_seconds": 3,
+    "on_screen_max_words": 6,
+    "tries": 3,
+    "brief_tokens": [2000, 3000],
+    "brief_tries": 3
+  },
+
+  "judge": {
+    "min_hookscore": 50,
+    "min_survivors": 4,
+    "top_n": 4
+  },
+
   "caps": {
     "angle_rounds": 2,
     "script_rounds": 3,
@@ -107,6 +129,12 @@
     "expansion_seconds": 900,
     "gate_seconds": 900,
     "screenshot_seconds": 60,
+    "index_seconds": 600,
+    "hooks_seconds": 1200,
+    "brief_seconds": 1200,
+    "judge_seconds": 900,
+    "transcribe_seconds": 1800,
+    "profile_seconds": 1200,
     "reviewer_seconds": 2400,
     "fixer_seconds": 2400,
     "verify_seconds": 900,

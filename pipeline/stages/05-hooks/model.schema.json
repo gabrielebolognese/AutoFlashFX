@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/05-hooks/model-output",
+  "title": "05-hooks: the model's structured answer (BUILD_SPEC.md S5): the filled hooks, one per template",
+  "type": "object",
+  "required": ["hooks", "notes"],
+  "properties": {
+    "hooks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["template_id", "family", "spoken", "on_screen", "marker", "marker_kind"],
+        "properties": {
+          "template_id": {"type": "string"},
+          "family": {"type": "string"},
+          "spoken": {"type": "string"},
+          "on_screen": {"type": "string"},
+          "marker": {"type": "string"},
+          "marker_kind": {"type": "string", "enum": ["tool", "number", "time"]}
+        }
+      }
+    },
+    "notes": {"type": "string"},
+    "suggested_shapes": {"type": "array", "items": {"type": "string"}}
+  }
+}
