@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 480, "w": 900, "cols": 3, "gap": 18, "ratio": 1.4, "items_json": "[{\"count\":\"1.2k\"},{\"count\":\"840\"},{\"count\":\"2.1k\"},{\"count\":\"660\"},{\"count\":\"3.4k\"},{\"count\":\"910\"}]", "card_frames": 4, "stagger_frames": 1, "row_gap_frames": 7, "enter_at": 0, "honesty": "mock", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* thumb-grid (vocabulary.md 13, Thumbnail grid, fan or deck): many examples at once. Grid build 3 to 4 frames per
+       card (fade while rising), 1 frame apart inside a row, the next row 7 frames after the first (v02 0:34.6). Each
+       card can carry a small count chip (a dark pill with a play glyph and a number). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #tg { display: grid; }
+    .tg-card { position: relative; border-radius: 24px; background: var(--c-surface); overflow: hidden; box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 26px -8px rgba(133, 112, 92, 0.32); }
+    .tg-card img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .tg-ph { position: absolute; inset: 0; background: linear-gradient(160deg, #F6EBE2, #EBD9CB); display: flex; align-items: center; justify-content: center; }
+    .tg-ph svg { width: 34%; height: 34%; opacity: 0.55; }
+    .tg-count { position: absolute; left: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 999px; background: var(--c-ink-chip); color: #FFFFFF; font-weight: 700; font-size: 24px; }
+    .tg-count svg { width: 18px; height: 18px; }
+    .tg-label { position: absolute; left: 14px; top: 12px; font-weight: 700; font-size: 26px; color: var(--c-ink); }
+    #tg-honesty-anchor { position: absolute; }
+  </style>
+  <div id="root" data-composition-id="thumb-grid" data-width="1080" data-height="1920">
+    <div id="tg-wrap" class="pc-el"><div id="tg"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 480, w: 900, cols: 3, gap: 18, ratio: 1.4, items_json: [], card_frames: 4, stagger_frames: 1, row_gap_frames: 7, enter_at: 0,
+        honesty: "mock", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("tg-wrap"), grid = document.getElementById("tg");
+      PC.place(wrap, { x: v.x, y: v.y, w: v.w });
+      var cols = Math.max(1, Math.round(v.cols));
+      var cw = (v.w - v.gap * (cols - 1)) / cols, ch = cw * v.ratio;
+      grid.style.gridTemplateColumns = "repeat(" + cols + ", " + cw + "px)";
+      grid.style.gap = v.gap + "px";
+      var play = '<svg viewBox="0 0 24 24" fill="#FFFFFF"><path d="M7 4l12 8-12 8z"/></svg>';
+      var ph = '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>';
+      var items = Array.isArray(v.items_json) ? v.items_json : [];
+      var cards = items.map(function (it, i) {
+        var c = PC.el("div", "tg-card", grid); c.id = "tg-card-" + i; c.style.height = ch + "px";
+        if (it.image) { var img = document.createElement("img"); img.src = it.image; img.alt = ""; c.appendChild(img); }
+        else { var p = PC.el("div", "tg-ph", c); p.innerHTML = ph; }
+        if (it.label) PC.el("div", "tg-label", c, it.label);
+        if (it.count) { var k = PC.el("div", "tg-count", c); k.innerHTML = play + "<span>" + String(it.count) + "</span>"; }
+        return c;
+      });
+      var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      var tl = gsap.timeline({ paused: true });
+      cards.forEach(function (c, i) {
+        var row = Math.floor(i / cols), col = i % cols;
+        var at = v.enter_at + PC.f(v.row_gap_frames) * row + PC.f(v.stagger_frames) * col;
+        tl.fromTo(c, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: PC.f(v.card_frames), ease: "power2.out" }, at);
+        PC.event("card", at, { el: c.id, row: row });
+      });
+      if (honesty) tl.fromTo(honesty, { opacity: 0 }, { opacity: 0.9, duration: PC.f(4), ease: "none" }, v.enter_at);
+      PC.exit(tl, wrap, v.exit_at, v.exit);
+      window.__timelines["thumb-grid"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "thumb-grid", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

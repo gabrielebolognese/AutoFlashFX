@@ -1,0 +1,3676 @@
+{
+ "style": "paper-cards",
+ "generated": "2026-11-01",
+ "fps": 30,
+ "canvas": {
+  "width": 1080,
+  "height": 1920
+ },
+ "placement": "Every component is a full-frame 1080x1920 layer mounted as a HyperFrames sub-composition (data-composition-src) with its props as data-variable-values; x, y and w props place the element; the host order and z-index give the stacking; the canvas is mounted first for the whole reel, the caption line once over the body beats.",
+ "conventions": {
+  "times": "props in seconds local to the clip (enter_at, exit_at); hero-3d also needs clip_start = its data-start",
+  "images": "image props take a path relative to the project (assets/brand/... from library/brand per brand.json, assets/research/... from the run's research assets); aspect ratio locked, never redrawn",
+  "exit": "every element component has exit (none, fade-blur, fall, push, cut) and exit_at: the scene change of 9c",
+  "honesty": "card-like components take honesty (none, mock, sourced) and show the light chip of tokens.json honesty_labels",
+  "kinds": "canvas: the background; card: a hero or support card; label: chips; support: badges, bars, strikes, callouts; move: a move demo that is also usable on its own; hook, cta, captions, branding, brand-slot, 3d as named"
+ },
+ "cue_types": [
+  "transition_slow",
+  "transition_fast",
+  "attention",
+  "hero_enter",
+  "ui_click",
+  "stamp",
+  "number",
+  "success",
+  "typing",
+  "negative",
+  "hook_hit",
+  "notification"
+ ],
+ "components": [
+  {
+   "id": "card",
+   "item": 1,
+   "name": "Card enter",
+   "kind": "card",
+   "does": "A surface card with an optional title, body and image. The default move for anything new: opacity 0 to 1 over 5 frames, y +38 to 0 over 8 frames, expo.out.",
+   "file": "compositions/card.html",
+   "status": "approved",
+   "still": "gallery/stills/card.png",
+   "z": 2,
+   "measure": "#card-box",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 0,
+     "label": "Height (px, 0 = auto)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "Clients spot it instantly",
+     "label": "Title"
+    },
+    {
+     "id": "body",
+     "type": "string",
+     "default": "Rounded cards, one radius, the same grey shadow on every site.",
+     "label": "Body text"
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "Image path (assets/...), optional",
+     "image": true
+    },
+    {
+     "id": "image_h",
+     "type": "number",
+     "default": 520,
+     "label": "Image height (px)"
+    },
+    {
+     "id": "align",
+     "type": "enum",
+     "default": "left",
+     "label": "Text align",
+     "options": [
+      "left",
+      "center"
+     ]
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "pop",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Entrance at (s)"
+    },
+    {
+     "id": "rise",
+     "type": "number",
+     "default": 38,
+     "label": "Rise distance (px)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    },
+    {
+     "id": "mascot",
+     "type": "string",
+     "default": "",
+     "label": "Mascot prop (empty = none): clapper, star, film, play, grid, check"
+    },
+    {
+     "id": "mascot_corner",
+     "type": "enum",
+     "default": "top-right",
+     "label": "Mascot corner",
+     "options": [
+      "top-right",
+      "bottom-right"
+     ]
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "tilt",
+     "type": "number",
+     "default": 0,
+     "label": "Tilt (degrees)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "number",
+    "tool",
+    "step",
+    "comparison",
+    "proof",
+    "mechanism",
+    "before-after",
+    "pain-payoff",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "only when the card is the scene's hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": 12,
+     "cue": null,
+     "note": "when the mascot prop is set"
+    },
+    {
+     "event": "exit",
+     "frame": "exit_at x 30",
+     "cue": "transition",
+     "note": "when exit is set"
+    }
+   ],
+   "demo": {
+    "mascot": "star",
+    "exit": "fade-blur",
+    "exit_at": 2.6
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v03/extra/s30_hook_000.0.png",
+    "r": 0.911,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "stat-number",
+   "item": 2,
+   "name": "Stat number with count-up",
+   "kind": "card",
+   "does": "A number that proves the point, counting from 0 with ease-out over 27.5 frames after its pill (168 tall, icon, unit in accent) or chip (141 tall, serif unit, sub-label) entered.",
+   "file": "compositions/stat-number.html",
+   "status": "approved",
+   "still": "gallery/stills/stat-number.png",
+   "z": 2,
+   "measure": "#stat-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 120,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 700,
+     "label": "Top (px)"
+    },
+    {
+     "id": "value",
+     "type": "number",
+     "default": 1134112,
+     "label": "The number"
+    },
+    {
+     "id": "decimals",
+     "type": "number",
+     "default": 0,
+     "label": "Decimals"
+    },
+    {
+     "id": "prefix",
+     "type": "string",
+     "default": "",
+     "label": "Prefix"
+    },
+    {
+     "id": "suffix",
+     "type": "string",
+     "default": "",
+     "label": "Suffix (after the digits)"
+    },
+    {
+     "id": "unit",
+     "type": "string",
+     "default": "installs",
+     "label": "Unit word"
+    },
+    {
+     "id": "container",
+     "type": "enum",
+     "default": "pill",
+     "label": "Container",
+     "options": [
+      "pill",
+      "chip"
+     ]
+    },
+    {
+     "id": "icon",
+     "type": "enum",
+     "default": "none",
+     "label": "Icon (pill)",
+     "options": [
+      "none",
+      "download",
+      "star",
+      "comment",
+      "play"
+     ]
+    },
+    {
+     "id": "sub_label",
+     "type": "string",
+     "default": "",
+     "label": "Sub label (chip)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "count_frames",
+     "type": "number",
+     "default": 27.5,
+     "label": "Count-up frames"
+    },
+    {
+     "id": "count_delay_frames",
+     "type": "number",
+     "default": 0,
+     "label": "Frames after the landing before the count starts"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "number",
+    "proof",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "a giant number is a hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "count_start",
+     "frame": "8 + count_delay_frames",
+     "cue": "number"
+    },
+    {
+     "event": "count_end",
+     "frame": "8 + count_delay_frames + count_frames",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "icon": "download"
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v03/extra/s30_count_044.9.png",
+    "r": 0.57,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "end-card",
+   "item": 3,
+   "name": "Keyword end card",
+   "kind": "cta",
+   "does": "The CTA: a tilted surface card with the verb and the keyword pill (typed, 2 frames per letter), two handwritten lines, five mascots walking in, the FlashFX lockup under them (at least 300 px wide). Elements fade in over 6 frames, 6 apart, top to bottom; the card wobbles slightly.",
+   "file": "compositions/end-card.html",
+   "status": "approved",
+   "still": "gallery/stills/end-card.png",
+   "z": 2,
+   "measure": "#ec-card",
+   "props": [
+    {
+     "id": "verb",
+     "type": "string",
+     "default": "Comment",
+     "label": "Verb line"
+    },
+    {
+     "id": "keyword",
+     "type": "string",
+     "default": "TELLS",
+     "label": "Keyword (typed into the pill)"
+    },
+    {
+     "id": "line1",
+     "type": "string",
+     "default": "and I send you the checklist",
+     "label": "Handwritten line 1"
+    },
+    {
+     "id": "line2",
+     "type": "string",
+     "default": "of the AI tells to ditch",
+     "label": "Handwritten line 2"
+    },
+    {
+     "id": "mascots_json",
+     "type": "string",
+     "default": "[\"clapper\",\"star\",\"film\",\"play\",\"grid\"]",
+     "label": "The five mascot props as JSON"
+    },
+    {
+     "id": "lockup",
+     "type": "string",
+     "default": "",
+     "label": "FlashFX lockup image (assets/brand/lockup/...), placed under the mascots",
+     "image": true
+    },
+    {
+     "id": "lockup_w",
+     "type": "number",
+     "default": 360,
+     "label": "Lockup width (px, at least 300)"
+    },
+    {
+     "id": "lockup_y",
+     "type": "number",
+     "default": 1230,
+     "label": "Lockup top (px)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Build starts (s)"
+    },
+    {
+     "id": "fade_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Fade frames per element"
+    },
+    {
+     "id": "stagger_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Frames between elements"
+    },
+    {
+     "id": "type_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Frames per typed letter"
+    },
+    {
+     "id": "wobble",
+     "type": "boolean",
+     "default": true,
+     "label": "The card wobbles slightly (v02)"
+    }
+   ],
+   "beat_types": [
+    "ask"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 6,
+     "cue": null
+    },
+    {
+     "event": "typing",
+     "frame": "2 x stagger_frames + fade_frames (18)",
+     "duration_frames": "len(keyword) x type_frames",
+     "cue": "typing"
+    },
+    {
+     "event": "mascots",
+     "frame": "4 x stagger_frames (24)",
+     "cue": null
+    },
+    {
+     "event": "lockup",
+     "frame": "after the typing",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "lockup": "assets/brand/lockup/lockup-gradient-on-light.png"
+   },
+   "demo_duration": 5,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v09/extra/s30_049.7_end.png",
+    "r": 0.959,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "mascot",
+   "item": 4,
+   "name": "Mascot",
+   "kind": "support",
+   "does": "The recurring pixel creature (85 x 58) with one prop, perched on a corner of the scene's main element; enters 4 frames after the card lands, rising over 4 frames; hops, pops or walks on the end card.",
+   "file": "compositions/mascot.html",
+   "status": "approved",
+   "still": "gallery/stills/mascot.png",
+   "z": 3,
+   "measure": "#ms-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 880,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 520,
+     "label": "Top (px)"
+    },
+    {
+     "id": "prop",
+     "type": "enum",
+     "default": "clapper",
+     "label": "Prop",
+     "options": [
+      "clapper",
+      "star",
+      "film",
+      "play",
+      "grid",
+      "check"
+     ]
+    },
+    {
+     "id": "move",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "pop",
+      "hop",
+      "walk"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "frames",
+     "type": "number",
+     "default": 4,
+     "label": "Entrance frames"
+    },
+    {
+     "id": "scale",
+     "type": "number",
+     "default": 1,
+     "label": "Scale (1 = 85 x 58 px)"
+    },
+    {
+     "id": "flip",
+     "type": "boolean",
+     "default": false,
+     "label": "Face left"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "mascot",
+     "frame": 0,
+     "cue": null
+    }
+   ],
+   "demo": {
+    "x": 500,
+    "y": 900,
+    "scale": 3,
+    "move": "hop",
+    "enter_at": 0.3
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 1,
+    "checks": 1,
+    "best_strip": "v08/extra/s30_000.8_mascot_title.png",
+    "r": 0.975,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "dark-chip",
+   "item": 5,
+   "name": "Dark chip or tag",
+   "kind": "label",
+   "does": "A short fact or label attached to a card: ink-chip fill, white text with one accent word, 55 tall; pops in over 3 frames.",
+   "file": "compositions/dark-chip.html",
+   "status": "approved",
+   "still": "gallery/stills/dark-chip.png",
+   "z": 3,
+   "measure": "#chip",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 120,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 1180,
+     "label": "Top (px)"
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "In 2 days",
+     "label": "Text"
+    },
+    {
+     "id": "accent_word",
+     "type": "string",
+     "default": "2 days",
+     "label": "The accent word (must appear in the text)"
+    },
+    {
+     "id": "icon",
+     "type": "enum",
+     "default": "none",
+     "label": "Icon",
+     "options": [
+      "none",
+      "clock",
+      "file",
+      "dot"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Pop at (s)"
+    },
+    {
+     "id": "pop_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Pop frames"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    },
+    {
+     "id": "tilt",
+     "type": "number",
+     "default": 0,
+     "label": "Tilt (degrees)"
+    }
+   ],
+   "beat_types": [
+    "stake",
+    "number",
+    "tool",
+    "step",
+    "comparison",
+    "proof",
+    "mechanism",
+    "pain-payoff",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {
+    "enter_at": 0.3,
+    "icon": "clock"
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v07/extra/s30_004.4_caption_tag.png",
+    "r": 0.69,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "light-chip",
+   "item": 6,
+   "name": "Light pill or chip",
+   "kind": "label",
+   "does": "A label inside or above a card: surface fill, ink text, 67 tall; fades in over 4 frames with a small drift.",
+   "file": "compositions/light-chip.html",
+   "status": "approved",
+   "still": "gallery/stills/light-chip.png",
+   "z": 3,
+   "measure": "#lchip",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 120,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 500,
+     "label": "Top (px)"
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "video AI",
+     "label": "Text"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "fade_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Fade frames"
+    },
+    {
+     "id": "drift",
+     "type": "number",
+     "default": 10,
+     "label": "Drift distance (px)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "stake",
+    "number",
+    "tool",
+    "step",
+    "comparison",
+    "mechanism",
+    "before-after",
+    "pain-payoff",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {
+    "enter_at": 0.3
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 1,
+    "checks": 1,
+    "best_strip": "v03/extra/s30_label_042.4.png",
+    "r": 0.937,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "caption-line",
+   "item": 7,
+   "name": "Caption line",
+   "kind": "captions",
+   "does": "The spoken words, one chunk of 1 to 4 words at a time, bare ink words centered at cap center y 1480, at most 620 px wide; each word fades in over 4 frames when spoken, emphasis words on accent boxes rising 9 px; the old chunk fades out over 2 frames, the next word on the following frame. Mounted once per reel over the body beats.",
+   "file": "compositions/caption-line.html",
+   "status": "approved",
+   "still": "gallery/stills/caption-line.png",
+   "z": 5,
+   "measure": "#cap-layer",
+   "props": [
+    {
+     "id": "chunks_json",
+     "type": "string",
+     "default": "[{\"start\":0.2,\"end\":1.4,\"words\":[{\"w\":\"You\",\"t\":0.2},{\"w\":\"ship\",\"t\":0.45},{\"w\":\"Claude\",\"t\":0.7,\"em\":true},{\"w\":\"Code\",\"t\":0.95,\"em\":true}]},{\"start\":1.45,\"end\":2.9,\"words\":[{\"w\":\"client\",\"t\":1.45},{\"w\":\"sites.\",\"t\":1.8}]}]",
+     "label": "Caption chunks as JSON: [{\"start\":s,\"end\":s,\"words\":[{\"w\":\"You\",\"t\":s,\"em\":false}, ...]}, ...] (times local to this clip)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 1480,
+     "label": "Cap center y (px)"
+    },
+    {
+     "id": "max_w",
+     "type": "number",
+     "default": 620,
+     "label": "Widest line (px)"
+    },
+    {
+     "id": "word_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Word fade frames"
+    },
+    {
+     "id": "box_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Emphasis box fade frames"
+    },
+    {
+     "id": "box_rise",
+     "type": "number",
+     "default": 9,
+     "label": "Emphasis box rise (px)"
+    },
+    {
+     "id": "out_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Chunk fade-out frames"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "caption_word",
+     "frame": "each word's time",
+     "cue": null
+    },
+    {
+     "event": "caption_chunk",
+     "frame": "each chunk's start",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 4,
+    "checks": 4,
+    "best_strip": "v06/extra/s30_031.0_highlight.png",
+    "r": 0.96,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "pop",
+   "item": 8,
+   "name": "Pop",
+   "kind": "move",
+   "does": "Brings small things in with a little spring: a keyword pill, a badge, a tile, a chip. Scale from 0.5 to a peak (13 to 16 percent for icons and badges, 1 to 3 percent for pills and cards) then back to 1 over 3 to 15 frames; opacity reaches 1 within 4 frames.",
+   "file": "compositions/pop.html",
+   "status": "approved",
+   "still": "gallery/stills/pop.png",
+   "z": 3,
+   "measure": "#pop-el",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 440,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 820,
+     "label": "Top (px)"
+    },
+    {
+     "id": "kind",
+     "type": "enum",
+     "default": "pill",
+     "label": "What pops",
+     "options": [
+      "pill",
+      "badge",
+      "tile",
+      "chip"
+     ]
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "LINK",
+     "label": "Text (pill, chip)"
+    },
+    {
+     "id": "icon",
+     "type": "enum",
+     "default": "star",
+     "label": "Icon (badge, tile)",
+     "options": [
+      "star",
+      "check",
+      "bolt",
+      "dot",
+      "play"
+     ]
+    },
+    {
+     "id": "size",
+     "type": "number",
+     "default": 160,
+     "label": "Badge or tile size (px)"
+    },
+    {
+     "id": "overshoot",
+     "type": "number",
+     "default": 0.02,
+     "label": "Overshoot (0.02 pills and cards, 0.13 to 0.16 icons and badges)"
+    },
+    {
+     "id": "frames",
+     "type": "number",
+     "default": 7,
+     "label": "Pop frames (3 to 15)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Pop at (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    },
+    {
+     "event": "pop_peak",
+     "frame": "round(frames x 0.55)",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "enter_at": 0.3
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v08/extra/s30_003.8_logo_chain.png",
+    "r": 0.957,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "check-badge",
+   "item": 9,
+   "name": "Check badge and checklist ticks",
+   "kind": "support",
+   "does": "Marks done or yes: a success circle with a white check and a white ring that pops (16 percent, 12 frames), or a checklist card whose ticks pop 3 frames each, 4 frames apart.",
+   "file": "compositions/check-badge.html",
+   "status": "approved",
+   "still": "gallery/stills/check-badge.png",
+   "z": 3,
+   "measure": "#cb-badge",
+   "props": [
+    {
+     "id": "mode",
+     "type": "enum",
+     "default": "badge",
+     "label": "Badge or checklist",
+     "options": [
+      "badge",
+      "list"
+     ]
+    },
+    {
+     "id": "x",
+     "type": "number",
+     "default": 498,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 860,
+     "label": "Top (px)"
+    },
+    {
+     "id": "size",
+     "type": "number",
+     "default": 84,
+     "label": "Badge size (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 760,
+     "label": "List card width (px)"
+    },
+    {
+     "id": "items_json",
+     "type": "string",
+     "default": "[\"Plan the palette\",\"Review the layout\",\"Then code\"]",
+     "label": "Checklist items as JSON"
+    },
+    {
+     "id": "tick_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames per tick"
+    },
+    {
+     "id": "tick_gap_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Frames between ticks"
+    },
+    {
+     "id": "overshoot",
+     "type": "number",
+     "default": 0.16,
+     "label": "Badge pop overshoot"
+    },
+    {
+     "id": "pop_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Badge pop frames"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "ticks_at",
+     "type": "number",
+     "default": 0.4,
+     "label": "First tick at (s, list mode)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "step",
+    "proof",
+    "mechanism",
+    "pain-payoff",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "check",
+     "frame": 0,
+     "cue": "success",
+     "note": "list mode: one per tick, ticks_at then 4 frames apart"
+    }
+   ],
+   "demo": {
+    "enter_at": 0.3,
+    "size": 120,
+    "x": 480
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v04/extra/s30_check_f1200.png",
+    "r": 0.979,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "window-card",
+   "item": 10,
+   "name": "Window card",
+   "kind": "card",
+   "does": "Shows the tool or a site: a card with a surface-chrome title bar and 3 dots, the content a real screenshot (research assets) or text lines; light or dark. Card enter, or a fly-in from below.",
+   "file": "compositions/window-card.html",
+   "status": "approved",
+   "still": "gallery/stills/window-card.png",
+   "z": 2,
+   "measure": "#wc",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 420,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 760,
+     "label": "Height (px)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "claude.com/plugins",
+     "label": "Title bar text (a site or app name)"
+    },
+    {
+     "id": "kind",
+     "type": "enum",
+     "default": "light",
+     "label": "Light or dark window",
+     "options": [
+      "light",
+      "dark"
+     ]
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "Content image (a research screenshot under assets/...)",
+     "image": true
+    },
+    {
+     "id": "image_fit",
+     "type": "enum",
+     "default": "cover-top",
+     "label": "Image fit",
+     "options": [
+      "cover-top",
+      "contain"
+     ]
+    },
+    {
+     "id": "lines_json",
+     "type": "string",
+     "default": "[]",
+     "label": "Text lines as JSON when there is no image",
+     "image": true
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "mascot",
+     "type": "string",
+     "default": "",
+     "label": "Mascot prop on the top-right corner (empty = none)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "tool",
+    "step",
+    "proof",
+    "mechanism",
+    "pain-payoff",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": "8 (rise) or 16 (fly-in)",
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": "land + 4",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "image": "assets/demo/plugin-page.png",
+    "mascot": "play",
+    "honesty": "sourced"
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v07/extra/s30_011.4_window_rise.png",
+    "r": 0.976,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "terminal-card",
+   "item": 11,
+   "name": "Terminal or code card that types",
+   "kind": "card",
+   "does": "The prompt or the code being written: a dark window card with colored mono text; lines appear one by one, typed at 2 characters per frame or whole.",
+   "file": "compositions/terminal-card.html",
+   "status": "approved",
+   "still": "gallery/stills/terminal-card.png",
+   "z": 2,
+   "measure": "#tc",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 0,
+     "label": "Height (px, 0 = auto)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "terminal",
+     "label": "Title bar text"
+    },
+    {
+     "id": "lines_json",
+     "type": "string",
+     "default": "[{\"text\":\"/plugin install frontend-design@claude-plugins-official\",\"color\":\"accent\"},{\"text\":\"Installing frontend-design...\",\"color\":\"muted\"},{\"text\":\"Installed. Scope: user\",\"color\":\"success\"}]",
+     "label": "Lines as JSON: [{\"text\":\"$ /plugin install ...\",\"color\":\"paper|accent|success|muted\"}]"
+    },
+    {
+     "id": "mode",
+     "type": "enum",
+     "default": "type",
+     "label": "Typing or lines",
+     "options": [
+      "type",
+      "lines"
+     ]
+    },
+    {
+     "id": "chars_per_frame",
+     "type": "number",
+     "default": 2,
+     "label": "Typed characters per frame (type mode)"
+    },
+    {
+     "id": "line_gap_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Frames between lines"
+    },
+    {
+     "id": "start_delay_frames",
+     "type": "number",
+     "default": 8,
+     "label": "Frames after the card lands before the first line"
+    },
+    {
+     "id": "prompt",
+     "type": "string",
+     "default": "$ ",
+     "label": "Prompt sign before the first line"
+    },
+    {
+     "id": "font_px",
+     "type": "number",
+     "default": 30,
+     "label": "Mono font size (px)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "step",
+    "mechanism"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "typing",
+     "frame": "8 + start_delay_frames, then line by line",
+     "duration_frames": "chars / chars_per_frame",
+     "cue": "typing"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v06/extra/s30_070.9_typing_tail.png",
+    "r": 0.96,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "chart-card",
+   "item": 12,
+   "name": "Chart card",
+   "kind": "card",
+   "does": "Data as bars (grow over 12 frames, 2 apart, the value fades in as its bar ends; the highlight bar in accent) or a gauge (arc and number over 23 frames). Mock data carries the honesty label.",
+   "file": "compositions/chart-card.html",
+   "status": "approved",
+   "still": "gallery/stills/chart-card.png",
+   "z": 2,
+   "measure": "#cc",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 520,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 620,
+     "label": "Height (px)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "Installs per month",
+     "label": "Title"
+    },
+    {
+     "id": "kind",
+     "type": "enum",
+     "default": "bars",
+     "label": "Bars or gauge",
+     "options": [
+      "bars",
+      "gauge"
+     ]
+    },
+    {
+     "id": "values_json",
+     "type": "string",
+     "default": "[{\"label\":\"Aug\",\"value\":41},{\"label\":\"Sep\",\"value\":58},{\"label\":\"Oct\",\"value\":77},{\"label\":\"Nov\",\"value\":100,\"highlight\":true}]",
+     "label": "Bars as JSON: [{\"label\":\"Jan\",\"value\":12,\"highlight\":false}]"
+    },
+    {
+     "id": "max",
+     "type": "number",
+     "default": 0,
+     "label": "Scale maximum (0 = the largest value)"
+    },
+    {
+     "id": "unit",
+     "type": "string",
+     "default": "%",
+     "label": "Unit after the values"
+    },
+    {
+     "id": "gauge_value",
+     "type": "number",
+     "default": 72,
+     "label": "Gauge value (0 to 100)"
+    },
+    {
+     "id": "bar_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Bar growth frames"
+    },
+    {
+     "id": "bar_gap_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Frames between bars"
+    },
+    {
+     "id": "value_fade_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Value label fade frames"
+    },
+    {
+     "id": "gauge_frames",
+     "type": "number",
+     "default": 23,
+     "label": "Gauge frames"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "number",
+    "comparison",
+    "proof",
+    "mechanism",
+    "before-after"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "bar",
+     "frame": "8 + 2 x i",
+     "duration_frames": 12,
+     "cue": null
+    },
+    {
+     "event": "gauge",
+     "frame": 8,
+     "duration_frames": 23,
+     "cue": "number"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v04/extra/s30_bars_f1426.png",
+    "r": 0.983,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "thumb-grid",
+   "item": 13,
+   "name": "Thumbnail grid, fan or deck",
+   "kind": "card",
+   "does": "Many examples at once: a grid of thumbnail cards (images or placeholders) with small count chips; cards build 4 frames each, 1 frame apart in a row, rows 7 frames apart.",
+   "file": "compositions/thumb-grid.html",
+   "status": "approved",
+   "still": "gallery/stills/thumb-grid.png",
+   "z": 2,
+   "measure": "#tg-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 480,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "cols",
+     "type": "number",
+     "default": 3,
+     "label": "Columns"
+    },
+    {
+     "id": "gap",
+     "type": "number",
+     "default": 18,
+     "label": "Gap (px)"
+    },
+    {
+     "id": "ratio",
+     "type": "number",
+     "default": 1.4,
+     "label": "Card height over width"
+    },
+    {
+     "id": "items_json",
+     "type": "string",
+     "default": "[{\"count\":\"1.2k\"},{\"count\":\"840\"},{\"count\":\"2.1k\"},{\"count\":\"660\"},{\"count\":\"3.4k\"},{\"count\":\"910\"}]",
+     "label": "Items as JSON: [{\"image\":\"assets/...\",\"label\":\"\",\"count\":\"1.2k\"}] (no image = a placeholder card)",
+     "image": true
+    },
+    {
+     "id": "card_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Frames per card (fade while rising)"
+    },
+    {
+     "id": "stagger_frames",
+     "type": "number",
+     "default": 1,
+     "label": "Frames between cards in a row"
+    },
+    {
+     "id": "row_gap_frames",
+     "type": "number",
+     "default": 7,
+     "label": "Frames between rows"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Build starts (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "stake",
+    "tool",
+    "comparison",
+    "mechanism",
+    "before-after"
+   ],
+   "sound_events": [
+    {
+     "event": "card",
+     "frame": "row x 7 + col",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v04/extra/s30_gridsettle_f444.png",
+    "r": 0.746,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "logo-tile",
+   "item": 14,
+   "name": "Logo tile or logo badge",
+   "kind": "brand-slot",
+   "does": "Names the tool or brand: a surface rounded square or circle badge holding a logo image file with its aspect ratio locked (brand.json or a research asset; a neutral icon when there is none). Pops with 13 percent overshoot over 14 frames; a second tile slides in from the left over 9 frames with a 6 px overshoot.",
+   "file": "compositions/logo-tile.html",
+   "status": "approved",
+   "still": "gallery/stills/logo-tile.png",
+   "z": 3,
+   "measure": "#lt-main",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 460,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 700,
+     "label": "Top (px)"
+    },
+    {
+     "id": "size",
+     "type": "number",
+     "default": 160,
+     "label": "Tile size (px)"
+    },
+    {
+     "id": "shape",
+     "type": "enum",
+     "default": "tile",
+     "label": "Rounded square tile (v02) or circle badge (v01)",
+     "options": [
+      "tile",
+      "badge"
+     ]
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "Logo image (assets/brand/... from brand.json, or a research asset); empty = the neutral icon",
+     "image": true
+    },
+    {
+     "id": "image_pad",
+     "type": "number",
+     "default": 30,
+     "label": "Padding around the logo (px)"
+    },
+    {
+     "id": "second_image",
+     "type": "string",
+     "default": "",
+     "label": "A second tile sliding in from the left (image path, optional)",
+     "image": true
+    },
+    {
+     "id": "overshoot",
+     "type": "number",
+     "default": 0.13,
+     "label": "Pop overshoot (0.13 tiles, 0.16 badges)"
+    },
+    {
+     "id": "frames",
+     "type": "number",
+     "default": 14,
+     "label": "Pop frames"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Pop at (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "tool"
+   ],
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "slide",
+     "frame": 17,
+     "cue": "ui_click",
+     "note": "when second_image is set"
+    }
+   ],
+   "demo": {
+    "image": "assets/brand/mark/mark-gradient.png",
+    "second_image": "assets/brand/mark/mark-black.png",
+    "x": 366,
+    "enter_at": 0.2
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v08/extra/s30_003.8_logo_chain.png",
+    "r": 0.934,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "strike-through",
+   "item": 15,
+   "name": "Strike-through",
+   "kind": "support",
+   "does": "Not X, before and after: a line drawn across a chip or text over 4 frames, or an X as two strokes of 6 frames, 6 apart; a replacement types in after it.",
+   "file": "compositions/strike-through.html",
+   "status": "approved",
+   "still": "gallery/stills/strike-through.png",
+   "z": 3,
+   "measure": "#st-text",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 120,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 820,
+     "label": "Top (px)"
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "video AI",
+     "label": "The text that gets struck"
+    },
+    {
+     "id": "style",
+     "type": "enum",
+     "default": "line",
+     "label": "A line or an X",
+     "options": [
+      "line",
+      "x"
+     ]
+    },
+    {
+     "id": "chip",
+     "type": "boolean",
+     "default": true,
+     "label": "The text sits in a light chip"
+    },
+    {
+     "id": "font_px",
+     "type": "number",
+     "default": 48,
+     "label": "Font size without a chip (px)"
+    },
+    {
+     "id": "replacement",
+     "type": "string",
+     "default": "motion graphics",
+     "label": "Replacement typed after the strike (optional)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Text enters at (s)"
+    },
+    {
+     "id": "strike_at",
+     "type": "number",
+     "default": 0.5,
+     "label": "Strike at (s)"
+    },
+    {
+     "id": "line_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Line frames"
+    },
+    {
+     "id": "x_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Frames per X stroke"
+    },
+    {
+     "id": "x_gap_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Frames between the X strokes"
+    },
+    {
+     "id": "replace_frames_per_char",
+     "type": "number",
+     "default": 2,
+     "label": "Frames per typed character of the replacement"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "stake",
+    "comparison",
+    "before-after",
+    "pain-payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "strike",
+     "frame": "strike_at x 30",
+     "cue": "negative"
+    },
+    {
+     "event": "typing",
+     "frame": "strike + line_frames + 2",
+     "cue": "typing",
+     "note": "when a replacement is set"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 2,
+    "checks": 2,
+    "best_strip": "v04/extra/s30_strike_f1007.png",
+    "r": 0.977,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "fly-in",
+   "item": 16,
+   "name": "Fly-in from a parked spot",
+   "kind": "move",
+   "does": "A big entrance for a hero card: travels 414 to 930 px from below, half below or a side over 11 to 16 frames, expo.out, the start tilt easing to 0, no overshoot.",
+   "file": "compositions/fly-in.html",
+   "status": "approved",
+   "still": "gallery/stills/fly-in.png",
+   "z": 2,
+   "measure": "#fi",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 480,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 0,
+     "label": "Height (px, 0 = auto)"
+    },
+    {
+     "id": "from",
+     "type": "enum",
+     "default": "bottom",
+     "label": "Parked spot",
+     "options": [
+      "bottom",
+      "half-bottom",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "distance",
+     "type": "number",
+     "default": 930,
+     "label": "Travel distance (px, 414 to 930)"
+    },
+    {
+     "id": "frames",
+     "type": "number",
+     "default": 14,
+     "label": "Frames (11 to 16)"
+    },
+    {
+     "id": "tilt",
+     "type": "number",
+     "default": 3.9,
+     "label": "Start tilt (degrees, 2.4 to 3.9)"
+    },
+    {
+     "id": "end_tilt",
+     "type": "number",
+     "default": 0,
+     "label": "End tilt (degrees, 0 to 1.4)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "The frontend-design skill",
+     "label": "Title"
+    },
+    {
+     "id": "body",
+     "type": "string",
+     "default": "Plans 4 to 6 hex colors, reviews the layout, then codes.",
+     "label": "Body text"
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "Image (assets/..., optional)",
+     "image": true
+    },
+    {
+     "id": "image_h",
+     "type": "number",
+     "default": 520,
+     "label": "Image height (px)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Fly in at (s)"
+    },
+    {
+     "id": "mascot",
+     "type": "string",
+     "default": "",
+     "label": "Mascot prop on the top-right corner (empty = none)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "any",
+    "hook"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": "frames (14)",
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": "frames + 4",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "mascot": "film",
+    "enter_at": 0.2
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v08/extra/s30_000.0_hook.png",
+    "r": 0.958,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "chat-card",
+   "item": 17,
+   "name": "Chat card",
+   "kind": "card",
+   "does": "A prompt being sent: a surface card with an input bar and a send button. The text types at 1.15 frames per character; the button turns from gray to accent over 2 frames, 3 frames after the last character; an optional reply bubble follows.",
+   "file": "compositions/chat-card.html",
+   "status": "approved",
+   "still": "gallery/stills/chat-card.png",
+   "z": 2,
+   "measure": "#chat",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 640,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "prompt",
+     "type": "string",
+     "default": "Design the landing page. Stop making it look AI-made.",
+     "label": "The prompt typed into the input bar"
+    },
+    {
+     "id": "placeholder",
+     "type": "string",
+     "default": "Message Claude",
+     "label": "Placeholder before typing"
+    },
+    {
+     "id": "reply",
+     "type": "string",
+     "default": "Planning the palette first: 4 to 6 hex colors.",
+     "label": "A reply bubble after send (optional)"
+    },
+    {
+     "id": "frames_per_char",
+     "type": "number",
+     "default": 1.15,
+     "label": "Frames per typed character (chat: 1.15)"
+    },
+    {
+     "id": "send_delay_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames after the last character before the send button turns accent"
+    },
+    {
+     "id": "send_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Frames the button takes to turn accent"
+    },
+    {
+     "id": "reply_delay_frames",
+     "type": "number",
+     "default": 10,
+     "label": "Frames after send before the reply bubble"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "type_at",
+     "type": "number",
+     "default": 0.4,
+     "label": "Typing starts (s, after the card landed)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "step"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "typing",
+     "frame": "type_at x 30",
+     "duration_frames": "chars x 1.15",
+     "cue": "typing"
+    },
+    {
+     "event": "send",
+     "frame": "typing end + 3",
+     "cue": "ui_click"
+    },
+    {
+     "event": "reply",
+     "frame": "send + 10",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v06/extra/s30_070.9_typing_tail.png",
+    "r": 0.972,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "progress-bar",
+   "item": 18,
+   "name": "Progress or meter bar",
+   "kind": "support",
+   "does": "Something finishing or a usage value: the bar fills over 6 frames (the percent counts with it), then a check badge pops over 3 frames.",
+   "file": "compositions/progress-bar.html",
+   "status": "approved",
+   "still": "gallery/stills/progress-bar.png",
+   "z": 3,
+   "measure": "#pb",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 120,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 860,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 840,
+     "label": "Width (px)"
+    },
+    {
+     "id": "label",
+     "type": "string",
+     "default": "Installing frontend-design",
+     "label": "Label above the bar"
+    },
+    {
+     "id": "value",
+     "type": "number",
+     "default": 100,
+     "label": "Fill percent (0 to 100)"
+    },
+    {
+     "id": "in_card",
+     "type": "boolean",
+     "default": true,
+     "label": "Inside a surface card"
+    },
+    {
+     "id": "fill_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Fill frames"
+    },
+    {
+     "id": "check",
+     "type": "boolean",
+     "default": true,
+     "label": "A check badge pops when the bar is full"
+    },
+    {
+     "id": "check_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Check pop frames"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "fill_at",
+     "type": "number",
+     "default": 0.5,
+     "label": "Fill starts (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "number",
+    "step",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "fill",
+     "frame": "fill_at x 30",
+     "duration_frames": 6,
+     "cue": "number"
+    },
+    {
+     "event": "check",
+     "frame": "fill + 5",
+     "cue": "success"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 8,
+    "checks": 8,
+    "best_strip": "v01/extra/s30_card33.png",
+    "r": 0.965,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "camera-move",
+   "item": 19,
+   "name": "Camera pull-back or zoom",
+   "kind": "move",
+   "does": "Reveals context or dives in: the whole scene content shrinks into an app window over 8 frames ease-out (pull-back), or grows out of it over 20 frames ease-in-out (zoom). The caption layer does not move.",
+   "file": "compositions/camera-move.html",
+   "status": "approved",
+   "still": "gallery/stills/camera-move.png",
+   "z": 2,
+   "measure": "#cm-stage",
+   "props": [
+    {
+     "id": "kind",
+     "type": "enum",
+     "default": "pullback",
+     "label": "Pull-back into a window, or zoom into one card",
+     "options": [
+      "pullback",
+      "zoom"
+     ]
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "The scene content as an image (assets/...); empty = a placeholder card",
+     "image": true
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "FlashFX editor",
+     "label": "Title bar of the app window the scene shrinks into"
+    },
+    {
+     "id": "frames",
+     "type": "number",
+     "default": 8,
+     "label": "Move frames (8 pull-back ease-out, v02; 20 zoom ease-in-out, v05)"
+    },
+    {
+     "id": "at",
+     "type": "number",
+     "default": 0.6,
+     "label": "Move starts (s)"
+    },
+    {
+     "id": "x",
+     "type": "number",
+     "default": 150,
+     "label": "End window left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 520,
+     "label": "End window top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 780,
+     "label": "End window width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 880,
+     "label": "End window height (px)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "any",
+    "tool"
+   ],
+   "sound_events": [
+    {
+     "event": "camera",
+     "frame": "at x 30",
+     "duration_frames": "frames",
+     "cue": "transition_slow"
+    }
+   ],
+   "demo": {
+    "image": "assets/demo/repo.png"
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 2,
+    "checks": 2,
+    "best_strip": "v05/extra/s30_windowshrink_f520.png",
+    "r": 0.641,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "headline",
+   "item": 20,
+   "name": "Headline reveal (the hook)",
+   "kind": "hook",
+   "does": "The hook: frame 0 shows the accent mark (the brand slot: the bolt, the tool's logo or an accent dot) where the kicker starts; the kicker words fade in one by one, then the headline builds word by word as spoken (3 frames per word) over 2 to 3 lines with one serif-italic phrase.",
+   "file": "compositions/headline.html",
+   "status": "approved",
+   "still": "gallery/stills/headline.png",
+   "z": 2,
+   "measure": "#hl-lines",
+   "props": [
+    {
+     "id": "kicker",
+     "type": "string",
+     "default": "CLAUDE CODE SITES",
+     "label": "Kicker (ALL CAPS, 2 to 4 words)"
+    },
+    {
+     "id": "kicker_mark",
+     "type": "string",
+     "default": "",
+     "label": "Kicker mark image (assets/..., the brand slot; empty = an accent dot)",
+     "image": true
+    },
+    {
+     "id": "lines_json",
+     "type": "string",
+     "default": "[\"Why your Claude Code\", \"cards all look\", \"*identical.*\"]",
+     "label": "Headline lines as a JSON array; the serif-italic phrase between asterisks"
+    },
+    {
+     "id": "words_json",
+     "type": "string",
+     "default": "",
+     "label": "Spoken times of the headline words as JSON [{\"w\":\"Why\",\"t\":0.05}, ...] (empty = 3 frames apart)"
+    },
+    {
+     "id": "kicker_at",
+     "type": "number",
+     "default": 0.1,
+     "label": "Kicker starts (s)"
+    },
+    {
+     "id": "headline_at",
+     "type": "number",
+     "default": 0.5,
+     "label": "Headline starts (s, used when words_json is empty)"
+    },
+    {
+     "id": "word_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames per word"
+    },
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "align",
+     "type": "enum",
+     "default": "center",
+     "label": "Align",
+     "options": [
+      "center",
+      "left"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook"
+   ],
+   "sound_events": [
+    {
+     "event": "word",
+     "frame": "each word's time",
+     "cue": null,
+     "note": "the hook set piece elsewhere takes hook_hit"
+    }
+   ],
+   "demo": {
+    "kicker_mark": "assets/brand/mark/mark-gradient.png"
+   },
+   "demo_duration": 4,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": "v02/extra/s30_hook.png",
+    "r": 0.929,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "exit-move",
+   "item": 21,
+   "name": "Exit fall or push",
+   "kind": "move",
+   "does": "Clears a scene with motion: fall off the bottom over 10 frames ease-in tilting 2 degrees (the next card rises at once), push 6 frames out to the left then 2 empty frames and a 12-frame entrance, or the look refs' fade with blur over 4 frames. The same moves are the exit props of every component.",
+   "file": "compositions/exit-move.html",
+   "status": "approved",
+   "still": "gallery/stills/exit-move.png",
+   "z": 2,
+   "measure": "#xm-leaving",
+   "props": [
+    {
+     "id": "type",
+     "type": "enum",
+     "default": "fall",
+     "label": "Exit",
+     "options": [
+      "fall",
+      "push",
+      "fade-blur"
+     ]
+    },
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "Before",
+     "label": "Title of the leaving card"
+    },
+    {
+     "id": "body",
+     "type": "string",
+     "default": "Rounded cards, one radius, the same grey shadow.",
+     "label": "Body of the leaving card"
+    },
+    {
+     "id": "next_title",
+     "type": "string",
+     "default": "After",
+     "label": "Title of the arriving card (empty = no next card)"
+    },
+    {
+     "id": "next_body",
+     "type": "string",
+     "default": "One typeface with a point of view, and real color.",
+     "label": "Body of the arriving card"
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": 0.8,
+     "label": "The exit starts (s)"
+    },
+    {
+     "id": "fall_frames",
+     "type": "number",
+     "default": 10,
+     "label": "Fall frames"
+    },
+    {
+     "id": "fall_tilt",
+     "type": "number",
+     "default": 2,
+     "label": "Fall tilt (degrees)"
+    },
+    {
+     "id": "push_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Push-out frames"
+    },
+    {
+     "id": "gap_frames",
+     "type": "number",
+     "default": 2,
+     "label": "Empty frames after the push"
+    },
+    {
+     "id": "in_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Entrance frames of the next card after a push"
+    },
+    {
+     "id": "blur_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Fade-blur frames"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "scene_change",
+     "frame": "exit_at x 30",
+     "cue": "transition_fast or transition_slow by duration"
+    },
+    {
+     "event": "enter",
+     "frame": "after the exit",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v07/extra/s30_003.2_badge_exit.png",
+    "r": 0.992,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "handwritten-callout",
+   "item": 22,
+   "name": "Handwritten callout",
+   "kind": "support",
+   "does": "A hand-drawn aside in the script color with an arrow pointing at something: the text fades in over 6 frames and the arrow draws itself over 8.",
+   "file": "compositions/handwritten-callout.html",
+   "status": "approved",
+   "still": "gallery/stills/handwritten-callout.png",
+   "z": 3,
+   "measure": "#hc-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 560,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 1150,
+     "label": "Top (px)"
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "same shadow|every time",
+     "label": "The aside (1 or 2 short lines; a | breaks the line)"
+    },
+    {
+     "id": "arrow",
+     "type": "enum",
+     "default": "up-left",
+     "label": "Arrow direction from the text",
+     "options": [
+      "none",
+      "up-left",
+      "up-right",
+      "down-left",
+      "down-right"
+     ]
+    },
+    {
+     "id": "arrow_len",
+     "type": "number",
+     "default": 150,
+     "label": "Arrow length (px)"
+    },
+    {
+     "id": "text_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Text fade frames"
+    },
+    {
+     "id": "draw_frames",
+     "type": "number",
+     "default": 8,
+     "label": "Arrow draw frames"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "stake",
+    "mechanism"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "draw",
+     "frame": 4,
+     "duration_frames": 10,
+     "cue": null
+    }
+   ],
+   "demo": {
+    "enter_at": 0.3
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 1,
+    "checks": 1,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "speech-bubble",
+   "item": 23,
+   "name": "Speech bubble and confetti",
+   "kind": "cta",
+   "does": "On the end card: the bubble scales from 0.5 to 1 over 7 frames with a 40 px overshoot in y settling over 9 more, a keyword pill pops under it, seeded confetti drifts down behind.",
+   "file": "compositions/speech-bubble.html",
+   "status": "approved",
+   "still": "gallery/stills/speech-bubble.png",
+   "z": 3,
+   "measure": "#sb",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 300,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 880,
+     "label": "Top (px)"
+    },
+    {
+     "id": "text",
+     "type": "string",
+     "default": "Comment TELLS",
+     "label": "The bubble text"
+    },
+    {
+     "id": "keyword",
+     "type": "string",
+     "default": "",
+     "label": "A keyword pill popping under the bubble (empty = none)"
+    },
+    {
+     "id": "tail",
+     "type": "enum",
+     "default": "bottom-left",
+     "label": "Tail corner",
+     "options": [
+      "bottom-left",
+      "bottom-right"
+     ]
+    },
+    {
+     "id": "bubble_frames",
+     "type": "number",
+     "default": 7,
+     "label": "Bubble scale frames"
+    },
+    {
+     "id": "overshoot_y",
+     "type": "number",
+     "default": 40,
+     "label": "Overshoot in y (px)"
+    },
+    {
+     "id": "settle_frames",
+     "type": "number",
+     "default": 9,
+     "label": "Settle frames after the overshoot"
+    },
+    {
+     "id": "confetti",
+     "type": "boolean",
+     "default": true,
+     "label": "Confetti drifts down behind it"
+    },
+    {
+     "id": "confetti_count",
+     "type": "number",
+     "default": 18,
+     "label": "Confetti pieces"
+    },
+    {
+     "id": "seed",
+     "type": "number",
+     "default": 7,
+     "label": "Seed for the confetti"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "ask"
+   ],
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    },
+    {
+     "event": "confetti",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "pop",
+     "frame": 11,
+     "cue": "ui_click",
+     "note": "the keyword pill, when set"
+    }
+   ],
+   "demo": {
+    "keyword": "TELLS",
+    "enter_at": 0.3
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v07/extra/s30_041.0_end.png",
+    "r": 0.931,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "table-card",
+   "item": 24,
+   "name": "Table card",
+   "kind": "card",
+   "does": "A comparison: a surface card with a logo row (image files) and a small pill, label and value rows with hairline dividers, values right-aligned, good values in success. Enters over 7 frames with a 28 px rise; rows follow 3 frames apart.",
+   "file": "compositions/table-card.html",
+   "status": "approved",
+   "still": "gallery/stills/table-card.png",
+   "z": 2,
+   "measure": "#tb",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 520,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "",
+     "label": "Title (optional)"
+    },
+    {
+     "id": "logos_json",
+     "type": "string",
+     "default": "[{\"label\":\"Default skill\"},{\"label\":\"frontend-design\"}]",
+     "label": "Logo row as JSON: [{\"image\":\"assets/...\",\"label\":\"FlashFX\"}, ...] (an empty image draws the neutral icon)",
+     "image": true
+    },
+    {
+     "id": "pill",
+     "type": "string",
+     "default": "compared",
+     "label": "Small pill next to the logo row (optional)"
+    },
+    {
+     "id": "rows_json",
+     "type": "string",
+     "default": "[{\"label\":\"Palette\",\"values\":[\"purple gradient\",\"4 to 6 hex colors\"],\"good\":[false,true]},{\"label\":\"Cards\",\"values\":[\"same radius\",\"one point of view\"],\"good\":[false,true]},{\"label\":\"Labels\",\"values\":[\"ALL CAPS 01 02\",\"plain\"],\"good\":[false,true]}]",
+     "label": "Rows as JSON: [{\"label\":\"Palette\",\"values\":[\"one purple\",\"4 to 6 hex\"],\"good\":[false,true]}]"
+    },
+    {
+     "id": "enter_frames",
+     "type": "number",
+     "default": 7,
+     "label": "Entrance frames"
+    },
+    {
+     "id": "rise",
+     "type": "number",
+     "default": 28,
+     "label": "Rise (px)"
+    },
+    {
+     "id": "row_gap_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames between rows"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "comparison",
+    "proof",
+    "before-after"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "row",
+     "frame": "4 + 3 x i",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v04/extra/s30_scene_f184.png",
+    "r": 0.975,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "dm-card",
+   "item": null,
+   "name": "DM notification card",
+   "kind": "branding",
+   "does": "The CTA's DM notification in the style's look: a surface card with the round FlashFX avatar image (at least 112 px across), the sender name and one message line. Enters with the card move; its landing is the notification sound.",
+   "file": "compositions/dm-card.html",
+   "status": "approved",
+   "still": "gallery/stills/dm-card.png",
+   "z": 3,
+   "measure": "#dm",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 110,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 1250,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 860,
+     "label": "Width (px)"
+    },
+    {
+     "id": "avatar",
+     "type": "string",
+     "default": "",
+     "label": "Round avatar image (assets/brand/mark/avatar-dark.png)",
+     "image": true
+    },
+    {
+     "id": "avatar_size",
+     "type": "number",
+     "default": 120,
+     "label": "Avatar diameter (px, at least 112)"
+    },
+    {
+     "id": "sender",
+     "type": "string",
+     "default": "FlashFX",
+     "label": "Sender name"
+    },
+    {
+     "id": "message",
+     "type": "string",
+     "default": "Comment TELLS and I send you the checklist",
+     "label": "One message line"
+    },
+    {
+     "id": "time_label",
+     "type": "string",
+     "default": "now",
+     "label": "Time label"
+    },
+    {
+     "id": "app_label",
+     "type": "string",
+     "default": "Instagram",
+     "label": "App label (small, grey)"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "pop",
+      "drop"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "ask"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "notification",
+     "frame": 8,
+     "cue": "notification"
+    }
+   ],
+   "demo": {
+    "avatar": "assets/brand/mark/avatar-dark.png",
+    "enter_at": 0.3,
+    "y": 700
+   },
+   "demo_duration": 3,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 4,
+    "checks": 4,
+    "best_strip": "v03/extra/s30_hook_000.0.png",
+    "r": 0.916,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "hero-3d",
+   "item": null,
+   "name": "3D hero object (Three.js)",
+   "kind": "3d",
+   "does": "The one 3D component (hook and end card only, at most 2 objects): a low-poly card, box or icosahedron turning under a warm key light, drawn from the hf-seek time, with a soft contact shadow; scales in with a back-out over 12 frames. Needs the clip_start prop (its data-start). Without WebGL it shows a flat card and reports data-webgl=0.",
+   "file": "compositions/hero-3d.html",
+   "status": "approved",
+   "still": "gallery/stills/hero-3d.png",
+   "z": 2,
+   "measure": "#h3-canvas",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 240,
+     "label": "Left of the 3D area (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top of the 3D area (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 600,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 600,
+     "label": "Height (px)"
+    },
+    {
+     "id": "object",
+     "type": "enum",
+     "default": "card",
+     "label": "The hero object (low poly, one object)",
+     "options": [
+      "card",
+      "box",
+      "icosa"
+     ]
+    },
+    {
+     "id": "spin",
+     "type": "number",
+     "default": 40,
+     "label": "Spin (degrees per second)"
+    },
+    {
+     "id": "tilt",
+     "type": "number",
+     "default": 18,
+     "label": "Tilt (degrees)"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s, local)"
+    },
+    {
+     "id": "enter_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Entrance frames (scale up with a back-out)"
+    },
+    {
+     "id": "clip_start",
+     "type": "number",
+     "default": 0,
+     "label": "The data-start of this clip in the root (s): hf-seek times are root times"
+    },
+    {
+     "id": "label",
+     "type": "string",
+     "default": "",
+     "label": "A label under the object (optional)"
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, local; -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": "enter_at x 30",
+     "cue": "hook_hit",
+     "note": "when it is the hook's set piece"
+    },
+    {
+     "event": "land",
+     "frame": "enter_at x 30 + 12",
+     "cue": null
+    }
+   ],
+   "demo": {
+    "enter_at": 0.2,
+    "label": "the skill file"
+   },
+   "demo_duration": 4,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 2,
+    "checks": 2,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-01"
+   }
+  },
+  {
+   "id": "paper-canvas",
+   "item": null,
+   "name": "Paper canvas",
+   "kind": "canvas",
+   "does": "The background of every reel: paper, a warm glow top left, a warm glow lower right, darker bottom corners, a dot grid. Static, mounted for the whole reel at z 0.",
+   "file": "compositions/paper-canvas.html",
+   "status": "approved",
+   "still": "gallery/stills/paper-canvas.png",
+   "z": 0,
+   "measure": "#paper-root",
+   "props": [
+    {
+     "id": "dots",
+     "type": "boolean",
+     "default": true,
+     "label": "Dot grid"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [],
+   "demo": {},
+   "demo_duration": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 1,
+    "checks": 1,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-01"
+   }
+  }
+ ]
+}

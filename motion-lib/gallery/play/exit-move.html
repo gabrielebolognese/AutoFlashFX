@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"type": "fall", "x": 90, "y": 560, "w": 900, "title": "Before", "body": "Rounded cards, one radius, the same grey shadow.", "next_title": "After", "next_body": "One typeface with a point of view, and real color.", "exit_at": 0.8, "fall_frames": 10, "fall_tilt": 2, "push_frames": 6, "gap_frames": 2, "in_frames": 12, "blur_frames": 4};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* exit-move (vocabulary.md 21, Exit fall or push; open question 3): clears a scene with motion instead of a cut.
+       Fall off the bottom over 10 frames, ease-in, tilting about 2 degrees (v07, v08); push 6 frames out to the left,
+       ease-in, 2 empty frames, then the next card enters over 12 frames expo-out (v03); or the look refs' fade with
+       blur over 4 frames. The next card rises at once after a fall (v07). The scene change is the transition sound. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    .xm-card { padding: 48px 52px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; }
+  </style>
+  <div id="root" data-composition-id="exit-move" data-width="1080" data-height="1920">
+    <div id="xm-leaving" class="pc-card pc-el xm-card"><div id="xm-title" class="pc-title"></div><div id="xm-body" class="pc-body"></div></div>
+    <div id="xm-next" class="pc-card pc-el xm-card" style="display: none"><div id="xm-next-title" class="pc-title"></div><div id="xm-next-body" class="pc-body"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ type: "fall", x: 90, y: 560, w: 900, title: "", body: "", next_title: "", next_body: "", exit_at: 0.8, fall_frames: 10, fall_tilt: 2, push_frames: 6,
+        gap_frames: 2, in_frames: 12, blur_frames: 4 }, window.__hyperframes.getVariables());
+      var leaving = document.getElementById("xm-leaving"), next = document.getElementById("xm-next");
+      PC.place(leaving, { x: v.x, y: v.y, w: v.w }); PC.place(next, { x: v.x, y: v.y, w: v.w });
+      document.getElementById("xm-title").textContent = v.title; document.getElementById("xm-body").textContent = v.body;
+      var tl = gsap.timeline({ paused: true });
+      tl.set(leaving, { opacity: 1 }, 0);
+      var gone;
+      if (v.type === "push") gone = PC.exit(tl, leaving, v.exit_at, "push", { frames: v.push_frames });
+      else if (v.type === "fade-blur") gone = PC.exit(tl, leaving, v.exit_at, "fade-blur", { frames: v.blur_frames });
+      else gone = PC.exit(tl, leaving, v.exit_at, "fall", { frames: v.fall_frames, tilt: v.fall_tilt });
+      PC.event("scene_change", v.exit_at, { type: v.type, end: gone });
+      if (v.next_title || v.next_body) {
+        next.style.display = "flex";
+        document.getElementById("xm-next-title").textContent = v.next_title; document.getElementById("xm-next-body").textContent = v.next_body;
+        if (v.type === "push") {
+          var at = gone + PC.f(v.gap_frames);
+          tl.fromTo(next, { x: 1200, opacity: 1 }, { x: 0, duration: PC.f(v.in_frames), ease: "expo.out" }, at);
+          PC.event("enter", at, { el: "xm-next", move: "push-in" });
+        } else if (v.type === "fade-blur") {
+          PC.enter(tl, next, gone, { rise: 38 });
+        } else {
+          PC.enter(tl, next, v.exit_at, { rise: 38 });  // the next card rises at once (v07)
+        }
+      }
+      window.__timelines["exit-move"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "exit-move", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 1180, "text": "In 2 days", "accent_word": "2 days", "icon": "clock", "enter_at": 0.3, "pop_frames": 3, "exit": "none", "exit_at": -1, "tilt": 0};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* dark-chip (vocabulary.md 5, Dark chip or tag): a short fact or label attached to a card, ink-chip fill, white
+       text with one accent word, 55 tall; pops in over 3 frames (v01 corner chip). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #chip-icon { display: none; width: 26px; height: 26px; }
+    #chip-icon svg { width: 100%; height: 100%; display: block; }
+  </style>
+  <div id="root" data-composition-id="dark-chip" data-width="1080" data-height="1920">
+    <div id="chip" class="pc-dark-chip pc-el">
+      <span id="chip-icon"></span>
+      <span id="chip-text"></span>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 120, y: 1180, text: "In 2 days", accent_word: "2 days", icon: "none", enter_at: 0, pop_frames: 3, exit: "none", exit_at: -1, tilt: 0 }, window.__hyperframes.getVariables());
+      var chip = document.getElementById("chip");
+      PC.place(chip, v);
+      if (v.tilt) chip.style.rotate = v.tilt + "deg";
+      var textEl = document.getElementById("chip-text");
+      if (v.accent_word && v.text.indexOf(v.accent_word) >= 0) {
+        var i = v.text.indexOf(v.accent_word);
+        textEl.appendChild(document.createTextNode(v.text.slice(0, i)));
+        PC.el("span", "pc-accent-word", textEl, v.accent_word);
+        textEl.appendChild(document.createTextNode(v.text.slice(i + v.accent_word.length)));
+      } else {
+        textEl.textContent = v.text;
+      }
+      var icons = {
+        clock: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+        file: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>',
+        dot: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#DC6532"/></svg>'
+      };
+      if (icons[v.icon]) { var ic = document.getElementById("chip-icon"); ic.innerHTML = icons[v.icon]; ic.style.display = "inline-block"; }
+
+      var tl = gsap.timeline({ paused: true });
+      PC.pop(tl, chip, v.enter_at, { overshoot: 0.02, frames: v.pop_frames, from: 0.5 });
+      PC.exit(tl, chip, v.exit_at, v.exit);
+      window.__timelines["dark-chip"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "dark-chip", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

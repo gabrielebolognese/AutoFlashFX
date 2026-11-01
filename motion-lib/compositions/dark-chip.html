@@ -1,0 +1,60 @@
+<html data-composition-variables='[
+         {"id":"x","type":"number","label":"Left (px)","default":120},
+         {"id":"y","type":"number","label":"Top (px)","default":1180},
+         {"id":"text","type":"string","label":"Text","default":"In 2 days"},
+         {"id":"accent_word","type":"string","label":"The accent word (must appear in the text)","default":"2 days"},
+         {"id":"icon","type":"enum","label":"Icon","default":"none","options":[{"value":"none","label":"none"},{"value":"clock","label":"clock"},{"value":"file","label":"file"},{"value":"dot","label":"dot"}]},
+         {"id":"enter_at","type":"number","label":"Pop at (s)","default":0},
+         {"id":"pop_frames","type":"number","label":"Pop frames","default":3},
+         {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+         {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1},
+         {"id":"tilt","type":"number","label":"Tilt (degrees)","default":0}
+       ]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* dark-chip (vocabulary.md 5, Dark chip or tag): a short fact or label attached to a card, ink-chip fill, white
+       text with one accent word, 55 tall; pops in over 3 frames (v01 corner chip). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #chip-icon { display: none; width: 26px; height: 26px; }
+    #chip-icon svg { width: 100%; height: 100%; display: block; }
+  </style>
+  <div id="root" data-composition-id="dark-chip" data-width="1080" data-height="1920">
+    <div id="chip" class="pc-dark-chip pc-el">
+      <span id="chip-icon"></span>
+      <span id="chip-text"></span>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 120, y: 1180, text: "In 2 days", accent_word: "2 days", icon: "none", enter_at: 0, pop_frames: 3, exit: "none", exit_at: -1, tilt: 0 }, window.__hyperframes.getVariables());
+      var chip = document.getElementById("chip");
+      PC.place(chip, v);
+      if (v.tilt) chip.style.rotate = v.tilt + "deg";
+      var textEl = document.getElementById("chip-text");
+      if (v.accent_word && v.text.indexOf(v.accent_word) >= 0) {
+        var i = v.text.indexOf(v.accent_word);
+        textEl.appendChild(document.createTextNode(v.text.slice(0, i)));
+        PC.el("span", "pc-accent-word", textEl, v.accent_word);
+        textEl.appendChild(document.createTextNode(v.text.slice(i + v.accent_word.length)));
+      } else {
+        textEl.textContent = v.text;
+      }
+      var icons = {
+        clock: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+        file: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>',
+        dot: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#DC6532"/></svg>'
+      };
+      if (icons[v.icon]) { var ic = document.getElementById("chip-icon"); ic.innerHTML = icons[v.icon]; ic.style.display = "inline-block"; }
+
+      var tl = gsap.timeline({ paused: true });
+      PC.pop(tl, chip, v.enter_at, { overshoot: 0.02, frames: v.pop_frames, from: 0.5 });
+      PC.exit(tl, chip, v.exit_at, v.exit);
+      window.__timelines["dark-chip"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

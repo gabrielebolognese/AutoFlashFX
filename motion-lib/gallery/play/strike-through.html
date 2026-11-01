@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 120, "y": 820, "text": "video AI", "style": "line", "chip": true, "font_px": 48, "replacement": "motion graphics", "enter_at": 0, "strike_at": 0.5, "line_frames": 4, "x_frames": 6, "x_gap_frames": 6, "replace_frames_per_char": 2, "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* strike-through (vocabulary.md 15): "not X", before and after. A line drawn across over 4 frames (v04), or an X as
+       two strokes of 6 frames each, 6 frames apart (v06); a replacement types in after it (v04). The strike is the
+       negative sound event. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #st-wrap { display: inline-flex; align-items: center; gap: 22px; }
+    #st-text { position: relative; display: inline-block; font-weight: 800; }
+    #st-text.chip { height: var(--light-chip-h); padding: 0 28px; border-radius: 999px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 14px 22px -6px rgba(133, 112, 92, 0.28); font-size: 30px; font-weight: 700; display: inline-flex; align-items: center; }
+    .st-line { position: absolute; left: -6%; width: 112%; height: 7px; border-radius: 4px; background: var(--c-accent); top: 50%; margin-top: -3px; transform-origin: 0% 50%; }
+    .st-line.b { transform: rotate(0deg); }
+    .st-x1 { transform: rotate(-18deg); } .st-x2 { transform: rotate(18deg); }
+    #st-replacement { font-weight: 800; color: var(--c-accent-deep); white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="strike-through" data-width="1080" data-height="1920">
+    <div id="st-wrap" class="pc-el">
+      <span id="st-text"><span id="st-label"></span></span>
+      <span id="st-replacement"></span>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 120, y: 820, text: "video AI", style: "line", chip: true, font_px: 48, replacement: "", enter_at: 0, strike_at: 0.5, line_frames: 4, x_frames: 6,
+        x_gap_frames: 6, replace_frames_per_char: 2, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("st-wrap"), text = document.getElementById("st-text"), rep = document.getElementById("st-replacement");
+      PC.place(wrap, { x: v.x, y: v.y });
+      document.getElementById("st-label").textContent = v.text;
+      if (v.chip) text.classList.add("chip"); else { text.style.fontSize = v.font_px + "px"; rep.style.fontSize = v.font_px + "px"; }
+      if (v.chip) rep.style.fontSize = "34px";
+      var lines = [];
+      if (v.style === "x") {
+        lines.push(PC.el("span", "st-line st-x1", text)); lines.push(PC.el("span", "st-line st-x2", text));
+        lines[0].id = "st-x1"; lines[1].id = "st-x2";
+        lines[1].style.transformOrigin = "100% 50%";
+      } else { lines.push(PC.el("span", "st-line b", text)); lines[0].id = "st-line"; }
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo(text, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: PC.f(4), ease: "power2.out" }, v.enter_at);
+      PC.event("enter", v.enter_at, { el: "st-text" });
+      var t = Math.max(v.strike_at, v.enter_at + PC.f(4));
+      if (v.style === "x") {
+        tl.fromTo(lines[0], { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: PC.f(v.x_frames), ease: "power2.out" }, t);
+        tl.fromTo(lines[1], { scaleX: 0, transformOrigin: "100% 50%" }, { scaleX: 1, duration: PC.f(v.x_frames), ease: "power2.out" }, t + PC.f(v.x_gap_frames));
+        PC.event("strike", t, { el: "st-x1" });
+        t = t + PC.f(v.x_gap_frames + v.x_frames);
+      } else {
+        t = PC.strike(tl, lines[0], t, { frames: v.line_frames });
+      }
+      tl.to(text, { opacity: 0.55, duration: PC.f(3), ease: "none" }, t);
+      if (v.replacement) PC.typeInto(tl, rep, v.replacement, t + PC.f(2), { framesPerChar: v.replace_frames_per_char });
+      PC.exit(tl, wrap, v.exit_at, v.exit);
+      window.__timelines["strike-through"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "strike-through", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

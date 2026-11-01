@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"mode": "badge", "x": 480, "y": 860, "size": 120, "w": 760, "items_json": "[\"Plan the palette\",\"Review the layout\",\"Then code\"]", "tick_frames": 3, "tick_gap_frames": 4, "overshoot": 0.16, "pop_frames": 12, "enter_at": 0.3, "ticks_at": 0.4, "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* check-badge (vocabulary.md 9, Check badge and checklist ticks): marks done or yes. A success circle with a white
+       check and a white ring that pops (0.2 to 1.16 to 1 over 6 plus 6 frames, v03), or a checklist card whose ticks pop
+       1 to 3 frames each, 4 to 6 frames apart (v06, v07). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #cb-list { padding: 30px 40px; box-sizing: border-box; display: none; flex-direction: column; gap: 18px; }
+    .cb-row { display: flex; align-items: center; gap: 22px; font-weight: 700; font-size: 34px; }
+    .cb-tick { width: 52px; height: 52px; border-radius: 50%; background: var(--c-success); border: 4px solid #FFFFFF; box-shadow: 0 6px 12px -3px rgba(40, 156, 92, 0.35); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .cb-tick svg { width: 28px; height: 28px; }
+    .cb-tick-slot { width: 52px; height: 52px; border-radius: 50%; box-shadow: inset 0 0 0 3px var(--c-card-edge); flex: 0 0 auto; position: relative; }
+    .cb-tick-slot .cb-tick { position: absolute; left: -4px; top: -4px; }
+  </style>
+  <div id="root" data-composition-id="check-badge" data-width="1080" data-height="1920">
+    <div id="cb-badge" class="pc-check-badge pc-el"></div>
+    <div id="cb-list" class="pc-card pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ mode: "badge", x: 498, y: 860, size: 84, w: 760, items_json: [], tick_frames: 3, tick_gap_frames: 4, overshoot: 0.16, pop_frames: 12,
+        enter_at: 0, ticks_at: 0.4, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var badge = document.getElementById("cb-badge"), list = document.getElementById("cb-list");
+      var tl = gsap.timeline({ paused: true });
+      if (v.mode === "list") {
+        badge.style.display = "none";
+        list.style.display = "flex";
+        PC.place(list, { x: v.x, y: v.y, w: v.w });
+        var items = Array.isArray(v.items_json) ? v.items_json : [];
+        var ticks = items.map(function (text, i) {
+          var row = PC.el("div", "cb-row", list);
+          var slot = PC.el("div", "cb-tick-slot", row);
+          var tick = PC.el("div", "cb-tick", slot); tick.id = "cb-tick-" + i; tick.innerHTML = PC.checkSVG();
+          PC.el("span", "", row, text);
+          return tick;
+        });
+        var landAt = PC.enter(tl, list, v.enter_at, { rise: 38 });
+        ticks.forEach(function (tick, i) {
+          var at = Math.max(v.ticks_at, landAt) + PC.f(v.tick_gap_frames) * i;
+          PC.pop(tl, tick, at, { overshoot: 0.16, frames: Math.max(2, v.tick_frames), from: 0.2 });
+          PC.event("check", at, { el: tick.id });
+        });
+        PC.exit(tl, list, v.exit_at, v.exit);
+      } else {
+        list.style.display = "none";
+        badge.innerHTML = PC.checkSVG();
+        badge.style.width = v.size + "px"; badge.style.height = v.size + "px";
+        PC.place(badge, { x: v.x, y: v.y });
+        PC.pop(tl, badge, v.enter_at, { overshoot: v.overshoot, frames: v.pop_frames, from: 0.2 });
+        PC.event("check", v.enter_at, { el: "cb-badge" });
+        PC.exit(tl, badge, v.exit_at, v.exit);
+      }
+      window.__timelines["check-badge"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "check-badge", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

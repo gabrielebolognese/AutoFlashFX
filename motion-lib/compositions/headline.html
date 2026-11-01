@@ -1,0 +1,98 @@
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker (ALL CAPS, 2 to 4 words)","default":"CLAUDE CODE SITES"},
+  {"id":"kicker_mark","type":"string","label":"Kicker mark image (assets/..., the brand slot; empty = an accent dot)","default":""},
+  {"id":"lines_json","type":"string","label":"Headline lines as a JSON array; the serif-italic phrase between asterisks","default":"[\"Why your Claude Code\", \"cards all look\", \"*identical.*\"]"},
+  {"id":"words_json","type":"string","label":"Spoken times of the headline words as JSON [{\"w\":\"Why\",\"t\":0.05}, ...] (empty = 3 frames apart)","default":""},
+  {"id":"kicker_at","type":"number","label":"Kicker starts (s)","default":0.1},
+  {"id":"headline_at","type":"number","label":"Headline starts (s, used when words_json is empty)","default":0.5},
+  {"id":"word_frames","type":"number","label":"Frames per word","default":3},
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"align","type":"enum","label":"Align","default":"center","options":[{"value":"center","label":"center"},{"value":"left","label":"left"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* headline (vocabulary.md 20, Headline reveal, and style.md Hook): frame 0 is empty paper with the accent mark where
+       the kicker will start; the kicker words fade in one by one, then the headline builds word by word (3 frames per
+       word, as spoken when words_json gives the times; open question 11: both look refs) over 2 to 3 lines with one
+       phrase in the serif italic. Kicker top y 253 (open question 5: v02), cap 21 (open question 6: v02). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #hl-kicker { position: absolute; top: var(--kicker-top); white-space: nowrap; }
+    #hl-kicker .kw { display: inline-block; margin-right: 0.45em; }
+    #hl-kicker .pc-kicker-mark { margin-right: 0.1em; vertical-align: -0.08em; }
+    #hl-mark-dot { width: 100%; height: 100%; border-radius: 50%; background: var(--c-accent); }
+    #hl-lines { position: absolute; }
+    .hl-line { white-space: nowrap; }
+    .hl-line .pc-word { display: inline-block; margin-right: 0.22em; }
+  </style>
+  <div id="root" data-composition-id="headline" data-width="1080" data-height="1920">
+    <div id="hl-kicker" class="pc-kicker pc-el"><span class="pc-kicker-mark" id="hl-mark"></span></div>
+    <div id="hl-lines" class="pc-headline pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ kicker: "", kicker_mark: "", lines_json: [], words_json: [], kicker_at: 0.1, headline_at: 0.5, word_frames: 3,
+        x: 90, w: 900, align: "center", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var kicker = document.getElementById("hl-kicker"), mark = document.getElementById("hl-mark"), lines = document.getElementById("hl-lines");
+      var capRatio = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-kicker-cap")) || 0.7;
+      var kickerCap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--kicker-cap")) || 21;
+      kicker.style.fontSize = PC.capFont(kickerCap, capRatio) + "px";
+      kicker.style.left = v.x + "px"; kicker.style.width = v.w + "px"; kicker.style.textAlign = v.align;
+      kicker.style.justifyContent = v.align === "center" ? "center" : "flex-start";
+      if (v.kicker_mark) { var img = document.createElement("img"); img.src = v.kicker_mark; img.alt = ""; img.className = "pc-logo"; mark.appendChild(img); }
+      else { var dot = document.createElement("div"); dot.id = "hl-mark-dot"; mark.appendChild(dot); }
+      var kwords = PC.splitWords(document.createElement("span"), v.kicker, "kw");
+      kwords.forEach(function (s) { kicker.appendChild(s); });
+
+      var lineH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--headline-line")) || 113;
+      lines.style.left = v.x + "px"; lines.style.width = v.w + "px"; lines.style.textAlign = v.align;
+      lines.style.top = (parseFloat(getComputedStyle(kicker).top) + kickerCap * 2.6) + "px";
+      var wordEls = [];
+      (v.lines_json || []).forEach(function (line) {
+        var div = PC.el("div", "hl-line", lines);
+        // the phrase between asterisks is the serif italic
+        var parts = String(line).split(/(\*[^*]+\*)/).filter(Boolean);
+        parts.forEach(function (part) {
+          var serif = /^\*.*\*$/.test(part);
+          var text = serif ? part.slice(1, -1) : part;
+          text.split(/\s+/).filter(Boolean).forEach(function (w) {
+            var span = PC.el("span", "pc-word" + (serif ? " pc-phrase" : ""), div, w);
+            wordEls.push(span);
+          });
+        });
+      });
+      // fit: a line wider than w scales every line's font down (the plan should have split it; this keeps it on screen)
+      var fontPx = parseFloat(getComputedStyle(lines).fontSize) || 102;
+      var widest = 0;
+      Array.prototype.forEach.call(lines.children, function (l) { widest = Math.max(widest, l.scrollWidth); });
+      if (widest > v.w && widest > 0) {
+        var k = Math.max(0.72, v.w / widest);
+        lines.style.fontSize = (fontPx * k) + "px";
+        lines.style.lineHeight = (lineH * k) + "px";
+        PC.event("headline_overflow", 0, { widest: widest, scale: k });
+      }
+
+      var tl = gsap.timeline({ paused: true });
+      tl.set(mark, { opacity: 1 }, 0);
+      kwords.forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, v.kicker_at + PC.f(3 * i));
+      });
+      var times = Array.isArray(v.words_json) ? v.words_json : [];
+      wordEls.forEach(function (span, i) {
+        var at = (times[i] && typeof times[i].t === "number") ? times[i].t : v.headline_at + PC.f(v.word_frames * i);
+        tl.fromTo(span, { opacity: 0 }, { opacity: 1, duration: PC.f(v.word_frames), ease: "none" }, at);
+        PC.event("word", at, { el: "hl-" + i, text: span.textContent });
+      });
+      PC.exit(tl, kicker, v.exit_at, v.exit);
+      PC.exit(tl, lines, v.exit_at, v.exit);
+      window.__timelines["headline"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

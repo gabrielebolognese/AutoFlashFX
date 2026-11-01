@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "of the AI tells to ditch", "mascots_json": "[\"clapper\",\"star\",\"film\",\"play\",\"grid\"]", "lockup": "assets/brand/lockup/lockup-gradient-on-light.png", "lockup_w": 360, "lockup_y": 1230, "enter_at": 0, "fade_frames": 6, "stagger_frames": 6, "type_frames": 2, "wobble": true};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* end-card (vocabulary.md 3, Keyword end card): the CTA. A tilted surface card (858 wide, x 105, top 324) with the
+       verb and the keyword pill (typed, 2 frames per letter: open question 4), two handwritten lines under the card, a
+       row of 5 mascots walking in from the left (v02), and the FlashFX lockup (tweaks.md Branding: the CTA always shows
+       it, at least 300 px wide). Elements fade in over 6 frames, 6 frames apart, top to bottom. No captions here. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #ec-card { left: var(--end-card-x); top: var(--end-card-top); width: var(--end-card-w); height: 410px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+    #ec-verb { font-weight: 800; font-size: var(--end-verb-font); letter-spacing: -0.02em; line-height: 1; }
+    #ec-pill { min-width: 420px; }
+    #ec-lines { left: 0; width: 1080px; text-align: center; top: 790px; }
+    #ec-row { left: 0; top: 1044px; width: 1080px; height: 100px; }
+    #ec-row .pc-mascot { position: absolute; top: 20px; }
+    #ec-lockup { left: 0; width: 1080px; display: flex; justify-content: center; }
+    #ec-lockup img { display: block; object-fit: contain; }
+  </style>
+  <div id="root" data-composition-id="end-card" data-width="1080" data-height="1920">
+    <div id="ec-card" class="pc-card pc-el">
+      <div id="ec-verb"></div>
+      <div id="ec-pill" class="pc-keyword-pill"><span id="ec-keyword"></span></div>
+    </div>
+    <div id="ec-lines" class="pc-hand pc-el"><div id="ec-line1"></div><div id="ec-line2"></div></div>
+    <div id="ec-row" class="pc-el"></div>
+    <div id="ec-lockup" class="pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ verb: "Comment", keyword: "TELLS", line1: "", line2: "", mascots_json: ["clapper", "star", "film", "play", "grid"], lockup: "",
+        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true }, window.__hyperframes.getVariables());
+      var card = document.getElementById("ec-card"), verb = document.getElementById("ec-verb"), pill = document.getElementById("ec-pill");
+      var kw = document.getElementById("ec-keyword"), linesEl = document.getElementById("ec-lines"), row = document.getElementById("ec-row");
+      var lockupWrap = document.getElementById("ec-lockup");
+      verb.textContent = v.verb;
+      document.getElementById("ec-line1").textContent = v.line1;
+      document.getElementById("ec-line2").textContent = v.line2;
+      var tilt = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--end-card-tilt")) || -1.7;
+      var props = Array.isArray(v.mascots_json) ? v.mascots_json : ["clapper", "star", "film", "play", "grid"];
+      var gap = 171, count = props.length, startX = 540 - ((count - 1) * gap) / 2 - 42;
+      var mascots = props.map(function (p, i) {
+        var m = PC.el("div", "pc-mascot", row);
+        m.innerHTML = PC.mascotSVG(p, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
+        m.style.left = (startX + i * gap) + "px";
+        return m;
+      });
+      var lockupImg = null;
+      if (v.lockup) {
+        lockupImg = document.createElement("img"); lockupImg.src = v.lockup; lockupImg.alt = "FlashFX";
+        lockupImg.style.width = Math.max(300, v.lockup_w) + "px"; lockupImg.className = "pc-logo";
+        lockupImg.style.height = "auto";
+        lockupWrap.appendChild(lockupImg);
+        lockupWrap.style.top = v.lockup_y + "px";
+      }
+
+      var tl = gsap.timeline({ paused: true });
+      var step = PC.f(v.stagger_frames), fade = PC.f(v.fade_frames), t = v.enter_at;
+      tl.fromTo(card, { opacity: 0, y: 24, rotation: tilt, transformOrigin: "50% 50%" }, { opacity: 1, y: 0, duration: fade, ease: "power2.out" }, t);
+      PC.event("enter", t, { el: "ec-card" }); PC.event("land", t + fade, { el: "ec-card" });
+      t += step;
+      tl.fromTo(verb, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t); t += step;
+      tl.fromTo(pill, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t);
+      var typeEnd = PC.typeInto(tl, kw, v.keyword, t + fade, { framesPerChar: v.type_frames });
+      t += step;
+      tl.fromTo(linesEl, { opacity: 0 }, { opacity: 1, duration: fade, ease: "none" }, t); t += step;
+      // the mascots walk in from the left edge, bunched, then spread to their spots (v02 s30_cta43)
+      mascots.forEach(function (m, i) {
+        var from = -120 - i * 30;
+        tl.fromTo(m, { x: from - (startX + i * gap), opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, t + PC.f(i));
+        tl.to(m, { x: 0, duration: PC.f(10 + i * 2), ease: "power2.out" }, t + PC.f(i));
+        tl.to(m, { y: -6, duration: PC.f(3), ease: "power1.inOut", yoyo: true, repeat: 3 }, t + PC.f(i));
+      });
+      PC.event("mascots", t, { el: "ec-row" });
+      t += step + PC.f(8);
+      if (lockupImg) {
+        tl.fromTo(lockupWrap, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: fade, ease: "power2.out" }, Math.max(t, typeEnd + PC.f(2)));
+        PC.event("lockup", Math.max(t, typeEnd + PC.f(2)), { el: "ec-lockup" });
+      }
+      if (v.wobble) {
+        // a slow deterministic wobble of the card (v02): rotation and y as functions of time, never random
+        var wob = { p: 0 };
+        tl.to(wob, { p: 1, duration: 40, ease: "none", onUpdate: function () {
+          var s = wob.p * 40;
+          gsap.set(card, { rotation: tilt + Math.sin(s * 2.1) * 0.35, y: Math.sin(s * 1.6) * 2.5 });
+        } }, v.enter_at + fade);
+      }
+      window.__timelines["end-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "end-card", duration = 5;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

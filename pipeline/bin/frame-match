@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# frame-match: measure every motion library component frame by frame (Playwright, Chromium) and compare it with the
+# style's numbers (vocabulary.md and style.md through tokens.json: 1 frame, 10 percent) and with the reference
+# filmstrips of the same move (styles/paper-cards/analysis/<vXX>/extra/s30_*.png, when they exist). Writes
+# motion-lib/gallery/frame-match.md and frame-match.json. The code: pipeline/lib/motion/framematch.py.
+#
+#   bash pipeline/bin/frame-match [--only id,id] [--no-shots] [--apply] [--gpu auto|software|hardware]
+#
+#   --only      only these component ids
+#   --no-shots  skip the per-frame screenshots (no strip correlation; numbers only, faster)
+#   --apply     move the components that fail to motion-lib/candidates/ (a candidate that passes comes back) and
+#               write the result into catalog.json
+#   --gpu       the Chromium WebGL path for the hero-3d measurement (default auto: what motion-lib/webgl.json found)
+# Exit 0 when every component passes, 1 when one fails, 2 on a usage or environment problem.
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+for a in "$@"; do case "$a" in -h|--help) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac; done
+[ -f "$REELS_REPO/$(cfg paths.tokens styles/paper-cards/tokens.json)" ] || bash "$HERE/build-tokens" --quiet || exit 2
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+args=("$@")
+if ! printf '%s\n' "$@" | grep -q -- '--gpu' && [ -f "$REELS_MOTION_LIB/webgl.json" ]; then
+  mode="$("$REELS_PY" -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("harness_gpu", "auto"))' "$REELS_MOTION_LIB/webgl.json" 2>/dev/null || echo auto)"
+  args+=(--gpu "$mode")
+fi
+exec "$REELS_PY" "$LIB/motion" frame-match "${args[@]}"

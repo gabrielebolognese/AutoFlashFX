@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 560, "y": 1150, "text": "same shadow|every time", "arrow": "up-left", "arrow_len": 150, "text_frames": 6, "draw_frames": 8, "enter_at": 0.3, "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* handwritten-callout (vocabulary.md 22): a hand-drawn aside with an arrow pointing at something, in the script
+       color and the handwritten face (lines 69 px apart, font about 58). Its motion was not measured: the text fades
+       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #hc-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+    #hc-text { white-space: pre; }
+    #hc-arrow { position: absolute; overflow: visible; }
+    #hc-arrow path { fill: none; stroke: var(--c-script); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <div id="root" data-composition-id="handwritten-callout" data-width="1080" data-height="1920">
+    <div id="hc-wrap" class="pc-el">
+      <div id="hc-text" class="pc-hand"></div>
+    </div>
+    <svg id="hc-arrow" class="pc-el" width="300" height="300" viewBox="0 0 300 300"><path id="hc-path" d=""/><path id="hc-head" d=""/></svg>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("hc-wrap"), text = document.getElementById("hc-text"), svg = document.getElementById("hc-arrow");
+      var path = document.getElementById("hc-path"), head = document.getElementById("hc-head");
+      PC.place(wrap, { x: v.x, y: v.y });
+      text.textContent = String(v.text).split("|").join("\n");
+      // the arrow starts at the text's near corner and curves toward the target over arrow_len px
+      var dirs = { "up-left": [-1, -1], "up-right": [1, -1], "down-left": [-1, 1], "down-right": [1, 1] };
+      var d = dirs[v.arrow];
+      if (d) {
+        var L = v.arrow_len, cx = 150, cy = 150;
+        var ex = cx + d[0] * L * 0.75, ey = cy + d[1] * L;
+        var c1x = cx + d[0] * L * 0.1, c1y = cy + d[1] * L * 0.55;
+        path.setAttribute("d", "M" + cx + " " + cy + " Q" + c1x + " " + c1y + " " + ex + " " + ey);
+        var a = Math.atan2(ey - c1y, ex - c1x);
+        var h1x = ex - 22 * Math.cos(a - 0.55), h1y = ey - 22 * Math.sin(a - 0.55), h2x = ex - 22 * Math.cos(a + 0.55), h2y = ey - 22 * Math.sin(a + 0.55);
+        head.setAttribute("d", "M" + h1x + " " + h1y + " L" + ex + " " + ey + " L" + h2x + " " + h2y);
+        var ax = v.x + (d[0] < 0 ? -20 : text.offsetWidth + 20) - cx, ay = v.y + (d[1] < 0 ? 10 : text.offsetHeight - 10) - cy;
+        PC.place(svg, { x: ax, y: ay });
+      } else svg.style.display = "none";
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: PC.f(v.text_frames), ease: "none" }, v.enter_at);
+      PC.event("enter", v.enter_at, { el: "hc-text" });
+      if (d) {
+        var len = path.getTotalLength(), hl = head.getTotalLength();
+        path.style.strokeDasharray = len + " " + len; head.style.strokeDasharray = hl + " " + hl;
+        var at = v.enter_at + PC.f(v.text_frames) - PC.f(2);
+        tl.fromTo(path, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: PC.f(v.draw_frames), ease: "power1.inOut" }, at);
+        tl.fromTo(head, { strokeDashoffset: hl }, { strokeDashoffset: 0, duration: PC.f(3), ease: "power1.out" }, at + PC.f(v.draw_frames) - PC.f(1));
+        PC.event("draw", at, { el: "hc-arrow", end: at + PC.f(v.draw_frames + 2) });
+      }
+      PC.exit(tl, wrap, v.exit_at, v.exit);
+      if (d) PC.exit(tl, svg, v.exit_at, v.exit);
+      window.__timelines["handwritten-callout"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "handwritten-callout", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

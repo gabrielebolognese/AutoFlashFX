@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 300, "y": 880, "text": "Comment TELLS", "keyword": "TELLS", "tail": "bottom-left", "bubble_frames": 7, "overshoot_y": 40, "settle_frames": 9, "confetti": true, "confetti_count": 18, "seed": 7, "enter_at": 0.3, "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* speech-bubble (vocabulary.md 23, Speech bubble and confetti on the end card): the bubble scales from about 0.5 to 1
+       over 7 frames with a 40 px overshoot in y, settling over 9 more frames; a keyword pill pops 7 frames with 2
+       percent overshoot; confetti drifts (seeded, v07 f1251, v08 f1180). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #sb { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 18px; transform-origin: 20% 100%; }
+    #sb-bubble { position: relative; padding: 26px 38px; border-radius: 34px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 28px -6px rgba(133, 112, 92, 0.3); font-weight: 800; font-size: 44px; letter-spacing: -0.02em; white-space: nowrap; }
+    #sb-bubble::after { content: ""; position: absolute; bottom: -18px; left: 44px; width: 34px; height: 34px; background: var(--c-surface); transform: rotate(45deg); border-radius: 6px; box-shadow: 4px 4px 0 -1px var(--c-card-edge); }
+    #sb-bubble.right::after { left: auto; right: 44px; }
+    #sb-pill { margin-left: 20px; height: 96px; font-size: 56px; padding: 0 40px; }
+    #sb-confetti { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
+    .sb-piece { position: absolute; width: 16px; height: 24px; border-radius: 4px; }
+  </style>
+  <div id="root" data-composition-id="speech-bubble" data-width="1080" data-height="1920">
+    <div id="sb-confetti" class="pc-el"></div>
+    <div id="sb" class="pc-el"><div id="sb-bubble"></div><div id="sb-pill" class="pc-keyword-pill" style="display:none"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 300, y: 880, text: "", keyword: "", tail: "bottom-left", bubble_frames: 7, overshoot_y: 40, settle_frames: 9, confetti: true, confetti_count: 18, seed: 7,
+        enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var sb = document.getElementById("sb"), bubble = document.getElementById("sb-bubble"), pill = document.getElementById("sb-pill"), layer = document.getElementById("sb-confetti");
+      PC.place(sb, { x: v.x, y: v.y });
+      bubble.textContent = v.text;
+      if (v.tail === "bottom-right") bubble.classList.add("right");
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo(sb, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: PC.f(v.bubble_frames), ease: "power2.out" }, v.enter_at);
+      tl.fromTo(sb, { y: 0 }, { y: -v.overshoot_y, duration: PC.f(v.bubble_frames), ease: "power2.out" }, v.enter_at);
+      tl.to(sb, { y: 0, duration: PC.f(v.settle_frames), ease: "power2.inOut" }, v.enter_at + PC.f(v.bubble_frames));
+      PC.event("pop", v.enter_at, { el: "sb-bubble" });
+      if (v.keyword) {
+        pill.style.display = "inline-flex"; pill.textContent = v.keyword;
+        PC.pop(tl, pill, v.enter_at + PC.f(v.bubble_frames) + PC.f(4), { overshoot: 0.02, frames: 7 });
+      }
+      if (v.confetti) {
+        var rnd = PC.prng(v.seed), colors = ["#DC6532", "#289C5C", "#FFFAF7", "#C9623C", "#D67354"];
+        for (var i = 0; i < v.confetti_count; i++) {
+          var p = PC.el("div", "sb-piece", layer); p.id = "sb-p" + i;
+          p.style.background = colors[i % colors.length];
+          var px = v.x - 120 + rnd() * 520, py = v.y - 160 + rnd() * 120, delay = rnd() * 0.25, fall = 260 + rnd() * 240, rot = rnd() * 720 - 360;
+          p.style.left = px + "px"; p.style.top = py + "px";
+          var at = v.enter_at + delay;
+          tl.fromTo(p, { opacity: 0, y: 0, rotation: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
+          tl.to(p, { y: fall, rotation: rot, duration: 1.2 + rnd() * 0.5, ease: "power1.in" }, at);
+          tl.to(p, { opacity: 0, duration: 0.25, ease: "none" }, at + 1.1 + rnd() * 0.3);
+        }
+        PC.event("confetti", v.enter_at, { el: "sb-confetti" });
+      }
+      PC.exit(tl, sb, v.exit_at, v.exit);
+      window.__timelines["speech-bubble"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "speech-bubble", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

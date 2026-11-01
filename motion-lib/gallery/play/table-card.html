@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 520, "w": 900, "title": "", "logos_json": "[{\"label\":\"Default skill\"},{\"label\":\"frontend-design\"}]", "pill": "compared", "rows_json": "[{\"label\":\"Palette\",\"values\":[\"purple gradient\",\"4 to 6 hex colors\"],\"good\":[false,true]},{\"label\":\"Cards\",\"values\":[\"same radius\",\"one point of view\"],\"good\":[false,true]},{\"label\":\"Labels\",\"values\":[\"ALL CAPS 01 02\",\"plain\"],\"good\":[false,true]}]", "enter_frames": 7, "rise": 28, "row_gap_frames": 3, "enter_at": 0, "honesty": "none", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* table-card (vocabulary.md 24): a surface card with a logo row and a small pill, label and value rows with hairline
+       dividers, values right-aligned, good values in success. Card enter over 7 frames, rise 28 (v04 f195 to f202);
+       the rows follow 3 frames apart. Logos are image files (brand.json or research assets), never redrawn. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #tb { padding: 36px 44px 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; }
+    #tb-title { font-weight: 800; font-size: 36px; letter-spacing: -0.02em; }
+    #tb-head { display: grid; align-items: center; gap: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--c-card-edge); }
+    .tb-logo { display: flex; align-items: center; justify-content: flex-end; gap: 12px; font-weight: 800; font-size: 28px; }
+    .tb-logo .tile { width: 56px; height: 56px; border-radius: 14px; background: var(--c-surface-chrome); box-shadow: 0 0 0 1px var(--c-card-edge); display: flex; align-items: center; justify-content: center; padding: 8px; box-sizing: border-box; flex: 0 0 auto; }
+    .tb-logo .tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .tb-logo .tile svg { width: 60%; height: 60%; }
+    #tb-pill { justify-self: start; height: 52px; font-size: 28px; padding: 0 18px; }
+    .tb-row { display: grid; align-items: center; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--c-card-edge); }
+    .tb-row:last-child { border-bottom: none; }
+    .tb-label { font-weight: 700; font-size: 30px; opacity: 0.7; }
+    .tb-val { font-weight: 800; font-size: 30px; text-align: right; }
+    .tb-val.good { color: var(--c-success); }
+  </style>
+  <div id="root" data-composition-id="table-card" data-width="1080" data-height="1920">
+    <div id="tb" class="pc-card pc-el">
+      <div id="tb-title" style="display:none"></div>
+      <div id="tb-head"></div>
+      <div id="tb-rows"></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 520, w: 900, title: "", logos_json: [], pill: "", rows_json: [], enter_frames: 7, rise: 28, row_gap_frames: 3, enter_at: 0, honesty: "none", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var tb = document.getElementById("tb"), head = document.getElementById("tb-head"), rowsEl = document.getElementById("tb-rows");
+      PC.place(tb, { x: v.x, y: v.y, w: v.w });
+      if (v.title) { var t = document.getElementById("tb-title"); t.textContent = v.title; t.style.display = "block"; }
+      PC.honesty(tb, v.honesty, { top: -22, right: 24 });
+      var logos = Array.isArray(v.logos_json) ? v.logos_json : [];
+      var cols = Math.max(1, logos.length);
+      var neutral = '<svg viewBox="0 0 24 24" fill="none" stroke="#DC6532" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/></svg>';
+      var grid = "minmax(160px, 1fr) " + Array(cols + 1).join("minmax(0, 1fr) ");
+      head.style.gridTemplateColumns = grid;
+      var pillEl = PC.el("div", "pc-light-chip", head, v.pill || ""); pillEl.id = "tb-pill"; if (!v.pill) pillEl.style.visibility = "hidden";
+      logos.forEach(function (l) {
+        var cell = PC.el("div", "tb-logo", head);
+        var tile = PC.el("div", "tile", cell);
+        if (l.image) { var img = document.createElement("img"); img.src = l.image; img.alt = ""; tile.appendChild(img); } else tile.innerHTML = neutral;
+        PC.el("span", "", cell, l.label || "");
+      });
+      var rows = (Array.isArray(v.rows_json) ? v.rows_json : []).map(function (r, i) {
+        var row = PC.el("div", "tb-row", rowsEl); row.id = "tb-row-" + i; row.style.gridTemplateColumns = grid;
+        PC.el("div", "tb-label", row, r.label || "");
+        (r.values || []).forEach(function (val, j) {
+          var good = Array.isArray(r.good) ? !!r.good[j] : false;
+          PC.el("div", "tb-val" + (good ? " good" : ""), row, String(val));
+        });
+        return row;
+      });
+      var tl = gsap.timeline({ paused: true });
+      var landAt = PC.enter(tl, tb, v.enter_at, { rise: v.rise, positionFrames: v.enter_frames, opacityFrames: Math.min(5, v.enter_frames) });
+      rows.forEach(function (row, i) {
+        var at = landAt - PC.f(3) + PC.f(v.row_gap_frames) * i;
+        tl.fromTo(row, { opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
+        PC.event("row", at, { el: row.id });
+      });
+      PC.exit(tl, tb, v.exit_at, v.exit);
+      window.__timelines["table-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "table-card", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

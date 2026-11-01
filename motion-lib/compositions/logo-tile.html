@@ -1,0 +1,64 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":460},
+  {"id":"y","type":"number","label":"Top (px)","default":700},
+  {"id":"size","type":"number","label":"Tile size (px)","default":160},
+  {"id":"shape","type":"enum","label":"Rounded square tile (v02) or circle badge (v01)","default":"tile","options":[{"value":"tile","label":"tile"},{"value":"badge","label":"badge"}]},
+  {"id":"image","type":"string","label":"Logo image (assets/brand/... from brand.json, or a research asset); empty = the neutral icon","default":""},
+  {"id":"image_pad","type":"number","label":"Padding around the logo (px)","default":30},
+  {"id":"second_image","type":"string","label":"A second tile sliding in from the left (image path, optional)","default":""},
+  {"id":"overshoot","type":"number","label":"Pop overshoot (0.13 tiles, 0.16 badges)","default":0.13},
+  {"id":"frames","type":"number","label":"Pop frames","default":14},
+  {"id":"enter_at","type":"number","label":"Pop at (s)","default":0},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* logo-tile (vocabulary.md 14, Logo tile or logo badge): names the tool or brand. A surface rounded square (v02) or
+       circle badge (v01) holding the logo as an image file with its aspect ratio locked (BRAND.md: never redrawn,
+       recolored or stretched; the tile keeps the style's shadow, the logo gets none). Pops with 13 percent overshoot
+       over 14 frames (v08); a second tile slides in from the left over 9 frames with a 6 px overshoot (v08). With no
+       image the tile shows the style's neutral icon in accent. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    .lt { position: absolute; box-sizing: border-box; }
+    .lt img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .lt svg { width: 56%; height: 56%; }
+  </style>
+  <div id="root" data-composition-id="logo-tile" data-width="1080" data-height="1920">
+    <div id="lt-main" class="lt pc-el"></div>
+    <div id="lt-second" class="lt pc-el" style="display: none"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 460, y: 700, size: 160, shape: "tile", image: "", image_pad: 30, second_image: "", overshoot: 0.13, frames: 14, enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var neutral = '<svg viewBox="0 0 24 24" fill="none" stroke="#DC6532" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/></svg>';
+      function fill(el, image) {
+        el.className = "lt pc-el " + (v.shape === "badge" ? "pc-logo-badge" : "pc-logo-tile");
+        el.style.width = v.size + "px"; el.style.height = v.size + "px"; el.style.padding = v.image_pad + "px";
+        if (image) { var img = document.createElement("img"); img.src = image; img.alt = ""; img.className = "pc-logo"; el.appendChild(img); }
+        else el.innerHTML = neutral;
+      }
+      var main = document.getElementById("lt-main"), second = document.getElementById("lt-second");
+      fill(main, v.image); PC.place(main, { x: v.x, y: v.y });
+      var tl = gsap.timeline({ paused: true });
+      PC.pop(tl, main, v.enter_at, { overshoot: v.overshoot, frames: v.frames, from: 0.55 });
+      if (v.second_image) {
+        second.style.display = "flex"; fill(second, v.second_image);
+        PC.place(second, { x: v.x + v.size + 28, y: v.y });
+        var at = v.enter_at + PC.f(v.frames) + PC.f(3);
+        tl.fromTo(second, { x: -(v.size + 28), opacity: 0 }, { opacity: 1, duration: PC.f(3), ease: "none" }, at);
+        tl.to(second, { x: 6, duration: PC.f(7), ease: "power2.out" }, at);
+        tl.to(second, { x: 0, duration: PC.f(2), ease: "power1.inOut" }, at + PC.f(7));
+        PC.event("slide", at, { el: "lt-second" });
+      }
+      PC.exit(tl, main, v.exit_at, v.exit);
+      if (v.second_image) PC.exit(tl, second, v.exit_at, v.exit);
+      window.__timelines["logo-tile"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

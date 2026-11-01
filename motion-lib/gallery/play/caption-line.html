@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"chunks_json": "[{\"start\":0.2,\"end\":1.4,\"words\":[{\"w\":\"You\",\"t\":0.2},{\"w\":\"ship\",\"t\":0.45},{\"w\":\"Claude\",\"t\":0.7,\"em\":true},{\"w\":\"Code\",\"t\":0.95,\"em\":true}]},{\"start\":1.45,\"end\":2.9,\"words\":[{\"w\":\"client\",\"t\":1.45},{\"w\":\"sites.\",\"t\":1.8}]}]", "y": 1480, "max_w": 620, "word_frames": 4, "box_frames": 4, "box_rise": 9, "out_frames": 2};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* caption-line (vocabulary.md 7, style.md Captions): the spoken words, one chunk of 1 to 4 words at a time, bare ink
+       words, sentence case, centered at cap center y 1480 (tweaks.md Caption box line), at most 620 px wide. The chunk is
+       laid out at its final width; each word appears in its own place when it is spoken (opacity 0 to 1 over 4 frames,
+       plain fade: open question 12). Emphasis words sit on an accent box that fades in with the word, rising 9 px.
+       The old chunk fades out over 2 frames; the next chunk's first word starts on the following frame. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    .pc-caption-chunk { line-height: 1; }
+    /* a 9 px gap between a plain word and the next box (style.md Captions); the boxes of adjacent emphasis words touch */
+    .pc-caption-word { margin: 0 0.14em; }
+    .pc-caption-word.em { margin: 0 14px; }
+    .pc-caption-word .pc-caption-box { left: -14px; right: -14px; top: 50%; height: var(--emphasis-h); margin-top: calc(var(--emphasis-h) / -2 - 2px); }
+    .pc-caption-word.em + .pc-caption-word.em { margin-left: 14px; }
+  </style>
+  <div id="root" data-composition-id="caption-line" data-width="1080" data-height="1920">
+    <div id="cap-layer" class="pc-el" style="left: 0; top: 0; width: 1080px; height: 1920px;"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ chunks_json: [], y: 1480, max_w: 620, word_frames: 4, box_frames: 4, box_rise: 9, out_frames: 2 }, window.__hyperframes.getVariables());
+      var layer = document.getElementById("cap-layer");
+      var chunks = Array.isArray(v.chunks_json) ? v.chunks_json : [];
+      var fontPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-font")) || 67;
+      var capPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-cap")) || 48;
+      var tl = gsap.timeline({ paused: true });
+      var F = PC.f;
+      chunks.forEach(function (chunk, ci) {
+        var div = PC.el("div", "pc-caption-chunk", layer);
+        div.id = "cap-c" + ci;
+        // the line box is fontPx tall; the cap center sits about 0.36 em above the baseline, which is at ~0.78 of the box
+        div.style.top = (v.y - fontPx * 0.5) + "px";
+        var words = (chunk.words || []).map(function (wd, wi) {
+          var span = PC.el("span", "pc-caption-word" + (wd.em ? " em" : ""), div);
+          span.id = "cap-c" + ci + "-w" + wi;
+          if (wd.em) { var box = PC.el("span", "pc-caption-box", span); box.id = span.id + "-box"; }
+          var txt = PC.el("span", "pc-caption-text", span, wd.w);
+          return { span: span, box: wd.em ? span.firstChild : null, t: typeof wd.t === "number" ? wd.t : chunk.start };
+        });
+        // fit: a chunk wider than max_w scales down (the text plan should have split it; this keeps it inside the zone)
+        var width = div.scrollWidth;
+        if (width > v.max_w && width > 0) {
+          var k = Math.max(0.6, v.max_w / width);
+          div.style.transform = "scale(" + k + ")";
+          div.style.transformOrigin = "50% 50%";
+          PC.event("caption_overflow", chunk.start, { chunk: ci, width: width, scale: k });
+        }
+        var start = typeof chunk.start === "number" ? chunk.start : (words[0] ? words[0].t : 0);
+        var end = typeof chunk.end === "number" ? chunk.end : start + 1;
+        var next = chunks[ci + 1];
+        if (next) {
+          var nextFirst = (next.words && next.words[0] && typeof next.words[0].t === "number") ? next.words[0].t : next.start;
+          if (typeof nextFirst === "number") end = Math.min(end, nextFirst - F(1));  // no overlap: the next word on the following frame
+        }
+        tl.set(div, { opacity: 1 }, 0);
+        words.forEach(function (wd) {
+          var at = Math.max(wd.t, start);
+          tl.fromTo(wd.span, { opacity: 0 }, { opacity: 1, duration: F(v.word_frames), ease: "none" }, at);
+          if (wd.box) tl.fromTo(wd.box, { opacity: 0, y: v.box_rise }, { opacity: 1, y: 0, duration: F(v.box_frames), ease: "power1.out" }, at);
+          PC.event("caption_word", at, { chunk: ci, text: wd.span.textContent, em: !!wd.box });
+        });
+        var outAt = Math.max(end - F(v.out_frames), start);
+        tl.to(div, { opacity: 0, duration: F(v.out_frames), ease: "none" }, outAt);
+        tl.set(div, { opacity: 0, visibility: "hidden" }, end);
+        tl.set(div, { visibility: "visible" }, 0);
+        PC.event("caption_chunk", start, { chunk: ci, end: end, words: words.length });
+      });
+      window.__timelines["caption-line"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "caption-line", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

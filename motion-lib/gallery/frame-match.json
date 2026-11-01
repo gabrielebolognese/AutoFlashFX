@@ -1,0 +1,2345 @@
+{
+ "run": "2026-11-01T17:57:32",
+ "results": [
+  {
+   "id": "camera-move",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "shrink: end scale",
+     "expected": 0.4583333333333333,
+     "measured": 0.458,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "shrink: frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v05/extra/s30_windowshrink_f520.png",
+     "r": 0.641,
+     "ref_onset": 8,
+     "cur_onset": 19,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_zoom27.png",
+      "r": 0.488,
+      "ref_onset": 6,
+      "cur_onset": 19,
+      "frames": 11
+     },
+     {
+      "strip": "v05/extra/s30_windowshrink_f520.png",
+      "r": 0.641,
+      "ref_onset": 8,
+      "cur_onset": 19,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "camera",
+     "t": 0.6,
+     "el": "cm-stage",
+     "kind": "pullback",
+     "end": 0.8666666666666667
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "caption-line",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "exit: frames to fade out",
+     "expected": 2,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 1,
+     "measured": 2,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_031.0_highlight.png",
+     "r": 0.96,
+     "ref_onset": 7,
+     "cur_onset": 41,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_capswap_008.0.png",
+      "r": 0.75,
+      "ref_onset": 17,
+      "cur_onset": 41,
+      "frames": 7
+     },
+     {
+      "strip": "v01/extra/s30_sc18.png",
+      "r": 0.102,
+      "ref_onset": 2,
+      "cur_onset": 41,
+      "frames": 7
+     },
+     {
+      "strip": "v06/extra/s30_031.0_highlight.png",
+      "r": 0.96,
+      "ref_onset": 7,
+      "cur_onset": 41,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "caption_overflow",
+     "t": 0.2,
+     "chunk": 0,
+     "width": 1080,
+     "scale": 0.6
+    },
+    {
+     "type": "caption_word",
+     "t": 0.2,
+     "chunk": 0,
+     "text": "You",
+     "em": false
+    },
+    {
+     "type": "caption_word",
+     "t": 0.45,
+     "chunk": 0,
+     "text": "ship",
+     "em": false
+    },
+    {
+     "type": "caption_word",
+     "t": 0.7,
+     "chunk": 0,
+     "text": "Claude",
+     "em": true
+    },
+    {
+     "type": "caption_word",
+     "t": 0.95,
+     "chunk": 0,
+     "text": "Code",
+     "em": true
+    },
+    {
+     "type": "caption_chunk",
+     "t": 0.2,
+     "chunk": 0,
+     "end": 1.4,
+     "words": 4
+    },
+    {
+     "type": "caption_overflow",
+     "t": 1.45,
+     "chunk": 1,
+     "width": 1080,
+     "scale": 0.6
+    },
+    {
+     "type": "caption_word",
+     "t": 1.45,
+     "chunk": 1,
+     "text": "client",
+     "em": false
+    },
+    {
+     "type": "caption_word",
+     "t": 1.8,
+     "chunk": 1,
+     "text": "sites.",
+     "em": false
+    },
+    {
+     "type": "caption_chunk",
+     "t": 1.45,
+     "chunk": 1,
+     "end": 2.9,
+     "words": 2
+    }
+   ],
+   "frames_measured": 91
+  },
+  {
+   "id": "card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_hook_000.0.png",
+     "r": 0.911,
+     "ref_onset": 5,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.911,
+      "ref_onset": 5,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_001.0_card.png",
+      "r": 0.437,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v07/extra/s30_000.0_hook.png",
+      "r": -0.004,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "card-box"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "card-box"
+    },
+    {
+     "type": "mascot",
+     "t": 0.4,
+     "el": "card-mascot"
+    }
+   ],
+   "frames_measured": 25
+  },
+  {
+   "id": "chart-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "grow: h growth frames (fit)",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 2,
+     "measured": [
+      2
+     ],
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_bars_f1426.png",
+     "r": 0.983,
+     "ref_onset": 3,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_bars_f1426.png",
+      "r": 0.983,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_048.0_bars.png",
+      "r": 0.96,
+      "ref_onset": 11,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "cc"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "cc"
+    },
+    {
+     "type": "bar",
+     "t": 0.267,
+     "el": "cc-bar-0",
+     "end": 0.6666666666666667,
+     "highlight": false
+    },
+    {
+     "type": "bar",
+     "t": 0.333,
+     "el": "cc-bar-1",
+     "end": 0.7333333333333334,
+     "highlight": false
+    },
+    {
+     "type": "bar",
+     "t": 0.4,
+     "el": "cc-bar-2",
+     "end": 0.8,
+     "highlight": false
+    },
+    {
+     "type": "bar",
+     "t": 0.467,
+     "el": "cc-bar-3",
+     "end": 0.8666666666666667,
+     "highlight": true
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "chat-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 1.15,
+     "measured": 1.154,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_070.9_typing_tail.png",
+     "r": 0.972,
+     "ref_onset": 3,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_004.4_caption_tag.png",
+      "r": 0.003,
+      "ref_onset": 6,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_070.9_typing_tail.png",
+      "r": 0.972,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "chat"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "chat"
+    },
+    {
+     "type": "typing",
+     "t": 0.4,
+     "el": "chat-input",
+     "end": 2.4316666666666666,
+     "chars": 53
+    },
+    {
+     "type": "send",
+     "t": 2.532,
+     "el": "chat-send"
+    },
+    {
+     "type": "reply",
+     "t": 2.865,
+     "el": "chat-reply"
+    }
+   ],
+   "frames_measured": 111
+  },
+  {
+   "id": "check-badge",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.16,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_check_f1200.png",
+     "r": 0.979,
+     "ref_onset": 3,
+     "cur_onset": 2,
+     "frames": 15
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_035.6_checks.png",
+      "r": 0.733,
+      "ref_onset": 0,
+      "cur_onset": 2,
+      "frames": 15
+     },
+     {
+      "strip": "v06/extra/s30_065.6_ticks.png",
+      "r": 0.886,
+      "ref_onset": 13,
+      "cur_onset": 2,
+      "frames": 15
+     },
+     {
+      "strip": "v04/extra/s30_check_f1200.png",
+      "r": 0.979,
+      "ref_onset": 3,
+      "cur_onset": 2,
+      "frames": 15
+     },
+     {
+      "strip": "v03/extra/s30_cta_058.0.png",
+      "r": 0.93,
+      "ref_onset": 1,
+      "cur_onset": 2,
+      "frames": 15
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "cb-badge"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.233,
+     "el": "cb-badge"
+    },
+    {
+     "type": "check",
+     "t": 0,
+     "el": "cb-badge"
+    }
+   ],
+   "frames_measured": 25
+  },
+  {
+   "id": "dark-chip",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.01 to 0.03",
+     "measured": 0.02,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_004.4_caption_tag.png",
+     "r": 0.69,
+     "ref_onset": 6,
+     "cur_onset": 1,
+     "frames": 6
+    },
+    "strips": [
+     {
+      "strip": "v01/extra/s30_sc05.png",
+      "r": 0.116,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 6
+     },
+     {
+      "strip": "v07/extra/s30_004.4_caption_tag.png",
+      "r": 0.69,
+      "ref_onset": 6,
+      "cur_onset": 1,
+      "frames": 6
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "chip"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.067,
+     "el": "chip"
+    }
+   ],
+   "frames_measured": 13
+  },
+  {
+   "id": "dm-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_hook_000.0.png",
+     "r": 0.916,
+     "ref_onset": 5,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.916,
+      "ref_onset": 5,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_001.0_card.png",
+      "r": 0.418,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "dm"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "dm"
+    },
+    {
+     "type": "notification",
+     "t": 0.267,
+     "el": "dm"
+    }
+   ],
+   "frames_measured": 21
+  },
+  {
+   "id": "end-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 6,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 6,
+     "measured": [
+      6,
+      6,
+      6
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 2,
+     "measured": 2.0,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v09/extra/s30_049.7_end.png",
+     "r": 0.959,
+     "ref_onset": 3,
+     "cur_onset": 1,
+     "frames": 9
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_cta43.png",
+      "r": 0.627,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 9
+     },
+     {
+      "strip": "v07/extra/s30_041.0_end.png",
+      "r": 0.165,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 9
+     },
+     {
+      "strip": "v08/extra/s30_038.9_end.png",
+      "r": 0.905,
+      "ref_onset": 1,
+      "cur_onset": 1,
+      "frames": 9
+     },
+     {
+      "strip": "v09/extra/s30_049.7_end.png",
+      "r": 0.959,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 9
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "ec-card"
+    },
+    {
+     "type": "land",
+     "t": 0.2,
+     "el": "ec-card"
+    },
+    {
+     "type": "typing",
+     "t": 0.6,
+     "el": "ec-keyword",
+     "end": 0.9333333333333333,
+     "chars": 5
+    },
+    {
+     "type": "mascots",
+     "t": 0.8,
+     "el": "ec-row"
+    },
+    {
+     "type": "lockup",
+     "t": 1.267,
+     "el": "ec-lockup"
+    }
+   ],
+   "frames_measured": 71
+  },
+  {
+   "id": "exit-move",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "exit: frames (fit, ease-in)",
+     "expected": 10,
+     "measured": 10,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "exit: leaves the frame",
+     "expected": "yes",
+     "measured": "yes",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_003.2_badge_exit.png",
+     "r": 0.992,
+     "ref_onset": 17,
+     "cur_onset": 30,
+     "frames": 13
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_003.2_badge_exit.png",
+      "r": 0.992,
+      "ref_onset": 17,
+      "cur_onset": 30,
+      "frames": 13
+     },
+     {
+      "strip": "v07/extra/s30_034.7_exit_counter.png",
+      "r": 0.76,
+      "ref_onset": 3,
+      "cur_onset": 30,
+      "frames": 13
+     },
+     {
+      "strip": "v08/extra/s30_010.6_scatter.png",
+      "r": 0.873,
+      "ref_onset": 2,
+      "cur_onset": 30,
+      "frames": 13
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "fall",
+     "t": 0.8,
+     "el": "xm-leaving"
+    },
+    {
+     "type": "fall",
+     "t": 0.8,
+     "end": 1.1333333333333333
+    },
+    {
+     "type": "enter",
+     "t": 0.8,
+     "el": "xm-next"
+    },
+    {
+     "type": "land",
+     "t": 1.067,
+     "el": "xm-next"
+    }
+   ],
+   "frames_measured": 51
+  },
+  {
+   "id": "fly-in",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fly: distance y",
+     "expected": 930,
+     "measured": 899.7,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: frames (fit)",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_000.0_hook.png",
+     "r": 0.958,
+     "ref_onset": 8,
+     "cur_onset": 2,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_000.0_hook.png",
+      "r": 0.958,
+      "ref_onset": 8,
+      "cur_onset": 2,
+      "frames": 17
+     },
+     {
+      "strip": "v07/extra/s30_011.4_window_rise.png",
+      "r": 0.921,
+      "ref_onset": 22,
+      "cur_onset": 2,
+      "frames": 17
+     },
+     {
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.957,
+      "ref_onset": 4,
+      "cur_onset": 2,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "fi",
+     "move": "fly-in"
+    },
+    {
+     "type": "land",
+     "t": 0.467,
+     "el": "fi"
+    },
+    {
+     "type": "mascot",
+     "t": 0.6,
+     "el": "fi-mascot"
+    }
+   ],
+   "frames_measured": 31
+  },
+  {
+   "id": "handwritten-callout",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "hc-text"
+    },
+    {
+     "type": "draw",
+     "t": 0.133,
+     "el": "hc-arrow",
+     "end": 0.4666666666666667
+    }
+   ],
+   "frames_measured": 25
+  },
+  {
+   "id": "headline",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "visible_at_zero: visible at frame 0",
+     "expected": 1,
+     "measured": 1,
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 3,
+     "measured": [
+      3,
+      3
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v02/extra/s30_hook.png",
+     "r": 0.929,
+     "ref_onset": 2,
+     "cur_onset": 19,
+     "frames": 6
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.929,
+      "ref_onset": 2,
+      "cur_onset": 19,
+      "frames": 6
+     },
+     {
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.838,
+      "ref_onset": 3,
+      "cur_onset": 19,
+      "frames": 6
+     },
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.545,
+      "ref_onset": 3,
+      "cur_onset": 19,
+      "frames": 6
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "headline_overflow",
+     "t": 0,
+     "widest": 1184,
+     "scale": 0.7601351351351351
+    },
+    {
+     "type": "word",
+     "t": 0.5,
+     "el": "hl-0",
+     "text": "Why"
+    },
+    {
+     "type": "word",
+     "t": 0.6,
+     "el": "hl-1",
+     "text": "your"
+    },
+    {
+     "type": "word",
+     "t": 0.7,
+     "el": "hl-2",
+     "text": "Claude"
+    },
+    {
+     "type": "word",
+     "t": 0.8,
+     "el": "hl-3",
+     "text": "Code"
+    },
+    {
+     "type": "word",
+     "t": 0.9,
+     "el": "hl-4",
+     "text": "cards"
+    },
+    {
+     "type": "word",
+     "t": 1,
+     "el": "hl-5",
+     "text": "all"
+    },
+    {
+     "type": "word",
+     "t": 1.1,
+     "el": "hl-6",
+     "text": "look"
+    },
+    {
+     "type": "word",
+     "t": 1.2,
+     "el": "hl-7",
+     "text": "identical."
+    }
+   ],
+   "frames_measured": 61
+  },
+  {
+   "id": "hero-3d",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "webgl: a WebGL context in the harness",
+     "expected": "yes",
+     "measured": "yes",
+     "ok": true,
+     "unit": "",
+     "warning": ""
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": true,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0.2,
+     "el": "h3-canvas",
+     "kind": "3d"
+    },
+    {
+     "type": "land",
+     "t": 0.6,
+     "el": "h3-canvas"
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "light-chip",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_label_042.4.png",
+     "r": 0.937,
+     "ref_onset": 2,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_label_042.4.png",
+      "r": 0.937,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "lchip"
+    }
+   ],
+   "frames_measured": 13
+  },
+  {
+   "id": "logo-tile",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.13,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fly: distance x",
+     "expected": 188,
+     "measured": 188,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: overshoot px",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: frames to settle",
+     "expected": 9,
+     "measured": 9,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_003.8_logo_chain.png",
+     "r": 0.934,
+     "ref_onset": 9,
+     "cur_onset": 18,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_003.8_logo_chain.png",
+      "r": 0.934,
+      "ref_onset": 9,
+      "cur_onset": 18,
+      "frames": 17
+     },
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.634,
+      "ref_onset": 2,
+      "cur_onset": 18,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "lt-main"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.267,
+     "el": "lt-main"
+    },
+    {
+     "type": "slide",
+     "t": 0.567,
+     "el": "lt-second"
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "mascot",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_000.8_mascot_title.png",
+     "r": 0.975,
+     "ref_onset": 17,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.496,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 7
+     },
+     {
+      "strip": "v08/extra/s30_000.8_mascot_title.png",
+      "r": 0.975,
+      "ref_onset": 17,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "mascot",
+     "t": 0,
+     "el": "ms-wrap",
+     "move": "rise"
+    }
+   ],
+   "frames_measured": 13
+  },
+  {
+   "id": "paper-canvas",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "static: renders",
+     "expected": "no page errors",
+     "measured": 0,
+     "ok": true,
+     "unit": ""
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [],
+   "frames_measured": 7
+  },
+  {
+   "id": "pop",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.13,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_003.8_logo_chain.png",
+     "r": 0.957,
+     "ref_onset": 9,
+     "cur_onset": 1,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_003.8_logo_chain.png",
+      "r": 0.957,
+      "ref_onset": 9,
+      "cur_onset": 1,
+      "frames": 17
+     },
+     {
+      "strip": "v03/extra/s30_cta_058.0.png",
+      "r": 0.888,
+      "ref_onset": 0,
+      "cur_onset": 1,
+      "frames": 17
+     },
+     {
+      "strip": "v09/extra/s30_002.3_stickers.png",
+      "r": 0.464,
+      "ref_onset": 0,
+      "cur_onset": 1,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "pop-el"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.267,
+     "el": "pop-el"
+    }
+   ],
+   "frames_measured": 25
+  },
+  {
+   "id": "progress-bar",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "grow: w growth frames (fit)",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: overshoot",
+     "expected": 0.16,
+     "measured": 0.16,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v01/extra/s30_card33.png",
+     "r": 0.965,
+     "ref_onset": 7,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v01/extra/s30_card33.png",
+      "r": 0.965,
+      "ref_onset": 7,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "pb"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "pb"
+    },
+    {
+     "type": "count_start",
+     "t": 0.5,
+     "el": "pb-pct"
+    },
+    {
+     "type": "count_end",
+     "t": 0.7,
+     "el": "pb-pct"
+    },
+    {
+     "type": "fill",
+     "t": 0.5,
+     "el": "pb-fill",
+     "end": 0.7
+    },
+    {
+     "type": "pop",
+     "t": 0.667,
+     "el": "pb-check"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.733,
+     "el": "pb-check"
+    },
+    {
+     "type": "check",
+     "t": 0.667,
+     "el": "pb-check"
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "speech-bubble",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "bubble: overshoot y px",
+     "expected": 40,
+     "measured": 40,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "bubble: frames to the peak",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "bubble: settle frames after the peak",
+     "expected": 9,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: overshoot",
+     "expected": "0.01 to 0.03",
+     "measured": 0.02,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_041.0_end.png",
+     "r": 0.931,
+     "ref_onset": 3,
+     "cur_onset": 9,
+     "frames": 10
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_041.0_end.png",
+      "r": 0.931,
+      "ref_onset": 3,
+      "cur_onset": 9,
+      "frames": 10
+     },
+     {
+      "strip": "v08/extra/s30_038.9_end.png",
+      "r": 0.302,
+      "ref_onset": 0,
+      "cur_onset": 9,
+      "frames": 10
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "sb-bubble"
+    },
+    {
+     "type": "pop",
+     "t": 0.367,
+     "el": "sb-pill"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.5,
+     "el": "sb-pill"
+    },
+    {
+     "type": "confetti",
+     "t": 0,
+     "el": "sb-confetti"
+    }
+   ],
+   "frames_measured": 41
+  },
+  {
+   "id": "stat-number",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "count: frames to the final value",
+     "expected": 27.5,
+     "measured": 27,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_count_044.9.png",
+     "r": 0.57,
+     "ref_onset": 3,
+     "cur_onset": 16,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_007.8_countup.png",
+      "r": 0.467,
+      "ref_onset": 20,
+      "cur_onset": 16,
+      "frames": 11
+     },
+     {
+      "strip": "v03/extra/s30_count_044.9.png",
+      "r": 0.57,
+      "ref_onset": 3,
+      "cur_onset": 16,
+      "frames": 11
+     },
+     {
+      "strip": "v04/extra/s30_count_f925.png",
+      "r": 0.567,
+      "ref_onset": 1,
+      "cur_onset": 16,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "stat-wrap"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "stat-wrap"
+    },
+    {
+     "type": "count_start",
+     "t": 0.267,
+     "el": "stat-num"
+    },
+    {
+     "type": "count_end",
+     "t": 1.183,
+     "el": "stat-num"
+    }
+   ],
+   "frames_measured": 49
+  },
+  {
+   "id": "strike-through",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "grow: w growth frames (fit)",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 2,
+     "measured": 2.0,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_strike_f1007.png",
+     "r": 0.977,
+     "ref_onset": 2,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_strike_f1007.png",
+      "r": 0.977,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 7
+     },
+     {
+      "strip": "v06/extra/s30_062.3_xstamp.png",
+      "r": 0.939,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "st-text"
+    },
+    {
+     "type": "strike",
+     "t": 0.5,
+     "el": "st-line"
+    },
+    {
+     "type": "typing",
+     "t": 0.7,
+     "el": "st-replacement",
+     "end": 1.7,
+     "chars": 15
+    }
+   ],
+   "frames_measured": 71
+  },
+  {
+   "id": "table-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 28,
+     "measured": 28,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 3,
+     "measured": [
+      3
+     ],
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_scene_f184.png",
+     "r": 0.975,
+     "ref_onset": 3,
+     "cur_onset": 1,
+     "frames": 10
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_scene_f184.png",
+      "r": 0.975,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 10
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "tb"
+    },
+    {
+     "type": "land",
+     "t": 0.233,
+     "el": "tb"
+    },
+    {
+     "type": "row",
+     "t": 0.133,
+     "el": "tb-row-0"
+    },
+    {
+     "type": "row",
+     "t": 0.233,
+     "el": "tb-row-1"
+    },
+    {
+     "type": "row",
+     "t": 0.333,
+     "el": "tb-row-2"
+    }
+   ],
+   "frames_measured": 25
+  },
+  {
+   "id": "terminal-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 0.5,
+     "measured": 0.491,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_070.9_typing_tail.png",
+     "r": 0.96,
+     "ref_onset": 4,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_rewrite_f982.png",
+      "r": 0.02,
+      "ref_onset": 10,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_070.9_typing_tail.png",
+      "r": 0.96,
+      "ref_onset": 4,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "tc"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "tc"
+    },
+    {
+     "type": "typing",
+     "t": 0.533,
+     "el": "tc-line-0",
+     "end": 1.4833333333333334,
+     "chars": 57
+    },
+    {
+     "type": "typing",
+     "t": 1.683,
+     "el": "tc-line-1",
+     "end": 2.1666666666666665,
+     "chars": 29
+    },
+    {
+     "type": "typing",
+     "t": 2.367,
+     "el": "tc-line-2",
+     "end": 2.7333333333333334,
+     "chars": 22
+    }
+   ],
+   "frames_measured": 121
+  },
+  {
+   "id": "thumb-grid",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 1,
+     "measured": [
+      1,
+      1
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 7,
+     "measured": [
+      7
+     ],
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_gridsettle_f444.png",
+     "r": 0.746,
+     "ref_onset": 2,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_grid34.png",
+      "r": 0.171,
+      "ref_onset": 5,
+      "cur_onset": 1,
+      "frames": 7
+     },
+     {
+      "strip": "v04/extra/s30_deckgrid_f420.png",
+      "r": 0.409,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 7
+     },
+     {
+      "strip": "v04/extra/s30_gridsettle_f444.png",
+      "r": 0.746,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "card",
+     "t": 0,
+     "el": "tg-card-0",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.033,
+     "el": "tg-card-1",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.067,
+     "el": "tg-card-2",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.233,
+     "el": "tg-card-3",
+     "row": 1
+    },
+    {
+     "type": "card",
+     "t": 0.267,
+     "el": "tg-card-4",
+     "row": 1
+    },
+    {
+     "type": "card",
+     "t": 0.3,
+     "el": "tg-card-5",
+     "row": 1
+    }
+   ],
+   "frames_measured": 31
+  },
+  {
+   "id": "window-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_011.4_window_rise.png",
+     "r": 0.976,
+     "ref_onset": 23,
+     "cur_onset": 1,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_011.4_window_rise.png",
+      "r": 0.976,
+      "ref_onset": 23,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.892,
+      "ref_onset": 5,
+      "cur_onset": 1,
+      "frames": 11
+     },
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.912,
+      "ref_onset": 5,
+      "cur_onset": 1,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "wc"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "wc"
+    },
+    {
+     "type": "mascot",
+     "t": 0.4,
+     "el": "wc-mascot"
+    }
+   ],
+   "frames_measured": 25
+  }
+ ]
+}

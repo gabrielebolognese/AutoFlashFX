@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# gallery: build the motion library's gallery (BUILD_SPEC.md M9): one still per component (motion-lib/gallery/stills/),
+# the page that plays each component (motion-lib/gallery/index.html, open it in a browser), the inline players
+# (gallery/play/<id>.html) and the showreel motion-lib/index.html that `npx hyperframes check` runs on, all from
+# catalog.json. The code: pipeline/lib/motion/gallery.py.
+#   bash pipeline/bin/gallery [--no-stills] [--gpu auto|software|hardware]
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+for a in "$@"; do case "$a" in -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac; done
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+[ -f "$REELS_MOTION_LIB/catalog.json" ] || "$REELS_PY" "$LIB/motion" catalog --write >/dev/null || exit 2
+args=("$@")
+if ! printf '%s\n' "$@" | grep -q -- '--gpu' && [ -f "$REELS_MOTION_LIB/webgl.json" ]; then
+  mode="$("$REELS_PY" -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("harness_gpu", "auto"))' "$REELS_MOTION_LIB/webgl.json" 2>/dev/null || echo auto)"
+  args+=(--gpu "$mode")
+fi
+exec "$REELS_PY" "$LIB/motion" gallery "${args[@]}"

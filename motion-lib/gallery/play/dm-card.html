@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 110, "y": 700, "w": 860, "avatar": "assets/brand/mark/avatar-dark.png", "avatar_size": 120, "sender": "FlashFX", "message": "Comment TELLS and I send you the checklist", "time_label": "now", "app_label": "Instagram", "enter": "rise", "enter_at": 0.3, "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. Static: no timeline. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* dm-card (branding, tweaks.md "Branding (FlashFX account)", BUILD_SPEC.md 2.7): the DM notification card of the
+       CTA beat, in the style's look: a surface card with a round avatar image (mark/avatar-dark.png, at least 112 px
+       across so its bolt stays 64 px tall), the sender name "FlashFX" and one message line. The avatar is an image file
+       with its aspect ratio locked, never redrawn. Enters with the style's card move; its landing is the notification
+       sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #dm { display: flex; align-items: center; gap: 28px; padding: 26px 34px; box-sizing: border-box; }
+    #dm-avatar { flex: 0 0 auto; border-radius: 50%; overflow: hidden; background: var(--c-ink-chip); }
+    #dm-avatar img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    #dm-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    #dm-top { display: flex; align-items: baseline; gap: 14px; }
+    #dm-sender { font-weight: 800; font-size: 36px; letter-spacing: -0.01em; }
+    #dm-app { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 28px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; }
+    #dm-time { margin-left: auto; font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 28px; opacity: 0.55; }
+    #dm-message { font-weight: 600; font-size: 32px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  </style>
+  <div id="root" data-composition-id="dm-card" data-width="1080" data-height="1920">
+    <div id="dm" class="pc-card pc-el">
+      <div id="dm-avatar"><img id="dm-avatar-img" alt=""></div>
+      <div id="dm-text">
+        <div id="dm-top"><span id="dm-sender"></span><span id="dm-app"></span><span id="dm-time"></span></div>
+        <div id="dm-message"></div>
+      </div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 110, y: 1250, w: 860, avatar: "", avatar_size: 120, sender: "FlashFX", message: "", time_label: "now", app_label: "Instagram",
+        enter: "rise", enter_at: 0, exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("dm"), av = document.getElementById("dm-avatar"), img = document.getElementById("dm-avatar-img");
+      PC.place(card, { x: v.x, y: v.y, w: v.w });
+      var size = Math.max(112, v.avatar_size);
+      av.style.width = size + "px"; av.style.height = size + "px";
+      if (v.avatar) { img.src = v.avatar; } else { img.style.display = "none"; }
+      document.getElementById("dm-sender").textContent = v.sender;
+      document.getElementById("dm-app").textContent = v.app_label;
+      document.getElementById("dm-time").textContent = v.time_label;
+      document.getElementById("dm-message").textContent = v.message;
+
+      var tl = gsap.timeline({ paused: true });
+      var landAt;
+      if (v.enter === "pop") landAt = PC.pop(tl, card, v.enter_at, { overshoot: 0.02, frames: 7 });
+      else if (v.enter === "drop") {
+        tl.fromTo(card, { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: PC.f(8), ease: "expo.out" }, v.enter_at);
+        landAt = v.enter_at + PC.f(8);
+        PC.event("enter", v.enter_at, { el: "dm" }); PC.event("land", landAt, { el: "dm" });
+      } else landAt = PC.enter(tl, card, v.enter_at, { rise: 38 });
+      PC.event("notification", landAt, { el: "dm" });
+      PC.exit(tl, card, v.exit_at, v.exit);
+      window.__timelines["dm-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "dm-card", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

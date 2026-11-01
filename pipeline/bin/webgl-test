@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# webgl-test: the WebGL test for Three.js in headless Chrome on this PC (BUILD_SPEC.md M9): hardware ANGLE first (the
+# integrated GPU through D3D11), then SwiftShader software rendering, in the Playwright harness and through
+# HyperFrames' own render (--browser-gpu, --no-browser-gpu). Writes motion-lib/webgl.json (harness_gpu, render_flag,
+# webgl true or false) that frame-match, the gallery and S10 read. The code: pipeline/lib/motion/webgl.py.
+#   bash pipeline/bin/webgl-test [--out FILE]
+set -u
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB="$(cd "$HERE/../lib" && pwd)"
+source "$LIB/common.sh"
+source "$LIB/config.sh"
+for a in "$@"; do case "$a" in -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac; done
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+exec "$REELS_PY" "$LIB/motion" webgl "$@"
