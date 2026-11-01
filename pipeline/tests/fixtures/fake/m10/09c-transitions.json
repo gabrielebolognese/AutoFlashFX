@@ -1,0 +1,15 @@
+{
+ "transitions": [
+  {"from": "s1", "to": "s2", "type": "fade-blur", "why": "the headline fades as the stake card rises"},
+  {"from": "s2", "to": "s3", "type": "fall", "why": "the stake card falls away before the screenshot"},
+  {"from": "s3", "to": "s4", "type": "fade-blur", "why": "a calm move into the mechanism"},
+  {"from": "s4", "to": "s5", "type": "push", "why": "the beat turns: the card is pushed out for the strike-through"},
+  {"from": "s5", "to": "s6", "type": "fade-blur", "why": "the chip fades into the list card"},
+  {"from": "s6", "to": "s7", "type": "fall", "why": "the list falls before the checklist"},
+  {"from": "s7", "to": "s8", "type": "fade-blur", "why": "into the proof screenshot"},
+  {"from": "s8", "to": "s9", "type": "push", "why": "the proof is pushed out for the terminal"},
+  {"from": "s9", "to": "s10", "type": "fade-blur", "why": "the terminal fades into the payoff card"},
+  {"from": "s10", "to": "s11", "type": "fall", "why": "the payoff falls away and the end card builds"}
+ ],
+ "notes": "fade-blur by default, a fall or a push where the beat turns (open question 3: B)."
+}

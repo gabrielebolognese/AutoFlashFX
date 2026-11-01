@@ -1,0 +1,7 @@
+{
+ "type": "external",
+ "name": "frontend-design, the Claude Code plugin",
+ "url": "https://claude.com/plugins/frontend-design",
+ "reason": "test fixture (M10): a reel whose solution is an external tool with no logo among the research assets, so the brand slot shows the neutral icon and no FlashFX asset appears outside the CTA",
+ "written_by": "fixture"
+}

@@ -21,6 +21,7 @@ import re
 from visual import common
 
 SCHEMA = os.path.join(common.REPO, "pipeline", "stages", "09-plan", "schema.json")
+PASS_SCHEMAS = {"animations": "09a-animations", "text": "09b-text", "transitions": "09c-transitions"}  # a pass file validates against its own schema
 RULES = ["schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
          "set_pieces", "zones", "captions", "cards", "assets", "honesty", "branding", "transitions", "hook2"]
 SCENE_RULES = {"schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
@@ -210,7 +211,10 @@ def rule_schema(plan: dict, ctx: Context, rep: Report) -> None:
     except ImportError:
         rep.skip("schema")
         return
-    schema = common.load_json(SCHEMA)
+    path = SCHEMA
+    if plan.get("pass") in PASS_SCHEMAS:
+        path = os.path.join(common.REPO, "pipeline", "stages", PASS_SCHEMAS[plan["pass"]], "schema.json")
+    schema = common.load_json(path)
     v = jsonschema.validators.validator_for(schema)(schema)
     for e in sorted(v.iter_errors(plan), key=lambda e: [str(p) for p in e.absolute_path])[:12]:
         rep.err("schema", ("/".join(str(p) for p in e.absolute_path) or "$") + ": " + e.message[:160])

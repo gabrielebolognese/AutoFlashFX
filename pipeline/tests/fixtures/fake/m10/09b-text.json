@@ -1,0 +1,360 @@
+{
+ "cards": [
+  {
+   "component": "s6-card-1",
+   "prop": "title",
+   "text": "The tells the skill names"
+  },
+  {
+   "component": "s2-dark-chip-2",
+   "prop": "text",
+   "text": "same look, every site"
+  }
+ ],
+ "chunks": [
+  {
+   "words": [
+    "You",
+    "ship",
+    "Claude"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Code",
+    "client",
+    "sites."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Clients",
+    "spot",
+    "it"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "instantly."
+   ],
+   "emphasis": [
+    "instantly."
+   ]
+  },
+  {
+   "words": [
+    "Anthropic's",
+    "skill"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "file",
+    "names",
+    "it:"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "rounded",
+    "cards,"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "one",
+    "radius,"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "same",
+    "grey"
+   ],
+   "emphasis": [
+    "same",
+    "grey"
+   ]
+  },
+  {
+   "words": [
+    "shadow."
+   ],
+   "emphasis": [
+    "shadow."
+   ]
+  },
+  {
+   "words": [
+    "It's",
+    "not",
+    "your",
+    "fault."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Anthropic",
+    "calls",
+    "it"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "distributional"
+   ],
+   "emphasis": [
+    "distributional"
+   ]
+  },
+  {
+   "words": [
+    "convergence."
+   ],
+   "emphasis": [
+    "convergence."
+   ]
+  },
+  {
+   "words": [
+    "Even",
+    "Anthropic's"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "terracotta",
+    "on"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "cream",
+    "is",
+    "flagged"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "as",
+    "an",
+    "AI",
+    "look."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "One",
+    "accented"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "headline",
+    "word."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "All",
+    "caps",
+    "labels."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Fake",
+    "one,"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "two,",
+    "three."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "With",
+    "it",
+    "on,"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Claude",
+    "plans",
+    "four"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "to",
+    "six",
+    "hex",
+    "colors,"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "reviews,",
+    "then"
+   ],
+   "emphasis": [
+    "then"
+   ]
+  },
+  {
+   "words": [
+    "codes."
+   ],
+   "emphasis": [
+    "codes."
+   ]
+  },
+  {
+   "words": [
+    "Anthropic"
+   ],
+   "emphasis": [
+    "Anthropic"
+   ]
+  },
+  {
+   "words": [
+    "verified."
+   ],
+   "emphasis": [
+    "verified."
+   ]
+  },
+  {
+   "words": [
+    "Over",
+    "a",
+    "million"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "installs",
+    "as",
+    "of"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "November."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Type",
+    "slash",
+    "plugin"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "install",
+    "frontend"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "design",
+    "at",
+    "claude"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "plugins",
+    "official."
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "Pick",
+    "a",
+    "scope."
+   ],
+   "emphasis": [
+    "Pick",
+    "a",
+    "scope."
+   ]
+  },
+  {
+   "words": [
+    "Then",
+    "it",
+    "turns",
+    "on"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "by",
+    "itself",
+    "when"
+   ],
+   "emphasis": [
+    "by",
+    "itself"
+   ]
+  },
+  {
+   "words": [
+    "you",
+    "ask",
+    "for"
+   ],
+   "emphasis": []
+  },
+  {
+   "words": [
+    "frontend",
+    "work."
+   ],
+   "emphasis": []
+  }
+ ],
+ "labels": [
+  {
+   "scene": "s9",
+   "kind": "tag",
+   "text": "one command"
+  }
+ ],
+ "notes": "The baseline chunks read well; kept them. Two card texts confirmed as written."
+}

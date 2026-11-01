@@ -3,10 +3,15 @@
 # Tests never touch the real queue, runs, exports or logs: sandbox_init creates a temporary state root and exports
 # REELS_ROOT so every script writes there. KEEP_SANDBOX=1 keeps the folder for inspection.
 #
-#   sandbox_init [--with-pipeline]   new temporary root with config.json (voice.wpm set to SANDBOX_WPM when that is
+#   sandbox_init [--with-pipeline] [--with-visual]
+#                                    new temporary root with config.json (voice.wpm set to SANDBOX_WPM when that is
 #                                    exported), library text files, an empty ideas.txt;
 #                                    --with-pipeline also copies pipeline/ and run.sh and runs git init (so a fixer
 #                                    can commit there). Sets SANDBOX (POSIX path) and SANDBOX_M (C:/ form).
+#                                    --with-visual (M10) also copies what the visual stages read: motion-lib/
+#                                    (compositions, assets, catalog, webgl.json, the stills), styles/paper-cards/
+#                                    tokens.json, library/brand/, golden/test-idea/{plan.json, contact-sheet.png,
+#                                    README.md}; the Node packages stay in the real repo (REELS_NODE_PREFIX).
 #   sandbox_cleanup                  remove it (also run by the EXIT trap)
 #   fast_mode                        REELS_SLEEP_SCALE=0.001 REELS_STATUS_EVERY=2 REELS_POLL_SECONDS=1
 #                                    REELS_TICK_SECONDS=0.2 REELS_DUMMY_SECONDS=0.3 (unless already set)
@@ -70,7 +75,11 @@ sandbox_init() {
   cp "$REPO_DIR"/library/profile/*.md "$SANDBOX/library/profile/" 2>/dev/null || true
   : > "$SANDBOX/ideas.txt"
   export REELS_ROOT="$SANDBOX_M"
-  if [ "${1:-}" = "--with-pipeline" ]; then
+  local with_pipeline=0 with_visual=0 a
+  for a in "$@"; do
+    case "$a" in --with-pipeline) with_pipeline=1 ;; --with-visual) with_pipeline=1; with_visual=1 ;; esac
+  done
+  if [ "$with_pipeline" = 1 ]; then
     # a copy of the code as its own git repo, so a fixer commits there and never in the real repo; the style text
     # files and .gitattributes come along because the preflight and the line-ending rules need them
     cp -r "$REPO_DIR/pipeline" "$SANDBOX/pipeline"
@@ -81,6 +90,21 @@ sandbox_init() {
     mkdir -p "$SANDBOX/styles/paper-cards" "$SANDBOX/motion-lib/candidates"
     cp "$REPO_DIR"/styles/paper-cards/*.md "$SANDBOX/styles/paper-cards/" 2>/dev/null || true
     : > "$SANDBOX/motion-lib/candidates/.gitkeep"
+    # what the hard preflight checks of M10 read under the repo: tokens.json, the catalog, the brand kit, the Node package
+    cp "$REPO_DIR/styles/paper-cards/tokens.json" "$SANDBOX/styles/paper-cards/tokens.json" 2>/dev/null || true
+    cp "$REPO_DIR/motion-lib/catalog.json" "$SANDBOX/motion-lib/catalog.json" 2>/dev/null || true
+    cp -r "$REPO_DIR/library/brand" "$SANDBOX/library/brand" 2>/dev/null || true
+    mkdir -p "$SANDBOX/node_modules/hyperframes"
+    cp "$REPO_DIR/node_modules/hyperframes/package.json" "$SANDBOX/node_modules/hyperframes/package.json" 2>/dev/null || printf '{"name": "hyperframes", "version": "sandbox"}
+' > "$SANDBOX/node_modules/hyperframes/package.json"
+    if [ "$with_visual" = 1 ]; then
+      for d in compositions assets; do cp -r "$REPO_DIR/motion-lib/$d" "$SANDBOX/motion-lib/$d"; done
+      for f in catalog.json webgl.json hyperframes.json meta.json index.html; do cp "$REPO_DIR/motion-lib/$f" "$SANDBOX/motion-lib/$f" 2>/dev/null || true; done
+      mkdir -p "$SANDBOX/motion-lib/gallery"; cp -r "$REPO_DIR/motion-lib/gallery/stills" "$SANDBOX/motion-lib/gallery/stills" 2>/dev/null || true
+      mkdir -p "$SANDBOX/golden/test-idea"
+      for f in plan.json contact-sheet.png README.md; do cp "$REPO_DIR/golden/test-idea/$f" "$SANDBOX/golden/test-idea/$f" 2>/dev/null || true; done
+      export REELS_NODE_PREFIX="$(mixed "$REPO_DIR")"
+    fi
     printf 'runs/
 exports/
 logs/
@@ -137,7 +161,10 @@ dummy_after() {  # dummy_after <stage key> -> the REELS_DUMMY list of every stag
 }
 
 sandbox_cleanup() {
-  if [ -n "$SANDBOX" ] && [ -d "$SANDBOX" ] && [ -z "${KEEP_SANDBOX:-}" ]; then rm -rf "$SANDBOX"; fi
+  if [ -n "$SANDBOX" ] && [ -d "$SANDBOX" ] && [ -z "${KEEP_SANDBOX:-}" ]; then
+    # a render's browser may still hold a handle for a moment (M10): one more try after a pause
+    rm -rf "$SANDBOX" 2>/dev/null || { sleep 3; rm -rf "$SANDBOX" 2>/dev/null || rm -rf "$SANDBOX"; }
+  fi
   [ -n "$SANDBOX" ] && [ -n "${KEEP_SANDBOX:-}" ] && printf 'sandbox kept: %s\n' "$SANDBOX_M"
   SANDBOX=""
 }

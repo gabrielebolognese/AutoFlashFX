@@ -192,8 +192,8 @@ def step_compile(args, inp: common.Inputs, toks: dict, cat: dict, lib: str) -> i
     if n3d and wg.get("webgl") is False:
         replaced = replace_3d(plan, by_id)
         flags.append(f"3D beats replaced with 2D cards ({', '.join(replaced)}): WebGL is not available in headless Chrome on this PC (motion-lib/webgl.json)")
-    for w in plan.get("wishlist", []) or []:
-        flags.append(f"the visual director wanted a component the library lacks ({w.get('name')}: {str(w.get('does', ''))[:100]}); the reel uses library components instead")
+    # the director's wishlist (a component the library lacks) was flagged by 9a already (visual.sh); S10 only records it
+    wishlist = [str(w.get("name")) for w in (plan.get("wishlist", []) or []) if isinstance(w, dict) and w.get("name")]
     for f in flags:
         flag(f)
     role = "builder"
@@ -216,7 +216,7 @@ def step_compile(args, inp: common.Inputs, toks: dict, cat: dict, lib: str) -> i
     common.write_json(os.path.join(stage_dir, "plan.json"), plan)  # the plan as compiled (with the exit props of the transitions)
     say("INFO", f"S10: project built from the plan: {info['hosts']} hosts, {len(plan['scenes'])} scenes, assets {', '.join(info['assets']) or 'none'}; builder role {role}" + (f" ({n3d} 3D objects)" if n3d else ""))
     write_build_json(stage_dir, {"project": info["project"], "hosts": info["hosts"], "assets": info["assets"], "webgl": wg.get("webgl"), "render_flag": wg.get("render_flag", ""),
-                                 "three_d_objects": n3d, "builder_role": role, "review_rounds": review_rounds, "flags": flags, "fix_rounds": 0})
+                                 "three_d_objects": n3d, "builder_role": role, "review_rounds": review_rounds, "flags": flags, "wishlist": wishlist, "fix_rounds": 0})
     return step_check(args, inp, toks, cat, lib)
 
 

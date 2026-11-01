@@ -1,0 +1,1697 @@
+{
+ "plan_version": 1,
+ "style": "paper-cards",
+ "idea_id": "c26c94b17281",
+ "source": "fixture bad-distinct",
+ "fps": 30,
+ "duration_ms": 41460,
+ "voice": "08-voiceover/vo.wav",
+ "solution": {
+  "type": "external",
+  "name": "frontend-design, the Claude Code plugin",
+  "url": "https://claude.com/plugins/frontend-design",
+  "logo": null
+ },
+ "tracker": {
+  "enabled": false
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "dm_avatar": "brand/mark/avatar-dark.png",
+  "lockup": "brand/lockup/lockup-gradient-on-light.png",
+  "brand_slot": null,
+  "flashfx_allowed_outside_cta": false
+ },
+ "scenes": [
+  {
+   "id": "s1",
+   "beat": "b1",
+   "beat_type": "hook",
+   "start_ms": 0,
+   "end_ms": 3460,
+   "set_piece": true,
+   "hook_set_piece": true,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "identical",
+     "ms": 1810,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s1-headline-1",
+     "component": "headline",
+     "start_ms": 0,
+     "end_ms": 3460,
+     "props": {
+      "kicker": "CLAUDE CODE SITES",
+      "kicker_mark": "",
+      "lines_json": [
+       "Why your Claude Code",
+       "cards all look",
+       "*identical.*"
+      ],
+      "kicker_at": 0.05,
+      "x": 90,
+      "w": 900,
+      "align": "center",
+      "words_json": [
+       {
+        "w": "Why",
+        "t": 0.05
+       },
+       {
+        "w": "your",
+        "t": 0.17
+       },
+       {
+        "w": "Claude",
+        "t": 0.29
+       },
+       {
+        "w": "Code",
+        "t": 0.59
+       },
+       {
+        "w": "cards",
+        "t": 0.79
+       },
+       {
+        "w": "all",
+        "t": 1.21
+       },
+       {
+        "w": "look",
+        "t": 1.59
+       },
+       {
+        "w": "identical.",
+        "t": 1.81
+       }
+      ]
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s1-hero-3d-2",
+     "component": "card",
+     "start_ms": 2400,
+     "end_ms": 3460,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "set-piece",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "beat": "b2",
+   "beat_type": "stake",
+   "start_ms": 3460,
+   "end_ms": 6640,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "instantly",
+     "ms": 5980,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s2-card-1",
+     "component": "card",
+     "start_ms": 3460,
+     "end_ms": 6640,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Clients spot it instantly",
+      "body": "You ship Claude Code client sites.",
+      "mascot": "star",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s2-dark-chip-2",
+     "component": "card",
+     "start_ms": 5980,
+     "end_ms": 6640,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "beat": "b3",
+   "beat_type": "comparison",
+   "start_ms": 6640,
+   "end_ms": 11390,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "same grey shadow",
+     "ms": 10260,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s3-window-card-1",
+     "component": "card",
+     "start_ms": 6640,
+     "end_ms": 11390,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s3-dark-chip-2",
+     "component": "card",
+     "start_ms": 10780,
+     "end_ms": 11390,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "beat": "b4",
+   "beat_type": "mechanism",
+   "start_ms": 11390,
+   "end_ms": 15130,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "distributional convergence",
+     "ms": 13490,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s4-card-1",
+     "component": "card",
+     "start_ms": 11390,
+     "end_ms": 15130,
+     "props": {
+      "x": 90,
+      "y": 520,
+      "w": 900,
+      "title": "Distributional convergence",
+      "body": "It's not your fault.",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s4-handwritten-callout-2",
+     "component": "card",
+     "start_ms": 12870,
+     "end_ms": 15130,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s5",
+   "beat": "b5",
+   "beat_type": "comparison",
+   "start_ms": 15130,
+   "end_ms": 18860,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [],
+   "components": [
+    {
+     "id": "s5-light-chip-1",
+     "component": "card",
+     "start_ms": 15290,
+     "end_ms": 18860,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s5-strike-through-2",
+     "component": "card",
+     "start_ms": 15910,
+     "end_ms": 18860,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s6",
+   "beat": "b6",
+   "beat_type": "number",
+   "start_ms": 18860,
+   "end_ms": 22730,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [],
+   "components": [
+    {
+     "id": "s6-card-1",
+     "component": "card",
+     "start_ms": 18860,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 500,
+      "w": 900,
+      "h": 500,
+      "title": "The tells the skill names",
+      "body": "",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s6-dark-chip-2",
+     "component": "card",
+     "start_ms": 18860,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s6-dark-chip-3",
+     "component": "card",
+     "start_ms": 20540,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s6-dark-chip-4",
+     "component": "card",
+     "start_ms": 21560,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s7",
+   "beat": "b7",
+   "beat_type": "mechanism",
+   "start_ms": 22730,
+   "end_ms": 26890,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "then codes",
+     "ms": 25750,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s7-check-badge-1",
+     "component": "card",
+     "start_ms": 22730,
+     "end_ms": 26890,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s8",
+   "beat": "b8",
+   "beat_type": "proof",
+   "start_ms": 26890,
+   "end_ms": 30110,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "Anthropic verified",
+     "ms": 26890,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s8-window-card-1",
+     "component": "card",
+     "start_ms": 26890,
+     "end_ms": 30110,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s8-stat-number-2",
+     "component": "card",
+     "start_ms": 27910,
+     "end_ms": 30110,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s9",
+   "beat": "b9",
+   "beat_type": "step",
+   "start_ms": 30110,
+   "end_ms": 34740,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "Pick a scope",
+     "ms": 34110,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s9-terminal-card-1",
+     "component": "card",
+     "start_ms": 30110,
+     "end_ms": 34740,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s10",
+   "beat": "b10",
+   "beat_type": "payoff",
+   "start_ms": 34740,
+   "end_ms": 37730,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "by itself",
+     "ms": 35320,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s10-card-1",
+     "component": "card",
+     "start_ms": 34740,
+     "end_ms": 37730,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Turns on by itself",
+      "body": "Ask for frontend work and the skill is already on.",
+      "mascot": "check",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s10-check-badge-2",
+     "component": "card",
+     "start_ms": 35540,
+     "end_ms": 37730,
+     "props": {
+      "x": 90,
+      "y": 560,
+      "w": 900,
+      "title": "Card",
+      "enter": "rise"
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s11",
+   "beat": "b11",
+   "beat_type": "ask",
+   "start_ms": 37730,
+   "end_ms": 41460,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "TELLS",
+     "ms": 37970,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s11-end-card-1",
+     "component": "end-card",
+     "start_ms": 37730,
+     "end_ms": 41460,
+     "props": {
+      "verb": "Comment",
+      "keyword": "TELLS",
+      "line1": "and I send you the checklist",
+      "line2": "ditch the identical cards",
+      "lockup": "brand/lockup/lockup-gradient-on-light.png",
+      "lockup_w": 300,
+      "lockup_y": 1170
+     },
+     "role": "cta",
+     "honesty_label": null,
+     "assets": [
+      "brand/lockup/lockup-gradient-on-light.png"
+     ]
+    },
+    {
+     "id": "s11-dm-card-2",
+     "component": "dm-card",
+     "start_ms": 37970,
+     "end_ms": 41460,
+     "props": {
+      "avatar": "brand/mark/avatar-dark.png",
+      "sender": "FlashFX",
+      "message": "Comment TELLS and I send the checklist",
+      "time_label": "",
+      "app_label": "Instagram",
+      "x": 110,
+      "y": 1305,
+      "w": 740,
+      "enter": "drop"
+     },
+     "role": "notification",
+     "honesty_label": null,
+     "assets": [
+      "brand/mark/avatar-dark.png"
+     ]
+    }
+   ]
+  }
+ ],
+ "captions": [
+  {
+   "scene": "s2",
+   "start_ms": 3460,
+   "end_ms": 4140,
+   "words": [
+    {
+     "word": "You",
+     "start_ms": 3460,
+     "end_ms": 3560,
+     "emphasis": false
+    },
+    {
+     "word": "ship",
+     "start_ms": 3560,
+     "end_ms": 3780,
+     "emphasis": false
+    },
+    {
+     "word": "Claude",
+     "start_ms": 3780,
+     "end_ms": 4140,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s2",
+   "start_ms": 4140,
+   "end_ms": 5300,
+   "words": [
+    {
+     "word": "Code",
+     "start_ms": 4140,
+     "end_ms": 4340,
+     "emphasis": false
+    },
+    {
+     "word": "client",
+     "start_ms": 4340,
+     "end_ms": 4660,
+     "emphasis": false
+    },
+    {
+     "word": "sites.",
+     "start_ms": 4660,
+     "end_ms": 4960,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s2",
+   "start_ms": 5300,
+   "end_ms": 5980,
+   "words": [
+    {
+     "word": "Clients",
+     "start_ms": 5300,
+     "end_ms": 5580,
+     "emphasis": false
+    },
+    {
+     "word": "spot",
+     "start_ms": 5580,
+     "end_ms": 5860,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 5860,
+     "end_ms": 5980,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s2",
+   "start_ms": 5980,
+   "end_ms": 6640,
+   "words": [
+    {
+     "word": "instantly.",
+     "start_ms": 5980,
+     "end_ms": 6340,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 6640,
+   "end_ms": 7320,
+   "words": [
+    {
+     "word": "Anthropic's",
+     "start_ms": 6640,
+     "end_ms": 7000,
+     "emphasis": false
+    },
+    {
+     "word": "skill",
+     "start_ms": 7000,
+     "end_ms": 7320,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 7320,
+   "end_ms": 8360,
+   "words": [
+    {
+     "word": "file",
+     "start_ms": 7320,
+     "end_ms": 7660,
+     "emphasis": false
+    },
+    {
+     "word": "names",
+     "start_ms": 7660,
+     "end_ms": 8020,
+     "emphasis": false
+    },
+    {
+     "word": "it:",
+     "start_ms": 8020,
+     "end_ms": 8200,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 8360,
+   "end_ms": 9400,
+   "words": [
+    {
+     "word": "rounded",
+     "start_ms": 8360,
+     "end_ms": 8640,
+     "emphasis": false
+    },
+    {
+     "word": "cards,",
+     "start_ms": 8640,
+     "end_ms": 8980,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 9400,
+   "end_ms": 10260,
+   "words": [
+    {
+     "word": "one",
+     "start_ms": 9400,
+     "end_ms": 9600,
+     "emphasis": false
+    },
+    {
+     "word": "radius,",
+     "start_ms": 9600,
+     "end_ms": 10060,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 10260,
+   "end_ms": 10780,
+   "words": [
+    {
+     "word": "same",
+     "start_ms": 10260,
+     "end_ms": 10500,
+     "emphasis": true
+    },
+    {
+     "word": "grey",
+     "start_ms": 10500,
+     "end_ms": 10780,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s3",
+   "start_ms": 10780,
+   "end_ms": 11390,
+   "words": [
+    {
+     "word": "shadow.",
+     "start_ms": 10780,
+     "end_ms": 11140,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s4",
+   "start_ms": 11390,
+   "end_ms": 12350,
+   "words": [
+    {
+     "word": "It's",
+     "start_ms": 11390,
+     "end_ms": 11570,
+     "emphasis": false
+    },
+    {
+     "word": "not",
+     "start_ms": 11570,
+     "end_ms": 11690,
+     "emphasis": false
+    },
+    {
+     "word": "your",
+     "start_ms": 11690,
+     "end_ms": 11810,
+     "emphasis": false
+    },
+    {
+     "word": "fault.",
+     "start_ms": 11810,
+     "end_ms": 12110,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s4",
+   "start_ms": 12350,
+   "end_ms": 13490,
+   "words": [
+    {
+     "word": "Anthropic",
+     "start_ms": 12350,
+     "end_ms": 12870,
+     "emphasis": false
+    },
+    {
+     "word": "calls",
+     "start_ms": 12870,
+     "end_ms": 13310,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 13310,
+     "end_ms": 13490,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s4",
+   "start_ms": 13490,
+   "end_ms": 14290,
+   "words": [
+    {
+     "word": "distributional",
+     "start_ms": 13490,
+     "end_ms": 14290,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s4",
+   "start_ms": 14290,
+   "end_ms": 15130,
+   "words": [
+    {
+     "word": "convergence.",
+     "start_ms": 14290,
+     "end_ms": 14810,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s5",
+   "start_ms": 15130,
+   "end_ms": 15910,
+   "words": [
+    {
+     "word": "Even",
+     "start_ms": 15130,
+     "end_ms": 15290,
+     "emphasis": false
+    },
+    {
+     "word": "Anthropic's",
+     "start_ms": 15290,
+     "end_ms": 15910,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s5",
+   "start_ms": 15910,
+   "end_ms": 16590,
+   "words": [
+    {
+     "word": "terracotta",
+     "start_ms": 15910,
+     "end_ms": 16430,
+     "emphasis": false
+    },
+    {
+     "word": "on",
+     "start_ms": 16430,
+     "end_ms": 16590,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s5",
+   "start_ms": 16590,
+   "end_ms": 17850,
+   "words": [
+    {
+     "word": "cream",
+     "start_ms": 16590,
+     "end_ms": 16870,
+     "emphasis": false
+    },
+    {
+     "word": "is",
+     "start_ms": 16870,
+     "end_ms": 17230,
+     "emphasis": false
+    },
+    {
+     "word": "flagged",
+     "start_ms": 17230,
+     "end_ms": 17850,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s5",
+   "start_ms": 17850,
+   "end_ms": 18860,
+   "words": [
+    {
+     "word": "as",
+     "start_ms": 17850,
+     "end_ms": 17970,
+     "emphasis": false
+    },
+    {
+     "word": "an",
+     "start_ms": 17970,
+     "end_ms": 18090,
+     "emphasis": false
+    },
+    {
+     "word": "AI",
+     "start_ms": 18090,
+     "end_ms": 18330,
+     "emphasis": false
+    },
+    {
+     "word": "look.",
+     "start_ms": 18330,
+     "end_ms": 18670,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 18860,
+   "end_ms": 19580,
+   "words": [
+    {
+     "word": "One",
+     "start_ms": 18860,
+     "end_ms": 19040,
+     "emphasis": false
+    },
+    {
+     "word": "accented",
+     "start_ms": 19040,
+     "end_ms": 19580,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 19580,
+   "end_ms": 20540,
+   "words": [
+    {
+     "word": "headline",
+     "start_ms": 19580,
+     "end_ms": 19900,
+     "emphasis": false
+    },
+    {
+     "word": "word.",
+     "start_ms": 19900,
+     "end_ms": 20300,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 20540,
+   "end_ms": 21560,
+   "words": [
+    {
+     "word": "All",
+     "start_ms": 20540,
+     "end_ms": 20620,
+     "emphasis": false
+    },
+    {
+     "word": "caps",
+     "start_ms": 20620,
+     "end_ms": 20840,
+     "emphasis": false
+    },
+    {
+     "word": "labels.",
+     "start_ms": 20840,
+     "end_ms": 21240,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 21560,
+   "end_ms": 22060,
+   "words": [
+    {
+     "word": "Fake",
+     "start_ms": 21560,
+     "end_ms": 21700,
+     "emphasis": false
+    },
+    {
+     "word": "one,",
+     "start_ms": 21700,
+     "end_ms": 21960,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s6",
+   "start_ms": 22060,
+   "end_ms": 22730,
+   "words": [
+    {
+     "word": "two,",
+     "start_ms": 22060,
+     "end_ms": 22200,
+     "emphasis": false
+    },
+    {
+     "word": "three.",
+     "start_ms": 22260,
+     "end_ms": 22520,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 22730,
+   "end_ms": 23510,
+   "words": [
+    {
+     "word": "With",
+     "start_ms": 22730,
+     "end_ms": 22830,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 22830,
+     "end_ms": 22930,
+     "emphasis": false
+    },
+    {
+     "word": "on,",
+     "start_ms": 22930,
+     "end_ms": 23150,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 23510,
+   "end_ms": 24270,
+   "words": [
+    {
+     "word": "Claude",
+     "start_ms": 23510,
+     "end_ms": 23750,
+     "emphasis": false
+    },
+    {
+     "word": "plans",
+     "start_ms": 23750,
+     "end_ms": 23990,
+     "emphasis": false
+    },
+    {
+     "word": "four",
+     "start_ms": 23990,
+     "end_ms": 24270,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 24270,
+   "end_ms": 25450,
+   "words": [
+    {
+     "word": "to",
+     "start_ms": 24270,
+     "end_ms": 24370,
+     "emphasis": false
+    },
+    {
+     "word": "six",
+     "start_ms": 24370,
+     "end_ms": 24590,
+     "emphasis": false
+    },
+    {
+     "word": "hex",
+     "start_ms": 24590,
+     "end_ms": 24770,
+     "emphasis": false
+    },
+    {
+     "word": "colors,",
+     "start_ms": 24770,
+     "end_ms": 25230,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 25450,
+   "end_ms": 26230,
+   "words": [
+    {
+     "word": "reviews,",
+     "start_ms": 25450,
+     "end_ms": 25750,
+     "emphasis": false
+    },
+    {
+     "word": "then",
+     "start_ms": 25750,
+     "end_ms": 26230,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s7",
+   "start_ms": 26230,
+   "end_ms": 26890,
+   "words": [
+    {
+     "word": "codes.",
+     "start_ms": 26230,
+     "end_ms": 26590,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 26890,
+   "end_ms": 27270,
+   "words": [
+    {
+     "word": "Anthropic",
+     "start_ms": 26890,
+     "end_ms": 27270,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 27270,
+   "end_ms": 27910,
+   "words": [
+    {
+     "word": "verified.",
+     "start_ms": 27270,
+     "end_ms": 27910,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 27910,
+   "end_ms": 28530,
+   "words": [
+    {
+     "word": "Over",
+     "start_ms": 27910,
+     "end_ms": 28150,
+     "emphasis": false
+    },
+    {
+     "word": "a",
+     "start_ms": 28150,
+     "end_ms": 28290,
+     "emphasis": false
+    },
+    {
+     "word": "million",
+     "start_ms": 28290,
+     "end_ms": 28530,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 28530,
+   "end_ms": 29590,
+   "words": [
+    {
+     "word": "installs",
+     "start_ms": 28530,
+     "end_ms": 29390,
+     "emphasis": false
+    },
+    {
+     "word": "as",
+     "start_ms": 29390,
+     "end_ms": 29490,
+     "emphasis": false
+    },
+    {
+     "word": "of",
+     "start_ms": 29490,
+     "end_ms": 29590,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s8",
+   "start_ms": 29590,
+   "end_ms": 30110,
+   "words": [
+    {
+     "word": "November.",
+     "start_ms": 29590,
+     "end_ms": 29910,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 30110,
+   "end_ms": 31150,
+   "words": [
+    {
+     "word": "Type",
+     "start_ms": 30110,
+     "end_ms": 30290,
+     "emphasis": false
+    },
+    {
+     "word": "slash",
+     "start_ms": 30290,
+     "end_ms": 30570,
+     "emphasis": false
+    },
+    {
+     "word": "plugin",
+     "start_ms": 30570,
+     "end_ms": 31150,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 31150,
+   "end_ms": 32170,
+   "words": [
+    {
+     "word": "install",
+     "start_ms": 31150,
+     "end_ms": 31510,
+     "emphasis": false
+    },
+    {
+     "word": "frontend",
+     "start_ms": 31510,
+     "end_ms": 32170,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 32170,
+   "end_ms": 33170,
+   "words": [
+    {
+     "word": "design",
+     "start_ms": 32170,
+     "end_ms": 32530,
+     "emphasis": false
+    },
+    {
+     "word": "at",
+     "start_ms": 32530,
+     "end_ms": 32810,
+     "emphasis": false
+    },
+    {
+     "word": "claude",
+     "start_ms": 32810,
+     "end_ms": 33170,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 33170,
+   "end_ms": 34110,
+   "words": [
+    {
+     "word": "plugins",
+     "start_ms": 33170,
+     "end_ms": 33550,
+     "emphasis": false
+    },
+    {
+     "word": "official.",
+     "start_ms": 33550,
+     "end_ms": 33990,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s9",
+   "start_ms": 34110,
+   "end_ms": 34740,
+   "words": [
+    {
+     "word": "Pick",
+     "start_ms": 34110,
+     "end_ms": 34250,
+     "emphasis": true
+    },
+    {
+     "word": "a",
+     "start_ms": 34250,
+     "end_ms": 34370,
+     "emphasis": true
+    },
+    {
+     "word": "scope.",
+     "start_ms": 34370,
+     "end_ms": 34550,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "scene": "s10",
+   "start_ms": 34740,
+   "end_ms": 35320,
+   "words": [
+    {
+     "word": "Then",
+     "start_ms": 34740,
+     "end_ms": 34820,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 34820,
+     "end_ms": 34900,
+     "emphasis": false
+    },
+    {
+     "word": "turns",
+     "start_ms": 34900,
+     "end_ms": 35120,
+     "emphasis": false
+    },
+    {
+     "word": "on",
+     "start_ms": 35120,
+     "end_ms": 35320,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s10",
+   "start_ms": 35320,
+   "end_ms": 36220,
+   "words": [
+    {
+     "word": "by",
+     "start_ms": 35320,
+     "end_ms": 35540,
+     "emphasis": true
+    },
+    {
+     "word": "itself",
+     "start_ms": 35540,
+     "end_ms": 35920,
+     "emphasis": true
+    },
+    {
+     "word": "when",
+     "start_ms": 35920,
+     "end_ms": 36220,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s10",
+   "start_ms": 36220,
+   "end_ms": 36760,
+   "words": [
+    {
+     "word": "you",
+     "start_ms": 36220,
+     "end_ms": 36320,
+     "emphasis": false
+    },
+    {
+     "word": "ask",
+     "start_ms": 36320,
+     "end_ms": 36600,
+     "emphasis": false
+    },
+    {
+     "word": "for",
+     "start_ms": 36600,
+     "end_ms": 36760,
+     "emphasis": false
+    }
+   ]
+  },
+  {
+   "scene": "s10",
+   "start_ms": 36760,
+   "end_ms": 37920,
+   "words": [
+    {
+     "word": "frontend",
+     "start_ms": 36760,
+     "end_ms": 37240,
+     "emphasis": false
+    },
+    {
+     "word": "work.",
+     "start_ms": 37240,
+     "end_ms": 37520,
+     "emphasis": false
+    }
+   ]
+  }
+ ],
+ "cards": [
+  {
+   "scene": "s1",
+   "component": "s1-headline-1",
+   "text": "CLAUDE CODE SITES",
+   "zone": "hero"
+  },
+  {
+   "scene": "s2",
+   "component": "s2-card-1",
+   "text": "Clients spot it instantly",
+   "zone": "hero"
+  },
+  {
+   "scene": "s2",
+   "component": "s2-dark-chip-2",
+   "text": "same look, every site",
+   "zone": "label"
+  },
+  {
+   "scene": "s3",
+   "component": "s3-window-card-1",
+   "text": "SKILL.md",
+   "zone": "hero"
+  },
+  {
+   "scene": "s3",
+   "component": "s3-dark-chip-2",
+   "text": "rgba(0,0,0,.1)",
+   "zone": "label"
+  },
+  {
+   "scene": "s4",
+   "component": "s4-card-1",
+   "text": "Distributional convergence",
+   "zone": "hero"
+  },
+  {
+   "scene": "s5",
+   "component": "s5-light-chip-1",
+   "text": "even Anthropic's palette",
+   "zone": "label"
+  },
+  {
+   "scene": "s5",
+   "component": "s5-strike-through-2",
+   "text": "#D97757 on cream",
+   "zone": "hero"
+  },
+  {
+   "scene": "s6",
+   "component": "s6-card-1",
+   "text": "The tells the skill names",
+   "zone": "hero"
+  },
+  {
+   "scene": "s6",
+   "component": "s6-dark-chip-2",
+   "text": "One accented headline word",
+   "zone": "label"
+  },
+  {
+   "scene": "s6",
+   "component": "s6-dark-chip-3",
+   "text": "ALL CAPS labels",
+   "zone": "label"
+  },
+  {
+   "scene": "s6",
+   "component": "s6-dark-chip-4",
+   "text": "Fake 01, 02, 03",
+   "zone": "label"
+  },
+  {
+   "scene": "s8",
+   "component": "s8-window-card-1",
+   "text": "claude.com/plugins",
+   "zone": "hero"
+  },
+  {
+   "scene": "s9",
+   "component": "s9-terminal-card-1",
+   "text": "Claude Code",
+   "zone": "hero"
+  },
+  {
+   "scene": "s10",
+   "component": "s10-card-1",
+   "text": "Turns on by itself",
+   "zone": "hero"
+  },
+  {
+   "scene": "s11",
+   "component": "s11-end-card-1",
+   "text": "TELLS",
+   "zone": "hero"
+  }
+ ],
+ "labels": [
+  {
+   "scene": "s1",
+   "text": "CLAUDE CODE SITES",
+   "kind": "kicker"
+  }
+ ],
+ "transitions": [
+  {
+   "from": "s1",
+   "to": "s2",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s2",
+   "to": "s3",
+   "type": "fall",
+   "duration_ms": 333
+  },
+  {
+   "from": "s3",
+   "to": "s4",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s4",
+   "to": "s5",
+   "type": "push",
+   "duration_ms": 267
+  },
+  {
+   "from": "s5",
+   "to": "s6",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s6",
+   "to": "s7",
+   "type": "fall",
+   "duration_ms": 333
+  },
+  {
+   "from": "s7",
+   "to": "s8",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s8",
+   "to": "s9",
+   "type": "push",
+   "duration_ms": 267
+  },
+  {
+   "from": "s9",
+   "to": "s10",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s10",
+   "to": "s11",
+   "type": "fall",
+   "duration_ms": 333
+  }
+ ],
+ "notes": "Planned by hand for the test idea (goldenplan.py DESIGN): the hook headline builds word by word on the spoken words and the 3D card lands in the breath; every body beat has one hero component and one element landing on its key word; the screenshots are real research assets (labelled real); the CTA follows tweaks.md Branding: the FlashFX DM card lands on the word TELLS and the lockup sits under the mascot row. Scene changes: fade-blur by default, a fall or a push where the beat turns (open question 3: B)."
+}
