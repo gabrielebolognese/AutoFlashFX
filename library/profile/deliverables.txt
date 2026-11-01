@@ -1,6 +1,5 @@
-# Comment keywords and what the viewer gets after commenting with one.
-# One per line:  KEYWORD | what they get | link
-# Write "to create" instead of the link when the deliverable does not exist yet.
-# Lines starting with # and empty lines are ignored.
-# Example:
-# GUIDE | the one-page setup checklist (PDF) | https://example.com/guide
+FLASH | access to FlashFX, the editor shown in the reel | https://flashfx.app
+LINK | the link to the tool, skill or repo shown in the reel | from the reel's sources
+TEMPLATE | the FlashFX project of the animation in the reel, ready to edit | to create
+PRESETS | a pack of FlashFX text animation presets | to create
+COMPARE | the full After Effects vs FlashFX side-by-side video | to create

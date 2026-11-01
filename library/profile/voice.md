@@ -15,6 +15,7 @@ DRAFT built 2026-11-01 by pipeline/bin/build-voice-profile from the instagram-ag
 - **Three of my own reels or captions that sound most like me:** [FILL IN: paste them]
 - **On camera I am:** [FILL IN: fast and loud / dry / calm / funny / deadpan]
 - **Words I actually use:** [FILL IN]
+  - The brand name is always written "FlashFX".
 - **Words I would never say out loud:** [FILL IN]
 - **Do I swear:** [FILL IN: yes / mild / no]
 - **Emoji in captions:** [FILL IN: never / one, rarely / freely]

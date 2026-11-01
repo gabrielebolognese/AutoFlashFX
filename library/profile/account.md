@@ -28,6 +28,11 @@ The reels are for people who build and publish with AI and developer tools (Clau
 
 [FILL IN: the product, service or offer, and what the comment keywords lead to]
 
-## Brand mark
+## Brand
 
-- file: [FILL IN: path to the logo or mark file, for example library/profile/brand-mark.png]
+- Brand kit: library/brand/ (rules in library/brand/BRAND.md, data in library/brand/brand.json)
+- Brandmark (the bolt): library/brand/mark/ ; default on light: mark-gradient.png or mark-black.png
+- Lockup (bolt + wordmark): library/brand/lockup/ ; default on light: lockup-gradient-on-light.png
+- Avatar for DM and comment UI: library/brand/mark/avatar-dark.png
+- Name: always "FlashFX"
+- Where the brand appears in reels: styles/paper-cards/tweaks.md, section "Branding (FlashFX account)"

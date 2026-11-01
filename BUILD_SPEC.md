@@ -61,6 +61,8 @@ instagramReels/
     hooks.txt                my hook templates (2.2)
     profile/                 account.md  voice.md  deliverables.txt  pronunciations.txt (2.3)
     voice/                   engine.txt (the voice config) and memo.* (for building voice.md) (2.5)
+    brand/                   FlashFX brand kit: mark/ wordmark/ lockup/ reference/ palette.png BRAND.md brand.json
+                             (2.7), curated by me, read-only at runtime
   styles/
     sfx/                     my full sound effects pack, shared by every style and reel (2.6)
       sfx-map.json  SFX-MAP.md  overrides.txt  previews/  .cache/   (generated, except overrides.txt)
@@ -79,7 +81,8 @@ instagramReels/
   logs/                      runner.log  status.txt  history.txt  blocked.txt  limits.log  suggested-ideas.txt  sfx-usage.json
 ```
 
-Git: initialize a repo (if build-runner.sh has not). Track code and the text files in library/ and styles/. Ignore
+Git: initialize a repo (if build-runner.sh has not). Track code, the text files in library/ and styles/, and the
+brand kit in library/brand/ (its PNGs included). Ignore
 runs/, exports/, logs/, styles/*/refs/, styles/*/analysis/, styles/sfx/ audio files and .cache/, library/voice/,
 .env. Add .gitattributes so *.sh always uses LF line endings.
 
@@ -126,9 +129,9 @@ runs/, exports/, logs/, styles/*/refs/, styles/*/analysis/, styles/sfx/ audio fi
 
 ### 2.3 library/profile/
 
-- account.md: who the account is for, the audience's problems, topics in and out, what I sell, my brand mark file,
-  and the content strategy ("Content strategy": the problem-first rules and the balance target between FlashFX,
-  external tools and methods).
+- account.md: who the account is for, the audience's problems, topics in and out, what I sell, the Brand section
+  (pointers into library/brand/, 2.7), and the content strategy ("Content strategy": the problem-first rules and the
+  balance target between FlashFX, external tools and methods).
 - voice.md: built from the template in the instagram-agent-skill repo (templates/voice.md): who I am, what I sound
   like, my positions, off limits, proof I can use, how I promote, the ask. Plus 3 to 5 verbatim excerpts of my real
   speech and my measured words per minute. Build it from library/voice/memo.* (a 5 to 10 minute voice memo,
@@ -139,6 +142,10 @@ runs/, exports/, logs/, styles/*/refs/, styles/*/analysis/, styles/sfx/ audio fi
 - pronunciations.txt: one per line, `word = how to say it`, for example `FlashFX = flash F X`.
 
 If a profile file is missing at runtime, continue with defaults and add a NEEDS REVIEW flag to the export.
+
+These files are mine: rebuilding them (pipeline/bin/build-voice-profile --force) keeps every section I wrote by
+hand (account.md's Brand and Content strategy, voice.md's How I promote and the FlashFX spelling line) and only
+refills the generated parts.
 
 ### 2.4 styles/paper-cards/
 
@@ -229,6 +236,23 @@ built once, and picking costs zero tokens.
 Music is not in version 1. Later it follows the same pattern (a library with mood folders, a map, ducking under the
 voice).
 
+### 2.7 library/brand/: the FlashFX brand kit
+
+The reels go to the FlashFX brand account. library/brand/ holds the FlashFX brand kit, extracted from the official
+brand guide (FlashFX Brand ID 2026) as trimmed, transparent PNGs: mark/ (the bolt in five versions, plus
+avatar-dark.png), wordmark/, lockup/ (bolt plus wordmark), palette.png and reference/ (8 guide pages). It is curated
+by me and read-only at runtime: never modify, regenerate or redraw these files.
+
+- BRAND.md: the rules (the name's spelling, which file on which background, clear space, minimum sizes, the never
+  list, and the brand colors and fonts, which matter only for logo placement and FlashFX product depictions).
+- brand.json: the same kit as data: colors (primary and secondary), the signature gradient, fonts, defaults, the
+  reel rules, and one entry per logo asset with path, type (mark, wordmark, lockup, avatar), variant, width, height,
+  use_on (light, dark or both), its visible content box and the bolt's height in the file. Logo files come only
+  from brand.json.
+- Where the brand appears in reels: styles/paper-cards/tweaks.md, section "Branding (FlashFX account)". The reel
+  style does not change: no brand colors or fonts go into tokens.json, and FlashFX branding appears only as these
+  logo files.
+
 ## 3. The video runner
 
 - `bash run.sh [--once]`. The loop:
@@ -240,8 +264,8 @@ voice).
 
   When ideas.txt has no idea: with --once, exit; otherwise check again every 120 seconds, forever.
 - Startup preflight: claude, ffmpeg, ffprobe, python, node, gh, the Python packages, disk space, engine.txt and its
-  interpreter importing kokoro (2.5), style files, tokens.json, the sfx map. A missing hard dependency is a systemic
-  failure: write logs/STOPPED.md with the exact fix and exit.
+  interpreter importing kokoro (2.5), style files, tokens.json, the sfx map, library/brand/brand.json and every file
+  it lists (2.7). A missing hard dependency is a systemic failure: write logs/STOPPED.md with the exact fix and exit.
 - Each idea gets runs/<YYYY-MM-DD_HHMM>_<slug>/ with state.json and one subfolder per stage
   (01-research/, 02-expansion/, ...).
   - A stage is done when its outputs validate against its schema and a .done marker exists.
@@ -517,7 +541,7 @@ that it counts as a code error.
 
 Shared inputs: script.json and words.json; style.md and tweaks.md (tweaks win), tokens.json, vocabulary.md; the
 motion-lib catalog (each component's props, its sound events and a preview still); the golden reels (plan plus
-contact sheet); the research assets.
+contact sheet); the research assets; library/brand/brand.json and the reel's solution (02-expansion/solution.json).
 
 1. **9a Animations** (09a-animations/plan.json): scenes and their components. Per beat: start and end ms snapped to
    word boundaries, the component (from motion-lib only) and its props, the entrance and exit motion, emphasis hits
@@ -529,6 +553,17 @@ contact sheet); the research assets.
 3. **9c Transitions** (09c-transitions/plan.json): how each scene leaves and the next arrives, with its duration,
    following the style's transition rules (allowed types, frequency, hard cuts versus motion).
 
+**Branding**, placed in 9a following tweaks.md "Branding (FlashFX account)" (2.7):
+- the CTA beat always gets the FlashFX DM notification card (sender "FlashFX", mark/avatar-dark.png as its round
+  avatar) and the FlashFX lockup on the end card
+- FlashFX logos anywhere else only when the reel's solution is FlashFX (a run without solution.json counts as not
+  FlashFX)
+- the brand slot follows the solution: the FlashFX bolt, the tool's logo from the research assets, or a neutral icon
+  from the style when there is none (style version 2 has no tracker: its brand slots are the hook's kicker mark,
+  logo tiles and logo badges)
+- logo assets come only from brand.json, with the variant chosen by the surface it sits on: its use_on must match
+  (light: paper and surface cards; dark: ink)
+
 A validator script checks the merged plan against tokens.json:
 - the first visual change happens before the style's limit
 - a visual change lands inside the hook breath
@@ -537,6 +572,8 @@ A validator script checks the merged plan against tokens.json:
 - each beat type uses only the components the beat map allows
 - caption chunk rules, text zones, words per card
 - real assets only for real claims: no invented UI values
+- branding: the CTA has the DM avatar and the lockup; no FlashFX asset outside the CTA unless the solution is
+  flashfx; every logo path is in brand.json and its use_on matches its surface
 
 An invalid pass gets one retry with the validator errors, then the review path.
 
@@ -552,6 +589,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
 - Every motion-lib component declares its sound events (for example card enter at frame 0, stamp landing at frame 3,
   typing from frame 5 to 40). The build exports 10-build/events.json: every event's absolute time in ms, its type, the
   component, the scene, and whether it is a scene change (with the transition's duration).
+- Logos are placed as image files from library/brand/ (the paths in brand.json), never redrawn, retyped, recolored,
+  distorted or given effects (outline, shadow, glow, filters); their aspect ratio is locked (sized from brand.json's
+  width and height, object-fit contain). The card around a logo keeps the style's shadow; the logo itself gets none.
 - A new component only when the plan needs one the library lacks. Write it to motion-lib/candidates/, use it in this
   reel only, and flag NEEDS REVIEW. Candidates join the library only with my approval.
 - Also build the hook 2 alternate clip: the hook beat's visuals with hook 2's on-screen text and timing, 3.5 seconds
@@ -595,10 +635,18 @@ An invalid pass gets one retry with the validator errors, then the review path.
   - only the fonts in tokens.json, at no less than its minimum sizes
   - no overlaps, nothing off-canvas, contrast at least 4.5:1
   - each emphasis lands within 80 ms of its word
+  - branding (tweaks.md "Branding (FlashFX account)"): the CTA beat contains the FlashFX lockup, at least 300px wide,
+    and the DM card's FlashFX avatar
+  - no FlashFX logo outside the CTA when the solution is not FlashFX
+  - each logo variant matches the luminance of the surface under it (light: gradient or black; dark: gradient or
+    white) and its contrast is readable
+  - every logo keeps its aspect ratio; the bolt is at least 64px tall (the DM avatar at least 112px across, which
+    keeps its bolt at 64px; bolt sizes from brand.json's bolt_height); clear space of at least a quarter of the
+    bolt's height around marks and lockups
 - **Style conformance.** Run tools/analyze_refs.py on draft_mixed.mp4 and compare with styles/paper-cards/analysis:
   - visual-change median and maximum within the reference range (plus or minus 20%)
-  - at least 90% of non-image pixels within ΔE 5 of a token color
-  - accent share under the tweaks.md limit
+  - at least 90% of non-image pixels within ΔE 5 of a token color (logo PNGs count as image pixels)
+  - accent share under the tweaks.md limit (logos excluded)
   - loudness
 - **Audio checks:** the S11 verification passes, and the voice is intelligible: transcribe the mixed draft and compare
   with the script (word error rate under 5%).
@@ -611,7 +659,8 @@ An invalid pass gets one retry with the validator errors, then the review path.
 
   It scores 1 to 5: does frame 1 stop the scroll; hierarchy and legibility; does it match the look (would it sit on the
   same account); motion variety; sync with the voice; sound fit; nothing looks generic; the requirements are visible
-  (the problem, the share line, the keyword). It passes when every score is at least 4. Every issue it lists carries a
+  (the problem, the share line, the keyword). It also checks that the branding feels natural, not like an ad (an
+  issue tagged [animation]). It passes when every score is at least 4. Every issue it lists carries a
   tag: [voice], [animation], [text], [transition] or [sfx].
 - **Fix routing:** each issue goes back to the step that owns it (S8, 9a, 9b, 9c or S11), then S10, S11 and S12 run
   again as needed.
@@ -844,18 +893,29 @@ Keep it short and current:
   - Builds:
     - tokens.json
     - every component in vocabulary.md as a HyperFrames component with its declared sound events
+    - for the branding (2.7, tweaks.md "Branding (FlashFX account)"): a DM notification card for the CTA in the
+      style's look (a surface card with a round avatar image, the sender name and one message line), and an image
+      prop on every logo spot (end card, logo tile, logo badge, kicker mark) that takes a file path from brand.json
+      or the research assets, with its aspect ratio locked
     - a gallery page that plays each one
     - frame-matching against the reference filmstrips in styles/paper-cards/analysis
     - components that pass the frame-match go into motion-lib/, with a HUMAN_TODO for me to review the gallery
-    - a golden reel built from the test idea, with a HUMAN_TODO for me to review it
+    - a golden reel built from the test idea, following the branding rules, with a HUMAN_TODO for me to review it
     - a WebGL test for Three.js in headless Chrome on this PC: hardware ANGLE first (the integrated GPU), then
       SwiftShader software rendering. Record which works in DECISIONS.md. Keep 3D scenes light (low poly, few
       objects). If WebGL is not available, 3D beats are replaced with 2D components and flagged NEEDS REVIEW.
 - **M10 Visual stages (S9, S10).**
-  - Test: the three plan passes validate, the draft renders, events.json matches what is on screen.
+  - Builds also: the branding placement of S9 and S10 and the preflight check of brand.json (2.7).
+  - Test: the three plan passes validate, the draft renders, events.json matches what is on screen. Branding, with a
+    fixture solution.json for flashfx and one for external: both CTAs have the FlashFX DM avatar and the lockup;
+    FlashFX logos in the body and the brand slot only in the flashfx reel, the tool's logo or a neutral icon in the
+    other; every logo path comes from brand.json with a use_on that matches its surface; every logo is an image
+    with its aspect ratio locked.
 - **M11 Sound effects pass and review loop (S11, S12).**
   - Test: on the test idea's draft, every sound lands within 1 frame of its event, loudness passes, the edit review
-    runs, and a planted [text] issue routes back to 9b and the stages after it run again.
+    runs, and a planted [text] issue routes back to 9b and the stages after it run again. The branding checks pass on
+    the test idea's draft, and each planted branding fault is caught: a FlashFX logo in the body of a non-FlashFX
+    reel, a black lockup on ink, a stretched logo, a lockup under 300px, a CTA without the DM avatar.
 - **M12 Final render, caption, export, end to end (S13, S14).**
   - Also builds the problem-first solution choice into the stages built in M4 and M6: S1's solution candidates, S2's
     solution decision and keyword, S3's honesty check H, S4's new pick, S7's solution rules; plus the SOLUTION block
@@ -865,8 +925,10 @@ Keep it short and current:
     fixture idea with a forced FlashFX solution goes to S4 and comes back with another solution (not dropped); with
     a non-FlashFX solution, script.json and the caption never mention FlashFX.
 - **M13 Hardening.**
+  - Also builds: pipeline/bin/build-voice-profile --force keeps the hand-written sections of account.md and
+    voice.md (2.3) instead of rebuilding them from the template.
   - Test: 3 ideas back to back, unattended; a simulated limit in the middle of a run; the logs and status lines tell
-    the full story.
+    the full story; build-voice-profile --force on a copy of the profile keeps its hand-written Brand section.
 
 ## 13. Not in version 1
 

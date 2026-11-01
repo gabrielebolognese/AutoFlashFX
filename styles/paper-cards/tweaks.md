@@ -13,8 +13,6 @@ Drafted from the look reference. Edit freely: every line in this file overrides 
 - **Right side:** cards may span the full width (60px margins) like the reference, but no text in the
   right 230px of the lower half, where Instagram's like, comment and share buttons sit.
 - **Length:** list and explainer videos may run 45 to 75s like the reference. Everything else stays 25 to 40s.
-- **Brand mark:** Claude's asterisk only when the video is about Claude. Otherwise my own mark,
-  or the logo of the product the video is about.
 - **3D:** hook and end card only, at most 2 objects on screen.
 - **Accent:** under 5% of any frame.
 
@@ -42,6 +40,40 @@ None of them is in force until you remove the word PROPOSED. Evidence for each i
 - PROPOSED **3D:** the look refs use no 3D objects, but draw flat cards in perspective in most scenes
   (tilts, fly-ins from near the camera). Proposal: the 3D line above applies to 3D objects (models,
   extruded logos); flat cards in CSS perspective are allowed in every scene.
+
+## Branding (FlashFX account)
+The style does not change. FlashFX branding appears only as the PNG files in library/brand/ (rules in BRAND.md).
+This section replaces the earlier Brand mark line, which style.md and vocabulary.md point to. Style version 2 has no
+progress tracker: "the tracker's brand slot" below means the topic-logo spots it has instead (the hook's kicker
+mark, logo tiles and logo badges).
+
+Every reel, at the ask (the comment CTA):
+- The CTA beat always shows FlashFX: the DM notification card's sender is "FlashFX" with
+  mark/avatar-dark.png as its round avatar, and the end card shows the FlashFX lockup
+  (lockup-gradient-on-light.png on paper or white cards; lockup-gradient-on-dark.png or lockup-white.png on ink),
+  at least 300px wide, with clear space around it.
+- The end card's hero object stays the topic's (for example the tool the reel is about). The FlashFX lockup sits
+  with it, never replaced by a 3D or redrawn version of the logo.
+
+Elsewhere in the reel, only when the reel's solution is FlashFX (see library/profile/account.md):
+- The progress tracker's brand slot shows the FlashFX bolt (mark-gradient.png or mark-black.png, since the tracker
+  is a light card).
+- Body beats may show FlashFX product cards with the lockup, and real screenshots of flashfx.app. Mock FlashFX UI
+  may use the app's secondary palette inside that card only (it depicts the product) and carries the
+  ILLUSTRATIVE label.
+
+When the solution is another tool, a repo or a method:
+- No FlashFX logo in the body or the tracker. The tracker's brand slot shows the tool's logo from the reel's
+  research assets, or a neutral icon from the style when there is none.
+
+Always:
+- Place the PNGs as images; never redraw, retype, recolor, stretch, outline or shadow them (the card around a
+  logo keeps the style's hard shadow, the logo itself gets none).
+- Light surfaces (paper, white cards): gradient or black versions. Ink surfaces: gradient or white versions.
+- Logos enter with the style's normal element motion; never spin, morph or distort the logo itself.
+- Bolt at least 64px tall, lockup at least 300px wide, never inside the caption band or the tracker zone
+  except the tracker's brand slot.
+- In captions and body text, the name is plain text in the style's font, spelled "FlashFX".
 
 ## My additions (fill these in)
 - [ ] Fonts: exact names, if different from the suggestions in style.md

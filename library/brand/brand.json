@@ -1,0 +1,442 @@
+{
+  "name": "FlashFX",
+  "source": "FlashFX Brand ID 2026 (official brand guide, 48 pages); rules in library/brand/BRAND.md",
+  "note": "This kit places the FlashFX brand inside reels; it does not change the reel style (styles/paper-cards). Paths are relative to the repo root. Boxes are [left, top, right, bottom] in file pixels; bolt_height is the bolt's visible height in the file.",
+  "colors": {
+    "primary": [
+      {
+        "name": "Citrus Splash",
+        "hex": "#FFC501",
+        "role": "brand yellow: the primary spark, highlights, key moments, \"Flash\" energy"
+      },
+      {
+        "name": "Flush Orange",
+        "hex": "#FE6E08",
+        "role": "brand orange: secondary energy, calls to action, emphasis, motion cues"
+      },
+      {
+        "name": "Kon",
+        "hex": "#182235",
+        "role": "foundation: depth, contrast, premium dark UI base"
+      },
+      {
+        "name": "Dawn's Early Light",
+        "hex": "#C9CDD3",
+        "role": "readable neutral: body text, soft UI surfaces"
+      },
+      {
+        "name": "Bleached Silk",
+        "hex": "#F2F2F2",
+        "role": "brand white: clean space, backgrounds, cards, breathing room"
+      },
+      {
+        "name": "Âbi Blue",
+        "hex": "#60A6FA",
+        "role": "precision accent: links, active states, info, focus"
+      }
+    ],
+    "secondary": [
+      {
+        "name": "Kon",
+        "hex": "#182235",
+        "role": "interface background (default UI canvas)"
+      },
+      {
+        "name": "Midnight Express",
+        "hex": "#1D2839",
+        "role": "icon background"
+      },
+      {
+        "name": "Rainmaker",
+        "hex": "#475569",
+        "role": "icon color"
+      },
+      {
+        "name": "Dark & Stormy",
+        "hex": "#323F51",
+        "role": "button background"
+      },
+      {
+        "name": "Durango Blue",
+        "hex": "#59667A",
+        "role": "button text"
+      },
+      {
+        "name": "Canary Wharf",
+        "hex": "#92A1B6",
+        "role": "body text"
+      }
+    ],
+    "secondary_use": "only for product UI, mockups and content that depicts the FlashFX app, never as primary branding"
+  },
+  "gradient": {
+    "type": "linear",
+    "stops": [
+      "#FFC501",
+      "#FE6E08"
+    ],
+    "angle": 135,
+    "use": "logo only"
+  },
+  "fonts": {
+    "Inter": {
+      "role": "signature",
+      "wordmark_and_titles": {
+        "weight": "Bold",
+        "letter_spacing_em": -0.022,
+        "letter_spacing_canva": -22,
+        "line_height": 1.3
+      },
+      "body": {
+        "weight": "Light",
+        "letter_spacing_em": 0,
+        "line_height": 1.5
+      }
+    },
+    "Montserrat": {
+      "role": "accent",
+      "subtitle_and_heading_2": {
+        "weight": "SemiBold",
+        "letter_spacing_em": 0.2,
+        "letter_spacing_canva": 200,
+        "line_height": 1.3,
+        "case": "usually all caps"
+      },
+      "heading_3": {
+        "weight": "Regular",
+        "letter_spacing_em": 0.2,
+        "line_height": 1.3
+      }
+    },
+    "approved_combos": [
+      "wordmark with a Montserrat heading 3 line under it",
+      "wordmark with heading 2 and body text"
+    ],
+    "in_reels": "the style's own fonts stay; the brand fonts only appear inside the logo files and FlashFX product depictions"
+  },
+  "defaults": {
+    "lockup": {
+      "light": "library/brand/lockup/lockup-gradient-on-light.png",
+      "dark": "library/brand/lockup/lockup-gradient-on-dark.png"
+    },
+    "mark": {
+      "light": "library/brand/mark/mark-gradient.png",
+      "dark": "library/brand/mark/mark-gradient.png"
+    },
+    "wordmark": {
+      "light": "library/brand/wordmark/wordmark-gradient.png",
+      "dark": "library/brand/wordmark/wordmark-gradient.png"
+    },
+    "avatar": "library/brand/mark/avatar-dark.png"
+  },
+  "reel_rules": {
+    "canvas": "1080x1920 (scale for the 540x960 drafts)",
+    "mark_min_bolt_height_px": 64,
+    "lockup_min_width_px": 300,
+    "clear_space": "at least 0.25 x the bolt's height on every side of a mark or lockup",
+    "never": [
+      "stretch or squash",
+      "outline, shadow or glow",
+      "a gradient other than the signature one",
+      "recolor outside the approved files",
+      "separate the bolt from the wordmark in a lockup",
+      "change the spacing inside a lockup",
+      "busy imagery or low-contrast backgrounds",
+      "redraw, retype or make a 3D version"
+    ]
+  },
+  "assets": [
+    {
+      "path": "library/brand/mark/mark-gradient.png",
+      "type": "mark",
+      "variant": "gradient",
+      "width": 1853,
+      "height": 2234,
+      "use_on": "both",
+      "content_box": [
+        82,
+        82,
+        1771,
+        2152
+      ],
+      "bolt_height": 2070
+    },
+    {
+      "path": "library/brand/mark/mark-yellow.png",
+      "type": "mark",
+      "variant": "yellow",
+      "width": 1853,
+      "height": 2234,
+      "use_on": "dark",
+      "content_box": [
+        82,
+        82,
+        1771,
+        2152
+      ],
+      "bolt_height": 2070
+    },
+    {
+      "path": "library/brand/mark/mark-orange.png",
+      "type": "mark",
+      "variant": "orange",
+      "width": 1853,
+      "height": 2234,
+      "use_on": "dark",
+      "content_box": [
+        82,
+        82,
+        1771,
+        2152
+      ],
+      "bolt_height": 2070
+    },
+    {
+      "path": "library/brand/mark/mark-white.png",
+      "type": "mark",
+      "variant": "white",
+      "width": 1853,
+      "height": 2234,
+      "use_on": "dark",
+      "content_box": [
+        82,
+        82,
+        1771,
+        2152
+      ],
+      "bolt_height": 2070
+    },
+    {
+      "path": "library/brand/mark/mark-black.png",
+      "type": "mark",
+      "variant": "black",
+      "width": 1853,
+      "height": 2234,
+      "use_on": "light",
+      "content_box": [
+        82,
+        82,
+        1771,
+        2152
+      ],
+      "bolt_height": 2070
+    },
+    {
+      "path": "library/brand/mark/avatar-dark.png",
+      "type": "avatar",
+      "variant": "gradient-on-black",
+      "width": 1024,
+      "height": 1024,
+      "use_on": "both",
+      "content_box": [
+        273,
+        219,
+        751,
+        805
+      ],
+      "bolt_height": 586,
+      "shape": "circle"
+    },
+    {
+      "path": "library/brand/wordmark/wordmark-gradient.png",
+      "type": "wordmark",
+      "variant": "gradient",
+      "width": 1660,
+      "height": 430,
+      "use_on": "both",
+      "content_box": [
+        61,
+        61,
+        1599,
+        369
+      ]
+    },
+    {
+      "path": "library/brand/wordmark/wordmark-white.png",
+      "type": "wordmark",
+      "variant": "white",
+      "width": 1660,
+      "height": 430,
+      "use_on": "dark",
+      "content_box": [
+        61,
+        61,
+        1599,
+        369
+      ]
+    },
+    {
+      "path": "library/brand/wordmark/wordmark-black.png",
+      "type": "wordmark",
+      "variant": "black",
+      "width": 1660,
+      "height": 430,
+      "use_on": "light",
+      "content_box": [
+        61,
+        61,
+        1599,
+        369
+      ]
+    },
+    {
+      "path": "library/brand/wordmark/wordmark-yellow.png",
+      "type": "wordmark",
+      "variant": "yellow",
+      "width": 1660,
+      "height": 430,
+      "use_on": "dark",
+      "content_box": [
+        61,
+        61,
+        1599,
+        369
+      ]
+    },
+    {
+      "path": "library/brand/wordmark/wordmark-orange.png",
+      "type": "wordmark",
+      "variant": "orange",
+      "width": 1660,
+      "height": 430,
+      "use_on": "dark",
+      "content_box": [
+        61,
+        61,
+        1599,
+        369
+      ]
+    },
+    {
+      "path": "library/brand/lockup/lockup-gradient-on-light.png",
+      "type": "lockup",
+      "variant": "gradient-on-light",
+      "width": 1459,
+      "height": 575,
+      "use_on": "light",
+      "content_box": [
+        54,
+        54,
+        1405,
+        521
+      ],
+      "bolt_height": 467
+    },
+    {
+      "path": "library/brand/lockup/lockup-black.png",
+      "type": "lockup",
+      "variant": "black",
+      "width": 1459,
+      "height": 574,
+      "use_on": "light",
+      "content_box": [
+        54,
+        54,
+        1405,
+        520
+      ],
+      "bolt_height": 466
+    },
+    {
+      "path": "library/brand/lockup/lockup-gradient-on-dark.png",
+      "type": "lockup",
+      "variant": "gradient-on-dark",
+      "width": 1459,
+      "height": 575,
+      "use_on": "dark",
+      "content_box": [
+        54,
+        54,
+        1405,
+        521
+      ],
+      "bolt_height": 467
+    },
+    {
+      "path": "library/brand/lockup/lockup-gradient-on-dark-large.png",
+      "type": "lockup",
+      "variant": "gradient-on-dark-large",
+      "width": 2514,
+      "height": 990,
+      "use_on": "dark",
+      "content_box": [
+        93,
+        93,
+        2421,
+        897
+      ],
+      "bolt_height": 804
+    },
+    {
+      "path": "library/brand/lockup/lockup-white.png",
+      "type": "lockup",
+      "variant": "white",
+      "width": 1459,
+      "height": 574,
+      "use_on": "dark",
+      "content_box": [
+        54,
+        54,
+        1405,
+        520
+      ],
+      "bolt_height": 466
+    }
+  ],
+  "references": [
+    {
+      "path": "library/brand/palette.png",
+      "what": "color reference sheet",
+      "width": 1800,
+      "height": 1380
+    },
+    {
+      "path": "library/brand/reference/p01-cover.png",
+      "what": "guide page 1: cover",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p12-brandmark-variants.png",
+      "what": "guide page 12: brandmark variants",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p22-wordmark-on-dark.png",
+      "what": "guide page 22: wordmarks on dark",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p23-wordmark-on-light.png",
+      "what": "guide page 23: wordmarks on light",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p25-wordmark-with-headings.png",
+      "what": "guide page 25: wordmark with headings",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p27-lockups.png",
+      "what": "guide page 27: lockups",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p31-primary-palette.png",
+      "what": "guide page 31: primary palette",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "path": "library/brand/reference/p42-app-ui-palette.png",
+      "what": "guide page 42: app UI palette (secondary)",
+      "width": 1080,
+      "height": 1080
+    }
+  ]
+}
