@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/07-script/cut-output",
+  "title": "07-script: the cut model's structured answer (about 20 percent fewer words, no fact lost)",
+  "type": "object",
+  "required": ["beats", "ask_line", "notes"],
+  "properties": {
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "display", "spoken"],
+        "properties": {
+          "id": {"type": "string"},
+          "display": {"type": "string"},
+          "spoken": {"type": "string"},
+          "card": {"type": "string"}
+        }
+      }
+    },
+    "ask_line": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}

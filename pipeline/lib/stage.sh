@@ -183,16 +183,18 @@ json_file_field() {
   fi
 }
 
-write_retry_prompt() {  # write_retry_prompt <out> <role> <stage> '<errors json list>' ["extra line"]
-  "$REELS_PY" - "$1" "$2" "$3" "$4" "${5:-}" <<'PY'
+write_retry_prompt() {  # write_retry_prompt <out> <role> <stage> '<errors json list>' ["extra line"] [task]
+  # task (M6): a "# Task: <task>" header line after the stage line, for stages whose calls differ by task (S7's
+  # write, cut, claims, pick); the fake claude serves fixtures by it
+  "$REELS_PY" - "$1" "$2" "$3" "$4" "${5:-}" "${6:-}" <<'PY'
 import json, sys
-out, role, stage, errors_json, extra = sys.argv[1:6]
+out, role, stage, errors_json, extra, task = sys.argv[1:7]
 try:
     errors = json.loads(errors_json or "[]")
 except ValueError:
     errors = [errors_json]
 with open(out, "w", encoding="utf-8", newline="\n") as f:
-    f.write(f"# Role: {role}\n# Stage: {stage}\n\nYour previous answer did not pass the stage's checks:\n")
+    f.write(f"# Role: {role}\n# Stage: {stage}\n" + (f"# Task: {task}\n" if task else "") + "\nYour previous answer did not pass the stage's checks:\n")
     for e in errors:
         f.write(f"- {e}\n")
     f.write("\nAnswer again with the complete JSON object (every field, not only the changed ones), fixing exactly these points and keeping everything else as it was. Only the JSON object, nothing else.\n")

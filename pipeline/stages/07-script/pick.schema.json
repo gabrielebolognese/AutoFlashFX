@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/07-script/pick-output",
+  "title": "07-script: the pairwise judge's structured answer (which draft the creator would say out loud)",
+  "type": "object",
+  "required": ["winner", "reason"],
+  "properties": {
+    "winner": {"type": "string", "enum": ["1", "2"]},
+    "reason": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/07-script/model-output",
+  "title": "07-script: the script model's structured answer (a draft or a rewrite, BUILD_SPEC.md S7)",
+  "type": "object",
+  "required": ["tone", "beats", "ask", "hook2", "notes"],
+  "properties": {
+    "tone": {"type": "string"},
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "display", "spoken", "emphasis", "card"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string", "enum": ["hook", "stake", "number", "tool", "step", "comparison", "proof", "mechanism", "before-after", "pain-payoff", "payoff", "ask"]},
+          "display": {"type": "string"},
+          "spoken": {"type": "string"},
+          "emphasis": {"type": "array", "items": {"type": "string"}},
+          "card": {"type": "string"},
+          "facts": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "ask": {
+      "type": "object",
+      "required": ["keyword", "line"],
+      "properties": {"keyword": {"type": "string"}, "line": {"type": "string"}}
+    },
+    "hook2": {
+      "type": "object",
+      "required": ["spoken"],
+      "properties": {"spoken": {"type": "string"}}
+    },
+    "notes": {"type": "string"}
+  }
+}

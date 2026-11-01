@@ -1,101 +1,102 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/07-script/script.json",
-  "title": "07-script script.json (first version, M2)",
+  "title": "07-script script.json (M6): the picked draft after the cut pass, humanize.py and every check, composed by pipeline/lib/script_checks.py compose",
   "type": "object",
-  "required": [
-    "tone",
-    "video_type",
-    "target_seconds",
-    "beats",
-    "ask"
-  ],
+  "required": ["tone", "video_type", "target_seconds", "wpm", "beats", "ask", "hook", "checks", "rounds", "picked"],
   "properties": {
-    "tone": {
-      "type": "string"
+    "written_by": {"type": "string"},
+    "checked": {"type": "string"},
+    "idea_id": {"type": "string"},
+    "wpm": {"type": "number"},
+    "video_type": {"type": "string", "enum": ["default", "list"]},
+    "length_s": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+    "length_source": {"type": "string"},
+    "target_seconds": {"type": "number"},
+    "estimated_seconds": {"type": "number"},
+    "estimated_seconds_spoken": {"type": "number"},
+    "words": {"type": "integer"},
+    "spoken_words": {"type": "integer"},
+    "tone": {"type": "string", "enum": ["warning", "insider", "contrarian", "calm expert", "confession"]},
+    "tones": {"type": "array", "items": {"type": "string"}},
+    "tone_source": {"type": "string"},
+    "picked": {"type": "string"},
+    "pick": {"type": "object"},
+    "drafts": {"type": "object"},
+    "used_fallback_draft": {"type": "boolean"},
+    "hook": {
+      "type": "object",
+      "required": ["spoken", "on_screen"],
+      "properties": {
+        "id": {"type": "string"},
+        "spoken": {"type": "string", "minLength": 1},
+        "on_screen": {"type": "string"},
+        "family": {"type": "string"},
+        "template_id": {"type": "string"},
+        "template": {"type": "string"},
+        "marker": {"type": "string"}
+      }
     },
-    "video_type": {
-      "type": "string",
-      "enum": [
-        "default",
-        "list"
-      ]
-    },
-    "target_seconds": {
-      "type": "number"
-    },
-    "wpm": {
-      "type": "number"
+    "hook2": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string"},
+        "display": {"type": "string"},
+        "spoken": {"type": "string"},
+        "card": {"type": "string"}
+      }
     },
     "beats": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 4,
       "items": {
         "type": "object",
-        "required": [
-          "id",
-          "type",
-          "display",
-          "spoken",
-          "emphasis",
-          "card"
-        ],
+        "required": ["id", "type", "display", "spoken", "emphasis", "card"],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "hook",
-              "stake",
-              "number",
-              "tool",
-              "step",
-              "comparison",
-              "proof",
-              "mechanism",
-              "before-after",
-              "pain-payoff",
-              "payoff",
-              "ask"
-            ]
-          },
-          "display": {
-            "type": "string"
-          },
-          "spoken": {
-            "type": "string"
-          },
-          "emphasis": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "card": {
-            "type": "string"
-          }
+          "id": {"type": "string", "pattern": "^b[0-9]+$"},
+          "type": {"type": "string", "enum": ["hook", "stake", "number", "tool", "step", "comparison", "proof", "mechanism", "before-after", "pain-payoff", "payoff", "ask"]},
+          "display": {"type": "string", "minLength": 1},
+          "spoken": {"type": "string", "minLength": 1},
+          "emphasis": {"type": "array", "items": {"type": "string"}, "maxItems": 3},
+          "card": {"type": "string", "pattern": "^\\s*\\S+(\\s+\\S+){0,5}\\s*$"},
+          "card_words": {"type": "integer", "maximum": 6},
+          "facts": {"type": "array", "items": {"type": "string"}},
+          "seconds": {"type": ["number", "null"]}
         }
       }
     },
     "ask": {
       "type": "object",
-      "required": [
-        "keyword",
-        "line"
-      ],
+      "required": ["keyword", "line"],
       "properties": {
-        "keyword": {
-          "type": "string"
-        },
-        "line": {
-          "type": "string"
-        }
+        "keyword": {"type": "string", "minLength": 1},
+        "line": {"type": "string", "minLength": 1},
+        "loop_word": {"type": "string"},
+        "deliverable": {"type": "string"},
+        "deliverable_status": {"type": "string"},
+        "deliverable_link": {"type": "string"}
       }
     },
+    "cut": {"type": "object"},
     "checks": {
-      "type": "object"
-    }
+      "type": "object",
+      "required": ["ok", "hard", "soft"],
+      "properties": {
+        "ok": {"type": "boolean"},
+        "hard": {"type": "array"},
+        "soft": {"type": "array"},
+        "info": {"type": "array"},
+        "summary": {"type": "object"},
+        "detail": {"type": "object"}
+      }
+    },
+    "rounds": {"type": "integer", "minimum": 1},
+    "rounds_log": {"type": "array"},
+    "flags": {"type": "array"},
+    "pronunciations": {"type": "array"},
+    "spoken_changes": {"type": "object"},
+    "humanize": {"type": "object"},
+    "rewrites": {"type": "array"},
+    "notes": {"type": "string"}
   }
 }

@@ -102,6 +102,23 @@
     "top_n": 4
   },
 
+  "script": {
+    "tones": ["warning", "insider", "contrarian", "calm expert", "confession"],
+    "overshoot_pct": 25,
+    "cut_pct": 20,
+    "cut_range_pct": [10, 30],
+    "cut_tries": 2,
+    "detect_min_overall": 70,
+    "detect_min_check": 55,
+    "hook_max_s": 3,
+    "beat_max_s": 4,
+    "stake_max_s": 5,
+    "abstract_run": 3,
+    "length_tolerance_pct": 15,
+    "card_max_words": 6,
+    "min_body_beats": 2
+  },
+
   "caps": {
     "angle_rounds": 2,
     "script_rounds": 3,
@@ -133,6 +150,10 @@
     "hooks_seconds": 1200,
     "brief_seconds": 1200,
     "judge_seconds": 900,
+    "script_seconds": 1800,
+    "cut_seconds": 900,
+    "checks_seconds": 900,
+    "pick_seconds": 900,
     "transcribe_seconds": 1800,
     "profile_seconds": 1200,
     "reviewer_seconds": 2400,

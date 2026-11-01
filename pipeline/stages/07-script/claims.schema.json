@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/07-script/claims-output",
+  "title": "07-script: the checks model's structured answer (every claim of the script mapped to facts.md)",
+  "type": "object",
+  "required": ["claims", "summary"],
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["beat", "claim", "status", "facts", "note"],
+        "properties": {
+          "beat": {"type": "string"},
+          "claim": {"type": "string"},
+          "status": {"type": "string", "enum": ["supported", "overstated", "unsupported"]},
+          "facts": {"type": "array", "items": {"type": "integer"}},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "summary": {"type": "string"}
+  }
+}
