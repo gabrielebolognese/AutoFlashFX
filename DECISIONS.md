@@ -1950,3 +1950,11 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     the 03-gate dummy lacked the new H field, and the runner's own fixer repaired it and committed
     `autofix(03-gate): ...` (b7ea7e3) with a line in known-issues.md; test-m3 now counts only the 10-build lines its
     sections add, since the sandbox copies the repo's known-issues.md.
+274. **M11's style check hung in every second review round** (found by the real run of test-m12 section 4): S12 runs
+    tools/analyze_refs.py into 12-review/analysis/ every round, and the analyzer's ffmpeg calls have no -y, so a still
+    left from round 1 made ffmpeg wait for "Overwrite? [y/N]" on the inherited stdin until timeouts.style_seconds
+    (1200 s) ran out; the runner then retried the "temporary" timeout three times, an hour lost and the review cycle
+    next. pipeline/lib/review/style_check.py now removes the previous v01/ folder first and runs the analyzer with no
+    stdin (tools/analyze_refs.py, the user's tool, is unchanged). M11's tests never ran a second real style check in the
+    same run folder. The live test run was rescued by hand (the same fix copied into its sandbox, the stale stills
+    removed, the waiting ffmpeg killed); test-m12 section 1 now runs the analyzer twice into one folder.

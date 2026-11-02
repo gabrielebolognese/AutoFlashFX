@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import glob
 import os
+import shutil
 import subprocess
 import sys
 
@@ -35,7 +36,12 @@ def run_analyzer(ctx: rc.Ctx, video: str, out_dir: str) -> dict:
     if not os.path.isfile(tool):
         tool = os.path.join(rc.REPO, "tools", "analyze_refs.py")
     cmd = [sys.executable, tool, video, "--out", out_dir, "--strips", "0"]
-    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=int(ctx.c("timeouts.style_seconds", 1200)))
+    # a later review round writes into the same folder: the analyzer's ffmpeg calls have no -y, so a still left from
+    # the previous round made ffmpeg wait for "Overwrite? [y/N]" until the stage timed out (found in M12). The old
+    # results go first, and the analyzer gets no stdin, so no prompt can ever block it.
+    shutil.rmtree(os.path.join(out_dir, "v01"), ignore_errors=True)
+    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL,
+                          timeout=int(ctx.c("timeouts.style_seconds", 1200)))
     summary = rc.load_json(os.path.join(out_dir, "v01", "summary.json"), None)
     if not summary:
         raise RuntimeError(f"analyze_refs.py produced no summary ({(proc.stderr or proc.stdout or '')[-300:]})")

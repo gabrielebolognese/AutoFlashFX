@@ -346,6 +346,24 @@ EOF
   assert_eq "$(jf "$res" before)" '["width", "height"]' "post-pass: the 540x960 draft with the voice fails only the size checks"
   assert_true "post-pass: the video is re-encoded at 1080x1920" grep -q "re-encoded to H.264 High yuv420p 30 fps at 1080x1920" <<<"$(jf "$res" fixed)"
   assert_eq "$(jf "$res" pass)" "true" "post-pass: every hard check passes afterwards (aac 48 kHz, h264 High, yuv420p, 3.5 s at most)"
+  # the voice (2.68 s) is shorter than the clip (3.2 s, the voice plus the tail): the audio is padded, the video keeps its length
+  assert_true "mux: a mix shorter than the video keeps the video's length (apad, DECISIONS.md 273)" python -c 'import subprocess, sys
+d = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", sys.argv[1]], capture_output=True, text=True).stdout)
+print(d); sys.exit(0 if abs(d - 3.2) <= 0.1 else 1)' "$(mixed "$W/h2.mp4")"
+  # M11's style check, found by the real run of M12: a second review round analyzes into the same folder, and the
+  # analyzer's ffmpeg (no -y) waited for "Overwrite? [y/N]" until the stage timed out. Two runs in a row must both finish.
+  assert_true "style check: the analyzer runs twice into the same folder without hanging (DECISIONS.md 274)" timeout 240 python - "$(mixed "$FROZEN/10-build/hook2.mp4")" "$(mixed "$W/style-out")" <<'EOF'
+import os, sys
+sys.path.insert(0, os.path.join("pipeline", "lib"))
+from review import style_check
+class Ctx:
+    repo = os.getcwd()
+    def c(self, key, default=None):
+        return 60
+for i in (1, 2):
+    s = style_check.run_analyzer(Ctx(), sys.argv[1], sys.argv[2])
+    print("run", i, "ok" if s else "no summary")
+EOF
 else
   echo "   (the frozen hook2.mp4 or vo_hook2.wav is missing: the mux and post-pass unit is skipped)"
 fi
