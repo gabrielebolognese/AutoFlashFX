@@ -2071,3 +2071,14 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     final consonant undone), so recording, recordings and record match, as do clip, clips and clipping. The second
     real run's other blocks follow the spec: a line the voice still garbled after its one rewrite ("Heads up" heard
     as "headset", 25 percent), and the first run's facts failure.
+287. **The ffmpeg rerun (build/M13/rerun3) found three more S8 false failures, all transcription spellings of words
+    the voice said right**: whisper wrote the spoken "ten thirty" as "10.30" (a clock time with a dot), the spoken
+    "docs" as "docks", and the spelled-out "eff eff em" as "FFM" (and, in the second run, "C L I" as "CL"). The
+    comparison now also accepts, when the reference says it that way: a dotted clock time ("10.30") and a version read
+    as one number after the point ("3.12" for "three point twelve"); an all-capitals acronym for the letters or the
+    letter names the script spells ("CLI" for "c l i", "FFM" for "eff eff em"); and common homophones mapped to one
+    form on both sides (docs and docks, cache and cash, site, sight and cite, to, too and two, for and four, and a few
+    more in VARIANTS, now applied to number words too); a number followed by a comma ("10.30,") is read as a number.
+    Genuine mishearings still fail ("Heads up" as "headset", "Claude" as "cloud"). Replayed on the blocked ffmpeg run
+    in its sandbox (Kokoro is deterministic), S8 passed: 1 of 12 lines misheard on the first pass ("asked5", a word and
+    a digit glued together), fixed by its rewrite. Not changed: whisper gluing a digit to a word; the rewrite handles it.

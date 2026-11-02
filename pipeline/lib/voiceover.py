@@ -89,7 +89,16 @@ VARIANTS = {
     "judgement": "judgment", "practise": "practice", "learnt": "learned", "spelt": "spelled", "dreamt": "dreamed", "burnt": "burned",
     "optimise": "optimize", "optimised": "optimized", "customise": "customize", "customised": "customized", "summarise": "summarize",
     "their": "there", "theyre": "there", "youre": "your", "whos": "whose", "alright": "allright",
+    # homophones whisper picks by guesswork (M13, DECISIONS.md 287: "docs" heard as "docks" blocked a reel)
+    "docks": "docs", "cash": "cache", "sight": "site", "cite": "site", "write": "right", "knew": "new",
+    "know": "no", "buy": "by", "bye": "by", "hear": "here", "won": "one", "four": "for", "too": "to", "two": "to",
+    "root": "route", "peak": "peek", "pique": "peek", "byte": "bite", "whole": "hole", "sum": "some", "weight": "wait",
+    "cell": "sell", "scene": "seen", "plane": "plain", "male": "mail", "tale": "tail", "pain": "pane", "aloud": "allowed",
 }
+# letter names, for an acronym the script spells out ("eff eff em peg") and whisper writes in capitals ("FFM peg")
+LETTER_NAMES = {"a": "a", "b": "bee", "c": "see", "d": "dee", "e": "e", "f": "eff", "g": "gee", "h": "aitch", "i": "i",
+                "j": "jay", "k": "kay", "l": "el", "m": "em", "n": "en", "o": "oh", "p": "pee", "q": "cue", "r": "ar",
+                "s": "ess", "t": "tee", "u": "you", "v": "vee", "w": "double you", "x": "ex", "y": "why", "z": "zee"}
 
 
 # ------------------------------------------------------------------------------------------------ small helpers
@@ -531,8 +540,16 @@ def _number_items(piece: str, context: str) -> list[str]:
     if m:  # a clock time or a timestamp: "1:30" is "one thirty", "2:00" is "two"
         mins = int(m.group(2))
         return num_words(int(m.group(1))) + (num_words(mins) if mins else [])
+    m = re.fullmatch(r"(\d{1,2})\.(\d\d)", digits)
+    if m and int(m.group(1)) <= 24 and int(m.group(2)) < 60 and int(m.group(2)) >= 10:
+        clock = num_words(int(m.group(1))) + num_words(int(m.group(2)))  # "10.30" written for a spoken "ten thirty"
+        if " ".join(clock) in context:
+            return clock
     m = re.fullmatch(r"(\d+)\.(\d+)", digits)
     if m:
+        whole = num_words(int(m.group(1))) + ["point"] + num_words(int(m.group(2)))
+        if len(m.group(2)) > 1 and not m.group(2).startswith("0") and " ".join(whole) in context:
+            return whole  # a version said "three point twelve"
         return num_words(int(m.group(1))) + ["point"] + [ONES[int(d)] for d in m.group(2)]
     return [digits]
 
@@ -542,11 +559,23 @@ def norm_items(tokens: list[str], context: str = "") -> list[tuple[str, int]]:
     a number written in digits) or none (punctuation alone)."""
     items: list[tuple[str, int]] = []
     for i, raw in enumerate(tokens):
+        caps = re.sub(r"^[^A-Za-z]+|[^A-Za-z]+$", "", strip_markup(raw))
+        if context and re.fullmatch(r"[A-Z]{2,6}", caps):
+            # an acronym in capitals where the other side spells it: "CLI" for "c l i", "FFM" for "eff eff em"
+            spelled = None
+            for form in ([c.lower() for c in caps], [LETTER_NAMES[c.lower()] for c in caps]):
+                if " ".join(form) in context:
+                    spelled = form
+                    break
+            if spelled:
+                for w in " ".join(spelled).split():
+                    items.append((w, i))
+                continue
         tok = strip_markup(raw).lower()
         tok = tok.replace("&", " and ").replace("%", " percent ")
         tok = re.sub(r"\$\s*(\d[\d,]*(?:\.\d+)?)", r"\1 dollars ", tok)
         for piece in re.split(r"[\s\-/_]+", tok):
-            piece = piece.strip()
+            piece = piece.strip().rstrip(",;!?")  # "10.30," is a number with a comma after it, not a word
             if not piece:
                 continue
             if piece in ORDINALS:
@@ -560,7 +589,7 @@ def norm_items(tokens: list[str], context: str = "") -> list[tuple[str, int]]:
                 continue
             if re.fullmatch(r"\d[\d,]*(\.\d+)?\.?|\d{1,2}:\d\d\.?", piece):
                 for w in _number_items(piece.rstrip("."), context):
-                    items.append((w, i))
+                    items.append((VARIANTS.get(w, w), i))  # "2" and "two" meet "to" and "too" in one form
                 continue
             word = re.sub(r"[^a-z0-9]+", "", piece)
             if not word:
