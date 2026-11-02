@@ -77,7 +77,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   pipeline/bin/doctor (read-only health report), build-voice-profile --force keeping the hand-written parts of the
   profile (voiceprofile.py merge_keep), S8 and S12 passing the reel's names to faster-whisper as hotwords (DECISIONS.md
   283; S8 also accepts "130" heard for "one thirty", S7's rewrite refuses a respelled name, S7's share-identity check
-  compares word stems, 09b checks the zones rule: DECISIONS.md 284 to 286), pipeline/tests/m13-run.sh (the three-idea driver) and pipeline/tests/fixtures/ideas/three-ideas.txt. Run every
+  compares word stems, 09b checks the zones rule, S8 accepts more transcription spellings: DECISIONS.md 284 to
+  287), pipeline/tests/m13-run.sh (the three-idea driver) and pipeline/tests/fixtures/ideas/three-ideas.txt. Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4

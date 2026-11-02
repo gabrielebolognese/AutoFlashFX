@@ -39,7 +39,7 @@ are (the build runner is executing that file).
    the second idea's first S2 call; the runner killed at its first S3 call; the restart; the forever mode stopped with
    SIGTERM; status.txt sampled throughout) and pipeline/tests/fixtures/ideas/three-ideas.txt (Claude Code's /init, the
    Playwright MCP server, ffmpeg's stream copy).
-8. **Fixes for what the real runs surfaced** (DECISIONS.md 283 to 286):
+8. **Fixes for what the real runs surfaced** (DECISIONS.md 283 to 287):
    - S8 blocked a reel for a correct "Claude": faster-whisper's small model writes "clod" or "clawed"; S8 and S12's
      audio check now pass the reel's names as faster-whisper hotwords (measured: respellings did nothing, phonemes
      helped in some sentences, hotwords fixed every sentence tried), and S7's one-line rewrite refuses a respelled name
@@ -52,6 +52,9 @@ are (the build runner is executing that file).
    - S7's share-identity check compares word stems ("Long recording" names "long recordings"); it blocked the ffmpeg
      idea in the second run.
    - The heartbeat's issue counters include S12's review issue (spec: "errors and failed reviews"); logcheck follows.
+   - S8's comparison accepts more transcription spellings of words the voice said right (decision 287): a dotted clock
+     time, a version read as one number, an acronym in capitals for spelled letters, common homophones (docs and
+     docks), a number followed by a comma.
 
 ## Files
 
@@ -62,7 +65,7 @@ are (the build runner is executing that file).
   logs build/M13/test-*.log.
 - Changed (M13): pipeline/lib/ai.sh, log.sh, status.sh, runner.sh (the rotation call), pipeline/bin/runner-status,
   pipeline/lib/voiceprofile.py, pipeline/bin/build-voice-profile, config.json (logs.rotate_mb, rotate_keep),
-  DECISIONS.md 276 to 284, CLAUDE.md, pipeline/knowledge/known-issues.md (one line tidied).
+  DECISIONS.md 276 to 287, CLAUDE.md, pipeline/knowledge/known-issues.md (one line tidied).
 - Earlier milestones touched, because the M13 runs depend on them: M7 (pipeline/lib/voiceover.py: hotwords, the paired
   number reading, the "fixing pronunciation (line N)" activity; pipeline/lib/tts/whisper_worker.py: the hotwords),
   M6 (pipeline/lib/script_checks.py: the respelling guard of the one-line rewrite, the share-identity stems;
@@ -110,7 +113,11 @@ It surfaced the S8 bugs: the /init idea blocked for a correct "Claude" (decision
 **Validation reruns, one idea each, with the fixes:** the /init idea (build/M13/rerun, 141 minutes): S8 passed (2 of 12
 lines misheard on the first pass instead of 6, none of them "Claude"), the runner's own review and fix loop repaired a
 09b zones bug on the way (two autofix commits, ported to the repo, decision 285), exported #1 with NEEDS REVIEW from the
-edit review's cap; logcheck: no problem. RERUN3_RESULT
+edit review's cap; logcheck: no problem. The ffmpeg idea (build/M13/rerun3): S7 passed this time (the stem fix), and
+S8 blocked it again on three new transcription spellings of words the voice said right ("10.30" for "ten thirty",
+"docks" for "docs", "FFM" for "eff eff em"); after the fix of decision 287, S8 replayed on that run passed (1 of 12
+lines misheard, fixed by its rewrite; build/M13/rerun3/s8-again.out, voiceover-blocked.json and
+voiceover-replayed.json). The rerun was not taken further than S8.
 
 **Fake-only sections** (build/M13/test-m13-s124.log): 100 passed, 0 failed: section 1 (logcheck on a good timeline and
 14 broken ones, the rotation alone and inside a live dummy run whose 2 rotated files still tell one story, the status
@@ -120,10 +127,10 @@ same three-idea scenario with the fake claude, about 11 minutes), section 4 (no 
 **Earlier milestones' tests after the touches to their code:** test-m1 96, test-m2 207 (a first run under the load of
 two real pipelines failed its heartbeat timing check once; say() was then made as cheap as before), test-m3 fake 373
 plus section 10 again 34 (its orphaned-reviewer scenario was a timing flake under load; the fake reviewer now waits
-90 s), test-m5 fake 198, test-m6 fake 147 (twice), test-m7 fake 116 (twice), test-m10 fake 133 plus section 2 again 104
-(M12's new solution.json in the frozen run had broken its no-solution scenario), test-m11 fake sections 1 and 2 (four
+90 s), test-m5 fake 198, test-m6 fake 147 (twice), test-m7 fake 116 (three times), test-m10 fake 133 plus section 2
+again 104 (M12's new solution.json in the frozen run had broken its no-solution scenario), test-m11 fake sections 1 and 2 (four
 failures in section 2 from a one-off empty export.json written by the S14 dummy under heavy load; not reproduced), then
-section 2 again 110 and section 3 28, test-limits 94, test-no-emdash 1. All passing.
+section 2 again 110, section 3 28 and section 1 again 89, test-limits 94, test-no-emdash 1. All passing.
 
 ## Known gaps
 
@@ -146,5 +153,6 @@ section 2 again 110 and section 3 28, test-limits 94, test-no-emdash 1. All pass
   runner seems stuck.
 - M13: build-runner.sh's uncommitted changes (the `--fallback-model` switch) predate M13; commit or drop them while the
   build runner is stopped.
-- M13: the reels of the M13 runs (build/M13/rerun/1.mp4, build/M13/real2/exports/1/, and the ffmpeg rerun's when it
-  exported) are worth one look each; their captions files list the components the visual director keeps asking for.
+- M13: the two reels of the M13 runs (build/M13/rerun/1.mp4 and build/M13/real2/exports/1/, both the /init idea, both
+  NEEDS REVIEW from the edit review's cap) are worth one look each; their captions files list the components the
+  visual director keeps asking for.

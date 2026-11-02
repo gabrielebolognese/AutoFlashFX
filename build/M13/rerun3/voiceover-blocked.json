@@ -1,0 +1,1410 @@
+{
+ "written_by": "08-voiceover",
+ "engine": {
+  "engine": "kokoro",
+  "python": "C:/Users/there/venvs/kokoro/Scripts/python.exe",
+  "voice": "af_bella",
+  "lang": "a",
+  "speed": 1.0,
+  "silence_threshold_db": -40.0,
+  "min_pause_s": 0.3,
+  "keep_pause_s": 0.1,
+  "breath_after_hook_s": 1.0
+ },
+ "engine_file": {
+  "path": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/library/voice/engine.txt",
+  "status": "defaults",
+  "notes": [
+   "library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)"
+  ]
+ },
+ "interpreters": {
+  "tts": "C:/Users/there/venvs/kokoro/Scripts/python.exe",
+  "whisper": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
+  "tts_worker": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/pipeline/lib/tts/kokoro_worker.py",
+  "whisper_worker": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/pipeline/lib/tts/whisper_worker.py"
+ },
+ "whisper_model": "small",
+ "thresholds": {
+  "wer_fail_pct": 3.0,
+  "wer_flag_max_pct": 8.0,
+  "overrun_pct": 15.0,
+  "overrun_min_s": 0.4,
+  "wpm": 176.0,
+  "lead_s": 0.05,
+  "tail_s": 0.2,
+  "loudness_lufs": -14.0,
+  "true_peak_dbtp": -1.5
+ },
+ "pronunciations": [],
+ "lines": [
+  {
+   "id": "b1",
+   "kind": "beat",
+   "type": "hook",
+   "spoken": "Stop re-encoding clips. Use dash c copy instead.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Stop re-encoding clips. Use dash c copy instead.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b1.a1.wav",
+     "duration_s": 2.87,
+     "raw_s": 5.2,
+     "wer_pct": 0.0,
+     "heard": "Stop re-encoding clips. Use dash c copy instead.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.87,
+   "raw_s": 5.2,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b1.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Stop re-encoding clips. Use dash c copy instead.",
+   "applied": [],
+   "words": 8,
+   "syllables": 12,
+   "estimate_s": 2.97,
+   "shortened": 1,
+   "removed_s": 2.33,
+   "heard_text": "Stop re-encoding clips. Use dash c copy instead.",
+   "transcript": [
+    {
+     "word": "Stop",
+     "start": 0.0,
+     "end": 0.22
+    },
+    {
+     "word": "re",
+     "start": 0.22,
+     "end": 0.44
+    },
+    {
+     "word": "-encoding",
+     "start": 0.44,
+     "end": 0.76
+    },
+    {
+     "word": "clips.",
+     "start": 0.76,
+     "end": 1.2
+    },
+    {
+     "word": "Use",
+     "start": 1.46,
+     "end": 1.56
+    },
+    {
+     "word": "dash",
+     "start": 1.56,
+     "end": 1.88
+    },
+    {
+     "word": "c",
+     "start": 1.88,
+     "end": 2.06
+    },
+    {
+     "word": "copy",
+     "start": 2.06,
+     "end": 2.34
+    },
+    {
+     "word": "instead.",
+     "start": 2.34,
+     "end": 2.7
+    }
+   ]
+  },
+  {
+   "id": "b2",
+   "kind": "beat",
+   "type": "stake",
+   "spoken": "Clipping streams or podcasts, you've probably sat watching an export crawl.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Clipping streams or podcasts, you've probably sat watching an export crawl.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b2.a1.wav",
+     "duration_s": 4.05,
+     "raw_s": 5.35,
+     "wer_pct": 0.0,
+     "heard": "Clipping streams or podcasts, you've probably sat watching an export crawl.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 4.05,
+   "raw_s": 5.35,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b2.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Clipping streams or podcasts, you've probably sat watching an export crawl.",
+   "applied": [],
+   "words": 11,
+   "syllables": 17,
+   "estimate_s": 4.2,
+   "shortened": 1,
+   "removed_s": 1.3,
+   "heard_text": "Clipping streams or podcasts, you've probably sat watching an export crawl.",
+   "transcript": [
+    {
+     "word": "Clipping",
+     "start": 0.0,
+     "end": 0.24
+    },
+    {
+     "word": "streams",
+     "start": 0.24,
+     "end": 0.62
+    },
+    {
+     "word": "or",
+     "start": 0.62,
+     "end": 0.92
+    },
+    {
+     "word": "podcasts,",
+     "start": 0.92,
+     "end": 1.4
+    },
+    {
+     "word": "you've",
+     "start": 1.82,
+     "end": 1.96
+    },
+    {
+     "word": "probably",
+     "start": 1.96,
+     "end": 2.32
+    },
+    {
+     "word": "sat",
+     "start": 2.32,
+     "end": 2.62
+    },
+    {
+     "word": "watching",
+     "start": 2.62,
+     "end": 3.04
+    },
+    {
+     "word": "an",
+     "start": 3.04,
+     "end": 3.2
+    },
+    {
+     "word": "export",
+     "start": 3.2,
+     "end": 3.56
+    },
+    {
+     "word": "crawl.",
+     "start": 3.56,
+     "end": 3.94
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "kind": "beat",
+   "type": "step",
+   "spoken": "Ten minutes in. Stop at ten thirty. Before dash i.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Start, ten minutes. End, ten thirty. Before dash i.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b3.a1.wav",
+     "duration_s": 3.08,
+     "raw_s": 6.55,
+     "wer_pct": 44.4,
+     "heard": "Start 10 minutes and 10.30 before dash-I.",
+     "misheard": [
+      "End",
+      "thirty"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "Ten minutes in. Stop at ten thirty. Before dash i.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b3.a2.wav",
+     "duration_s": 2.83,
+     "raw_s": 6.275,
+     "wer_pct": 20.0,
+     "heard": "10 minutes in, stop at 10.30, before dash I",
+     "misheard": [
+      "ten",
+      "thirty"
+     ],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"Start, ten minutes. End, ten thirty. Before dash i.\" -> \"Ten minutes in. Stop at ten thirty. Before dash i.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "block",
+   "wer_pct": 20.0,
+   "misheard": [
+    "ten",
+    "thirty"
+   ],
+   "heard": [
+    "ten thirty -> 1030"
+   ],
+   "duration_s": 2.83,
+   "raw_s": 6.275,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b3.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"Start, ten minutes. End, ten thirty. Before dash i.\" -> \"Ten minutes in. Stop at ten thirty. Before dash i.\""
+   ],
+   "tts": "Ten minutes in. Stop at ten thirty. Before dash i.",
+   "applied": [],
+   "words": 10,
+   "syllables": 14,
+   "estimate_s": 3.46,
+   "shortened": 2,
+   "removed_s": 3.445,
+   "heard_text": "10 minutes in, stop at 10.30, before dash I",
+   "transcript": [
+    {
+     "word": "10",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "minutes",
+     "start": 0.18,
+     "end": 0.38
+    },
+    {
+     "word": "in,",
+     "start": 0.38,
+     "end": 0.7
+    },
+    {
+     "word": "stop",
+     "start": 0.94,
+     "end": 1.08
+    },
+    {
+     "word": "at",
+     "start": 1.08,
+     "end": 1.24
+    },
+    {
+     "word": "10",
+     "start": 1.24,
+     "end": 1.44
+    },
+    {
+     "word": ".30,",
+     "start": 1.44,
+     "end": 1.76
+    },
+    {
+     "word": "before",
+     "start": 2.0,
+     "end": 2.16
+    },
+    {
+     "word": "dash",
+     "start": 2.16,
+     "end": 2.52
+    },
+    {
+     "word": "I",
+     "start": 2.52,
+     "end": 2.76
+    }
+   ]
+  },
+  {
+   "id": "b4",
+   "kind": "beat",
+   "type": "mechanism",
+   "spoken": "Add dash c copy, and there's no decoding or encoding.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Add dash c copy, and there's no decoding or encoding.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b4.a1.wav",
+     "duration_s": 2.83,
+     "raw_s": 4.275,
+     "wer_pct": 0.0,
+     "heard": "Add dash c copy and there's no decoding or encoding.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.83,
+   "raw_s": 4.275,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b4.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Add dash c copy, and there's no decoding or encoding.",
+   "applied": [],
+   "words": 10,
+   "syllables": 16,
+   "estimate_s": 3.96,
+   "shortened": 1,
+   "removed_s": 1.445,
+   "heard_text": "Add dash c copy and there's no decoding or encoding.",
+   "transcript": [
+    {
+     "word": "Add",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "dash",
+     "start": 0.18,
+     "end": 0.44
+    },
+    {
+     "word": "c",
+     "start": 0.44,
+     "end": 0.7
+    },
+    {
+     "word": "copy",
+     "start": 0.7,
+     "end": 1.02
+    },
+    {
+     "word": "and",
+     "start": 1.02,
+     "end": 1.26
+    },
+    {
+     "word": "there's",
+     "start": 1.26,
+     "end": 1.44
+    },
+    {
+     "word": "no",
+     "start": 1.44,
+     "end": 1.56
+    },
+    {
+     "word": "decoding",
+     "start": 1.56,
+     "end": 2.1
+    },
+    {
+     "word": "or",
+     "start": 2.1,
+     "end": 2.3
+    },
+    {
+     "word": "encoding.",
+     "start": 2.3,
+     "end": 2.62
+    }
+   ]
+  },
+  {
+   "id": "b5",
+   "kind": "beat",
+   "type": "proof",
+   "spoken": "Very fast. No quality loss. Docs, line three twenty.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Very fast. No quality loss. Per eff eff em peg.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b5.a1.wav",
+     "duration_s": 2.96,
+     "raw_s": 6.425,
+     "wer_pct": 30.0,
+     "heard": "Very fast, no quality loss per FFM peg.",
+     "misheard": [
+      "eff",
+      "eff",
+      "em"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "Very fast. No quality loss. Docs, line three twenty.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b5.a2.wav",
+     "duration_s": 3.31,
+     "raw_s": 6.75,
+     "wer_pct": 11.1,
+     "heard": "Very fast. No quality loss. Docks line 320.",
+     "misheard": [
+      "Docs"
+     ],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"Very fast. No quality loss. Per eff eff em peg.\" -> \"Very fast. No quality loss. Docs, line three twenty.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "block",
+   "wer_pct": 11.1,
+   "misheard": [
+    "Docs"
+   ],
+   "heard": [
+    "docs -> docks"
+   ],
+   "duration_s": 3.31,
+   "raw_s": 6.75,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b5.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"Very fast. No quality loss. Per eff eff em peg.\" -> \"Very fast. No quality loss. Docs, line three twenty.\""
+   ],
+   "tts": "Very fast. No quality loss. Docs, line three twenty.",
+   "applied": [],
+   "words": 9,
+   "syllables": 13,
+   "estimate_s": 3.22,
+   "shortened": 2,
+   "removed_s": 3.44,
+   "heard_text": "Very fast. No quality loss. Docks line 320.",
+   "transcript": [
+    {
+     "word": "Very",
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "word": "fast.",
+     "start": 0.2,
+     "end": 0.56
+    },
+    {
+     "word": "No",
+     "start": 0.92,
+     "end": 1.0
+    },
+    {
+     "word": "quality",
+     "start": 1.0,
+     "end": 1.36
+    },
+    {
+     "word": "loss.",
+     "start": 1.36,
+     "end": 1.7
+    },
+    {
+     "word": "Docks",
+     "start": 1.98,
+     "end": 2.36
+    },
+    {
+     "word": "line",
+     "start": 2.36,
+     "end": 2.62
+    },
+    {
+     "word": "320.",
+     "start": 2.62,
+     "end": 2.92
+    }
+   ]
+  },
+  {
+   "id": "b6",
+   "kind": "beat",
+   "type": "mechanism",
+   "spoken": "Here's the catch: copy starts at the keyframe before your time.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Here's the catch: copy starts at the keyframe before your time.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b6.a1.wav",
+     "duration_s": 2.95,
+     "raw_s": 4.325,
+     "wer_pct": 0.0,
+     "heard": "Here's the catch. Copy starts at the keyframe before your time.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.95,
+   "raw_s": 4.325,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b6.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Here's the catch: copy starts at the keyframe before your time.",
+   "applied": [],
+   "words": 11,
+   "syllables": 15,
+   "estimate_s": 3.71,
+   "shortened": 1,
+   "removed_s": 1.375,
+   "heard_text": "Here's the catch. Copy starts at the keyframe before your time.",
+   "transcript": [
+    {
+     "word": "Here's",
+     "start": 0.0,
+     "end": 0.22
+    },
+    {
+     "word": "the",
+     "start": 0.22,
+     "end": 0.32
+    },
+    {
+     "word": "catch.",
+     "start": 0.32,
+     "end": 0.58
+    },
+    {
+     "word": "Copy",
+     "start": 0.9,
+     "end": 1.08
+    },
+    {
+     "word": "starts",
+     "start": 1.08,
+     "end": 1.42
+    },
+    {
+     "word": "at",
+     "start": 1.42,
+     "end": 1.62
+    },
+    {
+     "word": "the",
+     "start": 1.62,
+     "end": 1.68
+    },
+    {
+     "word": "keyframe",
+     "start": 1.68,
+     "end": 2.06
+    },
+    {
+     "word": "before",
+     "start": 2.06,
+     "end": 2.32
+    },
+    {
+     "word": "your",
+     "start": 2.32,
+     "end": 2.5
+    },
+    {
+     "word": "time.",
+     "start": 2.5,
+     "end": 2.78
+    }
+   ]
+  },
+  {
+   "id": "b7",
+   "kind": "beat",
+   "type": "number",
+   "spoken": "In one test. Asked five. Got seven point oh seven.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "In one test. Asked five. Got seven point oh seven.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b7.a1.wav",
+     "duration_s": 2.94,
+     "raw_s": 6.425,
+     "wer_pct": 0.0,
+     "heard": "In one test asked five got seven point oh seven",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.94,
+   "raw_s": 6.425,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b7.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "In one test. Asked five. Got seven point oh seven.",
+   "applied": [],
+   "words": 10,
+   "syllables": 12,
+   "estimate_s": 2.97,
+   "shortened": 2,
+   "removed_s": 3.485,
+   "heard_text": "In one test asked five got seven point oh seven",
+   "transcript": [
+    {
+     "word": "In",
+     "start": 0.0,
+     "end": 0.1
+    },
+    {
+     "word": "one",
+     "start": 0.1,
+     "end": 0.32
+    },
+    {
+     "word": "test",
+     "start": 0.32,
+     "end": 0.66
+    },
+    {
+     "word": "asked",
+     "start": 0.66,
+     "end": 1.12
+    },
+    {
+     "word": "five",
+     "start": 1.12,
+     "end": 1.48
+    },
+    {
+     "word": "got",
+     "start": 1.48,
+     "end": 1.78
+    },
+    {
+     "word": "seven",
+     "start": 1.78,
+     "end": 2.14
+    },
+    {
+     "word": "point",
+     "start": 2.14,
+     "end": 2.36
+    },
+    {
+     "word": "oh",
+     "start": 2.36,
+     "end": 2.52
+    },
+    {
+     "word": "seven",
+     "start": 2.52,
+     "end": 2.78
+    }
+   ]
+  },
+  {
+   "id": "b8",
+   "kind": "beat",
+   "type": "step",
+   "spoken": "For an exact start, just drop dash c copy and re-encode.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "For an exact start, I'd drop dash c copy and re-encode.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b8.a1.wav",
+     "duration_s": 3.05,
+     "raw_s": 4.425,
+     "wer_pct": 8.3,
+     "heard": "For an exact start, I drop dash C copy and re-encode.",
+     "misheard": [
+      "I'd"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "For an exact start, just drop dash c copy and re-encode.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b8.a2.wav",
+     "duration_s": 3.03,
+     "raw_s": 4.45,
+     "wer_pct": 0.0,
+     "heard": "For an exact start, just drop dash c copy and re-encode",
+     "misheard": [],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"For an exact start, I'd drop dash c copy and re-encode.\" -> \"For an exact start, just drop dash c copy and re-encode.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.03,
+   "raw_s": 4.45,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b8.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"For an exact start, I'd drop dash c copy and re-encode.\" -> \"For an exact start, just drop dash c copy and re-encode.\""
+   ],
+   "tts": "For an exact start, just drop dash c copy and re-encode.",
+   "applied": [],
+   "words": 11,
+   "syllables": 14,
+   "estimate_s": 3.46,
+   "shortened": 1,
+   "removed_s": 1.42,
+   "heard_text": "For an exact start, just drop dash c copy and re-encode",
+   "transcript": [
+    {
+     "word": "For",
+     "start": 0.0,
+     "end": 0.06
+    },
+    {
+     "word": "an",
+     "start": 0.06,
+     "end": 0.14
+    },
+    {
+     "word": "exact",
+     "start": 0.14,
+     "end": 0.4
+    },
+    {
+     "word": "start,",
+     "start": 0.4,
+     "end": 0.76
+    },
+    {
+     "word": "just",
+     "start": 0.92,
+     "end": 1.02
+    },
+    {
+     "word": "drop",
+     "start": 1.02,
+     "end": 1.24
+    },
+    {
+     "word": "dash",
+     "start": 1.24,
+     "end": 1.56
+    },
+    {
+     "word": "c",
+     "start": 1.56,
+     "end": 1.82
+    },
+    {
+     "word": "copy",
+     "start": 1.82,
+     "end": 2.18
+    },
+    {
+     "word": "and",
+     "start": 2.18,
+     "end": 2.4
+    },
+    {
+     "word": "re",
+     "start": 2.4,
+     "end": 2.56
+    },
+    {
+     "word": "-encode",
+     "start": 2.56,
+     "end": 2.88
+    }
+   ]
+  },
+  {
+   "id": "b9",
+   "kind": "beat",
+   "type": "comparison",
+   "spoken": "Same test, re-encoded. Five point zero zero five seconds.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Same test, re-encoded. Five point oh oh five seconds.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b9.a1.wav",
+     "duration_s": 3.05,
+     "raw_s": 5.4,
+     "wer_pct": 20.0,
+     "heard": "Same test, re-encoded, 5.005 seconds.",
+     "misheard": [
+      "oh",
+      "oh"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "Same test, re-encoded. Five point zero zero five seconds.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b9.a2.wav",
+     "duration_s": 3.41,
+     "raw_s": 5.775,
+     "wer_pct": 0.0,
+     "heard": "Same test, re-encoded 5.005 seconds",
+     "misheard": [],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"Same test, re-encoded. Five point oh oh five seconds.\" -> \"Same test, re-encoded. Five point zero zero five seconds.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.41,
+   "raw_s": 5.775,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b9.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"Same test, re-encoded. Five point oh oh five seconds.\" -> \"Same test, re-encoded. Five point zero zero five seconds.\""
+   ],
+   "tts": "Same test, re-encoded. Five point zero zero five seconds.",
+   "applied": [],
+   "words": 9,
+   "syllables": 14,
+   "estimate_s": 3.46,
+   "shortened": 1,
+   "removed_s": 2.365,
+   "heard_text": "Same test, re-encoded 5.005 seconds",
+   "transcript": [
+    {
+     "word": "Same",
+     "start": 0.0,
+     "end": 0.22
+    },
+    {
+     "word": "test,",
+     "start": 0.22,
+     "end": 0.56
+    },
+    {
+     "word": "re",
+     "start": 0.86,
+     "end": 1.02
+    },
+    {
+     "word": "-encoded",
+     "start": 1.02,
+     "end": 1.46
+    },
+    {
+     "word": "5",
+     "start": 1.46,
+     "end": 1.74
+    },
+    {
+     "word": ".005",
+     "start": 1.74,
+     "end": 2.88
+    },
+    {
+     "word": "seconds",
+     "start": 2.88,
+     "end": 3.24
+    }
+   ]
+  },
+  {
+   "id": "b10",
+   "kind": "beat",
+   "type": "payoff",
+   "spoken": "Copy first, then re-encode only if you need the exact start.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Copy first, then re-encode only if you need the exact start.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b10.a1.wav",
+     "duration_s": 3.28,
+     "raw_s": 4.55,
+     "wer_pct": 0.0,
+     "heard": "Copy first, then re-encode only if you need the exact start.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.28,
+   "raw_s": 4.55,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b10.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Copy first, then re-encode only if you need the exact start.",
+   "applied": [],
+   "words": 11,
+   "syllables": 15,
+   "estimate_s": 3.71,
+   "shortened": 1,
+   "removed_s": 1.27,
+   "heard_text": "Copy first, then re-encode only if you need the exact start.",
+   "transcript": [
+    {
+     "word": "Copy",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "first,",
+     "start": 0.18,
+     "end": 0.56
+    },
+    {
+     "word": "then",
+     "start": 0.82,
+     "end": 0.92
+    },
+    {
+     "word": "re",
+     "start": 0.92,
+     "end": 1.12
+    },
+    {
+     "word": "-encode",
+     "start": 1.12,
+     "end": 1.56
+    },
+    {
+     "word": "only",
+     "start": 1.56,
+     "end": 1.84
+    },
+    {
+     "word": "if",
+     "start": 1.84,
+     "end": 2.0
+    },
+    {
+     "word": "you",
+     "start": 2.0,
+     "end": 2.1
+    },
+    {
+     "word": "need",
+     "start": 2.1,
+     "end": 2.22
+    },
+    {
+     "word": "the",
+     "start": 2.22,
+     "end": 2.38
+    },
+    {
+     "word": "exact",
+     "start": 2.38,
+     "end": 2.7
+    },
+    {
+     "word": "start.",
+     "start": 2.7,
+     "end": 3.12
+    }
+   ]
+  },
+  {
+   "id": "b11",
+   "kind": "beat",
+   "type": "ask",
+   "spoken": "Comment LINK for the official docs. Then stop re-encoding clips.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Comment LINK for eff eff em peg. Then stop re-encoding clips.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b11.a1.wav",
+     "duration_s": 3.09,
+     "raw_s": 5.45,
+     "wer_pct": 33.3,
+     "heard": "Comment LINK For FFMPEG Then Stop Re-Encoding Clips",
+     "misheard": [
+      "eff",
+      "eff",
+      "em",
+      "peg"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "Comment LINK for the official docs. Then stop re-encoding clips.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b11.a2.wav",
+     "duration_s": 3.2,
+     "raw_s": 5.425,
+     "wer_pct": 0.0,
+     "heard": "Comment LINK for the official docs, then stop re-encoding clips.",
+     "misheard": [],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"Comment LINK for eff eff em peg. Then stop re-encoding clips.\" -> \"Comment LINK for the official docs. Then stop re-encoding clips.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.2,
+   "raw_s": 5.425,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/b11.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"Comment LINK for eff eff em peg. Then stop re-encoding clips.\" -> \"Comment LINK for the official docs. Then stop re-encoding clips.\""
+   ],
+   "tts": "Comment LINK for the official docs. Then stop re-encoding clips.",
+   "applied": [],
+   "words": 10,
+   "syllables": 15,
+   "estimate_s": 3.71,
+   "shortened": 1,
+   "removed_s": 2.225,
+   "heard_text": "Comment LINK for the official docs, then stop re-encoding clips.",
+   "transcript": [
+    {
+     "word": "Comment",
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "word": "LINK",
+     "start": 0.2,
+     "end": 0.58
+    },
+    {
+     "word": "for",
+     "start": 0.58,
+     "end": 0.68
+    },
+    {
+     "word": "the",
+     "start": 0.68,
+     "end": 0.82
+    },
+    {
+     "word": "official",
+     "start": 0.82,
+     "end": 1.1
+    },
+    {
+     "word": "docs,",
+     "start": 1.1,
+     "end": 1.5
+    },
+    {
+     "word": "then",
+     "start": 1.76,
+     "end": 1.86
+    },
+    {
+     "word": "stop",
+     "start": 1.86,
+     "end": 2.1
+    },
+    {
+     "word": "re",
+     "start": 2.1,
+     "end": 2.34
+    },
+    {
+     "word": "-encoding",
+     "start": 2.34,
+     "end": 2.66
+    },
+    {
+     "word": "clips.",
+     "start": 2.66,
+     "end": 3.0
+    }
+   ]
+  },
+  {
+   "id": "hook2",
+   "kind": "hook2",
+   "type": "hook",
+   "spoken": "You don't need to re-encode. Add dash c copy.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "You don't need to re-encode. Add dash c copy.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/hook2.a1.wav",
+     "duration_s": 2.34,
+     "raw_s": 4.625,
+     "wer_pct": 0.0,
+     "heard": "You don't need to re-encode. Add dash c copy.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.34,
+   "raw_s": 4.625,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/runs/2026-11-02_1533_ffmpeg-can-cut-a-clip/08-voiceover/lines/hook2.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "You don't need to re-encode. Add dash c copy.",
+   "applied": [],
+   "words": 9,
+   "syllables": 11,
+   "estimate_s": 2.72,
+   "shortened": 1,
+   "removed_s": 2.285,
+   "heard_text": "You don't need to re-encode. Add dash c copy.",
+   "transcript": [
+    {
+     "word": "You",
+     "start": 0.0,
+     "end": 0.06
+    },
+    {
+     "word": "don't",
+     "start": 0.06,
+     "end": 0.26
+    },
+    {
+     "word": "need",
+     "start": 0.26,
+     "end": 0.34
+    },
+    {
+     "word": "to",
+     "start": 0.34,
+     "end": 0.5
+    },
+    {
+     "word": "re",
+     "start": 0.5,
+     "end": 0.62
+    },
+    {
+     "word": "-encode.",
+     "start": 0.62,
+     "end": 1.02
+    },
+    {
+     "word": "Add",
+     "start": 1.24,
+     "end": 1.36
+    },
+    {
+     "word": "dash",
+     "start": 1.36,
+     "end": 1.66
+    },
+    {
+     "word": "c",
+     "start": 1.66,
+     "end": 1.88
+    },
+    {
+     "word": "copy.",
+     "start": 1.88,
+     "end": 2.2
+    }
+   ]
+  }
+ ],
+ "timing": {
+  "tts_wall_s": 191.67,
+  "tts_load_s": 85.72,
+  "tts_synth_s": 57.76,
+  "tts_tighten_s": 0.11,
+  "align_wall_s": 74.55,
+  "align_model_load_s": 3.48,
+  "loudness_s": 6.77,
+  "rewrite_s": 114.71,
+  "total_s": 393.22,
+  "audio_raw_s": 63.42,
+  "speed_x_realtime": 0.911,
+  "calls": 4
+ },
+ "pace": {
+  "wpm": 185,
+  "wpm_speech_only": 190,
+  "words": 110,
+  "speech_s": 34.7,
+  "gaps_s": 1.0
+ },
+ "timeline": [
+  {
+   "id": "b1",
+   "type": "hook",
+   "start_ms": 50,
+   "end_ms": 2920,
+   "start_s": 0.05
+  },
+  {
+   "id": "b2",
+   "type": "stake",
+   "start_ms": 3920,
+   "end_ms": 7970,
+   "start_s": 3.92
+  },
+  {
+   "id": "b3",
+   "type": "step",
+   "start_ms": 8070,
+   "end_ms": 10900,
+   "start_s": 8.07
+  },
+  {
+   "id": "b4",
+   "type": "mechanism",
+   "start_ms": 11000,
+   "end_ms": 13830,
+   "start_s": 11.0
+  },
+  {
+   "id": "b5",
+   "type": "proof",
+   "start_ms": 13930,
+   "end_ms": 17240,
+   "start_s": 13.93
+  },
+  {
+   "id": "b6",
+   "type": "mechanism",
+   "start_ms": 17340,
+   "end_ms": 20290,
+   "start_s": 17.34
+  },
+  {
+   "id": "b7",
+   "type": "number",
+   "start_ms": 20390,
+   "end_ms": 23330,
+   "start_s": 20.39
+  },
+  {
+   "id": "b8",
+   "type": "step",
+   "start_ms": 23430,
+   "end_ms": 26460,
+   "start_s": 23.43
+  },
+  {
+   "id": "b9",
+   "type": "comparison",
+   "start_ms": 26560,
+   "end_ms": 29970,
+   "start_s": 26.56
+  },
+  {
+   "id": "b10",
+   "type": "payoff",
+   "start_ms": 30070,
+   "end_ms": 33350,
+   "start_s": 30.07
+  },
+  {
+   "id": "b11",
+   "type": "ask",
+   "start_ms": 33450,
+   "end_ms": 36650,
+   "start_s": 33.45
+  }
+ ],
+ "breath": {
+  "after": "b1",
+  "start_ms": 2920,
+  "end_ms": 3920,
+  "seconds": 1.0
+ },
+ "loudness": {
+  "vo": {
+   "input": {
+    "lufs": -24.85,
+    "true_peak_dbtp": -5.61,
+    "lra": 2.4,
+    "threshold": -34.91
+   },
+   "lufs": -14.23,
+   "true_peak_dbtp": -1.61,
+   "gain_db": 12.4,
+   "passes": 3,
+   "limiter_db": -2.3,
+   "ok": true
+  },
+  "hook2": {
+   "input": {
+    "lufs": -25.52,
+    "true_peak_dbtp": -9.55,
+    "lra": 0.0,
+    "threshold": -35.52
+   },
+   "lufs": -14.29,
+   "true_peak_dbtp": -1.61,
+   "gain_db": 12.95,
+   "passes": 3,
+   "limiter_db": -2.83,
+   "ok": true
+  }
+ },
+ "duration_s": 36.85,
+ "flags": [],
+ "verdict": {
+  "status": "block",
+  "reason": "voice: line b3 cannot be said clearly by af_bella (WER 20.0%: ten thirty -> 1030) after no respelling rule, rewritten by S7: \"Start, ten minutes. End, ten thirty. Before dash i.\" -> \"Ten minutes in. Stop at ten thirty. Before dash i.\"; line b5 cannot be said clearly by af_bella (WER 11.1%: docs -> docks) after no respelling rule, rewritten by S7: \"Very fast. No quality loss. Per eff eff em peg.\" -> \"Very"
+ },
+ "error": ""
+}

@@ -1,0 +1,201 @@
+
+== 1. units: engine.txt, the word error rate, respelling, pronunciations, silences, the preflight's voice check (no engine) ==
+PASS  engine: a full kokoro block is read from the file
+PASS  engine: every setting comes from the file (numbers parsed, the last line of a key wins)
+PASS  engine: the interpreter is the file's python line
+PASS  engine --brief: the banner text
+PASS  engine: a file with only engine and python takes the defaults for the rest
+PASS  engine: the note names the missing lines
+PASS  engine: the spec's defaults fill them
+PASS  engine: a missing file gives the defaults
+PASS  engine: the missing file is noted with the defaults in use
+PASS  engine: kokoro af_bella by default
+PASS  engine: another engine named means the kokoro defaults, never that engine
+PASS  engine: the note says what to rewrite
+PASS  engine: the other engine's interpreter is not used either (the default kokoro interpreter is)
+PASS  engine: a keep longer than min_pause and a non-numeric speed are problems
+PASS  wer: case and punctuation do not count
+PASS  wer: one substitution in ten words is 10 percent
+PASS  wer: one deletion in ten words is 10 percent
+PASS  wer: one insertion in five words is 20 percent
+PASS  wer: plugin heard as plug -in is the same word
+PASS  wer: spelled letters, digits and a year read as the line says it
+PASS  wer: a long number in digits
+PASS  wer: a possessive heard without its s and a British spelling are not errors
+PASS  wer: inline phonemes compare as the word
+PASS  wer: a misheard word in eight is 12.5 percent
+PASS  wer: the misheard word is named
+PASS  wer: and what was heard instead
+PASS  respell: camelCase split and the acronym spelled out
+PASS  respell: an acronym letter by letter
+PASS  respell: letters and a digit
+PASS  respell: a file name
+PASS  respell: an at-sign and dashes
+PASS  respell: a plain word has no rule (the rewrite is next)
+PASS  respell: a plain lowercase word has no rule
+PASS  pronounce: a respelling and inline phonemes, whole words, any case
+PASS  pronounce: the applied entries are listed
+PASS  pronounce: applying the file again changes nothing (no double wrapping)
+PASS  pronounce: a reel's own respelling is exact-case and whole-word
+PASS  silences: the three pauses of 0.1 s or longer, the lead under 0.1 s left out
+PASS  energy: the tone's level (a 9000 of 32768 sine is -14 dBFS RMS)
+PASS  energy: silence is far below -40 dB
+PASS  preflight: an engine.txt whose interpreter cannot import kokoro is a systemic stop (exit 3)
+PASS  preflight: STOPPED.md names the import failure
+PASS  preflight: STOPPED.md gives the exact fix
+PASS  preflight: an interpreter that does not exist is a systemic stop
+PASS  preflight: the missing interpreter is named
+PASS  preflight: with the fake workers the import checks are skipped and the preflight passes
+PASS  preflight: and says a fake engine is in use
+PASS  preflight: a missing engine.txt is a warning that names the defaults
+
+== 2. S8 through the runner with the fake engine and transcriber, from the frozen M6 outputs ==
+    [16:06] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:06] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:06] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.BV9wseme8X/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:06] START  reels autopilot v0.1.0 (24804e0) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [16:06] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1606_claude-codes-frontend-design-skill (resumed at generating voiceover, 6 stages done)
+    [16:06] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:06] INFO   S8: kokoro af_bella (the defaults, no engine.txt), speed 1: 11 beats plus hook 2, 118 spoken words at 176 wpm; pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1 s breath after the hook
+    [16:06] INFO   S8: first pass: every line transcribes back within 3% word error rate (worst 0.0%)
+    [16:06] INFO   S8: generated 12 lines in 1 s (0.00x real time for 55.8 s of raw voice, model load 0 s), aligned in 1 s; pace 176 wpm after tightening (180 on speech alone)
+    [16:06] INFO   S8: vo.wav 41.4 s at -14.0 LUFS, true peak -8.41 dBTP (1 passes); words.json 118 words, 11 beats; vo_hook2.wav 2.7 s
+    [16:07] STEP   generating voiceover done (14s) -> planning animations
+    [16:07] STEP   planning animations done (2s) -> planning text
+    [16:07] STEP   planning text done (2s) -> planning transitions
+    [16:07] STEP   planning transitions done (4s) -> building visuals
+    [16:07] STEP   building visuals done (3s) -> adding sound effects
+    [16:07] STEP   adding sound effects done (3s) -> reviewing: mechanical checks
+    [16:07] STEP   reviewing: mechanical checks done (5s) -> rendering final video
+    [16:07] STEP   rendering final video done (2s) -> writing caption
+    [16:07] STEP   writing caption done (5s) -> exporting #1
+    [16:07] DONE   exported #1 -> exports/1/ (1 min, 0 issues fixed)
+PASS  happy path: the runner exits 0
+PASS  START: the run seeded from the frozen outputs resumes at S8
+PASS  S8: the setup line (engine, voice, where the config came from, the lines, the tightening values)
+PASS  S8: every line passes the word error rate check
+PASS  S8: the speed and pace line
+PASS  S8: the outputs line (loudness on target, 118 words, hook 2)
+PASS  S8 done, the runner moves to S9a
+PASS  the run continued to the (dummy) export
+PASS  no ERROR, BLOCK or FLAG line
+PASS  no model call on the happy path
+PASS  vo.wav written
+PASS  vo.wav is 48 kHz mono 16-bit
+PASS  vo_hook2.wav written
+PASS  vo_hook2.wav is 48 kHz mono 16-bit
+PASS  words.json validates against schema.json
+PASS  words_hook2.json validates against schema.json
+PASS  words.json: 11 beats with the exact layout (0.05 s lead, 0.1 s gaps, the 1.0 s breath after the hook, 0.2 s tail), monotonic words inside their beats, every beat covered (11 beats, 118 words, 41420 ms, breath 1.0 s)
+PASS  words.json has one entry per spoken word of the script
+PASS  words_hook2.json: the beat is hook2
+PASS  words.json: engine, voice, sample rate
+PASS  words.json: the lead and the breath are silence in vo.wav
+PASS  voiceover.json: verdict ok, one generation call and one transcription call
+PASS  activity "generating voiceover (beat 3/12)" was published
+PASS  activity "tightening silences" was published
+PASS  activity "aligning words" was published
+PASS  activity "normalizing loudness" was published
+PASS  no em dash in the stage files
+PASS  dummy.sh: its words.json validates against the schema
+PASS  dummy.sh: its words_hook2.json validates against the schema
+    [16:08] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:08] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:08] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.HMjvSnYKA0/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:08] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:08] INFO   S8: kokoro af_bella (the defaults, no engine.txt), speed 1: 11 beats plus hook 2, 118 spoken words at 176 wpm; pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1 s breath after the hook
+    [16:08] WARN   S8: first pass: 2 of 12 lines misheard: b5 WER 9.1%: ai -> xx; b9 WER 7.7%: scope -> xx
+    [16:08] WARN   S8: line b5 misheard (WER 9.1%: ai -> xx), fixing the pronunciation: AI -> A I
+    [16:08] INFO   S8: line b5 ok after the pronunciation fix (WER 0.0%)
+    [16:08] WARN   S8: line b9 still misheard (WER 7.7%: scope -> xx) after the pronunciation step, rewriting it through S7
+    [16:08] INFO   S8: line b9 rewritten by S7 in simpler words: "Type the plugin install command for frontend design in Claude Code. Pick a scope."
+    [16:08] INFO   S8: line b9 ok after the rewrite (WER 0.0%)
+    [16:08] WARN   S8: line b7 runs 37% over its estimate (5.0 s against 3.7 s at 176 wpm), rewriting it through S7
+    [16:08] INFO   S8: line b7 rewritten by S7 in simpler words: "Type the plugin install command for frontend design in Claude Code. Pick a scope."
+    [16:08] FLAG   needs review: voice: line b7 runs 37% over its estimate (6.0 s against 4.4 s at 176 wpm) after a rewrite
+    [16:08] INFO   S8: generated 12 lines in 2 s (0.01x real time for 58.5 s of raw voice, model load 0 s), aligned in 1 s; pace 170 wpm after tightening (174 on speech alone)
+    [16:08] INFO   S8: vo.wav 43.6 s at -14.0 LUFS, true peak -8.42 dBTP (1 passes); words.json 120 words, 11 beats; vo_hook2.wav 2.7 s
+    [16:08] STEP   generating voiceover done (33s) -> planning animations
+    [16:08] STEP   planning animations done (2s) -> planning text
+    [16:09] STEP   planning text done (1s) -> planning transitions
+    [16:09] STEP   planning transitions done (3s) -> building visuals
+    [16:09] STEP   building visuals done (2s) -> adding sound effects
+    [16:09] STEP   adding sound effects done (2s) -> reviewing: mechanical checks
+    [16:09] STEP   reviewing: mechanical checks done (2s) -> rendering final video
+    [16:09] STEP   rendering final video done (2s) -> writing caption
+    [16:09] STEP   writing caption done (3s) -> exporting #1
+    [16:09] DONE   exported #1 -> exports/1/ (1 min, 0 issues fixed)
+PASS  ladder: the runner exits 0
+PASS  ladder: the first pass names the misheard lines and words
+PASS  ladder step 1: the acronym is respelled
+PASS  ladder step 1: the respelled line passes
+PASS  ladder step 2: a plain word has no respelling, the line goes to S7
+PASS  ladder step 2: S7 rewrote the line (the fake's answer) and S8 says so
+PASS  ladder step 2: S7's own log lines land in the stage log with the S7 prefix
+PASS  ladder step 2: the rewritten line passes
+PASS  overrun: a slow line is sent to S7
+PASS  overrun: still slow after the rewrite, so a NEEDS REVIEW flag
+PASS  ladder: the run continued to the export
+PASS  ladder: no ERROR or BLOCK
+PASS  ladder: two model calls, S7's rewrites of b9 and b7
+PASS  ladder: the verdict is flag
+PASS  ladder: the respelling is recorded in voiceover.json
+PASS  ladder: script.json records both rewrites
+PASS  ladder: the activity text while fixing a pronunciation
+PASS  ladder: the activity text while rewriting
+PASS  ladder: words.json keeps the script's word AI timed from the respelled A I
+PASS  ladder: words.json still has the exact layout after the regenerations (11 beats, 120 words, 43620 ms, breath 1.0 s)
+    [16:09] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:09] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:09] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.n4ertsXNRL/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:09] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:09] WARN   S8: first pass: 1 of 12 lines misheard: b9 WER 7.7%: scope -> xx
+    [16:09] WARN   S8: line b9 still misheard (WER 7.7%: scope -> xx) after the pronunciation step, rewriting it through S7
+    [16:10] FLAG   needs review: voice: line b9 is misheard by faster-whisper (WER 7.1%: scope -> xx) after no respelling rule, rewritten by S7: "Type slash plugin install frontend design at claude plugins official. Pick a scope." -> "Type the plugin install command for frontend design in Claude Code. Pick a scope."; listen to vo.wav
+    [16:10] DONE   exported #1 -> exports/1/ (53s, 0 issues fixed)
+PASS  flag path: the runner exits 0
+PASS  flag path: 7.1 percent after the rewrite is a NEEDS REVIEW flag that tells the whole story
+PASS  flag path: the export continues
+PASS  flag path: no BLOCK
+PASS  flag path: one model call (the rewrite)
+    [16:11] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:11] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:11] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.JrZstpusrY/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:11] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:11] WARN   S8: first pass: 1 of 12 lines misheard: b9 WER 15.4%: slash -> xx; install -> xx
+    [16:11] WARN   S8: line b9 still misheard (WER 15.4%: slash -> xx; install -> xx) after the pronunciation step, rewriting it through S7
+    [16:11] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S8: voice: line b9 cannot be said clearly by af_bella (WER 14.3%: the -> xx; install -> xx) after no respelling rule, rewritten by S7: "Type slash plugin install frontend design at claude plugins official. Pick a scope." -> "Type the plugin install command for frontend design in Claude Code. Pick a scope.". Moved to logs/blocked.txt
+PASS  block path: the runner exits 0 (the idea is blocked, the loop goes on)
+PASS  block path: the BLOCK line names the line, the rate and the steps tried
+PASS  block path: logs/blocked.txt
+PASS  block path: nothing exported
+PASS  block path: the idea left ideas.txt
+PASS  block path: one model call (the rewrite), never another voice or engine
+PASS  block path: the trail shows only kokoro af_bella in every attempt
+    [16:11] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:11] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:11] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.UTfVIjaDgd/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:11] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:11] ERROR  S8 generating voiceover: exit 1: 08-voiceover: the voice engine failed (kokoro_worker.py exit 1, call 1); see the kokoro: lines above
+    [16:12] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S8: environment problem: fake reviewer: exit 1: 08-voiceover: the voice engine failed (kokoro_worker.py exit 1, call 1); see the kokoro: lines above; the stage needs a file only the user can create. Needs you: create library/keys/service.key with your API key (fake reviewer). Moved to logs/blocked.txt
+PASS  crash: an engine crash is a code error with the worker's exit code
+PASS  crash: the review path ends in a block (the fake reviewer cannot fix it), never in another engine
+PASS  crash: the worker's traceback is in the stage log
+PASS  crash: nothing exported
+    [16:12] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:12] WARN   preflight: REELS_TTS_WORKER is set (C:/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fakes/kokoro_worker.py): a fake voice engine is in use, the kokoro import check is skipped
+    [16:12] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.abFDFU4CSM/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [16:12] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:12] RETRY  temporary error (timeout), retrying in 60s (try 1/3)
+    [16:12] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:12] RETRY  temporary error (timeout), retrying in 4m (try 2/3)
+    [16:13] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:13] RETRY  temporary error (timeout), retrying in 16m (try 3/3)
+    [16:13] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [16:13] ERROR  S8 generating voiceover: temporary error persisted after 3 retries (timeout): exit 1: 08-voiceover: the voice engine hung: kokoro_worker.py did not finish in 4 s (killed)
+    [16:13] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S8: environment problem: fake reviewer: temporary error persisted after 3 retries (timeout): exit 1: 08-voiceover: the voice engine hung: kokoro_worker.py did n; the stage needs a file only the user can create. Needs you: create library/keys/service.key with your API key (fake reviewer). Moved to logs/blocked.txt
+PASS  hang: the worker is killed after the timeout
+PASS  hang: the runner classifies the failure (a code error, or a timeout retry first)
+PASS  hang: the idea ends blocked, never voiced with anything else
+
+test-m7.sh: 116 passed, 0 failed

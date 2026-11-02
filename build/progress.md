@@ -405,13 +405,14 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   fixes the real runs surfaced: S8 and S12 pass the reel's names to faster-whisper as hotwords (it blocked a reel for a
   correct "Claude"), S7's one-line rewrite refuses a respelled name, S8 accepts "130" heard for "one thirty", S8's
   "fixing pronunciation (line N)" activity, the 09b zones check and the 09c rerun of 09b (ported from the runner's own
-  autofix), the heartbeat counters with the review issue, S7's share-identity check on word stems. Results: section 3, 33 passed, on the second real run (build/M13/real2: run 1 killed at the second idea's first S3 call as planned after the simulated limit at its S2 call, the restart resumed S3 and finished the queue, idea 1 exported #1 after 124 minutes, idea 2 blocked at S8 by the spec's voice rule, idea 3 blocked at S7 by the share-identity check fixed afterwards, decision 286; 503 status samples all valid; the forever mode's IDLE line and its SIGTERM stop). Fake-only sections 1, 2, 4: 100
+  autofix), the heartbeat counters with the review issue, S7's share-identity check on word stems, S8's comparison
+  accepting more transcription spellings ("10.30", "docks", "FFM"). Results: section 3, 33 passed, on the second real run (build/M13/real2: run 1 killed at the second idea's first S3 call as planned after the simulated limit at its S2 call, the restart resumed S3 and finished the queue, idea 1 exported #1 after 124 minutes, idea 2 blocked at S8 by the spec's voice rule, idea 3 blocked at S7 by the share-identity check fixed afterwards, decision 286; 503 status samples all valid; the forever mode's IDLE line and its SIGTERM stop). Fake-only sections 1, 2, 4: 100
   passed. After the touches to their code: test-m1 96, test-m2 207 (a first run under the load of two real pipelines failed
   its heartbeat timing check once), test-m3 fake sections 373 plus section 10 again 34 (a timing flake under load:
-  the fake reviewer now waits 90 s), test-m5 fake 198, test-m6 fake 147 (twice), test-m7 fake 116, test-m10 fake 133
+  the fake reviewer now waits 90 s), test-m5 fake 198, test-m6 fake 147 (twice), test-m7 fake 116 (three times), test-m10 fake 133
   plus section 2 again 104 (an M12 fixture change had broken its no-solution scenario), test-m11 fake: sections 1
   and 2 in one run (4 failures in section 2 from a one-off empty export.json of the S14 dummy under heavy load, not
-  reproduced), then section 2 again 110 and section 3 28, test-limits 94, test-no-emdash 1, all passing.
+  reproduced), then section 2 again 110, section 3 28 and section 1 again 89, test-limits 94, test-no-emdash 1, all passing.
 - Test command: `bash pipeline/tests/test-m13.sh` (`M13_SECTIONS="1 2 4"` for the fake-only sections, about 20 minutes;
   section 3 runs three ideas with the real models, several hours: start `bash pipeline/tests/m13-run.sh real
   build/M13/real2` detached, then `M13_REAL_DIR=build/M13/real2 M13_SECTIONS=3 bash pipeline/tests/test-m13.sh`);
@@ -420,4 +421,4 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   facts block by the spec's rule); the rerun of its first idea with the fixes exported (build/M13/rerun, 141 minutes);
   the second three-idea run (build/M13/real2) is the one section 3 passes on. Earlier milestones touched: M3 (a test
   timing), M6 (script_checks.py, the rewrite prompt), M7 (voiceover.py, whisper_worker.py), M10 (plan_validate.py,
-  plan9.py, visual.sh, test-m10.sh), M11 (audio_check.py). DECISIONS.md 276 to 286. Report: build/M13/report.md.
+  plan9.py, visual.sh, test-m10.sh), M11 (audio_check.py). DECISIONS.md 276 to 287. Report: build/M13/report.md.

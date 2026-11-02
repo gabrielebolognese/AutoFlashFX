@@ -1,0 +1,117 @@
+08-voiceover: start (pid 10528, run 2026-11-02_1533_ffmpeg-can-cut-a-clip, 2026-11-02)
+[16:05] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[16:05] INFO   S8: kokoro af_bella (the defaults, no engine.txt), speed 1: 11 beats plus hook 2, 110 spoken words at 176 wpm; pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1 s breath after the hook
+voice interpreter: C:/Users/there/venvs/kokoro/Scripts/python.exe; whisper interpreter: C:/Users/there/venvs/chatterbox/Scripts/python.exe (model small); worker C:/Users/there/AppData/Local/Temp/tmp.1fTnLml1cC/pipeline/lib/tts/kokoro_worker.py
+activity: generating voiceover (beat 1/12)
+  kokoro: loading kokoro (af_bella, lang a, speed 1) on CPU ...
+  kokoro: stderr: Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\nn\modules\rnn.py:1012: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.2 and num_layers=1
+  kokoro: stderr:   super().__init__("LSTM", *args, **kwargs)
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\nn\utils\weight_norm.py:145: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  kokoro: stderr:   WeightNorm.apply(module, name, dim)
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  kokoro: stderr:   warnings.warn(
+  kokoro: WARNING: Defaulting repo_id to hexgrad/Kokoro-82M. Pass repo_id='hexgrad/Kokoro-82M' to suppress this warning.
+  kokoro: kokoro ready: import 0.5 s, load 25.2 s
+activity: generating voiceover (beat 1/12)
+  kokoro: LINE 1/12 b1 5.20
+activity: generating voiceover (beat 2/12)
+  kokoro: LINE 2/12 b2 5.35
+activity: generating voiceover (beat 3/12)
+  kokoro: LINE 3/12 b3 6.28
+activity: generating voiceover (beat 4/12)
+  kokoro: LINE 4/12 b4 4.28
+activity: generating voiceover (beat 5/12)
+  kokoro: LINE 5/12 b5 6.75
+activity: generating voiceover (beat 6/12)
+  kokoro: LINE 6/12 b6 4.33
+activity: generating voiceover (beat 7/12)
+  kokoro: LINE 7/12 b7 6.42
+activity: generating voiceover (beat 8/12)
+  kokoro: LINE 8/12 b8 4.45
+activity: generating voiceover (beat 9/12)
+  kokoro: LINE 9/12 b9 5.78
+activity: generating voiceover (beat 10/12)
+  kokoro: LINE 10/12 b10 4.55
+activity: generating voiceover (beat 11/12)
+  kokoro: LINE 11/12 b11 5.42
+activity: generating voiceover (beat 12/12)
+  kokoro: LINE 12/12 hook2 4.62
+activity: tightening silences
+  kokoro: TIGHTEN 1/12 b1 2.87 1
+activity: tightening silences
+  kokoro: TIGHTEN 2/12 b2 4.03 1
+activity: tightening silences
+  kokoro: TIGHTEN 3/12 b3 2.83 2
+activity: tightening silences
+  kokoro: TIGHTEN 4/12 b4 2.86 1
+activity: tightening silences
+  kokoro: TIGHTEN 5/12 b5 3.31 2
+activity: tightening silences
+  kokoro: TIGHTEN 6/12 b6 2.95 1
+activity: tightening silences
+  kokoro: TIGHTEN 7/12 b7 2.94 2
+activity: tightening silences
+  kokoro: TIGHTEN 8/12 b8 3.03 1
+activity: tightening silences
+  kokoro: TIGHTEN 9/12 b9 3.41 1
+activity: tightening silences
+  kokoro: TIGHTEN 10/12 b10 3.29 1
+activity: tightening silences
+  kokoro: TIGHTEN 11/12 b11 3.21 1
+activity: tightening silences
+  kokoro: TIGHTEN 12/12 hook2 2.34 1
+  kokoro: done: 12 lines, 63.4 s of raw voice in 40.3 s (0.64x real time), tightened in 0.1 s
+call 1: 12 lines, 63.4 s of raw voice in 40.3 s of synthesis (0.64x real time), import+load 25.6 s, tightened to 37.1 s
+activity: aligning words
+  whisper: loading faster-whisper small on cpu (int8, local cache only) ...
+  whisper: whisper ready (small): import 0.9 s, load 2.9 s
+  whisper: FILE 1/12 b1 3.9
+  whisper: FILE 2/12 b2 4.1
+  whisper: FILE 3/12 b3 4.0
+  whisper: FILE 4/12 b4 4.2
+  whisper: FILE 5/12 b5 3.8
+  whisper: FILE 6/12 b6 3.9
+  whisper: FILE 7/12 b7 3.7
+  whisper: FILE 8/12 b8 3.9
+  whisper: FILE 9/12 b9 3.8
+  whisper: FILE 10/12 b10 4.0
+  whisper: FILE 11/12 b11 4.0
+  whisper: FILE 12/12 hook2 3.8
+  whisper: done: 12 files in 47.1 s
+[16:07] WARN   S8: first pass: 1 of 12 lines misheard: b7 WER 30.0%: asked five -> asked5; oh -> zero
+line b7: misheard ['Asked', 'five', 'oh'] but no respelling rule applies (plain words): on to the rewrite
+[16:07] WARN   S8: line b7 still misheard (WER 30.0%: asked five -> asked5; oh -> zero) after the pronunciation step, rewriting it through S7
+activity: rewriting line b7
+  S7: 07-script: start (pid 11421, run 2026-11-02_1533_ffmpeg-can-cut-a-clip, 2026-11-02)
+  S7: [16:07] INFO   S7: line b7 rewritten in simpler words: "In one test. Wanted five. Got seven point zero seven."
+  S7: 07-script: rewrite-line b7 done
+[16:07] INFO   S8: line b7 rewritten by S7 in simpler words: "In one test. Wanted five. Got seven point zero seven."
+activity: generating voiceover (line b7)
+  kokoro: loading kokoro (af_bella, lang a, speed 1) on CPU ...
+  kokoro: stderr: Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\nn\modules\rnn.py:1012: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.2 and num_layers=1
+  kokoro: stderr:   super().__init__("LSTM", *args, **kwargs)
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\nn\utils\weight_norm.py:145: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  kokoro: stderr:   WeightNorm.apply(module, name, dim)
+  kokoro: stderr: C:\Users\there\venvs\kokoro\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  kokoro: stderr:   warnings.warn(
+  kokoro: WARNING: Defaulting repo_id to hexgrad/Kokoro-82M. Pass repo_id='hexgrad/Kokoro-82M' to suppress this warning.
+  kokoro: kokoro ready: import 0.4 s, load 19.7 s
+activity: generating voiceover (line b7)
+  kokoro: LINE 1/1 b7 6.60
+activity: tightening silences
+  kokoro: TIGHTEN 1/1 b7 3.13 2
+  kokoro: done: 1 lines, 6.6 s of raw voice in 4.6 s (0.70x real time), tightened in 0.0 s
+call 3: 1 lines, 6.6 s of raw voice in 4.6 s of synthesis (0.70x real time), import+load 20.1 s, tightened to 3.1 s
+activity: aligning words
+  whisper: loading faster-whisper small on cpu (int8, local cache only) ...
+  whisper: whisper ready (small): import 0.9 s, load 2.7 s
+  whisper: FILE 1/1 b7 3.9
+  whisper: done: 1 files in 3.9 s
+[16:08] INFO   S8: line b7 ok after the rewrite (WER 0.0%)
+activity: normalizing loudness
+[16:08] INFO   S8: generated 12 lines in 94 s (0.71x real time for 63.6 s of raw voice, model load 26 s), aligned in 59 s; pace 184 wpm after tightening (189 on speech alone)
+[16:08] INFO   S8: vo.wav 37.1 s at -14.23 LUFS, true peak -1.69 dBTP (3 passes); words.json 110 words, 11 beats; vo_hook2.wav 2.6 s
+done (ok) in 184 s
+08-voiceover: done
