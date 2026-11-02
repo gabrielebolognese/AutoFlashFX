@@ -250,6 +250,7 @@ if want 2; then
   mkdir -p "$SANDBOX/fixtures"; cp "$FIXTURES/fake/m10/"*.json "$SANDBOX/fixtures/"
   export FAKE_CLAUDE_FIXTURES="$SANDBOX_M/fixtures"
   RD="$(seed_run)"
+  rm -f "$RD/02-expansion/solution.json"   # the frozen run has one since M12 (5407b58): this reel is the one without it
   fast_mode
   run_once "$SANDBOX/fake.out" REELS_DUMMY="$LATER_DUMMIES" FAKE_CLAUDE_REVIEW=no; rc=$?
   OUT="$SANDBOX/fake.out"
@@ -411,6 +412,7 @@ if want 3; then
   section "3. the real visual director and the build on the frozen inputs (real model calls)"
   sandbox_init --with-visual
   RD="$(seed_run)"
+  rm -f "$RD/02-expansion/solution.json"   # the frozen run has one since M12 (5407b58): this reel is the one without it
   fast_mode
   t0=$EPOCHSECONDS
   run_once "$SANDBOX/real.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?

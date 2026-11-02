@@ -2053,3 +2053,13 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     and 7 (the banner, START with "resumed at", STEP chains, GATE with H, LIMIT, RESUME, BLOCK, NEXT, the heartbeat
     with its counters, IDLE and the summary). The fixes went into the live sandbox of the rerun as well; the first
     run's log keeps its pre-fix line, so test-m13 section 3 is passed by a second run with every fix in.
+285. **The runner's own fixer found a visual-stage bug during the M13 rerun, and the issue counters include the review.**
+    In the rerun of the /init idea, 09c failed twice on a zones error ("text reaches x 938 in the lower half"): 09b
+    had lengthened a card text into the right rail, and 09b's checks never ran the zones rule. The runner's review
+    and fix loop (4.2) fixed it in the sandbox (autofix 97bd3f2: zones in plan_validate.py's CAPTION_RULES; 54dcb04
+    after the escalation: the transitions pass runs `visual check-text` and runs 09b again first when 09b's plan fails
+    09b's current checks, since the runner restarts only the failed stage), and the reel then exported. Both are ported
+    to the repo unchanged (test-m10's fake sections pass). The heartbeat's "issues: f fixed, o open" (spec section 7:
+    "errors and failed reviews") counts S12's review too: round 1 failing opens one issue and a later round passing
+    fixes it, in state.json, read by the runner when the stage ends; logcheck.py follows the same rule, and the DONE
+    line's "N issues fixed" includes a recovered review.
