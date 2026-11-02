@@ -26,7 +26,7 @@ RULES = ["schema", "components", "times", "first_change", "breath", "max_gap", "
          "set_pieces", "zones", "captions", "cards", "assets", "honesty", "branding", "transitions", "hook2"]
 SCENE_RULES = {"schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
                "set_pieces", "zones", "assets", "branding", "hook2"}
-CAPTION_RULES = {"captions", "cards", "honesty"}
+CAPTION_RULES = {"captions", "cards", "honesty", "zones"}
 TRANSITION_RULES = {"transitions"}
 TIMING_PROPS = ("strike_at", "ticks_at", "fill_at", "type_at", "at")
 

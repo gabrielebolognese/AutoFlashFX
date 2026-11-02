@@ -41,6 +41,20 @@ visual_pass_run() {
   fi
   export REELS_MOTION_LIB="$lib_dir"
   local py="$REELS_PY $REELS_PIPELINE/lib/visual"
+  # 0. a text plan that fails the text pass's own checks now (written before a fix to them: the runner restarts only
+  #    the failed stage) is redone first, because the transitions director cannot change card texts or captions
+  if [ "$pass" = transitions ]; then
+    local tchk trc
+    tchk="$($py check-text --run-dir "$RUN_DIR")"; trc=$?
+    if [ "$trc" = 4 ]; then
+      say WARN "S9: the text plan fails the text pass's checks ($(cut_text "$(json_field "$tchk" errors.0 "")" 120)): running the text pass again first"
+      bash "$REELS_PIPELINE/stages/09b-text/run.sh" "$RUN_DIR" >>"$RUN_DIR/09b-text/stage.log" 2>&1 \
+        || stage_fail "the text pass, run again because its plan failed its checks, failed: $(tail -n 1 "$RUN_DIR/09b-text/stage.log" | cut -c1-200)"
+      visual_activity "$act"
+    elif [ "$trc" != 0 ]; then
+      stage_fail "visual check-text failed (exit $trc): $(printf '%s' "$tchk" | tail -n 1 | cut -c1-200)"
+    fi
+  fi
   # 1. the digests
   local dg="$OUT/digest" dres
   dres="$($py digest --run-dir "$RUN_DIR" --out "$dg" --pass "$pass")" || stage_fail "visual digest failed: $(printf '%s' "$dres" | tail -n 1 | cut -c1-200)"

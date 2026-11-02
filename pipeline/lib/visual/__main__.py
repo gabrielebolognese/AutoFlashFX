@@ -4,6 +4,7 @@
   animations    compose 09a-animations/plan.json from the director's answer (times snapped to words.json, the branding)
   text          compose 09b-text/plan.json from the director's answer (caption chunks from words.json, card texts, labels)
   transitions   compose 09c-transitions/plan.json from the director's answer and write the merged plan
+  check-text    the text pass's checks on a run's 09a and 09b plans as they are now (09c runs 09b again on failure)
   merge         the merged plan of a run (visual/plan_merge.py)
   validate      check a plan against tokens.json, catalog.json and brand.json (visual/plan_validate.py)
   build         S10: compile the merged plan into 10-build/project/, check it, render the draft and the hook 2 clip,
@@ -38,6 +39,9 @@ def main(argv: list[str]) -> int:
         p.add_argument("--answer", required=True, help="the director's structured answer (ai() AI_OUT)")
         p.add_argument("--out", required=True, help="the pass's plan.json")
         p.add_argument("--merged", default="", help="transitions: also write the merged plan here")
+
+    ct = sub.add_parser("check-text")
+    ct.add_argument("--run-dir", required=True)
 
     mg = sub.add_parser("merge")
     mg.add_argument("--run-dir", required=True)
@@ -81,6 +85,9 @@ def main(argv: list[str]) -> int:
     if a.cmd in ("animations", "text", "transitions"):
         from visual import plan9
         return plan9.run_compose(a)
+    if a.cmd == "check-text":
+        from visual import plan9
+        return plan9.run_check_text(a)
     if a.cmd == "merge":
         from visual import plan_merge
         return plan_merge.run(a)

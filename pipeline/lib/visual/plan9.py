@@ -13,6 +13,8 @@ the exact problems.
   python pipeline/lib/visual transitions --run-dir DIR --answer answer.json --out 09c-transitions/plan.json --merged merged.json
       each prints one JSON line {ok, errors, warnings, summary, ...}; exit 0 when the plan was written, 4 when the
       answer has problems the model must fix (the errors list), 1 on a code error
+  python pipeline/lib/visual check-text --run-dir DIR
+      the text pass's checks on the run's 09a and 09b plans as they are now: exit 0 ok, 4 errors (09c runs 09b again)
 """
 from __future__ import annotations
 
@@ -571,6 +573,29 @@ def compose_transitions(answer: dict, plan_a: dict, plan_b: dict | None, toks: d
             notes.append(f"transition {key[0]} to {key[1]} does not join consecutive scenes: dropped")
     plan_c = {"pass": "transitions", "transitions": out, "notes": common.undash(str(answer.get("notes", "")))[:1000]}
     return plan_c, errors, notes
+
+
+def text_plan_errors(run_dir: str) -> list[str]:
+    """The text pass's own checks (run_compose "text": the caption part of the validator on 09a merged with 09b) on
+    the run's plan files as they are now. A 09b plan written before a fix to those checks fails them here; the
+    transitions pass cannot change card texts or captions, so 09c runs the text pass again first (visual.sh)."""
+    inp = common.Inputs(run_dir)
+    toks = common.tokens()
+    plan_a = common.load_json(os.path.join(run_dir, "09a-animations", "plan.json"))
+    plan_b = common.load_json(os.path.join(run_dir, "09b-text", "plan.json"))
+    ctx = plan_validate.Context(toks=toks, cat=common.catalog(), brand=common.brand_json(), config=inp.config, words=inp.words, script=inp.script, assets=inp.asset_files(), numbers=inp.numbers)
+    res = plan_validate.validate(plan_merge.merge(plan_a, plan_b, None, toks), ctx, {"captions"}, skip_schema=True)
+    return [common.undash(f"{e['rule']}: {e['message']}") for e in res["errors"]]
+
+
+def run_check_text(args) -> int:
+    for rel in ("09a-animations/plan.json", "09b-text/plan.json"):
+        if not os.path.isfile(os.path.join(args.run_dir, rel)):
+            print(json.dumps({"ok": False, "errors": [f"{rel} is missing"], "code_error": True}))
+            return 1
+    errors = text_plan_errors(args.run_dir)
+    print(json.dumps({"ok": not errors, "errors": errors}, ensure_ascii=False))
+    return 4 if errors else 0
 
 
 # ------------------------------------------------------------------------------------------------ the CLI
