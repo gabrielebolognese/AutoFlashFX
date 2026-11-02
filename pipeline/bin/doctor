@@ -1,0 +1,219 @@
+#!/usr/bin/env bash
+# doctor: one read-only health report of the reels pipeline (PLAN.md M13). Changes nothing, starts nothing.
+#
+#   bash pipeline/bin/doctor [--quick]
+#
+# Sections: versions (bash, git, python, node, ffmpeg, ffprobe, claude, and the Node packages against the pins of
+# package.json), disk (free space against config runner.min_free_gb, the size of runs/, exports/ and logs/), voice
+# (bash pipeline/bin/setup-venv --check: the kokoro interpreter and the faster-whisper one; skipped with --quick),
+# freshness (the sound effects map, tokens.json, the hooks index), runner (alive or not, logs/status.txt checked line
+# by line with pipeline/lib/logcheck.py, its age, runner.log and its rotated files, the story of the last session),
+# queue and logs (ideas.txt, history.txt counts, blocked.txt, logs/STOPPED.md, limits.log, known-issues.md).
+# Every line starts with OK, WARN or FAIL. Exit 0 when no line is FAIL, 1 otherwise.
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+source "$REELS_PIPELINE/lib/log.sh"
+source "$REELS_PIPELINE/lib/config.sh"
+quick=0
+for a in "$@"; do
+  case "$a" in
+    --quick) quick=1 ;;
+    -h|--help) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "doctor: unknown option $a" >&2; exit 2 ;;
+  esac
+done
+FAILS=0; WARNS=0
+ok()   { printf 'OK    %s\n' "$*"; }
+warn() { WARNS=$((WARNS + 1)); printf 'WARN  %s\n' "$*"; }
+bad()  { FAILS=$((FAILS + 1)); printf 'FAIL  %s\n' "$*"; }
+head1() { printf '\n== %s\n' "$*"; }
+ver() {  # ver <command> [args]: the first line of its version output, or "" when it is missing
+  command -v "$1" >/dev/null 2>&1 || return 1
+  "$@" 2>&1 </dev/null | tr -d '\r' | grep -m1 -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -n 1
+}
+
+echo "reels doctor: $REELS_ROOT ($(date '+%Y-%m-%d %H:%M'))"
+
+head1 "versions"
+missing=(); found=()
+for spec in "bash:bash --version" "git:git --version" "python:$REELS_PY --version" "node:node --version" \
+            "ffmpeg:ffmpeg -version" "ffprobe:ffprobe -version" "claude:claude --version"; do
+  name="${spec%%:*}"; cmd="${spec#*:}"
+  v="$(ver $cmd)" && [ -n "$v" ] && found+=("$name $v") || missing+=("$name")
+done
+[ ${#found[@]} -gt 0 ] && ok "$(IFS=,; echo "${found[*]}" | sed 's/,/, /g')"
+[ ${#missing[@]} -gt 0 ] && bad "not found or no version: ${missing[*]} (bash pipeline/bin/preflight names the fix)"
+pkgs="$("$REELS_PY" - "$REELS_REPO" <<'EOF'
+import json, os, sys
+repo = sys.argv[1]
+try:
+    pins = json.load(open(os.path.join(repo, "package.json"), encoding="utf-8")).get("dependencies", {})
+except (OSError, ValueError):
+    print("FAIL package.json is missing or unreadable"); sys.exit()
+good, wrong = [], []
+for name, want in pins.items():
+    try:
+        have = json.load(open(os.path.join(repo, "node_modules", name, "package.json"), encoding="utf-8")).get("version", "?")
+    except (OSError, ValueError):
+        have = "missing"
+    (good if have == want else wrong).append(f"{name} {have}" + ("" if have == want else f" (pinned {want})"))
+if wrong:
+    print("FAIL node packages: " + ", ".join(wrong) + "; run bash pipeline/bin/setup-node")
+else:
+    print("OK node packages as pinned in package.json: " + ", ".join(good))
+EOF
+)"
+case "$pkgs" in OK*) ok "${pkgs#OK }" ;; *) bad "${pkgs#FAIL }" ;; esac
+
+head1 "disk"
+min_gb="$(cfg runner.min_free_gb 10)"
+free_gb="$(df -kP "$REELS_ROOT" 2>/dev/null | awk 'NR == 2 { printf "%d", $4 / 1048576 }')"
+if [ -z "$free_gb" ]; then warn "cannot read the free space under $REELS_ROOT"
+elif [ "$free_gb" -lt "$min_gb" ]; then bad "only $free_gb GB free under $REELS_ROOT (the runner needs $min_gb GB; old run folders under runs/ can go)"
+else ok "$free_gb GB free under $REELS_ROOT (minimum $min_gb GB)"; fi
+sizes=""
+for d in runs exports logs; do
+  [ -d "$REELS_ROOT/$d" ] || continue
+  n="$(find "$REELS_ROOT/$d" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l | tr -d ' ')"
+  s="$(du -sh "$REELS_ROOT/$d" 2>/dev/null | cut -f1)"
+  sizes="${sizes:+$sizes, }$d/ ${s:-?} ($n $(plural "$n" entry | sed 's/entrys/entries/'))"
+done
+[ -n "$sizes" ] && ok "$sizes"
+
+if [ "$quick" = 0 ]; then
+  head1 "voice"
+  vout="$(timeout 120 bash "$REELS_PIPELINE/bin/setup-venv" --check 2>&1)"; vrc=$?
+  while IFS= read -r l; do
+    l="${l%$'\r'}"
+    case "$l" in
+      ok:*) ok "${l#ok: }" ;;
+      WARN:*) warn "${l#WARN: }" ;;
+      FAIL:*|ERROR:*) bad "${l#*: }" ;;
+    esac
+  done <<<"$vout"
+  [ "$vrc" = 0 ] || bad "setup-venv --check exited $vrc: bash pipeline/bin/setup-venv installs what is missing"
+fi
+
+head1 "freshness"
+if out="$(bash "$REELS_PIPELINE/bin/build-sfx-map" --check 2>&1)"; then ok "$(printf '%s' "$out" | tail -n 1)"
+else warn "sound effects map: $(printf '%s' "$out" | tail -n 1) (S11 rebuilds it at its start; bash pipeline/bin/build-sfx-map now)"; fi
+if out="$(bash "$REELS_PIPELINE/bin/build-tokens" --check 2>&1)"; then ok "$(printf '%s' "$out" | tail -n 1)"
+else warn "tokens: $(printf '%s' "$out" | tail -n 1) (bash pipeline/bin/build-tokens)"; fi
+hooks="$("$REELS_PY" - "$REELS_ROOT" "$REELS_PIPELINE/lib" <<'EOF'
+import json, os, sys
+root = sys.argv[1]
+sys.path.insert(0, sys.argv[2])
+from hooks import source_hash  # the indexer's own hash (the text read with its line endings normalized)
+src, idx = os.path.join(root, "library", "hooks.txt"), os.path.join(root, "library", ".hooks.index.json")
+if not os.path.isfile(src):
+    print("WARN library/hooks.txt is missing"); sys.exit()
+if not os.path.isfile(idx):
+    print("WARN the hooks index is not built (bash pipeline/bin/index-hooks; S5 builds it when needed)"); sys.exit()
+sha = source_hash(src)
+try:
+    d = json.load(open(idx, encoding="utf-8"))
+except ValueError:
+    print("WARN library/.hooks.index.json is unreadable (bash pipeline/bin/index-hooks)"); sys.exit()
+if d.get("source_sha1") == sha:
+    print("OK hooks index current (%s hooks, built %s)" % (len(d.get("hooks", [])), d.get("built", "?")))
+else:
+    print("WARN hooks.txt changed since the index was built %s (S5 rebuilds it; bash pipeline/bin/index-hooks now)" % d.get("built", "?"))
+EOF
+)"
+case "$hooks" in OK*) ok "${hooks#OK }" ;; *) warn "${hooks#WARN }" ;; esac
+
+head1 "runner"
+pid=""
+[ -f "$REELS_LOCKS/runner/pid" ] && { read -r pid _ < "$REELS_LOCKS/runner/pid"; } 2>/dev/null
+alive=0
+if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then alive=1; ok "a runner is running (pid $pid)"
+elif [ -n "$pid" ]; then warn "no runner is running; its lock is left from pid $pid, which is gone (a crash or a closed window: bash run.sh resumes and clears it)"
+else ok "no runner is running"; fi
+st="$REELS_LOGS/status.txt"
+if [ -f "$st" ] || { sleep 0.2; [ -f "$st" ]; }; then
+  line="$(cat "$st" 2>/dev/null)" || { sleep 0.2; line="$(cat "$st" 2>/dev/null)"; }
+  age=$(( (EPOCHSECONDS - $(stat -c %Y "$st" 2>/dev/null || echo "$EPOCHSECONDS")) / 60 ))
+  if why="$("$REELS_PY" "$REELS_PIPELINE/lib/logcheck.py" status "$st" 2>&1)"; then
+    ok "status ($age min ago): $line"
+  else
+    bad "logs/status.txt is not a valid status line ($why): $line"
+  fi
+  if [ "$alive" = 1 ] && [ "$age" -gt 12 ]; then
+    warn "the runner is alive but its status is $age minutes old (the heartbeat comes every $(( $(cfg runner.status_every_seconds 300) / 60 )) minutes): it may hang; bash pipeline/bin/runner-status shows the log"
+  fi
+else
+  ok "no logs/status.txt yet (the runner has never run here)"
+fi
+log="$REELS_LOGS/runner.log"
+if [ -f "$log" ]; then
+  size="$(stat -c %s "$log" 2>/dev/null || echo 0)"
+  rot="$(ls "$log".[0-9]* 2>/dev/null | wc -l | tr -d ' ')"
+  ok "logs/runner.log $(( size / 1024 )) KB ($rot rotated $(plural "$rot" file) kept; it rotates at $(cfg logs.rotate_mb 50) MB)"
+  last="$(grep -n 'START  reels autopilot v' "$log" | tail -n 1 | cut -d: -f1)"
+  if [ -n "$last" ]; then
+    tmp="$(mktemp)"; tail -n +"$last" "$log" > "$tmp"
+    story="$("$REELS_PY" "$REELS_PIPELINE/lib/logcheck.py" story "$tmp" --live 2>/dev/null)"; src=$?
+    rm -f "$tmp"
+    summary="$(printf '%s' "$story" | "$REELS_PY" -c 'import json, sys
+d = json.loads(sys.stdin.read() or "{}")
+o = d.get("outcomes", [])
+print("%d %s (%s), exports %s, %d limit waits" % (len(o), "idea" if len(o) == 1 else "ideas", ", ".join(o) or "none", d.get("exports") or "none", d.get("limits", 0)))
+for p in d.get("problems", [])[:5]: print("PROBLEM " + p)' 2>/dev/null)"
+    first="$(printf '%s\n' "$summary" | head -n 1)"
+    if [ "$src" = 0 ]; then ok "last session (from line $last): $first"
+    else
+      warn "last session (from line $last): $first; the log tells an odd story:"
+      printf '%s\n' "$summary" | grep '^PROBLEM ' | sed 's/^PROBLEM /        /'
+    fi
+  fi
+else
+  ok "no logs/runner.log yet"
+fi
+
+head1 "queue and logs"
+queue="$("$REELS_PY" "$REELS_PIPELINE/lib/ideas.py" count --file "$REELS_IDEAS" 2>/dev/null || echo "?")"
+ok "ideas.txt: $queue $(plural "$queue" idea) queued"
+hist="$REELS_LOGS/history.txt"
+if [ -s "$hist" ]; then
+  today="$(date +%Y-%m-%d)"
+  counts="$("$REELS_PY" - "$hist" "$today" <<'EOF'
+import sys
+lines = [l.rstrip("\r\n") for l in open(sys.argv[1], encoding="utf-8", errors="replace") if l.strip()]
+def count(ls):
+    e = sum(1 for l in ls if l.rsplit("|", 1)[-1].strip().startswith("exported"))
+    d = sum(1 for l in ls if l.rsplit("|", 1)[-1].strip().startswith("dropped"))
+    b = sum(1 for l in ls if l.rsplit("|", 1)[-1].strip().startswith("blocked"))
+    return e, d, b
+t = count(lines); n = count([l for l in lines if l.startswith(sys.argv[2])])
+print("%d exported, %d dropped, %d blocked in all (today %d, %d, %d)" % (t + n))
+print(lines[-1][:160] if lines else "")
+EOF
+)"
+  ok "history: $(printf '%s\n' "$counts" | head -n 1)"
+  ok "last: $(printf '%s\n' "$counts" | sed -n 2p)"
+else
+  ok "history: no finished idea yet"
+fi
+if [ -s "$REELS_LOGS/blocked.txt" ]; then
+  nb="$(grep -c '^#' "$REELS_LOGS/blocked.txt" 2>/dev/null || echo 0)"
+  warn "logs/blocked.txt holds $nb blocked $(plural "$nb" idea) (re-add them with add-idea.sh once the cause is fixed); the last reasons:"
+  grep -i 'reason' "$REELS_LOGS/blocked.txt" | tail -n 3 | cut -c1-160 | sed 's/^/        /'
+else
+  ok "no blocked ideas"
+fi
+if [ -f "$REELS_LOGS/STOPPED.md" ]; then
+  bad "logs/STOPPED.md: the runner stopped itself (systemic failure). Its first lines:"
+  grep -v '^\s*$' "$REELS_LOGS/STOPPED.md" | head -n 6 | cut -c1-160 | sed 's/^/        /'
+else
+  ok "no logs/STOPPED.md"
+fi
+if [ -s "$REELS_LOGS/limits.log" ]; then
+  ok "limits.log: $(grep -vc 'resumed after' "$REELS_LOGS/limits.log") limit $(plural 2 wait), the last: $(tail -n 1 "$REELS_LOGS/limits.log" | cut -c1-140)"
+else
+  ok "limits.log: no usage limit met yet"
+fi
+ki="$REELS_PIPELINE/knowledge/known-issues.md"
+[ -f "$ki" ] && ok "known-issues.md: $(grep -c '^- ' "$ki") fix $(plural 2 line)"
+
+printf '\n%s\n' "doctor: $FAILS $(plural "$FAILS" problem), $WARNS $(plural "$WARNS" warning)"
+[ "$FAILS" = 0 ]
