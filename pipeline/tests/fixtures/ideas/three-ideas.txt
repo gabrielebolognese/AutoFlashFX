@@ -1,0 +1,7 @@
+# M13: three distinct ideas on tools the research can verify (pipeline/tests/test-m13.sh runs them back to back)
+
+{Claude Code's /init command: it reads your project and writes a CLAUDE.md file, so every new session already knows how your code is built and tested. Show what it writes and what to add by hand.}
+
+{The Playwright MCP server lets Claude Code open a real browser, click through your web app and tell you what is broken. Show how to add it with one command and the first prompt to try.}
+
+{ffmpeg can cut a clip out of a huge video in one second without re-encoding: -ss, -to and -c copy. Show the command and the one catch (it cuts on keyframes).}

@@ -1967,3 +1967,63 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     models.limit_fallback (default opus, its effort kept) in the same session, with a WARN line; the build runner
     does the same for its batches. Found on 2026-11-02 while Fable was at its limit and the real M12 run was heading
     for round 4; the live run got the same ai.sh.
+
+## M13 Hardening (2026-11-02)
+
+276. **Fault injection lives in ai.sh** (`REELS_FAULT`, never set in normal use). `limit:<stage>[@n]` replaces the next
+    call of that stage with a result shaped like the CLI's own ("You've hit your session limit · resets 3:48pm
+    (Europe/Rome)", is_error, the same session id), so the real classifier, the LIMIT line, limits.log, the wait, the
+    RESUME line and the retry in the same session all run unchanged; the reset is REELS_FAULT_MINUTES (default 3, at
+    least 2, since the message has minutes only) ahead and REELS_FAULT_WAIT=fast fast-forwards that one wait.
+    `kill:<stage>[@n]` kills the runner (its pid file) and then the stage with SIGKILL, as a crash or a closed window
+    would. `@n` is the n-th run folder by creation time (the second idea of a sandbox), and each fault fires once:
+    logs/.faults/<kind>-<stage>[@n] remembers it, so the restarted runner keeps the same REELS_FAULT without a second
+    kill. The test injects both into the second idea at its first S2 call (the limit: S2 resumes session A, so "the
+    same session continues" is visible in the call log) and its first S3 call (the kill): both come before the gate
+    can drop the idea, so a dropped second idea cannot skip them.
+277. **logs/runner.log rotates at 50 MB** (config logs.rotate_mb, logs.rotate_keep 3): checked when the runner starts
+    and at most once a minute in runner_tick (REELS_LOG_ROTATE_BYTES and REELS_LOG_ROTATE_EVERY in tests); the file
+    moves to runner.log.1 (older ones shift, the oldest goes) and the new file opens with an INFO line naming the old
+    one (INFO never replaces status.txt). A stage's say lines append to whatever runner.log is at that moment, so
+    nothing is lost across a rotation; logcheck.py reads runner.log.N ... runner.log.1 runner.log as one timeline.
+278. **status.txt is written aside and renamed** (say in log.sh). Measured on this PC with a reader polling the file
+    while 1500 lines were written: the direct `>` write let the reader see an empty file; the rename never shows
+    empty or half-written content, but Git Bash's rename leaves the name missing for a moment (about 1 read in 100
+    during a burst of writes), so readers try again: runner-status, the doctor and the test's sampler. A refused
+    rename (another program holding the file) falls back to the direct write.
+279. **pipeline/lib/logcheck.py is the judge of the status lines** (the test and the doctor use it). Every line:
+    `[HH:MM] TAG  details`, a known tag padded to 6, no CR, no ANSI code, no em dash. The story, session by session
+    from each banner: every idea STARTs, moves by STEP lines whose "-> next" is the next STEP's activity, has its GATE
+    line before it is exported, ends with DONE, DROP or BLOCK (or, with --allow-crash, the session ends inside it and
+    the next session STARTs it again "resumed at" the same stage), NEXT names the next idea and position, every LIMIT
+    has its RESUME before the stage ends, the heartbeat has the idea's position and text, a minute within one of the
+    idea's age, the FIXED count and an activity from the table of spec section 7 (so has every STEP; the base text
+    without its parenthetical detail is allowed, as the runner announces a stage before the stage refines it), no
+    idea is silent longer than the heartbeat plus 2 minutes (a hang), the exports are numbered without gaps, the last
+    session ends with the summary whose counts match its own lines, no STOP. Times are minute stamps, so every time
+    comparison allows one minute. The dummy gate prints no GATE line (only the real gate does); rather than change the
+    dummy (test-m2, m3 and m12 assert the dummy runs' exact event sequences), the checker takes --no-gate-line.
+280. **build-voice-profile --force keeps the user's parts** (spec 2.3): the existing file is passed as --keep and
+    voiceprofile.py merge_keep puts back account.md's Brand and Content strategy and voice.md's How I promote word for
+    word (in their place, or after the section that preceded them), any section the user added, any section filled by
+    hand while the rebuild only has placeholders for it (a whole section when it has fewer placeholders than the
+    rebuild's, else field by field: `- **Name:** Gabriele` replaces `- **Name:** [FILL IN]`), the measured pace line
+    and the excerpts when the rebuild measured nothing, and the FlashFX spelling line in its own section after the line
+    it followed. With a memo, the memo's draft wins for every field it filled. The previous file is copied to
+    logs/voice-profile/<name>.before-<date>.md first, and the script names what it kept. A second --force changes
+    nothing. The account.md template's placeholder "Brand mark" section became the "Brand" section of the brand kit
+    (library/brand/, 2.7), the one the user's file already had.
+281. **pipeline/bin/doctor is read-only and quick** (about 30 s, 5 s with --quick, which skips the voice check):
+    versions (and the Node packages against package.json's pins), disk against runner.min_free_gb with the size of
+    runs/, exports/ and logs/, the voice interpreters (setup-venv --check), the freshness of the sfx map, tokens.json
+    and the hooks index (each tool's own check; hooks.py's own hash), the runner (alive, status.txt checked by
+    logcheck.py with its age, a warning when a live runner's status is older than 12 minutes, runner.log and its
+    rotated files, the last session's story with --live), and the queue and logs (ideas, history counts, blocked.txt,
+    STOPPED.md, limits.log, known-issues.md). OK, WARN or FAIL per line; exit 1 only on a FAIL (a missing tool, a wrong
+    package, too little disk, a broken status line, STOPPED.md).
+282. **The M13 run is driven by pipeline/tests/m13-run.sh, not by test-m13.sh itself**: bash reads a script as it runs,
+    so a test script edited during a run of several hours breaks (it happened to test-m12 in M12). The driver is small
+    and stable; test-m13.sh section 3 can check a finished driver folder (M13_REAL_DIR). The real run is started
+    detached with PowerShell's Start-Process, because the Claude Code tool stops its own background commands after 2
+    hours. The test accepts any of exported, dropped or blocked per idea (spec: "every idea ends exported, dropped or
+    blocked with a reason"), and requires the exports numbered from 1 without gaps.
