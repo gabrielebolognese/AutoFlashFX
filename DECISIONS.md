@@ -2063,3 +2063,11 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     "errors and failed reviews") counts S12's review too: round 1 failing opens one issue and a later round passing
     fixes it, in state.json, read by the runner when the stage ends; logcheck.py follows the same rule, and the DONE
     line's "N issues fixed" includes a recovered review.
+286. **S7's share-identity check matched exact words** (found by the second real M13 run): the stake must name the
+    share identity with at least two of its words, and "Long recording. Timestamps known." failed against "if you cut
+    clips from long recordings" because "recording" is not "recordings"; the third round's rewrite had changed the
+    plural, so a reel whose stake clearly names the viewer was blocked as a hard failure after 3 rounds.
+    script_checks.py now compares light word stems (word_stem: plural, possessive, -ing and -ed removed, a doubled
+    final consonant undone), so recording, recordings and record match, as do clip, clips and clipping. The second
+    real run's other blocks follow the spec: a line the voice still garbled after its one rewrite ("Heads up" heard
+    as "headset", 25 percent), and the first run's facts failure.

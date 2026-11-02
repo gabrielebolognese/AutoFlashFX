@@ -1041,10 +1041,12 @@ def run_checks(draft: dict, plan: dict, vendor: Vendor) -> dict:
         failures.append(failure("timing", f"the stake runs only {stake_dur:.1f} s: give the viewer's pain a full sentence", beats[stake_idx[0]]["id"], hard=False))
     identity = plan.get("identity", "")
     id_words = [w for w in re.findall(r"[a-z0-9][a-z0-9'-]*", identity.lower()) if w not in IDENTITY_STOP and len(w) > 2]
-    stake_text = " ".join(beats[i]["display"] for i in stake_idx).lower()
-    all_text = " ".join(b["display"] for b in beats).lower()
-    hit_stake = [w for w in id_words if re.search(r"\b" + re.escape(w) + r"\b", stake_text)]
-    hit_all = [w for w in id_words if re.search(r"\b" + re.escape(w) + r"\b", all_text)]
+    # word stems, so "Long recording" names "long recordings" and "Clipping" names "clips" (M13, DECISIONS.md 286: the
+    # exact-word match blocked a reel whose stake said "recording" for the identity's "recordings")
+    stake_stems = {word_stem(w) for w in re.findall(r"[a-z0-9][a-z0-9'-]*", " ".join(beats[i]["display"] for i in stake_idx).lower())}
+    all_stems = {word_stem(w) for w in re.findall(r"[a-z0-9][a-z0-9'-]*", " ".join(b["display"] for b in beats).lower())}
+    hit_stake = [w for w in id_words if word_stem(w) in stake_stems]
+    hit_all = [w for w in id_words if word_stem(w) in all_stems]
     need = min(2, len(id_words)) if id_words else 0
     identity_ok = len(hit_stake) >= need if need else True
     if id_words and not identity_ok:
@@ -1389,6 +1391,24 @@ def cmd_rewrite_line_data(args) -> int:
               "words": n_words(beat["spoken"]), "all": "\n".join(f"{b['id']} [{b['type']}] {b['spoken']}" for b in script["beats"]),
               "pronunciations": "\n".join(f"- {w} = {s}" for w, s in script.get("pronunciations", [])) or "(none)"})
     return 0
+
+
+def word_stem(word: str) -> str:
+    """A light English stem for matching a phrase's words in a script: plural, possessive, -ing and -ed endings removed,
+    a doubled final consonant undone (recordings, recording -> record; clips, clipping -> clip; cut, cutting -> cut)."""
+    w = re.sub(r"'s?$", "", (word or "").lower())
+    for _ in range(2):  # "recordings": the plural, then the -ing
+        for suf, keep in (("ies", "y"), ("ing", ""), ("ed", ""), ("es", ""), ("s", "")):
+            if w.endswith(suf) and len(w) - len(suf) >= 3:
+                if suf == "es" and not re.search(r"(s|x|z|ch|sh)es$", w):
+                    continue
+                if suf == "s" and w.endswith("ss"):
+                    continue
+                w = w[: len(w) - len(suf)] + keep
+                if suf in ("ing", "ed") and len(w) >= 4 and w[-1] == w[-2] and w[-1] not in "aeiouls":
+                    w = w[:-1]
+                break
+    return w
 
 
 def sound_skeleton(word: str) -> str:
