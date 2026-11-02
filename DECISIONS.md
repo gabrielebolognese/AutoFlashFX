@@ -1941,3 +1941,12 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     mux_seconds, caption_seconds), the fake fixtures of M4 (the decision and H fields) and the frozen test idea
     (02-expansion/solution.json, 03-gate H fields), and the assertions of test-m2, test-m3, test-m4 and test-m6 that
     read the history line, the gate's score text, the keyword or the S7 plan line (build/M12/patch-tests.py).
+273. **Found while testing M12:** the hook 2 clip's mix (2.68 s, the voice) is shorter than its composition (3.19 s, the
+    voice plus the tail), and `-shortest` cut the clip to the audio, so the duration check failed three times and the
+    idea was blocked; the mux now pads the audio with silence (apad) so the video's length wins. The activity
+    "exporting #N" of spec section 7 was set only after the export, so no line ever showed it; the runner now sets it
+    before the export (the number predicted from exports/, the one export.py assigns with one runner) and the STEP line
+    reads `writing caption done (12s) -> exporting #1`. test-m2's dummy run calls the real reviewer when a dummy fails:
+    the 03-gate dummy lacked the new H field, and the runner's own fixer repaired it and committed
+    `autofix(03-gate): ...` (b7ea7e3) with a line in known-issues.md; test-m3 now counts only the 10-build lines its
+    sections add, since the sandbox copies the repo's known-issues.md.
