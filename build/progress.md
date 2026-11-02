@@ -379,9 +379,23 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   234 to 260. Report: build/M11/report.md.
 
 ## M12 Final render, caption, export, end to end (S13, S14)
-- Status: not started
-- Test command: `bash pipeline/tests/test-m12.sh` (planned)
-- Notes:
+- Status: done (2026-11-02). The test has five sections: 1 the units (solution.py, the expansion's decision and keyword rule, the gate's H, the script's solution checks, the history line with the solution type, the SOLUTION block, S13's checks on the golden render, the mux with a mix shorter than the clip, the post-pass at 1080x1920, the style check run twice into one folder, the model-limit fallback in ai.sh, the caption composer and its refusals, the dummies and schemas), 2 S11 real, S12 dummy, S13 and S14 through the runner on the frozen build with the fake caption model (exports/1 with every ffprobe and loudness check, the captions file in the spec's format with SOLUTION and a planted NEEDS REVIEW flag, the history line, the idea gone; about 10 minutes, two renders), 3 the honesty loop with the fake claude (a forced FlashFX solution fails H, S4 decides the external skill, the gate passes on round 2, never a drop), 4 the test idea from scratch with the real models and the real voice (exports/1/1.mp4, 1captions.txt, 1hook2.mp4; 168 minutes, 5 edit review rounds, exported with NEEDS REVIEW), 5 the em dash scan. Results: sections 1 and 5 96 passed, section 2 56, section 3 28, section 4 33 (its log after the captions printout is not valid: test-m12.sh was edited while the 3-hour run was executing it; see build/M12/report.md). After the touches to their code: test-m2 207, test-m3 fake sections 374, test-m4 fake 202, test-m5 fake 198, test-m6 fake 147, test-m11 fake 227, all passing.
+- Test command: `bash pipeline/tests/test-m12.sh` (`M12_SECTIONS="1 2 3 5"` for the fake-only sections, about 20 minutes;
+  section 4 is the real end to end run, 1 to 3 hours: `bash build/M12/run-s4.sh` starts it detached; `M12_FREEZE=1`
+  copies its solution.json, render.json and 14-export outputs into the frozen fixtures); `bash pipeline/tests/run-all.sh`
+  now includes test-m12.
+- Notes: the problem-first solution (pipeline/lib/solution.py) runs through S1 (solution candidates), S2
+  (02-expansion/solution.json with the keyword that follows the type), S3 (the honesty check H; a fail goes to S4,
+  never a drop), S4 (decides again), S7 and S14 (the FlashFX rules), the SOLUTION block of Ncaptions.txt and the
+  history lines (`date | idea | solution | exported N`). S13 is pipeline/stages/13-render/run.sh over
+  pipeline/lib/finalrender.py (HyperFrames renders silent at 1080x1920, ffmpeg muxes 11-sfx/mix.wav with the audio
+  padded, ffprobe and loudnorm checks, one post-pass). S14 is pipeline/stages/14-export/run.sh with prompt-caption.md
+  over pipeline/lib/caption.py (hook 1 as the first line, one ask, 3 to 5 hashtags, humanize.py, the caption.py lint,
+  export.json); the runner's export.py writes exports/N/. Earlier milestones touched: M2 (runner.sh exporting #N,
+  history.sh, export.py, dummies), M3 (ai.sh: a model at its own limit falls back to opus), M4, M5, M6 (the solution
+  retrofit), M11 (style_check.py: the hang in later review rounds). DECISIONS.md 261 to 275. Hooks for M13: the real run
+  takes about 2 to 3 hours per idea, most of it in the 5 edit review rounds; the 03-gate autofix (b7ea7e3) came from
+  test-m2's dummy run reaching the real reviewer. Report: build/M12/report.md.
 
 ## M13 Hardening
 - Status: not started

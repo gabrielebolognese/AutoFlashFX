@@ -1,0 +1,153 @@
+
+== 1. units: the solution module, the expansion's decision, the gate's H, the script's rules, the history line, the SOLUTION block, S13's checks, the caption composer, the dummies ==
+PASS  solution.py type: external on the frozen run
+PASS  solution.py block: external: name link
+PASS  solution.py type: - without solution.json
+PASS  solution.py block without solution.json says so
+PASS  solution.py balance: the exported reels' types, newest first (dropped ideas left out)
+PASS  solution.py balance: the text names the counts
+PASS  solution.py proof: the usable lines of Proof I can use (placeholders skipped)
+PASS  solution.py proof: the repo's draft voice.md has no usable proof line
+PASS  solution.py check (external): two FlashFX mentions, one made-in, one sales phrase
+PASS  solution.py check (flashfx): the mention is allowed, made-in and the sales phrase are not
+PASS  solution.py prompt: the rules, the empty proof, the balance and the keyword rule
+PASS  research.py finish: the solution candidate is kept
+PASS  facts.md: the Solution candidates section
+PASS  facts.md: the candidate line
+PASS  research.json with candidates validates
+PASS  the fake research fixture validates against the model schema
+PASS  expansion.py: an external decision takes the keyword LINK (the model wrote SKILL)
+PASS  expansion.py writes 02-expansion/solution.json
+PASS  solution.json: type, keyword, the deliverable is the tool's link
+PASS  expansion.md: the solution decision line
+PASS  expansion.md: the LINK deliverable
+PASS  expansion.json with the decision validates
+PASS  the fake expansion fixtures validate against the model schema (m4 and m12)
+PASS  expansion.py: a flashfx decision takes the keyword FLASH
+PASS  expansion.md: FLASH with deliverables.txt's entry
+PASS  expansion.py: an external URL that is not a source of facts.md is refused
+PASS  expansion.py: a method keeps the model's keyword (NEW deliverable)
+PASS  expansion.py: an unknown type is refused
+PASS  expansion.py: an empty reason is refused
+PASS  the dummy S2 writes an external solution.json
+PASS  gate: the model's H fail is an angle round, not a drop
+PASS  gate: the angle hint asks to decide the solution again
+PASS  gate: flashfx with no proof line fails H whatever the model said (forced)
+PASS  gate.json: H_forced names the empty proof section
+PASS  gate: an H fail with no round left drops with the scores
+PASS  gate: flashfx with proof lines and the model's H pass passes
+PASS  gate: an external solution with no proof passes H (the proof matters for FlashFX only)
+PASS  gate: without --solution (an older run) H comes from the model
+PASS  gate.json validates with the H fields
+PASS  gate.json: H ok, solution_type none without solution.json
+PASS  the fake gate fixtures validate against the model schema
+PASS  the fake angle fixtures validate against the model schema
+PASS  the frozen gate.json carries H
+PASS  script setup: the plan carries the solution decision
+PASS  script setup: the rules text for an external solution
+PASS  script check: the frozen draft passes every check with the solution rules
+PASS  script check: a FlashFX mention in a non-FlashFX reel is a hard failure (display and spoken)
+PASS  script check: the failure is check solution on the beat
+PASS  script check: the same mention raises no solution failure when the solution is flashfx
+PASS  script check (flashfx): 'animated this reel in FlashFX' and 'sign up' are hard failures
+PASS  the claims answer with solution_issues validates
+PASS  the old claims fixture (no solution_issues) still validates
+PASS  claims merge: the checks model's ad-language issue is one hard failure
+PASS  claims merge: the failure names the ad language
+PASS  claims merge: a later clean answer removes the model's solution failure
+PASS  the frozen script.json has no solution (older run): read as none
+PASS  history: date | idea | solution | exported N (the run's solution.json type, last written as a method)
+PASS  history: - before S2 decided
+PASS  history: the blocked line with the solution
+PASS  history: an exported line is not repeated
+PASS  history_counts still counts with the new field
+PASS  the 13-render dummy validates
+PASS  the 14-export dummy validates
+PASS  the 14-export dummy takes the solution from solution.json
+PASS  captions: the SOLUTION block sits between COMMENT KEYWORD and HOOKS
+PASS  captions: the SOLUTION line
+PASS  captions: a flashfx solution reads flashfx
+PASS  captions: a method reads method: name
+PASS  finalrender check: the golden render passes every video and container check and fails only the loudness (HyperFrames' audio path, +3 LU)
+PASS  finalrender check: the duration matches the voice within 0.2 s
+PASS  post-pass: the 540x960 draft with the voice fails only the size checks
+PASS  post-pass: the video is re-encoded at 1080x1920
+PASS  post-pass: every hard check passes afterwards (aac 48 kHz, h264 High, yuv420p, 3.5 s at most)
+PASS  caption data: hook 1, the keyword, the solution, the flag
+PASS  caption data: the facts the script cites, with URL and date
+PASS  the fake caption answer validates against the model schema
+PASS  caption compose: the fixture answer passes every check and the vendor lint
+PASS  export.json validates
+PASS  caption.txt: the first line is hook 1
+PASS  export.json: the hashtags
+PASS  export.json: the flag as stage: text
+PASS  export.json: the solution and the files
+PASS  caption compose: a bad answer is refused
+PASS  caption compose: it names the hashtag in the body, the link, the second asks, the FlashFX mention, the made-in and caption.py's two asks
+PASS  caption compose: 8 hashtags are cut to 5 and the keyword tag dropped
+PASS  caption compose: nothing written for a refused answer
+PASS  caption compose --force writes the last answer anyway
+PASS  caption compose: humanize.py removed the em dash from the forced caption
+PASS  captions (frozen run): every section in order
+PASS  captions (frozen run): the first line is hook 1
+PASS  captions (frozen run): the facts carry URL and date
+
+== 3. the honesty loop with the fake claude: a forced FlashFX solution fails H, S4 decides the skill, the gate passes on round 2, the run reaches the export ==
+    [08:31] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.UobfWKTN0i | mode: once (stops when the queue is empty) | dummy stages: 05-hooks,06-judge,07-script,08-voiceover,09a-animations,09b-text,09c-transitions,10-build,11-sfx,12-review,13-render,14-export
+    [08:31] INFO   S1: 7 claims (5 verified), 2 numbers, 0 screenshots; core claim verified
+    [08:31] STEP   researching facts done (8s) -> expanding idea
+    [08:31] INFO   S2: expansion 1065 chars, solution flashfx (FlashFX), keyword FLASH (existing), evidence facts.md#1, #3, #4
+    [08:31] STEP   expanding idea done (10s) -> checking idea (gate)
+    [08:31] ANGLE  gate failed (H): finding a better angle, round 1/2
+    [08:31] STEP   checking idea (gate) done (9s) -> finding a better angle
+    [08:32] INFO   S4: angle round 1/2, 1 new claim, solution external (the frontend-design skill (anthropics/sk...), expansion 1324 chars: The solution is decided again: the frontend-design skill (external) instead of FlashFX, with the keyword LINK; the takea
+    [08:32] STEP   finding a better angle done (13s) -> checking idea (gate)
+    [08:32] GATE   passed (P3 S3 C3 F ok H ok) after 1 angle round
+    [08:32] STEP   checking idea (gate) done (10s) -> picking hooks
+    [08:32] STEP   picking hooks done (2s) -> judging hooks
+    [08:32] STEP   judging hooks done (1s) -> writing script
+    [08:32] STEP   writing script done (1s) -> generating voiceover
+    [08:32] STEP   generating voiceover done (3s) -> planning animations
+    [08:32] STEP   planning animations done (2s) -> planning text
+    [08:32] STEP   planning text done (1s) -> planning transitions
+    [08:32] STEP   planning transitions done (1s) -> building visuals
+    [08:32] STEP   building visuals done (4s) -> adding sound effects
+    [08:32] STEP   adding sound effects done (2s) -> reviewing: mechanical checks
+    [08:32] STEP   reviewing: mechanical checks done (2s) -> rendering final video
+    [08:32] STEP   rendering final video done (2s) -> writing caption
+    [08:32] STEP   writing caption done (2s) -> exporting #1
+    [08:32] DONE   exported #1 -> exports/1/ (1 min, 0 issues fixed)
+PASS  the runner exits 0
+PASS  S2: the forced FlashFX decision with the keyword FLASH
+PASS  ANGLE: the gate fails H and asks for an angle round
+PASS  an H failure never drops the idea
+PASS  S4: the solution decided again (external)
+PASS  GATE: round 2 passes with H ok
+PASS  the run reaches the export (dummy stages after S4)
+PASS  the event lines: one angle round, the pass, the dummy stages, the export
+PASS  gate-1.json: H fail, decision angle, the flashfx solution
+PASS  gate-1.json: failing lists H alone
+PASS  gate.json (round 2): H ok, pass, the external solution
+PASS  solution.json: rewritten by the angle round, external with LINK
+PASS  solution-r0.json: the first decision is kept
+PASS  expansion.json: the keyword follows the new solution
+PASS  expansion.md: the new decision line
+PASS  the gate prompt (round 1) shows the FlashFX decision
+PASS  the gate prompt shows the empty proof section
+PASS  the angle prompt asks to decide the solution again
+PASS  the angle prompt carries the solution rules
+PASS  the angle prompt names the failing criterion H
+PASS  the second gate round sees the first round's H
+PASS  angle.json records the H it repaired and the new solution
+PASS  angle.json validates
+PASS  history: the solution type external
+PASS  captions: the SOLUTION block from solution.json (the dummy export)
+PASS  ideas.txt: the idea is gone
+PASS  the fake answered S1, S2, S3, S4, S3
+PASS  no em dash in the stage files
+
+== 5. no em dash in the files M12 wrote ==
+PASS  no em dash in the M12 sources, prompts, schemas, contracts and fixtures
+
+test-m12.sh: 120 passed, 0 failed
+exit 0

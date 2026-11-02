@@ -1,0 +1,174 @@
+
+== 1. units: the solution module, the expansion's decision, the gate's H, the script's rules, the history line, the SOLUTION block, S13's checks, the caption composer, the dummies ==
+PASS  solution.py type: external on the frozen run
+PASS  solution.py block: external: name link
+PASS  solution.py type: - without solution.json
+PASS  solution.py block without solution.json says so
+PASS  solution.py balance: the exported reels' types, newest first (dropped ideas left out)
+PASS  solution.py balance: the text names the counts
+PASS  solution.py proof: the usable lines of Proof I can use (placeholders skipped)
+PASS  solution.py proof: the repo's draft voice.md has no usable proof line
+PASS  solution.py check (external): two FlashFX mentions, one made-in, one sales phrase
+PASS  solution.py check (flashfx): the mention is allowed, made-in and the sales phrase are not
+PASS  solution.py prompt: the rules, the empty proof, the balance and the keyword rule
+PASS  research.py finish: the solution candidate is kept
+PASS  facts.md: the Solution candidates section
+PASS  facts.md: the candidate line
+PASS  research.json with candidates validates
+PASS  the fake research fixture validates against the model schema
+PASS  expansion.py: an external decision takes the keyword LINK (the model wrote SKILL)
+PASS  expansion.py writes 02-expansion/solution.json
+PASS  solution.json: type, keyword, the deliverable is the tool's link
+PASS  expansion.md: the solution decision line
+PASS  expansion.md: the LINK deliverable
+PASS  expansion.json with the decision validates
+PASS  the fake expansion fixtures validate against the model schema (m4 and m12)
+PASS  expansion.py: a flashfx decision takes the keyword FLASH
+PASS  expansion.md: FLASH with deliverables.txt's entry
+PASS  expansion.py: an external URL that is not a source of facts.md is refused
+PASS  expansion.py: a method keeps the model's keyword (NEW deliverable)
+PASS  expansion.py: an unknown type is refused
+PASS  expansion.py: an empty reason is refused
+PASS  the dummy S2 writes an external solution.json
+PASS  gate: the model's H fail is an angle round, not a drop
+PASS  gate: the angle hint asks to decide the solution again
+PASS  gate: flashfx with no proof line fails H whatever the model said (forced)
+PASS  gate.json: H_forced names the empty proof section
+PASS  gate: an H fail with no round left drops with the scores
+PASS  gate: flashfx with proof lines and the model's H pass passes
+PASS  gate: an external solution with no proof passes H (the proof matters for FlashFX only)
+PASS  gate: without --solution (an older run) H comes from the model
+PASS  gate.json validates with the H fields
+PASS  gate.json: H ok, solution_type none without solution.json
+PASS  the fake gate fixtures validate against the model schema
+PASS  the fake angle fixtures validate against the model schema
+PASS  the frozen gate.json carries H
+PASS  script setup: the plan carries the solution decision
+PASS  script setup: the rules text for an external solution
+PASS  script check: the frozen draft passes every check with the solution rules
+PASS  script check: a FlashFX mention in a non-FlashFX reel is a hard failure (display and spoken)
+PASS  script check: the failure is check solution on the beat
+PASS  script check: the same mention raises no solution failure when the solution is flashfx
+PASS  script check (flashfx): 'animated this reel in FlashFX' and 'sign up' are hard failures
+PASS  the claims answer with solution_issues validates
+PASS  the old claims fixture (no solution_issues) still validates
+PASS  claims merge: the checks model's ad-language issue is one hard failure
+PASS  claims merge: the failure names the ad language
+PASS  claims merge: a later clean answer removes the model's solution failure
+PASS  the frozen script.json has no solution (older run): read as none
+PASS  history: date | idea | solution | exported N (the run's solution.json type, last written as a method)
+PASS  history: - before S2 decided
+PASS  history: the blocked line with the solution
+PASS  history: an exported line is not repeated
+PASS  history_counts still counts with the new field
+PASS  the 13-render dummy validates
+PASS  the 14-export dummy validates
+PASS  the 14-export dummy takes the solution from solution.json
+PASS  captions: the SOLUTION block sits between COMMENT KEYWORD and HOOKS
+PASS  captions: the SOLUTION line
+PASS  captions: a flashfx solution reads flashfx
+PASS  captions: a method reads method: name
+PASS  finalrender check: the golden render passes every video and container check and fails only the loudness (HyperFrames' audio path, +3 LU)
+PASS  finalrender check: the duration matches the voice within 0.2 s
+PASS  post-pass: the 540x960 draft with the voice fails only the size checks
+PASS  post-pass: the video is re-encoded at 1080x1920
+PASS  post-pass: every hard check passes afterwards (aac 48 kHz, h264 High, yuv420p, 3.5 s at most)
+PASS  caption data: hook 1, the keyword, the solution, the flag
+PASS  caption data: the facts the script cites, with URL and date
+PASS  the fake caption answer validates against the model schema
+PASS  caption compose: the fixture answer passes every check and the vendor lint
+PASS  export.json validates
+PASS  caption.txt: the first line is hook 1
+PASS  export.json: the hashtags
+PASS  export.json: the flag as stage: text
+PASS  export.json: the solution and the files
+PASS  caption compose: a bad answer is refused
+PASS  caption compose: it names the hashtag in the body, the link, the second asks, the FlashFX mention, the made-in and caption.py's two asks
+PASS  caption compose: 8 hashtags are cut to 5 and the keyword tag dropped
+PASS  caption compose: nothing written for a refused answer
+PASS  caption compose --force writes the last answer anyway
+PASS  caption compose: humanize.py removed the em dash from the forced caption
+PASS  captions (frozen run): every section in order
+PASS  captions (frozen run): the first line is hook 1
+PASS  captions (frozen run): the facts carry URL and date
+
+== 2. S13 and S14 through the runner on the frozen build: the real sound pass, a dummy review, the final render, the caption with the fake model, the export ==
+S11, S12 (dummy), S13 and S14 took 153s
+    [06:52] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [06:52] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.VEevln9y3I/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [06:53] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.VEevln9y3I | mode: once (stops when the queue is empty) | dummy stages: 12-review
+    [06:53] INFO   S11: 17 sounds placed (mandatory 9, transition 8), 23 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [06:53] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.21 dB under the cap; mix -14.35 LUFS, -1.6 dBTP
+    [06:53] STEP   adding sound effects done (13s) -> reviewing: mechanical checks
+    [06:53] STEP   reviewing: mechanical checks done (1s) -> rendering final video
+    [06:54] INFO   S13: the reel rendered at 1080x1920 in 77.5 s (looks, --browser-gpu); muxing the mix
+    [06:55] INFO   S13: the hook 2 clip rendered at 1080x1920 in 22.0 s (looks, --browser-gpu); muxing the mix
+    [06:55] INFO   S13: final.mp4 1080x1920 30.0 fps High yuv420p, aac 48000 Hz, 41.47 s (voice 41.46 s), -14.36 LUFS, -1.78 dBTP: every check passes
+    [06:55] INFO   S13: hook2.mp4 3.20 s, aac audio: every check passes
+    [06:55] STEP   rendering final video done (1m44s) -> writing caption
+    [06:55] INFO   S14: caption for hook 1 "Why your Claude Code cards all look identical.", keyword TELLS, solution external, 8 cited facts, 0 flags
+    [06:55] INFO   S14: caption 510 chars (first line 46), #claudecode #frontenddesign #webdesign #aitools, lint READY (warnings: none), humanize changed 0
+    [06:55] STEP   writing caption done (12s) -> exporting
+    [06:55] DONE   exported #1 -> exports/1/ (2 min, 0 issues fixed)
+PASS  the runner exits 0
+PASS  STEP after S11
+PASS  STEP: the review hands over to the final render
+PASS  STEP: the render hands over to the caption
+PASS  STEP: the caption hands over to the export
+PASS  the DONE line
+PASS  no ERROR, BLOCK or DROP line
+PASS  S13: the render line
+PASS  S13: every check passes on final.mp4
+PASS  S13: the hook 2 clip passes
+PASS  S14: the caption line
+PASS  S13: the activity 'rendering hook 2 clip'
+PASS  S13: the activity 'rendering final video'
+PASS  S14: the activity 'writing caption'
+FAIL  the activity 'exporting #1' reached the log (no match for 'exporting #1' in /tmp/tmp.VEevln9y3I/logs/runner.log)
+PASS  section 2: exports/1/1.mp4
+PASS  section 2: exports/1/1captions.txt
+PASS  section 2: exports/1/1hook2.mp4
+PASS  section 2: 1.mp4 passes every ffprobe and loudness check (1080x1920, 30 fps, h264 High, yuv420p, aac 48 kHz, the voice's length, -14 LUFS) [[]]
+    {'width': 1080, 'height': 1920, 'fps': 30.0, 'video_codec': 'h264', 'profile': 'High', 'pix_fmt': 'yuv420p', 'audio_codec': 'aac', 'sample_rate': 48000, 'duration': 41.467} loudness -14.36 LUFS -1.78 dBTP
+PASS  section 2: 1hook2.mp4 is 3.5 s or shorter with audio, 1080x1920, aac 48 kHz [[]]
+PASS  section 2: the captions file has the sections of spec section 8 in order, SOLUTION included
+PASS  section 2: the caption's first line is hook 1
+PASS  section 2: the first line is 125 characters or fewer (46)
+PASS  section 2: HASHTAGS has 1 to 5 tags
+PASS  section 2: the SOLUTION block
+PASS  section 2: the SOLUTION line reads flashfx, external: name link, or method
+PASS  section 2: HOOKS line with the number
+PASS  section 2: the RUN section names the run
+PASS  section 2: the vendor caption.py lint reports no FAIL
+PASS  section 2: no em dash in the captions file
+PASS  section 2: export.json validates against 14-export/schema.json
+PASS  section 2: render.json validates against 13-render/schema.json
+PASS  section 2: render.json pass
+PASS  section 2: a non-FlashFX reel: script.json never mentions FlashFX
+PASS  section 2: a non-FlashFX reel: the caption never mentions FlashFX
+PASS  13-render/video.mp4: the silent render is kept
+PASS  13-render/video.mp4 has no audio stream
+PASS  render.json: no post-pass was needed for the reel
+PASS  render.json: the reel carries the sound stage's mix
+PASS  render.json: the hook 2 clip carries its own mix
+PASS  render.json: the mix's loudness survived the AAC encode (-14 LUFS plus or minus 1)
+PASS  ideas.txt: the idea is gone after the export
+PASS  history: date | idea | external | exported 1
+PASS  the run folder is kept
+PASS  state.json: exported
+PASS  state.json: export number 1
+PASS  one model call: the caption
+PASS  the caption call uses the script model
+PASS  the caption call has no tools
+PASS  the caption prompt header
+PASS  the caption prompt carries hook 1
+PASS  the caption prompt carries the solution rule for an external solution
+FAIL  captions: NEEDS REVIEW (the frozen run's flags: the draft profile) (no match for '^NEEDS REVIEW$' in /tmp/tmp.VEevln9y3I/exports/1/1captions.txt)
+PASS  captions: a cited fact with its URL and date
+PASS  no em dash in the stage files and the logs
+
+== 5. no em dash in the files M12 wrote ==
+PASS  no em dash in the M12 sources, prompts, schemas, contracts and fixtures
+
+test-m12.sh: 145 passed, 2 failed
+exit 1

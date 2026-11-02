@@ -1,0 +1,164 @@
+
+== 2. S13 and S14 through the runner on the frozen build: the real sound pass, a dummy review, the final render, the caption with the fake model, the export ==
+S11, S12 (dummy), S13 and S14 took 601s
+    [06:38] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [06:38] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [06:39] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX | mode: once (stops when the queue is empty) | dummy stages: 12-review
+    [06:39] INFO   S11: 17 sounds placed (mandatory 9, transition 8), 23 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [06:39] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.21 dB under the cap; mix -14.35 LUFS, -1.6 dBTP
+    [06:39] STEP   adding sound effects done (17s) -> reviewing: mechanical checks
+    [06:39] STEP   reviewing: mechanical checks done (1s) -> rendering final video
+    [06:40] INFO   S13: the reel rendered at 1080x1920 in 92.5 s (looks, --browser-gpu); muxing the mix
+    [06:41] INFO   S13: the hook 2 clip rendered at 1080x1920 in 24.9 s (looks, --browser-gpu); muxing the mix
+    [06:41] WARN   S13: the hook 2 clip differs from the target (duration 2.68 s against 3.19 s): one ffmpeg post-pass
+    [06:41] INFO   S13: final.mp4 1080x1920 30.0 fps High yuv420p, aac 48000 Hz, 41.46 s (voice 41.46 s), -14.37 LUFS, -1.78 dBTP: every check passes
+    [06:41] INFO   S13: hook2.mp4 2.68 s, aac audio: FAILS duration
+    [06:41] ERROR  S13 rendering final video: exit 1: 13-render: S13: a check still fails after the post-pass: hook 2: duration 2.68 s against 3.19 s
+    [06:41] INFO   S13: files outside pipeline,motion-lib/candidates changed during the fix and were left alone: ["export.out"]
+    [06:41] INFO   S13 rendering final video: attempt 2 after the fix
+    [06:43] INFO   S13: the reel rendered at 1080x1920 in 98.9 s (looks, --browser-gpu); muxing the mix
+    [06:44] INFO   S13: the hook 2 clip rendered at 1080x1920 in 28.6 s (looks, --browser-gpu); muxing the mix
+    [06:44] WARN   S13: the hook 2 clip differs from the target (duration 2.68 s against 3.19 s): one ffmpeg post-pass
+    [06:44] INFO   S13: final.mp4 1080x1920 30.0 fps High yuv420p, aac 48000 Hz, 41.46 s (voice 41.46 s), -14.37 LUFS, -1.78 dBTP: every check passes
+    [06:44] INFO   S13: hook2.mp4 2.68 s, aac audio: FAILS duration
+    [06:44] ERROR  S13 rendering final video: exit 1: 13-render: S13: a check still fails after the post-pass: hook 2: duration 2.68 s against 3.19 s
+    [06:44] INFO   S13: files outside pipeline,motion-lib/candidates changed during the fix and were left alone: ["export.out"]
+    [06:44] INFO   S13 rendering final video: attempt 3 after the fix
+    [06:47] INFO   S13: the reel rendered at 1080x1920 in 128.5 s (looks, --browser-gpu); muxing the mix
+    [06:48] INFO   S13: the hook 2 clip rendered at 1080x1920 in 66.0 s (looks, --browser-gpu); muxing the mix
+    [06:48] WARN   S13: the hook 2 clip differs from the target (duration 2.68 s against 3.19 s): one ffmpeg post-pass
+    [06:48] INFO   S13: final.mp4 1080x1920 30.0 fps High yuv420p, aac 48000 Hz, 41.46 s (voice 41.46 s), -14.37 LUFS, -1.78 dBTP: every check passes
+    [06:48] INFO   S13: hook2.mp4 2.68 s, aac audio: FAILS duration
+    [06:48] ERROR  S13 rendering final video: exit 1: 13-render: S13: a check still fails after the post-pass: hook 2: duration 2.68 s against 3.19 s
+    [06:48] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S13: still failing after 1 review cycle and the escalated review: exit 1: 13-render: S13: a check still fails after the post-pass: hook 2: duration 2.68 s against 3.19 s. Moved to logs/blocked.txt
+PASS  the runner exits 0
+PASS  STEP after S11
+PASS  STEP: the review hands over to the final render
+FAIL  STEP: the render hands over to the caption (no match for '^\[[0-9]{2}:[0-9]{2}\] STEP   rendering final video done \([0-9hms]+\) -> writing caption$' in /tmp/tmp.xt2moZiOJX/export.out)
+FAIL  STEP: the caption hands over to the export (no match for '^\[[0-9]{2}:[0-9]{2}\] STEP   writing caption done \([0-9hms]+\) -> exporting$' in /tmp/tmp.xt2moZiOJX/export.out)
+FAIL  the DONE line (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #1 -> exports/1/ \([0-9]+ (min|s), 0 issues fixed\)$' in /tmp/tmp.xt2moZiOJX/export.out)
+FAIL  no ERROR, BLOCK or DROP line (unexpected match for '^\[[0-9]{2}:[0-9]{2}\] (ERROR|BLOCK|DROP)' in /tmp/tmp.xt2moZiOJX/export.out)
+PASS  S13: the render line
+PASS  S13: every check passes on final.mp4
+FAIL  S13: the hook 2 clip passes (no match for '^\[[0-9]{2}:[0-9]{2}\] INFO   S13: hook2.mp4 [0-9.]+ s, aac audio: every check passes$' in /tmp/tmp.xt2moZiOJX/export.out)
+FAIL  S14: the caption line (no match for '^\[[0-9]{2}:[0-9]{2}\] INFO   S14: caption [0-9]+ chars \(first line [0-9]+\), #claudecode #frontenddesign #webdesign #aitools, lint READY' in /tmp/tmp.xt2moZiOJX/export.out)
+PASS  S13: the activity 'rendering hook 2 clip'
+PASS  S13: the activity 'rendering final video'
+FAIL  S14: the activity 'writing caption' (no match for '^activity: writing caption$' in C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/runs/2026-11-02_0638_claude-codes-frontend-design-skill/14-export/stage.log)
+FAIL  the activity 'exporting #1' reached the log (no match for 'exporting #1' in /tmp/tmp.xt2moZiOJX/logs/runner.log)
+FAIL  section 2: exports/1/1.mp4 (missing file /tmp/tmp.xt2moZiOJX/exports/1/1.mp4)
+FAIL  section 2: exports/1/1captions.txt (missing file /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+FAIL  section 2: exports/1/1hook2.mp4 (missing file /tmp/tmp.xt2moZiOJX/exports/1/1hook2.mp4)
+FAIL  section 2: 1.mp4 passes every ffprobe and loudness check (1080x1920, 30 fps, h264 High, yuv420p, aac 48 kHz, the voice's length, -14 LUFS) [["width", "height", "fps", "video_codec", "profile", "pix_fmt", "audio_present", "audio_codec", "sample_rate", "duration", "loudness"]] (expected 'true', got 'false')
+    {'width': None, 'height': None, 'fps': None, 'video_codec': None, 'profile': None, 'pix_fmt': None, 'audio_codec': None, 'sample_rate': None, 'duration': 0.0} loudness None LUFS None dBTP
+FAIL  section 2: 1hook2.mp4 is 3.5 s or shorter with audio, 1080x1920, aac 48 kHz [["width", "height", "fps", "video_codec", "profile", "pix_fmt", "audio_present", "audio_codec", "sample_rate", "duration", "max_seconds"]] (expected 'true', got 'false')
+grep: /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt: No such file or directory
+grep: /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt: No such file or directory
+FAIL  section 2: the captions file has the sections of spec section 8 in order, SOLUTION included (expected 'CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,FACTS AND SOURCES,RUN', got '')
+sed: can't read /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt: No such file or directory
+FAIL  section 2: the caption's first line is hook 1 (expected 'Why your Claude Code cards all look identical.', got '')
+PASS  section 2: the first line is 125 characters or fewer (0)
+FAIL  section 2: HASHTAGS has 1 to 5 tags
+FAIL  section 2: the SOLUTION block (no match for '^SOLUTION$' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+FAIL  section 2: the SOLUTION line reads flashfx, external: name link, or method (no match for '^(flashfx|external: .+|method.*)$' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+FAIL  section 2: HOOKS line with the number (no match for '^1\.mp4 uses: "' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+FAIL  section 2: the RUN section names the run (no match for '^runs/2026-11-02_0638_claude-codes-frontend-design-skill$' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+    t = open(sys.argv[1], encoding="utf-8").read().replace("\r\n", "\n")
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/exports/1/1captions.txt'
+FAIL  section 2: the vendor caption.py lint reports no FAIL (expected 'none', got 'FIRST LINE')
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+    bad = [p for p in sys.argv[1:] if open(p, "rb").read().find(bytes([0xE2, 0x80, 0x94])) >= 0]
+                                      ~~~~^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/exports/1/1captions.txt'
+FAIL  section 2: no em dash in the captions file (em dash in: )
+FAIL  section 2: export.json validates against 14-export/schema.json
+PASS  section 2: render.json validates against 13-render/schema.json
+FAIL  section 2: render.json pass (expected 'true', got 'false')
+PASS  section 2: a non-FlashFX reel: script.json never mentions FlashFX
+PASS  section 2: a non-FlashFX reel: the caption never mentions FlashFX
+PASS  13-render/video.mp4: the silent render is kept
+PASS  13-render/video.mp4 has no audio stream
+PASS  render.json: no post-pass was needed for the reel
+PASS  render.json: the reel carries the sound stage's mix
+PASS  render.json: the hook 2 clip carries its own mix
+PASS  render.json: the mix's loudness survived the AAC encode (-14 LUFS plus or minus 1)
+PASS  ideas.txt: the idea is gone after the export
+FAIL  history: date | idea | external | exported 1 (no match for '^20[0-9-]+ [0-9:]+ \| Claude Code's frontend-design skill: it makes websites built with AI stop looking AI-generated. Show what it does and how to install it. \| external \| exported 1$' in /tmp/tmp.xt2moZiOJX/logs/history.txt)
+PASS  the run folder is kept
+FAIL  state.json: exported (expected 'exported', got 'blocked')
+FAIL  state.json: export number 1 (expected '1', got '')
+FAIL  one model call: the caption (expected '1', got '4')
+PASS  the caption call uses the script model
+FAIL  the caption call has no tools (expected '[""]', got '["Read,Glob,Grep,WebSearch,WebFetch"]')
+FAIL  the caption prompt header (no match for '^# Stage: 14-export$' in C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/runs/2026-11-02_0638_claude-codes-frontend-design-skill/14-export/prompt-caption.md)
+FAIL  the caption prompt carries hook 1 (no match for '^- Hook 1, the caption's first line \(fixed, do not rewrite it\): Why your Claude Code cards all look identical\.$' in C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/runs/2026-11-02_0638_claude-codes-frontend-design-skill/14-export/prompt-caption.md)
+FAIL  the caption prompt carries the solution rule for an external solution (no match for 'FlashFX is not mentioned anywhere in the caption' in C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/runs/2026-11-02_0638_claude-codes-frontend-design-skill/14-export/prompt-caption.md)
+FAIL  captions: NEEDS REVIEW (the frozen run's flags: the draft profile) (no match for '^NEEDS REVIEW$' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+FAIL  captions: a cited fact with its URL and date (no match for '^- Install command: /plugin install frontend-design@claude-plugins-official.*: https://code.claude.com/docs/en/discover-plugins \(checked 2026-11-01\)$' in /tmp/tmp.xt2moZiOJX/exports/1/1captions.txt)
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+    bad = [p for p in sys.argv[1:] if open(p, "rb").read().find(bytes([0xE2, 0x80, 0x94])) >= 0]
+                                      ~~~~^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:/Users/there/AppData/Local/Temp/tmp.xt2moZiOJX/runs/2026-11-02_0638_claude-codes-frontend-design-skill/14-export/export.json'
+FAIL  no em dash in the stage files and the logs (em dash in: )
+
+== 3. the honesty loop with the fake claude: a forced FlashFX solution fails H, S4 decides the skill, the gate passes on round 2, the run reaches the export ==
+    [06:49] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.tEb6nXhybM | mode: once (stops when the queue is empty) | dummy stages: 05-hooks,06-judge,07-script,08-voiceover,09a-animations,09b-text,09c-transitions,10-build,11-sfx,12-review,13-render,14-export
+    [06:50] INFO   S1: 7 claims (5 verified), 2 numbers, 0 screenshots; core claim verified
+    [06:50] STEP   researching facts done (11s) -> expanding idea
+    [06:50] INFO   S2: expansion 1065 chars, solution flashfx (FlashFX), keyword FLASH (existing), evidence facts.md#1, #3, #4
+    [06:50] STEP   expanding idea done (12s) -> checking idea (gate)
+    [06:50] ANGLE  gate failed (H): finding a better angle, round 1/2
+    [06:50] STEP   checking idea (gate) done (9s) -> finding a better angle
+    [06:50] INFO   S4: angle round 1/2, 1 new claim, solution external (the frontend-design skill (anthropics/sk...), expansion 1324 chars: The solution is decided again: the frontend-design skill (external) instead of FlashFX, with the keyword LINK; the takea
+    [06:50] STEP   finding a better angle done (12s) -> checking idea (gate)
+    [06:50] GATE   passed (P3 S3 C3 F ok H ok) after 1 angle round
+    [06:50] STEP   checking idea (gate) done (10s) -> picking hooks
+    [06:50] STEP   picking hooks done (1s) -> judging hooks
+    [06:51] STEP   judging hooks done (2s) -> writing script
+    [06:51] STEP   writing script done (1s) -> generating voiceover
+    [06:51] STEP   generating voiceover done (3s) -> planning animations
+    [06:51] STEP   planning animations done (1s) -> planning text
+    [06:51] STEP   planning text done (1s) -> planning transitions
+    [06:51] STEP   planning transitions done (2s) -> building visuals
+    [06:51] STEP   building visuals done (2s) -> adding sound effects
+    [06:51] STEP   adding sound effects done (1s) -> reviewing: mechanical checks
+    [06:51] STEP   reviewing: mechanical checks done (2s) -> rendering final video
+    [06:51] STEP   rendering final video done (1s) -> writing caption
+    [06:51] STEP   writing caption done (2s) -> exporting
+    [06:51] DONE   exported #1 -> exports/1/ (2 min, 0 issues fixed)
+PASS  the runner exits 0
+PASS  S2: the forced FlashFX decision with the keyword FLASH
+PASS  ANGLE: the gate fails H and asks for an angle round
+PASS  an H failure never drops the idea
+PASS  S4: the solution decided again (external)
+PASS  GATE: round 2 passes with H ok
+PASS  the run reaches the export (dummy stages after S4)
+PASS  the event lines: one angle round, the pass, the dummy stages, the export
+PASS  gate-1.json: H fail, decision angle, the flashfx solution
+PASS  gate-1.json: failing lists H alone
+PASS  gate.json (round 2): H ok, pass, the external solution
+PASS  solution.json: rewritten by the angle round, external with LINK
+PASS  solution-r0.json: the first decision is kept
+PASS  expansion.json: the keyword follows the new solution
+PASS  expansion.md: the new decision line
+PASS  the gate prompt (round 1) shows the FlashFX decision
+PASS  the gate prompt shows the empty proof section
+PASS  the angle prompt asks to decide the solution again
+PASS  the angle prompt carries the solution rules
+PASS  the angle prompt names the failing criterion H
+PASS  the second gate round sees the first round's H
+PASS  angle.json records the H it repaired and the new solution
+PASS  angle.json validates
+PASS  history: the solution type external
+PASS  captions: the SOLUTION block from solution.json (the dummy export)
+PASS  ideas.txt: the idea is gone
+PASS  the fake answered S1, S2, S3, S4, S3
+PASS  no em dash in the stage files
+
+test-m12.sh: 48 passed, 35 failed
+exit 1

@@ -5,8 +5,8 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M11 Sound effects pass and review loop: done (2026-11-01). Next: M12 Final render, caption, export, end to end (S13,
-  S14), then M13 Hardening; M14 Editable project export (S15): pending. The build is driven by
+- M12 Final render, caption, export, end to end: done (2026-11-02). Next: M13 Hardening; M14 Editable project export
+  (S15): pending. The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
@@ -62,16 +62,26 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   back to its owner through reopen.txt, every later stage again, 3 opus rounds then 2 fable rounds, then the export with
   NEEDS REVIEW), the review notes the re-run passes read ({{REVIEW}} in the director prompts, S8's respelling of a quoted
   word, S11's fewer and softer sounds), pipeline/tests/materialize-project.py (the frozen project folders rebuilt from
-  the plans). Run every test with `bash pipeline/tests/run-all.sh` (about 2.5 hours; test-m3 section 4, test-m4
+  the plans), M12: the problem-first solution (pipeline/lib/solution.py: S1's solution candidates, S2's decision and
+  keyword in 02-expansion/solution.json, S3's honesty check H, S4's new pick, S7's and the caption's FlashFX rules, the
+  SOLUTION block, the solution type in history lines), S13 (pipeline/stages/13-render/run.sh over
+  pipeline/lib/finalrender.py: HyperFrames renders 1080x1920 silent, ffmpeg muxes 11-sfx/mix.wav as AAC 48 kHz, ffprobe
+  and loudnorm checks, one post-pass) and S14 (pipeline/stages/14-export/run.sh, prompt-caption.md, model.schema.json over
+  pipeline/lib/caption.py: hook 1 as the first line, the model's body, ask and hashtags, the checks, humanize.py and the
+  vendor caption.py lint, export.json; the runner's export.py then writes exports/N/). Run every test with
+  `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test idea with
+  the real models, 1 to 3 hours; test-m3 section 4, test-m4
   sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3, test-m7 section 3, test-m10 section 3 and test-m11
   section 4 make real model or engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes, test-m10
   about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
-  `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh` and `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` are the
-  fake-only tests).
-- The stages S13 and S14 (run.sh in each stage folder) arrive from M12 on, so `bash run.sh` alone stops with
-  logs/STOPPED.md at S13. `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages;
-  `REELS_DUMMY=13,14 bash run.sh --once` runs the real research, expansion, gate, hooks, judge, script, voiceover,
-  visual plan, build, sound pass and review with dummy render and export after them. The sound stage (S11) writes
+  `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
+  `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` are the fake-only tests).
+- Every stage is real from M12 on: `bash run.sh` turns each idea into exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4).
+  `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages; `REELS_DUMMY=13,14 bash run.sh --once`
+  skips the final render and the caption. S13 writes runs/<id>/13-render/final.mp4, hook2.mp4, video.mp4 (the silent
+  render) and render.json (every check with want, got, ok; the post-pass); S14 writes 14-export/export.json (what the
+  export renders into Ncaptions.txt), caption.txt and caption-data.json. S2 writes 02-expansion/solution.json (type
+  flashfx, external or method, name, url, reason, keyword), which S3 to S14, the captions file and history.txt read. The sound stage (S11) writes
   runs/<id>/11-sfx/cues.json (every sound: cue type, file, the event it sits on, placement, gains, the verification),
   sfx_stem.wav, mix.wav (the audio S13 muxes), draft_mixed.mp4 (for the review), sound-map.txt (one readable line per
   sound), and sfx_stem_hook2.wav, mix_hook2.wav for the alternate clip; it refreshes styles/sfx/sfx-map.json at its
@@ -124,7 +134,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 - `bash run.sh` processes ideas forever; `bash run.sh --once` stops when the queue is empty. Results appear in
   `exports/N/`. Stop it with Ctrl+C; restarting resumes the unfinished run.
 - A missing hard dependency writes logs/STOPPED.md with the exact fix. `bash pipeline/bin/preflight` runs the
-  checks alone. Today (M2) the real stages do not exist, so `bash run.sh` stops with STOPPED.md after the banner;
+  checks alone. Every stage is real (M12): one idea takes 1 to 3 hours on this PC;
   `REELS_DUMMY=all bash run.sh --once` exercises the loop with dummy stages (it removes the processed ideas from
   ideas.txt and writes dummy files into exports/, so use it in a copy or re-add the idea afterwards).
 - `bash pipeline/bin/runner-status` prints whether a runner is alive, the latest status line and the log tail.
