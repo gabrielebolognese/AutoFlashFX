@@ -12,7 +12,10 @@
 # or reference.wav when one exists (the user's real speech, so the pipeline has a real words-per-minute figure).
 # The measured pace (from at least 30 s of speech) is written into config.json voice.wpm as well.
 #
-# Existing files are never overwritten without --force (the user curates library/profile/). The transcription
+# Existing files are never overwritten without --force (the user curates library/profile/). With --force the
+# hand-written parts survive (BUILD_SPEC.md 2.3, M13): account.md's Brand and Content strategy, voice.md's How I
+# promote and the FlashFX spelling line, any section you added, any section you filled by hand while the rebuild only
+# has placeholders for it; the previous file is copied to logs/voice-profile/<name>.before-<date>.md first. The transcription
 # runs under the first interpreter that imports faster_whisper: config paths.venv_python, then the `python` line of
 # library/voice/engine.txt, then `python`. Working files go to logs/voice-profile/. --no-model skips the model
 # call (the template is used even with a memo). Exit 0 when the files exist afterwards, 2 on a file error.
@@ -33,11 +36,17 @@ while [ $# -gt 0 ]; do
     --no-model) no_model=1; shift ;;
     --memo) memo_arg="$2"; shift 2 ;;
     --quiet) quiet=1; shift ;;
-    -h|--help) sed -n '2,22p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
     *) echo "build-voice-profile: unknown option $1" >&2; exit 1 ;;
   esac
 done
 note() { [ "$quiet" = 1 ] || printf '%s\n' "$*"; }
+kept_note() {  # kept_note <compose or account JSON> <file>: name the hand-written parts a --force rebuild kept
+  local kept
+  kept="$(printf '%s' "$1" | "$REELS_PY" -c 'import json, sys; print("; ".join(json.loads(sys.stdin.read() or "{}").get("kept", [])))' 2>/dev/null)"
+  [ -n "$kept" ] && note "  kept your hand-written parts of $(basename "$2"): $kept (the previous file is in logs/voice-profile/)"
+  return 0
+}
 
 PROFILE_DIR="$REELS_ROOT/$(cfg paths.profile library/profile)"
 VOICE_DIR="$REELS_ROOT/$(cfg paths.voice_dir library/voice)"
@@ -128,15 +137,19 @@ voice_out="$PROFILE_DIR/voice.md"; account_out="$PROFILE_DIR/account.md"
 if [ -f "$voice_out" ] && [ "$force" = 0 ]; then
   note "kept $voice_out (it exists; use --force to rebuild it)"
 else
-  res="$("$REELS_PY" "$VP" compose --out "$voice_out" "${compose_args[@]}")" || exit 2
+  keep_args=(); [ -f "$voice_out" ] && keep_args=(--keep "$voice_out" --backup "$WORK/voice.md.before-$TODAY.md")
+  res="$("$REELS_PY" "$VP" compose --out "$voice_out" "${compose_args[@]}" "${keep_args[@]}")" || exit 2
   note "wrote $voice_out ($(json_field "$res" from_model false | sed 's/true/drafted from the memo/; s/false/template with placeholders/'), pace $(json_field "$res" wpm 0) wpm, $(json_field "$res" excerpts 0) excerpts)"
+  kept_note "$res" "$voice_out"
 fi
 if [ -f "$account_out" ] && [ "$force" = 0 ]; then
   note "kept $account_out (it exists; use --force to rebuild it)"
 else
   acc_args=(--date "$TODAY"); [ -n "$answer" ] && acc_args+=(--answer "$answer")
-  "$REELS_PY" "$VP" account --out "$account_out" "${acc_args[@]}" >/dev/null || exit 2
+  [ -f "$account_out" ] && acc_args+=(--keep "$account_out" --backup "$WORK/account.md.before-$TODAY.md")
+  res="$("$REELS_PY" "$VP" account --out "$account_out" "${acc_args[@]}")" || exit 2
   note "wrote $account_out"
+  kept_note "$res" "$account_out"
 fi
 
 if [ -n "$measure_file" ]; then

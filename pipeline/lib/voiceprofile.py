@@ -17,6 +17,11 @@ inside `transcribe`.
         voice.md: the model's draft (answer.voice_md) when there is one, else the template with [FILL IN]
         placeholders; then the Pace line filled from the measurement and a section of verbatim excerpts
   voiceprofile.py account --out account.md [--answer OUT.json] [--date D]
+        compose and account also take --keep EXISTING.md [--backup COPY.md] (M13): the existing file's hand-written
+        parts are put back into the rebuilt text (merge_keep: account.md's Brand and Content strategy, voice.md's
+        How I promote and the FlashFX spelling line, any section the user added, any section filled by hand that
+        the rebuild only has placeholders for, the measured pace and excerpts when nothing was measured); the JSON
+        output lists them in "kept"
   voiceprofile.py set-wpm --config config.json --wpm N        rewrite voice.wpm in place, keeping the layout
   voiceprofile.py is-draft FILE                                exit 0 when the file still holds a [FILL IN]
 
@@ -85,6 +90,173 @@ def save_text(path: str, content: str) -> None:
 
 def out_json(data) -> None:
     sys.stdout.write(json.dumps(data, ensure_ascii=False) + "\n")
+
+
+# ------------------------------------------------------------------------------------------------ keep (M13)
+# The user's hand-written parts survive a rebuild (BUILD_SPEC.md 2.3): build-voice-profile --force passes the
+# existing file as --keep, and merge_keep() puts these back into the freshly generated text.
+KEEP_SECTIONS = {
+    "account": ("Brand", "Content strategy", "How I promote"),
+    "voice": ("How I promote",),
+}
+# generated sections: never kept as "hand-written additions" (they are rebuilt every time)
+GENERATED_SECTIONS = {
+    "account": ("Working assumption (used until this file is filled in)", "Brand mark"),
+    "voice": ("Verbatim excerpts of my real speech", "Pace"),
+}
+SPELLING_RE = re.compile(r"FlashFX", re.I)
+SPELLING_HINT_RE = re.compile(r"\b(always|written|spell|spelled|spelling|never)\b", re.I)
+
+
+def split_sections(text: str) -> tuple[str, list[list]]:
+    """(the text before the first '## ' heading, [[heading, body text], ...]) for a markdown file."""
+    pre, sections = [], []
+    for line in text.split("\n"):
+        if line.startswith("## "):
+            sections.append([line[3:].strip(), []])
+        elif sections:
+            sections[-1][1].append(line)
+        else:
+            pre.append(line)
+    return "\n".join(pre), [[h, "\n".join(b)] for h, b in sections]
+
+
+def join_sections(pre: str, sections: list[list]) -> str:
+    out = pre.rstrip("\n") + "\n"
+    for heading, body in sections:
+        out += f"\n## {heading}\n" + ("\n" + body.strip("\n") + "\n" if body.strip() else "")
+    return out
+
+
+def _norm(heading: str) -> str:
+    return " ".join(heading.lower().split())
+
+
+def spelling_lines(body: str) -> list[str]:
+    """The hand-written FlashFX spelling lines of a section ('The brand name is always written "FlashFX".')."""
+    return [l for l in body.split("\n") if SPELLING_RE.search(l) and SPELLING_HINT_RE.search(l) and PLACEHOLDER not in l]
+
+
+FIELD_RE = re.compile(r"^\s*-\s+\*\*([^*]+):\*\*\s*(.*)$")
+
+
+def fill_fields(new_body: str, old_body: str) -> tuple[str, int]:
+    """The new section with every '- **Field:** [FILL IN...]' bullet taken from the old section when the user filled
+    it there; returns (text, how many)."""
+    old_fields = {}
+    for line in old_body.split("\n"):
+        m = FIELD_RE.match(line)
+        if m and m.group(2).strip() and PLACEHOLDER not in m.group(2):
+            old_fields[m.group(1).strip().lower()] = line
+    out, n = [], 0
+    for line in new_body.split("\n"):
+        m = FIELD_RE.match(line)
+        if m and PLACEHOLDER in m.group(2) and m.group(1).strip().lower() in old_fields:
+            out.append(old_fields[m.group(1).strip().lower()]); n += 1
+        else:
+            out.append(line)
+    return "\n".join(out), n
+
+
+def merge_keep(old: str, new: str, kind: str) -> tuple[str, list[str]]:
+    """The new text with the old file's hand-written parts put back; returns (text, what was kept).
+
+    Kept from the old file: the sections of KEEP_SECTIONS[kind] (they replace the new section of that name, or are
+    inserted after the section that preceded them in the old file), every other section the new text does not have
+    at all (a section the user added; GENERATED_SECTIONS excepted), every section the user filled by hand while the
+    new one is still the template's placeholders, the measured Pace line and the excerpts when the new text has
+    none, and the FlashFX spelling line (in its own section, after the line it followed)."""
+    if not old.strip():
+        return new, []
+    _, old_secs = split_sections(old)
+    pre, new_secs = split_sections(new)
+    keep_names = {_norm(h) for h in KEEP_SECTIONS.get(kind, ())}
+    generated = {_norm(h) for h in GENERATED_SECTIONS.get(kind, ())}
+    kept: list[str] = []
+    new_index = {_norm(h): i for i, (h, _) in enumerate(new_secs)}
+    previous = None
+    for heading, body in old_secs:
+        key = _norm(heading)
+        if not body.strip():
+            previous = key
+            continue
+        i = new_index.get(key)
+        if key in keep_names or (i is None and key not in generated):
+            if i is None:
+                at = new_index.get(previous, len(new_secs) - 1) + 1 if previous is not None else len(new_secs)
+                new_secs.insert(at, [heading, body])
+                new_index = {_norm(h): j for j, (h, _) in enumerate(new_secs)}
+            else:
+                new_secs[i][1] = body
+            kept.append(heading)
+        elif i is not None and PLACEHOLDER in new_secs[i][1] and \
+                " ".join(body.split()) != " ".join(new_secs[i][1].split()):
+            if body.count(PLACEHOLDER) < new_secs[i][1].count(PLACEHOLDER):
+                new_secs[i][1] = body  # filled by hand (more of it than the rebuild could fill)
+                kept.append(heading)
+            else:
+                merged, n = fill_fields(new_secs[i][1], body)
+                if n:
+                    new_secs[i][1] = merged
+                    kept.append(f"{heading} ({n} {'field' if n == 1 else 'fields'})")
+        elif i is not None and key in generated and PLACEHOLDER not in body and \
+                (PLACEHOLDER in new_secs[i][1] or not new_secs[i][1].strip()):
+            new_secs[i][1] = body
+            kept.append(heading)
+        previous = key
+    if kind == "voice":
+        # the measured Pace line, when the rebuild measured nothing
+        old_pace = re.search(r"^\s*-\s+\*\*Pace:\*\*(.*)$", old, re.MULTILINE)
+        for sec in new_secs:
+            m = re.search(r"^\s*-\s+\*\*Pace:\*\*(.*)$", sec[1], re.MULTILINE)
+            if m and PLACEHOLDER in m.group(1) and old_pace and PLACEHOLDER not in old_pace.group(1):
+                sec[1] = sec[1].replace(m.group(0), old_pace.group(0), 1)
+                kept.append("Pace line")
+        # the excerpts of an earlier measurement
+        if "verbatim excerpts of my real speech" not in {_norm(h) for h, _ in new_secs}:
+            for heading, body in old_secs:
+                if _norm(heading) == "verbatim excerpts of my real speech" and body.strip():
+                    new_secs.append([heading, body])
+                    kept.append(heading)
+    # the FlashFX spelling line, wherever the user put it
+    all_new = "\n".join(b for _, b in new_secs)
+    for heading, body in old_secs:
+        for line in spelling_lines(body):
+            if line.strip() in all_new:
+                continue
+            target = next((s for s in new_secs if _norm(s[0]) == _norm(heading)), None)
+            if target is None:
+                target = new_secs[-1] if new_secs else None
+            if target is None:
+                new_secs.append([heading, line]); kept.append("FlashFX spelling line"); continue
+            old_lines = body.split("\n")
+            before = old_lines[old_lines.index(line) - 1].strip() if old_lines.index(line) > 0 else ""
+            tl = target[1].split("\n")
+            pos = next((j + 1 for j, l in enumerate(tl) if before and l.strip() == before), None)
+            if pos is None:
+                # after the bullet whose field name matched the old preceding line ("- **Words I actually use:**")
+                field = re.match(r"^\s*-\s+\*\*([^*]+):\*\*", before)
+                pos = next((j + 1 for j, l in enumerate(tl) if field and l.lstrip().startswith(f"- **{field.group(1)}:**")), None)
+            if pos is None:
+                pos = len(tl)
+                while pos > 0 and not tl[pos - 1].strip():
+                    pos -= 1
+            tl.insert(pos, line)
+            target[1] = "\n".join(tl)
+            all_new = "\n".join(b for _, b in new_secs)
+            kept.append("FlashFX spelling line")
+    return join_sections(pre, new_secs), kept
+
+
+def apply_keep(args, text: str, kind: str) -> tuple[str, list[str]]:
+    """merge_keep against args.keep (the existing file) when given; a copy of that file goes next to the work files."""
+    path = getattr(args, "keep", "") or ""
+    if not path or not os.path.isfile(winpath(path)):
+        return text, []
+    old = read_text(path)
+    if getattr(args, "backup", ""):
+        save_text(args.backup, old)
+    return merge_keep(old, text, kind)
 
 
 # ------------------------------------------------------------------------------------------------ transcribe
@@ -303,9 +475,11 @@ def cmd_compose(args) -> int:
                 text += f"{i}. \"{clean(e['text'], one_line=True)}\" ({e['start']:.0f}s to {e['end']:.0f}s)\n"
     else:
         text = fill_pace(text, "[FILL IN: words per minute, measured; until then config.json voice.wpm (150) is used]")
+    text, kept = apply_keep(args, text, "voice")
     save_text(args.out, text.rstrip("\n") + "\n")
     out_json({"out": args.out, "draft": is_draft_text(text), "from_model": bool(body),
-              "wpm": (measured or {}).get("wpm", 0), "excerpts": len((measured or {}).get("excerpts", []))})
+              "wpm": (measured or {}).get("wpm", 0), "excerpts": len((measured or {}).get("excerpts", [])),
+              "kept": kept})
     return 0
 
 
@@ -342,11 +516,14 @@ def cmd_account(args) -> int:
             f"- [FILL IN: topics the account never covers]\n\n"
             f"## What I sell\n\n"
             f"[FILL IN: the product, service or offer, and what the comment keywords lead to]\n\n"
-            f"## Brand mark\n\n"
-            f"- file: [FILL IN: path to the logo or mark file, for example library/profile/brand-mark.png]\n"
+            f"## Brand\n\n"
+            f"- Brand kit: library/brand/ (rules in library/brand/BRAND.md, data in library/brand/brand.json)\n"
+            f"- Name: always \"FlashFX\"\n"
+            f"- Where the brand appears in reels: styles/paper-cards/tweaks.md, section \"Branding (FlashFX account)\"\n"
         )
-    save_text(args.out, text)
-    out_json({"out": args.out, "draft": is_draft_text(text), "from_model": bool(body)})
+    text, kept = apply_keep(args, text, "account")
+    save_text(args.out, text.rstrip("\n") + "\n")
+    out_json({"out": args.out, "draft": is_draft_text(text), "from_model": bool(body), "kept": kept})
     return 0
 
 
@@ -390,9 +567,11 @@ def main(argv=None) -> int:
     sp.add_argument("--max-excerpts", type=int, default=5); sp.set_defaults(func=cmd_measure)
     sp = sub.add_parser("compose"); sp.add_argument("--template"); sp.add_argument("--out", required=True)
     sp.add_argument("--answer"); sp.add_argument("--measure"); sp.add_argument("--source", default="")
-    sp.add_argument("--memo-name", default=""); sp.add_argument("--date", default=""); sp.set_defaults(func=cmd_compose)
+    sp.add_argument("--memo-name", default=""); sp.add_argument("--date", default="")
+    sp.add_argument("--keep", default=""); sp.add_argument("--backup", default=""); sp.set_defaults(func=cmd_compose)
     sp = sub.add_parser("account"); sp.add_argument("--out", required=True); sp.add_argument("--answer")
-    sp.add_argument("--date", default=""); sp.set_defaults(func=cmd_account)
+    sp.add_argument("--date", default=""); sp.add_argument("--keep", default=""); sp.add_argument("--backup", default="")
+    sp.set_defaults(func=cmd_account)
     sp = sub.add_parser("set-wpm"); sp.add_argument("--config", required=True); sp.add_argument("--wpm", type=int, required=True)
     sp.set_defaults(func=cmd_set_wpm)
     sp = sub.add_parser("is-draft"); sp.add_argument("file"); sp.set_defaults(func=cmd_is_draft)
