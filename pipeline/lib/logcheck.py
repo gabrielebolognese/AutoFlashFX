@@ -17,7 +17,8 @@ PLAN.md M13). Used by pipeline/tests/test-m13.sh and pipeline/bin/doctor.
                                      idea again "resumed at" the stage it was in); NEXT announces the next idea with
                                      the same position; the heartbeat (REEL) has the right idea position, text,
                                      an activity of the table of spec section 7 (so has every STEP), minute, stage
-                                     time and issue counters, and no idea goes silent for longer than
+                                     time and issue counters (ERROR and FIXED lines, plus S12's review issue: round 1
+                                     failing opens one, a later round passing fixes it, read at the stage's end), and no idea goes silent for longer than
                                      --max-gap minutes (default the heartbeat plus 2); the exports are numbered 1, 2,
                                      3 ... without gaps; every LIMIT line is followed by its RESUME line; the last
                                      session ends with the summary (IDLE queue empty: this session E exported, D
@@ -241,7 +242,10 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
             idea = {"session": len(sessions), "k": k, "total": total, "text": sm.group(3), "run": sm.group(4),
                     "resumed": resumed, "resumed_at": sm.group(6) or "", "line": i + 1, "start": now,
                     "steps": [], "gate": None, "outcome": None, "export": None, "heartbeats": 0, "fixed": 0,
-                    "errors": 0, "angles": 0, "flags": 0, "limits": 0}
+                    "errors": 0, "angles": 0, "flags": 0, "limits": 0,
+                    # S12 (12-review/run.sh): round 1 failing opens one issue, a later round passing fixes it; the
+                    # runner reads these from state.json when the stage ends, so they count from the next STEP line
+                    "rev_open": 0, "rev_fixed": 0, "rev_pending": None}
             if crashed_idea is not None:
                 if not resumed or idea["run"] != crashed_idea["run"]:
                     problem(i, "the session after the crash did not resume %s first (START %r)" % (crashed_idea["run"], text))
@@ -265,6 +269,11 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
             if expected is not None and expected != act and not expected.startswith("exporting"):
                 problem(i, "STEP %r but the previous line announced %r" % (act, expected))
             idea["steps"].append({"activity": act, "seconds": parse_dur(st.group(2)), "next": nxt, "line": i + 1})
+            if idea["rev_pending"] == "open":
+                idea["rev_open"] = 1
+            elif idea["rev_pending"] == "fixed":
+                idea["rev_open"], idea["rev_fixed"] = 0, idea["rev_fixed"] + 1
+            idea["rev_pending"] = None
             for a in (act, nxt):
                 if a not in ("done", "finishing") and not known_activity(a):
                     problem(i, "STEP activity %r is not in the activity table of spec section 7" % a)
@@ -283,6 +292,10 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
             idea["errors"] += 1
         elif tag == "FLAG":
             idea["flags"] += 1
+        elif tag == "WARN" and idea is not None and re.match(r"^S12: review round 1 failed", text):
+            idea["rev_pending"] = "open"
+        elif tag == "INFO" and idea is not None and re.match(r"^S12: review round ([2-9]|\d\d+) passed", text):
+            idea["rev_pending"] = "fixed"
         elif tag == "LIMIT":
             lm = LIMIT_RE.match(text)
             if not lm and not LIMIT_UNPARSED_RE.match(text):
@@ -322,10 +335,14 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
             if stage_s // 60 > minute + 1 and not idea["resumed"]:
                 problem(i, "heartbeat stage time %ds longer than the idea's %d minutes" % (stage_s, minute))
             if not idea["resumed"]:
-                if fixed != idea["fixed"]:
-                    problem(i, "heartbeat says %d fixed, the log has %d FIXED lines for this idea" % (fixed, idea["fixed"]))
-                if open_ != max(0, idea["errors"] - idea["fixed"]) and open_ > idea["errors"]:
-                    problem(i, "heartbeat says %d open, the log has %d ERROR and %d FIXED lines" % (open_, idea["errors"], idea["fixed"]))
+                want_fixed = idea["fixed"] + idea["rev_fixed"]
+                want_open = max(0, idea["errors"] - idea["fixed"]) + idea["rev_open"]
+                if fixed != want_fixed:
+                    problem(i, "heartbeat says %d fixed, the log has %d FIXED lines and %d recovered review rounds for this idea"
+                            % (fixed, idea["fixed"], idea["rev_fixed"]))
+                if open_ != want_open:
+                    problem(i, "heartbeat says %d open, the log has %d ERROR, %d FIXED and %d failing review lines"
+                            % (open_, idea["errors"], idea["fixed"], idea["rev_open"]))
             elif fixed < idea["fixed"]:
                 problem(i, "heartbeat says %d fixed, fewer than this session's %d FIXED lines" % (fixed, idea["fixed"]))
             if not known_activity(act):
@@ -340,8 +357,10 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
             n = int(dm.group(1))
             idea["export"] = n
             exports.append(n)
-            if int(dm.group(4)) != idea["fixed"] and not idea["resumed"]:
-                problem(i, "DONE says %s issues fixed, the log has %d FIXED lines" % (dm.group(4), idea["fixed"]))
+            done_fixed = idea["fixed"] + idea["rev_fixed"] + (1 if idea["rev_pending"] == "fixed" else 0)
+            if int(dm.group(4)) != done_fixed and not idea["resumed"]:
+                problem(i, "DONE says %s issues fixed, the log has %d FIXED lines and %d recovered review rounds"
+                        % (dm.group(4), idea["fixed"], done_fixed - idea["fixed"]))
             if idea["gate"] is None and not idea["resumed"] and gate_line:
                 problem(i, "idea %d was exported without a GATE line" % idea["k"])
             sess["exported"] += 1
