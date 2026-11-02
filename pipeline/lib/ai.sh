@@ -255,7 +255,8 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
     # model ..."): the message has no reset time, so it is neither a usage limit to wait out nor a code error to fix.
     # The call carries on with config models.limit_fallback (default opus) in the same session (DECISIONS.md 275).
     local fb_model; fb_model="$(cfg models.limit_fallback.model opus)"
-    if [ "$cls" = error ] && [ "$model" != "$fb_model" ] \
+    # (the CLI reports it as api error 429, model_requires_usage_credits, which the classifier calls a transient rate limit)
+    if { [ "$cls" = error ] || [ "$cls" = transient ]; } && [ "$model" != "$fb_model" ] \
        && printf '%s' "$message" | grep -qiE "reached your [a-z0-9 ._-]+ limit|switch to another model"; then
       say WARN "$role: $model is at its own usage limit, this call carries on with $fb_model"
       printf 'model limit: %s -> %s\n' "$model" "$fb_model" >> "$base.meta"

@@ -421,7 +421,7 @@ m=""; while [ $# -gt 0 ]; do [ "$1" = --model ] && m="$2"; shift; done
 cat >/dev/null
 echo "$m" >> "$(dirname "$0")/models.log"
 if [ "$m" = fable ]; then
-  printf '{"type":"result","subtype":"success","is_error":true,"result":"You%sve reached your Fable limit. Switch to another model, or manage usage credits at https://claude.ai/settings/usage, to continue.","session_id":"s1"}\n' "'"; exit 1
+  printf '{"type":"result","subtype":"success","is_error":true,"api_error_status":429,"api_error":"model_requires_usage_credits","terminal_reason":"api_error","result":"You%sve reached your Fable limit. Switch to another model, or manage usage credits at https://claude.ai/settings/usage, to continue.","session_id":"s1"}\n' "'"; exit 1
 fi
 printf '{"type":"result","subtype":"success","is_error":false,"result":"ok from %s","session_id":"s2"}\n' "$m"
 EOF
