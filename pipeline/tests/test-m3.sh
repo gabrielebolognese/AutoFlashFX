@@ -877,7 +877,9 @@ sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
 printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
-FAKE_CLAUDE_DELAY=20 FAKE_CLAUDE_REVIEW=no runner_bg "$SANDBOX/rkill3.out" --once
+# the reviewer outlives the restart: 90 s, since the restarted runner's preflight alone can take over 30 s on a busy
+# PC (M13: with 20 s the orphan had already finished when two real pipelines ran beside the test)
+FAKE_CLAUDE_DELAY=90 FAKE_CLAUDE_REVIEW=no runner_bg "$SANDBOX/rkill3.out" --once
 if wait_for '"role": "reviewer"' "$FAKE_CLAUDE_LOG" 120; then
   RD="$(run_dirs | head -n 1)"
   wait_for '^[0-9]+' "$RD/errors/E1.pid" 10
