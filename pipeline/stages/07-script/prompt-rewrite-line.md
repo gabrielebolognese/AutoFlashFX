@@ -27,6 +27,10 @@ simpler words. Answer with only the JSON object described at the end.
 - Words that are easy to say: no hex code read letter by letter, no slash, no at-sign, no abbreviation, no symbol;
   name the thing instead ("the install command", "Anthropic's terracotta") when the display carries the exact value.
 - Plain spoken English, contractions welcome, never an em dash, no placeholder.
+- Never respell a word to change how it sounds ("Clawed" for "Claude", "Klod", "Flash Eff Ex"): every name stays
+  spelled as the script spells it, because the spoken track is also what the captions show and what the voice check
+  compares with. The voice step handles pronunciation itself; you may only choose other words around a name, or say
+  the thing without the name.
 - Give the display track too: the same line as the display shows it (digits and exact values allowed there), changed
   only where a word changed.
 

@@ -430,6 +430,39 @@ def tts_text(spoken: str, entries: list[tuple[str, str]], respellings: dict | No
     return text, applied
 
 
+def hotwords(texts: list[str], extra: list[str] | None = None, limit: int = 40) -> str:
+    """The reel's names for faster-whisper's hotwords (M13, DECISIONS.md 283): the words with a capital that is not
+    just a sentence's first letter (Claude, MCP, CLAUDE.md, FlashFX, GitHub), in order, each once, plus extra words
+    (the keys of pronunciations.txt). Whisper's small model does not know "Claude" and writes "clod" or "clawed" for
+    a voice that says it right; a viewer who knows the topic hears the name, and so does whisper with the hint, while
+    a word the voice really gets wrong still fails (the hint biases spelling, it does not invent sounds)."""
+    seen: list[str] = []
+
+    def add(word: str) -> None:
+        w = re.sub(r"^[^A-Za-z0-9]+|[^A-Za-z0-9]+$", "", word)
+        if len(w) >= 2 and re.search(r"[A-Za-z]", w) and w.lower() not in {x.lower() for x in seen}:
+            seen.append(w)
+
+    initial: dict[str, int] = {}   # capitalized only at a sentence start: a name when it happens twice
+    for text in texts:
+        plain = strip_markup(clean(text))
+        for sentence in re.split(r"(?<=[.!?])\s+", plain):
+            for k, word in enumerate(sentence.split()):
+                core = re.sub(r"^[^A-Za-z0-9]+|[^A-Za-z0-9]+$", "", word)
+                if not core or not re.search(r"[A-Z]", core) or core in ("I", "I'm", "I've", "I'll", "I'd"):
+                    continue
+                if k == 0 and core[0].isupper() and core[1:] == core[1:].lower() and "." not in core:
+                    initial[core] = initial.get(core, 0) + 1  # "Start", "You're": maybe just the sentence start
+                    continue
+                add(core)
+    for word, n in initial.items():
+        if n >= 2 or word.lower() in {x.lower() for x in seen}:
+            add(word)
+    for word in extra or []:
+        add(word)
+    return " ".join(seen[:limit])
+
+
 def auto_respell(word: str) -> str:
     """A deterministic respelling for a word the voice got wrong: camelCase split, acronyms of 2 to 5 capitals
     spelled letter by letter, digits written out, dots, slashes, at-signs and dashes named or dropped. A plain word
@@ -1086,7 +1119,9 @@ class Stage:
         n = self.calls
         job = {"model": self.whisper_model, "language": "en", "pad_s": self.pad_s, "compute_type": "int8", "device": "cpu",
                "items": [{"id": ln["id"], "wav": ln["wav"], "text": strip_markup(ln["tts"])} for ln in lines],
-               "result": f"{self.work}/whisper-{n}.result.json"}
+               "result": f"{self.work}/whisper-{n}.result.json",
+               # the names of the whole reel (not only these lines), so whisper spells them as the script does
+               "hotwords": hotwords([x["spoken"] for x in getattr(self, "lines", None) or lines], [w for w, _ in self.entries])}
         job_path = f"{self.work}/whisper-{n}.json"
         save_json(job_path, job)
         relay("ACTIVITY", "aligning words")

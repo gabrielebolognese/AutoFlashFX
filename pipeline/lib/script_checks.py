@@ -1391,6 +1391,38 @@ def cmd_rewrite_line_data(args) -> int:
     return 0
 
 
+def sound_skeleton(word: str) -> str:
+    """A rough consonant skeleton of a word (Claude, Clawed and Clod are all "kld"), to catch a respelling."""
+    w = re.sub(r"[^a-z]", "", (word or "").lower())
+    w = re.sub(r"'s$", "", w)
+    for a, b in (("ph", "f"), ("ck", "k"), ("qu", "k"), ("x", "ks"), ("c", "k"), ("q", "k"), ("z", "s")):
+        w = w.replace(a, b)
+    w = re.sub(r"[aeiouwhy]", "", w)
+    return re.sub(r"(.)\1+", r"\1", w)
+
+
+def respellings(before: str, after: str) -> list[tuple[str, str]]:
+    """(old, new) pairs where the rewrite swapped a word for a different spelling of the same sound (M13, DECISIONS.md
+    283): S8 then compares the transcription with the respelled text and fails a voice that says the name right, and
+    the captions would show the respelling. Only names (capitalized) or long words count, with 2 or more consonants."""
+    def words(text: str) -> list[str]:
+        return [re.sub(r"^[^A-Za-z0-9]+|[^A-Za-z0-9]+$", "", w) for w in re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text or "").split()]
+    old = [w for w in words(before) if w]
+    new = [w for w in words(after) if w]
+    old_l, new_l = {w.lower() for w in old}, {w.lower() for w in new}
+    pairs = []
+    for o in old:
+        if o.lower() in new_l or not (o[:1].isupper() or len(o) >= 5):
+            continue
+        sk = sound_skeleton(o)
+        if len(sk) < 2:
+            continue
+        for n in new:
+            if n.lower() not in old_l and sound_skeleton(n) == sk and (o, n) not in pairs:
+                pairs.append((o, n))
+    return pairs
+
+
 def cmd_rewrite_line_apply(args) -> int:
     script = load_json(args.script, {})
     answer = load_json(args.answer, {})
@@ -1409,6 +1441,9 @@ def cmd_rewrite_line_apply(args) -> int:
         if r.search(spoken_src) or r.search(display):
             errors.append("the answer holds a placeholder")
     spoken, changes = spoken_track(spoken_src, pron)
+    for o, n in respellings(beat["spoken"], spoken_src):
+        errors.append(f"the new line respells \"{o}\" as \"{n}\": keep every name spelled as the script spells it (the "
+                      f"voice step handles the pronunciation); choose other words around it instead")
     if n_words(spoken) > n_words(beat["spoken"]) + 3:
         errors.append(f"the new line is longer ({n_words(spoken)} words against {n_words(beat['spoken'])}); it must be shorter or equal")
     if errors:

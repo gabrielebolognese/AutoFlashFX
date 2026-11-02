@@ -6,7 +6,7 @@ tts.whisper_python, the voice interpreter, .venv-tts or python, whichever import
   <whisper python> pipeline/lib/tts/whisper_worker.py job.json
 
 job.json: {"model": "small", "language": "en", "pad_s": 0.5, "compute_type": "int8", "device": "cpu",
-           "result": ".../whisper-2.result.json",
+           "result": ".../whisper-2.result.json", "hotwords": "Claude Code CLAUDE.md" (optional, M13),
            "items": [{"id": "b1", "wav": ".../b1.a1.wav", "text": "<what the voice was asked to say, for the log>"}, ...]}
 
 The model is loaded once: the configured name from the local cache first, then "small" from the cache, then the
@@ -66,6 +66,8 @@ def main() -> int:
         kwargs = {"word_timestamps": True, "beam_size": 5, "condition_on_previous_text": False, "vad_filter": False}
         if language:
             kwargs["language"] = language
+        if job.get("hotwords"):
+            kwargs["hotwords"] = str(job["hotwords"])  # the reel's names (Claude, CLAUDE.md): see voiceover.hotwords
         segments, _info = model.transcribe(padded, **kwargs)
         words = []
         texts = []
@@ -82,7 +84,7 @@ def main() -> int:
                         "took_s": round(took, 2)})
         print(f"FILE {i}/{n} {item['id']} {took:.1f}", flush=True)
     t3 = time.time()
-    result = {"model": used, "items": results,
+    result = {"model": used, "items": results, "hotwords": str(job.get("hotwords") or ""),
               "timing": {"import_s": round(t1 - t0, 2), "load_s": round(t2 - t1, 2), "transcribe_s": round(t3 - t2, 2), "total_s": round(t3 - t0, 2)}}
     with open(job["result"], "w", encoding="utf-8", newline="\n") as f:
         json.dump(result, f, ensure_ascii=False, indent=1)

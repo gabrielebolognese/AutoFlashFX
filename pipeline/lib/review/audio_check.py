@@ -56,7 +56,8 @@ def transcribe(ctx: rc.Ctx, wav: str, ref_text: str) -> dict:
     work = os.path.join(ctx.stage_dir, "transcribe")
     os.makedirs(work, exist_ok=True)
     job = {"model": str(ctx.c("tts.whisper_model", "small")), "language": "en", "pad_s": float(ctx.c("tts.whisper_pad_s", 0.5)), "compute_type": "int8", "device": "cpu",
-           "items": [{"id": "mix", "wav": rc.mixed(wav), "text": ref_text}], "result": rc.mixed(os.path.join(work, "whisper.result.json"))}
+           "items": [{"id": "mix", "wav": rc.mixed(wav), "text": ref_text}], "result": rc.mixed(os.path.join(work, "whisper.result.json")),
+           "hotwords": voiceover.hotwords([ref_text])}  # the reel's names, as S8 transcribes them (DECISIONS.md 283)
     job_path = os.path.join(work, "whisper.json")
     rc.write_json(job_path, job)
     env = dict(os.environ)

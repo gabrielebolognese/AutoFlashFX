@@ -2027,3 +2027,17 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     detached with PowerShell's Start-Process, because the Claude Code tool stops its own background commands after 2
     hours. The test accepts any of exported, dropped or blocked per idea (spec: "every idea ends exported, dropped or
     blocked with a reason"), and requires the exports numbered from 1 without gaps.
+283. **Found by the real M13 run: S8 blocked a reel for saying "Claude" right.** faster-whisper's small model does not
+    know the name and writes "clod" or "clawed" for af_bella's correct "Claude" (BUILD_SPEC.md S8 compares every line's
+    transcription with its text); auto_respell has no rule for a plain capitalized word, so the line went to S7's
+    rewrite, and the script model respelled the name ("You're briefing Clawed Code wrong") to steer the voice; the voice
+    then said "Claude", whisper heard "claude", the text said "Clawed", and the idea was blocked at WER 12.5%. Measured
+    on this PC (pipeline/lib/tts workers, af_bella, small.en): respellings ("Clawd", "Klawd") change nothing, Kokoro's
+    inline phonemes help in some sentences only, while faster-whisper's `hotwords` with the reel's names gives "Claude"
+    in every sentence tried, from the unchanged voice. Two fixes: (1) voiceover.hotwords() collects the reel's names
+    (a capital that is not just a sentence's first letter, or a sentence-initial word capitalized twice, plus the keys
+    of pronunciations.txt) and S8 and S12's audio check pass them to whisper_worker.py (job "hotwords"); the hint
+    biases the spelling of what the voice said, it does not create sounds, so a word the voice really garbles still
+    fails. (2) S7's one-line rewrite refuses a respelling (script_checks.py respellings(): a new word with the same
+    consonant skeleton as a name or long word it replaced, "Clawed" for "Claude"), and its prompt forbids it, because
+    the spoken track is also what the captions show and what the voice check compares with.
