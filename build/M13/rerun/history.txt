@@ -1,0 +1,1 @@
+2026-11-02 14:23 | Claude Code's /init command: it reads your project and writes a CLAUDE.md file, so every new session already knows how your code is built and tested. Show what it writes and what to add by hand. | external | exported 1

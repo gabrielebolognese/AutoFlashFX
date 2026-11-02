@@ -1,0 +1,182 @@
+
+== 2. S11 and S12 through the runner with the fake editor: a pass, then a planted [text] issue routed to 9b ==
+    [13:58] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [13:58] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.zDr85kuTNK/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [13:58] START  reels autopilot v0.1.0 (4f84cad) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [13:58] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1357_claude-codes-frontend-design-skill (resumed at adding sound effects, 11 stages done)
+    [13:58] INFO   S11: 17 sounds placed (mandatory 9, transition 8), 23 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [13:58] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.21 dB under the cap; mix -14.35 LUFS, -1.6 dBTP
+    [13:58] STEP   adding sound effects done (12s) -> reviewing: mechanical checks
+    [13:58] INFO   S12: review round 1/5 of the draft
+    [14:01] INFO   S12: code checks: mechanical ok, style ok, audio ok (voice WER 0.0%)
+    [14:01] INFO   S12: review round 1 passed (scores stop 4, hierarchy 4, look 4, variety 4, sync 5, sound 4, generic 4, requirements 4)
+    [14:01] STEP   reviewing: mechanical checks done (2m55s) -> rendering final video
+    [14:01] STEP   rendering final video done (2s) -> writing caption
+    [14:01] STEP   writing caption done (3s) -> exporting #1
+    [14:02] DONE   exported #1 -> exports/1/ (3 min, 0 issues fixed)
+    (the pass took 231 s)
+PASS  pass: the runner exits 0
+PASS  pass: the run seeded from the frozen build resumes at S11
+PASS  pass: S11's summary line
+PASS  pass: S11 done, the runner moves to S12
+PASS  pass: S12 announces round 1 of 5
+PASS  pass: the three code checks pass
+PASS  pass: the round passes with the editor's scores
+PASS  pass: S12 done, the runner moves to S13
+PASS  pass: the run continued to the (dummy) export
+PASS  pass: no ERROR or BLOCK line
+PASS  pass: one model call, the editor's
+PASS  activity "reviewing: mechanical checks" was published by S12
+PASS  activity "reviewing: style check" was published by S12
+PASS  activity "reviewing: audio check" was published by S12
+PASS  activity "reviewing: edit review \(round 1/5\)" was published by S12
+PASS  pass: cues.json validates against 11-sfx/schema.json
+PASS  pass: sfx_stem.wav written
+PASS  pass: mix.wav written
+PASS  pass: draft_mixed.mp4 written
+PASS  pass: sound-map.txt written
+    mandatory ok
+    transitions ok
+    spacing ok
+    density ok
+    first-word ok
+    attention ok
+    files-in-pool ok
+    rotation ok
+    sync ok
+    voice-rule ok
+    loudness ok
+    passes 2
+    sound-map ok
+    anchors ok
+    typing-trim ok
+    mixed-draft ok
+    hook2 ok
+    count 17
+PASS  pass: every mandatory cue of the events present (hook_hit, notification, success, negative, typing)
+PASS  pass: whooshes on the scene changes
+PASS  pass: never two sounds within 250 ms
+PASS  pass: at most 4 hits in any 10 s
+PASS  pass: nothing on the hook's first word but hook_hit
+PASS  pass: no attention whoosh in the first 2 s or during the ask
+PASS  pass: every file comes from its cue type's pool
+PASS  pass: never the same file twice in a row for a cue type (a series excepted)
+PASS  pass: every planned sound found within 33 ms of its event on the rendered stem, no unplanned sound
+PASS  pass: every sound at least 8 dB under the local voice peak
+PASS  pass: the mix at -14 LUFS plus or minus 1 and at most -1.5 dBTP
+PASS  pass: sound-map.txt has one line per cue
+PASS  pass: whooshes placed by their peak, the rest by their onset
+PASS  pass: typing beds trimmed to their segment
+PASS  pass: draft_mixed.mp4 carries AAC 48 kHz audio as long as the reel
+PASS  pass: the hook 2 clip has its own verified hook_hit
+PASS  pass: the hook 2 stem written
+PASS  pass: the hook 2 mix written
+PASS  pass: review.json validates against 12-review/schema.json
+PASS  pass: mechanical.json written
+PASS  pass: style.json written
+PASS  pass: audio.json written
+PASS  pass: review-r1.json written
+PASS  pass: edit-r1.json written
+PASS  pass: prompt-r1.md written
+PASS  pass: notes.md written
+PASS  pass: filmstrips/hook.png written
+PASS  pass: filmstrips/transition-01.png written
+PASS  pass: digest/scenes.md written
+PASS  pass: digest/images.md written
+PASS  pass: the prompt carries the sound map beside the scenes
+PASS  pass: the prompt points at the contact sheet
+PASS  pass: the prompt points at the hook filmstrip
+PASS  pass: the prompt points at the look-reference stills
+PASS  pass: review.json is round 1
+PASS  pass: review.json pass true
+PASS  pass: the verdict is pass
+PASS  pass: the editor's scores are recorded
+PASS  pass: no failed round counted
+PASS  pass: the prompt is the editor's
+PASS  pass: notes.md written in prose
+PASS  pass: no em dash in the stage files
+    [14:02] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [14:02] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.zDr85kuTNK/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [14:02] START  reels autopilot v0.1.0 (4f84cad) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [14:02] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1402_claude-codes-frontend-design-skill (resumed at adding sound effects, 11 stages done)
+    [14:02] INFO   S11: 17 sounds placed (mandatory 9, transition 8), 23 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [14:02] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.21 dB under the cap; mix -14.34 LUFS, -1.6 dBTP
+    [14:03] STEP   adding sound effects done (12s) -> reviewing: mechanical checks
+    [14:03] INFO   S12: review round 1/5 of the draft
+    [14:05] INFO   S12: code checks: mechanical ok, style ok, audio ok (voice WER 0.0%)
+    [14:05] WARN   S12: review round 1 failed (2 issues; scores stop 4, hierarchy 3, look 4, variety 4, sync 4, sound 4, generic 4, requirements 4): back to 09b-text, then every step after it runs again
+    [14:05] STEP   reviewing: mechanical checks done (2m52s) -> planning text
+    [14:05] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [14:06] INFO   S9: text planned: 46 caption chunks, 6 card texts changed, 10 labels
+    [14:06] STEP   planning text done (11s) -> planning transitions
+    [14:06] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [14:06] INFO   S9: transitions planned: 10 transitions (1 cut, 5 fade-blur, 2 fall, 2 push); the merged plan passes the validator
+    [14:06] STEP   planning transitions done (15s) -> building visuals
+    [14:06] INFO   S10: project built from the plan: 29 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png, research/04-blog.png; builder role builder (1 3D objects)
+    [14:06] INFO   S10: hyperframes check ok (12 warnings)
+    [14:07] INFO   S10: events.json: 120 events (10 scene changes); 79 of 79 element events verified on screen
+    [14:08] INFO   S10: draft.mp4 540x960 30.0 fps, 41.47 s (plan 41.46 s), silent, rendered in 91.2 s
+    [14:09] INFO   S10: hook2.mp4 3.20 s (3190 ms planned), rendered in 28.4 s
+    [14:09] STEP   building visuals done (2m51s) -> adding sound effects
+    [14:09] INFO   S11: 17 sounds placed (mandatory 9, transition 8), 23 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [14:09] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.21 dB under the cap; mix -14.34 LUFS, -1.6 dBTP
+    [14:09] STEP   adding sound effects done (15s) -> reviewing: mechanical checks
+    [14:09] INFO   S12: review round 2/5 of the draft
+    [14:12] INFO   S12: code checks: mechanical ok, style ok, audio ok (voice WER 0.0%)
+    [14:13] INFO   S12: review round 2 passed (scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 4, generic 4, requirements 4)
+    [14:13] STEP   reviewing: mechanical checks done (3m36s) -> rendering final video
+    [14:13] STEP   rendering final video done (5s) -> writing caption
+    [14:13] STEP   writing caption done (3s) -> exporting #2
+    [14:13] DONE   exported #2 -> exports/2/ (11 min, 1 issue fixed)
+    (the text loop took 661 s)
+PASS  text loop: the runner exits 0
+PASS  text loop: round 1 fails and names 09b-text
+PASS  text loop: S12 hands over to S9b
+PASS  text loop: the text pass runs again with the review's notes
+PASS  text loop: then the transitions pass
+PASS  text loop: then the build
+PASS  text loop: then the sounds
+PASS  text loop: round 2
+PASS  text loop: round 2 passes
+PASS  text loop: the run continued to the (dummy) export, with the review counted as one issue fixed
+PASS  text loop: no ERROR or BLOCK line
+PASS  text loop: four model calls: the editor twice, the director for 9b and 9c
+PASS  text loop: the activity "fixing [text] issues (round 2, opus)" was published
+PASS  text loop: state.json counts one reopen of 09b-text
+PASS  text loop: state.json counts one reopen of 09c-transitions
+PASS  text loop: state.json counts one reopen of 10-build
+PASS  text loop: state.json counts one reopen of 11-sfx
+PASS  text loop: state.json counts one reopen of 12-review
+PASS  text loop: 09a-animations was not reopened
+PASS  text loop: rounds.review counts the failed round
+PASS  text loop: the failed review counts as an issue fixed
+PASS  text loop: no issue left open
+PASS  text loop: review-r1.json says fix
+PASS  text loop: review-r2.json says pass
+PASS  text loop: review.json is round 2
+PASS  text loop: feedback.json carries the editor's issue
+PASS  text loop: the text pass's prompt carries the review's notes
+PASS  text loop: the notes quote the issue
+PASS  text loop: the transitions pass gets the context note
+PASS  text loop: the second draft was rendered again (draft.mp4 newer than review-r1.json)
+PASS  text loop: cues.json is from the second sound pass (round 1 recorded)
+PASS  text loop: review.json validates against 12-review/schema.json
+PASS  text loop: mechanical.json written
+PASS  text loop: style.json written
+PASS  text loop: audio.json written
+PASS  text loop: review-r2.json written
+PASS  text loop: edit-r2.json written
+PASS  text loop: prompt-r2.md written
+PASS  text loop: notes.md written
+PASS  text loop: filmstrips/hook.png written
+PASS  text loop: filmstrips/transition-01.png written
+PASS  text loop: digest/scenes.md written
+PASS  text loop: digest/images.md written
+PASS  text loop: the prompt carries the sound map beside the scenes
+PASS  text loop: the prompt points at the contact sheet
+PASS  text loop: the prompt points at the hook filmstrip
+PASS  text loop: the prompt points at the look-reference stills
+PASS  text loop: review.json is round 2
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.zDr85kuTNK
+
+test-m11.sh: 110 passed, 0 failed

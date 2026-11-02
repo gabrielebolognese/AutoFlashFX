@@ -1,0 +1,62 @@
+
+== 3. three ideas unattended with the real models and engines (several hours) ==
+   sandbox C:/Users/there/AppData/Local/Temp/tmp.dS4bXlUFob; run 1 1668 s, run 2 2762 s
+    [11:11] START  reels autopilot v0.1.0 (ede52cb) | queue: 3 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [11:11] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1111_claude-codes-init-command-it
+    [11:15] GATE   passed (P3 S3 C2 F ok H ok)
+    [11:33] BLOCK  idea "Claude Code's /init command: it reads yo..." blocked at S8: voice: line b1 cannot be said clearly by af_bella (WER 12.5%: clawed -> claude) after no respelling rule, rewritten by S7: "You're briefing Claude Code wrong. Not your fault." -> "You're briefing Clawed Code wrong. Not your fault.". Moved to logs/blocked.txt
+    [11:33] NEXT   idea 2/3 "The Playwright MCP server lets Claude Co..."
+    [11:33] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1133_the-playwright-mcp-server-lets
+    [11:37] WARN   fault injected (REELS_FAULT limit:02-expansion@2): this call returns a session limit instead of reaching the model
+    [11:37] LIMIT  session limit hit, resuming at 11:42 (+2 min margin)
+    [11:37] RESUME limit reset, continuing: expanding idea
+    [11:38] WARN   fault injected (REELS_FAULT kill:03-gate@2): killing the runner and this stage now
+    [11:38] START  reels autopilot v0.1.0 (ede52cb) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [11:39] START  idea 1/2 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1133_the-playwright-mcp-server-lets (resumed at checking idea (gate), 2 stages done)
+    [11:39] INFO   S3 checking idea (gate): attempt 2 (the previous one was interrupted)
+    [11:39] GATE   passed (P2 S3 C3 F ok H ok)
+    [11:55] BLOCK  idea "The Playwright MCP server lets Claude Co..." blocked at S7: script still failing after 3 rounds: b6: the claim 'Two tools: console messages and network requests' says more than facts.md backs (The two tools exist, but 'Two tools help' implies only two; the server has.... Moved to logs/blocked.txt
+    [11:55] NEXT   idea 2/2 "ffmpeg can cut a clip out of a huge vide..."
+    [11:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1155_ffmpeg-can-cut-a-clip
+    [12:01] ANGLE  gate failed (F wording): finding a better angle, round 1/2
+    [12:02] GATE   passed (P3 S3 C2 F ok H ok) after 1 angle round
+    [12:24] BLOCK  idea "ffmpeg can cut a clip out of a huge vide..." blocked at S8: voice: line b3 cannot be said clearly by af_bella (WER 10.0%: (nothing) -> hundred) after no respelling rule, rewritten by S7: "Dash s s one-thirty, dash t o two minutes. Input options." -> "Start one thirty. Stop two minutes. Both before the input.". Moved to logs/blocked.txt
+    [12:24] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 45m28s | today: 0 exported, 0 dropped, 3 blocked
+    [12:24] START  reels autopilot v0.1.0 (ede52cb) | queue: 0 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [12:25] IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked in 0s | today: 0 exported, 0 dropped, 3 blocked
+    [12:25] IDLE   no ideas in ideas.txt, checking every 2 s (idle 0 min) | today: 0 exported, 0 dropped, 3 blocked
+PASS  real: the simulated limit and the kill both fired in the second idea
+PASS  real: run 1 ended killed (exit 137) during the second idea
+PASS  real: the killed runner left its lock and the stage's pid file, as a real crash does
+PASS  real: the restarted runner (run 2) finishes the queue and exits 0
+PASS  real: run 3 (forever mode) stops on SIGTERM with exit 130
+FAIL  real: runner.log tells the full story with no problem (line 162: heartbeat activity 'fixing pronunciation' is not in the activity table of spec section 7) (expected exit 0, got 1)
+PASS  real: three runner sessions (run 1, the restart, the forever mode)
+PASS  real: every idea ended exported, dropped or blocked
+PASS  real: only the second idea of session 1 was interrupted (the kill)
+PASS  real: the restart resumed the same idea at the same stage (S3)
+PASS  real: S3 runs again as attempt 2 after the interruption
+PASS  real: one LIMIT (session limit) in the second idea, followed by its RESUME line
+PASS  real: the LIMIT line names the time it resumes at (reset plus the margin)
+PASS  real: limits.log has the target time
+PASS  real: limits.log has the resume
+PASS  real: the faulted S2 call is in the call log (001-expansion-1.json)
+PASS  real: the retry after the limit resumes the same session (b72ceac3-d092-4b8e-b225-d3a73b7088bd)
+PASS  real: the retried call in that session succeeds
+PASS  real: every idea that ran past 5 minutes has heartbeat lines ([4, 1, 3, 5])
+PASS  real: every idea that passed the gate has its GATE line and its stage STEPs
+PASS  real: exports/ numbered 1 to 0 without gaps
+PASS  real: every export has its N.mp4 and Ncaptions.txt and Nhook2.mp4
+PASS  real: history.txt has one line per idea
+PASS  real: each history line says exported N, dropped or blocked with a reason
+PASS  real: ideas.txt is empty
+PASS  real: no logs/STOPPED.md
+PASS  real: status.txt was a valid status line at every sampled moment ({"samples": 219, "invalid": 0, "problems": []})
+PASS  real: the final status.txt is valid
+PASS  real: no .status.* file left behind
+PASS  real: the forever mode's IDLE line
+PASS  real: the forever mode's stop line
+PASS  real: the summary line on the empty queue
+PASS  real: no em dash in the exports and the logs
+
+test-m13.sh: 32 passed, 1 failed

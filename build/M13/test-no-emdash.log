@@ -1,0 +1,4 @@
+no_emdash: clean
+PASS  no em dash in tracked text files
+
+test-no-emdash.sh: 1 passed, 0 failed

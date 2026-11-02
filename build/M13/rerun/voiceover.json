@@ -1,0 +1,1319 @@
+{
+ "written_by": "08-voiceover",
+ "engine": {
+  "engine": "kokoro",
+  "python": "C:/Users/there/venvs/kokoro/Scripts/python.exe",
+  "voice": "af_bella",
+  "lang": "a",
+  "speed": 1.0,
+  "silence_threshold_db": -40.0,
+  "min_pause_s": 0.3,
+  "keep_pause_s": 0.1,
+  "breath_after_hook_s": 1.0
+ },
+ "engine_file": {
+  "path": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/library/voice/engine.txt",
+  "status": "defaults",
+  "notes": [
+   "library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)"
+  ]
+ },
+ "interpreters": {
+  "tts": "C:/Users/there/venvs/kokoro/Scripts/python.exe",
+  "whisper": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
+  "tts_worker": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/pipeline/lib/tts/kokoro_worker.py",
+  "whisper_worker": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/pipeline/lib/tts/whisper_worker.py"
+ },
+ "whisper_model": "small",
+ "thresholds": {
+  "wer_fail_pct": 3.0,
+  "wer_flag_max_pct": 8.0,
+  "overrun_pct": 15.0,
+  "overrun_min_s": 0.4,
+  "wpm": 176.0,
+  "lead_s": 0.05,
+  "tail_s": 0.2,
+  "loudness_lufs": -14.0,
+  "true_peak_dbtp": -1.5
+ },
+ "pronunciations": [],
+ "lines": [
+  {
+   "id": "b1",
+   "kind": "beat",
+   "type": "hook",
+   "spoken": "The truth nobody tells you about slash init.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "The truth nobody tells you about slash init.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b1.a1.wav",
+     "duration_s": 2.08,
+     "raw_s": 3.075,
+     "wer_pct": 0.0,
+     "heard": "The Truth Nobody Tells You About Slash In It",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.08,
+   "raw_s": 3.075,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b1.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "The truth nobody tells you about slash init.",
+   "applied": [],
+   "words": 8,
+   "syllables": 12,
+   "estimate_s": 2.68,
+   "shortened": 0,
+   "removed_s": 0.995,
+   "heard_text": "The Truth Nobody Tells You About Slash In It",
+   "transcript": [
+    {
+     "word": "The",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "word": "Truth",
+     "start": 0.04,
+     "end": 0.28
+    },
+    {
+     "word": "Nobody",
+     "start": 0.28,
+     "end": 0.54
+    },
+    {
+     "word": "Tells",
+     "start": 0.54,
+     "end": 1.0
+    },
+    {
+     "word": "You",
+     "start": 1.0,
+     "end": 1.06
+    },
+    {
+     "word": "About",
+     "start": 1.06,
+     "end": 1.24
+    },
+    {
+     "word": "Slash",
+     "start": 1.24,
+     "end": 1.74
+    },
+    {
+     "word": "In",
+     "start": 1.74,
+     "end": 1.86
+    },
+    {
+     "word": "It",
+     "start": 1.86,
+     "end": 2.02
+    }
+   ]
+  },
+  {
+   "id": "b2",
+   "kind": "beat",
+   "type": "stake",
+   "spoken": "Claude Code daily? New session. You explain tests again.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Claude Code daily? New session. You explain tests again.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b2.a1.wav",
+     "duration_s": 3.0,
+     "raw_s": 6.5,
+     "wer_pct": 0.0,
+     "heard": "Claude Code Daily New Session You Explain Tests Again",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.0,
+   "raw_s": 6.5,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b2.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Claude Code daily? New session. You explain tests again.",
+   "applied": [],
+   "words": 9,
+   "syllables": 13,
+   "estimate_s": 2.9,
+   "shortened": 2,
+   "removed_s": 3.5,
+   "heard_text": "Claude Code Daily New Session You Explain Tests Again",
+   "transcript": [
+    {
+     "word": "Claude",
+     "start": 0.0,
+     "end": 0.3
+    },
+    {
+     "word": "Code",
+     "start": 0.3,
+     "end": 0.46
+    },
+    {
+     "word": "Daily",
+     "start": 0.46,
+     "end": 0.8
+    },
+    {
+     "word": "New",
+     "start": 0.8,
+     "end": 1.2
+    },
+    {
+     "word": "Session",
+     "start": 1.2,
+     "end": 1.62
+    },
+    {
+     "word": "You",
+     "start": 1.62,
+     "end": 1.92
+    },
+    {
+     "word": "Explain",
+     "start": 1.92,
+     "end": 2.22
+    },
+    {
+     "word": "Tests",
+     "start": 2.22,
+     "end": 2.66
+    },
+    {
+     "word": "Again",
+     "start": 2.66,
+     "end": 2.88
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "kind": "beat",
+   "type": "tool",
+   "spoken": "Run slash init: Claude analyzes your codebase and writes a starter.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Run slash init: Claude analyzes your codebase and writes a starter.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b3.a1.wav",
+     "duration_s": 3.53,
+     "raw_s": 5.025,
+     "wer_pct": 0.0,
+     "heard": "Run slash in it. Claude analyzes your code base and writes a starter.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.53,
+   "raw_s": 5.025,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b3.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Run slash init: Claude analyzes your codebase and writes a starter.",
+   "applied": [],
+   "words": 11,
+   "syllables": 19,
+   "estimate_s": 4.24,
+   "shortened": 1,
+   "removed_s": 1.495,
+   "heard_text": "Run slash in it. Claude analyzes your code base and writes a starter.",
+   "transcript": [
+    {
+     "word": "Run",
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "word": "slash",
+     "start": 0.2,
+     "end": 0.54
+    },
+    {
+     "word": "in",
+     "start": 0.54,
+     "end": 0.9
+    },
+    {
+     "word": "it.",
+     "start": 0.9,
+     "end": 1.06
+    },
+    {
+     "word": "Claude",
+     "start": 1.26,
+     "end": 1.46
+    },
+    {
+     "word": "analyzes",
+     "start": 1.46,
+     "end": 1.98
+    },
+    {
+     "word": "your",
+     "start": 1.98,
+     "end": 2.12
+    },
+    {
+     "word": "code",
+     "start": 2.12,
+     "end": 2.32
+    },
+    {
+     "word": "base",
+     "start": 2.32,
+     "end": 2.62
+    },
+    {
+     "word": "and",
+     "start": 2.62,
+     "end": 2.82
+    },
+    {
+     "word": "writes",
+     "start": 2.82,
+     "end": 3.0
+    },
+    {
+     "word": "a",
+     "start": 3.0,
+     "end": 3.16
+    },
+    {
+     "word": "starter.",
+     "start": 3.16,
+     "end": 3.46
+    }
+   ]
+  },
+  {
+   "id": "b4",
+   "kind": "beat",
+   "type": "mechanism",
+   "spoken": "Build commands. Test instructions. Conventions too. Read every session.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Build commands. Test instructions. Conventions too. Read every session.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b4.a1.wav",
+     "duration_s": 3.93,
+     "raw_s": 8.625,
+     "wer_pct": 0.0,
+     "heard": "Build Commands, Test Instructions, Conventions too. Read every session.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.93,
+   "raw_s": 8.625,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b4.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Build commands. Test instructions. Conventions too. Read every session.",
+   "applied": [],
+   "words": 9,
+   "syllables": 17,
+   "estimate_s": 3.79,
+   "shortened": 3,
+   "removed_s": 4.695,
+   "heard_text": "Build Commands, Test Instructions, Conventions too. Read every session.",
+   "transcript": [
+    {
+     "word": "Build",
+     "start": 0.0,
+     "end": 0.16
+    },
+    {
+     "word": "Commands,",
+     "start": 0.16,
+     "end": 0.72
+    },
+    {
+     "word": "Test",
+     "start": 0.92,
+     "end": 1.04
+    },
+    {
+     "word": "Instructions,",
+     "start": 1.04,
+     "end": 1.76
+    },
+    {
+     "word": "Conventions",
+     "start": 1.94,
+     "end": 2.34
+    },
+    {
+     "word": "too.",
+     "start": 2.34,
+     "end": 2.72
+    },
+    {
+     "word": "Read",
+     "start": 3.0,
+     "end": 3.1
+    },
+    {
+     "word": "every",
+     "start": 3.1,
+     "end": 3.4
+    },
+    {
+     "word": "session.",
+     "start": 3.4,
+     "end": 3.76
+    }
+   ]
+  },
+  {
+   "id": "b5",
+   "kind": "beat",
+   "type": "number",
+   "spoken": "Docs say: mostly remove lines, and keep it under two hundred.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Docs say: mostly remove lines, and keep it under two hundred.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b5.a1.wav",
+     "duration_s": 3.12,
+     "raw_s": 4.55,
+     "wer_pct": 0.0,
+     "heard": "Doc say, mostly remove lines and keep it under 200",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.12,
+   "raw_s": 4.55,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b5.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Docs say: mostly remove lines, and keep it under two hundred.",
+   "applied": [],
+   "words": 11,
+   "syllables": 15,
+   "estimate_s": 3.35,
+   "shortened": 1,
+   "removed_s": 1.43,
+   "heard_text": "Doc say, mostly remove lines and keep it under 200",
+   "transcript": [
+    {
+     "word": "Doc",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "say,",
+     "start": 0.18,
+     "end": 0.52
+    },
+    {
+     "word": "mostly",
+     "start": 0.68,
+     "end": 0.94
+    },
+    {
+     "word": "remove",
+     "start": 0.94,
+     "end": 1.3
+    },
+    {
+     "word": "lines",
+     "start": 1.3,
+     "end": 1.78
+    },
+    {
+     "word": "and",
+     "start": 1.78,
+     "end": 2.08
+    },
+    {
+     "word": "keep",
+     "start": 2.08,
+     "end": 2.28
+    },
+    {
+     "word": "it",
+     "start": 2.28,
+     "end": 2.38
+    },
+    {
+     "word": "under",
+     "start": 2.38,
+     "end": 2.52
+    },
+    {
+     "word": "200",
+     "start": 2.52,
+     "end": 2.9
+    }
+   ]
+  },
+  {
+   "id": "b6",
+   "kind": "beat",
+   "type": "step",
+   "spoken": "Could Claude find it? Would it look? Both yes? Delete.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Could Claude find it? Would it look? Both yes? Delete.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b6.a1.wav",
+     "duration_s": 2.83,
+     "raw_s": 7.35,
+     "wer_pct": 0.0,
+     "heard": "Could Claude find it? Would it look? Both yes, delete",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.83,
+   "raw_s": 7.35,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b6.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Could Claude find it? Would it look? Both yes? Delete.",
+   "applied": [],
+   "words": 10,
+   "syllables": 11,
+   "estimate_s": 2.45,
+   "shortened": 3,
+   "removed_s": 4.52,
+   "heard_text": "Could Claude find it? Would it look? Both yes, delete",
+   "transcript": [
+    {
+     "word": "Could",
+     "start": 0.0,
+     "end": 0.1
+    },
+    {
+     "word": "Claude",
+     "start": 0.1,
+     "end": 0.42
+    },
+    {
+     "word": "find",
+     "start": 0.42,
+     "end": 0.64
+    },
+    {
+     "word": "it?",
+     "start": 0.64,
+     "end": 0.86
+    },
+    {
+     "word": "Would",
+     "start": 1.04,
+     "end": 1.12
+    },
+    {
+     "word": "it",
+     "start": 1.12,
+     "end": 1.24
+    },
+    {
+     "word": "look?",
+     "start": 1.24,
+     "end": 1.4
+    },
+    {
+     "word": "Both",
+     "start": 1.64,
+     "end": 1.78
+    },
+    {
+     "word": "yes,",
+     "start": 1.78,
+     "end": 2.08
+    },
+    {
+     "word": "delete",
+     "start": 2.36,
+     "end": 2.56
+    }
+   ]
+  },
+  {
+   "id": "b7",
+   "kind": "beat",
+   "type": "step",
+   "spoken": "Then add four things: exact test commands and any misleading code.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Then add four things: exact test commands and any misleading code.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b7.a1.wav",
+     "duration_s": 3.58,
+     "raw_s": 4.975,
+     "wer_pct": 0.0,
+     "heard": "Then add four things, exact test commands and any misleading code.",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.58,
+   "raw_s": 4.975,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b7.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Then add four things: exact test commands and any misleading code.",
+   "applied": [],
+   "words": 11,
+   "syllables": 16,
+   "estimate_s": 3.57,
+   "shortened": 1,
+   "removed_s": 1.395,
+   "heard_text": "Then add four things, exact test commands and any misleading code.",
+   "transcript": [
+    {
+     "word": "Then",
+     "start": 0.0,
+     "end": 0.12
+    },
+    {
+     "word": "add",
+     "start": 0.12,
+     "end": 0.38
+    },
+    {
+     "word": "four",
+     "start": 0.38,
+     "end": 0.6
+    },
+    {
+     "word": "things,",
+     "start": 0.6,
+     "end": 0.94
+    },
+    {
+     "word": "exact",
+     "start": 1.32,
+     "end": 1.48
+    },
+    {
+     "word": "test",
+     "start": 1.48,
+     "end": 1.8
+    },
+    {
+     "word": "commands",
+     "start": 1.8,
+     "end": 2.16
+    },
+    {
+     "word": "and",
+     "start": 2.16,
+     "end": 2.5
+    },
+    {
+     "word": "any",
+     "start": 2.5,
+     "end": 2.66
+    },
+    {
+     "word": "misleading",
+     "start": 2.66,
+     "end": 3.04
+    },
+    {
+     "word": "code.",
+     "start": 3.04,
+     "end": 3.48
+    }
+   ]
+  },
+  {
+   "id": "b8",
+   "kind": "beat",
+   "type": "step",
+   "spoken": "Decisions outside the repo. Anything corrected twice.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Decisions outside the repo. Anything corrected twice.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b8.a1.wav",
+     "duration_s": 2.8,
+     "raw_s": 5.05,
+     "wer_pct": 0.0,
+     "heard": "Decisions Outside the Repo Anything Corrected Twice",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.8,
+   "raw_s": 5.05,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b8.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Decisions outside the repo. Anything corrected twice.",
+   "applied": [],
+   "words": 7,
+   "syllables": 15,
+   "estimate_s": 3.35,
+   "shortened": 1,
+   "removed_s": 2.25,
+   "heard_text": "Decisions Outside the Repo Anything Corrected Twice",
+   "transcript": [
+    {
+     "word": "Decisions",
+     "start": 0.0,
+     "end": 0.42
+    },
+    {
+     "word": "Outside",
+     "start": 0.42,
+     "end": 0.7
+    },
+    {
+     "word": "the",
+     "start": 0.7,
+     "end": 1.02
+    },
+    {
+     "word": "Repo",
+     "start": 1.02,
+     "end": 1.4
+    },
+    {
+     "word": "Anything",
+     "start": 1.4,
+     "end": 1.68
+    },
+    {
+     "word": "Corrected",
+     "start": 1.68,
+     "end": 2.32
+    },
+    {
+     "word": "Twice",
+     "start": 2.32,
+     "end": 2.56
+    }
+   ]
+  },
+  {
+   "id": "b9",
+   "kind": "beat",
+   "type": "proof",
+   "spoken": "It's context, not enforcement, so hard rules belong in a hook.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "It's context, not enforcement, so hard rules belong in a hook.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b9.a1.wav",
+     "duration_s": 3.78,
+     "raw_s": 5.1,
+     "wer_pct": 0.0,
+     "heard": "It's context not enforcement so hard rules belong in a hook",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 3.78,
+   "raw_s": 5.1,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b9.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "It's context, not enforcement, so hard rules belong in a hook.",
+   "applied": [],
+   "words": 11,
+   "syllables": 17,
+   "estimate_s": 3.79,
+   "shortened": 1,
+   "removed_s": 1.32,
+   "heard_text": "It's context not enforcement so hard rules belong in a hook",
+   "transcript": [
+    {
+     "word": "It's",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "context",
+     "start": 0.18,
+     "end": 0.66
+    },
+    {
+     "word": "not",
+     "start": 0.66,
+     "end": 1.18
+    },
+    {
+     "word": "enforcement",
+     "start": 1.18,
+     "end": 1.72
+    },
+    {
+     "word": "so",
+     "start": 1.72,
+     "end": 2.14
+    },
+    {
+     "word": "hard",
+     "start": 2.14,
+     "end": 2.42
+    },
+    {
+     "word": "rules",
+     "start": 2.42,
+     "end": 2.78
+    },
+    {
+     "word": "belong",
+     "start": 2.78,
+     "end": 3.16
+    },
+    {
+     "word": "in",
+     "start": 3.16,
+     "end": 3.44
+    },
+    {
+     "word": "a",
+     "start": 3.44,
+     "end": 3.54
+    },
+    {
+     "word": "hook",
+     "start": 3.54,
+     "end": 3.68
+    }
+   ]
+  },
+  {
+   "id": "b10",
+   "kind": "beat",
+   "type": "payoff",
+   "spoken": "One command starts it. You finish by deleting.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Slash init starts it. You finish by deleting.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b10.a1.wav",
+     "duration_s": 2.31,
+     "raw_s": 4.625,
+     "wer_pct": 25.0,
+     "heard": "Slash and it starts it, you finish by deleting",
+     "misheard": [
+      "init"
+     ],
+     "steps": []
+    },
+    {
+     "attempt": 2,
+     "tts": "One command starts it. You finish by deleting.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b10.a2.wav",
+     "duration_s": 2.41,
+     "raw_s": 4.65,
+     "wer_pct": 0.0,
+     "heard": "One command starts it. You finish by deleting.",
+     "misheard": [],
+     "steps": [
+      "no respelling rule",
+      "rewritten by S7: \"Slash init starts it. You finish by deleting.\" -> \"One command starts it. You finish by deleting.\""
+     ]
+    }
+   ],
+   "attempt": 2,
+   "rewritten": true,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.41,
+   "raw_s": 4.65,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b10.a2.wav",
+   "flag_text": "",
+   "steps": [
+    "no respelling rule",
+    "rewritten by S7: \"Slash init starts it. You finish by deleting.\" -> \"One command starts it. You finish by deleting.\""
+   ],
+   "tts": "One command starts it. You finish by deleting.",
+   "applied": [],
+   "words": 8,
+   "syllables": 12,
+   "estimate_s": 2.68,
+   "shortened": 1,
+   "removed_s": 2.24,
+   "heard_text": "One command starts it. You finish by deleting.",
+   "transcript": [
+    {
+     "word": "One",
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "word": "command",
+     "start": 0.18,
+     "end": 0.46
+    },
+    {
+     "word": "starts",
+     "start": 0.46,
+     "end": 0.8
+    },
+    {
+     "word": "it.",
+     "start": 0.8,
+     "end": 1.14
+    },
+    {
+     "word": "You",
+     "start": 1.28,
+     "end": 1.36
+    },
+    {
+     "word": "finish",
+     "start": 1.36,
+     "end": 1.62
+    },
+    {
+     "word": "by",
+     "start": 1.62,
+     "end": 1.92
+    },
+    {
+     "word": "deleting.",
+     "start": 1.92,
+     "end": 2.24
+    }
+   ]
+  },
+  {
+   "id": "b11",
+   "kind": "beat",
+   "type": "ask",
+   "spoken": "Comment LINK and I'll send the official docs for slash init.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Comment LINK and I'll send the official docs for slash init.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b11.a1.wav",
+     "duration_s": 2.94,
+     "raw_s": 4.275,
+     "wer_pct": 0.0,
+     "heard": "Comment LINK and I'll send the official docs for Slash in it",
+     "misheard": [],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "ok",
+   "wer_pct": 0.0,
+   "misheard": [],
+   "heard": [],
+   "duration_s": 2.94,
+   "raw_s": 4.275,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/b11.a1.wav",
+   "flag_text": "",
+   "steps": [],
+   "tts": "Comment LINK and I'll send the official docs for slash init.",
+   "applied": [],
+   "words": 11,
+   "syllables": 15,
+   "estimate_s": 3.35,
+   "shortened": 1,
+   "removed_s": 1.335,
+   "heard_text": "Comment LINK and I'll send the official docs for Slash in it",
+   "transcript": [
+    {
+     "word": "Comment",
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "word": "LINK",
+     "start": 0.2,
+     "end": 0.64
+    },
+    {
+     "word": "and",
+     "start": 0.64,
+     "end": 0.76
+    },
+    {
+     "word": "I'll",
+     "start": 0.76,
+     "end": 0.88
+    },
+    {
+     "word": "send",
+     "start": 0.88,
+     "end": 1.08
+    },
+    {
+     "word": "the",
+     "start": 1.08,
+     "end": 1.24
+    },
+    {
+     "word": "official",
+     "start": 1.24,
+     "end": 1.5
+    },
+    {
+     "word": "docs",
+     "start": 1.5,
+     "end": 1.88
+    },
+    {
+     "word": "for",
+     "start": 1.88,
+     "end": 2.12
+    },
+    {
+     "word": "Slash",
+     "start": 2.12,
+     "end": 2.6
+    },
+    {
+     "word": "in",
+     "start": 2.6,
+     "end": 2.72
+    },
+    {
+     "word": "it",
+     "start": 2.72,
+     "end": 2.86
+    }
+   ]
+  },
+  {
+   "id": "hook2",
+   "kind": "hook2",
+   "type": "hook",
+   "spoken": "Add four things after slash init. Number four's overlooked.",
+   "respellings": {},
+   "attempts": [
+    {
+     "attempt": 1,
+     "tts": "Add four things after slash init. Number four's overlooked.",
+     "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/hook2.a1.wav",
+     "duration_s": 2.91,
+     "raw_s": 5.225,
+     "wer_pct": 44.4,
+     "heard": "add four things after slashing it number four is overlooked",
+     "misheard": [
+      "slash",
+      "init",
+      "four's"
+     ],
+     "steps": []
+    }
+   ],
+   "attempt": 1,
+   "rewritten": false,
+   "respelled": false,
+   "status": "flag",
+   "wer_pct": 44.4,
+   "misheard": [
+    "slash",
+    "init",
+    "four's"
+   ],
+   "heard": [
+    "slash -> slashing",
+    "init -> it",
+    "fours -> four is"
+   ],
+   "duration_s": 2.91,
+   "raw_s": 5.225,
+   "wav": "C:/Users/there/AppData/Local/Temp/tmp.ayE7kETGJN/runs/2026-11-02_1202_claude-codes-init-command-it/08-voiceover/lines/hook2.a1.wav",
+   "flag_text": "voice: hook 2 is misheard by faster-whisper (WER 44.4%: slash -> slashing; init -> it; fours -> four is) after no respelling rule; listen to vo_hook2.wav",
+   "steps": [
+    "no respelling rule"
+   ],
+   "tts": "Add four things after slash init. Number four's overlooked.",
+   "applied": [],
+   "words": 9,
+   "syllables": 14,
+   "estimate_s": 3.12,
+   "shortened": 1,
+   "removed_s": 2.315,
+   "heard_text": "add four things after slashing it number four is overlooked",
+   "transcript": [
+    {
+     "word": "add",
+     "start": 0.0,
+     "end": 0.16
+    },
+    {
+     "word": "four",
+     "start": 0.16,
+     "end": 0.36
+    },
+    {
+     "word": "things",
+     "start": 0.36,
+     "end": 0.6
+    },
+    {
+     "word": "after",
+     "start": 0.6,
+     "end": 0.88
+    },
+    {
+     "word": "slashing",
+     "start": 0.88,
+     "end": 1.4
+    },
+    {
+     "word": "it",
+     "start": 1.4,
+     "end": 1.58
+    },
+    {
+     "word": "number",
+     "start": 1.58,
+     "end": 1.82
+    },
+    {
+     "word": "four",
+     "start": 1.82,
+     "end": 2.16
+    },
+    {
+     "word": "is",
+     "start": 2.16,
+     "end": 2.32
+    },
+    {
+     "word": "overlooked",
+     "start": 2.32,
+     "end": 2.6
+    }
+   ]
+  }
+ ],
+ "timing": {
+  "tts_wall_s": 92.04,
+  "tts_load_s": 17.52,
+  "tts_synth_s": 53.25,
+  "tts_tighten_s": 0.08,
+  "align_wall_s": 69.33,
+  "align_model_load_s": 3.11,
+  "loudness_s": 6.07,
+  "rewrite_s": 27.24,
+  "total_s": 195.87,
+  "audio_raw_s": 64.4,
+  "speed_x_realtime": 0.827,
+  "calls": 4
+ },
+ "pace": {
+  "wpm": 182,
+  "wpm_speech_only": 187,
+  "words": 106,
+  "speech_s": 34.0,
+  "gaps_s": 1.0
+ },
+ "timeline": [
+  {
+   "id": "b1",
+   "type": "hook",
+   "start_ms": 50,
+   "end_ms": 2130,
+   "start_s": 0.05
+  },
+  {
+   "id": "b2",
+   "type": "stake",
+   "start_ms": 3130,
+   "end_ms": 6130,
+   "start_s": 3.13
+  },
+  {
+   "id": "b3",
+   "type": "tool",
+   "start_ms": 6230,
+   "end_ms": 9760,
+   "start_s": 6.23
+  },
+  {
+   "id": "b4",
+   "type": "mechanism",
+   "start_ms": 9860,
+   "end_ms": 13790,
+   "start_s": 9.86
+  },
+  {
+   "id": "b5",
+   "type": "number",
+   "start_ms": 13890,
+   "end_ms": 17010,
+   "start_s": 13.89
+  },
+  {
+   "id": "b6",
+   "type": "step",
+   "start_ms": 17110,
+   "end_ms": 19940,
+   "start_s": 17.11
+  },
+  {
+   "id": "b7",
+   "type": "step",
+   "start_ms": 20040,
+   "end_ms": 23620,
+   "start_s": 20.04
+  },
+  {
+   "id": "b8",
+   "type": "step",
+   "start_ms": 23720,
+   "end_ms": 26520,
+   "start_s": 23.72
+  },
+  {
+   "id": "b9",
+   "type": "proof",
+   "start_ms": 26620,
+   "end_ms": 30400,
+   "start_s": 26.62
+  },
+  {
+   "id": "b10",
+   "type": "payoff",
+   "start_ms": 30500,
+   "end_ms": 32910,
+   "start_s": 30.5
+  },
+  {
+   "id": "b11",
+   "type": "ask",
+   "start_ms": 33010,
+   "end_ms": 35950,
+   "start_s": 33.01
+  }
+ ],
+ "breath": {
+  "after": "b1",
+  "start_ms": 2130,
+  "end_ms": 3130,
+  "seconds": 1.0
+ },
+ "loudness": {
+  "vo": {
+   "input": {
+    "lufs": -24.72,
+    "true_peak_dbtp": -5.99,
+    "lra": 1.7,
+    "threshold": -34.82
+   },
+   "lufs": -14.54,
+   "true_peak_dbtp": -1.5,
+   "gain_db": 12.75,
+   "passes": 4,
+   "limiter_db": -3.36,
+   "ok": true
+  },
+  "hook2": {
+   "input": {
+    "lufs": -25.66,
+    "true_peak_dbtp": -9.22,
+    "lra": 1.1,
+    "threshold": -35.88
+   },
+   "lufs": -14.21,
+   "true_peak_dbtp": -1.93,
+   "gain_db": 13.36,
+   "passes": 3,
+   "limiter_db": -2.3,
+   "ok": true
+  }
+ },
+ "duration_s": 36.15,
+ "flags": [
+  "voice: hook 2 is misheard by faster-whisper (WER 44.4%: slash -> slashing; init -> it; fours -> four is) after no respelling rule; listen to vo_hook2.wav"
+ ],
+ "verdict": {
+  "status": "flag",
+  "reason": ""
+ },
+ "error": ""
+}

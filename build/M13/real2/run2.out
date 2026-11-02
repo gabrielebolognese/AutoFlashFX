@@ -1,0 +1,84 @@
+[14:37] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[14:37] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+[14:37] READY  preflight ok: 8 tools, 2 python packages, 8 files, 171 GB free
+[14:37] START  reels autopilot v0.1.0 (89c1431) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+[14:37] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE | mode: once (stops when the queue is empty)
+[14:37] QUEUE  1. The Playwright MCP server lets Claude Code open a real brows...
+[14:37] QUEUE  2. ffmpeg can cut a clip out of a huge video in one second with...
+[14:37] START  idea 1/2 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets (resumed at checking idea (gate), 2 stages done)
+[14:37] INFO   S3 checking idea (gate): attempt 2 (the previous one was interrupted)
+[14:38] GATE   passed (P3 S2 C3 F ok H ok)
+[14:38] STEP   checking idea (gate) done (43s) -> picking hooks
+[14:38] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+[14:39] INFO   S5: 2 new hook shapes written to library/hooks.suggested.txt
+[14:39] INFO   S5: 13 hooks from how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation (12 from hooks.txt, 1 vendor shapes), spoken cap 8 words at 176 wpm
+[14:41] WARN   S5: the brief missed the length (the brief is about 3041 tokens (2339 words); it must be between 2000 and 3000 tokens, so cut about 71 words), asking again (try 2/3)
+[14:42] INFO   S5: brief.md 2883 tokens (2218 words), video type default; session A done
+[14:42] STEP   picking hooks done (4m05s) -> judging hooks
+[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+[14:42] INFO   S6: 7 of 13 hooks passed hookscore (min 50); judging 7 (survivors)
+[14:44] INFO   S6: hook 1 h01 "Still testing by hand? Use Playwright MCP instead." (mistake-warning), hook 2 h12 "Beginner mistake: shipping what Claude Code never clicked."; 7/13 passed the filter, 3 judge calls
+[14:44] STEP   judging hooks done (2m01s) -> writing script
+[14:45] INFO   S7: hook 1 h01 "Still testing by hand? Use Playwright MCP instead."; default reel of 25 to 40 s (tweaks.md) at 176 wpm: 73 to 118 words after the cut; tones calm expert and insider (brief); solution external
+[14:46] INFO   S7: draft a (calm expert) written: 11 beats, 114 words before the cut
+[14:47] INFO   S7: draft a cut from 114 to 94 words (17.5%, attempt 1)
+[14:47] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | checking script | minute 14 | stage 3m01s | issues: 0 fixed, 0 open
+[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+[14:49] INFO   S7: draft b (insider) written: 11 beats, 113 words before the cut
+[14:49] INFO   S7: draft b cut from 113 to 100 words (11.5%, attempt 1)
+[14:49] WARN   S7: draft b (insider) round 1: 36.5 s, 100 words, detect 74.8: 0 hard and 1 soft failure (first: the hook runs 3.4 s (8 words); it must stay under 3 s)
+[14:50] INFO   S7: the judge picked draft a (calm expert): Draft 2 sounds more like him talking to a friend. The stake "Claude Code says done, you click, miss the console error" i...
+[14:51] WARN   S7: draft a (calm expert) round 2: 34.4 s, 94 words, detect 72.3: 1 hard and 0 soft failure (first: b11: 'Stop testing by hand.' reads as ad language (a pitch, hype or a superlative about the solution) (Mild pu...)
+[14:52] WARN   S7: draft a (calm expert) round 3: 34.4 s, 94 words, detect 73.0: 0 hard and 1 soft failure (first: no loop: the last line shares no word with the hook; repeat one word of the hook in the ask line)
+[14:52] FLAG   needs review: soft script check failed after 3 rounds: beats: no loop: the last line shares no word with the hook; repeat one word of the hook in the ask line
+[14:52] INFO   S7: script.json: draft a (calm expert), 11 beats, 34.43 s (94 words at 176 wpm), cut 17.5%, detect 73.0, 3 rounds; session D done
+[14:52] STEP   writing script done (7m24s) -> generating voiceover
+[14:52] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[14:52] INFO   S8: kokoro af_bella (the defaults, no engine.txt), speed 1: 11 beats plus hook 2, 101 spoken words at 176 wpm; pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1 s breath after the hook
+[14:52] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | generating voiceover (beat 3/12) | minute 19 | stage 34s | issues: 0 fixed, 0 open
+[14:54] WARN   S8: first pass: 2 of 12 lines misheard: b9 WER 50.0%: caveat -> kaviatt; c l i -> cl; b10 WER 37.5%: point it -> pointed; clicks -> klicks
+[14:54] WARN   S8: line b9 still misheard (WER 50.0%: caveat -> kaviatt; c l i -> cl) after the pronunciation step, rewriting it through S7
+[14:54] INFO   S8: line b9 rewritten by S7 in simpler words: "Heads up: Playwright's command line uses fewer tokens."
+[14:54] WARN   S8: line b10 still misheard (WER 37.5%: point it -> pointed; clicks -> klicks) after the pronunciation step, rewriting it through S7
+[14:54] INFO   S8: line b10 rewritten by S7 in simpler words: "Next, your own localhost. Claude does the clicking."
+[14:55] INFO   S8: line b10 ok after the rewrite (WER 0.0%)
+[14:55] INFO   S8: generated 12 lines in 80 s (0.65x real time for 57.6 s of raw voice, model load 22 s), aligned in 57 s; pace 182 wpm after tightening (188 on speech alone)
+[14:55] INFO   S8: vo.wav 34.5 s at -14.86 LUFS, true peak -1.59 dBTP (4 passes); words.json 101 words, 11 beats; vo_hook2.wav 2.9 s
+[14:55] BLOCK  idea "The Playwright MCP server lets Claude Co..." blocked at S8: voice: line b9 cannot be said clearly by af_bella (WER 25.0%: heads up -> headset) after no respelling rule, rewritten by S7: "Caveat: Playwright C L I uses fewer tokens." -> "Heads up: Playwright's command line uses fewer tokens.". Moved to logs/blocked.txt
+[14:55] NEXT   idea 2/2 "ffmpeg can cut a clip out of a huge vide..."
+[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+[15:00] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | researching facts | minute 5 | stage 4m59s | issues: 0 fixed, 0 open
+[15:00] INFO   S1: 14 claims (13 verified), 5 numbers, 4 screenshots; core claim verified
+[15:00] STEP   researching facts done (5m18s) -> expanding idea
+[15:01] INFO   S2: expansion 1268 chars, solution method (ffmpeg stream copy cut), keyword CUT (new), evidence facts.md#1, #2, #3, #6, #4, #11
+[15:01] STEP   expanding idea done (37s) -> checking idea (gate)
+[15:02] GATE   passed (P3 S2 C3 F ok H ok)
+[15:02] STEP   checking idea (gate) done (29s) -> picking hooks
+[15:02] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+[15:02] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+[15:03] INFO   S5: 2 new hook shapes written to library/hooks.suggested.txt
+[15:04] INFO   S5: 17 hooks from how-to-system, mistake-warning, myth-contrarian, story-confession, tools-listicle, transformation (11 from hooks.txt, 6 vendor shapes), spoken cap 8 words at 176 wpm
+[15:05] WARN   S5: the brief missed the length (the brief is about 3453 tokens (2656 words); it must be between 2000 and 3000 tokens, so cut about 388 words), asking again (try 2/3)
+[15:05] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | picking hooks | minute 10 | stage 3m32s | issues: 0 fixed, 0 open
+[15:06] INFO   S5: brief.md 2764 tokens (2126 words), video type default; session A done
+[15:06] STEP   picking hooks done (4m18s) -> judging hooks
+[15:06] INFO   S6: 5 of 17 hooks passed hookscore (min 50); judging 5 (survivors)
+[15:07] INFO   S6: hook 1 h09 "Stop re-exporting whole videos. Use -c copy instead." (mistake-warning), hook 2 h10 "You don't need an editor. Just -c copy."; 5/17 passed the filter, 3 judge calls
+[15:07] STEP   judging hooks done (1m07s) -> writing script
+[15:07] INFO   S7: hook 1 h09 "Stop re-exporting whole videos. Use -c copy instead."; default reel of 25 to 40 s (tweaks.md) at 176 wpm: 73 to 118 words after the cut; tones calm expert and insider (brief); solution method
+[15:10] INFO   S7: draft a (calm expert) written: 11 beats, 126 words before the cut
+[15:10] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | cutting script | minute 15 | stage 3m04s | issues: 0 fixed, 0 open
+[15:10] INFO   S7: draft a cut from 126 to 108 words (14.3%, attempt 1)
+[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+[15:12] INFO   S7: draft b (insider) written: 11 beats, 124 words before the cut
+[15:13] WARN   S7: the cut of draft b missed (only 8% of the words were removed (124 to 114); remove between 10 and 30% (about 25 words)), asking again (try 2/2)
+[15:13] INFO   S7: draft b cut from 124 to 104 words (16.1%, attempt 2)
+[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+[15:14] INFO   S7: the judge picked draft a (calm expert): Draft 1 sounds closer to the excerpts. It uses short, plain sentences in straightforward English, like "Clipping long re...
+[15:15] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | writing script (draft 1/2, round 2/3) | minute 20 | stage 8m04s | issues: 0 fixed, 0 open
+[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+[15:18] WARN   S7: draft a (calm expert) round 3: 35.1 s, 97 words, detect 80.4: 1 hard and 0 soft failure (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+[15:18] BLOCK  idea "ffmpeg can cut a clip out of a huge vide..." blocked at S7: script still failing after 3 rounds: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its words (cut, clips, long, recordings) in the stake beat; found .... Moved to logs/blocked.txt
+[15:18] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 40m30s | today: 1 exported, 0 dropped, 2 blocked

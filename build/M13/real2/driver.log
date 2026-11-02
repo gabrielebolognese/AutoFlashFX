@@ -1,0 +1,6 @@
+2026-11-02 12:28:12 m13-run real: sandbox C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE, 3 ideas, faults limit:02-expansion@2,kill:03-gate@2, time limit 43200s per run
+2026-11-02 14:36:50 run 1 ended with exit 137 after 7717s (limit fired 1, kill fired 1, runner lock left 1, stage pid left 1)
+2026-11-02 14:36:50 restarting the runner (run 2)
+2026-11-02 15:18:17 run 2 ended with exit 0 after 2487s
+2026-11-02 15:19:48 run 3 (forever mode on the empty queue, stopped with SIGTERM after its IDLE line) ended with exit 130
+2026-11-02 15:20:03 m13-run real done: MODE=real SANDBOX_M=C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE RC1=137 RC2=0 RC3=130 LIMIT_FIRED=1 KILL_FIRED=1 LOCK_LEFT=1 PID_LEFT=1 T0=1793618892 T1=1793626609 T2=1793629096 

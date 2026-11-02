@@ -1,0 +1,65 @@
+CAPTION
+Before your next Claude Code session, run /init.
+
+If you open every Claude Code session by explaining your repo, the /init command does that briefing once. It reads your codebase and writes a starting CLAUDE.md, and Claude Code reads that file every session.
+
+The docs say the real work is mostly removing lines. If Claude could find it in the code and would look for it, cut it.
+
+Keep what it can't find: your single-test command, decisions made outside the repo, anything you've corrected twice. Target under 200 lines.
+
+CLAUDE.md is context, not enforcement. If a rule has to hold every time, put it in a hook. Then run /context, check Memory files, and your next session starts already briefed.
+
+Comment LINK and I'll send you the link to the Claude Code /init docs.
+
+HASHTAGS
+#ClaudeCode #ClaudeMD #AIcoding #DeveloperTools
+
+COMMENT KEYWORD
+LINK -> DM them: the link to Claude Code /init (the link to the tool, skill or repo shown in the reel) https://code.claude.com/docs/en/memory
+
+SOLUTION
+external: Claude Code /init https://code.claude.com/docs/en/memory
+
+HOOKS
+1.mp4 uses: "Before your next Claude Code session, run /init."
+1hook2.mp4 uses: "Nobody tells you /init's output needs cutting."
+
+NEEDS REVIEW
+05-hooks: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+05-hooks: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+07-script: script: the judge's pick (draft a) still failed a hard check after 3 rounds, draft b was used instead: b10: the claim 'Next session Claude already knows your build and tests' says more than facts.md backs (Docs say CLAUDE.m...
+07-script: soft script check failed after 3 rounds: beats: the hook runs 3.1 s (8 words); it must stay under 3 s
+07-script: soft script check failed after 3 rounds: length: the script runs about 40.2 s (107 words); it must run 25 to 40 s: cut about 4 words
+07-script: soft script check failed after 3 rounds: detect: detect.py scores 67 (needs 70 overall and 55 on every check): VOICE 54 (0.9 contractions, 3.7 personal pronouns per 100 words, 0 s
+08-voiceover: voice: hook 2 is misheard by faster-whisper (WER 25.0%: inits -> and its) after no respelling rule; listen to vo_hook2.wav
+09a-animations: the visual director wanted a component the library lacks: giant-number: A scalable centered hero number (digit height 200+ px) with a label line above it and a count-up, for target or limit va
+09a-animations: the visual director wanted a component the library lacks: file-into-session: A file icon card sliding into a session window and settling with a check, to show a file loaded at every session start
+09a-animations: the visual director wanted a component the library lacks: window-card focus crop: A focus_y / zoom prop on window-card so a research screenshot can be cropped to one line (the /init row of the commands
+09a-animations: the visual director wanted a component the library lacks: chip and stat scale: A scale prop on dark-chip, light-chip and stat-number so a label or the hero number can be set 2x for phone legibility;
+09a-animations: the visual director wanted a component the library lacks: honesty tag placement: A prop to put the honesty light chip in the title bar or under the content so it never covers the first terminal line
+09a-animations: the visual director wanted a component the library lacks: window-card line objects: Render {text, color} line objects in window-card lines_json the way terminal-card does (today an object prints as [objec
+09a-animations: the visual director wanted a component the library lacks: pop pill fits its text: Pop pill width follows its text so a 3 to 4 word label stays on one line; until then pops carry one short word (CUT, HOO
+09a-animations: the visual director wanted a component the library lacks: window-card focus crop: A focus_y / zoom prop on window-card so a research screenshot can be cropped to one region (the 'Loaded into: Every sess
+09a-animations: the visual director wanted a component the library lacks: chip and stat scale: A scale prop on stat-number, dark-chip and light-chip so the hero number can be set about 2x for phone legibility
+09a-animations: the visual director wanted a component the library lacks: window-card focus crop: A focus_y / zoom prop on window-card so a research screenshot can be cropped and enlarged to one region (the 'How Claude
+09a-animations: the visual director wanted a component the library lacks: terminal-card per-line start times: A lines_at_json prop (one start time per line, snapped to words) so each CLAUDE.md bullet types on its spoken word. Toda
+09a-animations: the visual director wanted a component the library lacks: end-card single big mascot: A mascot_count / mascot_scale option on end-card so the CTA can show one large mascot instead of five small ones walking
+09a-animations: the visual director wanted a component the library lacks: card and window-card mascot scale: A scale for the mascot prop on card, window-card and fly-in, so the perched mascot sits at the reference size without a
+09a-animations: the visual director wanted a component the library lacks: check-badge list size: A row-size or scale prop on the checklist card so a 2-item list can fill a hero card. Today it is 182 px tall, so b6 put
+09a-animations: the visual director wanted a component the library lacks: window-card line objects: Render {text, color} line objects in window-card lines_json the way terminal-card does, so the command line in b3 and b1
+09a-animations: the visual director wanted a component the library lacks: pop pill fits its text: Make the pop pill's width follow its text so a label of 3 or 4 words stays on one line. Until then, pops carry one short
+09a-animations: the visual director wanted a component the library lacks: chip and stat scale: A scale prop on stat-number, dark-chip and light-chip so the hero number can be set about 2x for phone legibility.
+09a-animations: the visual director wanted a component the library lacks: honesty tag placement: A prop that moves the honesty chip to the title bar, so it never covers a terminal's first line. Today b7 opens with a b
+12-review: edit review: still failing after 5 rounds (3 opus, 2 fable); exported as it is. Scores: stop 4, hierarchy 3, look 4, variety 3, sync 4, sound 4, generic 3, requirements 4. Open issues: [text] the emphasis on "two" at 25.99s (scene s8) has no accent box in the caption line | [animation] The stake card 'Your repo, explained again' is still a large empty white box from 3.8 s to past 4.4 s (only a small titl | [animation] The 'Two questions per line' card is blank from 17.3 to 17.5 s and its lower half stays empty until the CUT pop near 19. | [animation] The 'If emphasis fails' card (29.1 to about 30 s) shows a small title over an empty lower half before the HOOK pop arriv | [animation] The code.claude.com/docs window-card (11.9 to 14.0 s) is still a full docs page shrunk until its text can't be read at 5 | [animation] Every scene (s2, s3, s5, s6, s7, s8, s9, s10) uses the same layout: a wide white card pinned to the top quarter with tex
+
+FACTS AND SOURCES
+- /init generates a starting CLAUDE.md automatically: Claude analyzes your codebase and creates a file with build commands, test instructions and project conventions it discovers.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+- The docs say to refine the generated file with instructions Claude would not discover on its own.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+- Best practices: after /init, "the work is mostly removing lines." Keep only what Claude cannot work out from the code: exact test, typecheck and lint commands (including how to run a single test file), places where the code is misleading, decisions that are not in the repo, and anything you have had to correct twice.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- A test to apply before adding a line: could Claude find this by reading the code, and would it actually go and look? If both answers are yes, leave it out.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- Target under 200 lines per CLAUDE.md file. Longer files use more context and reduce adherence.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+- CLAUDE.md is context, not enforced configuration. A rule that must always or never happen belongs in a hook. If you keep adding emphasis to a CLAUDE.md line and Claude still misses it, that line belongs in a hook.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- Run /context and check the list under Memory files to confirm CLAUDE.md loaded. /doctor prompt-audit flags outdated, broken or conflicting instructions.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+
+RUN
+runs/2026-11-02_1228_claude-codes-init-command-it

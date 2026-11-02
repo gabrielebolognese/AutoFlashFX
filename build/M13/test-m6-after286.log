@@ -1,0 +1,248 @@
+
+== 1. units: script_checks.py and the fake's task fixtures (no model) ==
+PASS  numbers: thousands, ranges, hex, percent, money, year, version, leading zeros, ordinals (flash F X shows one million one hundred thirty-four thousand one hundred twelve ...)
+PASS  numbers: the pronunciation file is applied (FlashFX -> flash F X)
+PASS  length-rule: tweaks.md gives 25 to 40 s by default and 45 to 75 s for lists
+PASS  length-rule: a PROPOSED Length line is ignored
+PASS  tones: the brief's first two suggested tones
+PASS  tones: no brief suggestion, the hook's family decides, then the default order
+PASS  tones: unknown family, the default order
+PASS  setup: plan.json written
+PASS  setup: the length range from tweaks.md for a default reel
+PASS  setup: 81 to 130 words at 195 wpm, the writer aims at 121 to 143 before the cut
+PASS  setup: hook 1 is the judge's winner
+PASS  setup: hook 2 and the keyword
+PASS  setup: the beat map comes from style.md and the excerpts from voice.md
+PASS  draft: the hook beat's display and card are hook 1's lines whatever the model wrote
+PASS  draft: an emphasis word that is not in the display line is dropped
+PASS  draft: pronunciations and numbers applied to the spoken track
+PASS  draft: the normalizer notes the replaced hook
+PASS  fixture good passes every local check (37.2 s, detect 84.8)
+PASS  fixture placeholder fails exactly the placeholders check (hard)
+PASS  fixture two-asks fails exactly the one-ask check (hard)
+PASS  fixture abstract-run fails exactly beats.py's abstract run (soft)
+PASS  fixture abstract-run: the message names the run
+PASS  fixture long-beat fails exactly the 4 s beat rule (soft)
+PASS  fixture long-beat: the message names the beat
+PASS  placeholders are hard, timing is soft
+PASS  good: the report records detect.py PASS, the loop word, the stake identity words and beats.py's notes
+PASS  check --write: humanize.py replaced the stock word and the em dash in the draft
+PASS  check --write: the exact value rgba(0,0,0,.1) survives humanize.py
+PASS  check: the humanize report counts the lexical hit
+PASS  cut-data: the listing, the targets and the tokens that must survive
+PASS  cut-apply: the fixture cut passes (removed 22.0%)
+PASS  cut-apply: 10 to 30 percent removed
+PASS  cut-apply: a cut that drops #D97757 fails
+PASS  cut-apply: the error names the lost value
+PASS  cut-best: the attempt that kept every value wins
+PASS  cut-best: with only a lossy attempt the uncut draft is kept
+PASS  claims: every claim supported keeps the report ok
+PASS  claims: an overstated claim is one hard failure
+PASS  claims: the failure is check facts on the named beat
+PASS  feedback: the rewrite prompt text carries the failure, its severity and the word budget
+PASS  pick-data: both drafts in a seeded order with their check summaries
+PASS  pick: winner 2 maps to the draft shown second
+PASS  pick: an answer that names no draft takes the first one, leniently
+PASS  compose: script.json written
+PASS  compose: script.json validates against schema.json
+PASS  compose: the rules of spec S7 hold on the file (12 beats, 37.23 s, 117 words, tone insider, picked a, cut 22.0%, detect 84.8, rounds 1)
+PASS  compose: both drafts, the pick, the cut and the checks are recorded
+PASS  schema: a card of 7 words is rejected
+PASS  rewrite-line-apply: the line is replaced and recorded
+PASS  rewrite-line-apply: the record names the beat and the reason
+PASS  rewrite-line-apply: script-rl.json still validates
+PASS  rewrite-line-apply: a longer line is refused
+PASS  fake: '# Task: cut' serves 07-script.cut.1.json
+PASS  fake: the second cut call serves 07-script.cut.2.json
+PASS  fake: without a task line only the stage files count (none here), so the plain ok answer comes back
+PASS  fake: the log records the task
+
+== 2. S7 through the runner with the fake claude, from the frozen M5 outputs (then the rewrite, block and soft paths) ==
+    [15:22] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [15:22] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.nBk4MmCQbL/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [15:22] START  reels autopilot v0.1.0 (2c2351a) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [15:22] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1522_claude-codes-frontend-design-skill (resumed at writing script, 5 stages done)
+    [15:22] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+    [15:22] INFO   S7: hook 1 h01 "Why your Claude Code cards all look identical."; default reel of 25 to 40 s (tweaks.md) at 195 wpm: 81 to 130 words after the cut; tones insider and warning (brief); solution external
+    [15:23] INFO   S7: draft a (insider) written: 12 beats, 150 words before the cut
+    [15:23] INFO   S7: draft a cut from 150 to 117 words (22.0%, attempt 1)
+    [15:23] INFO   S7: draft a (insider) round 1: 37.2 s, 117 words, detect 84.8, 9 claims checked: every check passes
+    [15:23] INFO   S7: draft b (warning) written: 12 beats, 152 words before the cut
+    [15:23] INFO   S7: draft b cut from 152 to 119 words (21.7%, attempt 1)
+    [15:23] INFO   S7: draft b (warning) round 1: 38.2 s, 119 words, detect 78.4, 9 claims checked: every check passes
+    [15:24] INFO   S7: the judge picked draft b (warning): Draft 1 reads like someone who opened the file: 'Same shadow, rgba(0,0,0,.1)' and 'It names tells' are things he would s...
+    [15:24] INFO   S7: script.json: draft b (warning), 12 beats, 38.15 s (119 words at 195 wpm), cut 21.7%, detect 78.4, 1 round; session D done
+    [15:24] STEP   writing script done (1m29s) -> generating voiceover
+    [15:24] STEP   generating voiceover done (4s) -> planning animations
+    [15:24] STEP   planning animations done (1s) -> planning text
+    [15:24] STEP   planning text done (3s) -> planning transitions
+    [15:24] STEP   planning transitions done (2s) -> building visuals
+    [15:24] STEP   building visuals done (3s) -> adding sound effects
+    [15:24] STEP   adding sound effects done (1s) -> reviewing: mechanical checks
+    [15:24] STEP   reviewing: mechanical checks done (3s) -> rendering final video
+    [15:24] STEP   rendering final video done (2s) -> writing caption
+    [15:24] STEP   writing caption done (3s) -> exporting #1
+    [15:24] DONE   exported #1 -> exports/1/ (2 min, 0 issues fixed)
+PASS  the runner exits 0
+PASS  START: the run seeded from the frozen outputs resumes at S7
+PASS  S7: the plan line (hook 1, the length rule from tweaks.md, the tones from the brief, the solution type of M12)
+PASS  S7: draft a written
+PASS  S7: draft a cut by 22 percent
+PASS  S7: draft a passes every check
+PASS  S7: draft b written
+PASS  S7: draft b passes every check
+PASS  S7: the pick line with the judge's reason
+PASS  S7: the summary line
+PASS  S7 done, the runner moves to S8
+PASS  the run continued to the (dummy) export
+PASS  no ERROR line
+PASS  no BLOCK line
+PASS  no script flag
+PASS  script.json validates against schema.json
+PASS  script.json keeps the rules of spec S7 (12 beats, 38.15 s, 119 words, tone warning, picked b, cut 21.7%, detect 78.4, rounds 1)
+PASS  script.json: the pick and one round
+PASS  script.json: the tone is the picked draft's
+PASS  script.json: two drafts with their cut, the pick's order and reason, hook 2's tracks, the claims checked
+PASS  script.json: beat 1 is hook 1 with its on-screen line as card
+PASS  script.json: the keyword and the loop word
+PASS  stage file plan.json
+PASS  stage file draft-a.r1.json
+PASS  stage file draft-a.r1.cut.json
+PASS  stage file draft-b.r1.cut.json
+PASS  stage file checks-a-r1.json
+PASS  stage file checks-b-r1.json
+PASS  stage file pick-data.json
+PASS  stage file pick.json
+PASS  stage file rounds.json
+PASS  stage file prompt-write-a.md
+PASS  stage file prompt-write-b-short.md
+PASS  stage file prompt-cut-a-r1.md
+PASS  stage file prompt-claims-a-r1.md
+PASS  stage file prompt-pick.md
+PASS  the write prompt carries the task line
+PASS  the claims prompt inlines facts.md
+PASS  the cut prompt lists the values that must survive
+PASS  the pick prompt carries the voice excerpts
+PASS  the full prompt of draft B names draft A's tone (the fallback when session D is lost)
+PASS  7 model calls: 2 drafts, 2 cuts, 2 claims checks, the pick
+PASS  the roles in order
+PASS  the tasks in order
+PASS  draft a starts session D
+PASS  draft b resumes session D
+PASS  the cut, claims and pick calls are fresh sessions
+PASS  state.json keeps session D
+PASS  the models from config (script, cut, checks, judge)
+PASS  no tools on any call
+PASS  no em dash in the stage files
+PASS  ideas.txt: the idea is gone after the export
+PASS  rewrite-line: the stage script exits 0
+PASS  rewrite-line: the INFO line
+PASS  rewrite-line: script.json records the rewrite
+PASS  rewrite-line: the spoken track is the simpler line
+PASS  rewrite-line: one script call that resumes session D
+PASS  rewrite-line: script.json still validates
+    [15:25] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [15:25] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.nBk4MmCQbL/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [15:25] START  reels autopilot v0.1.0 (2c2351a) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [15:25] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1525_claude-codes-frontend-design-skill (resumed at writing script, 5 stages done)
+    [15:25] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+    [15:25] INFO   S7: hook 1 h01 "Why your Claude Code cards all look identical."; default reel of 25 to 40 s (tweaks.md) at 195 wpm: 81 to 130 words after the cut; tones insider and warning (brief); solution external
+    [15:26] INFO   S7: draft a (insider) written: 12 beats, 150 words before the cut
+    [15:26] INFO   S7: draft a cut from 150 to 117 words (22.0%, attempt 1)
+    [15:26] WARN   S7: draft a (insider) round 1: 37.2 s, 117 words, detect 84.8: 1 hard and 0 soft failure (first: b11: the claim 'the skill has over a million installs' says more than facts.md backs (facts.md#14 gives 1,134,...)
+    [15:26] INFO   S7: draft b (warning) written: 12 beats, 152 words before the cut
+    [15:26] INFO   S7: draft b cut from 152 to 119 words (21.7%, attempt 1)
+    [15:27] WARN   S7: draft b (warning) round 1: 38.2 s, 119 words, detect 78.4: 1 hard and 0 soft failure (first: b11: the claim 'the skill has over a million installs' says more than facts.md backs (facts.md#14 gives 1,134,...)
+    [15:27] INFO   S7: the judge picked draft b (warning): Draft 1 reads like someone who opened the file: 'Same shadow, rgba(0,0,0,.1)' and 'It names tells' are things he would s...
+    [15:27] INFO   S7: draft b (warning) round 2: 38.8 s, 121 words, detect 81.7, 9 claims checked: every check passes
+    [15:27] INFO   S7: script.json: draft b (warning), 12 beats, 38.77 s (121 words at 195 wpm), cut 21.7%, detect 81.7, 2 rounds; session D done
+    [15:27] STEP   writing script done (1m53s) -> generating voiceover
+    [15:27] STEP   generating voiceover done (4s) -> planning animations
+    [15:27] STEP   planning animations done (2s) -> planning text
+    [15:27] STEP   planning text done (4s) -> planning transitions
+    [15:27] STEP   planning transitions done (2s) -> building visuals
+    [15:27] STEP   building visuals done (4s) -> adding sound effects
+    [15:28] STEP   adding sound effects done (2s) -> reviewing: mechanical checks
+    [15:28] STEP   reviewing: mechanical checks done (3s) -> rendering final video
+    [15:28] STEP   rendering final video done (2s) -> writing caption
+    [15:28] STEP   writing caption done (4s) -> exporting #2
+    [15:28] DONE   exported #2 -> exports/2/ (3 min, 0 issues fixed)
+PASS  rewrite round: the runner exits 0
+PASS  rewrite round: round 1 names the overstated claim
+PASS  rewrite round: round 2 passes
+PASS  rewrite round: the summary counts 2 rounds
+PASS  rewrite round: the run continued to the export
+PASS  rewrite round: no ERROR or BLOCK
+PASS  rewrite round: script.json says 2 rounds and ok
+PASS  rewrite round: the round 2 draft of the picked draft
+PASS  rewrite round: the round 2 report
+PASS  rewrite round: the rewritten line is in script.json
+PASS  rewrite round: 9 calls (7 plus the rewrite and its claims check)
+PASS  rewrite round: the rewrite in session D, then the claims check
+PASS  rewrite round: the rewrite resumes session D
+PASS  rewrite round: the rewrite prompt lists the failing check
+PASS  rewrite round: the rewrite prompt carries its task line
+PASS  rewrite round: script.json keeps round 1's cut statistics
+PASS  rewrite round: state.json rounds.script
+PASS  rewrite round: the rounds log has round 1 for both drafts and round 2 for the pick
+    [15:29] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [15:29] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.nBk4MmCQbL/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [15:29] START  reels autopilot v0.1.0 (2c2351a) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [15:29] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1528_claude-codes-frontend-design-skill (resumed at writing script, 5 stages done)
+    [15:29] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+    [15:29] INFO   S7: hook 1 h01 "Why your Claude Code cards all look identical."; default reel of 25 to 40 s (tweaks.md) at 195 wpm: 81 to 130 words after the cut; tones insider and warning (brief); solution external
+    [15:29] INFO   S7: draft a (insider) written: 12 beats, 150 words before the cut
+    [15:29] INFO   S7: draft a cut from 150 to 117 words (22.0%, attempt 1)
+    [15:29] WARN   S7: draft a (insider) round 1: 37.2 s, 117 words, detect 84.8: 1 hard and 0 soft failure (first: b5: the claim 'the skill names every tell' is not backed by facts.md (facts.md lists some tells (claims 5 to 8...)
+    [15:29] INFO   S7: draft b (warning) written: 12 beats, 152 words before the cut
+    [15:30] INFO   S7: draft b cut from 152 to 119 words (21.7%, attempt 1)
+    [15:30] WARN   S7: draft b (warning) round 1: 38.2 s, 119 words, detect 78.4: 1 hard and 0 soft failure (first: b5: the claim 'the skill names every tell' is not backed by facts.md (facts.md lists some tells (claims 5 to 8...)
+    [15:30] INFO   S7: the judge picked draft b (warning): Draft 1 reads like someone who opened the file: 'Same shadow, rgba(0,0,0,.1)' and 'It names tells' are things he would s...
+    [15:30] WARN   S7: draft b (warning) round 2: 37.2 s, 117 words, detect 84.8: 1 hard and 0 soft failure (first: b5: the claim 'the skill names every tell' is not backed by facts.md (facts.md lists some tells (claims 5 to 8...)
+    [15:30] WARN   S7: draft b (warning) round 3: 37.2 s, 117 words, detect 84.8: 1 hard and 0 soft failure (first: b5: the claim 'the skill names every tell' is not backed by facts.md (facts.md lists some tells (claims 5 to 8...)
+    [15:30] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S7: script still failing after 3 rounds: b5: the claim 'the skill names every tell' is not backed by facts.md (facts.md lists some tells (claims 5 to 8) but nothing says the list is complete); reword it from a v.... Moved to logs/blocked.txt
+PASS  block path: the runner exits 0 (the idea is blocked, the queue is empty)
+PASS  block path: the BLOCK line with the hard failure
+PASS  block path: no ERROR and no export
+PASS  block path: logs/blocked.txt
+PASS  block path: the history line
+PASS  block path: result.json
+PASS  block path: no script.json
+PASS  block path: 11 calls (7, then two rewrite rounds with their claims checks)
+PASS  block path: state.json says blocked
+    [15:31] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [15:31] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.nBk4MmCQbL/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [15:31] START  reels autopilot v0.1.0 (2c2351a) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [15:31] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1531_claude-codes-frontend-design-skill (resumed at writing script, 5 stages done)
+    [15:31] FLAG   needs review: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+    [15:31] INFO   S7: hook 1 h01 "Why your Claude Code cards all look identical."; default reel of 25 to 40 s (tweaks.md) at 195 wpm: 81 to 130 words after the cut; tones insider and warning (brief); solution external
+    [15:31] INFO   S7: draft a (insider) written: 12 beats, 150 words before the cut
+    [15:32] INFO   S7: draft a cut from 150 to 122 words (18.7%, attempt 1)
+    [15:32] WARN   S7: draft a (insider) round 1: 38.8 s, 122 words, detect 88.6: 0 hard and 1 soft failure (first: b8 runs 6.2 s (20 words); no beat may run over 4 s: split it or cut it to 13 words)
+    [15:32] INFO   S7: draft b (warning) written: 12 beats, 152 words before the cut
+    [15:32] INFO   S7: draft b cut from 152 to 122 words (19.7%, attempt 1)
+    [15:33] WARN   S7: draft b (warning) round 1: 38.8 s, 122 words, detect 88.6: 0 hard and 1 soft failure (first: b8 runs 6.2 s (20 words); no beat may run over 4 s: split it or cut it to 13 words)
+    [15:33] INFO   S7: the judge picked draft b (warning): Draft 1 reads like someone who opened the file: 'Same shadow, rgba(0,0,0,.1)' and 'It names tells' are things he would s...
+    [15:33] WARN   S7: draft b (warning) round 2: 38.8 s, 122 words, detect 88.6: 0 hard and 1 soft failure (first: b8 runs 6.2 s (20 words); no beat may run over 4 s: split it or cut it to 13 words)
+    [15:34] WARN   S7: draft b (warning) round 3: 38.8 s, 122 words, detect 88.6: 0 hard and 1 soft failure (first: b8 runs 6.2 s (20 words); no beat may run over 4 s: split it or cut it to 13 words)
+    [15:34] FLAG   needs review: soft script check failed after 3 rounds: beats: b8 runs 6.2 s (20 words); no beat may run over 4 s: split it or cut it to 13 words
+    [15:34] INFO   S7: script.json: draft b (warning), 12 beats, 38.77 s (122 words at 195 wpm), cut 19.7%, detect 88.6, 3 rounds; session D done
+    [15:34] STEP   writing script done (2m38s) -> generating voiceover
+    [15:34] STEP   generating voiceover done (6s) -> planning animations
+    [15:34] STEP   planning animations done (7s) -> planning text
+    [15:34] STEP   planning text done (10s) -> planning transitions
+    [15:34] STEP   planning transitions done (5s) -> building visuals
+    [15:34] STEP   building visuals done (4s) -> adding sound effects
+    [15:34] STEP   adding sound effects done (1s) -> reviewing: mechanical checks
+    [15:35] STEP   reviewing: mechanical checks done (3s) -> rendering final video
+    [15:35] STEP   rendering final video done (4s) -> writing caption
+    [15:35] STEP   writing caption done (4s) -> exporting #3
+    [15:35] DONE   exported #3 -> exports/3/ (4 min, 0 issues fixed)
+PASS  soft path: the runner exits 0
+PASS  soft path: the FLAG line names the long beat
+PASS  soft path: the run continued to the export
+PASS  soft path: no ERROR or BLOCK
+PASS  soft path: script.json validates, 3 rounds, checks not ok with a soft failure only, the flag recorded
+PASS  soft path: 11 calls (two rewrite rounds)
+
+test-m6.sh: 147 passed, 0 failed

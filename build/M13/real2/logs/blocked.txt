@@ -1,0 +1,4 @@
+# 2026-11-02 14:55 | blocked at S8 | voice: line b9 cannot be said clearly by af_bella (WER 25.0%: heads up -> headset) after no respelling rule, rewritten by S7: "Caveat: Playwright C L I uses fewer tokens." -> "Heads up: Playwright's command line uses fewer tokens." | runs/2026-11-02_1432_the-playwright-mcp-server-lets
+{The Playwright MCP server lets Claude Code open a real browser, click through your web app and tell you what is broken. Show how to add it with one command and the first prompt to try.}
+# 2026-11-02 15:18 | blocked at S7 | script still failing after 3 rounds: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its words (cut, clips, long, recordings) in the stake beat; found ... | runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+{ffmpeg can cut a clip out of a huge video in one second without re-encoding: -ss, -to and -c copy. Show the command and the one catch (it cuts on keyframes).}

@@ -1,0 +1,2 @@
+2026-11-02 11:37:38 | session limit | reset 2026-11-02 11:40 | waiting until 2026-11-02 11:42:00 (reset + 120 s) | "You've hit your session limit · resets 11:40am (Europe/Rome)"
+2026-11-02 11:37:38 | resumed after the session limit (waited 1s)

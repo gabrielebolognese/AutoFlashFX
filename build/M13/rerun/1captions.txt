@@ -1,0 +1,52 @@
+CAPTION
+The truth nobody tells you about /init.
+
+If you open Claude Code on the same repo every day, you know the drill: new session, and you explain how your tests run all over again.
+
+Run /init and Claude analyzes your codebase and writes a starter CLAUDE.md: build commands, test instructions, conventions. It gets read every session.
+
+The docs say the work from there is mostly removing lines, and to keep it under 200. If Claude could find it and would look for it, delete it.
+
+Then add by hand what the code can't tell it: exact test commands, any misleading code, decisions made outside the repo, anything you corrected twice.
+
+It's context, not enforcement, so hard rules belong in a hook. One command starts it. You finish by deleting.
+
+Comment LINK and I'll send you the official docs for /init.
+
+HASHTAGS
+#ClaudeCode #AIcoding #devtools #softwareengineering
+
+COMMENT KEYWORD
+LINK -> DM them: the link to Claude Code /init (the link to the tool, skill or repo shown in the reel) https://code.claude.com/docs/en/memory
+
+SOLUTION
+external: Claude Code /init https://code.claude.com/docs/en/memory
+
+HOOKS
+1.mp4 uses: "The truth nobody tells you about /init."
+1hook2.mp4 uses: "Add four things after /init. Number four's overlooked."
+
+NEEDS REVIEW
+05-hooks: library/profile/voice.md is still a draft with [FILL IN] placeholders: the hooks, the judge and the script use default voice assumptions
+05-hooks: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+08-voiceover: voice: hook 2 is misheard by faster-whisper (WER 44.4%: slash -> slashing; init -> it; fours -> four is) after no respelling rule; listen to vo_hook2.wav
+09a-animations: the visual director wanted a component the library lacks: running-list: One list card that persists across consecutive scenes and adds rows on spoken words, so the 4 things grow in one place a
+09a-animations: the visual director wanted a component the library lacks: doodle-sticker: Small white-outlined stars and clouds scattered around the mascot like the look refs (v01); tokens currently have doodle
+12-review: edit review (round 2): [voice] the voice is hard to follow in the mix: word error rate 26.4 percent (misheard: too, not, enforcement, so, hard, rules)
+09a-animations: the visual director wanted a component the library lacks: screenshot-crop: Shows one region of a research screenshot (a crop rect in image px) scaled up inside a window card, so one docs line (th
+09a-animations: the visual director wanted a component the library lacks: giant-number: A hero number with digits about 250 to 300 px tall that counts up, filling the hero zone (stat-number is fixed at a 168
+09a-animations: the visual director wanted a component the library lacks: hook-sticker: A surface or ink sticker holding a 4 to 6 word line at 52 to 60 px (at least half the headline size) that slaps onto the
+09a-animations: the visual director wanted a component the library lacks: doc-strike-card: A CLAUDE.md-style document card with 6 to 10 large lines (48 px or more) where chosen lines get struck through and fade
+09a-animations: the visual director wanted a component the library lacks: checklist-reveal: check-badge list mode with a reveal time per item (items_at) and items that start already ticked, so a checklist builds
+12-review: edit review: still failing after 5 rounds (3 opus, 2 fable); exported as it is. Scores: stop 4, hierarchy 3, look 4, variety 3, sync 4, sound 3, generic 4, requirements 4. Open issues: [text] the emphasis on "every session" at 12.96s (scene s4) has no accent box in the caption line | [text] the emphasis on "remove lines" at 14.83s (scene s5) has no accent box in the caption line | [text] the emphasis on "find it" at 17.53s (scene s6) has no accent box in the caption line | [text] the emphasis on "misleading code" at 22.70s (scene s7) has no accent box in the caption line | [text] the emphasis on "outside the repo" at 24.14s (scene s8) has no accent box in the caption line | [text] the emphasis on "corrected twice" at 25.40s (scene s8) has no accent box in the caption line
+
+FACTS AND SOURCES
+- /init generates a starting CLAUDE.md: Claude analyzes your codebase and creates a file with build commands, test instructions, and project conventions it discovers.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+- Best practices: /init generates a starting version from your codebase, and from there the work is mostly removing lines.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- What to add by hand: the exact test, typecheck and lint commands and how to run a single test file; places where the code is misleading; decisions that are not in the repo (error helper, deploys, migration review); anything you have had to correct twice already.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- A test before writing anything down: 1. Could Claude find this by reading the code? 2. Would it actually go and look? If both are yes, leave it out.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+- Target under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence.: https://code.claude.com/docs/en/memory (checked 2026-11-02)
+- Claude treats CLAUDE.md as context, not enforced configuration. If Claude keeps ignoring a line, adding IMPORTANT probably won't fix it: a rule that can't have exceptions belongs in a hook.: https://code.claude.com/docs/en/best-practices (checked 2026-11-02)
+
+RUN
+runs/2026-11-02_1202_claude-codes-init-command-it

@@ -1,0 +1,503 @@
+1793618892	<missing>
+1793618912	<missing>
+1793618932	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793618952	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793618972	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793618992	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793619013	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793619033	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793619053	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793619074	[12:28] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-02_1228_claude-codes-init-command-it
+1793619095	[12:31] STEP   researching facts done (2m47s) -> expanding idea
+1793619115	[12:31] STEP   researching facts done (2m47s) -> expanding idea
+1793619135	[12:31] STEP   researching facts done (2m47s) -> expanding idea
+1793619155	[12:32] STEP   expanding idea done (44s) -> checking idea (gate)
+1793619175	[12:32] GATE   passed (P3 S3 C3 F ok H ok)
+1793619196	[12:32] STEP   checking idea (gate) done (39s) -> picking hooks
+1793619216	[12:32] STEP   checking idea (gate) done (39s) -> picking hooks
+1793619237	[12:33] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793619257	[12:33] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793619278	[12:33] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793619298	[12:33] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793619319	[12:33] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793619340	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619361	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619381	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619401	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619421	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619442	[12:35] WARN   S5: the hooks missed a rule (hook 4 "Everyone overcomplicates CLAUDE.md. The secret: under 200 li": spoken line has 9 words, the cap is 8 (), asking again (try 2/3)
+1793619462	[12:37] WARN   S5: the brief missed the length (the brief is about 3130 tokens (2408 words); it must be between 2000 and 3000 tokens, so cut about 140 words), asking again (try 2/3)
+1793619483	[12:37] WARN   S5: the brief missed the length (the brief is about 3130 tokens (2408 words); it must be between 2000 and 3000 tokens, so cut about 140 words), asking again (try 2/3)
+1793619504	[12:37] WARN   S5: the brief missed the length (the brief is about 3130 tokens (2408 words); it must be between 2000 and 3000 tokens, so cut about 140 words), asking again (try 2/3)
+1793619524	[12:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | judging hooks | minute 10 | stage 12s | issues: 0 fixed, 0 open
+1793619545	[12:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | judging hooks | minute 10 | stage 12s | issues: 0 fixed, 0 open
+1793619565	[12:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | judging hooks | minute 10 | stage 12s | issues: 0 fixed, 0 open
+1793619585	[12:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | judging hooks | minute 10 | stage 12s | issues: 0 fixed, 0 open
+1793619605	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619625	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619645	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619666	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619686	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619707	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619727	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619747	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619767	[12:39] STEP   judging hooks done (1m28s) -> writing script
+1793619788	[12:43] WARN   S7: draft a (calm expert) round 1: 37.8 s, 104 words, detect 65.4: 0 hard and 4 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793619808	[12:43] WARN   S7: draft a (calm expert) round 1: 37.8 s, 104 words, detect 65.4: 0 hard and 4 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793619828	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619849	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619870	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619891	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619911	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619932	[12:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | writing script (draft 2/2, round 1/3) | minute 15 | stage 3m42s | issues: 0 fixed, 0 open
+1793619953	[12:45] WARN   S7: draft b (insider) round 1: 40.2 s, 107 words, detect 66.5: 0 hard and 6 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793619974	[12:45] WARN   S7: draft b (insider) round 1: 40.2 s, 107 words, detect 66.5: 0 hard and 6 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793619994	[12:45] WARN   S7: draft b (insider) round 1: 40.2 s, 107 words, detect 66.5: 0 hard and 6 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793620015	[12:45] WARN   S7: draft b (insider) round 1: 40.2 s, 107 words, detect 66.5: 0 hard and 6 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793620035	[12:45] WARN   S7: draft b (insider) round 1: 40.2 s, 107 words, detect 66.5: 0 hard and 6 soft failures (first: the hook runs 3.1 s (8 words); it must stay under 3 s)
+1793620055	[12:47] WARN   S7: draft a (calm expert) round 2: 36.1 s, 100 words, detect 48.4: 0 hard and 1 soft failure (first: detect.py scores 48 (needs 70 overall and 55 on every check): BURSTINESS 16 (variation 0.30 across 22 sentence...)
+1793620075	[12:47] WARN   S7: draft a (calm expert) round 2: 36.1 s, 100 words, detect 48.4: 0 hard and 1 soft failure (first: detect.py scores 48 (needs 70 overall and 55 on every check): BURSTINESS 16 (variation 0.30 across 22 sentence...)
+1793620095	[12:47] WARN   S7: draft a (calm expert) round 2: 36.1 s, 100 words, detect 48.4: 0 hard and 1 soft failure (first: detect.py scores 48 (needs 70 overall and 55 on every check): BURSTINESS 16 (variation 0.30 across 22 sentence...)
+1793620116	[12:47] WARN   S7: draft a (calm expert) round 2: 36.1 s, 100 words, detect 48.4: 0 hard and 1 soft failure (first: detect.py scores 48 (needs 70 overall and 55 on every check): BURSTINESS 16 (variation 0.30 across 22 sentence...)
+1793620136	[12:48] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | checking script | minute 20 | stage 8m42s | issues: 0 fixed, 0 open
+1793620156	[12:49] FLAG   needs review: soft script check failed after 3 rounds: detect: detect.py scores 67 (needs 70 overall and 55 on every check): VOICE 54 (0.9 contractions, 3.7 personal pronouns per 100 words, 0 s
+1793620178	[12:49] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793620198	[12:49] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793620218	[12:49] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793620239	[12:49] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793620261	[12:49] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793620281	[12:51] WARN   S8: line b3 still misheard (WER 35.7%: analyze -> analyzed; claude dot m d -> claudemd) after the pronunciation step, rewriting it through S7
+1793620301	[12:51] WARN   S8: line b3 still misheard (WER 35.7%: analyze -> analyzed; claude dot m d -> claudemd) after the pronunciation step, rewriting it through S7
+1793620323	[12:51] WARN   S8: line b4 still misheard (WER 14.3%: it -> at) after the pronunciation step, rewriting it through S7
+1793620344	[12:52] WARN   S8: line b5 still misheard (WER 10.0%: per -> for) after the pronunciation step, rewriting it through S7
+1793620364	[12:52] WARN   S8: line b9 still misheard (WER 26.7%: claude dot m d -> claudemd) after the pronunciation step, rewriting it through S7
+1793620384	[12:52] WARN   S8: line b9 still misheard (WER 26.7%: claude dot m d -> claudemd) after the pronunciation step, rewriting it through S7
+1793620405	[12:52] WARN   S8: line b9 still misheard (WER 26.7%: claude dot m d -> claudemd) after the pronunciation step, rewriting it through S7
+1793620425	[12:53] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | aligning words | minute 25 | stage 4m25s | issues: 0 fixed, 0 open
+1793620445	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620465	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620485	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620505	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620525	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620546	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620566	[12:54] STEP   generating voiceover done (4m43s) -> planning animations
+1793620586	[12:56] STEP   planning animations done (2m22s) -> planning text
+1793620606	[12:56] STEP   planning animations done (2m22s) -> planning text
+1793620627	[12:56] STEP   planning animations done (2m22s) -> planning text
+1793620647	[12:56] STEP   planning animations done (2m22s) -> planning text
+1793620668	[12:57] STEP   planning text done (1m05s) -> planning transitions
+1793620689	[12:57] STEP   planning text done (1m05s) -> planning transitions
+1793620709	[12:58] STEP   planning transitions done (51s) -> building visuals
+1793620729	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620749	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620770	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620790	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620812	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620833	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620853	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620874	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620895	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620916	[12:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 30 | stage 17s | issues: 0 fixed, 0 open
+1793620937	[13:01] STEP   building visuals done (3m31s) -> adding sound effects
+1793620957	[13:02] STEP   adding sound effects done (22s) -> reviewing: mechanical checks
+1793620980	[13:02] STEP   adding sound effects done (22s) -> reviewing: mechanical checks
+1793621001	[13:02] STEP   adding sound effects done (22s) -> reviewing: mechanical checks
+1793621021	[13:02] STEP   adding sound effects done (22s) -> reviewing: mechanical checks
+1793621042	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621063	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621084	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621107	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621128	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621148	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621168	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621189	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621209	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621229	[13:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 35 | stage 1m20s | issues: 0 fixed, 0 open
+1793621250	[13:07] WARN   S12: review round 1 failed (14 issues; scores stop 3, hierarchy 3, look 3, variety 3, sync 4, sound 3, generic 3, requirements 4): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+1793621270	[13:07] STEP   reviewing: mechanical checks done (5m07s) -> planning animations
+1793621291	[13:07] STEP   reviewing: mechanical checks done (5m07s) -> planning animations
+1793621312	[13:07] STEP   reviewing: mechanical checks done (5m07s) -> planning animations
+1793621332	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621353	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621373	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621393	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621414	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621435	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621455	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621476	[13:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 40 | stage 1m11s | issues: 0 fixed, 1 open
+1793621496	[13:11] WARN   S9: the animations plan has 1 problems (beat_map: s10-terminal-card-1: terminal-card is not allowed for a payoff beat (tokens.json beat_map: card, check-badge, ...); asking the director once more
+1793621518	[13:11] WARN   S9: the animations plan has 1 problems (beat_map: s10-terminal-card-1: terminal-card is not allowed for a payoff beat (tokens.json beat_map: card, check-badge, ...); asking the director once more
+1793621539	[13:11] WARN   S9: the animations plan has 1 problems (beat_map: s10-terminal-card-1: terminal-card is not allowed for a payoff beat (tokens.json beat_map: card, check-badge, ...); asking the director once more
+1793621560	[13:12] STEP   planning animations done (4m57s) -> planning text
+1793621580	[13:12] STEP   planning animations done (4m57s) -> planning text
+1793621601	[13:12] STEP   planning animations done (4m57s) -> planning text
+1793621621	[13:12] STEP   planning animations done (4m57s) -> planning text
+1793621643	[13:13] STEP   planning text done (1m15s) -> planning transitions
+1793621665	[13:13] STEP   planning text done (1m15s) -> planning transitions
+1793621685	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621706	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621727	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621748	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621771	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621791	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621813	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621833	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621854	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621874	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621895	[13:14] STEP   planning transitions done (43s) -> building visuals
+1793621916	[13:18] STEP   building visuals done (3m44s) -> adding sound effects
+1793621936	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793621957	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793621977	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793621998	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622018	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622039	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622060	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622081	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622101	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622122	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622142	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622163	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622185	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622205	[13:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 50 | stage 0s | issues: 0 fixed, 1 open
+1793622226	[13:23] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 2/5) | minute 55 | stage 5m00s | issues: 0 fixed, 1 open
+1793622246	[13:23] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 2/5) | minute 55 | stage 5m00s | issues: 0 fixed, 1 open
+1793622268	[13:23] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 2/5) | minute 55 | stage 5m00s | issues: 0 fixed, 1 open
+1793622288	[13:23] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 2/5) | minute 55 | stage 5m00s | issues: 0 fixed, 1 open
+1793622308	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622328	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622349	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622369	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622389	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622409	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622429	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622450	[13:24] STEP   reviewing: mechanical checks done (6m12s) -> planning animations
+1793622470	[13:27] FLAG   needs review: the visual director wanted a component the library lacks: honesty tag placement: A prop to put the honesty light chip in the title bar or under the content so it never covers the first terminal line
+1793622490	[13:27] STEP   planning animations done (2m50s) -> planning text
+1793622510	[13:27] STEP   planning animations done (2m50s) -> planning text
+1793622531	[13:28] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning transitions | minute 60 | stage 0s | issues: 0 fixed, 1 open
+1793622551	[13:28] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning transitions | minute 60 | stage 0s | issues: 0 fixed, 1 open
+1793622571	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622591	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622612	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622633	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622655	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622675	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622696	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622716	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622736	[13:29] STEP   planning transitions done (40s) -> building visuals
+1793622757	[13:32] STEP   building visuals done (2m55s) -> adding sound effects
+1793622779	[13:32] STEP   adding sound effects done (17s) -> reviewing: mechanical checks
+1793622799	[13:32] STEP   adding sound effects done (17s) -> reviewing: mechanical checks
+1793622819	[13:32] STEP   adding sound effects done (17s) -> reviewing: mechanical checks
+1793622839	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622860	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622880	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622901	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622923	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622944	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622965	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793622985	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793623005	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793623025	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793623047	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793623068	[13:33] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: mechanical checks | minute 65 | stage 1m05s | issues: 0 fixed, 1 open
+1793623090	[13:37] STEP   reviewing: mechanical checks done (5m11s) -> planning animations
+1793623111	[13:37] STEP   reviewing: mechanical checks done (5m11s) -> planning animations
+1793623131	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623151	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623171	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623192	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623212	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623232	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623253	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623273	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623294	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623314	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623336	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623356	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623376	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623396	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623417	[13:38] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 70 | stage 46s | issues: 0 fixed, 1 open
+1793623438	[13:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 75 | stage 5m46s | issues: 0 fixed, 1 open
+1793623459	[13:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 75 | stage 5m46s | issues: 0 fixed, 1 open
+1793623480	[13:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 75 | stage 5m46s | issues: 0 fixed, 1 open
+1793623501	[13:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 75 | stage 5m46s | issues: 0 fixed, 1 open
+1793623522	[13:43] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 75 | stage 5m46s | issues: 0 fixed, 1 open
+1793623543	[13:45] STEP   planning animations done (7m30s) -> planning text
+1793623564	[13:45] STEP   planning animations done (7m30s) -> planning text
+1793623584	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623605	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623625	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623645	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623665	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623685	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623705	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623725	[13:46] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623746	[13:48] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 80 | stage 3m14s | issues: 0 fixed, 1 open
+1793623766	[13:48] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 80 | stage 3m14s | issues: 0 fixed, 1 open
+1793623786	[13:49] STEP   planning text done (4m11s) -> planning transitions
+1793623806	[13:50] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623827	[13:50] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623847	[13:50] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623867	[13:50] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793623888	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793623908	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793623928	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793623949	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793623969	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793623990	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793624012	[13:51] STEP   planning transitions done (1m23s) -> building visuals
+1793624032	[13:53] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | rendering draft | minute 85 | stage 2m38s | issues: 0 fixed, 1 open
+1793624053	[13:53] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | rendering draft | minute 85 | stage 2m38s | issues: 0 fixed, 1 open
+1793624073	[13:54] STEP   building visuals done (3m08s) -> adding sound effects
+1793624093	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624113	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624134	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624154	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624174	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624195	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624215	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624236	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624256	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624276	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624297	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624317	[13:54] STEP   adding sound effects done (14s) -> reviewing: mechanical checks
+1793624337	[13:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 4/5) | minute 90 | stage 4m14s | issues: 0 fixed, 1 open
+1793624357	[13:58] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 4/5) | minute 90 | stage 4m14s | issues: 0 fixed, 1 open
+1793624377	[13:59] STEP   reviewing: mechanical checks done (5m00s) -> planning animations
+1793624397	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624418	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624438	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624458	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624478	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624498	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624518	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624539	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624560	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624581	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624601	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624621	[13:59] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793624641	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624662	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624683	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624703	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624723	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624743	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624764	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624784	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624804	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624824	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624845	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624866	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624886	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624907	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624927	[14:03] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 95 | stage 4m11s | issues: 0 fixed, 1 open
+1793624947	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793624968	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793624988	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625008	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625029	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625050	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625071	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625091	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625111	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625132	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625152	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625172	[14:08] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning animations | minute 100 | stage 9m11s | issues: 0 fixed, 1 open
+1793625192	[14:13] STEP   planning animations done (13m33s) -> planning text
+1793625213	[14:13] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625233	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625254	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625274	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625294	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625315	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625336	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625357	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625378	[14:13] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | planning text | minute 105 | stage 38s | issues: 0 fixed, 1 open
+1793625399	[14:16] STEP   planning text done (3m11s) -> planning transitions
+1793625419	[14:16] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625440	[14:16] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625461	[14:16] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625481	[14:16] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625502	[14:16] WARN   visual_director_escalation: fable is at its own usage limit, this call carries on with opus
+1793625522	[14:18] STEP   planning transitions done (2m16s) -> building visuals
+1793625543	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625563	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625584	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625605	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625626	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625646	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625668	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625689	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625710	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625731	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625752	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625773	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625795	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625817	[14:18] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | building visuals | minute 110 | stage 7s | issues: 0 fixed, 1 open
+1793625839	[14:23] STEP   building visuals done (5m09s) -> adding sound effects
+1793625860	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625880	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625901	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625922	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625943	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625963	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793625983	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626004	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626024	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626045	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626065	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626085	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626106	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626126	[14:24] STEP   adding sound effects done (21s) -> reviewing: mechanical checks
+1793626146	[14:28] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 5/5) | minute 120 | stage 4m32s | issues: 0 fixed, 1 open
+1793626166	[14:28] REEL   #idea 1/3 "Claude Code's /init command: it reads yo..." | reviewing: edit review (round 5/5) | minute 120 | stage 4m32s | issues: 0 fixed, 1 open
+1793626187	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626207	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626228	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626248	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626269	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626290	[14:29] STEP   reviewing: mechanical checks done (5m28s) -> rendering final video
+1793626310	[14:31] STEP   rendering final video done (1m56s) -> writing caption
+1793626330	[14:31] STEP   rendering final video done (1m56s) -> writing caption
+1793626350	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626370	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626391	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626411	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626431	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626452	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626472	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626492	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626513	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626533	[14:32] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets
+1793626554	[14:35] WARN   fault injected (REELS_FAULT limit:02-expansion@2): this call returns a session limit instead of reaching the model
+1793626575	[14:35] RESUME limit reset, continuing: expanding idea
+1793626595	[14:36] STEP   expanding idea done (48s) -> checking idea (gate)
+1793626616	[14:36] WARN   fault injected (REELS_FAULT kill:03-gate@2): killing the runner and this stage now
+1793626637	[14:36] WARN   fault injected (REELS_FAULT kill:03-gate@2): killing the runner and this stage now
+1793626658	[14:36] WARN   fault injected (REELS_FAULT kill:03-gate@2): killing the runner and this stage now
+1793626679	[14:37] START  idea 1/2 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets (resumed at checking idea (gate), 2 stages done)
+1793626700	[14:37] START  idea 1/2 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-02_1432_the-playwright-mcp-server-lets (resumed at checking idea (gate), 2 stages done)
+1793626720	[14:38] STEP   checking idea (gate) done (43s) -> picking hooks
+1793626742	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626762	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626782	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626803	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626823	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626843	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626864	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626884	[14:38] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793626904	[14:41] WARN   S5: the brief missed the length (the brief is about 3041 tokens (2339 words); it must be between 2000 and 3000 tokens, so cut about 71 words), asking again (try 2/3)
+1793626925	[14:41] WARN   S5: the brief missed the length (the brief is about 3041 tokens (2339 words); it must be between 2000 and 3000 tokens, so cut about 71 words), asking again (try 2/3)
+1793626946	[14:41] WARN   S5: the brief missed the length (the brief is about 3041 tokens (2339 words); it must be between 2000 and 3000 tokens, so cut about 71 words), asking again (try 2/3)
+1793626967	[14:42] STEP   picking hooks done (4m05s) -> judging hooks
+1793626993	[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+1793627014	[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+1793627034	[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+1793627054	[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+1793627074	[14:42] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | judging hooks | minute 9 | stage 2s | issues: 0 fixed, 0 open
+1793627095	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627116	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627136	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627156	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627176	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627197	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627217	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627238	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627259	[14:44] STEP   judging hooks done (2m01s) -> writing script
+1793627279	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627300	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627321	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627342	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627362	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627382	[14:47] WARN   S7: draft a (calm expert) round 1: 35.1 s, 94 words, detect 72.3: 3 hard and 1 soft failures (first: b6 display holds the placeholder 'todo': write the real value or drop the line)
+1793627402	[14:49] WARN   S7: draft b (insider) round 1: 36.5 s, 100 words, detect 74.8: 0 hard and 1 soft failure (first: the hook runs 3.4 s (8 words); it must stay under 3 s)
+1793627422	[14:49] WARN   S7: draft b (insider) round 1: 36.5 s, 100 words, detect 74.8: 0 hard and 1 soft failure (first: the hook runs 3.4 s (8 words); it must stay under 3 s)
+1793627442	[14:49] WARN   S7: draft b (insider) round 1: 36.5 s, 100 words, detect 74.8: 0 hard and 1 soft failure (first: the hook runs 3.4 s (8 words); it must stay under 3 s)
+1793627463	[14:49] WARN   S7: draft b (insider) round 1: 36.5 s, 100 words, detect 74.8: 0 hard and 1 soft failure (first: the hook runs 3.4 s (8 words); it must stay under 3 s)
+1793627483	[14:51] WARN   S7: draft a (calm expert) round 2: 34.4 s, 94 words, detect 72.3: 1 hard and 0 soft failure (first: b11: 'Stop testing by hand.' reads as ad language (a pitch, hype or a superlative about the solution) (Mild pu...)
+1793627503	[14:51] WARN   S7: draft a (calm expert) round 2: 34.4 s, 94 words, detect 72.3: 1 hard and 0 soft failure (first: b11: 'Stop testing by hand.' reads as ad language (a pitch, hype or a superlative about the solution) (Mild pu...)
+1793627524	[14:51] WARN   S7: draft a (calm expert) round 2: 34.4 s, 94 words, detect 72.3: 1 hard and 0 soft failure (first: b11: 'Stop testing by hand.' reads as ad language (a pitch, hype or a superlative about the solution) (Mild pu...)
+1793627544	[14:52] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793627564	[14:52] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+1793627584	[14:52] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | generating voiceover (beat 3/12) | minute 19 | stage 34s | issues: 0 fixed, 0 open
+1793627605	[14:52] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | generating voiceover (beat 3/12) | minute 19 | stage 34s | issues: 0 fixed, 0 open
+1793627625	[14:52] REEL   #idea 1/2 "The Playwright MCP server lets Claude Co..." | generating voiceover (beat 3/12) | minute 19 | stage 34s | issues: 0 fixed, 0 open
+1793627645	[14:54] WARN   S8: line b9 still misheard (WER 50.0%: caveat -> kaviatt; c l i -> cl) after the pronunciation step, rewriting it through S7
+1793627665	[14:54] WARN   S8: line b9 still misheard (WER 50.0%: caveat -> kaviatt; c l i -> cl) after the pronunciation step, rewriting it through S7
+1793627685	[14:54] WARN   S8: line b10 still misheard (WER 37.5%: point it -> pointed; clicks -> klicks) after the pronunciation step, rewriting it through S7
+1793627706	[14:54] WARN   S8: line b10 still misheard (WER 37.5%: point it -> pointed; clicks -> klicks) after the pronunciation step, rewriting it through S7
+1793627726	[14:54] WARN   S8: line b10 still misheard (WER 37.5%: point it -> pointed; clicks -> klicks) after the pronunciation step, rewriting it through S7
+1793627746	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627766	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627787	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627807	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627827	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627847	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627867	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627887	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627908	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627928	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627948	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627968	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793627988	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793628009	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793628029	[14:55] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-02_1455_ffmpeg-can-cut-a-clip
+1793628049	[15:00] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | researching facts | minute 5 | stage 4m59s | issues: 0 fixed, 0 open
+1793628070	[15:00] STEP   researching facts done (5m18s) -> expanding idea
+1793628090	[15:00] STEP   researching facts done (5m18s) -> expanding idea
+1793628110	[15:01] STEP   expanding idea done (37s) -> checking idea (gate)
+1793628130	[15:02] STEP   checking idea (gate) done (29s) -> picking hooks
+1793628150	[15:02] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793628171	[15:02] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793628191	[15:02] FLAG   needs review: library/profile/account.md is still a draft with [FILL IN] placeholders: the research and the hooks used its working assumption
+1793628211	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628231	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628251	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628272	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628292	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628312	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628332	[15:03] WARN   S5: the hooks missed a rule (hook 1 "The ffmpeg shortcut that saves me time clipping.": the marker "ffmpeg" (tool) is neither a named tool,), asking again (try 2/3)
+1793628352	[15:05] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | picking hooks | minute 10 | stage 3m32s | issues: 0 fixed, 0 open
+1793628373	[15:05] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | picking hooks | minute 10 | stage 3m32s | issues: 0 fixed, 0 open
+1793628393	[15:06] STEP   picking hooks done (4m18s) -> judging hooks
+1793628413	[15:06] STEP   picking hooks done (4m18s) -> judging hooks
+1793628434	[15:06] STEP   picking hooks done (4m18s) -> judging hooks
+1793628454	[15:06] STEP   picking hooks done (4m18s) -> judging hooks
+1793628474	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628494	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628514	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628534	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628555	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628575	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628595	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628616	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628636	[15:07] STEP   judging hooks done (1m07s) -> writing script
+1793628656	[15:10] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | cutting script | minute 15 | stage 3m04s | issues: 0 fixed, 0 open
+1793628676	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628697	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628717	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628737	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628757	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628777	[15:11] WARN   S7: draft a (calm expert) round 1: 43.0 s, 108 words, detect 64.4: 2 hard and 9 soft failures (first: b4: the claim '-ss 00:10:00 -to 00:10:30 gives a 30-second clip' says more than facts.md backs (The -to behavi...)
+1793628797	[15:13] WARN   S7: the cut of draft b missed (only 8% of the words were removed (124 to 114); remove between 10 and 30% (about 25 words)), asking again (try 2/2)
+1793628818	[15:13] WARN   S7: the cut of draft b missed (only 8% of the words were removed (124 to 114); remove between 10 and 30% (about 25 words)), asking again (try 2/2)
+1793628838	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628858	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628878	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628898	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628918	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628939	[15:13] WARN   S7: draft b (insider) round 1: 39.2 s, 104 words, detect 71.3: 1 hard and 5 soft failures (first: the stake does not name the share identity (if you cut clips from long recordings): use at least two of its wo...)
+1793628959	[15:15] REEL   #idea 2/2 "ffmpeg can cut a clip out of a huge vide..." | writing script (draft 1/2, round 2/3) | minute 20 | stage 8m04s | issues: 0 fixed, 0 open
+1793628979	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793628999	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793629019	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793629039	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793629060	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793629080	[15:15] WARN   S7: draft a (calm expert) round 2: 32.0 s, 85 words, detect 45.4: 0 hard and 1 soft failure (first: detect.py scores 45 (needs 70 overall and 55 on every check): BURSTINESS 0 (variation 0.14 across 19 sentences...)
+1793629101	[15:18] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 40m30s | today: 1 exported, 0 dropped, 2 blocked
+1793629121	[15:18] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 40m30s | today: 1 exported, 0 dropped, 2 blocked
+1793629142	[15:18] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 40m30s | today: 1 exported, 0 dropped, 2 blocked
+1793629163	[15:18] IDLE   queue empty: this session 0 exported, 0 dropped, 2 blocked in 40m30s | today: 1 exported, 0 dropped, 2 blocked
+1793629183	[15:19] READY  preflight ok: 8 tools, 2 python packages, 8 files, 171 GB free

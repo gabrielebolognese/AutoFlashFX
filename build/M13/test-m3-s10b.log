@@ -1,0 +1,41 @@
+
+== 10. a runner killed during a review cycle: the restart resumes the cycle, no Opus cycle lost ==
+pipeline/tests/test-m3.sh: line 90: 29895 Killed                  ( cd "$SANDBOX" && exec env NO_COLOR=1 bash "$SANDBOX/run.sh" "$@" ) > "$out" 2>&1
+PASS  the runner is dead after SIGKILL
+PASS  the review cycle child is dead too
+PASS  state: the stage had failed (under review) when killed
+PASS  state: the review loop was active
+PASS  state: cycle E1 was pending
+PASS  state: no cycle recorded yet
+PASS  the cycle's pid file is left behind by the kill
+PASS  the restarted runner blocks the idea on the reviewer's verdict and exits 0
+PASS  START says where it resumes
+PASS  the restart resumes cycle E1 as cycle 1/3 with the Opus reviewer
+PASS  no ESCAL before an Opus cycle, no second ERROR: the stage did not run again
+PASS  no 'after the fix' line: nothing was fixed
+PASS  BLOCK on the resumed cycle's verdict
+PASS  the hung reviewer call, then the resumed cycle's reviewer call, both with the Opus reviewer
+PASS  state: one Opus cycle in all
+PASS  state: the signature was counted once
+PASS  state: no escalation
+PASS  state: one open issue, not two
+PASS  state: the stage ran once
+PASS  state: nothing pending after the verdict
+PASS  the cycle's pid file is removed
+PASS  no E2: the interrupted cycle kept its number
+PASS  F1.result.json holds the verdict
+PASS  blocked.txt has the idea
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.qo3AeP8Ufo
+PASS  the review cycle child still runs after the runner died
+PASS  the restarted runner exits 0
+FAIL  the orphaned cycle is adopted (no match for '^\[[0-9]{2}:[0-9]{2}\] WARN   S10: review cycle E1 still runs from the previous runner \(pid 36632\), waiting for it instead of starting it twice$' in /tmp/tmp.9cOqRlXVC9/rkill4.out)
+PASS  its verdict blocks the idea
+PASS  one reviewer call in all: the adopted cycle's
+PASS  state: one cycle
+PASS  state: one open issue
+PASS  no ESCAL, no second ERROR
+PASS  the adopted child has ended
+PASS  its pid file is removed
+
+test-m3.sh: 33 passed, 1 failed
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.9cOqRlXVC9

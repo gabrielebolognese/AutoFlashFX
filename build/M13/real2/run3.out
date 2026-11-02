@@ -1,0 +1,8 @@
+[15:19] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[15:19] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+[15:19] READY  preflight ok: 8 tools, 2 python packages, 8 files, 171 GB free
+[15:19] START  reels autopilot v0.1.0 (89c1431) | queue: 0 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+[15:19] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.vp9cj1utGE | mode: forever (Ctrl+C stops it, a restart resumes)
+[15:19] IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked in 1s | today: 1 exported, 0 dropped, 2 blocked
+[15:19] IDLE   no ideas in ideas.txt, checking every 2 s (idle 0 min) | today: 1 exported, 0 dropped, 2 blocked
+[15:19] INFO   stopped by the user (TERM)

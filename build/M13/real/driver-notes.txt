@@ -1,0 +1,1 @@
+2026-11-02 12:00:45 hot-patched into the live sandbox (DECISIONS.md 283): voiceover.py whisper_worker.py script_checks.py audio_check.py prompt-rewrite-line.md, while idea 3 was at S2

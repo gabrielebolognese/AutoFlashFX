@@ -1,0 +1,56 @@
+
+== 3. the cap: an editor that always fails with an [sfx] issue: 5 rounds, then the export with NEEDS REVIEW ==
+    [14:15] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [14:15] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.WEbBYNP92j/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [14:15] START  reels autopilot v0.1.0 (4266535) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [14:15] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-02_1414_claude-codes-frontend-design-skill (resumed at adding sound effects, 11 stages done)
+    [14:15] STEP   adding sound effects done (17s) -> reviewing: mechanical checks
+    [14:19] WARN   S12: review round 1 failed (1 issues; scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4): back to 11-sfx, then every step after it runs again
+    [14:19] STEP   reviewing: mechanical checks done (4m03s) -> adding sound effects
+    [14:20] STEP   adding sound effects done (43s) -> reviewing: mechanical checks
+    [14:21] WARN   S12: review round 2 failed (1 issues; scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4): back to 11-sfx, then every step after it runs again
+    [14:21] STEP   reviewing: mechanical checks done (37s) -> adding sound effects
+    [14:21] STEP   adding sound effects done (38s) -> reviewing: mechanical checks
+    [14:23] WARN   S12: review round 3 failed (1 issues; scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4): back to 11-sfx, then every step after it runs again
+    [14:23] STEP   reviewing: mechanical checks done (1m26s) -> adding sound effects
+    [14:23] STEP   adding sound effects done (27s) -> reviewing: mechanical checks
+    [14:24] WARN   S12: review round 4 failed (1 issues; scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4): back to 11-sfx, then every step after it runs again
+    [14:24] STEP   reviewing: mechanical checks done (38s) -> adding sound effects
+    [14:24] STEP   adding sound effects done (18s) -> reviewing: mechanical checks
+    [14:25] WARN   S12: review round 5 failed and the 5 rounds are used up: exporting with NEEDS REVIEW (scores stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4)
+    [14:25] FLAG   needs review: edit review: still failing after 5 rounds (3 opus, 2 fable); exported as it is. Scores: stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 2, generic 4, requirements 4. Open issues: [sfx] The sounds are too many and too loud over the voice: a whoosh on every scene change plus the dings crowd the stake and t
+    [14:25] STEP   reviewing: mechanical checks done (29s) -> rendering final video
+    [14:25] STEP   rendering final video done (1s) -> writing caption
+    [14:25] STEP   writing caption done (3s) -> exporting #1
+    [14:25] DONE   exported #1 -> exports/1/ (10 min, 0 issues fixed)
+    (the cap loop took 654 s)
+PASS  cap: the runner exits 0
+PASS  cap: round 1 fails and goes back to S11
+PASS  cap: round 2 fails and goes back to S11
+PASS  cap: round 3 fails and goes back to S11
+PASS  cap: round 4 fails and goes back to S11
+PASS  cap: round 5 ends the loop
+PASS  cap: the NEEDS REVIEW flag carries the scores and the notes
+PASS  cap: the run still exports (the dummy export)
+PASS  cap: no ERROR or BLOCK line
+PASS  cap: five editor calls, one per round
+PASS  cap: the activity "fixing [sfx] issues (round 2, opus)" was published
+PASS  cap: the activity "fixing [sfx] issues (round 3, opus)" was published
+PASS  cap: the activity "fixing [sfx] issues (round 4, fable)" was published
+PASS  cap: the activity "fixing [sfx] issues (round 5, fable)" was published
+PASS  cap: rounds.review is 5
+PASS  cap: S11 ran five times (reopened four times)
+PASS  cap: S12 ran five times
+PASS  cap: the build never ran again (an [sfx] issue stops at S11)
+PASS  cap: the last review.json says cap
+PASS  cap: review.json records the cap
+PASS  cap: the sound pass applied the editor's note
+PASS  cap: the unchanged composition's checks came from the cache in the later rounds
+PASS  cap: the export's NEEDS REVIEW block carries the review notes
+PASS  cap: review-r1.json kept
+PASS  cap: review-r2.json kept
+PASS  cap: review-r3.json kept
+PASS  cap: review-r4.json kept
+PASS  cap: review-r5.json kept
+
+test-m11.sh: 28 passed, 0 failed

@@ -1,0 +1,1 @@
+[12:25] IDLE   no ideas in ideas.txt, checking every 2 s (idle 0 min) | today: 0 exported, 0 dropped, 3 blocked

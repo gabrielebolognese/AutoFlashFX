@@ -1,0 +1,227 @@
+
+== 1. state.py and export.py units ==
+PASS  the stage table has 16 stages
+PASS  first stage is 01-research
+PASS  last stage is 14-export with its activity
+PASS  04-angle starts skipped (the gate reopens it)
+PASS  slug: five ASCII words, apostrophes dropped
+PASS  new: the run folder name is <date>_<HHMM>_<slug>
+PASS  new: state.json written
+PASS  new: idea.txt written
+PASS  new: one subfolder per stage
+PASS  new: the idea text is normalized into state.json
+PASS  new: stages start pending
+PASS  new: the run is running
+PASS  next: the first pending stage with its activity
+PASS  unfinished: lists the running run
+PASS  stage-start: running
+PASS  stage-start: attempts 1
+PASS  stage-done: an output missing required fields fails with exit 5
+PASS  stage-done: the validation error names the field
+PASS  stage-done: no .done marker when invalid
+PASS  stage-done: status failed when invalid
+PASS  stage-done: the dummy output validates
+PASS  stage-done: .done written
+PASS  stage-done: reports the next stage and activity
+PASS  reopen: .done removed
+PASS  reopen: pending again
+PASS  pickup: counts sessions (a resume)
+PASS  flag: recorded
+PASS  unfinished: exit 3 once the run is finished
+PASS  lock: 20 concurrent flag calls against a touch loop keep all 20 flags
+PASS  lock: 10 concurrent issue calls count to 10
+PASS  lock: runs/<id>/state.lock sits next to state.json
+PASS  lock: a writer gives up with exit 2 after REELS_STATE_LOCK_WAIT seconds while another process holds the lock
+PASS  lock: the message names the lock file and the wait
+PASS  lock: with the default wait the writer goes through once the holder is done
+PASS  lock: it waited for the holder (3s)
+PASS  numbering: the first export is 1
+PASS  numbering: highest existing number plus 1, other folders ignored
+PASS  captions: the sections of spec section 8, in order
+PASS  captions: HOOKS lines carry the export number
+PASS  captions: the hook 2 clip line
+PASS  captions: NEEDS REVIEW lists the flag
+PASS  captions: the RUN section names the run folder
+PASS  captions: the NEW deliverable line
+
+== 2. two dummy ideas end to end, heartbeat and status lines ==
+PASS  run.sh --once exits 0 when the queue empties (161s for 2 ideas)
+PASS  banner
+PASS  queue listing: 1.
+PASS  queue listing: 2.
+PASS  START line: position, text cut at 40, run folder
+PASS  STEP line: activity done (time) -> next activity
+PASS  STEP skips 04-angle when the gate passes
+PASS  STEP before the export (the activity exporting #N)
+PASS  15 STEP lines per idea (16 stages, angle skipped)
+PASS  DONE line for export 1
+PASS  NEXT line keeps counting the ideas of the session
+PASS  START line for the second idea
+PASS  DONE line for export 2
+PASS  summary line when the queue empties
+PASS  no resume in a clean run
+PASS  NO_COLOR output has no escape codes
+PASS  status.txt holds the latest line
+PASS  runner.log has every terminal line
+PASS  runner.log has more than 40 lines
+PASS  exports/1/1.mp4
+PASS  exports/1/1captions.txt
+PASS  exports/1/1hook2.mp4
+PASS  exports/2/2.mp4
+PASS  exports/2/2captions.txt
+PASS  exports/2/2hook2.mp4
+PASS  exports/ holds exactly 1 and 2
+PASS  captions: HOOKS line with the number
+PASS  captions: RUN section names the first run
+PASS  the staging folders were moved, not copied
+PASS  two history lines
+PASS  history: date | idea | solution | exported 1
+PASS  history: the second idea with its accents
+PASS  ideas.txt is empty afterwards
+PASS  two run folders
+PASS  2026-11-02_1324_idea-a-the-gh-cli: state exported
+PASS  2026-11-02_1325_idea-b-uv-replaces-pip: state exported
+PASS  state.json holds the export number
+PASS  04-angle stays skipped
+PASS  logs/.activity is published by the runner
+PASS  heartbeat: at least 10 REEL lines in 161s with REELS_STATUS_EVERY=2 (got 44)
+PASS  heartbeat: every REEL line has #idea i/n, the text cut at 40, activity, minute, stage, issues
+PASS  heartbeat: a first-idea line with the exact text cut, minute 0 and a seconds-only stage timer
+PASS  heartbeat: the activity field follows the stages
+PASS  heartbeat: second idea position
+PASS  heartbeat: on schedule, every 2 s scaled (gaps n=42 min=0.95 median=2.67 max=5.52)
+
+== 3. SIGKILL mid-stage, restart resumes the same stage ==
+PASS  the runner is dead after SIGKILL
+PASS  the stage child is dead too
+PASS  state.json: 05-hooks was running when killed
+PASS  no .done for the killed stage
+PASS  earlier stages have their .done markers
+PASS  the runner lock is left behind by the kill
+PASS  the restarted runner finishes the run and exits 0
+PASS  START line says where it resumes
+PASS  the interrupted attempt is announced
+PASS  the earlier stages are skipped
+PASS  the earlier stages are skipped (2)
+PASS  the killed stage runs again
+PASS  the resumed run exports #1
+PASS  no second run folder was created
+PASS  state.json: research ran once
+PASS  state.json: hooks ran twice
+PASS  state.json: two sessions
+PASS  exactly one export
+PASS  one history line
+
+== 4. crashes around the export: no duplicate, no gap ==
+pipeline/tests/test-m2.sh: line 38: 53623 Killed                  ( cd "$SANDBOX" && env NO_COLOR=1 "$@" timeout 300 bash "$REPO_DIR/run.sh" --once ) > "$out" 2>&1
+PASS  the runner died at the planted point (exit 137)
+PASS  the crash is announced
+PASS  the export was assembled in runs/<id>/export/
+PASS  nothing moved into exports/ yet
+PASS  state.json records the intended number
+PASS  state.json has no export number yet
+PASS  the exports lock is left behind
+PASS  restart after the crash exits 0
+PASS  the leftover exports lock is cleared at startup
+PASS  the restart resumes at the export
+PASS  the export completes as #1
+PASS  exactly one export after the crash
+PASS  the staging folder is gone
+PASS  one history line
+PASS  the idea is removed once
+pipeline/tests/test-m2.sh: line 38: 55495 Killed                  ( cd "$SANDBOX" && env NO_COLOR=1 "$@" timeout 300 bash "$REPO_DIR/run.sh" --once ) > "$out" 2>&1
+PASS  the runner died right after the move (exit 137)
+PASS  exports/2 exists after the move
+PASS  state.json does not know the number yet
+PASS  the run is still unfinished
+PASS  no history line yet
+PASS  restart after the second crash exits 0
+PASS  the moved export is recognized as #2
+PASS  no exports/3: no duplicate
+PASS  exactly one history line for #2
+PASS  the run is finished
+PASS  the idea is removed
+
+== 5. drop, code error, FLAG and invalid output ==
+PASS  the runner continues past a drop and a block and exits 0
+PASS  DROP line
+PASS  NEXT after the drop
+PASS  ERROR line with the last log line
+PASS  BLOCK line (the reviewer's verdict: only the user can fix it)
+PASS  NEXT after the block
+PASS  FLAG line printed by the stage
+PASS  the third idea exports as #1: no gap for dropped or blocked ideas
+PASS  summary counts
+PASS  only exports/1
+PASS  history: dropped line
+PASS  history: blocked line
+PASS  history: exported line
+PASS  blocked.txt: the reason line
+PASS  blocked.txt: the idea in braces, ready to re-add
+PASS  ideas.txt is empty
+PASS  the dropped and blocked run folders are kept
+PASS  state.json statuses
+PASS  captions: NEEDS REVIEW section when flagged
+PASS  captions: the flag text
+PASS  the code error counts as an open issue
+PASS  the failed stage kept its log
+PASS  stage.log has the stage's own output
+PASS  an invalid output does not stop the runner
+PASS  ERROR line names the schema violation
+PASS  an invalid output is a code error: reviewed, then blocked on the reviewer's verdict
+PASS  blocked.txt gets the idea
+
+== 6. forever mode: IDLE, NEW, a second runner refused, SIGTERM ==
+PASS  banner with an empty queue
+PASS  mode line
+PASS  summary line first
+PASS  IDLE line with the poll interval, idle minutes and today's counts
+PASS  a second runner refuses to start while one runs
+PASS  it names the running pid
+PASS  an idea added while idle is processed
+PASS  NEW line names the source and the queue size
+PASS  START after NEW
+PASS  the summary line again when the queue empties again
+PASS  IDLE line with today's count updated
+PASS  IDLE repeats at the heartbeat cadence (got 4 lines)
+PASS  status.txt holds the latest line while idle
+PASS  SIGTERM stops the runner
+PASS  the stop is announced
+PASS  the runner lock is released on SIGTERM
+
+== 7. a stage that is not built yet, and runner-status ==
+PASS  every stage has a run.sh: the not-built-yet stop no longer applies (section skipped)
+
+== 8. state.json damaged mid-run: one retry, then the systemic stop with STOPPED.md ==
+PASS  the runner stops with exit 3 (a systemic stop, not a silent exit)
+PASS  WARN line: the failed state call is retried once, with state.py's message in short form
+PASS  ERROR line after the retry
+PASS  STOP line
+PASS  one ERROR line and one STOP line, no more
+PASS  the run neither goes on nor ends as blocked, dropped or exported
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder and the error in its diagnosis
+PASS  STOPPED.md fix 1: unlock the file and restart
+PASS  STOPPED.md fix 2: move the run folder out of runs/
+PASS  status.txt holds the STOP line
+PASS  the idea stays in ideas.txt
+PASS  no history line
+PASS  the runner lock is released
+PASS  runner-status: says the runner is not running
+PASS  runner-status: shows the STOP status line
+PASS  runner-status: mentions STOPPED.md
+PASS  an orphaned stage process is waited for instead of being started twice
+PASS  the stage is not started while the orphan lives
+PASS  the runner stops with exit 3
+PASS  the orphan's outputs are judged before the stage runs again
+PASS  WARN line: the stage start is retried once
+PASS  ERROR line: the stage start fails
+PASS  STOP line
+PASS  the stage never ran and the run did not end another way
+PASS  no stage.log: the stage was never started
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder
+PASS  the idea stays in ideas.txt
+PASS  the runner lock is released
+
+test-m2.sh: 207 passed, 0 failed
