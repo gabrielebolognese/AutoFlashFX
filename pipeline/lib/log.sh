@@ -65,7 +65,9 @@ say() {
     printf '%s\n' "$plain" >&"$fd"
   fi
   if [ -n "${REELS_LOGS:-}" ]; then
-    mkdir -p "$REELS_LOGS" 2>/dev/null || return 0
+    # [ -d ] is a builtin: the folder is made once, not by a mkdir process on every line (M13: the rename below costs
+    # one process already)
+    [ -d "$REELS_LOGS" ] || mkdir -p "$REELS_LOGS" 2>/dev/null || return 0
     printf '%s\n' "$plain" >> "$REELS_LOGS/runner.log"
     case " ${REELS_STATUS_SKIP_TAGS:-QUEUE INFO} " in
       *" $tag "*) ;;

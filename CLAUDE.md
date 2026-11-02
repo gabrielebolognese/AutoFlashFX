@@ -5,8 +5,7 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M12 Final render, caption, export, end to end: done (2026-11-02). Next: M13 Hardening; M14 Editable project export
-  (S15): pending. The build is driven by
+- M13 Hardening: done (2026-11-02). Next: M14 Editable project export (S15): pending. The build is driven by
   `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
@@ -68,14 +67,25 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   pipeline/lib/finalrender.py: HyperFrames renders 1080x1920 silent, ffmpeg muxes 11-sfx/mix.wav as AAC 48 kHz, ffprobe
   and loudnorm checks, one post-pass) and S14 (pipeline/stages/14-export/run.sh, prompt-caption.md, model.schema.json over
   pipeline/lib/caption.py: hook 1 as the first line, the model's body, ask and hashtags, the checks, humanize.py and the
-  vendor caption.py lint, export.json; the runner's export.py then writes exports/N/). Run every test with
-  `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test idea with
-  the real models, 1 to 3 hours; test-m3 section 4, test-m4
+  vendor caption.py lint, export.json; the runner's export.py then writes exports/N/), M13: the fault injection in
+  ai.sh (`REELS_FAULT=limit:<stage>[@n]` makes that stage's next call a CLI-shaped session limit once,
+  `REELS_FAULT=kill:<stage>[@n]` kills the runner and the stage there; logs/.faults/ remembers what fired;
+  `REELS_FAULT_WAIT=fast` fast-forwards the injected wait; never set in normal use), the rotation of logs/runner.log
+  at 50 MB (config logs.rotate_mb and rotate_keep: runner.log.1 to .3), status.txt written aside and renamed (a reader
+  may find it missing for a moment, never empty), pipeline/lib/logcheck.py (checks a status line, status.txt, a
+  sampler file and the whole story of runner.log against spec sections 6 and 7, the activity table included),
+  pipeline/bin/doctor (read-only health report), build-voice-profile --force keeping the hand-written parts of the
+  profile (voiceprofile.py merge_keep), S8 and S12 passing the reel's names to faster-whisper as hotwords (DECISIONS.md
+  283), pipeline/tests/m13-run.sh (the three-idea driver) and pipeline/tests/fixtures/ideas/three-ideas.txt. Run every
+  test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
+  idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
+  test-m3 section 4, test-m4
   sections 3 and 4, test-m5 sections 3 and 4, test-m6 section 3, test-m7 section 3, test-m10 section 3 and test-m11
   section 4 make real model or engine calls, test-m8 and test-m9 make none, test-m9 takes about 8 minutes, test-m10
   about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
   `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
-  `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` are the fake-only tests).
+  `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` and `M13_SECTIONS="1 2 4" bash pipeline/tests/test-m13.sh`
+  (about 20 minutes) are the fake-only tests).
 - Every stage is real from M12 on: `bash run.sh` turns each idea into exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4).
   `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages; `REELS_DUMMY=13,14 bash run.sh --once`
   skips the final render and the caption. S13 writes runs/<id>/13-render/final.mp4, hook2.mp4, video.mp4 (the silent
@@ -126,7 +136,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   instagram-agent-skill), knowledge/known-issues.md, tests/.
 - `runs/`: one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
   its outputs, stage.log, .done and calls/ with every model call's raw output; errors/E<n>.md and fixes/F<n>.md
-  from the review and fix loop). `logs/`: runner.log, status.txt, history.txt, blocked.txt, limits.log,
+  from the review and fix loop). `logs/`: runner.log (rotated at 50 MB into runner.log.1 to .3), status.txt, history.txt, blocked.txt, limits.log,
   suggested-ideas.txt, sfx-usage.json, STOPPED.md.
 - `tools/analyze_refs.py`: reference video analyzer. `build/`, `build-runner.sh`: the automated build (temporary).
 
@@ -138,6 +148,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   `REELS_DUMMY=all bash run.sh --once` exercises the loop with dummy stages (it removes the processed ideas from
   ideas.txt and writes dummy files into exports/, so use it in a copy or re-add the idea afterwards).
 - `bash pipeline/bin/runner-status` prints whether a runner is alive, the latest status line and the log tail.
+- `bash pipeline/bin/doctor` (read-only, about 30 s; `--quick` skips the voice check) reports versions, the Node
+  packages against their pins, disk, the voice interpreters, the freshness of the sfx map, tokens and hooks index, the
+  runner and its status line, the last session's story, blocked ideas, STOPPED.md and limits; exit 1 on a FAIL line.
 - The terminal lines: REEL (heartbeat every 5 minutes), IDLE, START, STEP, GATE, ANGLE, DONE, DROP, BLOCK, NEW,
   NEXT, FLAG, STOP, and the error lines LIMIT, RESUME, RETRY, ERROR, FIXED, ESCAL.
 
