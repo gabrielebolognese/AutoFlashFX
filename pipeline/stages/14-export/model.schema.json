@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/14-export/model-output",
+  "title": "14-export: the caption model's structured answer (BUILD_SPEC.md S14); caption.py compose checks it and writes export.json",
+  "type": "object",
+  "required": ["body", "ask_line", "hashtags", "search_terms", "notes"],
+  "properties": {
+    "body": {"type": "string"},
+    "ask_line": {"type": "string"},
+    "hashtags": {"type": "array", "items": {"type": "string"}, "maxItems": 10},
+    "search_terms": {"type": "array", "items": {"type": "string"}, "maxItems": 8},
+    "notes": {"type": "string"}
+  }
+}

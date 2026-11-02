@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/14-export/export.json",
-  "title": "14-export export.json (first version, M2)",
+  "title": "14-export export.json (M12): the caption, the hashtags, the keyword and its deliverable, the solution, the hooks, the flags, the facts and the files the runner's export step copies",
   "type": "object",
   "required": [
     "caption",
@@ -9,20 +9,37 @@
     "keyword",
     "deliverable",
     "deliverable_status",
+    "solution",
     "hooks",
     "files"
   ],
   "properties": {
     "caption": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "hashtags": {
       "type": "array",
       "maxItems": 5,
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^#[A-Za-z0-9_]+$"
       }
     },
+    "solution": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"type": "string", "enum": ["none", "flashfx", "external", "method"]},
+        "name": {"type": "string"},
+        "url": {"type": "string"}
+      }
+    },
+    "lint": {"type": "object"},
+    "humanize": {"type": "object"},
+    "checks": {"type": "object"},
+    "written_by": {"type": "string"},
+    "checked": {"type": "string"},
     "keyword": {
       "type": "string"
     },

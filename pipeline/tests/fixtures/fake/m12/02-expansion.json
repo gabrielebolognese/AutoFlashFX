@@ -1,0 +1,30 @@
+{
+  "problem": "I build landing pages with Claude Code and every one of them looks like the same AI template.",
+  "solution": "Open FlashFX, the motion graphics editor, and rebuild the page's hero as an animation so it stops looking like every other AI template.",
+  "share_identity": "if you ship client sites with Claude Code",
+  "takeaway": "copy one skill folder once and every page you generate after that stops looking generated",
+  "keyword": "FLASH",
+  "deliverable": "access to FlashFX, the editor shown in the reel",
+  "deliverable_status": "existing",
+  "one_true_thing": "One folder copied into ~/.claude/skills changes every frontend Claude Code builds",
+  "evidence": [
+    {
+      "fact": 1,
+      "note": "the skill is published in anthropics/skills"
+    },
+    {
+      "fact": 3,
+      "note": "it installs by copying the folder"
+    },
+    {
+      "fact": 4,
+      "note": "the defaults it steers away from"
+    }
+  ],
+  "solution_decision": {
+    "type": "flashfx",
+    "name": "FlashFX",
+    "url": "https://flashfx.app",
+    "reason": "fixture: FlashFX forced into a web design problem (the honesty check must catch it)"
+  }
+}

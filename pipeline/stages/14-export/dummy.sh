@@ -23,6 +23,15 @@ cat > "$OUT/export.json" <<JSON
 {"caption": "Your AI site looks fake. One fix.\n\nClaude Code's frontend-design skill changes what the model reaches for. One command installs it.\n\nComment SKILL and I will send you the install command and the checklist.",
  "hashtags": ["#claudecode", "#webdesign", "#aitools"],
  "keyword": "SKILL", "deliverable": "the install command and a before/after checklist", "deliverable_status": "new", "link": "",
+ "solution": $("$REELS_PY" - "$RUN_DIR/02-expansion/solution.json" <<'PY'
+import json, os, sys
+sys.stdout.reconfigure(newline="\n")
+p = sys.argv[1]
+s = json.load(open(p, encoding="utf-8-sig")) if os.path.isfile(p) else {}
+t = str(s.get("type", "none")).lower()
+print(json.dumps({"type": t if t in ("flashfx", "external", "method") else "none", "name": str(s.get("name", "")), "url": str(s.get("url", ""))}))
+PY
+),
  "hooks": {"hook1": "Your AI site looks fake, one fix", "hook2": "Install this skill in 30 seconds"},
  "needs_review": $needs_review,
  "facts": [{"claim": "The dummy tool exists and is open source", "url": "https://example.com/repo", "checked": "$today"},

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/13-render/render.json",
-  "title": "13-render render.json (first version, M2)",
+  "title": "13-render render.json (M12): the rendered files, every ffprobe and loudness check of the reel and the hook 2 clip, the post-pass, pass",
   "type": "object",
   "required": [
     "files",
@@ -9,18 +9,33 @@
     "pass"
   ],
   "properties": {
+    "written_by": {"type": "string"},
+    "checked": {"type": "string"},
     "files": {
       "type": "object",
       "required": [
         "reel",
         "hook2"
-      ]
+      ],
+      "properties": {
+        "reel": {"type": "string", "minLength": 1},
+        "hook2": {"type": "string", "minLength": 1},
+        "video": {"type": "string"}
+      }
     },
+    "render_flag": {"type": "string"},
+    "quality": {"type": "string"},
+    "voice_seconds": {"type": "number"},
     "checks": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "reel": {"type": "object"},
+        "hook2": {"type": "object"}
+      }
     },
-    "pass": {
-      "type": "boolean"
-    }
+    "post_pass": {"type": "object"},
+    "reel": {"type": "object"},
+    "hook2": {"type": "object"},
+    "pass": {"type": "boolean"}
   }
 }

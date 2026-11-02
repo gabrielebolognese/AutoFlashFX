@@ -237,10 +237,16 @@ runner_result_reason() {  # the reason a stage gave in result.json (exit 10 or 2
   printf '%s' "${reason:-no reason given ($1/result.json missing)}"
 }
 
+runner_export_number() {  # the number the export will get (export.py assigns it under the lock; one runner, so the same)
+  local n
+  n="$(export_next_number 2>/dev/null | tr -d '')"
+  printf '%s' "${n:-?}"
+}
+
 runner_next_text() {  # the "-> next" part of the STEP line
   case "$1" in
     stage) printf '%s' "$2" ;;
-    export) printf 'exporting' ;;
+    export) printf 'exporting #%s' "$(runner_export_number)" ;;   # the activity of spec section 7 ("exporting #7")
     finalize) printf 'finishing' ;;
     *) printf 'done' ;;
   esac
@@ -636,7 +642,7 @@ runner_drop() {  # stage reason
   reels_undash reason   # a stage's reason may quote a model's text
   say DROP "idea \"$(cut_text "$IDEA_TEXT" 40)\" dropped: $reason. Removed from ideas.txt"
   runner_remove_idea
-  history_add dropped "$IDEA_TEXT" "$reason"
+  history_add dropped "$IDEA_TEXT" "$reason" "$(history_solution "$RUN_DIR")"
   state_finish "$RUN_DIR" dropped "$reason" "$stage" >/dev/null
   SESSION_DROPPED=$((SESSION_DROPPED + 1))
   rm -f "$REELS_LOGS/.block-streak"
@@ -648,7 +654,7 @@ runner_block() {  # stage label reason
   say BLOCK "idea \"$(cut_text "$IDEA_TEXT" 40)\" blocked at $label: $reason. Moved to logs/blocked.txt"
   runner_remove_idea
   blocked_add "$IDEA_RAW" "$label" "$reason" "$RUN_DIR"
-  history_add blocked "$IDEA_TEXT" "$reason"
+  history_add blocked "$IDEA_TEXT" "$reason" "$(history_solution "$RUN_DIR")"
   state_finish "$RUN_DIR" blocked "$reason" "$stage" >/dev/null
   SESSION_BLOCKED=$((SESSION_BLOCKED + 1))
 }
@@ -656,7 +662,7 @@ runner_block() {  # stage label reason
 runner_do_export() {  # -> 0 exported (state holds the number), 1 run ended, 2 stop, 3 fixed (try again)
   local out rc number
   STAGE_STARTED="$EPOCHSECONDS"
-  set_activity "exporting"
+  set_activity "exporting #$(runner_export_number)"
   out="$(export_run "$RUN_DIR")"; rc=$?
   case "$rc" in
     0) return 0 ;;
@@ -678,7 +684,7 @@ runner_finalize() {  # the export is in exports/N: remove the idea, history line
   local number="$1" fin elapsed
   set_activity "exporting #$number"
   runner_remove_idea
-  history_add exported "$IDEA_TEXT" "$number"
+  history_add exported "$IDEA_TEXT" "$number" "$(history_solution "$RUN_DIR")"
   fin="$(state_finish "$RUN_DIR" exported "exported #$number" "" "$number")"
   elapsed="$(json_field "$fin" elapsed 0)"
   say DONE "exported #$number -> exports/$number/ ($(fmt_min "$elapsed"), $ISSUES_FIXED $(plural "$ISSUES_FIXED" issue) fixed)"

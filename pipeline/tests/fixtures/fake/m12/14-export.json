@@ -1,0 +1,8 @@
+{
+  "body": "Every Claude Code landing page ends up with the same rounded cards, one radius and the same grey shadow. Clients notice before you do.\n\nAnthropic's frontend-design plugin names those tells in its own skill file, even its #D97757 terracotta on cream.\n\nOne command installs it. After that it turns on by itself whenever you ask Claude for frontend work.",
+  "ask_line": "Comment TELLS and I'll send you the one-page checklist of the AI design tells plus the exact install command.",
+  "hashtags": ["#claudecode", "#frontenddesign", "#webdesign", "#aitools"],
+  "search_terms": ["Claude Code", "frontend-design plugin", "AI design tells"],
+  "notes": "fixture: the fake caption model's answer for the frozen test idea (M12)"
+}
+

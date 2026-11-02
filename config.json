@@ -385,7 +385,11 @@
     "sfx_seconds": 1200,
     "mechanical_seconds": 1800,
     "style_seconds": 1200,
-    "edit_review_seconds": 1800
+    "edit_review_seconds": 1800,
+    "render_final_seconds": 5400,
+    "render_hook2_seconds": 1200,
+    "mux_seconds": 900,
+    "caption_seconds": 900
   },
   "review": {
     "reviewer_tools": "Read Glob Grep WebSearch WebFetch",
@@ -561,5 +565,29 @@
         "fix": "gh auth login (the research stage needs it from M4 on)"
       }
     ]
+  },
+  "render": {
+    "draft_resolution": "540x960",
+    "final_resolution": "1080x1920",
+    "fps": 30,
+    "quality": "looks",
+    "audio_bitrate_k": 160,
+    "audio_channels": 1,
+    "duration_tolerance_s": 0.2,
+    "loudness_tolerance_lu": 1.0,
+    "true_peak_tolerance_db": 0.5,
+    "hook2_max_s": 3.5
+  },
+  "caption": {
+    "first_line_max_chars": 125,
+    "hashtags": [
+      3,
+      5
+    ],
+    "body_chars": [
+      150,
+      900
+    ],
+    "tries": 2
   }
 }

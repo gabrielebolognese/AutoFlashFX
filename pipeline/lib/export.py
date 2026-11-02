@@ -4,7 +4,8 @@
 The number is assigned at export time: N = the highest number in exports/ plus 1, so dropped or blocked ideas leave
 no gaps. Everything is assembled in runs/<id>/export/ first: N.mp4 and Nhook2.mp4 copied from the files named in
 14-export/export.json, Ncaptions.txt rendered from export.json in the format of spec section 8 (the HOOKS lines
-need N, so only this step can write it). Then the folder is moved into exports/N/ with one rename. The lock
+need N, so only this step can write it; the SOLUTION block comes from export.json's "solution", M12). Then the
+folder is moved into exports/N/ with one rename. The lock
 .locks/exports (mkdir, stale after --stale seconds) is held from the numbering to the move. The export record in
 state.json is updated under state.py's StateLock (runs/<id>/state.lock), from a fresh load each time.
 
@@ -34,6 +35,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import state as state_lib  # noqa: E402
+import solution as solution_lib  # noqa: E402
 from ideas import LockTimeout, QueueLock, winpath  # noqa: E402
 
 RENAME_TRIES = 8
@@ -97,6 +99,9 @@ def render_captions(m: dict, n: int, run_id: str) -> str:
              "COMMENT KEYWORD", keyword_line.rstrip()]
     if (m.get("deliverable_status") or "existing") == "new":
         lines.append(f"NEW deliverable to create before posting: {deliverable}")
+    # SOLUTION (M12, spec section 8): flashfx | external: name link | method (the stage's export.json carries it;
+    # a run without 02-expansion/solution.json says so)
+    lines += ["", "SOLUTION", solution_lib.block_text(m.get("solution") if isinstance(m.get("solution"), dict) else None)]
     lines += ["", "HOOKS", f'{n}.mp4 uses: "{hooks.get("hook1", "")}"', f'{n}hook2.mp4 uses: "{hooks.get("hook2", "")}"']
     needs = [str(x) for x in (m.get("needs_review") or []) if str(x).strip()]
     if needs:

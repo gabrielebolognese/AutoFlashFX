@@ -1,0 +1,22 @@
+{
+  "scores": {
+    "P": 3,
+    "S": 3,
+    "C": 3
+  },
+  "F": "ok",
+  "F_kind": "none",
+  "evidence": {
+    "P": "\"I build landing pages with Claude Code and every one of them looks like the same AI template\": a felt first-person pain, answered by one install",
+    "S": "\"if you are a freelancer shipping client landing pages with Claude Code\" plus a takeaway that names the three banned defaults: forwardable on its own",
+    "C": "SKILL with a concrete checklist deliverable",
+    "F": "every statement maps to verified claims of facts.md",
+    "H": "\"Open FlashFX, the motion graphics editor, and rebuild the page's hero as an animation\": FlashFX is a motion graphics editor and the problem is a web page that looks AI-generated; the facts show the frontend-design skill solving it, not FlashFX"
+  },
+  "reason": "Fixture gate: P, S and C hold, but FlashFX is forced into a problem it does not solve.",
+  "angle_hint": "",
+  "different_topic": false,
+  "suggested_idea": "",
+  "H": "fail",
+  "H_fix": "the frontend-design skill from anthropics/skills (external, keyword LINK)"
+}

@@ -164,8 +164,8 @@ assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS")" "8" "numberi
 rm -rf "$SANDBOX/exports"
 for st in 13-render 14-export; do REELS_DUMMY_SECONDS=0 bash "$REPO_DIR/pipeline/stages/$st/dummy.sh" "$RD" >/dev/null 2>&1; done
 caps="$(python "$EXPORT_PY" render --run-dir "$RD" --number 7)"
-assert_eq "$(printf '%s\n' "$caps" | grep -E '^(CAPTION|HASHTAGS|COMMENT KEYWORD|HOOKS|NEEDS REVIEW|FACTS AND SOURCES|RUN)$' | paste -sd,)" \
-  "CAPTION,HASHTAGS,COMMENT KEYWORD,HOOKS,NEEDS REVIEW,FACTS AND SOURCES,RUN" "captions: the sections of spec section 8, in order"
+assert_eq "$(printf '%s\n' "$caps" | grep -E '^(CAPTION|HASHTAGS|COMMENT KEYWORD|SOLUTION|HOOKS|NEEDS REVIEW|FACTS AND SOURCES|RUN)$' | paste -sd,)" \
+  "CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,NEEDS REVIEW,FACTS AND SOURCES,RUN" "captions: the sections of spec section 8, in order"
 assert_true "captions: HOOKS lines carry the export number" grep -q -F '7.mp4 uses: "Your AI site looks fake, one fix"' <<<"$caps"
 assert_true "captions: the hook 2 clip line" grep -q -F '7hook2.mp4 uses:' <<<"$caps"
 assert_true "captions: NEEDS REVIEW lists the flag" grep -q -F '07-script: soft script check failed (detect 64)' <<<"$caps"
@@ -188,7 +188,7 @@ assert_grep "${ts_regex}QUEUE  2\. Idea B: uv replaces pip" "$OUT" "queue listin
 assert_grep "${ts_regex}START  idea 1/2 \"Idea A: the gh CLI in 60 seconds, three ...\" -> runs/20[0-9-]+_[0-9]{4}_idea-a-the-gh-cli$" "$OUT" "START line: position, text cut at 40, run folder"
 assert_grep "${ts_regex}STEP   researching facts done \([0-9]+s\) -> expanding idea$" "$OUT" "STEP line: activity done (time) -> next activity"
 assert_grep "${ts_regex}STEP   checking idea \(gate\) done \([0-9]+s\) -> picking hooks$" "$OUT" "STEP skips 04-angle when the gate passes"
-assert_grep "${ts_regex}STEP   writing caption done \([0-9]+s\) -> exporting$" "$OUT" "STEP before the export"
+assert_grep "${ts_regex}STEP   writing caption done \([0-9]+s\) -> exporting #[0-9]+$" "$OUT" "STEP before the export (the activity exporting #N)"
 assert_eq "$(grep -c -E "${ts_regex}STEP " "$OUT")" "30" "15 STEP lines per idea (16 stages, angle skipped)"
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/ \([0-9]+(s| min), 0 issues fixed\)$" "$OUT" "DONE line for export 1"
 assert_grep "${ts_regex}NEXT   idea 2/2 \"Idea B: uv replaces pip, venv and pyenv ...\"$" "$OUT" "NEXT line keeps counting the ideas of the session"
@@ -210,8 +210,8 @@ assert_grep '^1\.mp4 uses: "' "$SANDBOX/exports/1/1captions.txt" "captions: HOOK
 assert_grep "^runs/$(ls "$SANDBOX/runs" | head -n 1)$" "$SANDBOX/exports/1/1captions.txt" "captions: RUN section names the first run"
 assert_eq "$(ls -d "$SANDBOX"/runs/*/export 2>/dev/null | wc -l | tr -d ' ')" "0" "the staging folders were moved, not copied"
 assert_eq "$(grep -c . "$SANDBOX/logs/history.txt")" "2" "two history lines"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| exported 1$" "$SANDBOX/logs/history.txt" "history: date | idea | exported 1"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| exported 2$" "$SANDBOX/logs/history.txt" "history: the second idea with its accents"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| external \| exported 1$" "$SANDBOX/logs/history.txt" "history: date | idea | solution | exported 1"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| external \| exported 2$" "$SANDBOX/logs/history.txt" "history: the second idea with its accents"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt is empty afterwards"
 assert_eq "$(ls "$SANDBOX/runs" | wc -l | tr -d ' ')" "2" "two run folders"
 for d in $(run_dirs); do
@@ -304,7 +304,7 @@ assert_true "the exports lock is left behind" [ -d "$SANDBOX/.locks/exports" ]
 run_once "$SANDBOX/crash1b.out"; rc=$?
 assert_rc 0 $rc "restart after the crash exits 0"
 assert_grep "removed a leftover exports lock" "$SANDBOX/crash1b.out" "the leftover exports lock is cleared at startup"
-assert_grep "resumed at exporting, 15 stages done" "$SANDBOX/crash1b.out" "the restart resumes at the export"
+assert_grep "resumed at exporting #[0-9]+, 15 stages done" "$SANDBOX/crash1b.out" "the restart resumes at the export"
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$SANDBOX/crash1b.out" "the export completes as #1"
 assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "exactly one export after the crash"
 assert_no_file "$RD/export" "the staging folder is gone"
@@ -350,9 +350,9 @@ assert_grep "${ts_regex}FLAG   needs review: dummy soft check failed in 07-scrip
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the third idea exports as #1: no gap for dropped or blocked ideas"
 assert_grep "${ts_regex}IDLE   queue empty: this session 1 exported, 1 dropped, 1 blocked" "$OUT" "summary counts"
 assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "only exports/1"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| dropped: facts do not hold \(dummy 03-gate\)$" "$SANDBOX/logs/history.txt" "history: dropped line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| blocked: environment problem: fake reviewer: exit 1" "$SANDBOX/logs/history.txt" "history: blocked line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_C \| exported 1$" "$SANDBOX/logs/history.txt" "history: exported line"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| external \| dropped: facts do not hold \(dummy 03-gate\)$" "$SANDBOX/logs/history.txt" "history: dropped line"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| external \| blocked: environment problem: fake reviewer: exit 1" "$SANDBOX/logs/history.txt" "history: blocked line"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_C \| external \| exported 1$" "$SANDBOX/logs/history.txt" "history: exported line"
 assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: fake reviewer: exit 1: .* \| runs/" "$SANDBOX/logs/blocked.txt" "blocked.txt: the reason line"
 assert_grep "^\{$IDEA_B\}$" "$SANDBOX/logs/blocked.txt" "blocked.txt: the idea in braces, ready to re-add"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt is empty"
