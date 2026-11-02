@@ -1,9 +1,11 @@
 # pipeline/lib/history.sh: logs/history.txt and logs/blocked.txt (BUILD_SPEC.md sections 2.1, 4.2, 4.3).
 # Source common.sh first.
 #
-#   history_add exported "<idea text>" <N>            "date | idea | exported N"   (not repeated for the same N)
-#   history_add dropped  "<idea text>" "<reason>"     "date | idea | dropped: reason"
-#   history_add blocked  "<idea text>" "<reason>"     "date | idea | blocked: reason"
+#   history_add exported "<idea text>" <N> [solution]        "date | idea | solution | exported N"  (not repeated for the same N)
+#   history_add dropped  "<idea text>" "<reason>" [solution] "date | idea | solution | dropped: reason"
+#   history_add blocked  "<idea text>" "<reason>" [solution] "date | idea | solution | blocked: reason"
+#     solution (M12, BUILD_SPEC.md 4.3) is the reel's solution type: flashfx, external or method, or "-" when the
+#     idea ended before S2 chose one (the default); S2 reads the recent lines to keep the balance target
 #   blocked_add "<raw idea>" <stage> "<reason>" <run_dir>   two lines in logs/blocked.txt: a comment with the date,
 #                                                     stage, reason and run folder, then the idea in braces, ready to
 #                                                     paste into add-idea.sh
@@ -18,8 +20,9 @@ declare -F reels_undash >/dev/null 2>&1 || source "$(cd "$(dirname "${BASH_SOURC
 history_file() { printf '%s' "$REELS_LOGS/history.txt"; }
 
 history_add() {
-  local kind="$1" idea="$2" detail="$3" stamp line file
+  local kind="$1" idea="$2" detail="$3" solution="${4:--}" stamp line file
   reels_undash idea; reels_undash detail
+  case "$solution" in flashfx|external|method) ;; *) solution="-" ;; esac
   file="$(history_file)"
   mkdir -p "$REELS_LOGS"
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1
@@ -29,12 +32,18 @@ history_add() {
          && grep -F -- "| exported $detail" "$file" | grep -q -F -- "| $idea |"; then
         return 0  # already written (a restart after the export)
       fi
-      line="$stamp | $idea | exported $detail" ;;
-    dropped) line="$stamp | $idea | dropped: $detail" ;;
-    blocked) line="$stamp | $idea | blocked: $detail" ;;
+      line="$stamp | $idea | $solution | exported $detail" ;;
+    dropped) line="$stamp | $idea | $solution | dropped: $detail" ;;
+    blocked) line="$stamp | $idea | $solution | blocked: $detail" ;;
     *) echo "history_add: unknown kind '$kind'" >&2; return 1 ;;
   esac
   printf '%s\n' "$line" >> "$file"
+}
+
+history_solution() {  # history_solution <run_dir>: the run's solution type for the history line (- before S2 decided)
+  local t
+  t="$("$REELS_PY" "$REELS_PIPELINE/lib/solution.py" type --run-dir "$1" 2>/dev/null | tr -d '\r')"
+  printf '%s' "${t:--}"
 }
 
 blocked_add() {

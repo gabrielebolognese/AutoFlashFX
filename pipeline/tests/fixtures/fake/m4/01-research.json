@@ -5,24 +5,96 @@
     "note": "Test fixture for the fake claude (not real research): the skill is listed in the anthropics/skills repository and the docs describe how skills install."
   },
   "claims": [
-    {"claim": "The frontend-design skill is published in the anthropics/skills repository on GitHub", "url": "https://github.com/anthropics/skills", "tier": "primary", "status": "verified", "note": "fixture"},
-    {"claim": "A skill is a folder with a SKILL.md file that Claude Code loads when the task matches its description", "url": "https://docs.claude.com/en/docs/claude-code/skills", "tier": "primary", "status": "verified", "note": "fixture"},
-    {"claim": "Skills install by copying the folder into ~/.claude/skills/ or a project's .claude/skills/", "url": "https://docs.claude.com/en/docs/claude-code/skills", "tier": "primary", "status": "verified", "note": "fixture"},
-    {"claim": "The skill steers the model away from the defaults it reaches for: common fonts, purple gradients, centered hero layouts", "url": "https://github.com/anthropics/skills/tree/main/skills/frontend-design", "tier": "primary", "status": "verified", "note": "fixture"},
-    {"claim": "Anthropic described agent skills, the frontend-design skill among them, in a blog post", "url": "https://www.anthropic.com/news/skills", "tier": "vendor", "status": "verified", "note": "fixture"},
-    {"claim": "A forum thread claims the skill doubles conversion rates", "url": "https://www.reddit.com/r/ClaudeAI/comments/example", "tier": "forum", "status": "unverified", "note": "fixture: no data behind it"},
-    {"claim": "The skill generates whole React apps on its own", "url": "https://example.com/wrong", "tier": "press", "status": "false", "note": "fixture: it changes design choices, it does not generate apps by itself"}
+    {
+      "claim": "The frontend-design skill is published in the anthropics/skills repository on GitHub",
+      "url": "https://github.com/anthropics/skills",
+      "tier": "primary",
+      "status": "verified",
+      "note": "fixture"
+    },
+    {
+      "claim": "A skill is a folder with a SKILL.md file that Claude Code loads when the task matches its description",
+      "url": "https://docs.claude.com/en/docs/claude-code/skills",
+      "tier": "primary",
+      "status": "verified",
+      "note": "fixture"
+    },
+    {
+      "claim": "Skills install by copying the folder into ~/.claude/skills/ or a project's .claude/skills/",
+      "url": "https://docs.claude.com/en/docs/claude-code/skills",
+      "tier": "primary",
+      "status": "verified",
+      "note": "fixture"
+    },
+    {
+      "claim": "The skill steers the model away from the defaults it reaches for: common fonts, purple gradients, centered hero layouts",
+      "url": "https://github.com/anthropics/skills/tree/main/skills/frontend-design",
+      "tier": "primary",
+      "status": "verified",
+      "note": "fixture"
+    },
+    {
+      "claim": "Anthropic described agent skills, the frontend-design skill among them, in a blog post",
+      "url": "https://www.anthropic.com/news/skills",
+      "tier": "vendor",
+      "status": "verified",
+      "note": "fixture"
+    },
+    {
+      "claim": "A forum thread claims the skill doubles conversion rates",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/example",
+      "tier": "forum",
+      "status": "unverified",
+      "note": "fixture: no data behind it"
+    },
+    {
+      "claim": "The skill generates whole React apps on its own",
+      "url": "https://example.com/wrong",
+      "tier": "press",
+      "status": "false",
+      "note": "fixture: it changes design choices, it does not generate apps by itself"
+    }
   ],
   "numbers": [
-    {"name": "skills repo stars", "value": "12,345", "unit": "stars", "url": "https://github.com/anthropics/skills", "note": "fixture"},
-    {"name": "install steps", "value": "1", "unit": "command", "url": "https://docs.claude.com/en/docs/claude-code/skills", "note": "fixture"}
+    {
+      "name": "skills repo stars",
+      "value": "12,345",
+      "unit": "stars",
+      "url": "https://github.com/anthropics/skills",
+      "note": "fixture"
+    },
+    {
+      "name": "install steps",
+      "value": "1",
+      "unit": "command",
+      "url": "https://docs.claude.com/en/docs/claude-code/skills",
+      "note": "fixture"
+    }
   ],
-  "pitfalls": ["Skills need Claude Code 2.0 or newer", "A skill only triggers when the task matches the description in its frontmatter"],
+  "pitfalls": [
+    "Skills need Claude Code 2.0 or newer",
+    "A skill only triggers when the task matches the description in its frontmatter"
+  ],
   "one_true_thing": [
     "One folder copied into ~/.claude/skills changes every frontend Claude Code builds",
     "The skill lists the exact defaults it bans: the default font, purple gradients, centered heroes"
   ],
-  "assets": [{"name": "repo", "what": "the anthropics/skills repository page"}],
-  "unverified": ["How many people use the skill"],
-  "summary": "Fixture summary: the skill exists, installs by copying a folder and changes design defaults. Avoid any conversion claim."
+  "assets": [
+    {
+      "name": "repo",
+      "what": "the anthropics/skills repository page"
+    }
+  ],
+  "unverified": [
+    "How many people use the skill"
+  ],
+  "summary": "Fixture summary: the skill exists, installs by copying a folder and changes design defaults. Avoid any conversion claim.",
+  "solution_candidates": [
+    {
+      "type": "external",
+      "name": "the frontend-design skill (anthropics/skills)",
+      "url": "https://github.com/anthropics/skills",
+      "why": "fixture: the skill is the solution the idea names; it steers Claude Code away from its default look"
+    }
+  ]
 }

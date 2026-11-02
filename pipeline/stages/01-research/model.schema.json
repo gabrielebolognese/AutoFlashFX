@@ -3,7 +3,7 @@
   "$id": "https://instagramreels.local/stages/01-research/model-output",
   "title": "01-research: the research model's structured answer (BUILD_SPEC.md S1); research.py finish turns it into research.json",
   "type": "object",
-  "required": ["core_claim", "claims", "numbers", "pitfalls", "one_true_thing", "assets", "unverified", "summary"],
+  "required": ["core_claim", "claims", "numbers", "pitfalls", "one_true_thing", "assets", "solution_candidates", "unverified", "summary"],
   "properties": {
     "core_claim": {
       "type": "object",
@@ -50,6 +50,19 @@
         "type": "object",
         "required": ["name", "what"],
         "properties": {"name": {"type": "string"}, "what": {"type": "string"}}
+      }
+    },
+    "solution_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "name", "url", "why"],
+        "properties": {
+          "type": {"type": "string", "enum": ["external", "method"]},
+          "name": {"type": "string"},
+          "url": {"type": "string"},
+          "why": {"type": "string"}
+        }
       }
     },
     "unverified": {"type": "array", "items": {"type": "string"}},

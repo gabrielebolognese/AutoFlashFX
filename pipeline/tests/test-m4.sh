@@ -176,7 +176,9 @@ chars="$(wc -c < "$RD/02-expansion/expansion.md" | tr -d ' ')"
 assert_true "expansion.md is between 500 and 1500 characters ($chars)" test "$chars" -ge 500 -a "$chars" -le 1500
 assert_true "expansion.json validates against schema.json" python pipeline/bin/validate-json pipeline/stages/02-expansion/schema.json "$RD/02-expansion/expansion.json"
 assert_grep "^Problem: I build landing pages" "$RD/02-expansion/expansion.md" "expansion.md: the problem line"
-assert_grep "^Comment keyword: SKILL\. Deliverable \(NEW, to create\): " "$RD/02-expansion/expansion.md" "expansion.md: a keyword not in deliverables.txt is NEW"
+assert_grep "^Comment keyword: LINK\. Deliverable \(existing\): the link to .*\(https://github.com/anthropics/skills\)$" "$RD/02-expansion/expansion.md" "expansion.md: an external solution takes the keyword LINK with its link (M12)"
+assert_grep "^Solution decision: external \(the frontend-design skill \(anthropics/skills\), https://github.com/anthropics/skills\): " "$RD/02-expansion/expansion.md" "expansion.md: the solution decision line (M12)"
+assert_eq "$(json_get "$RD/02-expansion/solution.json" type)/$(json_get "$RD/02-expansion/solution.json" keyword)" "external/LINK" "solution.json: the type and the keyword (M12)"
 assert_grep "^- facts.md#1: " "$RD/02-expansion/expansion.md" "expansion.md: evidence lines point to facts.md"
 python - "$FAKE_M4/02-expansion.json" "$SANDBOX_M/bad.json" "$SANDBOX_M/guide.json" <<'EOF'
 import json, sys
@@ -186,6 +188,7 @@ bad["evidence"] = [{"fact": 6, "note": "x"}, {"fact": 99, "note": "y"}]; bad["sh
 bad["deliverable_status"] = "existing"; bad["solution"] = base["solution"] * 5
 json.dump(bad, open(sys.argv[2], "w", encoding="utf-8"))
 good = dict(base); good["keyword"] = "guide"; good["deliverable_status"] = "new"
+good["solution_decision"] = {"type": "method", "name": "copy the skill folder by hand", "url": "", "reason": "fixture: a method keeps the keyword the model chose (M12)"}
 json.dump(good, open(sys.argv[3], "w", encoding="utf-8"))
 EOF
 res="$(python pipeline/lib/expansion.py compose --run-dir "$RD" --model-out "$SANDBOX_M/bad.json" --deliverables "$SANDBOX_M/deliv.txt" --written-by 02-expansion --round 0)"
@@ -203,29 +206,29 @@ assert_grep "^Comment keyword: GUIDE\. Deliverable \(existing\): .*\(https://exa
 
 # gate.py
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/03-gate.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: S1 with rounds left is an angle" grep -q '"decision": "angle", "scores_text": "P3 S1 C3 F ok", "failing_text": "S1"' <<<"$res"
+assert_true "gate: S1 with rounds left is an angle" grep -q '"decision": "angle", "scores_text": "P3 S1 C3 F ok H ok", "failing_text": "S1"' <<<"$res"
 assert_true "gate.json validates against schema.json" python pipeline/bin/validate-json pipeline/stages/03-gate/schema.json "$RD/03-gate/gate.json"
 assert_file "$RD/03-gate/gate-1.json" "gate: a copy per round"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/03-gate.json" --round 3 --angles-done 2 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: no round left is a drop with the scores" grep -q '"decision": "drop", .*"reason": "still failing after 2 angle rounds (P3 S1 C3 F ok): ' <<<"$res"
+assert_true "gate: no round left is a drop with the scores" grep -q '"decision": "drop", .*"reason": "still failing after 2 angle rounds (P3 S1 C3 F ok H ok): ' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.false.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: the model's F fail of kind core drops at once" grep -q '"decision": "drop", .*"reason": "facts don.t hold (P2 S2 C2 F fail): ' <<<"$res"
+assert_true "gate: the model's F fail of kind core drops at once" grep -q '"decision": "drop", .*"reason": "facts don.t hold (P2 S2 C2 F fail H ok): ' <<<"$res"
 assert_eq "$(json_get "$RD/03-gate/gate.json" F_kind)" "core" "gate.json: F_kind core"
 # an F fail of kind wording (a statement of the expansion that facts.md does not back, the core claim verified) is
 # repaired by an angle round, not a drop (M4 review 2, DECISIONS.md 112)
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.wording.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: an F fail of kind wording with the core verified is an angle round, not a drop" grep -q '"decision": "angle", "scores_text": "P3 S3 C3 F fail", "failing_text": "F wording"' <<<"$res"
+assert_true "gate: an F fail of kind wording with the core verified is an angle round, not a drop" grep -q '"decision": "angle", "scores_text": "P3 S3 C3 F fail H ok", "failing_text": "F wording"' <<<"$res"
 assert_eq "$(json_get "$RD/03-gate/gate.json" F_kind)" "wording" "gate.json: F_kind wording"
 assert_eq "$(json_get "$RD/03-gate/gate.json" failing)" '["F"]' "gate.json: failing lists F"
 assert_eq "$(json_get "$RD/03-gate/gate.json" decision)" "angle" "gate.json: decision angle"
 assert_true "gate.json with F_kind validates against schema.json" python pipeline/bin/validate-json pipeline/stages/03-gate/schema.json "$RD/03-gate/gate.json"
 assert_true "gate: the wording fail keeps the model's angle hint (the statements to reword)" grep -q '"angle_hint": "Fixture gate hint: reword the install sentence' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.wording.json" --round 3 --angles-done 2 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: a wording fail with no round left drops with the scores" grep -q '"decision": "drop", .*"reason": "still failing after 2 angle rounds (P3 S3 C3 F fail): Fixture gate: ' <<<"$res"
+assert_true "gate: a wording fail with no round left drops with the scores" grep -q '"decision": "drop", .*"reason": "still failing after 2 angle rounds (P3 S3 C3 F fail H ok): Fixture gate: ' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.wording.json" --round 1 --angles-done 0 --cap 2 --core-status false --today 2026-11-01)"
-assert_true "gate: a false core claim drops at once whatever kind the model gave" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail", .*core claim is false.*"F_kind": "core"' <<<"$res"
+assert_true "gate: a false core claim drops at once whatever kind the model gave" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail H ok", .*core claim is false.*"F_kind": "core"' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.wording.json" --round 1 --angles-done 0 --cap 2 --core-status unverified --today 2026-11-01)"
-assert_true "gate: an unverified core claim drops at once whatever kind the model gave" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail", .*core claim is unverified.*"F_kind": "core"' <<<"$res"
+assert_true "gate: an unverified core claim drops at once whatever kind the model gave" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail H ok", .*core claim is unverified.*"F_kind": "core"' <<<"$res"
 python - "$FAKE_M4/variants/03-gate.wording.json" "$SANDBOX_M/w-nokind.json" "$SANDBOX_M/w-s1.json" "$SANDBOX_M/w-nohint.json" <<'EOF'
 import json, sys
 w = json.load(open(sys.argv[1], encoding="utf-8"))
@@ -237,24 +240,24 @@ nohint = dict(w); nohint["angle_hint"] = ""
 json.dump(nohint, open(sys.argv[4], "w", encoding="utf-8"))
 EOF
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$SANDBOX_M/w-nokind.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: an F fail without a kind is read as core (the strict default) and drops" grep -q '"decision": "drop", .*"reason": "facts don.t hold (P3 S3 C3 F fail): ' <<<"$res"
+assert_true "gate: an F fail without a kind is read as core (the strict default) and drops" grep -q '"decision": "drop", .*"reason": "facts don.t hold (P3 S3 C3 F fail H ok): ' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$SANDBOX_M/w-s1.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: S1 plus a wording fail is one angle round naming both" grep -q '"decision": "angle", "scores_text": "P3 S1 C3 F fail", "failing_text": "S1 F wording"' <<<"$res"
+assert_true "gate: S1 plus a wording fail is one angle round naming both" grep -q '"decision": "angle", "scores_text": "P3 S1 C3 F fail H ok", "failing_text": "S1 F wording"' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$SANDBOX_M/w-nohint.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
 assert_true "gate: a wording fail without an angle hint gets one built from the F evidence" grep -q '"angle_hint": "remove or reword the statements of the expansion that facts.md does not back: \\"one folder in' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.pass.json" --round 1 --angles-done 0 --cap 2 --core-status false --today 2026-11-01)"
-assert_true "gate: a false core claim fails F whatever the model said" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail", .*core claim is false' <<<"$res"
+assert_true "gate: a false core claim fails F whatever the model said" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail H ok", .*core claim is false' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.pass.json" --round 1 --angles-done 0 --cap 2 --core-status unverified --today 2026-11-01)"
-assert_true "gate: an unverified core claim fails F too" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail"' <<<"$res"
+assert_true "gate: an unverified core claim fails F too" grep -q '"decision": "drop", "scores_text": "P3 S3 C3 F fail H ok"' <<<"$res"
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.pass.json" --round 2 --angles-done 1 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: P, S, C at least 2 and F ok passes" grep -q '"decision": "pass", "scores_text": "P3 S3 C3 F ok"' <<<"$res"
+assert_true "gate: P, S, C at least 2 and F ok passes" grep -q '"decision": "pass", "scores_text": "P3 S3 C3 F ok H ok"' <<<"$res"
 python - "$FAKE_M4/03-gate.json" "$SANDBOX_M/dt.json" <<'EOF'
 import json, sys
 g = json.load(open(sys.argv[1], encoding="utf-8")); g["different_topic"] = True; g["suggested_idea"] = "A reel about {something else} entirely"
 json.dump(g, open(sys.argv[2], "w", encoding="utf-8"))
 EOF
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$SANDBOX_M/dt.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
-assert_true "gate: a different-topic verdict drops with the suggestion" grep -q '"decision": "drop", .*no angle keeps the core topic (P3 S1 C3 F ok)' <<<"$res"
+assert_true "gate: a different-topic verdict drops with the suggestion" grep -q '"decision": "drop", .*no angle keeps the core topic (P3 S1 C3 F ok H ok)' <<<"$res"
 python pipeline/lib/gate.py suggest --logs "$SANDBOX_M/logs" --idea "$TEST_IDEA" --suggestion "A reel about {something else} entirely" --source 03-gate >/dev/null
 assert_grep "^# 20[0-9-]+ [0-9:]+ \| from 03-gate \| the idea was: Claude Code" "$SANDBOX/logs/suggested-ideas.txt" "suggested-ideas.txt: the comment line"
 assert_grep "^\{A reel about \(something else\) entirely\}$" "$SANDBOX/logs/suggested-ideas.txt" "suggested-ideas.txt: the suggestion in braces, inner braces replaced"
@@ -339,13 +342,13 @@ assert_grep "${ts_regex}ANGLE  gate failed \(S1\): finding a better angle, round
 assert_grep "${ts_regex}STEP   checking idea \(gate\) done \([0-9ms]+\) -> finding a better angle$" "$OUT" "STEP: the gate hands over to the angle stage"
 assert_grep "${ts_regex}STEP   finding a better angle done \([0-9ms]+\) -> checking idea \(gate\)$" "$OUT" "STEP: the angle stage hands back to the gate"
 assert_grep "${ts_regex}ANGLE  gate failed \(S1\): finding a better angle, round 2/2$" "$OUT" "ANGLE line, round 2/2"
-assert_grep "${ts_regex}DROP   idea \"Claude Code's frontend-design skill: it ...\" dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok\): Fixture gate: the share driver is too weak to be forwarded on its own\.\. Removed from ideas.txt$" "$OUT" "DROP line with the scores and the reason"
+assert_grep "${ts_regex}DROP   idea \"Claude Code's frontend-design skill: it ...\" dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok H ok\): Fixture gate: the share driver is too weak to be forwarded on its own\.\. Removed from ideas.txt$" "$OUT" "DROP line with the scores and the reason"
 assert_eq "$(event_tags "$OUT")" "STEP,STEP,ANGLE,STEP,STEP,ANGLE,STEP,STEP,DROP" "the event lines in order: two angle rounds, then the drop"
 assert_grep "${ts_regex}FLAG   needs review: library/profile/account.md is missing: the research and the expansion used default audience assumptions$" "$OUT" "FLAG: a missing account.md is a NEEDS REVIEW flag, not an error"
 assert_eq "$(grep -c "FLAG   needs review: library/profile/account.md" "$OUT")" "1" "the missing account.md is flagged once, although S1, S2 and S4 all noticed it"
 assert_not_grep "GATE   passed" "$OUT" "no GATE passed line"
 assert_not_grep "${ts_regex}ERROR" "$OUT" "no ERROR line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok\): " "$SANDBOX/logs/history.txt" "history: the drop with the scores"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok H ok\): " "$SANDBOX/logs/history.txt" "history: the drop with the scores"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone"
 assert_eq "$(state_get "$RD" rounds.angle)" "2" "state.json: rounds.angle reached 2"
 assert_eq "$(state_get "$RD" status)" "dropped" "state.json: dropped"
@@ -368,7 +371,7 @@ assert_grep "^   Added by 04-angle round 1\.$" "$RD/01-research/facts.md" "facts
 assert_eq "$(json_get "$RD/01-research/research.json" counts.claims)" "8" "research.json: 8 claims"
 assert_grep "^- facts.md#8: " "$RD/02-expansion/expansion.md" "expansion.md: the new claim is cited"
 assert_grep "^\[[0-9:]+\] INFO   S4: angle round 2/2, 0 new claims" "$SANDBOX/logs/runner.log" "INFO: the second angle round added nothing new"
-assert_grep "^\[[0-9:]+\] INFO   S4: angle round 1/2, 1 new claim, expansion [0-9]+ chars: The share line now names" "$SANDBOX/logs/runner.log" "INFO: the first angle round added the new claim"
+assert_grep "^\[[0-9:]+\] INFO   S4: angle round 1/2, 1 new claim, solution external \(.*\), expansion [0-9]+ chars: The share line now names" "$SANDBOX/logs/runner.log" "INFO: the first angle round added the new claim (and names the solution, M12)"
 assert_eq "$(json_get "$RD/04-angle/angle-1.json" change)" "The share line now names the three banned defaults, so it survives without the video, and the identity is narrower: freelancers who ship client landing pages." "angle-1.json: the em dashes the model wrote in \"change\" became commas before the file was written"
 no_emdash_in "angle.json, angle-1.json, angle-2.json and the second round's prompt hold no em dash" "$RD/04-angle/angle.json" "$RD/04-angle/angle-1.json" "$RD/04-angle/angle-2.json" "$RD/04-angle/prompt-angle-r2.md"
 # the model calls: S1, S2, S3, S4, S3, S4, S3; session A for the research model, a fresh session for every gate
@@ -412,7 +415,7 @@ run_once "$SANDBOX/pass.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/pass.out"; RD="$(run_dirs | sed -n 2p)"
 assert_rc 0 $rc "pass on round 2: the runner exits 0"
 assert_grep "${ts_regex}ANGLE  gate failed \(S1\): finding a better angle, round 1/2$" "$OUT" "pass on round 2: one ANGLE line"
-assert_grep "${ts_regex}GATE   passed \(P3 S3 C3 F ok\) after 1 angle round$" "$OUT" "pass on round 2: the GATE line names the angle round"
+assert_grep "${ts_regex}GATE   passed \(P3 S3 C3 F ok H ok\) after 1 angle round$" "$OUT" "pass on round 2: the GATE line names the angle round"
 assert_grep "${ts_regex}STEP   checking idea \(gate\) done \([0-9ms]+\) -> picking hooks$" "$OUT" "pass on round 2: the gate hands over to S5"
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "pass on round 2: the run continues to the export (dummy stages)"
 assert_eq "$(event_tags "$OUT")" "STEP,STEP,ANGLE,STEP,STEP,GATE,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,DONE" "pass on round 2: the event lines (the gate's own STEP, then the 12 dummy stages)"
@@ -435,11 +438,11 @@ printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
 run_once "$SANDBOX/false.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/false.out"; RD="$(run_dirs | sed -n 3p)"
 assert_rc 0 $rc "false core claim: the runner exits 0"
-assert_grep "${ts_regex}DROP   idea \".*\" dropped: facts don't hold \(P3 S3 C3 F fail\): the idea's core claim is false \(the ffmpeg 8 documentation lists no such option\)" "$OUT" "false core claim: DROP at once with F fail, whatever the gate model scored"
+assert_grep "${ts_regex}DROP   idea \".*\" dropped: facts don't hold \(P3 S3 C3 F fail H ok\): the idea's core claim is false \(the ffmpeg 8 documentation lists no such option\)" "$OUT" "false core claim: DROP at once with F fail, whatever the gate model scored"
 assert_not_grep "${ts_regex}ANGLE" "$OUT" "false core claim: no angle round"
 assert_eq "$(state_get "$RD" stages.04-angle.status)" "skipped" "false core claim: 04-angle stayed skipped"
 assert_eq "$(json_get "$RD/03-gate/gate.json" F)" "fail" "false core claim: gate.json F fail"
-assert_grep "dropped: facts don't hold \(P3 S3 C3 F fail\)" "$SANDBOX/logs/history.txt" "false core claim: the history line"
+assert_grep "dropped: facts don't hold \(P3 S3 C3 F fail H ok\)" "$SANDBOX/logs/history.txt" "false core claim: the history line"
 
 # the gate says only a different topic works: drop, and the suggestion goes to logs/suggested-ideas.txt
 fake_claude_reset
@@ -453,7 +456,7 @@ EOF
 printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
 run_once "$SANDBOX/topic.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/topic.out"
-assert_grep "${ts_regex}DROP   idea \".*\" dropped: no angle keeps the core topic \(P3 S1 C3 F ok\): .*suggestion written to logs/suggested-ideas.txt\. Removed from ideas.txt$" "$OUT" "different topic: DROP with the reason"
+assert_grep "${ts_regex}DROP   idea \".*\" dropped: no angle keeps the core topic \(P3 S1 C3 F ok H ok\): .*suggestion written to logs/suggested-ideas.txt\. Removed from ideas.txt$" "$OUT" "different topic: DROP with the reason"
 assert_grep "^\{A reel about the three defaults every AI page shares, with the skill as one fix among others\}$" "$SANDBOX/logs/suggested-ideas.txt" "different topic: the suggestion in logs/suggested-ideas.txt"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "different topic: nothing added to ideas.txt"
 assert_not_grep "${ts_regex}ANGLE" "$OUT" "different topic: no angle round"
@@ -471,7 +474,7 @@ OUT="$SANDBOX/wording.out"; RD="$(run_of "$OUT")"
 assert_rc 0 $rc "wording repair: the runner exits 0"
 assert_grep "${ts_regex}ANGLE  gate failed \(F wording\): finding a better angle, round 1/2$" "$OUT" "wording repair: the ANGLE line names the F wording failure"
 assert_not_grep "${ts_regex}DROP" "$OUT" "wording repair: a wording slip with the core verified does not drop the idea"
-assert_grep "${ts_regex}GATE   passed \(P3 S3 C3 F ok\) after 1 angle round$" "$OUT" "wording repair: the gate passes on round 2"
+assert_grep "${ts_regex}GATE   passed \(P3 S3 C3 F ok H ok\) after 1 angle round$" "$OUT" "wording repair: the gate passes on round 2"
 assert_grep "${ts_regex}DONE   exported #[0-9]+ -> exports/" "$OUT" "wording repair: the run continues to the export"
 assert_eq "$(event_tags "$OUT")" "STEP,STEP,ANGLE,STEP,STEP,GATE,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,DONE" "wording repair: the event lines (one angle round, the pass, the dummy stages)"
 assert_eq "$(json_get "$RD/03-gate/gate-1.json" decision)" "angle" "wording repair: gate-1.json decided angle"
@@ -481,10 +484,10 @@ assert_eq "$(json_get "$RD/03-gate/gate.json" pass)" "true" "wording repair: gat
 assert_eq "$(json_get "$RD/04-angle/angle-1.json" previous_F_kind)" "wording" "wording repair: angle-1.json records the F kind it repaired"
 assert_true "angle.json with previous_F_kind validates against schema.json" python pipeline/bin/validate-json pipeline/stages/04-angle/schema.json "$RD/04-angle/angle.json"
 assert_grep "^## F failed for wording: fix this first$" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt asks for the repair first"
-assert_grep "^Scores: P3 S3 C3 F fail\. Failing: F \(wording\)\.$" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt names the failing criterion"
+assert_grep "^Scores: P3 S3 C3 F fail H ok\. Failing: F \(wording\)\.$" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt names the failing criterion"
 assert_grep "one folder in ~/.claude/skills\" says more than claim 3" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt quotes the gate's F evidence (the statement to fix)"
 assert_grep "^Hint for a better angle: Fixture gate hint: reword the install sentence" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt carries the gate's hint"
-assert_grep "gate round 1: P3 S3 C3 F fail \(wording\), decision angle" "$RD/03-gate/prompt-gate-r2.md" "wording repair: the second gate round sees the first round's F kind"
+assert_grep "gate round 1: P3 S3 C3 F fail \(wording\) H ok, decision angle" "$RD/03-gate/prompt-gate-r2.md" "wording repair: the second gate round sees the first round's F kind"
 assert_eq "$(json_get "$RD/02-expansion/expansion.json" written_by)" "04-angle round 1" "wording repair: the expansion was rewritten by the angle round"
 assert_eq "$(grep -c '| exported [0-9]*$' "$SANDBOX/logs/history.txt")" "2" "wording repair: the history line says exported (the second export of this section)"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "wording repair: the idea left ideas.txt after the export, not after a drop"
@@ -507,7 +510,7 @@ grep -E "$ts_regex(STEP|GATE|ANGLE|DROP|DONE|ERROR|BLOCK|FLAG|WARN|INFO)" "$OUT"
 assert_rc 0 $rc "the runner exits 0"
 assert_grep "${ts_regex}STEP   researching facts done \([0-9hms]+\) -> expanding idea$" "$OUT" "S1 done"
 assert_grep "${ts_regex}STEP   expanding idea done \([0-9hms]+\) -> checking idea \(gate\)$" "$OUT" "S2 done"
-assert_grep "${ts_regex}GATE   passed \(P[2-3] S[2-3] C[2-3] F ok\)" "$OUT" "GATE passed (directly or after an angle round)"
+assert_grep "${ts_regex}GATE   passed \(P[2-3] S[2-3] C[2-3] F ok H ok\)" "$OUT" "GATE passed (directly or after an angle round)"
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the run continued past the gate to the (dummy) export"
 assert_not_grep "${ts_regex}ERROR" "$OUT" "no ERROR line"
 assert_not_grep "${ts_regex}BLOCK" "$OUT" "no BLOCK line"
@@ -622,9 +625,9 @@ printf 'false idea run took %ss, kept at %s\n' "$((EPOCHSECONDS - started))" "$R
 grep -E "$ts_regex(STEP|GATE|ANGLE|DROP|DONE|ERROR|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v "root:" | sed 's/^/    /'
 assert_rc 0 $rc "the runner exits 0 after the drop"
 assert_grep "${ts_regex}DROP   idea \"ffmpeg 8 added a \"--make-reel\" flag: one...\" dropped: (facts don't hold|still failing after [0-9] angle rounds?|no angle keeps the core topic) \(P[0-3] S[0-3] C[0-3] F (ok|fail)\): .+\. Removed from ideas.txt$" "$OUT" "DROP line with the scores and a reason"
-assert_grep "${ts_regex}DROP   .* dropped: facts don't hold \(P[0-3] S[0-3] C[0-3] F fail\): " "$OUT" "the drop is an F failure (the tool does not do what the idea assumes)"
+assert_grep "${ts_regex}DROP   .* dropped: facts don't hold \(P[0-3] S[0-3] C[0-3] F fail H (ok|fail)\): " "$OUT" "the drop is an F failure (the tool does not do what the idea assumes)"
 assert_not_grep "${ts_regex}(ERROR|BLOCK|DONE)" "$OUT" "no ERROR, BLOCK or DONE line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $(printf '%s' "$FALSE_IDEA" | sed 's/[][\.*^$()+?{}|]/\\&/g') \| dropped: .*\(P[0-3] S[0-3] C[0-3] F (ok|fail)\): " "$SANDBOX/logs/history.txt" "history: the drop line with the scores and the reason"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $(printf '%s' "$FALSE_IDEA" | sed 's/[][\.*^$()+?{}|]/\\&/g') \| (-|flashfx|external|method) \| dropped: .*\(P[0-3] S[0-3] C[0-3] F (ok|fail) H (ok|fail)\): " "$SANDBOX/logs/history.txt" "history: the drop line with the scores and the reason"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the false idea's block is gone"
 assert_true "ideas.txt: nothing else was written (only the fixture's note text remains)" python -c 'import sys
 left = open(sys.argv[1], encoding="utf-8-sig").read()

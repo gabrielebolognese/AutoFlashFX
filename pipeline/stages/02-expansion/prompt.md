@@ -20,12 +20,20 @@ five parts the gate will score. Answer with only the JSON object described at th
 
 {{DELIVERABLES}}
 
+## The solution (decide it: flashfx, external or method)
+
+{{SOLUTION_RULES}}
+
 {{NOTE}}
 ## The five parts (BUILD_SPEC.md S2)
 
 1. problem: the viewer's problem as ONE first-person sentence in the viewer's own voice ("I ...", "my ..."),
    specific and felt: a real pain, not a topic. Then solution: what the idea gives them, one or two sentences,
-   concrete, naming the tool or the step.
+   concrete, naming the tool or the step. And solution_decision: the solution's type ("flashfx", "external" or
+   "method"), its name (as facts.md names it; "FlashFX" for flashfx; a few words for a method), its URL (the
+   claim's URL for an external tool or repo; "" for a method) and the reason it is the best solution for this
+   problem, following the rules above. The comment keyword follows it: FLASH for flashfx, LINK for external,
+   otherwise the deliverable that fits.
 2. share driver: share_identity names exactly who should forward this ("if you edit reels for clients", "if you run
    a Shopify store with AI-written product pages") and takeaway is the one thing worth forwarding, useful even
    without the video.
@@ -43,10 +51,11 @@ five parts the gate will score. Answer with only the JSON object described at th
 
 - Keep the idea's core topic: the expansion sharpens the idea, it does not replace it.
 - Length: the composed expansion.md must land between {{MIN}} and {{MAX}} characters in total, and the layout
-  itself adds about 250 characters of labels and the title, so your own text must stay under 1100 characters in
-  total. Aim for about 800: problem up to 140 characters, solution up to 220, share_identity up to 80, takeaway up
-  to 180, deliverable up to 150, one_true_thing up to 160, evidence notes up to 60 each. Count before you answer:
-  a long answer is sent back to you to cut.
+  itself adds about 300 characters of labels, the title and the solution decision line, so your own text must stay
+  under 1000 characters in total. Aim for about 750: problem up to 140 characters, solution up to 200,
+  solution_decision.reason up to 120, share_identity up to 80, takeaway up to 160, deliverable up to 130,
+  one_true_thing up to 150, evidence notes up to 50 each. Count before you answer: a long answer is sent back to
+  you to cut.
 - Only facts from facts.md, only verified ones, in the claim's own words: when a statement rests on a claim, keep
   that claim's wording (the install steps exactly as the docs give them, a font or a color named as the claim
   names it) and add no detail, step count or adjective the claim does not state. No invented numbers, no
@@ -55,5 +64,6 @@ five parts the gate will score. Answer with only the JSON object described at th
 
 ## Your answer
 
-Only this JSON object: {problem, solution, share_identity, takeaway, keyword, deliverable, deliverable_status
-("existing" | "new"), one_true_thing, evidence: [{fact, note}]}
+Only this JSON object: {problem, solution, solution_decision: {type ("flashfx" | "external" | "method"), name,
+url, reason}, share_identity, takeaway, keyword, deliverable, deliverable_status ("existing" | "new"),
+one_true_thing, evidence: [{fact, note}]}

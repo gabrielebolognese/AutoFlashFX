@@ -3,7 +3,7 @@
   "$id": "https://instagramreels.local/stages/03-gate/gate.json",
   "title": "03-gate gate.json (M4): the scores with quoted evidence and the decision, written by pipeline/lib/gate.py",
   "type": "object",
-  "required": ["round", "scores", "F", "pass", "decision", "evidence", "reason", "failing", "angles_done", "angle_cap", "core_claim_status"],
+  "required": ["round", "scores", "F", "H", "pass", "decision", "evidence", "reason", "failing", "angles_done", "angle_cap", "core_claim_status"],
   "properties": {
     "round": {"type": "integer", "minimum": 1},
     "scores": {
@@ -17,6 +17,11 @@
     },
     "F": {"type": "string", "enum": ["ok", "fail"]},
     "F_kind": {"type": "string", "enum": ["", "core", "wording"]},
+    "H": {"type": "string", "enum": ["ok", "fail"]},
+    "H_fix": {"type": "string"},
+    "H_forced": {"type": "string"},
+    "solution_type": {"type": "string"},
+    "model_H": {"type": "string"},
     "pass": {"type": "boolean"},
     "decision": {"type": "string", "enum": ["pass", "angle", "drop"]},
     "evidence": {
@@ -26,7 +31,8 @@
         "P": {"type": "string"},
         "S": {"type": "string"},
         "C": {"type": "string"},
-        "F": {"type": "string"}
+        "F": {"type": "string"},
+        "H": {"type": "string"}
       }
     },
     "reason": {"type": "string", "minLength": 1},

@@ -44,6 +44,10 @@ Verbatim excerpts of the creator's real speech (match this register):
 
 {{BEAT_MAP}}
 
+## The solution (02-expansion/solution.json; the rules of BUILD_SPEC.md S7)
+
+{{SOLUTION_RULES}}
+
 {{NOTE}}
 ## Structure (in this order; one idea per beat)
 

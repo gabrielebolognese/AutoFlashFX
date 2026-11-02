@@ -144,6 +144,29 @@ def collect_assets(run_dir: str, declared: list, max_assets: int) -> list[dict]:
     return assets[:max_assets] if max_assets > 0 else assets
 
 
+def clean_candidates(raw) -> list[dict]:
+    """The solution candidates (M12, spec S1): type external or method, a name, a URL for an external one, a why."""
+    out = []
+    for item in raw or []:
+        if not isinstance(item, dict):
+            continue
+        name = text(item.get("name"))
+        if not name:
+            continue
+        stype = text(item.get("type")).lower()
+        url = text(item.get("url"))
+        if stype not in ("external", "method"):
+            stype = "external" if URL_RE.match(url) else "method"
+        if stype == "external" and not URL_RE.match(url):
+            continue   # an external tool without a verified URL cannot be the solution (S2 needs the link)
+        if stype == "method":
+            url = url if URL_RE.match(url) else ""
+        out.append({"type": stype, "name": name, "url": url, "why": text(item.get("why"))})
+        if len(out) >= 6:
+            break
+    return out
+
+
 def render_facts(r: dict) -> str:
     lines = [f"# Facts: {text(r.get('idea'))[:100]}", "",
              f"Checked {r['checked']}. Every claim carries its source and the date it was checked; the claims are listed",
@@ -173,6 +196,13 @@ def render_facts(r: dict) -> str:
         lines.append("(none)")
     lines += ["", "## Pitfalls"] + ([f"- {p}" for p in r["pitfalls"]] or ["(none found)"])
     lines += ["", "## One specific true thing (candidates)"] + ([f"- {p}" for p in r["one_true_thing"]] or ["(none found)"])
+    lines += ["", "## Solution candidates (the best available ways to solve the viewer's problem; S2 decides)"]
+    if r.get("solution_candidates"):
+        for c in r["solution_candidates"]:
+            url = f" ({c['url']})" if c.get("url") else ""
+            lines.append(f"- {c['type']}: {c['name']}{url}: {c['why']}")
+    else:
+        lines.append("(none listed)")
     lines += ["", "## Unverified or unsourced"] + ([f"- {p}" for p in r["unverified"]] or ["(nothing)"])
     lines += ["", "## Assets (screenshots in 01-research/assets/)"]
     if r["assets"]:
@@ -239,6 +269,7 @@ def cmd_finish(args) -> int:
         numbers[key] = {"name": text(raw.get("name")), "value": parse_value(raw.get("value")),
                         "unit": text(raw.get("unit")), "url": url, "checked": checked, "note": text(raw.get("note"))}
     assets = collect_assets(run_dir, model.get("assets") or [], args.max_assets)
+    candidates = clean_candidates(model.get("solution_candidates"))
     r = {
         "idea_id": args.idea_id,
         "idea": text(args.idea),
@@ -251,6 +282,7 @@ def cmd_finish(args) -> int:
         "one_true_thing": [text(p) for p in (model.get("one_true_thing") or []) if text(p)],
         "unverified": unverified,
         "assets": assets,
+        "solution_candidates": candidates,
         "summary": text(model.get("summary"), one_line=False),
         "sources": {tier: sum(1 for c in numbered if c["tier"] == tier) for tier in TIERS},
         "counts": {"claims": len(numbered), "verified": sum(1 for c in numbered if c["status"] == "verified"),
@@ -259,7 +291,7 @@ def cmd_finish(args) -> int:
     write_files(run_dir, r)
     print(json.dumps({"claims": len(numbered), "verified": r["counts"]["verified"], "false": r["counts"]["false"],
                       "numbers": len(numbers), "assets": len(assets), "core_status": core_status,
-                      "one_true_thing": len(r["one_true_thing"])}, ensure_ascii=False))
+                      "one_true_thing": len(r["one_true_thing"]), "solution_candidates": len(candidates)}, ensure_ascii=False))
     return 0
 
 

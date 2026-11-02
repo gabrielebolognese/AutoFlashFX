@@ -8,8 +8,23 @@
   "deliverable_status": "new",
   "one_true_thing": "One folder copied into ~/.claude/skills changes every frontend Claude Code builds",
   "evidence": [
-    {"fact": 1, "note": "the skill is published in anthropics/skills"},
-    {"fact": 3, "note": "it installs by copying the folder"},
-    {"fact": 4, "note": "the defaults it steers away from"}
-  ]
+    {
+      "fact": 1,
+      "note": "the skill is published in anthropics/skills"
+    },
+    {
+      "fact": 3,
+      "note": "it installs by copying the folder"
+    },
+    {
+      "fact": 4,
+      "note": "the defaults it steers away from"
+    }
+  ],
+  "solution_decision": {
+    "type": "external",
+    "name": "the frontend-design skill (anthropics/skills)",
+    "url": "https://github.com/anthropics/skills",
+    "reason": "fixture: the idea names its solution, a skill published by Anthropic; FlashFX does not solve a web design problem"
+  }
 }

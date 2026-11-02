@@ -48,6 +48,7 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from errors import undash  # noqa: E402
+import solution as solution_lib  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(HERE))
 VENDOR_DEFAULT = os.path.join(REPO, "pipeline", "vendor", "ig-agent-skill")
@@ -68,7 +69,7 @@ TONE_DEFAULT_ORDER = ["insider", "calm expert", "warning", "contrarian", "confes
 BEAT_TYPES = ["hook", "stake", "number", "tool", "step", "comparison", "proof", "mechanism", "before-after",
               "pain-payoff", "payoff", "ask"]
 BODY_TYPES = {"number", "tool", "step", "comparison", "proof", "mechanism", "before-after", "pain-payoff"}
-HARD_CHECKS = {"facts", "placeholders", "requirements", "ask", "structure", "length_hard"}
+HARD_CHECKS = {"facts", "placeholders", "requirements", "ask", "structure", "length_hard", "solution"}
 WORD_RE = re.compile(r"[A-Za-z0-9$%'\u2019-]+")
 ALNUM_RE = re.compile(r"[A-Za-z0-9]")
 PLACEHOLDER_RES = [
@@ -445,6 +446,28 @@ def beat_map_text(style: str) -> str:
     return m.group(1).strip() if m else "(no beat map in style.md)"
 
 
+def solution_rules_text(sol: dict) -> str:
+    """The solution rules of spec S7 for the writer's prompt, by the solution's type (M12)."""
+    stype = sol.get("type", "none")
+    name, url = sol.get("name", ""), sol.get("url", "")
+    where = f"{name}" + (f" ({url})" if url else "")
+    if stype == "flashfx":
+        return ("The solution of this reel is FlashFX" + (f" ({url})" if url else "") + ": show it solving the viewer's problem the way "
+                "any tool would be shown, what the viewer does with it, step by step, from verified claims of facts.md and the account's proof "
+                "lines only. No ad language: no pitch, no hype, no superlatives, no sign-up or trial push, no 'the best', no 'game-changer'. "
+                "Never say or imply that this reel itself was made, edited or animated in FlashFX (the reels are rendered by another tool): "
+                "say what FlashFX does for the problem, never what made this video. The keyword FLASH sends the viewer access to FlashFX.")
+    if stype == "external":
+        return (f"The solution of this reel is {where or 'an external tool'}: show it solving the viewer's problem. Never mention FlashFX "
+                "anywhere, not in the spoken track, the display track or a card, and pitch nothing: no 'the best tool', no sign-up push. "
+                "The keyword LINK sends the viewer its link.")
+    if stype == "method":
+        return (f"The solution of this reel is a method with no product: {name or 'the steps the reel shows'}. Never mention FlashFX anywhere, "
+                "and no product pitch.")
+    return ("No solution decision was recorded for this run (it predates the solution choice): the reel counts as not FlashFX. Never mention "
+            "FlashFX anywhere.")
+
+
 def cmd_setup(args) -> int:
     cfg = load_json(args.config, {}) or {}
     script_cfg = cfg.get("script", {}) if isinstance(cfg.get("script"), dict) else {}
@@ -484,6 +507,10 @@ def cmd_setup(args) -> int:
              "family": runner_up.get("family", "")}
     beat_max_s = float(script_cfg.get("beat_max_s", 4))
     stake_max_s = float(script_cfg.get("stake_max_s", 5))
+    sol_raw = load_json(args.solution, {}) if getattr(args, "solution", "") else {}
+    sol_type = str((sol_raw or {}).get("type", "none")).lower()
+    solution_decision = {"type": sol_type if sol_type in solution_lib.SOLUTION_TYPES else "none",
+                         "name": clean((sol_raw or {}).get("name", "")), "url": clean((sol_raw or {}).get("url", ""))}
     plan = {
         "written_by": "07-script", "checked": today(), "wpm": wpm,
         "video_type": video_type, "length_s": [lo, hi], "length_source": source, "target_seconds": round((lo + hi) / 2, 1),
@@ -502,6 +529,7 @@ def cmd_setup(args) -> int:
         "deliverable_status": expansion.get("deliverable_status", "new"), "deliverable_link": clean(expansion.get("deliverable_link", "")),
         "identity": clean(expansion.get("share_identity", "")), "problem": clean(expansion.get("problem", "")),
         "solution": clean(expansion.get("solution", "")), "one_true_thing": clean(expansion.get("one_true_thing", "")),
+        "solution_decision": solution_decision, "solution_rules": solution_rules_text(solution_decision),
         "pronunciations": read_pronunciations(args.pronunciations) if args.pronunciations else [],
         "beat_map": beat_map_text(read_text_or(args.style)) if args.style else "(no style file)",
         "voice_excerpts": voice_excerpts(voice), "voice_present": bool(voice.strip()),
@@ -512,7 +540,7 @@ def cmd_setup(args) -> int:
               "final_words": final_words, "write_words": write_words, "tones": tones, "tone_source": tone_source,
               "keyword": plan["keyword"], "hook_spoken": hook["spoken"], "hook_on_screen": hook["on_screen"],
               "hook_id": hook["id"], "hook2_id": hook2["id"], "pronunciations": len(plan["pronunciations"]),
-              "has_excerpts": bool(plan["voice_excerpts"])})
+              "has_excerpts": bool(plan["voice_excerpts"]), "solution_type": solution_decision["type"]})
     return 0
 
 
@@ -1046,6 +1074,21 @@ def run_checks(draft: dict, plan: dict, vendor: Vendor) -> dict:
     checks["ask"] = {"keyword": kw, "keyword_in_ask": kw_ok, "second_asks": second_asks, "loop_word": loop_word, "line": ask_text}
     checks["requirements"] = {"problem": bool(stake_idx), "identity": identity_ok, "keyword": kw_ok}
 
+    # the solution rules (M12, spec S7): no FlashFX mention unless the solution is flashfx, nothing implying the reel
+    # was made in FlashFX, no explicit sales phrase (the checks model judges the rest of the ad language)
+    sol = plan.get("solution_decision") or {"type": "none"}
+    sol_texts = {}
+    for b in beats:
+        for field in ("display", "spoken", "card"):
+            sol_texts[f"{b['id']} {field}"] = b.get(field, "")
+    sol_texts["ask line"] = draft.get("ask", {}).get("line", "")
+    sol_texts["hook 2"] = draft.get("hook2", {}).get("spoken", "")
+    sol_res = solution_lib.check_texts(sol, sol_texts)
+    for prob in sol_res["problems"]:
+        m = re.match(r"^(b\d+) ", prob["text"])
+        failures.append(failure("solution", prob["message"], m.group(1) if m else ""))
+    checks["solution"] = {"type": sol.get("type", "none"), "ok": sol_res["ok"], "problems": [p["message"] for p in sol_res["problems"]]}
+
     # the length against the range
     lo, hi = float(plan["length_s"][0]), float(plan["length_s"][1])
     tol = float(plan.get("length_tolerance_pct", 15)) / 100
@@ -1168,21 +1211,41 @@ def cmd_claims(args) -> int:
         claims.append(item)
         if item["status"] in ("unsupported", "overstated"):
             bad.append(item)
-    report["hard"] = [f for f in report.get("hard", []) if f["check"] != "facts"]
+    report["hard"] = [f for f in report.get("hard", []) if f["check"] != "facts" and not (f["check"] == "solution" and f.get("source") == "model")]
     for item in bad:
         beat = item["beat"] if item["beat"] in valid_ids or not valid_ids else ""
         what = "is not backed by facts.md" if item["status"] == "unsupported" else "says more than facts.md backs"
         msg = f"{item['beat'] or 'a beat'}: the claim '{item['claim'][:120]}' {what}" + (f" ({item['note'][:160]})" if item["note"] else "") + \
               "; reword it from a verified claim of facts.md or remove it"
         report["hard"].append(failure("facts", msg, beat))
+    # the solution rules the checks model judges (M12, spec S7): ad language, and anything implying the reel itself
+    # was made in FlashFX; each one is a hard failure of check "solution" (the scripted part sits in run_checks)
+    solution_issues = []
+    for c in answer.get("solution_issues", []) if isinstance(answer.get("solution_issues"), list) else []:
+        if not isinstance(c, dict) or not clean(c.get("text", "")):
+            continue
+        kind = clean(c.get("kind", "")).lower() or "ad_language"
+        beat = clean(c.get("beat", ""))
+        item = {"beat": beat, "kind": kind, "text": clean(c.get("text", "")), "note": clean(c.get("note", ""))}
+        solution_issues.append(item)
+        what = {"made_in_flashfx": "implies the reel itself was made in FlashFX (the reels are rendered by another tool)",
+                "flashfx_mention": "names FlashFX although the reel's solution is not FlashFX",
+                "pitch": "reads as ad language"}.get(kind, "reads as ad language (a pitch, hype or a superlative about the solution)")
+        msg = f"{beat or 'a beat'}: '{item['text'][:120]}' {what}" + (f" ({item['note'][:160]})" if item["note"] else "") + \
+              "; show the solution solving the problem instead, the way any tool would be shown"
+        f = failure("solution", msg, beat if (beat in valid_ids or not valid_ids) else "")
+        f["source"] = "model"
+        report["hard"].append(f)
     report["checks"]["claims"] = {"status": "checked", "n": len(claims), "supported": len([c for c in claims if c["status"] == "supported"]),
                                   "unsupported": len([c for c in claims if c["status"] == "unsupported"]),
                                   "overstated": len([c for c in claims if c["status"] == "overstated"]),
                                   "not_a_claim": len([c for c in claims if c["status"] in ("not a claim", "framing", "not_a_claim")]),
                                   "claims": claims, "summary": clean(answer.get("summary", ""))}
+    report["checks"].setdefault("solution", {})["model_issues"] = solution_issues
     report["ok"] = not report["hard"] and not report.get("soft")
     report["summary"]["hard"] = len(report["hard"])
     report["summary"]["claims_unsupported"] = len(bad)
+    report["summary"]["solution_issues"] = len(solution_issues)
     save_json(args.out or args.report, report)
     out_json({"ok": report["ok"], "hard": len(report["hard"]), "soft": len(report.get("soft", [])), "claims": len(claims), "bad": len(bad),
               "first": (report["hard"] + report.get("soft", []))[0]["message"] if (report["hard"] or report.get("soft")) else ""})
@@ -1292,6 +1355,7 @@ def cmd_compose(args) -> int:
         "tone": draft.get("tone", ""), "tones": plan.get("tones", []), "tone_source": plan.get("tone_source", ""),
         "picked": draft.get("label", ""), "pick": pick, "drafts": drafts_info, "used_fallback_draft": bool(args.fallback),
         "hook": plan["hook"], "hook2": {k: v for k, v in draft.get("hook2", {}).items() if k != "spoken_changes"},
+        "solution": plan.get("solution_decision") or {"type": "none", "name": "", "url": ""},
         "beats": beats,
         "ask": {"keyword": plan.get("keyword", ""), "line": draft["ask"]["line"], "loop_word": report["checks"]["ask"].get("loop_word", ""),
                 "deliverable": plan.get("deliverable", ""), "deliverable_status": plan.get("deliverable_status", "new"), "deliverable_link": plan.get("deliverable_link", "")},
@@ -1406,6 +1470,7 @@ def main(argv=None) -> int:
     sp.add_argument("--expansion", required=True); sp.add_argument("--voice", default=""); sp.add_argument("--pronunciations", default="")
     sp.add_argument("--tweaks", default=""); sp.add_argument("--style", default=""); sp.add_argument("--wpm", required=True)
     sp.add_argument("--rounds", default="3"); sp.add_argument("--idea-id", default=""); sp.add_argument("--idea-text", default="")
+    sp.add_argument("--solution", default="", help="02-expansion/solution.json (M12: the solution rules)")
     sp.add_argument("--out", required=True); sp.set_defaults(func=cmd_setup)
 
     sp = sub.add_parser("draft")

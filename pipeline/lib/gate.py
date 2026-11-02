@@ -10,15 +10,19 @@
       The rules of spec S3, applied here so they never depend on the model's mood (DECISIONS.md 100 and 112):
         - F fails with kind core whatever the model said when the research found the idea's core claim false or
           could not verify it (--core-status); an F fail of kind core drops the idea at once ("facts don't hold")
-        - pass: P, S and C at least 2 and F ok
+        - pass: P, S and C at least 2, F ok and H ok
+        - H, honesty (M12): the model's verdict on whether the chosen solution (--solution, 02-expansion/solution.json)
+          really solves the problem and FlashFX is not forced; the code forces a fail when the solution is flashfx
+          and voice.md "Proof I can use" has no usable line (--proof-count 0). An H fail is never a drop by itself:
+          it goes to S4 like a failing P, S or C, inside the same angle rounds
         - the model says only a different topic would work: drop, with the suggestion for logs/suggested-ideas.txt
-        - P, S or C failing, or F failing for wording, with angle rounds left (--angles-done below --cap):
-          decision angle (S4 rewrites the expansion: a better angle, or the unbacked statements removed or
-          reworded from facts.md)
+        - P, S or C failing, F failing for wording, or H failing, with angle rounds left (--angles-done below
+          --cap): decision angle (S4 rewrites the expansion: a better angle, the unbacked statements removed or
+          reworded from facts.md, or the solution decided again)
         - no rounds left: drop ("still failing after N angle rounds")
       Writes 03-gate/gate.json (the primary output) and a copy gate-<round>.json; prints one JSON line with
-      decision, scores_text ("P3 S2 C3 F ok"), failing_text ("S1", "F wording", "S1 F wording"), reason (the drop
-      reason or the pass note), suggested_idea, angle_hint and F_kind.
+      decision, scores_text ("P3 S2 C3 F ok H ok"), failing_text ("S1", "F wording", "S1 F wording", "H"), reason
+      (the drop reason or the pass note), suggested_idea, angle_hint, F_kind and H.
   gate.py suggest --logs DIR --idea TEXT --suggestion TEXT [--source STAGE]
       appends the suggestion to logs/suggested-ideas.txt (a comment line, then the suggestion in braces, ready to
       paste into add-idea.sh); never writes ideas.txt
@@ -86,7 +90,7 @@ def cmd_decide(args) -> int:
     raw_scores = model.get("scores") if isinstance(model.get("scores"), dict) else {}
     scores = {k: score(raw_scores.get(k)) for k in LETTERS}
     raw_evidence = model.get("evidence") if isinstance(model.get("evidence"), dict) else {}
-    evidence = {k: text(raw_evidence.get(k)) for k in LETTERS + ("F",)}
+    evidence = {k: text(raw_evidence.get(k)) for k in LETTERS + ("F", "H")}
     model_f = "ok" if text(model.get("F")).lower() == "ok" else "fail"
     # the kind of F failure the model found: "core" (the idea does not hold) or "wording" (a statement of the
     # expansion is not in facts.md, the idea holds without it); a missing or unknown kind on a fail is read as
@@ -112,17 +116,42 @@ def cmd_decide(args) -> int:
     angle_hint = text(model.get("angle_hint"))
     different_topic = bool(model.get("different_topic"))
     suggested = text(model.get("suggested_idea"))
+    # H, honesty (M12, spec S3): the chosen solution really solves the stated problem and FlashFX is not forced. The
+    # model judges; the code forces a fail when FlashFX is chosen while voice.md "Proof I can use" has nothing to
+    # back a FlashFX claim (spec S2: every FlashFX claim must be in that section). An H fail is never a drop by
+    # itself: S4 decides the solution again inside the same angle rounds.
+    solution = {}
+    if args.solution and os.path.isfile(winpath(args.solution)):
+        try:
+            solution = load_json(args.solution) or {}
+        except (OSError, ValueError):
+            solution = {}
+    sol_type = text(solution.get("type")).lower() if isinstance(solution, dict) else ""
+    model_h = "fail" if text(model.get("H")).lower() == "fail" else "ok"   # the model says pass or fail; the line prints "H ok" like F
+    h_fix = text(model.get("H_fix"))
+    h_forced = ""
+    if sol_type == "flashfx" and int(args.proof_count or 0) <= 0:
+        h_verdict = "fail"
+        h_forced = "FlashFX is the chosen solution but library/profile/voice.md \"Proof I can use\" lists nothing, so no FlashFX claim can be backed: choose the external tool or the method that solves the problem"
+        if not h_fix:
+            h_fix = h_forced
+    else:
+        h_verdict = model_h
     failing_letters = [f"{k}{scores[k]}" for k in LETTERS if scores[k] < 2]
-    failing = failing_letters + (["F"] if f_verdict == "fail" else [])
-    failing_text = " ".join(failing_letters + ([f"F {f_kind}"] if f_verdict == "fail" else []))
-    scores_text = f"P{scores['P']} S{scores['S']} C{scores['C']} F {f_verdict}"
-    passed = not failing_letters and f_verdict == "ok"
+    failing = failing_letters + (["F"] if f_verdict == "fail" else []) + (["H"] if h_verdict == "fail" else [])
+    failing_text = " ".join(failing_letters + ([f"F {f_kind}"] if f_verdict == "fail" else []) + (["H"] if h_verdict == "fail" else []))
+    scores_text = f"P{scores['P']} S{scores['S']} C{scores['C']} F {f_verdict} H {h_verdict}"
+    passed = not failing_letters and f_verdict == "ok" and h_verdict == "ok"
     wording_fail = f_verdict == "fail" and f_kind == "wording"
     if wording_fail and not angle_hint:
         angle_hint = ("remove or reword the statements of the expansion that facts.md does not back: "
                       + (evidence["F"] or model_reason or "see the gate's F evidence"))
+    if h_verdict == "fail":
+        angle_hint = ("decide the solution again (the honesty check failed): " + (h_fix or evidence["H"] or model_reason or "pick the solution that really solves the problem")
+                      + (f"; also: {angle_hint}" if angle_hint else ""))
     short_fail = "; ".join(([" ".join(failing_letters) + " below 2"] if failing_letters else [])
-                           + (["a statement of the expansion is not in facts.md"] if wording_fail else []))
+                           + (["a statement of the expansion is not in facts.md"] if wording_fail else [])
+                           + (["the solution does not pass the honesty check (H)"] if h_verdict == "fail" else []))
 
     if f_verdict == "fail" and f_kind == "core":
         decision = "drop"
@@ -153,6 +182,10 @@ def cmd_decide(args) -> int:
         "scores": scores,
         "F": f_verdict,
         "F_kind": f_kind,
+        "H": h_verdict,
+        "H_fix": h_fix,
+        "H_forced": h_forced,
+        "solution_type": sol_type or "none",
         "pass": passed,
         "decision": decision,
         "evidence": evidence,
@@ -160,6 +193,7 @@ def cmd_decide(args) -> int:
         "model_reason": model_reason,
         "model_F": model_f,
         "model_F_kind": model_kind,
+        "model_H": model_h,
         "failing": failing,
         "angle_hint": angle_hint,
         "different_topic": different_topic,
@@ -176,7 +210,8 @@ def cmd_decide(args) -> int:
     save_json(os.path.join(out_dir, f"gate-{args.round}.json"), gate)
     print(json.dumps({"decision": decision, "scores_text": scores_text, "failing_text": failing_text,
                       "reason": reason, "suggested_idea": gate["suggested_idea"], "angle_hint": angle_hint,
-                      "scores": scores, "F": f_verdict, "F_kind": f_kind}, ensure_ascii=False))
+                      "scores": scores, "F": f_verdict, "F_kind": f_kind, "H": h_verdict, "H_forced": bool(h_forced),
+                      "solution_type": sol_type or "none"}, ensure_ascii=False))
     return 0
 
 
@@ -218,6 +253,8 @@ def main(argv=None) -> int:
     sp.add_argument("--round", type=int, required=True); sp.add_argument("--angles-done", type=int, required=True)
     sp.add_argument("--cap", type=int, required=True); sp.add_argument("--core-status", default="unverified")
     sp.add_argument("--today", required=True); sp.add_argument("--idea", default="")
+    sp.add_argument("--solution", default="", help="02-expansion/solution.json (M12: the honesty check H)")
+    sp.add_argument("--proof-count", type=int, default=0, help="usable lines of voice.md Proof I can use (0 forces H to fail for a flashfx solution)")
     sp.set_defaults(func=cmd_decide)
     sp = sub.add_parser("suggest")
     sp.add_argument("--logs", required=True); sp.add_argument("--idea", required=True)

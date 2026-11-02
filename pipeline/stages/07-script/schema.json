@@ -46,6 +46,14 @@
         "card": {"type": "string"}
       }
     },
+    "solution": {
+      "type": "object",
+      "properties": {
+        "type": {"type": "string", "enum": ["none", "flashfx", "external", "method"]},
+        "name": {"type": "string"},
+        "url": {"type": "string"}
+      }
+    },
     "beats": {
       "type": "array",
       "minItems": 4,

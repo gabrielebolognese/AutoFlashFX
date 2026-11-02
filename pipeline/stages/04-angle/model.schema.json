@@ -3,7 +3,7 @@
   "$id": "https://instagramreels.local/stages/04-angle/model-output",
   "title": "04-angle: the model's structured answer (BUILD_SPEC.md S4): the expansion fields plus the change, the core topic check and new claims",
   "type": "object",
-  "required": ["change", "keeps_core_topic", "suggested_idea", "new_claims", "problem", "solution", "share_identity", "takeaway", "keyword", "deliverable", "deliverable_status", "one_true_thing", "evidence"],
+  "required": ["change", "keeps_core_topic", "suggested_idea", "new_claims", "problem", "solution", "solution_decision", "share_identity", "takeaway", "keyword", "deliverable", "deliverable_status", "one_true_thing", "evidence"],
   "properties": {
     "change": {"type": "string"},
     "keeps_core_topic": {"type": "boolean"},
@@ -24,6 +24,16 @@
     },
     "problem": {"type": "string"},
     "solution": {"type": "string"},
+    "solution_decision": {
+      "type": "object",
+      "required": ["type", "name", "url", "reason"],
+      "properties": {
+        "type": {"type": "string", "enum": ["flashfx", "external", "method"]},
+        "name": {"type": "string"},
+        "url": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    },
     "share_identity": {"type": "string"},
     "takeaway": {"type": "string"},
     "keyword": {"type": "string"},

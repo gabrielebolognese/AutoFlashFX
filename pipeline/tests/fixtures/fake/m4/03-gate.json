@@ -1,15 +1,22 @@
 {
-  "scores": {"P": 3, "S": 1, "C": 3},
+  "scores": {
+    "P": 3,
+    "S": 1,
+    "C": 3
+  },
   "F": "ok",
   "F_kind": "none",
   "evidence": {
     "P": "\"I build landing pages with Claude Code and every one of them looks like the same AI template\": a felt first-person pain, answered by one install",
     "S": "\"if you ship client sites with Claude Code\" names an identity, but the takeaway needs the video to make sense",
     "C": "SKILL with a concrete checklist deliverable",
-    "F": "every statement maps to facts.md#1, #3 and #4, all verified"
+    "F": "every statement maps to facts.md#1, #3 and #4, all verified",
+    "H": "the solution is the frontend-design skill the idea names, an external tool from facts.md; FlashFX is not involved"
   },
   "reason": "Fixture gate: the share driver is too weak to be forwarded on its own.",
   "angle_hint": "Make the takeaway a sentence someone would forward without the video: name the three banned defaults.",
   "different_topic": false,
-  "suggested_idea": ""
+  "suggested_idea": "",
+  "H": "pass",
+  "H_fix": ""
 }

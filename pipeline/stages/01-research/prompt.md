@@ -31,6 +31,13 @@ as of today, {{TODAY}}. Not virality: the account's owner validated the idea bef
    command, one before and after, one measured difference). Each must be backed by one of your claims.
 6. Screenshots of the real pages (the repository, the docs page, the product page, a release note): take 2 to
    {{MAX_ASSETS}} with the command below. They are the visual evidence the reel will show.
+7. Solution candidates: the best available ways to solve the viewer's problem behind the idea (reels are
+   problem-first: each one solves a real problem with the best solution available). List 1 to 4 candidates: an
+   external tool or GitHub repo (type "external", with its name and the URL you verified it at) or a method with no
+   product (type "method", named in a few words), each with one line on why it solves the problem and what backs
+   it. When the idea names its solution, research that one first and list it first. Every candidate's URL must be
+   one of your claims' sources. FlashFX is never a candidate you add on your own: the expansion step decides about
+   it from the account's own proof.
 
 ## Tools and rules
 
@@ -71,5 +78,8 @@ When the research is done, answer with only the JSON object below (no prose arou
 - pitfalls: [strings]
 - one_true_thing: [strings, 3 to 5 candidates, the most concrete first]
 - assets: [{name: the short name you gave the screenshot, what: what it shows, one line}]
+- solution_candidates: [{type: "external" | "method", name, url (the verified URL for an external tool or repo,
+  "" for a method), why: one line on why it solves the problem and which source backs it}], 1 to 4, the idea's own
+  solution first when it names one
 - unverified: [strings: what you looked for and could not confirm]
 - summary: 2 to 4 sentences for the next stage: what the reel can safely say, what it must avoid.

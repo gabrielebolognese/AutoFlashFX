@@ -134,7 +134,7 @@ pron_text="$(grep -v -E '^\s*(#|$)' "${pron_file:-/nonexistent}" 2>/dev/null | t
 wpm="$(cfg voice.wpm "")"; [ -n "$wpm" ] || wpm="$("$REELS_PY" "$LIB/hooks.py" wpm --voice "${voice:-/nonexistent}" --default 150)"  # config voice.wpm: the reel voice's pace (M7)
 plan_res="$(py setup --config "$REELS_CONFIG" --brief "$brief" --judge "$judge" --expansion "$exp_json" --voice "${voice:-}" \
   --pronunciations "${pron_file:-}" --tweaks "$style_dir/tweaks.md" --style "$style_dir/style.md" --wpm "$wpm" --rounds "$ROUNDS" \
-  --idea-id "$IDEA_ID" --idea-text "$IDEA_TEXT" --out "$PLAN")" || stage_fail "script_checks.py setup failed (judge.json without a winner?)"
+  --idea-id "$IDEA_ID" --idea-text "$IDEA_TEXT" --solution "$RUN_DIR/02-expansion/solution.json" --out "$PLAN")" || stage_fail "script_checks.py setup failed (judge.json without a winner?)"
 video_type=""; len_lo=""; len_hi=""; len_src=""; keyword=""; hook_spoken=""; hook_on_screen=""; hook_id=""
 eval "$(json_eval "$plan_res" video_type=video_type keyword=keyword hook_spoken=hook_spoken hook_on_screen=hook_on_screen hook_id=hook_id len_src=length_source)"
 len_lo="$(json_file_field "$PLAN" length_s.0 25)"; len_hi="$(json_file_field "$PLAN" length_s.1 40)"
@@ -149,10 +149,11 @@ deliverable="$(json_file_field "$PLAN" deliverable "")"; dstatus="$(json_file_fi
 case "$dstatus" in existing) deliv_label="existing deliverable: $deliverable" ;; *) deliv_label="NEW deliverable, to create: $deliverable" ;; esac
 excerpts="$(json_file_field "$PLAN" voice_excerpts "")"; [ -n "$excerpts" ] || excerpts="(no verbatim excerpts yet: go by the profile above)"
 beat_map="$(json_file_field "$PLAN" beat_map "")"
+solution_rules="$(json_file_field "$PLAN" solution_rules "")"; solution_type="$(json_file_field "$PLAN" solution_decision.type none)"
 [ -n "$keyword" ] || stage_fail "expansion.json has no comment keyword"
 tone_guide() { json_file_field "$PLAN" "tone_guide.$1" ""; }
-say INFO "S7: hook 1 $hook_id \"$(cut_text "$hook_spoken" 60)\"; $video_type reel of ${len_lo%.*} to ${len_hi%.*} s ($len_src) at $wpm wpm: $final_lo to $final_hi words after the cut; tones $tone_a and $tone_b ($tone_src)"
-WRITE_CTX=("IDEA=$IDEA_TEXT" "HOOK_SPOKEN=$hook_spoken" "HOOK_ON_SCREEN=$hook_on_screen" "HOOK_FAMILY=$hook_family"
+say INFO "S7: hook 1 $hook_id \"$(cut_text "$hook_spoken" 60)\"; $video_type reel of ${len_lo%.*} to ${len_hi%.*} s ($len_src) at $wpm wpm: $final_lo to $final_hi words after the cut; tones $tone_a and $tone_b ($tone_src); solution $solution_type"
+WRITE_CTX=("IDEA=$IDEA_TEXT" "HOOK_SPOKEN=$hook_spoken" "HOOK_ON_SCREEN=$hook_on_screen" "HOOK_FAMILY=$hook_family" "SOLUTION_RULES=$solution_rules"
   "HOOK2_SPOKEN=$hook2_spoken" "HOOK2_ON_SCREEN=$hook2_on_screen" "@BRIEF=$brief" "@FACTS=$facts" "VOICE=$voice_text"
   "EXCERPTS=$excerpts" "PRONUNCIATIONS=$pron_text" "BEAT_MAP=$beat_map" "VIDEO_TYPE=$video_type" "LENGTH_LO=${len_lo%.*}"
   "LENGTH_HI=${len_hi%.*}" "WPM=$wpm" "WRITE_LO=$write_lo" "WRITE_HI=$write_hi" "FINAL_LO=$final_lo" "FINAL_HI=$final_hi"
@@ -216,6 +217,7 @@ check_draft() {  # check_draft <label> <round> <draft file> -> REP, OK, HARD, SO
   data="$(py claims-data --draft "$file")" || stage_fail "script_checks.py claims-data failed on $file"
   prompt="$OUT/prompt-claims-$d-r$r.md"
   render_prompt "$HERE/prompt-claims.md" "$prompt" "@FACTS=$facts" "PROBLEM=$problem" "IDENTITY=$identity" "SOLUTION=$solution" \
+    "SOLUTION_RULES=$solution_rules" \
     "HOOK_SPOKEN=$hook_spoken" "KEYWORD=$keyword" "BEATS=$(json_field "$data" text)" "NOTE=$(stage_note_section)" \
     || stage_fail "cannot render pipeline/stages/07-script/prompt-claims.md"
   ai checks "$OUT" "$prompt" --schema "$HERE/claims.schema.json" --tools "" --timeout "$T_CHECKS" --name "claims-$d-r$r" --activity "checking script" || stage_ai_failed

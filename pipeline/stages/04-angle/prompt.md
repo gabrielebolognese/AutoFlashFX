@@ -19,6 +19,7 @@ Evidence quoted by the gate:
 Hint for a better angle: {{GATE_HINT}}
 
 {{F_REPAIR}}
+{{H_REPAIR}}
 {{PREVIOUS_ANGLES}}
 ## The current expansion (what failed)
 
@@ -31,6 +32,10 @@ Hint for a better angle: {{GATE_HINT}}
 ## Existing comment keywords (library/profile/deliverables.txt)
 
 {{DELIVERABLES}}
+
+## The solution rules (flashfx, external or method; the keyword follows it)
+
+{{SOLUTION_RULES}}
 
 ## The account (who the reel is for)
 
@@ -69,5 +74,6 @@ Hint for a better angle: {{GATE_HINT}}
 
 Only this JSON object: {change: what this angle does differently, one or two sentences; keeps_core_topic: true |
 false; suggested_idea: "" unless keeps_core_topic is false; new_claims: [{claim, url, tier, status, note}];
-problem, solution, share_identity, takeaway, keyword, deliverable, deliverable_status ("existing" | "new"),
-one_true_thing, evidence: [{fact, note}]}
+problem, solution, solution_decision: {type ("flashfx" | "external" | "method"), name, url, reason} (the solution
+kept, or decided again when H failed), share_identity, takeaway, keyword, deliverable, deliverable_status
+("existing" | "new"), one_true_thing, evidence: [{fact, note}]}

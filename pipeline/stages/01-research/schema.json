@@ -52,6 +52,19 @@
     },
     "pitfalls": {"type": "array", "items": {"type": "string"}},
     "one_true_thing": {"type": "array", "items": {"type": "string"}},
+    "solution_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "name", "url", "why"],
+        "properties": {
+          "type": {"type": "string", "enum": ["external", "method"]},
+          "name": {"type": "string", "minLength": 1},
+          "url": {"type": "string"},
+          "why": {"type": "string"}
+        }
+      }
+    },
     "unverified": {"type": "array", "items": {"type": "string"}},
     "assets": {
       "type": "array",

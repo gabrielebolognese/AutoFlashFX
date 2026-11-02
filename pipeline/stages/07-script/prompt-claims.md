@@ -29,6 +29,17 @@ the Pitfalls (the research checked them) and the "One specific true thing" candi
 
 {{BEATS}}
 
+## The solution rules (BUILD_SPEC.md S7; list every breach in solution_issues)
+
+{{SOLUTION_RULES}}
+
+- ad_language: a pitch for the solution instead of showing it solve the problem: hype, a superlative about the
+  tool ("the best editor", "game-changer"), a sign-up or buy push, "trust me", an unbacked promise of results.
+  A verified fact stated plainly (a price, a feature, an install step) is not ad language.
+- made_in_flashfx: any line saying or implying that this reel, video or clip itself was made, edited, animated or
+  rendered in FlashFX.
+- flashfx_mention: FlashFX named at all when the solution above is not FlashFX.
+
 ## How to judge
 
 - A claim is a statement about the world: what a tool does or does not do, how it is installed, a number, a date, a
@@ -47,4 +58,5 @@ the Pitfalls (the research checked them) and the "One specific true thing" candi
 
 Only this JSON object: {"claims": [{"beat": "b3", "claim": "<the statement, short>", "status": "supported" |
 "overstated" | "unsupported", "facts": [5, 6], "note": "<why, one line; for overstated or unsupported, what facts.md
-actually says>"}], "summary": "<one line>"}
+actually says>"}], "solution_issues": [{"beat": "b7", "kind": "ad_language" | "made_in_flashfx" | "flashfx_mention",
+"text": "<the offending words>", "note": "<why, one line>"}] (empty when the rules hold), "summary": "<one line>"}

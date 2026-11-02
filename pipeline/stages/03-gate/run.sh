@@ -55,7 +55,8 @@ for path in sorted(glob.glob(os.path.join(run_dir, "03-gate", "gate-*.json"))):
         continue
     s = g.get("scores", {})
     kind = f" ({g.get('F_kind')})" if g.get("F") == "fail" and g.get("F_kind") else ""
-    parts.append(f"gate round {g.get('round')}: P{s.get('P')} S{s.get('S')} C{s.get('C')} F {g.get('F')}{kind}, decision {g.get('decision')}, reason: {g.get('model_reason') or g.get('reason')}")
+    h = f" H {g.get('H')}" if g.get("H") else ""
+    parts.append(f"gate round {g.get('round')}: P{s.get('P')} S{s.get('S')} C{s.get('C')} F {g.get('F')}{kind}{h}, decision {g.get('decision')}, reason: {g.get('model_reason') or g.get('reason')}")
 for path in sorted(glob.glob(os.path.join(run_dir, "04-angle", "angle-*.json"))):
     try:
         a = json.load(open(path, encoding="utf-8-sig"))
@@ -69,9 +70,36 @@ else
   history="This is the first time the expansion is scored."
 fi
 
+# the honesty check H (M12, spec S3): the solution decision, voice.md's proof lines and the research's candidates
+solution_file="$RUN_DIR/02-expansion/solution.json"
+solution_text="$("$REELS_PY" - "$solution_file" <<'EOF'
+import json, os, sys
+sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+p = sys.argv[1]
+if not os.path.isfile(p):
+    print("(no solution decision was written: judge the solution the expansion describes)"); sys.exit(0)
+s = json.load(open(p, encoding="utf-8-sig"))
+print(f"{s.get('type')}: {s.get('name') or '(unnamed)'}" + (f" ({s.get('url')})" if s.get('url') else "") + f". Reason given: {s.get('reason') or 'none'}. Keyword: {s.get('keyword') or '?'}.")
+EOF
+)"
+voice_file="$(profile_file voice.md || true)"
+proof_lines="$("$REELS_PY" "$LIB/solution.py" proof --voice "${voice_file:-/nonexistent}")"
+proof_count="$(printf '%s' "$proof_lines" | grep -c . || true)"
+[ -n "$proof_lines" ] && proof_text="$(printf '%s' "$proof_lines" | sed 's/^/- /')" || proof_text="(empty: no FlashFX claim can be backed today)"
+candidates_text="$("$REELS_PY" - "$research" <<'EOF'
+import json, os, sys
+sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+p = sys.argv[1]
+r = json.load(open(p, encoding="utf-8-sig")) if os.path.isfile(p) else {}
+c = r.get("solution_candidates") or []
+print("; ".join(f"{x.get('type')}: {x.get('name')}" + (f" ({x.get('url')})" if x.get("url") else "") for x in c) or "(none listed)")
+EOF
+)"
+
 prompt="$OUT/prompt-gate-r$round.md"
 render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "@EXPANSION=$exp_md" "@FACTS=$facts" \
   "CORE_STATUS=$core_status" "CORE_NOTE=$core_note" "DELIVERABLE_STATUS=$deliverable_text" "ROUND=$round" "CAP=$cap" \
+  "SOLUTION=$solution_text" "PROOF=$proof_text" "CANDIDATES=$candidates_text" \
   "HISTORY=$history" "NOTE=$(stage_note_section)" || stage_fail "cannot render pipeline/stages/03-gate/prompt.md"
 
 ai gate "$OUT" "$prompt" --schema "$HERE/model.schema.json" --tools "" \
@@ -79,7 +107,8 @@ ai gate "$OUT" "$prompt" --schema "$HERE/model.schema.json" --tools "" \
   || stage_ai_failed
 
 out="$("$REELS_PY" "$LIB/gate.py" decide --run-dir "$RUN_DIR" --model-out "$AI_OUT" --round "$round" \
-  --angles-done "$angles_done" --cap "$cap" --core-status "$core_status" --today "$TODAY" --idea "$IDEA_TEXT")" \
+  --angles-done "$angles_done" --cap "$cap" --core-status "$core_status" --today "$TODAY" --idea "$IDEA_TEXT" \
+  --solution "$solution_file" --proof-count "${proof_count:-0}")" \
   || stage_fail "gate.py decide failed on $AI_OUT"
 decision=""; scores_text=""; failing_text=""; reason=""; suggestion=""
 eval "$(json_eval "$out" decision=decision scores_text=scores_text failing_text=failing_text reason=reason suggestion=suggested_idea)"

@@ -29,6 +29,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from errors import undash  # noqa: E402
+import solution as solution_lib  # noqa: E402
 
 STAGE = "02-expansion"
 FIRST_PERSON = re.compile(r"(?:^|[^A-Za-z])(I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll|my|me|mine|myself)(?=$|[^A-Za-z])")
@@ -82,6 +83,13 @@ def one_sentence(s: str) -> bool:
     return not re.search(r"[.!?]\s+[A-Z]", body)
 
 
+def decision_line(sol: dict | None) -> str:
+    """The solution decision as one line of expansion.md (M12, spec S2): type, name, URL, reason."""
+    if not sol:
+        return "Solution decision: none yet"
+    return f"Solution decision: {solution_lib.line_text(sol)}: {sol.get('reason') or 'no reason given'}"
+
+
 def compose_md(idea: str, f: dict) -> str:
     deliverable = f["deliverable"]
     if f["deliverable_status"] == "existing":
@@ -92,6 +100,7 @@ def compose_md(idea: str, f: dict) -> str:
     lines = [f"# Expansion: {idea[:90]}", "",
              f"Problem: {f['problem']}", "",
              f"Solution: {f['solution']}", "",
+             decision_line(f.get("solution_decision")), "",
              f"Share driver: {f['share_identity']}. Takeaway worth forwarding: {f['takeaway']}", "",
              deliverable_line, "",
              f"One specific true thing: {f['one_true_thing']}", "",
@@ -130,11 +139,20 @@ def cmd_compose(args) -> int:
     keyword = f["keyword"].strip().strip("#").upper()
     if not KEYWORD_RE.match(keyword):
         errors.append(f"the comment keyword must be one word of 3 to 20 letters or digits, got {f['keyword']!r}")
+    # the solution decision (M12, spec S2): flashfx, external or method, checked against facts.md; the keyword
+    # follows it (FLASH, LINK, or the deliverable that fits for a method), whatever the model wrote
+    sol, sol_errors, sol_notes = solution_lib.normalize_decision(model.get("solution_decision"), research, deliverables, keyword)
+    errors += sol_errors
+    keyword = sol["keyword"]
     f["keyword"] = keyword
     known = {d["keyword"]: d for d in deliverables}
     status_given = text(model.get("deliverable_status")).lower()
     corrected = False
-    if keyword in known and known[keyword]["status"] == "existing":
+    if sol["type"] in ("flashfx", "external"):
+        f["deliverable_status"] = sol["deliverable_status"]
+        f["deliverable_link"] = sol["deliverable_link"]
+        f["deliverable"] = sol["deliverable"]
+    elif keyword in known and known[keyword]["status"] == "existing":
         f["deliverable_status"] = "existing"
         f["deliverable_link"] = known[keyword]["link"]
         if not f["deliverable"]:
@@ -145,6 +163,7 @@ def cmd_compose(args) -> int:
         corrected = status_given == "existing"
     if f["deliverable_status"] == "new" and f["deliverable"] and len(f["deliverable"].split()) < 4:
         errors.append("a NEW deliverable must be described concretely (what the viewer receives, in at least a few words)")
+    f["solution_decision"] = {k: sol[k] for k in ("type", "name", "url", "reason")}
 
     evidence = []
     seen = set()
@@ -186,7 +205,8 @@ def cmd_compose(args) -> int:
     ok = not errors
     result = {"ok": ok, "errors": errors, "chars": chars, "forced": (not ok) and args.force, "keyword": keyword,
               "deliverable_status": f.get("deliverable_status"), "deliverable_status_corrected": corrected,
-              "evidence_refs": [e["fact"] for e in evidence]}
+              "evidence_refs": [e["fact"] for e in evidence], "solution_type": sol["type"], "solution_name": sol["name"],
+              "solution_notes": sol_notes}
     if ok or args.force:
         record = dict(f)
         record.update({"evidence": [f"facts.md#{e['fact']}: {e['note']}" for e in evidence],
@@ -198,6 +218,15 @@ def cmd_compose(args) -> int:
             fh.write("\n")
         with open(os.path.join(out_dir, "expansion.md"), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(md)
+        # 02-expansion/solution.json: what every later stage reads (the branding of S9, the rules of S7 and S14, the
+        # SOLUTION block of the captions file, the history line)
+        solution_record = {"type": sol["type"], "name": sol["name"], "url": sol["url"], "reason": sol["reason"],
+                           "keyword": keyword, "deliverable": f.get("deliverable", ""), "deliverable_link": f.get("deliverable_link", ""),
+                           "written_by": args.written_by, "round": args.round, "checked": research.get("checked", ""),
+                           "notes": sol_notes}
+        with open(os.path.join(out_dir, "solution.json"), "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(solution_record, fh, ensure_ascii=False, indent=1)
+            fh.write("\n")
         result["path"] = os.path.join(out_dir, "expansion.md").replace("\\", "/")
     print(json.dumps(result, ensure_ascii=False))
     return 0

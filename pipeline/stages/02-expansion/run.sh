@@ -35,10 +35,15 @@ fi
 read -r min_chars max_chars < <(cfg research.expansion_chars '[500, 1500]' | tr -d '[]' | tr ',' ' ')
 min_chars="${min_chars:-500}"; max_chars="${max_chars:-1500}"
 tries="$(cfg research.expansion_tries 3)"
+# the solution rules (M12, spec S2): account.md's content strategy (or the spec's rules), the research's candidates,
+# voice.md "Proof I can use" and the recent reels' solution types from logs/history.txt
+voice_file="$(profile_file voice.md || true)"
+solution_rules="$("$REELS_PY" "$LIB/solution.py" prompt --run-dir "$RUN_DIR" --voice "${voice_file:-}" --account "${account:-}" \
+  --history "$REELS_LOGS/history.txt" --deliverables "${deliv_file:-}")" || stage_fail "solution.py prompt failed"
 
 prompt="$OUT/prompt-expansion.md"
 render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "@FACTS=$facts" "DELIVERABLES=$deliv_text" \
-  "ACCOUNT=$account_text" "MIN=$min_chars" "MAX=$max_chars" "NOTE=$(stage_note_section)" \
+  "ACCOUNT=$account_text" "SOLUTION_RULES=$solution_rules" "MIN=$min_chars" "MAX=$max_chars" "NOTE=$(stage_note_section)" \
   || stage_fail "cannot render pipeline/stages/02-expansion/prompt.md"
 
 try=1; ok=false; result=""; errors="[]"
@@ -63,9 +68,10 @@ done
 
 chars="$(json_field "$result" chars 0)"; keyword="$(json_field "$result" keyword "")"
 dstatus="$(json_field "$result" deliverable_status new)"; refs="$(json_field "$result" evidence_refs '[]' | tr -d '[] ')"
+sol_type="$(json_field "$result" solution_type none)"; sol_name="$(json_field "$result" solution_name "")"
 if [ "$ok" != true ]; then
   flag_once "expansion.md breaks a rule after $tries tries: $(json_field "$errors" 0 "unknown" | cut -c1-140)"
 fi
-say INFO "S2: expansion $chars chars, keyword $keyword ($dstatus), evidence facts.md#${refs//,/, #}"
+say INFO "S2: expansion $chars chars, solution $sol_type${sol_name:+ ($(cut_text "$sol_name" 40))}, keyword $keyword ($dstatus), evidence facts.md#${refs//,/, #}"
 echo "$STAGE: done"
 exit 0

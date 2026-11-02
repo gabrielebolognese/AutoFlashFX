@@ -40,10 +40,10 @@ exp_dir="$RUN_DIR/02-expansion"
 [ -f "$facts" ] || stage_fail "01-research/facts.md is missing"
 [ -f "$exp_dir/expansion.md" ] || stage_fail "02-expansion/expansion.md is missing"
 gate="$(cat "$gate_file")"
-gP=""; gS=""; gC=""; gF=""; gFk=""; g_reason=""; g_hint=""; g_failing=""; g_round=""; eP=""; eS=""; eC=""; eF=""
-eval "$(json_eval "$gate" gP=scores.P gS=scores.S gC=scores.C gF=F gFk=F_kind g_reason=model_reason g_hint=angle_hint g_failing=failing g_round=round eP=evidence.P eS=evidence.S eC=evidence.C eF=evidence.F)"
+gP=""; gS=""; gC=""; gF=""; gFk=""; gH=""; g_hfix=""; g_reason=""; g_hint=""; g_failing=""; g_round=""; eP=""; eS=""; eC=""; eF=""; eH=""
+eval "$(json_eval "$gate" gP=scores.P gS=scores.S gC=scores.C gF=F gFk=F_kind gH=H g_hfix=H_fix g_reason=model_reason g_hint=angle_hint g_failing=failing g_round=round eP=evidence.P eS=evidence.S eC=evidence.C eF=evidence.F eH=evidence.H)"
 [ -n "$g_reason" ] || g_reason="$(json_field "$gate" reason "")"
-scores_text="P${gP:-?} S${gS:-?} C${gC:-?} F ${gF:-?}"
+scores_text="P${gP:-?} S${gS:-?} C${gC:-?} F ${gF:-?} H ${gH:-?}"
 failing_text="$(printf '%s' "${g_failing:-[]}" | tr -d '[]"' | tr ',' ' ')"
 # an F failure of kind wording (DECISIONS.md 112): the gate quoted statements of the expansion that facts.md does
 # not back while the core claim is verified; the prompt names it and asks for the repair before anything else
@@ -60,7 +60,22 @@ or a color named as the claim names it), or research it now and add the claim to
 statement that no verified claim backs: one unbacked statement fails F again and costs this idea its last rounds.
 "
 fi
+# the honesty check H (M12, spec S4): when it failed, the solution is decided again with the S2 rules (the better
+# solution for the problem, and the keyword that follows it); solution.json is rewritten by expansion.py compose
+h_repair=""
+if [ "$gH" = fail ]; then
+  h_repair="## H failed: decide the solution again
+
+The gate found the solution dishonest for this problem: ${eH:-see the reason the gate gave}. What would be honest: ${g_hfix:-the solution that really solves the problem}.
+Decide the solution again with the rules below (flashfx only when it genuinely solves the problem and every FlashFX
+claim is in the proof list; otherwise the best external tool or repo in facts.md, or a method) and write it in
+solution_decision with its reason. The keyword follows it (FLASH, LINK, or the deliverable that fits). Rewrite the
+expansion around the new solution: the solution sentence, the takeaway and the one specific true thing must describe
+it, from verified claims. Do not mention FlashFX anywhere when it is not the solution.
+"
+fi
 [ -f "$exp_dir/expansion-r$((n - 1)).md" ] || cp "$exp_dir/expansion.md" "$exp_dir/expansion-r$((n - 1)).md"
+[ -f "$exp_dir/solution-r$((n - 1)).json" ] || { [ -f "$exp_dir/solution.json" ] && cp "$exp_dir/solution.json" "$exp_dir/solution-r$((n - 1)).json"; }
 
 previous=""
 if [ "$n" -gt 1 ]; then
@@ -79,9 +94,12 @@ EOF
 fi
 deliv_file="$(profile_file deliverables.txt || true)"
 deliv_text="$("$REELS_PY" "$LIB/expansion.py" deliverables --file "${deliv_file:-/nonexistent}")"
-account_text=""
+account_text=""; account=""
 if account="$(profile_file account.md)"; then account_text="$(tr -d '\r' < "$account")"
 else account_text="(library/profile/account.md does not exist yet: assume the reel is for people who build and publish with AI and developer tools and want practical, verified information.)"; fi
+voice_file="$(profile_file voice.md || true)"
+solution_rules="$("$REELS_PY" "$LIB/solution.py" prompt --run-dir "$RUN_DIR" --voice "${voice_file:-}" --account "${account:-}" \
+  --history "$REELS_LOGS/history.txt" --deliverables "${deliv_file:-}")" || stage_fail "solution.py prompt failed"
 read -r min_chars max_chars < <(cfg research.expansion_chars '[500, 1500]' | tr -d '[]' | tr ',' ' ')
 min_chars="${min_chars:-500}"; max_chars="${max_chars:-1500}"
 tries="$(cfg research.expansion_tries 3)"
@@ -96,7 +114,9 @@ render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "@FAC
   "GATE_EVIDENCE=- P: $eP
 - S: $eS
 - C: $eC
-- F: $eF" "GATE_HINT=$g_hint" "F_REPAIR=$f_repair" "PREVIOUS_ANGLES=$previous" "DELIVERABLES=$deliv_text" "ACCOUNT=$account_text" \
+- F: $eF
+- H: ${eH:-(none)}" "GATE_HINT=$g_hint" "F_REPAIR=$f_repair" "H_REPAIR=$h_repair" "SOLUTION_RULES=$solution_rules" \
+  "PREVIOUS_ANGLES=$previous" "DELIVERABLES=$deliv_text" "ACCOUNT=$account_text" \
   "ROUND=$n" "CAP=$cap" "MIN=$min_chars" "MAX=$max_chars" "MAX_ASSETS=$max_assets" "NEXT_CLAIM=$next_claim" \
   "NOTE=$(stage_note_section)" || stage_fail "cannot render pipeline/stages/04-angle/prompt.md"
 
@@ -136,16 +156,18 @@ done
 [ "$ok" = true ] || flag_once "expansion.md (angle round $n) breaks a rule after $tries tries: $(json_field "$errors" 0 "unknown" | cut -c1-140)"
 
 chars="$(json_field "$result" chars 0)"
-"$REELS_PY" - "$OUT" "$n" "$g_round" "$gP" "$gS" "$gC" "$gF" "$change" "$added_total" "$chars" "$TODAY" "$failing_text" "$gFk" <<'EOF'
+sol_type="$(json_field "$result" solution_type none)"; sol_name="$(json_field "$result" solution_name "")"
+"$REELS_PY" - "$OUT" "$n" "$g_round" "$gP" "$gS" "$gC" "$gF" "$change" "$added_total" "$chars" "$TODAY" "$failing_text" "$gFk" "$gH" "$sol_type" "$sol_name" <<'EOF'
 import json, os, sys
-out, n, g_round, p, s, c, f, change, added, chars, today, failing, f_kind = sys.argv[1:14]
+out, n, g_round, p, s, c, f, change, added, chars, today, failing, f_kind, h, sol_type, sol_name = sys.argv[1:17]
 def num(v):
     try:
         return int(v)
     except (TypeError, ValueError):
         return None
-record = {"round": int(n), "gate_round": num(g_round), "previous_scores": {"P": num(p), "S": num(s), "C": num(c), "F": f},
-          "previous_failing": failing.split(), "previous_F_kind": f_kind if f == "fail" else "",
+record = {"round": int(n), "gate_round": num(g_round), "previous_scores": {"P": num(p), "S": num(s), "C": num(c), "F": f, "H": h},
+          "previous_failing": failing.split(), "previous_F_kind": f_kind if f == "fail" else "", "previous_H": h,
+          "solution": {"type": sol_type, "name": sol_name},
           "change": change, "keeps_core_topic": True, "new_claims": int(added),
           "expansion_chars": int(chars), "written": "02-expansion/expansion.md", "checked": today}
 for name in ("angle.json", f"angle-{n}.json"):
@@ -154,6 +176,6 @@ for name in ("angle.json", f"angle-{n}.json"):
         fh.write("\n")
 EOF
 printf '03-gate\n' > "$OUT/reopen.txt"
-say INFO "S4: angle round $n/$cap, $added_total new $(plural "$added_total" claim), expansion $chars chars: $(printf '%s' "$change" | cut -c1-120)"
+say INFO "S4: angle round $n/$cap, $added_total new $(plural "$added_total" claim), solution $sol_type${sol_name:+ ($(cut_text "$sol_name" 40))}, expansion $chars chars: $(printf '%s' "$change" | cut -c1-120)"
 echo "$STAGE: done"
 exit 0

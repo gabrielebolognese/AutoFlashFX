@@ -189,6 +189,16 @@ while :; do
     printf '# Brief: %s\n\n' "$(printf '%s' "$IDEA_TEXT" | cut -c1-100)"
     printf -- '- Written by 05-hooks on %s for run %s. Facts and sources: 01-research/facts.md (cite claims by number). Hooks: 05-hooks/hooks.json; hook 1 and hook 2 are chosen by 06-judge (judge.json), the brief works with any of them.\n' "$TODAY" "$RUN_ID"
     printf -- '- Comment keyword: %s (%s). Share identity: %s.\n' "$keyword" "$deliv_label" "${identity:-?}"
+    printf -- '- Solution: %s. %s\n' "$("$REELS_PY" - "$RUN_DIR/02-expansion/solution.json" <<'EOF'
+import json, os, sys
+sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+p = sys.argv[1]
+if not os.path.isfile(p):
+    print("none decided (the run predates the solution choice; the reel counts as not FlashFX)"); sys.exit(0)
+s = json.load(open(p, encoding="utf-8-sig"))
+print(f"{s.get('type')}" + (f" ({s.get('name')}" + (f", {s.get('url')}" if s.get("url") else "") + ")" if s.get("name") else ""))
+EOF
+)" "$([ "$(json_file_field "$RUN_DIR/02-expansion/solution.json" type none)" = flashfx ] && echo "The reel shows FlashFX solving the problem with no ad language and never implies the reel itself was made in FlashFX." || echo "The script and the caption never mention FlashFX (the solution rules of BUILD_SPEC.md S7).")"
     printf -- '- Video type: %s (%s). Suggested tones: %s.\n' "$video_type" "$length_rule" "${tones:-see below}"
   } > "$OUT/brief-header.md"
   bres="$("$REELS_PY" "$LIB/hooks.py" brief --answer "$AI_OUT" --out "$OUT/brief.md" --header "$OUT/brief-header.md" \

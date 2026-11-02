@@ -24,6 +24,8 @@ beat, not only the changed ones).
   out in the spoken track, never an em dash, no placeholder.
 - The rhythm rule still holds: beats alternate between one sentence of 12 or 13 words and two or three sentences
   of 3 or 4 words; apart from the hook, no sentence of 5 to 11 words.
+- The solution rules still hold: FlashFX is named only when it is the reel's solution, never pitched, and nothing
+  says or implies this reel was made in FlashFX.
 
 ## Your answer
 

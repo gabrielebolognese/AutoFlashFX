@@ -313,7 +313,7 @@ OUT="$SANDBOX/fake.out"
 grep -E "$ts_regex(START|STEP|DONE|ERROR|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v "root:" | sed 's/^/    /'
 assert_rc 0 $rc "the runner exits 0"
 assert_grep "${ts_regex}START  idea 1/1 .* \(resumed at writing script, 5 stages done\)$" "$OUT" "START: the run seeded from the frozen outputs resumes at S7"
-assert_grep "${ts_regex}INFO   S7: hook 1 h01 \"Why your Claude Code cards all look identical\.\"; default reel of 25 to 40 s \(tweaks.md\) at 195 wpm: 81 to 130 words after the cut; tones insider and warning \(brief\)$" "$OUT" "S7: the plan line (hook 1, the length rule from tweaks.md, the tones from the brief)"
+assert_grep "${ts_regex}INFO   S7: hook 1 h01 \"Why your Claude Code cards all look identical\.\"; default reel of 25 to 40 s \(tweaks.md\) at 195 wpm: 81 to 130 words after the cut; tones insider and warning \(brief\); solution external$" "$OUT" "S7: the plan line (hook 1, the length rule from tweaks.md, the tones from the brief, the solution type of M12)"
 assert_grep "${ts_regex}INFO   S7: draft a \(insider\) written: 12 beats, 150 words before the cut$" "$OUT" "S7: draft a written"
 assert_grep "${ts_regex}INFO   S7: draft a cut from 150 to 117 words \(22.0%, attempt 1\)$" "$OUT" "S7: draft a cut by 22 percent"
 assert_grep "${ts_regex}INFO   S7: draft a \(insider\) round 1: 37.2 s, 117 words, detect 84.8, 9 claims checked: every check passes$" "$OUT" "S7: draft a passes every check"

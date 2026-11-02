@@ -469,7 +469,7 @@ assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the next idea is exported on
 assert_not_grep "${ts_regex}(FIXED|ESCAL|STOP) " "$OUT" "no fix, no escalation, no stop"
 assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: .* \| runs/" "$SANDBOX/logs/blocked.txt" "blocked.txt: the reason line"
 assert_grep "^\{$IDEA_A\}$" "$SANDBOX/logs/blocked.txt" "blocked.txt: the idea in braces"
-assert_grep "\| $IDEA_A \| blocked: environment problem: " "$SANDBOX/logs/history.txt" "history: the blocked line"
+assert_grep "\| $IDEA_A \| (-|external) \| blocked: environment problem: " "$SANDBOX/logs/history.txt" "history: the blocked line (with the solution field, M12)"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt is empty"
 RD="$(run_dirs | head -n 1)"
 assert_eq "$(state_get "$RD" status)" "blocked" "the run folder is kept with status blocked"
