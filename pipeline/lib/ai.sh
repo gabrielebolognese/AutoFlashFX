@@ -251,6 +251,17 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
     out="$(error_classify "$rc" "$base.json" "$base.err")"
     eval "$(json_eval "$out" cls=class message=message detail=detail retry_after=retry_after sid=session_id structured=structured fatal=fatal resume_failed=resume_failed)"
     printf 'class: %s\ndetail: %s\nmessage: %s\n' "$cls" "$detail" "$message" >> "$base.meta"
+    # one model at its own limit while the others still answer ("You've reached your Fable limit. Switch to another
+    # model ..."): the message has no reset time, so it is neither a usage limit to wait out nor a code error to fix.
+    # The call carries on with config models.limit_fallback (default opus) in the same session (DECISIONS.md 275).
+    local fb_model; fb_model="$(cfg models.limit_fallback.model opus)"
+    if [ "$cls" = error ] && [ "$model" != "$fb_model" ] \
+       && printf '%s' "$message" | grep -qiE "reached your [a-z0-9 ._-]+ limit|switch to another model"; then
+      say WARN "$role: $model is at its own usage limit, this call carries on with $fb_model"
+      printf 'model limit: %s -> %s\n' "$model" "$fb_model" >> "$base.meta"
+      model="$fb_model"; effort="$(cfg models.limit_fallback.effort "$effort")"
+      continue
+    fi
     AI_CLASS="$cls"; AI_DETAIL="$detail"
     case "$cls" in
       ok)

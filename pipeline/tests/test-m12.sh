@@ -411,6 +411,25 @@ caps="$(python pipeline/lib/export.py render --run-dir "$RD5" --number 1)"
 assert_eq "$(printf '%s\n' "$caps" | grep -E '^(CAPTION|HASHTAGS|COMMENT KEYWORD|SOLUTION|HOOKS|NEEDS REVIEW|FACTS AND SOURCES|RUN)$' | paste -sd,)" "CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,NEEDS REVIEW,FACTS AND SOURCES,RUN" "captions (frozen run): every section in order"
 assert_eq "$(printf '%s\n' "$caps" | sed -n 2p)" "Why your Claude Code cards all look identical." "captions (frozen run): the first line is hook 1"
 assert_true "captions (frozen run): the facts carry URL and date" grep -q -E '^- .*: https?://.* \(checked 2026-[0-9-]+\)$' <<<"$caps"
+
+# one model at its own limit ("You've reached your Fable limit. Switch to another model"): the escalated call carries on
+# with opus instead of failing as a code error (DECISIONS.md 275; a tiny stand-in for claude that refuses fable)
+FL="$W/fable-limit"; mkdir -p "$FL/runs/r1/10-build" "$FL/logs"
+cat > "$FL/claude" <<'EOF'
+#!/usr/bin/env bash
+m=""; while [ $# -gt 0 ]; do [ "$1" = --model ] && m="$2"; shift; done
+cat >/dev/null
+echo "$m" >> "$(dirname "$0")/models.log"
+if [ "$m" = fable ]; then
+  printf '{"type":"result","subtype":"success","is_error":true,"result":"You%sve reached your Fable limit. Switch to another model, or manage usage credits at https://claude.ai/settings/usage, to continue.","session_id":"s1"}\n' "'"; exit 1
+fi
+printf '{"type":"result","subtype":"success","is_error":false,"result":"ok from %s","session_id":"s2"}\n' "$m"
+EOF
+chmod +x "$FL/claude"; printf 'hi\n' > "$FL/p.md"
+res="$(REELS_ROOT="$(mixed "$FL")" REELS_CLAUDE="$FL/claude" bash -c 'source pipeline/lib/common.sh; source pipeline/lib/log.sh; source pipeline/lib/config.sh; source pipeline/lib/state.sh; source pipeline/lib/status.sh; source pipeline/lib/ai.sh
+ai builder_escalation "$1/runs/r1/10-build" "$1/p.md" --no-protect >/dev/null 2>&1; echo "$?|$AI_CLASS|$AI_RESULT"' _ "$FL" 2>/dev/null | tail -n 1)"
+assert_eq "$res" "0|ok|ok from opus" "ai: a fable call at Fable's own limit carries on with opus"
+assert_eq "$(paste -sd, "$FL/models.log")" "fable,opus" "ai: one fable try, then opus"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------

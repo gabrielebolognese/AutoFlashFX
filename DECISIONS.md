@@ -1958,3 +1958,11 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     stdin (tools/analyze_refs.py, the user's tool, is unchanged). M11's tests never ran a second real style check in the
     same run folder. The live test run was rescued by hand (the same fix copied into its sandbox, the stale stills
     removed, the waiting ffmpeg killed); test-m12 section 1 now runs the analyzer twice into one folder.
+275. **A model at its own limit falls back to opus:** when Fable's weekly allowance runs out, the CLI answers "You've
+    reached your Fable limit. Switch to another model ..." with no reset time. The classifier (M3) calls that a code
+    error, so every escalated call (builder_escalation, reviewer_escalation, visual_director_escalation from review
+    round 4) would have gone to the review and fix loop and blocked the reel; and it is not a usage limit to wait out
+    either (the others still answer, and the reset may be days away). ai.sh now retries such a call once with config
+    models.limit_fallback (default opus, its effort kept) in the same session, with a WARN line; the build runner
+    does the same for its batches. Found on 2026-11-02 while Fable was at its limit and the real M12 run was heading
+    for round 4; the live run got the same ai.sh.
