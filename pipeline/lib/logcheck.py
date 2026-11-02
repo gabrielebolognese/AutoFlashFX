@@ -73,6 +73,8 @@ ACTIVITIES = [re.compile("^(?:" + a + ")$") for a in (
     r"building visuals", r"rendering draft",
     r"adding sound effects(?: \(\d+ sounds?\)| \(checking the sound map\))?", r"verifying sound sync and loudness",
     r"reviewing: mechanical checks", r"reviewing: style check", r"reviewing: edit review \(round \d+/\d+\)",
+    # two steps the table does not name (DECISIONS.md 284): S12's audio check (M11) and S8's loudness pass
+    r"reviewing: audio check", r"normalizing loudness",
     r"fixing (?:\[[a-z0-9_-]+\],? ?(?:and )?)+issues \(round \d+, \w+\)",
     r"rendering final video", r"rendering hook 2 clip", r"writing caption", r"exporting #\d+",
     r"waiting for usage limit \([\w ]+\) until [\w: ]+ \((?:\d+h)?\d+m(?:\d+s)? left\)",

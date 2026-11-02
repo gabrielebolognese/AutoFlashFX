@@ -510,15 +510,27 @@ def year_words(n: int) -> list[str] | None:
     return None
 
 
+def pair_words(n: int) -> list[str] | None:
+    """The paired reading of a 3 or 4 digit number ("one thirty" for 130, "eleven forty five" for 1145): how a time
+    or a timestamp is said; whisper writes "130" for a voice that says "one thirty" (M13, DECISIONS.md 284)."""
+    if 100 <= n <= 9999 and n % 100 >= 10:
+        return num_words(n // 100) + num_words(n % 100)
+    return None
+
+
 def _number_items(piece: str, context: str) -> list[str]:
-    """Digits as words; the year reading when the other side says it that way."""
+    """Digits as words; the year reading or the paired reading when the other side says it that way."""
     digits = piece.replace(",", "")
     if re.fullmatch(r"\d+", digits):
         n = int(digits)
-        year = year_words(n)
-        if year and " ".join(year) in context:
-            return year
+        for reading in (year_words(n), pair_words(n)):
+            if reading and " ".join(reading) in context:
+                return reading
         return num_words(n)
+    m = re.fullmatch(r"(\d{1,2}):(\d\d)", digits)
+    if m:  # a clock time or a timestamp: "1:30" is "one thirty", "2:00" is "two"
+        mins = int(m.group(2))
+        return num_words(int(m.group(1))) + (num_words(mins) if mins else [])
     m = re.fullmatch(r"(\d+)\.(\d+)", digits)
     if m:
         return num_words(int(m.group(1))) + ["point"] + [ONES[int(d)] for d in m.group(2)]
@@ -546,7 +558,7 @@ def norm_items(tokens: list[str], context: str = "") -> list[tuple[str, int]]:
                     items.append((w, i))
                 items[-1] = (items[-1][0] + "th", i)
                 continue
-            if re.fullmatch(r"\d[\d,]*(\.\d+)?\.?", piece):
+            if re.fullmatch(r"\d[\d,]*(\.\d+)?\.?|\d{1,2}:\d\d\.?", piece):
                 for w in _number_items(piece.rstrip("."), context):
                     items.append((w, i))
                 continue
@@ -1071,13 +1083,18 @@ class Stage:
         def on_line(line: str) -> None:
             m = re.match(r"^LINE (\d+)/(\d+) (\S+)", line)
             if m:
-                if activity:
+                if activity == "fixing pronunciation":  # several lines at once: name the one being generated
+                    relay("ACTIVITY", f"fixing pronunciation (line {m.group(3)})")
+                elif activity:
                     relay("ACTIVITY", activity)
                 else:
                     relay("ACTIVITY", f"generating voiceover (beat {m.group(1)}/{m.group(2)})")
             elif line.startswith("TIGHTEN "):
                 relay("ACTIVITY", "tightening silences")
-        relay("ACTIVITY", activity or f"generating voiceover (beat 1/{total})")
+        if activity == "fixing pronunciation" and lines:
+            relay("ACTIVITY", f"fixing pronunciation (line {lines[0]['id']})")  # spec section 7: always the line
+        else:
+            relay("ACTIVITY", activity or f"generating voiceover (beat 1/{total})")
         t0 = time.time()
         try:
             rc = run_streaming([winpath(self.tts_py), winpath(self.tts_worker), winpath(job_path)], self.t_tts, on_line, "  kokoro: ")

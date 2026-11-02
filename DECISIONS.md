@@ -2041,3 +2041,15 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     fails. (2) S7's one-line rewrite refuses a respelling (script_checks.py respellings(): a new word with the same
     consonant skeleton as a name or long word it replaced, "Clawed" for "Claude"), and its prompt forbids it, because
     the spoken track is also what the captions show and what the voice check compares with.
+284. **More found by the real M13 run, and the final pass over the status lines.** (1) S8 blocked the ffmpeg idea
+    for a correct "one thirty": whisper writes "130", and the normalizer read that as "one hundred thirty";
+    voiceover.py now also accepts the paired reading of a 3 or 4 digit number (pair_words: "one thirty", "eleven
+    forty five") and a clock time ("1:30") when the reference says it that way, as it already did for years. (2) S8's
+    activity was "fixing pronunciation" without the line when several lines were respelled at once; it now names the
+    line being generated ("fixing pronunciation (line b4)", spec section 7). (3) Two activities the spec's table does
+    not name are kept and allowed by logcheck.py: S12's "reviewing: audio check" (M11's third code check) and S8's
+    "normalizing loudness". (4) The second idea was blocked at S7 because a claim still said more than facts.md backs
+    after 3 rounds: the spec's rule for a hard failure, not a defect. Every other line of the run matched sections 6
+    and 7 (the banner, START with "resumed at", STEP chains, GATE with H, LIMIT, RESUME, BLOCK, NEXT, the heartbeat
+    with its counters, IDLE and the summary). The fixes went into the live sandbox of the rerun as well; the first
+    run's log keeps its pre-fix line, so test-m13 section 3 is passed by a second run with every fix in.
