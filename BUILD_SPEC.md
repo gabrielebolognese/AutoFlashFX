@@ -57,6 +57,7 @@ instagramReels/
   config.json                models, engines, caps, paths (section 9)
   ideas.txt                  the idea queue, I edit it (2.1)
   exports/                   finished reels: 1/, 2/, 3/ ... (section 8)
+    N/project/               the editable Shorts Editor project (S15) (M14)
   library/                   everything I curate
     hooks.txt                my hook templates (2.2)
     profile/                 account.md  voice.md  deliverables.txt  pronunciations.txt (2.3)
@@ -72,13 +73,16 @@ instagramReels/
   pipeline/
     lib/                     bash: ai.sh limits.sh review.sh state.sh ideas.sh status.sh log.sh
     stages/                  one folder per stage: run script, prompt.md, CONTRACT.md, schema.json
+                             s15-project/ (the editable project, S15) (M14)
     bin/                     add-idea.sh, index-hooks, build-sfx-map, mix-sfx, screenshot, helpers
+                             rebuild-project.sh  editor-stable.sh (M14)
     vendor/ig-agent-skill/   MIT scripts from Jakeschincariol/instagram-agent-skill, with its LICENSE (section 10)
     knowledge/known-issues.md   symptom -> fix lines, written by the fixer (4.2)
     tests/
   tools/analyze_refs.py      already exists: reference video analyzer
   runs/                      one working folder per idea (machine only)
   logs/                      runner.log  status.txt  history.txt  blocked.txt  limits.log  suggested-ideas.txt  sfx-usage.json
+                             editor-gaps.md  editor-capabilities.json  editor-upgrade.json (M14)
 ```
 
 Git: initialize a repo (if build-runner.sh has not). Track code, the text files in library/ and styles/, and the
@@ -263,6 +267,8 @@ by me and read-only at runtime: never modify, regenerate or redraw these files.
   5. take the next idea
 
   When ideas.txt has no idea: with --once, exit; otherwise check again every 120 seconds, forever.
+- Between ideas, never during a run: advance the stable editor copy and run the capability upgrade when the (M14)
+  editor's capabilities changed (S15). run.sh also keeps the stable copy's server on port 5310 running. (M14)
 - Startup preflight: claude, ffmpeg, ffprobe, python, node, gh, the Python packages, disk space, engine.txt and its
   interpreter importing kokoro (2.5), style files, tokens.json, the sfx map, library/brand/brand.json and every file
   it lists (2.7). A missing hard dependency is a systemic failure: write logs/STOPPED.md with the exact fix and exit.
@@ -380,6 +386,8 @@ that it counts as a code error.
 4. **Then the review** (S12): every check on the complete draft. A fix goes back to the step that owns it, and every
    step after it runs again (a visual fix moves events, so S11 runs again).
 5. **Then the final render and the export** (S13, S14).
+6. **Then the editable project** (S15): built from the final composition after the export is assembled; it never (M14)
+   changes the MP4. (M14)
 
 ### S1 Research (session A, model: research)
 - Goal: get the facts right as of today. Not virality: I already validated the idea before writing it.
@@ -594,6 +602,11 @@ An invalid pass gets one retry with the validator errors, then the review path.
   width and height, object-fit contain). The card around a logo keeps the style's shadow; the logo itself gets none.
 - A new component only when the plan needs one the library lacks. Write it to motion-lib/candidates/, use it in this
   reel only, and flag NEEDS REVIEW. Candidates join the library only with my approval.
+- Editor annotations: every component part that should become its own layer in the editable project (card, (M14)
+  title, body, icon, chip, tag, stamp, tracker cell, logo, caption box) carries `data-ed-layer`, a readable (M14)
+  `data-ed-name`, and `data-ed-kind` (text, shape, image, group, dynamic, background, tracker, caption) when the (M14)
+  kind is not obvious. Annotations never change how anything looks. New candidates in motion-lib/candidates/ (M14)
+  follow the same rule. (M14)
 - Also build the hook 2 alternate clip: the hook beat's visuals with hook 2's on-screen text and timing, 3.5 seconds
   at most.
 - Render a silent draft at 540x960 (draft.mp4: half resolution, same timing and fps) for the next stages. Every
@@ -623,6 +636,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
    - a failure is corrected automatically (offsets, gains) and verified again; if it persists, the review path
 6. Outputs: 11-sfx/cues.json (event, cue type, file, time, gain), sfx_stem.wav, the mixed draft (draft_mixed.mp4), and
    11-sfx/sound-map.txt (one readable line per sound: time, cue type, file name, the visual event it sits on).
+   cues.json records for each sound: the event, the cue type, the file, the start time in ms, the trim in and out (M14)
+   points in ms within the file, the fade-out in ms and the final gain in dB, so S15 can rebuild the sound edit (M14)
+   exactly (the sound itself does not change). (M14)
 - If the sfx map is missing or empty, render voice only and add a NEEDS REVIEW flag.
 
 ### S12 Review and fix loop
@@ -679,6 +695,241 @@ An invalid pass gets one retry with the validator errors, then the review path.
   language, never implying the reel was made in FlashFX).
 - Run the vendor caption.py lint and humanize.py on it.
 - Export as described in section 8.
+
+### S15 Editable project (M14; scripts in pipeline/stages/s15-project/; no model call except the upgrade in step 8)
+
+Runs after S14 has assembled the export in runs/<id>/export/ and before the move to exports/N/. It never changes
+N.mp4, Nhook2.mp4 or the existing sections of Ncaptions.txt. Nhook2.mp4 gets no project.
+
+**Goal.** exports/N/project/ is a Shorts Editor project folder (the FlashFXeditor repo) that opens as the reel's
+layers, each one as editable as the editor allows today, and that looks like N.mp4 when nothing is changed.
+
+**Inputs.** The final HyperFrames composition S13 rendered; words.json and vo.wav; 11-sfx/cues.json and the sound
+files; the 09a, 09b and 09c plans; 10-build/events.json; tokens.json; the brand assets; the font files the
+composition loads; the stable editor copy's capabilities.json.
+
+**Stable editor copy** (pipeline/bin/editor-stable.sh; run between ideas, never during a run).
+- editor.stable_dir is a separate git clone of editor.repo (`git clone <editor.repo> <editor.stable_dir>` on first
+  use). S15 reads capabilities.json and runs the editor's CLI only there, never in editor.repo, which the editor's
+  own runner changes all the time.
+- Advancing, at most once an hour: `git fetch`, then find the newest commit whose subject is `batch-NN: review` and
+  whose docs/PROGRESS.md at that commit (`git show <commit>:docs/PROGRESS.md`) has `in_progress_batch: none` and,
+  in the entry of its `last_completed_batch`, a last `- review:` line that reads `accepted`. If that commit is newer
+  than the current one: check it out (detached), run `npm ci` when package-lock.json changed, `npm run build`, and
+  `npm run build:cli` when package.json has that script. On any failure, go back to the previous commit, rebuild it
+  and log why.
+- Serving: `npx vite preview --port 5310 --strictPort` in editor.stable_dir. run.sh starts it when it is not
+  running and restarts it after an advance. editor.url (http://localhost:5310/) is where I open reel projects.
+
+1. **Capabilities.** Read `<editor.stable_dir>/capabilities.json`; when it is missing, use
+   pipeline/stages/s15-project/baseline-capabilities.json (the editor v1.1.0 manifest at the end of this stage,
+   copied verbatim). Write the project at exactly the manifest's schemaVersion; when the manifest has
+   `cli.normalize`, always finish with normalize (step 5), which also fills any field newer than S15's mappings
+   with the editor's defaults. Use a clip kind, field, ease, transition, effect or value only when the manifest
+   lists it: lists are exhaustive, and a key that is false or absent is unsupported. The stable copy's
+   docs/INTEROP.md (from the editor's Batch 54) gives the exact JSON of each supported feature; until it exists,
+   its src/core/document/types.ts and validate.ts are the reference, and §21 of its docs/PLAN_V1_2.md gives the
+   JSON of planned features.
+
+2. **Capture** (15-project/layers.json). Open the final composition in the browser harness that S12's mechanical
+   checks use (Puppeteer), seek every frame, and record every layer, without inserting anything into the page:
+   - Layers: elements with `data-ed-layer` (the S10 annotations). An annotated element inside another one is its
+     child layer (the outer one is a group); unannotated elements belong to their nearest annotated ancestor; an
+     element with no annotated ancestor counts as one layer per top-level HyperFrames clip element.
+   - Placement per frame: for HTML elements, the border quad from the DevTools protocol (`DOM.getBoxModel`,
+     Puppeteer's `ElementHandle.boxModel()`), whose four corners include every CSS transform on the element and its
+     ancestors; for SVG elements, `getScreenCTM()` with `getBBox()`. Three corners give the 2D affine transform; a
+     fourth corner that does not fit it means a 3D transform. The placement relative to the parent layer is the
+     parent's inverse times the layer's.
+   - Opacity per frame: the product of the computed opacities from the layer up to its parent layer.
+   - Signature per frame: computed colors, borders, radii, shadows, filters, clip paths, box size and text content,
+     and for canvas, video and animated SVG content a hash of a screenshot of the layer's area (CDP
+     `Page.captureScreenshot` with a clip), because a WebGL canvas cannot be read back reliably.
+   - Per layer: whether its look is static, changes instantly (the signature jumps, then holds) or changes
+     continuously (over consecutive frames); and what a native clip needs: the kind (text, shape, image, svg,
+     video, canvas, group), the text with its computed font and style, the box, background, border, radius,
+     box-shadow, gradients and image source.
+
+3. **Map every layer to the most editable level the manifest allows:**
+   1. **Native**: the editor's own clip with the captured motion as keyframes: text, solid, image (PNG, JPEG, SVG),
+      video, caption, audio, and more kinds as the manifest adds them (shape, compound, null, lottie). Allowed when
+      the look is static, when its changes are on keyable props (`keyframes.props`, with `vectorValues` for
+      colors), or when every change is instant: then the clip is split at each change into static segments.
+   2. **Sprite**: the layer rendered once at rest and isolated in place (everything else hidden, its own and its
+      ancestors' transforms and opacity neutralized, a transparent background), at the largest scale it reaches on
+      screen (capped at 2x) and trimmed, with its anchor offset recorded; an image clip whose keyframes carry the
+      captured motion (scale divided by the render scale). Used for static looks the manifest cannot express (for
+      example a stroke or a hard shadow before the editor supports them).
+   3. **Overlay**: a continuous look change the editor cannot key (a counter, a line drawing itself, a 3D canvas, a
+      morph): the layer rendered isolated with transparency over its interval and cropped to the union of its
+      visible pixels: a VP9 alpha WebM when `media.videoAlpha`; else a PNG image sequence when
+      `media.imageSequence`; else animated WebP within `media.animatedImage` (per clip, frames x width x height x 4
+      x 4/3 bytes at most `textureBudgetBytes` and sides at most `maxSide`; a longer overlay becomes several
+      consecutive clips). Animated WebP frame durations are 33, 33, 34 ms repeating, so frame k starts at
+      floor(k x 1000 / 30) ms: at timeline frame k the editor shows the last animation frame that starts at or
+      before round(k x 1000000 / 30) microseconds, and a unit test reproduces that.
+   4. **Plate**: only when no level above works: the scene's layers at and below that layer are rendered as one
+      opaque video (one plates MP4 per reel, one clip per scene segment with in and out points); the layers above
+      it stay separate.
+   - Z-order: sprites and overlays are transparent, so native layers keep their exact order around them; a layer
+     below a plate goes into the plate.
+   - Groups: a compound clip when `compositing.compound`; else a parent with children when
+     `transform.parenting`; else flattened (children get world-space keyframes, exact for transforms; when the
+     group's own opacity is below 1 while its children overlap, the group becomes one sprite or overlay).
+   - Keyframes: keep the fewest keys that reproduce every captured frame within 0.25 px, 0.1 degree, 0.002 scale
+     and 0.004 opacity, using the manifest's eases (GSAP eases map to the Penner names once the manifest lists
+     them; otherwise linear keys); jumps become hold keys.
+   - Text is native only when its font is available (the editor's library, public/fonts/library/catalog.json,
+     copied into fonts/ with fonts.json version 2 entries, or the composition's own font files as
+     `source: "user"`) and when its fill, stroke, shadow and background are in the manifest. It uses box mode
+     `auto`, so only the composition's explicit line breaks (written as \n) wrap, and it is placed by its alignment
+     from the measured text bounds (left, center or right edge; top, middle or bottom by its vertical anchor).
+   - Captions are native (the caption track: cues from the 09b chunks, word timings from words.json, emphasis
+     words) only when the manifest has everything the style uses (the `progressive` highlight, `wordEmphasis`, a
+     box border and a hard shadow, cue fades). Otherwise they are baked: one PNG per word state (the box with its
+     words gray or ink), image clips on a "Captions (baked)" track with the style's 2-frame fades; plus the native
+     caption track, hidden, with the closest style, so I can switch with two clicks.
+   - Stand-ins: when `interop.fallbackOf` is true, every sprite and overlay that has a native equivalent in the
+     editor's JSON (INTEROP.md, or §21 of PLAN_V1_2.md for planned features) carries
+     `fallbackOf: { kind, reason, schemaVersion, data }` with that native clip (sparse is fine), so the editor can
+     make it editable later.
+
+4. **Audio.** vo.wav and every sound effect become audio clips at their exact times, with the trims, fades and gains
+   of cues.json, converted to 48 kHz WAV in media/audio/. The final render's master gain (the loudness
+   normalization) is folded into each clip's gain, so the project's playback and mix match N.mp4 within 0.5 LU.
+   When `audio.loudness` is true, also set the project's loudness target to -14 LUFS with a true peak of -1.5 dBTP
+   (as S8 and S11). The voice goes on the first audio track, sound effects on the second (and a third when two
+   overlap).
+
+5. **Write** runs/<id>/export/project/:
+   ```
+   project.json      the manifest's schemaVersion; name "N <title>"; 1080x1920, 30 fps; background = the paper color
+   media/            audio/, images/ (background, logos, icons), sprites/, overlays/, plates/
+   fonts/            fonts.json (version 2) and the font files used
+   layers.json       the capture, for rebuilds
+   FALLBACKS.md      every baked layer: scene, time range, layer name, level, the missing manifest key
+   OPEN.txt          how to open the project (the link and the folder)
+   ```
+   - Tracks from the bottom: the background (the paper and dot grid as one image clip, unless they animate), the
+     layers in z-order (tracks reused across scenes; one compound clip per scene when `compositing.compound`), the
+     baked captions, the caption track, then the audio tracks.
+   - Names a person can read: "S03 card: <its text>", "Caption 12", "SFX whoosh_fast". Label colors: violet for
+     sprites, orange for overlays, red for plates. Bins: Audio, Images, Sprites, Overlays, Plates.
+   - Markers: one at each scene start, labeled with its beat type, and one at the comment keyword.
+   - `meta.generator` (when `interop.generatorMeta`): name "instagramReels", version (the git short hash), source
+     "runs/<id>".
+   - When `cli.normalize` is true, write the sparse form and always run `npm run cli -- normalize <dir> --write` in
+     the stable copy; otherwise write every field.
+
+6. **Check.**
+   - Validate with `npm run cli -- validate <dir> --json` in the stable copy when `cli.validate` is true (strict:
+     it checks every field); otherwise with the S15 validator, which mirrors every rule of the editor's validate.ts
+     and every field of types.ts (types, required fields, no unknown fields; sorted, non-overlapping clips; media in
+     and out points inside the media; caption track rules; integer frames and microseconds; unique ids; files
+     present).
+   - Parity, when `cli.render` and `cli.compare` are true: render the project with the stable copy's CLI and
+     compare it with N.mp4 (SSIM at least editor.parity_ssim on every frame). Layers inside failing regions drop
+     one level (native to sprite, sprite to overlay) and the project is written again, at most twice; what still
+     fails goes to FALLBACKS.md and NEEDS REVIEW.
+   - Without `cli.render`, a layout check at the middle frame of every scene: composite the sprites, overlays and
+     plates with their keyframes in the browser harness and compare their regions with the composition (SSIM at
+     least 0.95); and measure each native text with Canvas2D in the same font and size, as the editor does, and
+     compare its box with the composition's text box (within 2 px). This catches placement, anchor and wrapping
+     errors.
+   - The project lasts as long as N.mp4 within 1 frame, and the voice and sounds sit at their times in the mix
+     within 1 frame.
+
+7. **Export.** The project moves with the rest to exports/N/project/. Ncaptions.txt gets the EDITOR section
+   (section 8). logs/editor-gaps.md gets one line per missing manifest key with a running count, the reel elements
+   it affected and the latest reel, sorted by count: the to-do list for the editor's next batches.
+
+8. **Capability upgrade** (between ideas, never during a run). When the capability content of the stable copy's
+   manifest (everything except `lastBatch` and `appVersion`) differs from logs/editor-capabilities.json, the runner
+   logs the added keys and, before taking the next idea:
+   - a build session (model: builder) reads the stable copy's docs/INTEROP.md and extends S15's mappings for the
+     new keys (and checks any mapping written earlier from the plan against INTEROP.md), with tests: a fixture
+     project validated by the editor CLI, and rendered and compared when `cli.render`;
+   - a review session (model: reviewer) checks the change against INTEROP.md and runs the tests, answering
+     accepted or a list of problems; the builder gets at most 2 fix rounds;
+   - accepted: commit `s15: editor capabilities <keys>` and save the manifest to logs/editor-capabilities.json;
+   - not accepted: revert every file the upgrade changed, record the manifest's capability hash and the reasons in
+     logs/editor-upgrade.json, and go on with those keys on fallback. A failed hash is tried again only when the
+     capabilities change again or 24 hours later. logs/status.txt shows the upgrade while it runs.
+   pipeline/stages/s15-project/CAPABILITIES.md lists every manifest key S15 knows: mapped or not, and which reel
+   elements use it.
+
+**Rebuild.** `bash pipeline/bin/rebuild-project.sh N` rebuilds exports/N/project/ from its run folder with the
+current manifest, without touching anything else. If the editor changed the project since it was written
+(project.json newer than layers.json), the old folder is kept as project.edited-<date>/.
+
+**Failure and time.** S15 has a cap of editor.cap_minutes (25). On an error or at the cap it writes the minimal
+project: the visuals without captions as one plate, the voice and sound effect clips, the baked captions and the
+hidden caption track. If even that fails: project/FAILED.md with the error, and a NEEDS REVIEW line. The export
+goes on in every case.
+
+The baseline manifest (the editor v1.1.0, before its Batch 54), copied verbatim to
+pipeline/stages/s15-project/baseline-capabilities.json:
+
+```json
+{
+  "manifestVersion": 1,
+  "app": "shorts-editor",
+  "appVersion": "1.1.0",
+  "lastBatch": 53,
+  "schemaVersion": 3,
+  "project": { "file": "project.json", "fontsManifest": "fonts/fonts.json", "fontsManifestVersion": 2, "sampleRate": 48000 },
+  "media": {
+    "video": ["mp4", "mov", "m4v", "webm"],
+    "audio": ["mp3", "m4a", "aac", "wav", "ogg"],
+    "image": ["png", "jpg", "jpeg", "webp", "gif", "svg"],
+    "animatedImage": { "formats": ["gif", "webp"], "alpha": true, "maxSide": 2048, "textureBudgetBytes": 134217728 },
+    "videoAlpha": false,
+    "imageSequence": false,
+    "lottie": false
+  },
+  "trackKinds": ["video", "audio", "caption"],
+  "clipKinds": ["video", "audio", "image", "text", "solid", "caption"],
+  "transform": { "rotation3d": false, "parenting": false, "motionPaths": false, "autoOrient": false },
+  "keyframes": {
+    "props": ["transform.x", "transform.y", "transform.scale", "transform.scaleY", "transform.rotation", "opacity", "volume.gainDb"],
+    "eases": ["linear", "easeIn", "easeOut", "easeInOut", "hold", "smooth", "snap", "overshoot"],
+    "bezier": false,
+    "spring": false,
+    "vectorValues": false
+  },
+  "solid": { "shapes": ["rect", "roundedRect", "ellipse", "line"], "fills": ["color", "gradient2"], "stroke": false, "shadow": false, "cornerRadii": false },
+  "mediaFrame": { "stroke": false, "shadow": false, "cornerRadius": false },
+  "text": {
+    "fills": ["color", "gradient2"],
+    "stroke": true,
+    "shadow": true,
+    "background": { "modes": ["line", "block"], "stroke": false, "shadow": false },
+    "anims": ["fade", "slideUp", "slideDown", "slideLeft", "slideRight", "pop", "typewriter", "wordPop", "wordFade", "lineReveal", "blurIn", "scaleBounce"],
+    "animUnits": ["char", "word", "line"],
+    "spans": false,
+    "counter": false,
+    "animators": false
+  },
+  "captions": {
+    "highlightModes": ["none", "color", "background", "scale", "colorAndScale"],
+    "perCueStyle": true,
+    "wordEmphasis": false,
+    "cueAnims": [],
+    "boxModes": ["line", "block"],
+    "wordsImport": false
+  },
+  "transitions": ["crossDissolve", "dipToBlack", "dipToWhite"],
+  "compositing": { "compound": false, "blendModes": ["normal"], "trackMatte": false, "masks": false, "adjustment": false },
+  "vector": { "shapes": false, "trimPaths": false, "svgImport": false },
+  "effects": [],
+  "audio": { "clipGainDb": [-60, 12], "fades": true, "trackGain": false, "pan": false, "loudness": false },
+  "time": { "speedRange": [0.25, 4], "freeze": true, "reverse": false, "remap": false, "frameBlend": false },
+  "templates": false,
+  "export": { "containers": ["mp4"], "videoCodecs": ["h264", "hevc", "av1"], "alpha": false, "imageSequence": false, "gif": false, "stems": false },
+  "cli": { "validate": false, "normalize": false, "info": false, "render": false, "compare": false },
+  "interop": { "openLink": false, "externalReload": false, "repairOnOpen": false, "fallbackOf": false, "generatorMeta": false }
+}
+```
 
 ## 6. Status lines (both runners print these)
 
@@ -765,6 +1016,7 @@ when the queue empties.
 - exports/N/N.mp4: the reel.
 - exports/N/Ncaptions.txt: the captions file (format below).
 - exports/N/Nhook2.mp4: the alternate hook clip, up to 3.5 seconds, using hook 2 in the same style.
+- exports/N/project/: the editable project (S15); the EDITOR section of Ncaptions.txt says how to open it. (M14)
 - After the export: delete the idea from ideas.txt and write the history line.
 
 Ncaptions.txt format:
@@ -795,6 +1047,10 @@ FACTS AND SOURCES
 
 RUN
 runs/<id>
+
+EDITOR (M14)
+Project: exports/N/project (open <editor.url>?open=exports/N/project, or Open project and pick that folder) (M14)
+Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M14)
 ```
 
 ## 9. config.json
@@ -819,6 +1075,10 @@ runs/<id>
 - **timeouts:** one per step, in seconds, generous for a CPU-only PC (text to speech, alignment, renders, model
   calls), because heavy steps run slower than real time (section 0, Hardware).
 - **style:** paper-cards. Plus paths.
+- **editor:** repo (the FlashFXeditor folder: /c/Users/there/OneDrive/Desktop/editor), stable_dir (the stable (M14)
+  copy S15 uses: next to repo, named like it with -stable added), port (5310), url (http://localhost:5310/, where I (M14)
+  open reel projects), projects_root (this instagramReels folder: the projects folder I choose in the editor, so (M14)
+  `?open=exports/N/project` works), project (true), cap_minutes (25), parity_ssim (0.97). (M14)
 
 ## 10. Vendored tools
 
@@ -929,9 +1189,42 @@ Keep it short and current:
     voice.md (2.3) instead of rebuilding them from the template.
   - Test: 3 ideas back to back, unattended; a simulated limit in the middle of a run; the logs and status lines tell
     the full story; build-voice-profile --force on a copy of the profile keeps its hand-written Brand section.
+- **M14 Editable project export (S15).** S15 and every line of this spec marked (M14) are built and reviewed in
+  M14 only; earlier milestones are not reviewed against them.
+  - Builds: pipeline/stages/s15-project/ (capture, mapping, sprite, overlay and plate rendering, writing,
+    validation, parity and layout checks), baseline-capabilities.json, the S15 validator,
+    pipeline/bin/editor-stable.sh (clone, advance, build, the server on port 5310),
+    pipeline/bin/rebuild-project.sh, the between-ideas steps in run.sh (stable copy, capability upgrade),
+    CAPABILITIES.md, editor annotations on every motion-lib component (the M9 frame-match tests still pass), the
+    cues.json trim and fade fields (S11's sound unchanged), the EDITOR section, logs/editor-gaps.md, the
+    config.json editor block.
+  - Also: mappings for the editor's next two planned feature sets, read from §21.7 and §21.8 of the editor's
+    docs/PLAN_V1_2.md (strokes, shadows and corner radii on solids, bordered text and caption boxes, progressive
+    captions with emphasis words and cue fades), used only when the manifest announces them. Skip this item if
+    PLAN_V1_2.md is not in the editor repo; the capability upgrade adds them later.
+  - Tests:
+    - the golden reel (or the test idea) gives exports/K/project/ that passes validation (the editor CLI when the
+      manifest has cli.validate, otherwise the S15 validator), with FALLBACKS.md, OPEN.txt and the EDITOR section
+    - with the baseline manifest: the background, the voice and every sound effect are native clips at the right
+      times; every text whose style the baseline supports is a native text clip; the captions are baked, plus the
+      hidden native caption track; the layout check passes
+    - with pipeline/tests/manifest-plus.json (the baseline plus the Batch 58 and 59 keys of the editor plan), the
+      cards become native solids and the captions native cues (the JSON matches a golden file); with the baseline
+      again they go back to sprites and baked captions
+    - the animated WebP timing test: every timeline frame of a 90-frame overlay shows its own WebP frame under the
+      editor's frame rule
+    - the stable copy: in a scratch git repo with fake commits it advances only to a `batch-NN: review` commit whose
+      batch is accepted, a failing build puts it back on the previous commit, and the server answers on port 5310
+    - the project lasts as long as N.mp4 within 1 frame, and its mix is within 0.5 LU of N.mp4
+    - a forced failure still exports N.mp4, with the minimal project and NEEDS REVIEW
+    - rebuild-project.sh rebuilds a project and keeps an edited one aside
+    - in the runner's fast test mode, a changed manifest between two dummy ideas triggers exactly one capability
+      upgrade (dummy sessions) with its status line; a failed upgrade is not retried for the same manifest
+    - S15 takes at most 15 minutes for a 60-second reel on this laptop (the time goes in build/progress.md)
 
 ## 13. Not in version 1
 
 Posting to Instagram (I post manually from exports/); music; multiple accounts, each with its own voice (its own
 engine file, like engine-puck.txt), its own style folder and its own content, run by the same pipeline and chosen
-per idea; series; FlashFX as a render target; processing ideas in parallel.
+per idea; series; processing ideas in parallel;
+FlashFX-v2 (.ffx) projects as a target (the Shorts Editor project of S15 is in). (M14)

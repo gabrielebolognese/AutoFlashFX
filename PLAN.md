@@ -623,10 +623,79 @@ Acceptance test: `bash pipeline/tests/test-m13.sh`
   dash in any export or log.
 - Runtime: several hours.
 
+## M14 Editable project export (spec S15)
+
+Depends on: M12 (the export, the final composition, cues.json, words.json), M13 (the hardened runner loop), M9 (the
+motion-lib components to annotate), the editor repo at /c/Users/there/OneDrive/Desktop/editor (config.json
+`editor.repo`; read only) and its stable copy next to it (`editor.stable_dir`, created by editor-stable.sh), Node 22
+and the Puppeteer harness of M11. S15 and every spec line marked (M14) are built and reviewed here only.
+
+Creates:
+- `pipeline/stages/s15-project/` (run.sh, CONTRACT.md, schema files): the capture (`capture.mjs`: Puppeteer seeks
+  every frame of the final composition, reads the `data-ed-layer` tree, border quads through `DOM.getBoxModel`,
+  `getScreenCTM()` with `getBBox()` for SVG, opacity products, look signatures and clipped screenshots for canvas,
+  video and animated SVG; writes `15-project/layers.json`), the mapping to native, sprite, overlay or plate by the
+  manifest (keyframe reduction within 0.25 px, 0.1 degree, 0.002 scale and 0.004 opacity, eases from the manifest,
+  hold keys for jumps; groups as compound, parented or flattened; native text only with an available font and
+  supported fill, stroke, shadow and background; captions native or baked plus the hidden caption track; `fallbackOf`
+  stand-ins when the manifest allows), sprite, overlay (VP9 alpha WebM, PNG sequence or animated WebP with the 33,
+  33, 34 ms frame rule, split by the texture budget) and plate rendering, the audio clips from vo.wav and cues.json
+  with the master gain folded in (48 kHz WAV), the writer (project.json at the manifest's schemaVersion, media/,
+  fonts/ with fonts.json version 2, layers.json, FALLBACKS.md, OPEN.txt; readable names, label colors, bins,
+  markers, `meta.generator`), the S15 validator (every rule of the editor's validate.ts and every field of
+  types.ts), the parity check (editor CLI render and compare when the manifest has them) and the layout check
+  (sprites, overlays and plates composited in the harness, SSIM at least 0.95 per scene; native text measured with
+  Canvas2D within 2 px), the 25-minute cap and the minimal project or FAILED.md on failure.
+- `pipeline/stages/s15-project/baseline-capabilities.json` (the editor v1.1.0 manifest of spec S15, verbatim) and
+  `CAPABILITIES.md` (every manifest key S15 knows: mapped or not, and which reel elements use it).
+- `pipeline/bin/editor-stable.sh`: clone `editor.repo` into `editor.stable_dir` on first use; advance at most once an
+  hour to the newest `batch-NN: review` commit whose docs/PROGRESS.md has `in_progress_batch: none` and an accepted
+  last review for its `last_completed_batch` (detached checkout, `npm ci` when package-lock.json changed,
+  `npm run build`, `npm run build:cli` when present; back to the previous commit on failure, with the reason logged);
+  the server (`npx vite preview --port 5310 --strictPort`).
+- `pipeline/bin/rebuild-project.sh N`: rebuilds exports/N/project/ from its run folder with the current manifest,
+  keeping an edited project aside as project.edited-<date>/.
+- `run.sh` and `pipeline/lib/runner.sh`, between ideas only: advance the stable copy, keep its server on port 5310
+  running (restart after an advance), and the capability upgrade of spec S15 step 8 (a builder session, a reviewer
+  session, at most 2 fix rounds, commit `s15: editor capabilities <keys>` or a full revert recorded in
+  logs/editor-upgrade.json with a 24-hour retry rule; the upgrade shown in logs/status.txt).
+- S14's export calls S15 after assembling `runs/<id>/export/` and before the move; the EDITOR section in
+  Ncaptions.txt; logs/editor-gaps.md (one line per missing manifest key, with a running count, the reel elements and
+  the latest reel, sorted by count); logs/editor-capabilities.json.
+- Editor annotations (`data-ed-layer`, `data-ed-name`, `data-ed-kind`) on every motion-lib component and in the
+  builder's rules for new candidates, without changing how anything looks.
+- cues.json gains the trim in and out points, the fade-out and the final gain of each sound (S11's sound unchanged).
+- config.json `editor` block: repo, stable_dir, port 5310, url, projects_root, project true, cap_minutes 25,
+  parity_ssim 0.97.
+- Mappings for §21.7 and §21.8 of the editor's docs/PLAN_V1_2.md, used only when the manifest announces them; skipped
+  when that file is not in the editor repo (it was not on 2026-11-02), and the capability upgrade adds them later.
+- Tests: `pipeline/tests/test-m14.sh`, `pipeline/tests/manifest-plus.json` (the baseline plus the Batch 58 and 59
+  keys of the editor plan), a golden project JSON, a scratch git repo with fake `batch-NN: review` commits.
+
+Acceptance test: `bash pipeline/tests/test-m14.sh`
+- The golden reel (or the test idea) gives exports/K/project/ that passes validation (the editor CLI when the manifest
+  has cli.validate, otherwise the S15 validator), with FALLBACKS.md, OPEN.txt and the EDITOR section.
+- With the baseline manifest: the background, the voice and every sound effect are native clips at the right times;
+  every text whose style the baseline supports is a native text clip; the captions are baked, plus the hidden native
+  caption track; the layout check passes.
+- With manifest-plus.json the cards become native solids and the captions native cues (the JSON matches the golden
+  file); with the baseline again they go back to sprites and baked captions.
+- The animated WebP timing test: every timeline frame of a 90-frame overlay shows its own WebP frame under the
+  editor's frame rule.
+- The stable copy, in the scratch repo: it advances only to a `batch-NN: review` commit whose batch is accepted, a
+  failing build puts it back on the previous commit, and the server answers on port 5310.
+- The project lasts as long as N.mp4 within 1 frame, and its mix is within 0.5 LU of N.mp4.
+- A forced failure still exports N.mp4, with the minimal project and NEEDS REVIEW.
+- rebuild-project.sh rebuilds a project and keeps an edited one aside.
+- In the runner's fast test mode, a changed manifest between two dummy ideas triggers exactly one capability upgrade
+  (dummy sessions) with its status line; a failed upgrade is not retried for the same manifest.
+- S15 takes at most 15 minutes for a 60-second reel on this laptop (the time goes in build/progress.md).
+- Runtime: 1 to 2 hours (renders, the capture of every frame).
+
 ## Dependency graph
 
 ```
-M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13
+M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13 -> M14
                     \-> M8 ------------------------/
                     \-> M9 (needs M7 fixtures) ---/
 ```

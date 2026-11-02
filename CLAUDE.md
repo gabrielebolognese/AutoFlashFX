@@ -6,8 +6,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 
 ## Build status
 - M11 Sound effects pass and review loop: done (2026-11-01). Next: M12 Final render, caption, export, end to end (S13,
-  S14). The build is driven by `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in
-  build/M<n>/.
+  S14), then M13 Hardening; M14 Editable project export (S15): pending. The build is driven by
+  `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
   faster_whisper), the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py,
@@ -139,16 +139,17 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   `bash pipeline/bin/runner-status`.
 - **Curated by the user, do not edit without asking:** `library/`, `styles/`, `ideas.txt` (only through
   add-idea.sh). The runner's own fixer may edit only `pipeline/` and `motion-lib/candidates/`.
-- **Reading the logs:** `logs/history.txt` has one line per finished idea (`date | idea | exported N`, `dropped:
-  reason` or `blocked: reason`); `logs/blocked.txt` lists blocked ideas with the reason so they can be re-added;
+- **Reading the logs:** `logs/history.txt` has one line per finished idea (`date | idea | solution | exported N`,
+  `dropped: reason` or `blocked: reason`; solution is flashfx, external, method, or `-` before S2 decided); `logs/blocked.txt` lists blocked ideas with the reason so they can be re-added;
   `logs/STOPPED.md` exists only after a systemic stop and contains the diagnosis and the exact fix;
   `logs/limits.log` has every usage limit wait with its target time; `logs/suggested-ideas.txt` holds the ideas
   the gate suggested instead of a dropped one (in braces, ready for add-idea.sh; never read by the runner).
 - **The gate (S3):** a dropped idea's history line carries the scores, for example `dropped: facts don't hold (P2
-  S2 C2 F fail): ...` or `dropped: still failing after 2 angle rounds (P3 S1 C3 F ok): ...`. The model only scores;
+  S2 C2 F fail H ok): ...` or `dropped: still failing after 2 angle rounds (P3 S1 C3 F ok H ok): ...`. The model only scores;
   pipeline/lib/gate.py decides (a false or unverified core claim always fails F with kind core and drops at once;
   an F fail of kind wording, a statement of the expansion that facts.md does not back while the core claim is
-  verified, goes to S4 like a failing P, S or C, DECISIONS.md 112). The angle loop hands over through
+  verified, goes to S4 like a failing P, S or C, DECISIONS.md 112; so does a failing honesty check H, the solution
+  not solving the problem or FlashFX forced, and S4 then decides the solution again, DECISIONS.md 264 and 265). The angle loop hands over through
   `<stage>/reopen.txt`, applied by state.py stage-done.
 - **Automatic fixes (BUILD_SPEC.md 4.2):** a code error in a stage is reviewed and fixed by the runner itself: the
   report is `runs/<id>/errors/E<n>.md`, the verdict `runs/<id>/fixes/F<n>.md`, the fix a commit `autofix(<stage>):

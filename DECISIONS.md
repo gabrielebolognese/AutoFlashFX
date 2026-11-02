@@ -418,6 +418,7 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 2026-11-01: reel voice = Kokoro af_bella, single voice, no fallback; silence tightened per beat (-40 dB, pauses of 0.3s or more cut to 0.1s, 1.0s breath after the hook). am_puck saved in library/voice/engine-puck.txt for later.
 2026-11-01: reels are problem-first; the solution is FlashFX, an external tool or repo, or a method, chosen per reel by the pipeline (rules in account.md).
 2026-11-01: FlashFX brand kit in library/brand/ (from the 2026 brand guide). The reel style is unchanged; the FlashFX lockup and DM avatar appear at every CTA, other FlashFX branding only when FlashFX is the solution.
+2026-11-01: every reel also gets exports/N/project/, an editable Shorts Editor project (S15, milestone M14). The MP4 export is unchanged. A stable copy of the editor (moved only to reviewed versions, served on port 5310) decides what is native through its capabilities.json; anything else is baked (sprite, overlay, plate) and logged in logs/editor-gaps.md. Editor repo: C:\Users\there\OneDrive\Desktop\editor (/c/Users/there/OneDrive/Desktop/editor).
 
 ### M3 review 1 fixes (2026-10-31)
 88. **A failed stage script is classified before any review (M3 review 1, fix 2).** BUILD_SPEC.md section 4 says
@@ -1873,3 +1874,70 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     build/M11/patch-1.py and patch-2.py; a Windows Python calling bare `bash` reaches the WSL launcher ("Class not
     registered"), so a patch script must not check bash syntax itself; ffmpeg 9's alimiter takes latency=1 so a limited
     mix does not shift in time.
+
+## M12 Final render, caption, export, end to end (S13, S14)
+
+### The problem-first solution (retrofitted into S1 to S4 and S7)
+261. **One module owns the solution:** pipeline/lib/solution.py holds the types (flashfx, external, method), the keyword
+    rule, the SOLUTION block's line, the history type, the balance of the recent exported reels, the usable lines of
+    voice.md "Proof I can use" (a line with [FILL IN is not proof) and the FlashFX rules as code (a FlashFX mention, a
+    "made/rendered/built in FlashFX" phrase, a short list of explicit sales phrases). S2, S3, S4, S7, S14, export.py
+    and history.sh call it, so the rules cannot drift between stages.
+262. **S1 solution candidates:** research's model schema requires solution_candidates (type external or method, name,
+    url, why, sources). An external candidate without a URL that research verified is dropped by research.py: S2 needs
+    the link for the LINK deliverable and the SOLUTION block. facts.md lists the candidates under their own heading.
+263. **S2 decides, the code corrects:** the model answers solution_decision {type, name, url, reason}; expansion.py
+    normalizes it (an unknown type becomes method, an external one without a URL found in facts.md becomes method
+    with a note, a flashfx one gets the name FlashFX and https://flashfx.app) and sets the keyword from the type,
+    whatever the model wrote: FLASH for flashfx, LINK for external (deliverable: the tool's link), the deliverable
+    that fits for a method (deliverables.txt or a new one, as before). The prompt carries account.md's content
+    strategy, the candidates, the proof lines and the balance of the last 10 exported reels from history.txt.
+    02-expansion/solution.json {type, name, url, reason, keyword, deliverable, deliverable_link, written_by, round,
+    checked} is what every later stage reads; a run without it counts as not FlashFX and its history type is "-".
+264. **S3 honesty H:** the gate model scores H pass or fail with evidence and a fix hint; gate.py forces a fail when the
+    solution is flashfx and "Proof I can use" has no usable line (every FlashFX claim must come from it, spec S2).
+    H failing is never a drop by itself: the decision is angle (S4) like a failing P, S or C, inside caps.angle_rounds;
+    only a reel still failing after the last round is dropped with "still failing after 2 angle rounds". The score
+    text gained " H ok" or " H fail" (for example `P3 S2 C3 F ok H fail`), so history lines of dropped ideas carry it.
+265. **S4 decides again:** when H failed, the angle prompt gets the gate's H evidence and fix and must answer a new
+    solution_decision under the S2 rules; S4 rewrites solution.json (written_by 04-angle, round n) and the keyword
+    that follows it. The fake fixture proves the path: a forced FlashFX solution on the web design idea fails H, S4
+    picks the external skill, the gate passes on round 2 (test-m12 section 3).
+266. **S7 solution rules:** the writer's prompt carries the rules for the reel's type. A FlashFX mention in a
+    non-FlashFX script is a scripted hard failure (any spoken or display line, any card); ad language and "made in
+    FlashFX" are judged by the checks model as part of check "solution" (hard), with the scripted phrase list as a
+    floor. The S7 plan line ends with "; solution <type>".
+267. **History lines:** `date | idea | solution | exported N` (and dropped, blocked), the type read from solution.json at
+    the moment the line is written, "-" before S2. The dummy S2 writes an external solution, so the dummy runs of
+    test-m2 and test-m3 show "external"; their assertions were updated.
+
+### S13 Final render
+268. **Video by HyperFrames, audio by ffmpeg:** HyperFrames renders 10-build/project at 1080x1920, 30 fps, without audio
+    (video.mp4); ffmpeg muxes 11-sfx/mix.wav as AAC 48 kHz mono, 160 kbps, with -c:v copy. HyperFrames' own audio path
+    duplicated the mono voice to two channels and measured about 3 LU louder than the mix on the golden reel, and the
+    mix is the file S11 verified and S12 heard. A missing mix falls back to vo.wav with a flag.
+269. **Checks and one post-pass:** ffprobe (size, rate, h264 High, yuv420p, AAC, 48 kHz, audio present, duration equal
+    to vo.wav within render.duration_tolerance_s) and loudnorm (voice.loudness_lufs plus or minus 1 LU, true peak at
+    most voice.true_peak_dbtp plus 0.5 dB of room for the AAC encode). A failing check gets one ffmpeg pass that fixes
+    only what differs (re-encode the video for a wrong profile, pixel format, size or rate; mux again; trim; a gain
+    plus alimiter pass on the mix); still failing is a code error (exit 3, the fix loop). The hook 2 clip takes the
+    same path with mix_hook2.wav, must be 3.5 s or shorter with audio, and its loudness is a soft check (a flag).
+
+### S14 Caption and export
+270. **Hook 1 is the first line, not the model's:** the caption model (config models.script, no tools) writes only the
+    body, the ask line, 3 to 5 hashtags and search terms; caption.py prepends hook 1 word for word (125 characters or
+    fewer) and checks: one ask, "Comment KEYWORD" once, no second ask, no link, hashtags one word each and not generic,
+    none in the body (a hex color like #D97757 is not a tag), body length, the solution rules of 261. humanize.py then
+    cleans it and the vendor caption.py lints the whole caption: no FAIL allowed, the WARNs recorded. One retry in the
+    same session with the exact problems; the second answer is written anyway with a NEEDS REVIEW flag.
+271. **The export stays the runner's:** S14 writes export.json (caption, hashtags, keyword, deliverable, solution, hooks,
+    needs_review from state.json flags, the cited facts with URL and date, files); pipeline/lib/export.py renders
+    Ncaptions.txt from it with the new SOLUTION block (`flashfx`, `external: name link`, `method: name`), numbers,
+    moves in one step, then the runner removes the idea and writes the history line with the solution type.
+272. **Earlier milestones touched by M12:** research.py, expansion.py, gate.py and the S1 to S4 prompts, schemas and
+    run.sh files (M4), script_checks.py and the S7 prompts, schemas and run.sh (M6), the S5 run.sh (M5: the brief's
+    header names the solution), history.sh, runner.sh and export.py (M2), the 02-expansion and 14-export dummies and
+    the 13 and 14 schemas (M2), config.json (render.*, caption.*, timeouts render_final_seconds, render_hook2_seconds,
+    mux_seconds, caption_seconds), the fake fixtures of M4 (the decision and H fields) and the frozen test idea
+    (02-expansion/solution.json, 03-gate H fields), and the assertions of test-m2, test-m3, test-m4 and test-m6 that
+    read the history line, the gate's score text, the keyword or the S7 plan line (build/M12/patch-tests.py).
