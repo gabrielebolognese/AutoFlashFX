@@ -14,8 +14,10 @@ elif [ -n "$pid" ]; then
 else
   echo "runner: not running"
 fi
-if [ -f "$REELS_LOGS/status.txt" ]; then
-  echo "status: $(cat "$REELS_LOGS/status.txt")"
+if [ -f "$REELS_LOGS/status.txt" ] || { sleep 0.2; [ -f "$REELS_LOGS/status.txt" ]; }; then
+  # say() renames a new status.txt into place, so it can be missing for a moment: one more read after a pause
+  st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)" || { sleep 0.2; st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)"; }
+  echo "status: $st"
 else
   echo "status: no logs/status.txt yet (the runner has never started here)"
 fi

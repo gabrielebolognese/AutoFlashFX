@@ -8,7 +8,8 @@
 #   runner_idle_line             the IDLE line: no ideas ..., checking every N min (idle M min) | today: e exported, d dropped
 #   runner_summary_line          when the queue empties: this session's counts and duration, plus today's
 #   runner_check_new_ideas       print a NEW line for every record add-idea.sh left in logs/.new-ideas, then clear it
-#   runner_tick                  what runs between polls: new ideas, and the heartbeat when it is due inside a run
+#   runner_tick                  what runs between polls: new ideas, the log rotation (at most once a minute;
+#                                REELS_LOG_ROTATE_EVERY seconds in tests) and the heartbeat when it is due inside a run
 #
 # Globals (set by runner.sh): ONCE, IN_RUN, SESSION_N, IDEA_TEXT, RUN_DIR, ELAPSED_BASE, SESSION_STARTED,
 # STAGE_STARTED, ISSUES_FIXED, ISSUES_OPEN, HEARTBEAT_EVERY, LAST_HEARTBEAT, IDLE_SINCE, POLL_SECONDS,
@@ -101,6 +102,10 @@ runner_check_new_ideas() {
 
 runner_tick() {
   runner_check_new_ideas
+  if [ $(( EPOCHSECONDS - ${LOG_ROTATE_CHECKED:-0} )) -ge "${REELS_LOG_ROTATE_EVERY:-60}" ]; then  # runner.log over 50 MB: rotate (M13)
+    LOG_ROTATE_CHECKED="$EPOCHSECONDS"
+    reels_log_rotate || true
+  fi
   if [ "${IN_RUN:-0}" = 1 ] && [ $(( EPOCHSECONDS - LAST_HEARTBEAT )) -ge "$HEARTBEAT_EVERY" ]; then
     runner_heartbeat
   fi

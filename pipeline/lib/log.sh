@@ -7,6 +7,10 @@
 #   fmt_min SECONDS        "31 min" (or "43s" under a minute), for the DONE line
 #   cut_text TEXT [N]      the text cut at N characters (default 40) with "..." when it was longer
 #   plural N word          word or words
+#   reels_log_rotate       when logs/runner.log has reached logs.rotate_mb (50 MB; REELS_LOG_ROTATE_BYTES in tests),
+#                          move it to runner.log.1 (older files shift to .2 ... up to logs.rotate_keep, default 3,
+#                          the oldest is deleted) and start the new file with an INFO line naming the old one.
+#                          Returns 0 when it rotated. The runner calls it at startup and at most once a minute.
 #   reels_undash VAR       rewrite the variable in place: an em dash (U+2014) becomes ", " whatever the spaces
 #                          around it ("a, b"), one at either end is dropped; an en dash (U+2013) between spaces is
 #                          treated the same, one inside a word (a range of numbers) becomes a hyphen
@@ -65,7 +69,10 @@ say() {
     printf '%s\n' "$plain" >> "$REELS_LOGS/runner.log"
     case " ${REELS_STATUS_SKIP_TAGS:-QUEUE INFO} " in
       *" $tag "*) ;;
-      *) printf '%s\n' "$plain" > "$REELS_LOGS/status.txt" ;;
+      *)  # written aside and renamed, so a reader never sees it empty or half written (M13); a rename refused
+          # while another program holds the file open falls back to the direct write
+          { printf '%s\n' "$plain" > "$REELS_LOGS/.status.$BASHPID" && mv -f "$REELS_LOGS/.status.$BASHPID" "$REELS_LOGS/status.txt"; } 2>/dev/null \
+            || { rm -f "$REELS_LOGS/.status.$BASHPID" 2>/dev/null; printf '%s\n' "$plain" > "$REELS_LOGS/status.txt"; } ;;
     esac
   fi
 }
@@ -90,3 +97,25 @@ cut_text() {
 }
 
 plural() { if [ "$1" = "1" ]; then printf '%s' "$2"; else printf '%ss' "$2"; fi; }
+
+reels_log_rotate() {
+  local f="$REELS_LOGS/runner.log" max mb keep size i
+  [ -f "$f" ] || return 1
+  if [ -n "${REELS_LOG_ROTATE_BYTES:-}" ]; then max="$REELS_LOG_ROTATE_BYTES"
+  else
+    mb=50; declare -F cfg >/dev/null 2>&1 && mb="$(cfg logs.rotate_mb 50 2>/dev/null)"
+    case "$mb" in ''|*[!0-9]*) mb=50 ;; esac
+    max=$(( mb * 1048576 ))
+  fi
+  size="$(stat -c %s "$f" 2>/dev/null)" || return 1
+  case "$size" in ''|*[!0-9]*) return 1 ;; esac
+  [ "$size" -ge "$max" ] || return 1
+  keep=3; declare -F cfg >/dev/null 2>&1 && keep="$(cfg logs.rotate_keep 3 2>/dev/null)"
+  case "$keep" in ''|*[!0-9]*|0) keep=3 ;; esac
+  rm -f "$f.$keep"
+  for (( i = keep - 1; i >= 1; i-- )); do [ -f "$f.$i" ] && mv -f "$f.$i" "$f.$((i + 1))"; done
+  mv -f "$f" "$f.1" || return 1
+  local what; if [ "$size" -ge 1048576 ]; then what="$(( size / 1048576 )) MB"; else what="$size bytes"; fi
+  REELS_STATUS_SKIP_TAGS="${REELS_STATUS_SKIP_TAGS:-QUEUE INFO}" say INFO "logs/runner.log reached $what: the earlier lines are in logs/runner.log.1 (up to $keep old files are kept)"
+  return 0
+}

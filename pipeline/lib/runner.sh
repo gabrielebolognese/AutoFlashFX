@@ -822,6 +822,7 @@ runner_main() {
     say WARN "removed a leftover exports lock from a previous runner"
   fi
 
+  LOG_ROTATE_CHECKED="$EPOCHSECONDS"; reels_log_rotate || true   # logs/runner.log over logs.rotate_mb (M13)
   runner_banner
   SESSION_START="$EPOCHSECONDS"
   SESSION_N=0; SESSION_EXPORTED=0; SESSION_DROPPED=0; SESSION_BLOCKED=0

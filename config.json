@@ -589,5 +589,9 @@
       900
     ],
     "tries": 2
+  },
+  "logs": {
+    "rotate_mb": 50,
+    "rotate_keep": 3
   }
 }
