@@ -99,7 +99,7 @@ em dash scan. The recorded full run: build/M14/test-m14.log (77 passed, 0 failed
   its reruns found decisions 301 to 304); test-m12 fake sections 1, 2, 3 and 5, 180 passed after its test got its
   own profile drafts (177 passed and 3 failed on the user's filled profile before, decision 305); test-m13 fake
   sections 1, 2 and 4, 93 passed and 7 failed on the same profile drift, then section 1 alone with the fixture
-  drafts 66 passed, and the whole fake run again after the test fix M13_FINAL; test-m14 section 3 after the last
+  drafts 66 passed, and the whole fake run again after the test fix 100 passed; test-m14 section 3 after the last
   review change, 12 passed.
 
 ## Found on the way

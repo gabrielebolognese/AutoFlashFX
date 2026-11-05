@@ -447,7 +447,7 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   reading of the grammar's transients and the hold's room: DECISIONS.md 301 to 304); test-m12 fake sections 1, 2, 3 and
   5, 180 passed once its test stopped reading the user's profile (DECISIONS.md 305); test-m13 fake sections 1, 2 and 4,
   93 passed and 7 failed on the same profile drift, section 1 alone with the fixture drafts 66 passed, the whole fake
-  run again after the test fix M13_FINAL; the logs are in build/M14/earlier-tests/.
+  run again after the test fix 100 passed; the logs are in build/M14/earlier-tests/.
 - Test command: `bash pipeline/tests/test-m14.sh` (no model call, about 35 minutes: frame-match on every component and
   the golden render; `M14_SECTIONS="1 3"` the quick sections, about 3 minutes); `bash pipeline/tests/run-all.sh` includes it.
 - Notes: the meter is pipeline/lib/review/energy.py (`python pipeline/lib/review energy <video> [--plan merged.json]`,
