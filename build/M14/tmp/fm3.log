@@ -1,0 +1,35 @@
+camera-move: pass (4/4 checks, strip r=0.899, moving 6.9%, longest still 3.43 s)
+caption-line: FAIL (4/6 checks, strip r=0.97, moving 0%, longest still 4.33 s)
+    after: frames after the reference: expected 1, measured 43
+    life: never static #cap-c0: expected 0 still windows of 0.5 s, measured 1
+card: FAIL (9/10 checks, strip r=0.935, moving 7.7%, longest still 3.97 s)
+    after: frames after the reference: expected 4, measured 6
+chart-card: pass (13/13 checks, strip r=0.976, moving 13.8%, longest still 3.7 s)
+chat-card: pass (10/10 checks, strip r=0.954, moving 0.8%, longest still 4.07 s)
+check-badge: pass (6/6 checks, strip r=0.98, moving 0%, longest still 4.33 s)
+dark-chip: pass (6/6 checks, strip r=0.955, moving 0%, longest still 4.33 s)
+dm-card: pass (7/7 checks, strip r=0.908, moving 6.2%, longest still 4 s)
+end-card: pass (11/11 checks, strip r=0.975, moving 11.5%, longest still 3 s)
+exit-move: pass (10/10 checks, strip r=0.967, moving 7.7%, longest still 3.2 s)
+fly-in: pass (7/7 checks, strip r=0.982, moving 8.5%, longest still 3.97 s)
+handwritten-callout: pass (5/5 checks, strip r=none, moving 0%, longest still 4.33 s)
+headline: pass (6/6 checks, strip r=0.99, moving 0%, longest still 4.33 s)
+hero-3d: pass (5/5 checks, strip r=none, moving 3.8%, longest still 3.93 s)
+icon-3d: pass (4/4 checks, strip r=none, moving 0%, longest still 4.33 s)
+light-chip: pass (4/4 checks, strip r=0.972, moving 0%, longest still 4.33 s)
+logo-tile: pass (10/10 checks, strip r=0.888, moving 0%, longest still 4.33 s)
+mascot: pass (4/4 checks, strip r=0.988, moving 0%, longest still 4.33 s)
+paper-canvas: pass (10/10 checks, strip r=none, moving 0%, longest still 4.33 s)
+pop: pass (6/6 checks, strip r=0.992, moving 0%, longest still 4.33 s)
+progress-bar: pass (13/13 checks, strip r=0.897, moving 0.8%, longest still 3.8 s)
+speech-bubble: pass (9/9 checks, strip r=0.987, moving 3.8%, longest still 3.87 s)
+stat-number: pass (9/9 checks, strip r=0.945, moving 14.6%, longest still 3.23 s)
+strike-through: pass (5/5 checks, strip r=0.966, moving 0%, longest still 4.33 s)
+table-card: FAIL (9/10 checks, strip r=0.972, moving 7.7%, longest still 3.93 s)
+    enter: position frames (fit): expected 7, measured 5
+terminal-card: pass (9/9 checks, strip r=0.959, moving 10%, longest still 3.03 s)
+thumb-grid: pass (9/9 checks, strip r=0.984, moving 5.4%, longest still 3.97 s)
+window-card: FAIL (8/9 checks, strip r=0.956, moving 20.8%, longest still 3.1 s)
+    after: frames after the reference: expected 4, measured 6
+frame-match: 24 pass, 4 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
+exit 1

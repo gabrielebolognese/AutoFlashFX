@@ -1,0 +1,17 @@
+project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (24 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png)
+hyperframes check: ok
+render: 214.9 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
+exit 0
+energy golden.mp4: 1244 frames, 41.47 s: moving share 19.6% (FAIL, at least 41%), middle band 26.3% (FAIL, at least 46%), pixels changing 1.23% (FAIL, at least 3.3%), still stretches 30.2% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
+  scene s1 (hook, 0.00 to 3.46 s): moving share 6.8%, middle band 12.6%, pixels changing 0.42%, still stretches 70.9%, longest still 2.43 s: FAIL
+  scene s2 (stake, 3.46 to 6.64 s): moving share 23.2%, middle band 21.1%, pixels changing 1.89%, still stretches 34.7%, longest still 1.1 s: FAIL
+  scene s3 (comparison, 6.64 to 11.39 s): moving share 36.4%, middle band 97.2%, pixels changing 1.82%, still stretches 0.0%, longest still 0.8 s: FAIL
+  scene s4 (mechanism, 11.39 to 15.13 s): moving share 14.3%, middle band 12.5%, pixels changing 0.82%, still stretches 29.5%, longest still 1.1 s: FAIL
+  scene s5 (comparison, 15.13 to 18.86 s): moving share 3.6%, middle band 0.0%, pixels changing 0.29%, still stretches 50.9%, longest still 1.9 s: FAIL
+  scene s6 (number, 18.86 to 22.73 s): moving share 21.6%, middle band 21.6%, pixels changing 1.86%, still stretches 0.0%, longest still 0.93 s: FAIL
+  scene s7 (mechanism, 22.73 to 26.89 s): moving share 9.6%, middle band 8.8%, pixels changing 0.49%, still stretches 56.0%, longest still 1.2 s: FAIL
+  scene s8 (proof, 26.89 to 30.11 s): moving share 46.9%, middle band 55.2%, pixels changing 2.19%, still stretches 0.0%, longest still 0.57 s: FAIL
+  scene s9 (step, 30.11 to 34.74 s): moving share 12.9%, middle band 10.1%, pixels changing 1.04%, still stretches 0.0%, longest still 0.97 s: FAIL
+  scene s10 (payoff, 34.74 to 37.73 s): moving share 20.0%, middle band 21.1%, pixels changing 2.16%, still stretches 42.2%, longest still 1.27 s: FAIL
+  scene s11 (ask, 37.73 to 41.46 s): moving share 22.3%, middle band 17.0%, pixels changing 0.85%, still stretches 64.3%, longest still 2.4 s: FAIL

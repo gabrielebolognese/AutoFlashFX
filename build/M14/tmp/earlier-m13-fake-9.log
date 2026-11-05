@@ -1,0 +1,53 @@
+
+== 1. units: the log checker, the rotation, the status line, the fault injection, the voice profile, the doctor ==
+PASS  logcheck story: the good timeline has no problem ({"sessions": 1, "ideas": 2, "outcomes": ["done", "dropped"], "exports": [1], "limits": 1, "problems": []})
+PASS  logcheck: the outcomes done, dropped
+PASS  logcheck: the LIMIT line paired with its RESUME
+PASS  logcheck catches: a LIMIT without its RESUME
+PASS  logcheck catches: an idea silent for 12 minutes (a hang)
+PASS  logcheck catches: a heartbeat with the wrong fixed count
+PASS  logcheck catches: a heartbeat with the wrong minute
+PASS  logcheck catches: a heartbeat naming another idea
+PASS  logcheck catches: a summary with wrong counts
+PASS  logcheck catches: a missing NEXT line
+PASS  logcheck catches: a broken STEP chain
+PASS  logcheck catches: an em dash in a line
+PASS  logcheck catches: a tag not padded to 6
+PASS  logcheck catches: an idea that never ends
+PASS  logcheck catches: a STOP line
+PASS  logcheck catches: exports with a gap
+PASS  logcheck catches: a crash that the next session does not resume
+PASS  logcheck --allow-crash: a crash resumed by the next session is a good story
+PASS  logcheck without --allow-crash: the same crash is a problem
+PASS  logcheck line: a valid line
+PASS  logcheck line: ANSI codes are refused
+PASS  logcheck status: a QUEUE line never belongs in status.txt
+PASS  logcheck samples: an empty sample after the first status is a problem
+PASS  rotation: a log under the size stays, one over it rotates every time
+PASS  rotation: runner.log plus 3 old files (logs.rotate_keep), the oldest deleted
+PASS  rotation: the new log starts with the INFO line naming the old one
+PASS  rotation: runner.log.1 holds the latest lines before the rotation
+PASS  rotation: the INFO line does not replace status.txt
+PASS  status.txt holds the latest line
+PASS  no .status.* file is left behind
+PASS  REELS_FAULT: only its stage and its idea, an unknown kind ignored, once only
+PASS  the fault's once-only marker in logs/.faults/
+PASS  the injected result: an error in the same session
+PASS  the injected result is classified as a usage limit with its reset time ({"class": "limit", "message": "You've hit your session limit · resets 6:42pm (Europe/Rome)", "detail": "session limit", "retry_after": null, "session_id": "sid-1", "structured": false, "api_error_status": null, "fatal": false, "resume_failed": false, "rc": 1, "limit": {"limit": true, "kind": "session", "message": "You've hit your session limit · resets 6:42pm (Europe/Rome)", "parsed": "time", "zone": "Europe/Rome", "note": "", "reset": 1794073320, "reset_iso": "2026-11-07 18:42", "target": 1794073440, "target_iso": "2026-11-07 18:44:00", "when": "18:42", "left": "6m"}, "json": true, "is_error": true})
+PASS  build-voice-profile --force exits 0
+PASS  account.md: the hand-written Brand section is kept word for word
+PASS  account.md: the Content strategy section is kept
+PASS  voice.md: How I promote is kept
+PASS  voice.md: the FlashFX spelling line is kept
+PASS  voice.md: the spelling line stays under 'Words I actually use'
+PASS  voice.md: a field filled by hand survives the template's placeholder
+PASS  voice.md: the measured pace survives a rebuild that measured nothing
+PASS  voice.md: the 5 verbatim excerpts survive
+PASS  the script names what it kept
+PASS  the previous account.md is copied into logs/voice-profile/
+PASS  a second --force rebuild changes nothing (idempotent)
+PASS  memo draft: the field the memo filled wins
+PASS  memo draft: a field only the old file had is kept
+PASS  memo draft: the spelling line stays in its section (The ask)
+PASS  memo draft: How I promote is kept
+PASS  a fresh account.md has the Brand section pointing at library/brand/

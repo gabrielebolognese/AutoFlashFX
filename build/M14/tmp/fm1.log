@@ -1,0 +1,57 @@
+camera-move: pass (4/4 checks, strip r=0.627, moving 5.4%, longest still 3.5 s)
+caption-line: FAIL (5/6 checks, strip r=0.959, moving 0%, longest still 4.33 s)
+    life: never static #cap-c0: expected 0 still windows of 0.5 s, measured 5
+card: FAIL (7/10 checks, strip r=0.853, moving 6.2%, longest still 4.07 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+    after: frames after the reference: expected 4, measured 1
+chart-card: FAIL (10/13 checks, strip r=0.626, moving 12.3%, longest still 3.73 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+    stagger: gap frames between neighbours: expected 2, measured [0]
+chat-card: FAIL (8/10 checks, strip r=0.674, moving 0.8%, longest still 4.1 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+check-badge: pass (6/6 checks, strip r=0.978, moving 0%, longest still 4.33 s)
+dark-chip: pass (6/6 checks, strip r=0.709, moving 0%, longest still 4.33 s)
+dm-card: FAIL (5/7 checks, strip r=0.792, moving 5.4%, longest still 4.07 s)
+    enter: rise px: expected 38, measured 42.8
+    enter: position frames (fit): expected 8, measured 10
+end-card: pass (11/11 checks, strip r=0.974, moving 8.5%, longest still 3.03 s)
+exit-move: FAIL (8/10 checks, strip r=0.969, moving 7.7%, longest still 3.2 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+fly-in: pass (7/7 checks, strip r=0.965, moving 7.7%, longest still 4 s)
+handwritten-callout: pass (5/5 checks, strip r=none, moving 0%, longest still 4.33 s)
+headline: FAIL (6/10 checks, strip r=0.93, moving 0%, longest still 4.33 s)
+    life: never static #hl-mark: expected 0 still windows of 0.5 s, measured 116
+    life: never static #hl-lines .pc-word:nth-child(1): expected 0 still windows of 0.5 s, measured 98
+    life: never static #hl-lines .pc-word:nth-child(2): expected 0 still windows of 0.5 s, measured 95
+    life: never static #hl-lines .pc-word:nth-child(3): expected 0 still windows of 0.5 s, measured 92
+hero-3d: pass (5/5 checks, strip r=none, moving 3.8%, longest still 3.93 s)
+icon-3d: FAIL (3/4 checks, strip r=none, moving 0%, longest still 4.33 s)
+    life: pixels never still (a canvas draws itself): expected < 15 frames, measured 15
+light-chip: pass (4/4 checks, strip r=0.946, moving 0%, longest still 4.33 s)
+logo-tile: pass (10/10 checks, strip r=0.827, moving 0%, longest still 4.33 s)
+mascot: pass (4/4 checks, strip r=0.98, moving 0%, longest still 4.33 s)
+paper-canvas: pass (10/10 checks, strip r=none, moving 0%, longest still 4.33 s)
+pop: pass (6/6 checks, strip r=0.955, moving 0%, longest still 4.33 s)
+progress-bar: FAIL (11/13 checks, strip r=0.806, moving 0%, longest still 4.33 s)
+    enter: rise px: expected 38, measured 42.7
+    enter: position frames (fit): expected 8, measured 10
+speech-bubble: pass (9/9 checks, strip r=0.934, moving 3.1%, longest still 3.87 s)
+stat-number: FAIL (8/9 checks, strip r=0.628, moving 12.3%, longest still 3.23 s)
+    enter: position frames (fit): expected 8, measured 10
+strike-through: pass (5/5 checks, strip r=0.97, moving 0%, longest still 4.33 s)
+table-card: FAIL (8/10 checks, strip r=0.141, moving 5.4%, longest still 4.03 s)
+    enter: rise px: expected 28, measured 32.3
+    enter: position frames (fit): expected 7, measured 10
+terminal-card: FAIL (7/9 checks, strip r=0.94, moving 8.5%, longest still 3.03 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+thumb-grid: pass (9/9 checks, strip r=0.799, moving 5.4%, longest still 3.97 s)
+window-card: FAIL (6/9 checks, strip r=0.705, moving 7.7%, longest still 4 s)
+    enter: rise px: expected 38, measured 42.9
+    enter: position frames (fit): expected 8, measured 10
+    after: frames after the reference: expected 4, measured 1
+frame-match: 15 pass, 13 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md

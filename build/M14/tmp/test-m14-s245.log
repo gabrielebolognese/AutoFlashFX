@@ -1,0 +1,76 @@
+
+== 2. the library on pc-motion.js: frame-match, the life checks, the energy of each component ==
+thumb-grid: pass (9/9 checks, strip r=0.984, moving 5.4%, longest still 3.97 s)
+window-card: pass (9/9 checks, strip r=0.956, moving 20.8%, longest still 3.1 s)
+frame-match: 26 pass, 2 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
+FAIL  frame-match passes every component (the style's numbers, the strips, the life checks) (expected exit 0, got 1)
+covered ok
+pass ['caption-line', 'table-card']
+never-static ok
+life-checked 28 of 28
+inertia ok measured on 20 components
+energy ok
+four-seconds ok
+main-animations ['caption-line', 'table-card']
+icon-3d ok
+PASS  every component in compositions/ was measured
+FAIL  every component passes (no match for '^pass ok' in /tmp/m14-fm2.txt)
+FAIL  every main animation still frame-matches its reference numbers (no match for '^main-animations ok' in /tmp/m14-fm2.txt)
+PASS  no visible element stands still for 0.5 s in any component rendered alone for 4 s
+PASS  the inertia after the landing lasts 2 to 4 s on every main element
+PASS  every component has its energy measured alone
+PASS  every component was measured for at least 4 s
+PASS  icon-3d passes frame-match
+PASS  the catalog agrees with the component files
+icon3d ok
+hold-prop ok
+canvas-props ok
+energy-in-catalog ['mascot', 'dark-chip', 'light-chip', 'caption-line', 'pop', 'check-badge', 'logo-tile', 'strike-through', 'headline', 'handwritten-callout', 'icon-3d', 'paper-canvas']
+count 28
+PASS  catalog.json lists icon-3d approved, kind 3d with a css fallback, allowed in the hook
+PASS  every element component declares the hold prop
+PASS  the canvas declares seed, duration, layers, edges and ambient
+FAIL  catalog.json carries every component's energy measures (no match for '^energy-in-catalog ok' in /tmp/m14-cat.txt)
+PASS  no composition keeps a tween or an onUpdate of its own (pc-motion.js holds the phases and the curves)
+PASS  every component loads pc-motion.js (28)
+PASS  pc-motion.js defines PCM.life
+PASS  pc-motion.js defines PCM.glide
+PASS  pc-motion.js defines PCM.canvas
+PASS  pc-motion.js defines PCM.idle
+PASS  pc-motion.js defines PCM.depth
+PASS  pc-motion.js defines PCM.exit
+PASS  pc-motion.js defines PCM.countUp
+PASS  pc-motion.js defines PCM.typeInto
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  the gallery page builds
+PASS  the gallery shows each component's energy measures
+PASS  the showreel's canvas host is driven by the runtime (no data-no-timeline)
+PASS  npx hyperframes check --json passes on motion-lib/
+
+== 4. the golden reel rendered again with the new library (same plan) ==
+project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (24 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png)
+hyperframes check: ok
+render: 111.8 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
+PASS  render-golden builds, checks, renders and probes clean with the new library
+PASS  the plan did not change (the same plan, the new library)
+PASS  npx hyperframes check passed on the golden project
+energy golden.mp4: 1244 frames, 41.47 s: moving share 27.0% (FAIL, at least 41%), middle band 29.4% (FAIL, at least 46%), pixels changing 1.42% (FAIL, at least 3.3%), still stretches 30.0% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
+before {'moving_share_pct': 13.0, 'middle_moving_share_pct': 12.0, 'pixels_changing_pct': 1.0, 'still_share_pct': 49.5, 'longest_still_s': 2.8}
+after {'moving_share_pct': 27.0, 'middle_moving_share_pct': 29.4, 'pixels_changing_pct': 1.42, 'still_share_pct': 30.0, 'longest_still_s': 2.43}
+every-measure ok
+doubled ok
+PASS  the re-rendered golden measures higher than before on every energy measure
+PASS  its moving share at least doubled
+PASS  golden/test-idea/energy.json written
+PASS  the contact sheet exists
+host ok
+pcm ok
+PASS  the golden project's canvas host is seeded, runs the reel's length and has a timeline
+PASS  the golden project carries pc-motion.js
+
+== 5. no em dash in the files M14 wrote ==
+PASS  no em dash in the M14 files
+
+test-m14.sh: 35 passed, 4 failed
+exit 1

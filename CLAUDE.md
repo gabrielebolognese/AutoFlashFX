@@ -110,8 +110,9 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
   `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
   `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` and `M13_SECTIONS="1 2 4" bash pipeline/tests/test-m13.sh`
-  (about 20 minutes) are the fake-only tests; `bash pipeline/tests/test-m14.sh` makes no model call, about 35 minutes:
-  frame-match on every component and the golden render).
+  (about 20 minutes) are the fake-only tests; `bash pipeline/tests/test-m14.sh` makes no model call, about 30 minutes:
+  frame-match on every component and the golden render; the tests never assert on the user's profile: test-m12 and
+  test-m13 use drafts of their own, pipeline/tests/fixtures/profile/, DECISIONS.md 305).
 - Every stage is real from M12 on: `bash run.sh` turns each idea into exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4).
   `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages; `REELS_DUMMY=13,14 bash run.sh --once`
   skips the final render and the caption. S13 writes runs/<id>/13-render/final.mp4, hook2.mp4, video.mp4 (the silent

@@ -1,0 +1,128 @@
+
+== 1. units: the sound pass, the detector, the review notes, the voice-only path, the code checks, the planted faults, the routing ==
+PASS  the run's project was rebuilt from the frozen plan (compositions in place)
+PASS  the hook 2 project was rebuilt too
+PASS  draft.mp4 present (frozen or rendered)
+    (S11 took 24 s)
+PASS  S11 runs on the frozen build
+PASS  S11: the summary line
+PASS  S11: the verification line
+PASS  activity "adding sound effects (N sounds)" was published
+PASS  activity "verifying sound sync and loudness" was published
+PASS  S11: cues.json validates against 11-sfx/schema.json
+PASS  S11: sfx_stem.wav written
+PASS  S11: mix.wav written
+PASS  S11: draft_mixed.mp4 written
+PASS  S11: sound-map.txt written
+    mandatory ok
+    transitions ok
+    spacing ok
+    density ok
+    first-word ok
+    attention ok
+    files-in-pool ok
+    rotation ok
+    sync ok
+    voice-rule ok
+    loudness ok
+    passes 2
+    sound-map ok
+    anchors ok
+    typing-trim ok
+    mixed-draft ok
+    hook2 ok
+    count 17
+PASS  S11: every mandatory cue of the events present (hook_hit, notification, success, negative, typing)
+PASS  S11: whooshes on the scene changes
+PASS  S11: never two sounds within 250 ms
+PASS  S11: at most 4 hits in any 10 s
+PASS  S11: nothing on the hook's first word but hook_hit
+PASS  S11: no attention whoosh in the first 2 s or during the ask
+PASS  S11: every file comes from its cue type's pool
+PASS  S11: never the same file twice in a row for a cue type (a series excepted)
+PASS  S11: every planned sound found within 33 ms of its event on the rendered stem, no unplanned sound
+PASS  S11: every sound at least 8 dB under the local voice peak
+PASS  S11: the mix at -14 LUFS plus or minus 1 and at most -1.5 dBTP
+PASS  S11: sound-map.txt has one line per cue
+PASS  S11: whooshes placed by their peak, the rest by their onset
+PASS  S11: typing beds trimmed to their segment
+PASS  S11: draft_mixed.mp4 carries AAC 48 kHz audio as long as the reel
+PASS  S11: the hook 2 clip has its own verified hook_hit
+PASS  S11: the hook 2 stem written
+PASS  S11: the hook 2 mix written
+PASS  S11 placed 10 to 25 sounds on the 41 s reel (17)
+PASS  logs/sfx-usage.json written
+PASS  the usage log names this run
+PASS  the usage log lists the files per cue type
+    base ok
+    shift ok
+    extra-detail quiet 5750 env [-120.0, -23.3, -23.8, -24.4, -24.9, -25.5, -26.0] spans near [('transition_fast', 6557.0, 7067), ('transition_slow', 3043.0, 5533)] unplanned [{'start_ms': 5750.0, 'end_ms': 6000.0, 'peak_dbfs': -23.3}]
+    extra ok
+PASS  detector: the rendered stem verifies
+PASS  detector: a sound 80 ms off its event is caught with the right error
+PASS  detector: an unplanned click in a silent stretch is caught
+PASS  S11 runs again with the review's [sfx] note
+PASS  the note changes the seed (another rotation)
+PASS  the note is applied: fewer and softer sounds
+PASS  the note is applied: the loudness complaint lowers every sound
+PASS  cues.json records the lowered density
+PASS  the second pass still verifies
+PASS  the second pass places no more sounds than the first (15 against 17)
+PASS  S11 with no sfx map exits 0 (the voice alone)
+PASS  the FLAG line names the missing map
+PASS  cues.json says voice only
+PASS  the voice-only cues.json validates
+PASS  the voice-only mixed draft exists
+PASS  S11 runs once more for the review checks
+    (mechanical took 213 s)
+PASS  the mechanical checks run on the clean draft
+FAIL  the mechanical checks pass on the clean draft (zone: text "Pick a scope" (light-chip s9-light-chip-2, scene s9, 3) (expected 'true', got 'false')
+PASS  the checker measured 200 or more text boxes at 40 or more times
+PASS  every emphasis hit landed within 80 ms of its word (25/25)
+PASS  branding: the CTA's lockup measured 300 px or wider on a light surface
+PASS  branding: the DM avatar measured 112 px or wider with its bolt at 64 px or more
+PASS  branding: no FlashFX logo outside the CTA (the solution is not FlashFX)
+PASS  the fonts seen are the style's five families only
+PASS  the style check runs
+PASS  the style check passes on the clean draft (cadence, palette 98.65 percent, accent max 2.92 percent, loudness)
+PASS  cadence: the hero zone's median gap sits in the reference range
+PASS  palette: 90 percent or more of the non-image pixels within delta E 5 of a token color
+PASS  tools/analyze_refs.py ran on the mixed draft
+PASS  the audio check runs (fake whisper)
+PASS  the audio check passes (the sound verification, WER 0.0 percent)
+PASS  the audio check reads S11's verification
+    (mechanical on the planted copy took 159 s)
+PASS  the mechanical checks run on the planted copy
+PASS  the planted copy fails
+    kinds: brand_clear_space:s4-card-1 brand_contrast:s3-window-card-1 brand_contrast:s4-card-1 brand_cta: brand_outside:s3-window-card-1 brand_outside:s4-card-1 brand_small:s11-end-card-1 brand_stretched:s11-end-card-1 brand_variant:s3-window-card-1 off_canvas:s6-dark-chip-2 right_rail:s3-window-card-1 right_rail:s6-dark-chip-2 zone:s6-dark-chip-2
+PASS  planted: a FlashFX logo in the body of a non-FlashFX reel is caught (brand_outside on s4-card-1)
+PASS  planted: a black lockup on ink is caught (brand_variant on the dark window card)
+PASS  planted: the black lockup on ink also fails the readable contrast (brand_contrast)
+PASS  planted: a stretched logo is caught (brand_stretched on the end card)
+PASS  planted: a lockup under 300 px is caught (brand_small on the end card)
+PASS  planted: a CTA without the DM avatar is caught (brand_cta)
+PASS  planted: a chip in the right rail of the lower half is caught (right_rail)
+FAIL  planted: a chip above the safe top is caught (zone)
+PASS  every planted issue carries a routing tag
+    pass ok
+    text ok
+    code-fail ok
+    voice-flag ok
+    voice-word ok
+    fable ok
+    cap ok
+    ad ok
+    notes ok
+PASS  routing: every check passed and every score 4 or more is a pass
+PASS  routing: a [text] issue reopens 09b-text, 09c, S10, S11 and S12 with the activity "fixing [text] issues (round 2, opus)"
+PASS  routing: a failing code check routes by its tag even when the editor's scores pass
+PASS  routing: a [voice] issue naming no word becomes a flag, not a loop
+PASS  routing: a [voice] issue naming a word in quotes reopens S8 and everything after it
+PASS  routing: after the opus rounds the fix goes to fable
+PASS  routing: the fifth failed round exports with the NEEDS REVIEW notes
+PASS  routing: branding that feels like an ad is an [animation] issue
+PASS  routing: the re-run pass gets its notes, a later pass a context note, an untouched pass nothing
+PASS  the 11-sfx dummy's cues.json validates against the M11 schema
+PASS  the 12-review dummy's review.json validates against the M11 schema
+
+== 2. S11 and S12 through the runner with the fake editor: a pass, then a planted [text] issue routed to 9b ==

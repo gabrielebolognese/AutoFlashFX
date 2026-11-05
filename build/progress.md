@@ -383,7 +383,9 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 - Test command: `bash pipeline/tests/test-m12.sh` (`M12_SECTIONS="1 2 3 5"` for the fake-only sections, about 20 minutes;
   section 4 is the real end to end run, 1 to 3 hours: `bash build/M12/run-s4.sh` starts it detached; `M12_FREEZE=1`
   copies its solution.json, render.json and 14-export outputs into the frozen fixtures); `bash pipeline/tests/run-all.sh`
-  now includes test-m12.
+  now includes test-m12. Since 2026-11-07 (M14) the three checks that asserted on the user's profile (section 1's proof
+  and prompt checks, section 3's empty-proof premise) use placeholder drafts of their own (DECISIONS.md 305): the user
+  filled library/profile that morning.
 - Notes: the problem-first solution (pipeline/lib/solution.py) runs through S1 (solution candidates), S2
   (02-expansion/solution.json with the keyword that follows the type), S3 (the honesty check H; a fail goes to S4,
   never a drop), S4 (decides again), S7 and S14 (the FlashFX rules), the SOLUTION block of Ncaptions.txt and the
@@ -416,7 +418,9 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
 - Test command: `bash pipeline/tests/test-m13.sh` (`M13_SECTIONS="1 2 4"` for the fake-only sections, about 20 minutes;
   section 3 runs three ideas with the real models, several hours: start `bash pipeline/tests/m13-run.sh real
   build/M13/real2` detached, then `M13_REAL_DIR=build/M13/real2 M13_SECTIONS=3 bash pipeline/tests/test-m13.sh`);
-  `bash pipeline/tests/run-all.sh` includes it.
+  `bash pipeline/tests/run-all.sh` includes it. Since 2026-11-07 (M14) the voice-profile block of section 1 starts from
+  the drafts as they were when it was written, pipeline/tests/fixtures/profile/ (DECISIONS.md 305): the user filled
+  library/profile that morning and seven of its checks edited placeholders that no longer existed.
 - Notes: the first real run (build/M13/real) had every idea blocked within 74 minutes (two S8 bugs, fixed, and an S7
   facts block by the spec's rule); the rerun of its first idea with the fixes exported (build/M13/rerun, 141 minutes);
   the second three-idea run (build/M13/real2) is the one section 3 passes on. Earlier milestones touched: M3 (a test
@@ -438,8 +442,12 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   failed in 27 minutes (section 1: 26, section 2: 29, section 3: 12, section 4: 9, section 5: 1; the run before the
   transients and room fixes passed its 71 checks); the partial runs
   before it (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame. After the touches to their code:
-  test-m9 section 1 27 passed (its sandbox re-proposes the six accepted tweaks lines), test-m10 fake sections 134 passed;
-  the full reruns of the fake-only tests of M9 to M13 are listed at the end of this section.
+  test-m9 80 passed (its sandbox re-proposes the six accepted tweaks lines); test-m10 fake sections 1 and 2, 134 passed;
+  test-m11 fake sections 1 to 3, 227 passed (its reruns found the caption position, the CTA's room, the review's
+  reading of the grammar's transients and the hold's room: DECISIONS.md 301 to 304); test-m12 fake sections 1, 2, 3 and
+  5, 180 passed once its test stopped reading the user's profile (DECISIONS.md 305); test-m13 fake sections 1, 2 and 4,
+  93 passed and 7 failed on the same profile drift, section 1 alone with the fixture drafts 66 passed, the whole fake
+  run again after the test fix M13_FINAL; the logs are in build/M14/earlier-tests/.
 - Test command: `bash pipeline/tests/test-m14.sh` (no model call, about 35 minutes: frame-match on every component and
   the golden render; `M14_SECTIONS="1 3"` the quick sections, about 3 minutes); `bash pipeline/tests/run-all.sh` includes it.
 - Notes: the meter is pipeline/lib/review/energy.py (`python pipeline/lib/review energy <video> [--plan merged.json]`,

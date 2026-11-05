@@ -94,8 +94,13 @@ em dash scan. The recorded full run: build/M14/test-m14.log (77 passed, 0 failed
   checks; the fixes added the safe-edge variables check, the 3 review checks and the 2 room checks.
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
-- Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the
-  last component touches and again after); the others are listed in build/progress.md with their counts.
+- Earlier milestones, run again after every change of M14 (the logs in build/M14/earlier-tests/): test-m9 80 passed
+  (18 minutes); test-m10 fake sections 1 and 2, 134 passed; test-m11 fake sections 1 to 3, 227 passed (54 minutes;
+  its reruns found decisions 301 to 304); test-m12 fake sections 1, 2, 3 and 5, 180 passed after its test got its
+  own profile drafts (177 passed and 3 failed on the user's filled profile before, decision 305); test-m13 fake
+  sections 1, 2 and 4, 93 passed and 7 failed on the same profile drift, then section 1 alone with the fixture
+  drafts 66 passed, and the whole fake run again after the test fix M13_FINAL; test-m14 section 3 after the last
+  review change, 12 passed.
 
 ## Found on the way
 
