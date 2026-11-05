@@ -70,18 +70,22 @@ REVIEW_JS = r"""
   // the grammar marks every element's main animation (data-pcm-main) and exit (data-pcm-exit) windows in local
   // seconds (pc-motion.js PCM.mark): an element inside one of them, or inside an ancestor's, is arriving or leaving
   const transientAt = (el, t) => {
-    let node = el;
+    // an exit wins over a main animation (a short-lived element may leave before its entrance window ends)
+    let node = el, main = false;
     while (node && node.id !== "stage" && node !== document.body) {
-      for (const name of ["data-pcm-main", "data-pcm-exit"]) {
+      for (const name of ["data-pcm-exit", "data-pcm-main"]) {
         const v = node.getAttribute(name);
         if (!v) continue;
         const parts = v.split(",");
         const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
-        if (isFinite(a) && isFinite(b) && t >= a - 1e-4 && t < b - 1e-4) return name === "data-pcm-main" ? "main" : "exit";
+        if (isFinite(a) && isFinite(b) && t >= a - 1e-4 && t < b - 1e-4) {
+          if (name === "data-pcm-exit") return "exit";
+          main = true;
+        }
       }
       node = node.parentElement;
     }
-    return "";
+    return main ? "main" : "";
   };
   const bgOf = (el) => {
     let node = el;

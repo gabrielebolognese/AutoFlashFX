@@ -201,11 +201,17 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
                 add(settled, f"{c['id']} landed")
             else:
                 # a life shorter than the main animation window: the element is judged once, at the last sample of its
-                # life that is not an exit (mechanical.py), so the samples sit as late as they can
-                if int(land) + 100 < last:
+                # life that is not an exit (mechanical.py), so the samples sit as late as they can: 50 ms before the
+                # exit (the compiled plan's exit_at, local seconds) or before the end
+                props = c.get("props") or {}
+                exit_at = props.get("exit_at")
+                leaves = last
+                if props.get("exit") not in (None, "", "none") and exit_at is not None and float(exit_at) >= 0:
+                    leaves = min(last, start + int(round(float(exit_at) * 1000)))
+                if int(land) + 100 < leaves:
                     add(int(land) + 100, f"{c['id']} landed")
-                if last - 50 > start + 100:
-                    add(last - 50, f"{c['id']} last")
+                if leaves - 50 > start + 100:
+                    add(leaves - 50, f"{c['id']} last")
     cta = ctx.cta_scene()
     if cta:
         add(int(cta["end_ms"]) - 300, "the CTA built")
