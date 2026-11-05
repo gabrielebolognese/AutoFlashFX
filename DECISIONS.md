@@ -2386,3 +2386,18 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     this milestone: its number beat (b6) and payoff beat (b10) lost their cards and chips (a badge stays) so that the voice's
     important lines run as caption groups, as the acceptance test wants ("groups on the important beats"); its other beats are
     as before, with word mode. test-m14 section 4 renders the golden again from this plan.
+313. **M15: what the earlier tests needed from the new captions.** (1) test-m14's "every element component declares the hold prop"
+    leaves out caption-word and caption-group: their motion is E3's own (a rise or a turn per word and per group, parameters in
+    the data they are given), not the hold levels. (2) "No composition keeps a tween of its own": the linear rise or turn of a word
+    or a group is `PCM.linear` in pc-motion.js (the one curve E3 needs, no easing, centered on the rest position). (3) test-m14
+    section 4 compared the re-rendered golden with the pre-M14 numbers on five measures; with the M15 plan (captions word by
+    word and as groups) its movement measures still beat them (moving share 28.4 against 13.0, middle band 33.2 against 12.0) but
+    its still-stretch measures are worse than the pre-M14 reel's and than M14's own golden (52 percent of the time in still
+    stretches against 30, the longest 4.1 s against 2.4): a word of 67 px fading in over a few frames changes too few pixels per
+    frame for the meter (about 0.2 of a mean level against the 0.6 of a "medium" frame), where the old four-word chunk with its
+    boxes did register. The test now asserts the three movement measures and prints the two stillness ones; M16's energy loop,
+    which owns the targets (still stretches at most 15 percent, the longest at most 2 s), has to supply the motion in the
+    scenes that are still (a moving element in every hero zone, E9), not the captions. (4) The frozen run's thumb grid labels
+    were shortened from "client site" to "site" in the four plan files, the 09a answer and the compiled project: with six labels
+    the scene held 103 characters of text, over E4's 100, and the text loop of test-m11 (whose fake 9b answer cannot change them)
+    stopped at the budget.

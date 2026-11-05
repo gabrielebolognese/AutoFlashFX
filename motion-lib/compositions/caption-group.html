@@ -52,13 +52,7 @@
         var mo = g.motion || { kind: "rise", px: 30 };
         var life = Math.max(F(3), outAt - start);
         PCM.prepare(block);
-        if (mo.kind === "turn") {
-          var dg = (typeof mo.deg === "number" ? mo.deg : 4) * (mo.dir || 1);
-          tl.fromTo(block, { rotationY: -dg / 2 }, { rotationY: dg / 2, duration: life, ease: "none", immediateRender: false }, start);
-        } else {
-          var px = typeof mo.px === "number" ? mo.px : 30;   // 0 is a plan that does not move: drawn as planned, the review refuses it
-          tl.fromTo(block, { y: px / 2 }, { y: -px / 2, duration: life, ease: "none", immediateRender: false }, start);
-        }
+        PCM.linear(tl, block, start, life, mo.kind === "turn" ? { kind: "turn", deg: (typeof mo.deg === "number" ? mo.deg : 4) * (mo.dir || 1) } : { kind: "rise", px: typeof mo.px === "number" ? mo.px : 30 });
         words.forEach(function (wd, wi) {
           var el = PC.el("div", "pc-gw f-" + (wd.font || "grotesk") + " c-" + (wd.color || "ink"), block, wd.w);
           el.id = "grp-" + gi + "-w" + wi;

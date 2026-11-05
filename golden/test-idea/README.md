@@ -4,7 +4,7 @@ The example reel the visual director (S9) reads: plan.json is the merged visual 
 
 - Duration: 41460 ms, 11 scenes, 18 component instances, 39 caption chunks
 - Solution: external (frontend-design, the Claude Code plugin); branding: the CTA scene s11 carries the DM card (brand/mark/avatar-dark.png) and the lockup (brand/lockup/lockup-gradient-on-light.png); brand slot: None
-- Render: not rendered in this run (--no-render)
+- Render: 1080x1920 at 30.0 fps, 41.47 s, audio aac 48000 Hz (the render time is in render.json)
 - HyperFrames check: ok, runtime warnings 1, contrast warnings 3, craft warnings 2
 
 ## Scenes

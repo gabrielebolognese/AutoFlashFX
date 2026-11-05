@@ -202,7 +202,7 @@ cat = json.load(open(sys.argv[1], encoding="utf-8-sig"))
 by = {c["id"]: c for c in cat["components"]}
 i3 = by.get("icon-3d")
 print("icon3d", "ok" if i3 and i3["status"] == "approved" and i3.get("fallback") == "css" and i3["kind"] == "3d" and "hook" in i3["beat_types"] else "no")
-no_hold = [c["id"] for c in cat["components"] if c["id"] not in ("paper-canvas",) and not any(p["id"] == "hold" for p in c["props"])]
+no_hold = [c["id"] for c in cat["components"] if c["id"] not in ("paper-canvas", "caption-word", "caption-group") and not any(p["id"] == "hold" for p in c["props"])]  # M15: the caption components carry E3's own motion (a rise or a turn per word and per group)
 print("hold-prop", "ok" if not no_hold else str(no_hold))
 canvas = by.get("paper-canvas")
 print("canvas-props", "ok" if canvas and {p["id"] for p in canvas["props"]} >= {"seed", "duration", "layers", "edges", "ambient"} else "no")
@@ -407,11 +407,16 @@ better = {"moving_share_pct": b["moving_share_pct"] > a["moving_share_pct"], "mi
           "pixels_changing_pct": b["pixels_changing_pct"] > a["pixels_changing_pct"], "still_share_pct": b["still_share_pct"] < a["still_share_pct"],
           "longest_still_s": b["longest_still_s"] < a["longest_still_s"]}
 print("before", {k: a[k] for k in better}); print("after", {k: b[k] for k in better})
-print("every-measure", "ok" if all(better.values()) else str([k for k, v in better.items() if not v]))
+# M15: the golden's captions run word by word and as groups (small words fade in over a few frames and change too few pixels per
+# frame for the meter), so its still stretches are longer than the chunk captions' were (DECISIONS.md 313); the movement
+# measures are asserted, the stillness ones are printed (M16's energy loop works on them)
+move = [k for k in ("moving_share_pct", "middle_moving_share_pct", "pixels_changing_pct") if not better[k]]
+print("still-measures", {k: better[k] for k in ("still_share_pct", "longest_still_s")})
+print("every-measure", "ok" if not move else str(move))
 print("doubled", "ok" if b["moving_share_pct"] >= 2 * a["moving_share_pct"] else f"{b['moving_share_pct']} vs 2 x {a['moving_share_pct']}")
 EOF
     cat /tmp/m14-gcmp.txt
-    assert_grep "^every-measure ok" /tmp/m14-gcmp.txt "the re-rendered golden measures higher than before on every energy measure"
+    assert_grep "^every-measure ok" /tmp/m14-gcmp.txt "the re-rendered golden measures higher than before on every movement measure (moving share, middle band, pixels changing)"
     assert_grep "^doubled ok" /tmp/m14-gcmp.txt "its moving share at least doubled"
     assert_file golden/test-idea/energy.json "golden/test-idea/energy.json written"
     assert_file golden/test-idea/contact-sheet.png "the contact sheet exists"

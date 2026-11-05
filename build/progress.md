@@ -462,3 +462,25 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   scale read in 3D, arriving and leaving elements left to the next sample; common.py: the landed sample after the
   combined animation). The hold fits the room to the safe edges (PCM.room, tokens.css --m-safe-*). DECISIONS.md 288
   to 304. Report: build/M14/report.md.
+
+## M15 Kinetic captions and text discipline
+- Status: done (2026-11-07), the final numbers in build/M15/report.md. The test has six sections: 1 kinetic.py (the "quick brown
+  fox" layout of spec E3, six long words, 300 generated word lists, group_runs, the motions, seven planted layout faults), 2 the plan
+  rules (the golden plan passes, ten planted plan faults, the 9b choice rule with a director's group refused over text and kept in a
+  free beat, the digest, S7's importance, the schemas), 3 the golden reel (word mode in normal talk, groups on the number and
+  payoff beats, every caption word and group moving on every frame in the browser harness, a planted static caption fails),
+  4 S12's mechanical checks on the compiled golden project and on planted copies (a group with a chip's text, 142 characters, a
+  static word, a static group), 5 the library (catalog, frame-match of caption-word and caption-group, hyperframes lint and check),
+  6 the em dash scan. No model call.
+- Test command: `bash pipeline/tests/test-m15.sh` (about 15 to 20 minutes; `M15_SECTIONS="1 2"` is the quick part, about 2
+  minutes); `bash pipeline/tests/run-all.sh` includes it.
+- Notes: the engine is pipeline/lib/visual/kinetic.py (`python pipeline/lib/visual kinetic "the quick brown fox" --anchor 0
+  --png out.png`); the components are motion-lib/compositions/caption-word.html and caption-group.html (caption-line is in
+  motion-lib/retired/); the plan's caption entries carry mode, importance, anchor, layout and motion; S7's beats carry importance;
+  the rules are plan_validate's caption_modes, text_budget and text_size and S12's caption_mode, caption_static, text_budget
+  (DECISIONS.md 306 to 312). The golden plan's number and payoff beats are text free so that they run as groups. The baked text
+  sizes of the library are warnings, not errors (DECISIONS.md 308). pipeline/tests/m15-mkrun.py builds the golden plan (or a
+  planted one) into a review-ready run folder; m15-frames.py seeks the caption hosts frame by frame. Earlier milestones touched:
+  M6 (script_checks.py, S7 schemas and prompts), M9 (tokens.py, catalog.py, expectations.py, golden.py, goldenplan.py, captions.py,
+  test-m9), M10 (plan9.py, plan_validate.py, common.py, the frozen run's plans and project), M11 (mechanical.py, review/common.py,
+  test-m11). Report: build/M15/report.md.

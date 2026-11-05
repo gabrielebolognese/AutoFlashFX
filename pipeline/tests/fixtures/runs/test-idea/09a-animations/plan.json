@@ -119,7 +119,7 @@
       "cols": 3,
       "gap": 18,
       "ratio": 1,
-      "items_json": "[{\"label\": \"client site\"}, {\"label\": \"client site\"}, {\"label\": \"client site\"}, {\"label\": \"client site\"}, {\"label\": \"client site\"}, {\"label\": \"client site\"}]",
+      "items_json": "[{\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}]",
       "card_frames": 4,
       "stagger_frames": 1,
       "row_gap_frames": 7,

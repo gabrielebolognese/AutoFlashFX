@@ -97,7 +97,7 @@ window.__pcEvents = [];
         var fit = (width > maxW && width > 0) ? Math.max(0.6, maxW / width) : 1;
         if (fit < 1) PC.event("caption_overflow", wd.t, { word: wi, width: width, scale: fit });
         var start = typeof wd.t === "number" ? wd.t : 0;
-        var end = typeof wd.end === "number" && wd.end > start + F(3) ? wd.end : start + 0.3;
+        var end = typeof wd.end === "number" && wd.end >= start + F(2) - 0.001 ? wd.end : start + 0.3;
         // a word that lives only a few frames fades in and out faster (never a half-visible word)
         var lifeF = Math.max(3, Math.round((end - start) * 30));
         var inF = Math.max(2, Math.min(v.word_frames, Math.round(lifeF * 0.5)));
