@@ -1108,10 +1108,10 @@
    "energy": {
     "moving_share_pct": 0.8,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.25,
+    "pixels_changing_pct": 0.29,
     "still_share_pct": 99.2,
     "longest_still_s": 3.13,
-    "mean_change": 0.077,
+    "mean_change": 0.104,
     "longest_still_run": 9,
     "static_windows": 0,
     "frames": 130,

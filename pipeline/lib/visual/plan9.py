@@ -38,6 +38,7 @@ def fmt_ms(ms: int) -> str:
 def timeline_md(inp: common.Inputs) -> str:
     tl = common.Timeline(inp.words)
     beats = {b["id"]: b for b in inp.script.get("beats", [])}
+    importance = importance_by_beat(inp)
     lines = [f"Voice: {tl.duration_ms} ms ({tl.duration_ms / 1000:.2f} s), {len(tl.words)} spoken words, {len(tl.order)} beats. Times are ms from the start of the reel."]
     if tl.breath:
         lines.append(f"The hook breath (silence after the hook beat, BUILD_SPEC.md S8): {tl.breath['start_ms']} to {tl.breath['end_ms']} ms. It is never a static frame: the hook's set piece lands inside it.")
@@ -50,7 +51,7 @@ def timeline_md(inp: common.Inputs) -> str:
         if sb.get("spoken") and sb.get("spoken") != sb.get("display"):
             lines.append(f"- spoken: {sb.get('spoken', '')}")
         lines.append(f"- card (the script's on-screen text, 6 words or fewer): {sb.get('card', '')}")
-        lines.append(f"- emphasis: {', '.join(sb.get('emphasis', [])) or 'none'}; facts: {', '.join(sb.get('facts', [])) or 'none'}")
+        lines.append(f"- emphasis: {', '.join(sb.get('emphasis', [])) or 'none'}; facts: {', '.join(sb.get('facts', [])) or 'none'}; importance: {importance.get(bid, 'normal')}")
         lines.append("- words (start ms): " + " ".join(f"{w['word']}({w['start_ms']})" for w in tl.beat_words(bid)))
         lines.append("")
     if inp.words_hook2:
@@ -542,17 +543,23 @@ def compose_text(answer: dict, inp: common.Inputs, plan_a: dict, toks: dict, cat
 
 # ------------------------------------------------------------------------------------------------ M15: caption modes (E3, E4)
 
-def importance_by_scene(inp: common.Inputs, plan_a: dict) -> dict:
-    """script.json's importance of each beat, by scene id (a script from before M15 has none: normal)."""
+def importance_by_beat(inp: common.Inputs) -> dict:
+    """script.json's importance of each beat, by beat id (a script from before M15 has none: the structure decides: the hook,
+    a number beat, a payoff beat, the line before the ask)."""
     beats = list((inp.script or {}).get("beats", []))
     derived: list[str] = []
     if any(not b.get("importance") for b in beats):
-        try:   # a script from before M15 has none: the structure decides (hook, number, payoff, the line before the ask)
+        try:
             import script_checks
             derived = script_checks.derive_importance(beats)
         except Exception:  # noqa: BLE001
             derived = []
-    imp = {b["id"]: (b.get("importance") or (derived[i] if i < len(derived) else "normal")) for i, b in enumerate(beats)}
+    return {b["id"]: (b.get("importance") or (derived[i] if i < len(derived) else "normal")) for i, b in enumerate(beats)}
+
+
+def importance_by_scene(inp: common.Inputs, plan_a: dict) -> dict:
+    """The importance of each scene's beat, by scene id."""
+    imp = importance_by_beat(inp)
     return {s["id"]: imp.get(s["beat"], "normal") for s in plan_a["scenes"]}
 
 
@@ -719,6 +726,12 @@ def finalize_captions(chunks: list[dict], inp: common.Inputs, plan_a: dict, base
         a["end_ms"] = int(b["start_ms"]) if gap <= 1500 else int(a["end_ms"]) + 600
     if out:
         out[-1]["end_ms"] = min(common_duration(inp), int(out[-1]["end_ms"]) + 400)
+    for e in out:
+        if e["mode"] == "group":   # a group never stays into the time another text arrives (the CTA's end card, a chip)
+            last_word = int(e["words"][-1]["end_ms"])
+            later = [a0 for (a0, _a1, _inst) in text_wins if int(e["words"][-1]["start_ms"]) < a0 < int(e["end_ms"])]
+            if later:
+                e["end_ms"] = max(last_word, min(later))
     for k, e in enumerate(out):
         if e["mode"] == "word":
             e["motion"] = kinetic.word_motion(k, toks)

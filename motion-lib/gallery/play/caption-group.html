@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"groups_json": "[{\"start\":0.2,\"end\":4.0,\"box\":{\"x\":60,\"y\":518.4,\"w\":559,\"h\":201},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":0.2,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518.4,\"bw\":323.4,\"bh\":201},{\"w\":\"quick\",\"t\":0.55,\"font\":\"serif-italic\",\"color\":\"accent-deep\",\"px\":100.5,\"x\":407.5,\"y\":518.4,\"bw\":211.1,\"bh\":100.5},{\"w\":\"brown\",\"t\":0.9,\"font\":\"handwritten\",\"color\":\"script\",\"px\":100.5,\"x\":407.5,\"y\":618.9,\"bw\":221.4,\"bh\":100.5},{\"w\":\"fox\",\"t\":1.25,\"font\":\"kicker\",\"color\":\"accent\",\"px\":84.4,\"x\":485.8,\"y\":727.5,\"bw\":143.1,\"bh\":84.4}]}]", "out_frames": 4};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* caption-group (Motion and energy rules E3, group mode; M15): the captions as the graphic. 2 to 6 spoken words fill the
+       hero zone as kinetic typography, each word on its spoken word time with the combined animation of E2 at word scale
+       (a rise, a zoom and a parallax rotation), in different fonts and sizes (the anchor 2 to 3 times the caption size,
+       the words beside it stacked to its height). The words stay until the group leaves; the group moves as one block, a
+       slow rise of 20 to 40 px over its life or a parallax turn of 3 to 6 degrees, and leaves together. Every word is
+       placed by pipeline/lib/visual/kinetic.py: this file only draws the layout it is given. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    .pc-grp { position: absolute; }
+    .pc-gw { position: absolute; white-space: nowrap; line-height: 1; }
+    .pc-gw.f-grotesk { font-family: "Inter Tight", sans-serif; font-weight: 800; letter-spacing: 0; }
+    .pc-gw.f-serif-italic { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+    .pc-gw.f-handwritten { font-family: "Caveat", cursive; font-weight: 500; }
+    .pc-gw.f-kicker { font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+    .pc-gw.c-ink { color: var(--c-ink); }
+    .pc-gw.c-accent-deep { color: var(--c-accent-deep); }
+    .pc-gw.c-script { color: var(--c-script); }
+    .pc-gw.c-accent { color: var(--c-accent); }
+  </style>
+  <div id="root" data-composition-id="caption-group" data-width="1080" data-height="1920">
+    <div id="grp-layer" class="pc-el" style="left: 0; top: 0; width: 1080px; height: 1920px;"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ groups_json: [], out_frames: 4 }, window.__hyperframes.getVariables());
+      var layer = document.getElementById("grp-layer");
+      var groups = Array.isArray(v.groups_json) ? v.groups_json : [];
+      var tl = gsap.timeline({ paused: true });
+      var F = PC.f;
+      groups.forEach(function (g, gi) {
+        var box = g.box || { x: 0, y: 0, w: 1080, h: 1920 };
+        var words = g.words || [];
+        var start = typeof g.start === "number" ? g.start : (words[0] ? words[0].t : 0);
+        var end = typeof g.end === "number" && g.end > start + F(6) ? g.end : start + 1;
+        var outAt = Math.max(end - F(v.out_frames), start + F(2));
+        var block = PC.el("div", "pc-grp", layer);
+        block.id = "grp-" + gi;
+        block.style.left = box.x + "px"; block.style.top = box.y + "px"; block.style.width = box.w + "px"; block.style.height = box.h + "px";
+        gsap.set(block, { opacity: 0 });
+        tl.set(block, { opacity: 1 }, start);
+        // the block moves as one while the group is on screen (E3: a rise of 20 to 40 px, or a parallax turn of 3 to 6
+        // degrees, over its life; linear, so the speed never reaches zero)
+        var mo = g.motion || { kind: "rise", px: 30 };
+        var life = Math.max(F(3), outAt - start);
+        PCM.prepare(block);
+        if (mo.kind === "turn") {
+          var dg = (mo.deg || 4) * (mo.dir || 1);
+          tl.fromTo(block, { rotationY: -dg / 2 }, { rotationY: dg / 2, duration: life, ease: "none", immediateRender: false }, start);
+        } else {
+          var px = mo.px || 30;
+          tl.fromTo(block, { y: px / 2 }, { y: -px / 2, duration: life, ease: "none", immediateRender: false }, start);
+        }
+        words.forEach(function (wd, wi) {
+          var el = PC.el("div", "pc-gw f-" + (wd.font || "grotesk") + " c-" + (wd.color || "ink"), block, wd.w);
+          el.id = "grp-" + gi + "-w" + wi;
+          el.style.left = (wd.x - box.x) + "px"; el.style.top = (wd.y - box.y) + "px";
+          el.style.fontSize = wd.px + "px";
+          el.style.height = (wd.bh || wd.px) + "px";
+          var at = Math.max(wd.t, start);
+          // the combined animation of E2 at word scale: opacity over 5 frames, a rise over 8 frames, a zoom from 0.85
+          // and a parallax rotation that settles last; the block's own motion carries the word afterwards
+          PCM.life(tl, el, { at: at, main: { kind: "rise", rise: Math.max(14, wd.px * 0.18), zoom: "in" }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 },
+                             until: Math.max(outAt, at + F(2)), room: false, events: { enter: "caption_word_enter", land: "caption_word_land" } });
+          PC.event("caption_word", at, { group: gi, word: wi, text: wd.w, em: !!wd.em, mode: "group", font: wd.font });
+        });
+        PCM.exit(tl, block, outAt, "fade-blur", { frames: v.out_frames, el: block.id });
+        tl.set(block, { opacity: 0, visibility: "hidden" }, end);
+        PC.event("caption_group", start, { group: gi, end: end, words: words.length });
+      });
+      window.__timelines["caption-group"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "caption-group", duration = 4.5;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

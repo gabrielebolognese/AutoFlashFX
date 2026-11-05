@@ -1,5 +1,5 @@
 {
- "run": "2026-11-07T19:40:58",
+ "run": "2026-11-07T20:14:17",
  "results": [
   {
    "id": "caption-group",
@@ -223,14 +223,14 @@
     "strips": [
      {
       "strip": "v03/extra/s30_capswap_008.0.png",
-      "r": 0.896,
+      "r": 0.95,
       "ref_onset": 16,
-      "cur_onset": 53,
+      "cur_onset": 65,
       "frames": 7
      },
      {
       "strip": "v01/extra/s30_sc18.png",
-      "r": 0.929,
+      "r": 0.939,
       "ref_onset": 2,
       "cur_onset": 87,
       "frames": 7
@@ -408,7 +408,7 @@
     },
     {
      "type": "fade",
-     "t": 3.7,
+     "t": 3.734,
      "el": "cap-w8"
     },
     {
@@ -442,10 +442,10 @@
    "energy": {
     "moving_share_pct": 0.8,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.25,
+    "pixels_changing_pct": 0.29,
     "still_share_pct": 99.2,
     "longest_still_s": 3.13,
-    "mean_change": 0.077,
+    "mean_change": 0.104,
     "longest_still_run": 9,
     "static_windows": 0,
     "frames": 130

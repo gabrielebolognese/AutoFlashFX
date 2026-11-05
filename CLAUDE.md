@@ -5,9 +5,8 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M14 Motion grammar and energy meter: done (2026-11-07). Next: M15 Kinetic captions and text discipline, M16
-  Director, components and the energy loop (BUILD_SPEC.md section 5, Motion and energy rules E3, E4, E8, E9), then
-  M17 Control check and M18 to M24: the channels plan (BUILD_SPEC.md section 14, explained in CHANNELS.md; the
+- M15 Kinetic captions and text discipline: done (2026-11-07). Next: M16 Director, components and the energy loop
+  (BUILD_SPEC.md section 5, Motion and energy rules E8, E9), then M17 Control check and M18 to M24: the channels plan (BUILD_SPEC.md section 14, explained in CHANNELS.md; the
   editable project is M21). The build is driven by `bash build-runner.sh` (`--until M16` stops after M16; a
   build/PAUSE file stops it between milestones); its log is build/build.log and its per-milestone reports are in
   build/M<n>/.
@@ -101,7 +100,21 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   the review reads the scale in 3D, does not judge an element while it arrives or leaves and samples "landed" after
   the combined animation: DECISIONS.md 303), the hold's room (PCM.room: the inertia and the drift fit the room from
   the element's rest box to the safe edges, `--m-safe-*` in tokens.css, over its life or room_life_s 8 s: near an
-  edge the element turns and creeps instead of drifting; DECISIONS.md 304). Run every
+  edge the element turns and creeps instead of drifting; DECISIONS.md 304), M15: the two caption modes of E3 as
+  components on pc-motion.js (motion-lib/compositions/caption-word.html: one word at a time on its spoken time, the
+  emphasis words in the serif italic at 1.4 times on the accent box, every word rising 8 to 16 px over its life;
+  caption-group.html: 2 to 6 words as kinetic typography in the hero zone, drawn from a layout it is given; caption-line is
+  retired into motion-lib/retired/), pipeline/lib/visual/kinetic.py (the deterministic group layout engine: roles, at least 3
+  fonts, the anchor at 2 to 3 times the caption size, the words beside it stacked to its height, asymmetry, the group caption
+  zone `motion.grammar.captions.group_zone`, the right rail, splitting what does not fit, avoiding graphics on screen;
+  `python pipeline/lib/visual kinetic "the quick brown fox" --anchor 0 --png out.png`), script.json's per-beat `importance`
+  (hook, key-claim, number, payoff, pre-ask, normal: script_checks.derive_importance), 9b's caption entries with `mode`
+  (word | group), `anchor`, `layout`, `motion` and `importance` and its choice rule (plan9.finalize_captions: word mode under
+  any text, groups where the hero zone holds no text; the digest lists each scene's importance, text and graphics), the plan
+  validator's rules `caption_modes`, `text_budget` (100 characters of non-caption text on screen) and `text_size` (a size the
+  plan chooses under the caption size is an error, a size the library bakes in a warning: DECISIONS.md 308), S12's
+  mechanical rules `caption_mode`, `caption_static`, `text_budget` and the baked-size warnings, the golden plan with groups on
+  its number and payoff beats, pipeline/tests/m15-mkrun.py and m15-frames.py (DECISIONS.md 306 to 312). Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4
@@ -111,7 +124,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
   `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` and `M13_SECTIONS="1 2 4" bash pipeline/tests/test-m13.sh`
   (about 20 minutes) are the fake-only tests; `bash pipeline/tests/test-m14.sh` makes no model call, about 30 minutes:
-  frame-match on every component and the golden render; the tests never assert on the user's profile: test-m12 and
+  frame-match on every component and the golden render; `bash pipeline/tests/test-m15.sh` makes no model call, about 15 minutes:
+  the layout engine, the plan rules with planted faults, the golden captions frame by frame, S12's checks on planted copies; the tests never assert on the user's profile: test-m12 and
   test-m13 use drafts of their own, pipeline/tests/fixtures/profile/, DECISIONS.md 305).
 - Every stage is real from M12 on: `bash run.sh` turns each idea into exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4).
   `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages; `REELS_DUMMY=13,14 bash run.sh --once`

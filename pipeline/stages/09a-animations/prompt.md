@@ -75,6 +75,11 @@ object described at the end.
   carries honesty "mock". Never invent a value, a quote or a screenshot.
 - Texts you write here (titles, chip texts, kicker, items) are first drafts for the text pass: short, 6 words or
   fewer, quoting the script's display line or card. The script's card text is the beat's natural title.
+- Graphics first, text last (Motion and energy rules E3 and E4): at most 100 characters of card, chip and code text on
+  screen at any moment, and no graphic text under the caption size, so a card that needs small text needs fewer
+  words. The captions run word by word under any text; where the voice says something that matters (the timeline
+  marks each beat's importance: hook, key-claim, number, payoff, pre-ask) or a beat has no graphic worth showing, leave
+  its hero zone free of text and the text pass turns the captions into a big kinetic group there.
 - Logos: image files only (brand/<path> from brand.json for FlashFX, research/<file> for a tool), never typed, drawn
   or tilted; write "@brand-slot" where the brand slot goes (the headline's kicker_mark, a logo-tile's image).
 - Do not set exit, exit_at or clip_start: the transitions pass and the builder own them.

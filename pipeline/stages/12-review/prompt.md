@@ -43,7 +43,8 @@ back for a fix):
   headline builds fast
 - hierarchy: hierarchy and legibility: one hero per scene, the captions readable, nothing crowded
 - look: does it match the look: would these stills sit on the same account as the reference stills (warm paper,
-  rounded warm-white cards with soft shadows, bare ink captions with orange emphasis boxes, the pixel mascot)
+  rounded warm-white cards with soft shadows, bare ink captions one word at a time with orange emphasis boxes, or big kinetic
+  caption groups in several fonts where the voice says something important, the pixel mascot)
 - variety: motion variety across the scenes (not the same card rising every time; the filmstrips show the moves)
 - sync: sync with the voice: each element lands on the word that names it (the scene table gives the spoken line,
   the components and when they arrive)

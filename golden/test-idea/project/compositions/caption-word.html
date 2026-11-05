@@ -19,7 +19,7 @@
        (E1). The emphasis words change font and size: the style's emphasis font (Instrument Serif italic) at 1.25 to 1.5
        times the caption size, on the style's accent box. */
     #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
-    .pc-cw { position: absolute; left: 0; width: 1080px; text-align: center; white-space: nowrap; line-height: 1; letter-spacing: -0.02em; }
+    .pc-cw { position: absolute; left: 0; width: 1080px; text-align: center; white-space: nowrap; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--c-ink); }
     .pc-cw .pc-caption-word { margin: 0; }
     .pc-cw .pc-caption-word.em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; letter-spacing: 0; padding: 0 22px; }
     .pc-cw .pc-caption-box { left: 0; right: 0; }
@@ -61,11 +61,15 @@
         if (fit < 1) PC.event("caption_overflow", wd.t, { word: wi, width: width, scale: fit });
         var start = typeof wd.t === "number" ? wd.t : 0;
         var end = typeof wd.end === "number" && wd.end > start + F(3) ? wd.end : start + 0.3;
-        var outAt = Math.max(end - F(v.out_frames), start + F(1));
+        // a word that lives only a few frames fades in and out faster (never a half-visible word)
+        var lifeF = Math.max(3, Math.round((end - start) * 30));
+        var inF = Math.max(2, Math.min(v.word_frames, Math.round(lifeF * 0.5)));
+        var outF = Math.max(1, Math.min(v.out_frames, Math.round(lifeF * 0.25)));
+        var outAt = Math.max(end - F(outF), start + F(inF));
         gsap.set(div, { opacity: 0 });
         gsap.set(span, { scale: fit, transformOrigin: "50% 50%" });
         // the combined main animation (a fade with a small zoom, E2) and nothing else: the word's own motion below
-        PCM.life(tl, div, { at: start, main: { kind: "fade", frames: v.word_frames, rise: 0, zoom: "small", mainFrames: v.main_frames, rotate: false }, hold: { kind: "none" },
+        PCM.life(tl, div, { at: start, main: { kind: "fade", frames: inF, rise: 0, zoom: "small", mainFrames: Math.max(inF, Math.min(v.main_frames, lifeF)), rotate: false }, hold: { kind: "none" },
                             inertia: { move: 0, scale: 0, rotate: 0 }, until: outAt, room: false, events: { enter: "caption_word_fade" } });
         // E3: every word rises 8 to 16 px over its life (or turns 2 to 4 degrees): a linear move, so its speed never reaches zero
         var life = Math.max(F(2), end - start);
@@ -76,7 +80,7 @@
           tl.fromTo(div, { y: rise / 2 }, { y: -rise / 2, duration: life, ease: "none", immediateRender: false }, start);
         }
         if (box) PCM.life(tl, box, { at: start, main: { kind: "fade", frames: v.box_frames, rise: v.box_rise, ease: "power1.out", zoom: false, rotate: false }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 }, until: start + F(1), room: false, events: { enter: "caption_box_fade" } });
-        PCM.exit(tl, div, outAt, "fade", { frames: v.out_frames, el: div.id });
+        PCM.exit(tl, div, outAt, "fade", { frames: outF, el: div.id });
         tl.set(div, { opacity: 0, visibility: "hidden" }, end);
         PC.event("caption_word", start, { word: wi, text: wd.w, em: em, mode: "word" });
       });

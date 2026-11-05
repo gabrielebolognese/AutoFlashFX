@@ -153,8 +153,11 @@ VISIBLE = 0.5
 
 
 def caption_motion_pairs(host: dict) -> list[tuple[float, float, str]]:
-    """Two sample times (seconds local to the caption host) inside each word's or group's life, far enough apart for a rising
-    or turning caption to have moved: [(t1, t2, label)]. A life shorter than 0.25 s is not sampled."""
+    """Two sample times (seconds local to the caption host) inside a word's or a group's life, after its main animation (the
+    zoom and the parallax rotation of E2 move it by design), far enough apart for a rising or turning caption to have moved:
+    [(t1, t2, label)]. A word is sampled when it lives 0.6 s or more (0.25 and 0.45 s in), a group when it lives 1.25 s or more
+    (0.8 and 1.1 s in): a shorter life cannot stand still for the 0.5 s of E1's rule, and the plan's validator already refuses a
+    motion of zero."""
     props = host.get("props") or {}
     out: list[tuple[float, float, str]] = []
     raw = props.get("words_json")
@@ -164,9 +167,8 @@ def caption_motion_pairs(host: dict) -> list[tuple[float, float, str]]:
             t, e = float(w["t"]), float(w.get("end", float(w["t"]) + 0.3))
         except (KeyError, TypeError, ValueError):
             continue
-        life = e - t
-        if life >= 0.25:
-            out.append((round(t + 0.35 * life, 4), round(t + 0.7 * life, 4), f"word {k}"))
+        if e - t >= 0.6:
+            out.append((round(t + 0.25, 4), round(t + 0.45, 4), f"word {k}"))
     raw = props.get("groups_json")
     groups = raw if isinstance(raw, list) else (json_loads(raw) if isinstance(raw, str) else [])
     for k, g in enumerate(groups or []):
@@ -174,9 +176,8 @@ def caption_motion_pairs(host: dict) -> list[tuple[float, float, str]]:
             t, e = float(g["start"]), float(g["end"])
         except (KeyError, TypeError, ValueError):
             continue
-        life = e - t
-        if life >= 0.5:
-            out.append((round(t + 0.4 * life, 4), round(t + 0.8 * life, 4), f"group {k}"))
+        if e - t >= 1.25:
+            out.append((round(t + 0.8, 4), round(t + 1.1, 4), f"group {k}"))
     return out
 
 
@@ -370,7 +371,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                         ta = {t["idx"]: t for t in ra["texts"] if t["opacity"] >= VISIBLE}
                         for t2 in rb["texts"]:
                             t1 = ta.get(t2["idx"])
-                            if t1 is None or t2["opacity"] < VISIBLE:
+                            if t1 is None or t2["opacity"] < VISIBLE or t1.get("transient") or t2.get("transient"):
                                 continue
                             moved = max(abs(t1["x"] - t2["x"]), abs(t1["y"] - t2["y"]), abs(t1["w"] - t2["w"]), abs(t1["h"] - t2["h"]))
                             if moved < min_move_px:
