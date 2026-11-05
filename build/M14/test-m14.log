@@ -30,6 +30,7 @@ PASS  motion.grammar.text_zones has the caption band, the hook header and the en
 PASS  tokens.css exposes the perspective
 PASS  tokens.css exposes the hold speeds
 PASS  tokens.css exposes the text zones
+PASS  tokens.css exposes the safe edges for the hold's room
 PASS  a sandbox build with an Energy line in tweaks.md
 PASS  the Energy line overrides the moving share target
 PASS  the Energy line overrides the longest still target
@@ -38,7 +39,7 @@ PASS  the sandbox tokens validate
 PASS  the sandbox tokens verify against the sources
 
 == 2. the library on pc-motion.js: frame-match, the life checks, the energy of each component ==
-thumb-grid: pass (9/9 checks, strip r=0.974, moving 6.2%, longest still 3.93 s)
+thumb-grid: pass (9/9 checks, strip r=0.966, moving 6.2%, longest still 3.93 s)
 window-card: pass (9/9 checks, strip r=0.965, moving 96.2%, longest still 0.03 s)
 frame-match: 28 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
 PASS  frame-match passes every component (the style's numbers, the strips, the life checks)
@@ -90,6 +91,13 @@ webgl-attr 1 drawn 0.1602
 webgl ok
 css-attr 0 layers 12 drawn 0.0785 longest unchanged run 0
 fallback ok
+review-rows {0.1: [('FlashFX', 0.851, 'main'), ('Comment T', 0.851, 'main')], 0.5: [('FlashFX', 0.999, 'main'), ('Instagram', 0.999, 'main'), ('now', 0.999, 'main'), ('Comment T', 0.999, 'main')], 1: [('FlashFX', 1.015, ''), ('Instagram', 1.015, ''), ('now', 1.015, ''), ('Comment T', 1.015, '')], 2: [('FlashFX', 1.039, ''), ('Instagram', 1.039, ''), ('now', 1.039, ''), ('Comment T', 1.039, '')], 2.6: [('FlashFX', 1.045, 'exit'), ('Instagram', 1.045, 'exit'), ('now', 1.045, 'exit'), ('Comment T', 1.045, 'exit')]}
+review-arriving ok
+review-settled ok
+review-leaving ok
+room-rows [1419.4, 1421.4, 1422.1] [12.0, 46.9]
+room-hold ok
+room-free ok
 counts [(7, 6, 16), (1234, 6, 16), (98765, 6, 16)]
 layers-present ok
 zones-clear ok
@@ -103,18 +111,23 @@ PASS  the edge and ambient layers stay out of every text zone over 40 s
 PASS  the layers hold no text
 PASS  every edge element sits 30 to 70 percent outside the frame (a few px of sway allowed)
 PASS  the edge layer moves at most 20 px per second, the ambient layer slower
+PASS  the review sees the DM card's texts arriving for the combined animation (data-pcm-main), the scale read in 3D (0.85 at the first frame)
+PASS  once landed the texts are judged, their scale at least 1 (the inertia grows): the 28 px labels read 28 px or more
+PASS  the review sees the texts leaving during the exit (data-pcm-exit)
+PASS  the hold fits the room: the DM card at the CTA's y keeps its message above the safe bottom for 8 s
+PASS  the same card with room below drifts on (20 px or more between 1 and 8 s)
 
 == 4. the golden reel rendered again with the new library (same plan) ==
 project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (24 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/02-plugin-page.png, research/03-skill-md.png)
 hyperframes check: ok
-render: 252.6 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+render: 176.8 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
 contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
 PASS  render-golden builds, checks, renders and probes clean with the new library
 PASS  the plan did not change (the same plan, the new library)
 PASS  npx hyperframes check passed on the golden project
-energy golden.mp4: 1244 frames, 41.47 s: moving share 28.2% (FAIL, at least 41%), middle band 29.8% (FAIL, at least 46%), pixels changing 1.6% (FAIL, at least 3.3%), still stretches 29.9% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
+energy golden.mp4: 1244 frames, 41.47 s: moving share 27.6% (FAIL, at least 41%), middle band 29.8% (FAIL, at least 46%), pixels changing 1.59% (FAIL, at least 3.3%), still stretches 30.0% (FAIL, at most 15%), longest still 2.43 s (FAIL, at most 2.0 s): FAIL
 before {'moving_share_pct': 13.0, 'middle_moving_share_pct': 12.0, 'pixels_changing_pct': 1.0, 'still_share_pct': 49.5, 'longest_still_s': 2.8}
-after {'moving_share_pct': 28.2, 'middle_moving_share_pct': 29.8, 'pixels_changing_pct': 1.6, 'still_share_pct': 29.9, 'longest_still_s': 2.43}
+after {'moving_share_pct': 27.6, 'middle_moving_share_pct': 29.8, 'pixels_changing_pct': 1.59, 'still_share_pct': 30.0, 'longest_still_s': 2.43}
 every-measure ok
 doubled ok
 PASS  the re-rendered golden measures higher than before on every energy measure
@@ -129,5 +142,4 @@ PASS  the golden project carries pc-motion.js
 == 5. no em dash in the files M14 wrote ==
 PASS  no em dash in the M14 files
 
-test-m14.sh: 71 passed, 0 failed
-exit 0
+test-m14.sh: 77 passed, 0 failed

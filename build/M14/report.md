@@ -40,8 +40,8 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
    pixels of a canvas); each component's energy measured alone (catalog.json `energy`, the gallery's energy line); the
    strip correlation finds the reference move anywhere in the move's frames; quarter-scale screenshots (12 minutes
    for the 28 components instead of over 30).
-7. **The golden reel rendered again from the same plan**: moving share 13.0 to 28.1 percent, middle band 12.0 to
-   29.8, pixels changing 1.0 to 1.6, still stretches 49.5 to 29.9 percent, longest still 2.8 to 2.43 s
+7. **The golden reel rendered again from the same plan**: moving share 13.0 to 27.6 percent, middle band 12.0 to
+   29.8, pixels changing 1.0 to 1.59, still stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s
    (golden/test-idea/energy.json against build/M14/golden-energy-before.json).
 
 ## Files
@@ -70,7 +70,7 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
 render; `M14_SECTIONS="1 3"` are the quick sections, about 3 minutes). Sections: 1 the meter, the calibration and the
 tokens; 2 the library (frame-match with the life checks, the catalog, no tween outside pc-motion.js, lint, check, the
 gallery); 3 icon-3d with WebGL and with its fallback, the canvas layers for three seeds; 4 the golden reel again; 5 the
-em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed, 37 minutes).
+em dash scan. The recorded full run: build/M14/test-m14.log (77 passed, 0 failed, 27 minutes).
 
 ## Test output, in short
 
@@ -87,10 +87,10 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   first frame), settled (scale 1 or more, the 28 px labels at 28 px or more) and leaving; the DM card at the CTA's y
   keeps its message above the safe bottom for 8 s while the same card at y 700 drifts on.
 - Section 4: the golden builds, checks and renders in about 2 to 3 minutes; every energy measure better than before, the moving
-  share doubled (13.0 to 28.1).
-- The full run: 71 passed, 0 failed (section 1: 25, section 2: 29, section 3: 7, section 4: 9, section 5: 1);
-  sections 1 and 3 run again after the transients and room fixes: 38 passed (the 32 before plus the safe-edge
-  variables check, the 3 review checks and the 2 room checks; build/M14/test-m14-s13.log).
+  share doubled (13.0 to 27.6).
+- The full run (build/M14/test-m14.log, after the transients and room fixes): 77 passed, 0 failed in 27 minutes
+  (section 1: 26, section 2: 29, section 3: 12, section 4: 9, section 5: 1). The run before those fixes passed its 71
+  checks; the fixes added the safe-edge variables check, the 3 review checks and the 2 room checks.
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
 - Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the

@@ -2217,10 +2217,11 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     and footprint, plan_validate.py and events.py know icon-3d; the frozen fixtures' index.html canvas hosts), M11
     (mechanical.py's clip_start for icon-3d), M1 (config: nothing). The frozen test projects rebuild from the plans
     with the new library, so M10 to M13's fake tests exercise it.
-299. **What the golden reel measures after the rewrite (the same plan, the new library):** moving share 13.0 to 28.1
-    percent (doubled, as the acceptance test asks), middle band 12.0 to 29.8, pixels changing 1.0 to 1.6, still
-    stretches 49.5 to 29.9 percent, longest still 2.8 to 2.43 s (build/M14/golden-energy-before.json against
-    golden/test-idea/energy.json); frozen frames fell from 25 to 4 percent. The gain came from three things in this
+299. **What the golden reel measures after the rewrite (the same plan, the new library):** moving share 13.0 to 27.6
+    percent (doubled, as the acceptance test asks; 28.1 before the hold learned to fit the room, decision 304), middle
+    band 12.0 to 29.8, pixels changing 1.0 to 1.59, still stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s
+    (build/M14/golden-energy-before.json against golden/test-idea/energy.json); frozen frames fell from 25 to 4
+    percent. The gain came from three things in this
     order: the window cards' screenshots scrolling inside their frames (30 px per second through the page's own height
     by object-position: the two window scenes went from 10 and 32 percent moving to over 80 and 60), the longer
     combined entrances (the zoom and parallax over 18 frames instead of a bare 8-frame rise) and the inertia's first

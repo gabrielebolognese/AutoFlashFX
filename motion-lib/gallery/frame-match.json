@@ -1,5 +1,5 @@
 {
- "run": "2026-11-07T13:46:12",
+ "run": "2026-11-07T15:04:58",
  "results": [
   {
    "id": "camera-move",
@@ -31,7 +31,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 0,
+     "measured": 1,
      "ok": true,
      "unit": "frames"
     }
@@ -39,22 +39,22 @@
    "correlation": {
     "best": {
      "strip": "v02/extra/s30_zoom27.png",
-     "r": 0.899,
+     "r": 0.94,
      "ref_onset": 6,
-     "cur_onset": 36,
+     "cur_onset": 37,
      "frames": 11
     },
     "strips": [
      {
       "strip": "v02/extra/s30_zoom27.png",
-      "r": 0.899,
+      "r": 0.94,
       "ref_onset": 6,
-      "cur_onset": 36,
+      "cur_onset": 37,
       "frames": 11
      },
      {
       "strip": "v05/extra/s30_windowshrink_f520.png",
-      "r": 0.872,
+      "r": 0.911,
       "ref_onset": 8,
       "cur_onset": 37,
       "frames": 11
@@ -80,12 +80,12 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 6.9,
-    "middle_moving_share_pct": 7.7,
-    "pixels_changing_pct": 1.93,
+    "middle_moving_share_pct": 6.9,
+    "pixels_changing_pct": 1.31,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.994,
-    "longest_still_run": 0,
+    "mean_change": 0.76,
+    "longest_still_run": 1,
     "static_windows": 0,
     "frames": 130
    }
@@ -134,7 +134,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 43,
+     "measured": 35,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -158,9 +158,9 @@
      },
      {
       "strip": "v01/extra/s30_sc18.png",
-      "r": 0.909,
-      "ref_onset": 0,
-      "cur_onset": 27,
+      "r": 0.931,
+      "ref_onset": 2,
+      "cur_onset": 71,
       "frames": 7
      },
      {
@@ -296,9 +296,9 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.036,
-    "longest_still_run": 43,
-    "static_windows": 32,
+    "mean_change": 0.038,
+    "longest_still_run": 35,
+    "static_windows": 20,
     "frames": 130
    }
   },
@@ -433,7 +433,7 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 12.3,
+    "middle_moving_share_pct": 13.8,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
@@ -561,7 +561,7 @@
      },
      {
       "strip": "v06/extra/s30_048.0_bars.png",
-      "r": 0.89,
+      "r": 0.892,
       "ref_onset": 11,
       "cur_onset": 13,
       "frames": 11
@@ -629,11 +629,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 12.3,
-    "middle_moving_share_pct": 16.9,
-    "pixels_changing_pct": 0.56,
+    "middle_moving_share_pct": 16.2,
+    "pixels_changing_pct": 0.55,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
-    "mean_change": 0.247,
+    "mean_change": 0.246,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -822,7 +822,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 51,
+     "measured": 87,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -896,8 +896,8 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.015,
-    "longest_still_run": 51,
-    "static_windows": 71,
+    "longest_still_run": 87,
+    "static_windows": 84,
     "frames": 130
    }
   },
@@ -938,7 +938,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 113,
+     "measured": 52,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -954,9 +954,9 @@
    "correlation": {
     "best": {
      "strip": "v07/extra/s30_004.4_caption_tag.png",
-     "r": 0.955,
-     "ref_onset": 5,
-     "cur_onset": 8,
+     "r": 0.967,
+     "ref_onset": 6,
+     "cur_onset": 4,
      "frames": 6
     },
     "strips": [
@@ -969,9 +969,9 @@
      },
      {
       "strip": "v07/extra/s30_004.4_caption_tag.png",
-      "r": 0.955,
-      "ref_onset": 5,
-      "cur_onset": 8,
+      "r": 0.967,
+      "ref_onset": 6,
+      "cur_onset": 4,
       "frames": 6
      }
     ]
@@ -997,9 +997,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
-    "longest_still_run": 113,
-    "static_windows": 98,
+    "mean_change": 0.024,
+    "longest_still_run": 52,
+    "static_windows": 62,
     "frames": 130
    }
   },
@@ -1222,7 +1222,7 @@
      },
      {
       "strip": "v07/extra/s30_041.0_end.png",
-      "r": 0.955,
+      "r": 0.944,
       "ref_onset": 4,
       "cur_onset": 29,
       "frames": 9
@@ -1321,7 +1321,7 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 13.1,
+    "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
     "pixels_changing_pct": 0.64,
     "still_share_pct": 69.2,
@@ -1472,7 +1472,7 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.1,
     "longest_still_s": 3.17,
-    "mean_change": 0.338,
+    "mean_change": 0.34,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -1593,7 +1593,7 @@
     "pixels_changing_pct": 1.11,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.472,
+    "mean_change": 0.474,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -1629,7 +1629,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 66,
+     "measured": 87,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -1673,9 +1673,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.017,
-    "longest_still_run": 66,
-    "static_windows": 56,
+    "mean_change": 0.016,
+    "longest_still_run": 87,
+    "static_windows": 72,
     "frames": 130
    }
   },
@@ -1884,7 +1884,7 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.044,
+    "mean_change": 0.043,
     "longest_still_run": 17,
     "static_windows": 3,
     "frames": 130
@@ -1928,7 +1928,7 @@
     {
      "check": "life: pixels never still (a canvas draws itself)",
      "expected": "< 15 frames",
-     "measured": 4,
+     "measured": 0,
      "ok": true,
      "unit": "frames"
     }
@@ -1970,7 +1970,7 @@
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
     "mean_change": 0.187,
-    "longest_still_run": 4,
+    "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
    }
@@ -2072,7 +2072,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 96,
+     "measured": 106,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -2119,9 +2119,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.011,
-    "longest_still_run": 96,
-    "static_windows": 81,
+    "mean_change": 0.01,
+    "longest_still_run": 106,
+    "static_windows": 91,
     "frames": 130
    }
   },
@@ -2221,7 +2221,7 @@
      },
      {
       "strip": "v02/extra/s30_hook.png",
-      "r": 0.883,
+      "r": 0.882,
       "ref_onset": 3,
       "cur_onset": 0,
       "frames": 17
@@ -2283,9 +2283,10 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 12,
+     "measured": 20,
      "ok": true,
-     "unit": "frames"
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
     },
     {
      "check": "life: inertia after the landing #ms-wrap",
@@ -2337,8 +2338,8 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.036,
-    "longest_still_run": 12,
-    "static_windows": 0,
+    "longest_still_run": 20,
+    "static_windows": 6,
     "frames": 130
    }
   },
@@ -2441,7 +2442,7 @@
     "pixels_changing_pct": 0.01,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.022,
+    "mean_change": 0.021,
     "longest_still_run": 4,
     "static_windows": 0,
     "frames": 130
@@ -2484,7 +2485,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 107,
+     "measured": 58,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -2500,29 +2501,29 @@
    "correlation": {
     "best": {
      "strip": "v03/extra/s30_cta_058.0.png",
-     "r": 0.976,
+     "r": 0.992,
      "ref_onset": 2,
-     "cur_onset": 21,
+     "cur_onset": 20,
      "frames": 17
     },
     "strips": [
      {
       "strip": "v08/extra/s30_003.8_logo_chain.png",
-      "r": 0.953,
-      "ref_onset": 9,
-      "cur_onset": 19,
+      "r": 0.927,
+      "ref_onset": 8,
+      "cur_onset": 15,
       "frames": 17
      },
      {
       "strip": "v03/extra/s30_cta_058.0.png",
-      "r": 0.976,
+      "r": 0.992,
       "ref_onset": 2,
-      "cur_onset": 21,
+      "cur_onset": 20,
       "frames": 17
      },
      {
       "strip": "v09/extra/s30_002.3_stickers.png",
-      "r": 0.672,
+      "r": 0.644,
       "ref_onset": 2,
       "cur_onset": 8,
       "frames": 17
@@ -2550,9 +2551,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.009,
-    "longest_still_run": 107,
-    "static_windows": 92,
+    "mean_change": 0.011,
+    "longest_still_run": 58,
+    "static_windows": 70,
     "frames": 130
    }
   },
@@ -2719,7 +2720,7 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.11,
+    "mean_change": 0.109,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -2851,7 +2852,7 @@
     "pixels_changing_pct": 0.29,
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
-    "mean_change": 0.127,
+    "mean_change": 0.126,
     "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130
@@ -2930,7 +2931,7 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_count_f925.png",
-     "r": 0.939,
+     "r": 0.937,
      "ref_onset": 2,
      "cur_onset": 41,
      "frames": 11
@@ -2938,21 +2939,21 @@
     "strips": [
      {
       "strip": "v08/extra/s30_007.8_countup.png",
-      "r": 0.908,
+      "r": 0.903,
       "ref_onset": 20,
       "cur_onset": 36,
       "frames": 11
      },
      {
       "strip": "v03/extra/s30_count_044.9.png",
-      "r": 0.931,
+      "r": 0.932,
       "ref_onset": 5,
       "cur_onset": 44,
       "frames": 11
      },
      {
       "strip": "v04/extra/s30_count_f925.png",
-      "r": 0.939,
+      "r": 0.937,
       "ref_onset": 2,
       "cur_onset": 41,
       "frames": 11
@@ -2990,7 +2991,7 @@
     "pixels_changing_pct": 0.32,
     "still_share_pct": 74.6,
     "longest_still_s": 3.23,
-    "mean_change": 0.203,
+    "mean_change": 0.206,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3180,7 +3181,7 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_scene_f184.png",
-     "r": 0.978,
+     "r": 0.979,
      "ref_onset": 3,
      "cur_onset": 10,
      "frames": 10
@@ -3188,7 +3189,7 @@
     "strips": [
      {
       "strip": "v04/extra/s30_scene_f184.png",
-      "r": 0.978,
+      "r": 0.979,
       "ref_onset": 3,
       "cur_onset": 10,
       "frames": 10
@@ -3227,7 +3228,7 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 13.1,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.51,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
@@ -3371,10 +3372,10 @@
    "energy": {
     "moving_share_pct": 10.0,
     "middle_moving_share_pct": 11.5,
-    "pixels_changing_pct": 0.75,
+    "pixels_changing_pct": 0.76,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.351,
+    "mean_change": 0.353,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3457,10 +3458,10 @@
    ],
    "correlation": {
     "best": {
-     "strip": "v04/extra/s30_deckgrid_f420.png",
-     "r": 0.974,
-     "ref_onset": 3,
-     "cur_onset": 26,
+     "strip": "v04/extra/s30_gridsettle_f444.png",
+     "r": 0.966,
+     "ref_onset": 1,
+     "cur_onset": 17,
      "frames": 7
     },
     "strips": [
@@ -3473,9 +3474,9 @@
      },
      {
       "strip": "v04/extra/s30_deckgrid_f420.png",
-      "r": 0.974,
+      "r": 0.959,
       "ref_onset": 3,
-      "cur_onset": 26,
+      "cur_onset": 13,
       "frames": 7
      },
      {
@@ -3569,7 +3570,7 @@
     "pixels_changing_pct": 0.24,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.159,
+    "mean_change": 0.158,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3664,8 +3665,8 @@
      {
       "strip": "v01/extra/s30_hook.png",
       "r": 0.958,
-      "ref_onset": 5,
-      "cur_onset": 22,
+      "ref_onset": 4,
+      "cur_onset": 6,
       "frames": 11
      },
      {
@@ -3710,7 +3711,7 @@
     "pixels_changing_pct": 2.74,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.825,
+    "mean_change": 0.824,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130

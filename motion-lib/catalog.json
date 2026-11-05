@@ -244,7 +244,7 @@
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 12.3,
+    "middle_moving_share_pct": 13.8,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
@@ -437,7 +437,7 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v04/extra/s30_count_f925.png",
-    "r": 0.939,
+    "r": 0.937,
     "run": "2026-11-07"
    },
    "energy": {
@@ -446,7 +446,7 @@
     "pixels_changing_pct": 0.32,
     "still_share_pct": 74.6,
     "longest_still_s": 3.23,
-    "mean_change": 0.203,
+    "mean_change": 0.206,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -601,7 +601,7 @@
     "run": "2026-11-07"
    },
    "energy": {
-    "moving_share_pct": 13.1,
+    "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
     "pixels_changing_pct": 0.64,
     "still_share_pct": 69.2,
@@ -752,8 +752,8 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.036,
-    "longest_still_run": 12,
-    "static_windows": 0,
+    "longest_still_run": 20,
+    "static_windows": 6,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -884,7 +884,7 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v07/extra/s30_004.4_caption_tag.png",
-    "r": 0.955,
+    "r": 0.967,
     "run": "2026-11-07"
    },
    "energy": {
@@ -893,9 +893,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
-    "longest_still_run": 113,
-    "static_windows": 98,
+    "mean_change": 0.024,
+    "longest_still_run": 52,
+    "static_windows": 62,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1016,9 +1016,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.011,
-    "longest_still_run": 96,
-    "static_windows": 81,
+    "mean_change": 0.01,
+    "longest_still_run": 106,
+    "static_windows": 91,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1121,9 +1121,9 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.036,
-    "longest_still_run": 43,
-    "static_windows": 32,
+    "mean_change": 0.038,
+    "longest_still_run": 35,
+    "static_windows": 20,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1263,7 +1263,7 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v03/extra/s30_cta_058.0.png",
-    "r": 0.976,
+    "r": 0.992,
     "run": "2026-11-07"
    },
    "energy": {
@@ -1272,9 +1272,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.009,
-    "longest_still_run": 107,
-    "static_windows": 92,
+    "mean_change": 0.011,
+    "longest_still_run": 58,
+    "static_windows": 70,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1435,8 +1435,8 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.015,
-    "longest_still_run": 51,
-    "static_windows": 71,
+    "longest_still_run": 87,
+    "static_windows": 84,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1638,7 +1638,7 @@
     "pixels_changing_pct": 2.74,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.825,
+    "mean_change": 0.824,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -1817,10 +1817,10 @@
    "energy": {
     "moving_share_pct": 10.0,
     "middle_moving_share_pct": 11.5,
-    "pixels_changing_pct": 0.75,
+    "pixels_changing_pct": 0.76,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.351,
+    "mean_change": 0.353,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2014,11 +2014,11 @@
    },
    "energy": {
     "moving_share_pct": 12.3,
-    "middle_moving_share_pct": 16.9,
-    "pixels_changing_pct": 0.56,
+    "middle_moving_share_pct": 16.2,
+    "pixels_changing_pct": 0.55,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
-    "mean_change": 0.247,
+    "mean_change": 0.246,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2167,8 +2167,8 @@
     "result": "pass",
     "checks_ok": 9,
     "checks": 9,
-    "best_strip": "v04/extra/s30_deckgrid_f420.png",
-    "r": 0.974,
+    "best_strip": "v04/extra/s30_gridsettle_f444.png",
+    "r": 0.966,
     "run": "2026-11-07"
    },
    "energy": {
@@ -2177,7 +2177,7 @@
     "pixels_changing_pct": 0.24,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.159,
+    "mean_change": 0.158,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2693,7 +2693,7 @@
     "pixels_changing_pct": 1.11,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.472,
+    "mean_change": 0.474,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3025,7 +3025,7 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.11,
+    "mean_change": 0.109,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3167,17 +3167,17 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v02/extra/s30_zoom27.png",
-    "r": 0.899,
+    "r": 0.94,
     "run": "2026-11-07"
    },
    "energy": {
     "moving_share_pct": 6.9,
-    "middle_moving_share_pct": 7.7,
-    "pixels_changing_pct": 1.93,
+    "middle_moving_share_pct": 6.9,
+    "pixels_changing_pct": 1.31,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.994,
-    "longest_still_run": 0,
+    "mean_change": 0.76,
+    "longest_still_run": 1,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
@@ -3321,7 +3321,7 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.044,
+    "mean_change": 0.043,
     "longest_still_run": 17,
     "static_windows": 3,
     "frames": 130,
@@ -3479,7 +3479,7 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.1,
     "longest_still_s": 3.17,
-    "mean_change": 0.338,
+    "mean_change": 0.34,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3620,9 +3620,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.017,
-    "longest_still_run": 66,
-    "static_windows": 56,
+    "mean_change": 0.016,
+    "longest_still_run": 87,
+    "static_windows": 72,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -3787,7 +3787,7 @@
     "pixels_changing_pct": 0.29,
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
-    "mean_change": 0.127,
+    "mean_change": 0.126,
     "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130,
@@ -3940,12 +3940,12 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v04/extra/s30_scene_f184.png",
-    "r": 0.978,
+    "r": 0.979,
     "run": "2026-11-07"
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 13.1,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.51,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
@@ -4265,7 +4265,7 @@
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
     "mean_change": 0.187,
-    "longest_still_run": 4,
+    "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
@@ -4544,7 +4544,7 @@
     "pixels_changing_pct": 0.01,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.022,
+    "mean_change": 0.021,
     "longest_still_run": 4,
     "static_windows": 0,
     "frames": 130,
