@@ -2,11 +2,13 @@
 # build-runner.sh: builds the reels autopilot (BUILD_SPEC.md) milestone by milestone, unattended.
 #
 # Each milestone is a fresh Claude Code session:
-#   build batch -> review 1 -> (if rejected) fix batch -> review 2 -> (if rejected) fix batch -> next milestone.
-# At most 2 lenient reviews per milestone: after the second one the build moves on whatever the verdict, and
-# anything left open is written to build/open-issues.md for the later batches.
-# Coding (build and fix batches) runs on Fable. When Fable hits a usage limit, coding switches to Opus by itself
-# until Fable's limit resets. The runner stops only when Claude Code itself cannot run, or a batch says it needs you.
+#   build batch (Sonnet) -> review 1 (Sonnet) -> fix (Sonnet) -> review 2 (Sonnet) -> fix (Sonnet)
+#   -> review 3 (Opus) -> fix (Opus) -> review 4 (Opus) -> fix (Opus) -> next milestone.
+# Every step after a rejection runs only when the review rejected; an approval moves on at once.
+# The Opus reviews tag each required fix [blocking] or [minor]: when an Opus review finds only minor ones, the build
+# moves on without a fix (the goal is to build first; fine tuning comes after). After review 4 the build moves on
+# whatever the verdict. Anything left open is written to build/open-issues.md for the fine-tuning pass.
+# Fable is used only when BUILD_MODEL or FIX_MODEL says fable. The runner stops only when Claude Code itself cannot run.
 #
 # Usage (Git Bash, from the instagramReels folder):
 #   bash build-runner.sh                 start, or resume where it stopped
@@ -26,14 +28,17 @@ set -u
 
 # ---------------------------------------------------------------- settings
 SPEC="BUILD_SPEC.md"
-BUILD_MODEL="${BUILD_MODEL:-fable}";            BUILD_EFFORT="${BUILD_EFFORT:-max}"
-FIX_MODEL="${FIX_MODEL:-fable}";                FIX_EFFORT="${FIX_EFFORT:-max}"
-REVIEW_MODEL="${REVIEW_MODEL:-opus}";           REVIEW_EFFORT="${REVIEW_EFFORT:-medium}"
+BUILD_MODEL="${BUILD_MODEL:-claude-sonnet-5-5}"; BUILD_EFFORT="${BUILD_EFFORT:-high}"
+FIX_MODEL="${FIX_MODEL:-claude-sonnet-5-5}";     FIX_EFFORT="${FIX_EFFORT:-high}"       # fixes after the first reviews
+REVIEW_MODEL="${REVIEW_MODEL:-claude-sonnet-5-5}"; REVIEW_EFFORT="${REVIEW_EFFORT:-medium}"
+FIRST_REVIEWS="${FIRST_REVIEWS:-2}"             # reviews on REVIEW_MODEL; the later ones escalate
+ESC_REVIEW_MODEL="${ESC_REVIEW_MODEL:-opus}";   ESC_REVIEW_EFFORT="${ESC_REVIEW_EFFORT:-high}"
+ESC_FIX_MODEL="${ESC_FIX_MODEL:-opus}";         ESC_FIX_EFFORT="${ESC_FIX_EFFORT:-xhigh}"  # fixes after an escalated review
 LIMIT_MODEL="${LIMIT_MODEL:-opus}";             LIMIT_EFFORT="${LIMIT_EFFORT:-high}"   # coding while Fable is at its limit
 FALLBACK="${FALLBACK:-1}"                       # 1: Fable batches pass --fallback-model $LIMIT_MODEL, so Claude Code
                                                 #    itself switches to Opus inside the session when Fable is unavailable
 PROBE_MODEL="${PROBE_MODEL:-haiku}"
-MAX_REVIEWS="${MAX_REVIEWS:-2}"                 # reviews per milestone; after the last one the build moves on
+MAX_REVIEWS="${MAX_REVIEWS:-4}"                 # reviews per milestone; after the last one the build moves on
 FINAL_FIX="${FINAL_FIX:-1}"                     # 1: a fix batch after the last rejected review, 0: move on at once
 STATUS_EVERY="${STATUS_EVERY:-120}"             # status line every 2 minutes
 ACTIVITY="${ACTIVITY:-full}"                    # live feed while Claude works: full, tools or off
@@ -45,13 +50,15 @@ CLAUDE_BIN="${CLAUDE_BIN:-claude}"
 read -r -a PERM_FLAGS <<< "${PERM_FLAGS:---permission-mode auto --permission-prompts none}"
 SLEEP_SCALE="${SLEEP_SCALE:-1}"                 # tests only: 0.001 makes every wait near instant
 
-MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17)
+MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24)
 MS_TITLES=("Plan" "Skeleton" "Runner core and terminal output" "Error system"
            "Research, expansion, gate, angle" "Profile and hooks" "Script" "Voiceover"
            "Sound effects memory map" "Motion library" "Visual stages"
            "Sound effects pass and review loop" "Final render, caption, export, end to end" "Hardening"
            "Motion grammar and energy meter" "Kinetic captions and text discipline"
-           "Director, components and the energy loop" "Editable project export")
+           "Director, components and the energy loop"
+           "Control check" "Channels" "Exports and channels side by side" "Formats and the timeline"
+           "Editable project export" "Life of Gabry: the story" "Life of Gabry: the look" "Life of Gabry: end to end")
 
 BUILD_DIR="build"; STATE="$BUILD_DIR/state.env"; STATUS_FILE="$BUILD_DIR/.status"
 LOG="$BUILD_DIR/build.log"; STATUS_TXT="$BUILD_DIR/status.txt"; TODO="$BUILD_DIR/HUMAN_TODO.md"
@@ -459,6 +466,16 @@ coding_model() {  # coding_model MODEL EFFORT -> prints "model effort": Opus sta
   if [ "$1" = "fable" ] && fable_limited; then echo "$LIMIT_MODEL $LIMIT_EFFORT"; else echo "$1 $2"; fi
 }
 
+escalated() {  # escalated N: true when review N (1-based, counted since the last start) runs on the escalation model
+  [ "$1" -gt "$FIRST_REVIEWS" ]
+}
+review_model() {  # "model effort" of the next review
+  if escalated $((REV_DONE + 1)); then echo "$ESC_REVIEW_MODEL $ESC_REVIEW_EFFORT"; else echo "$REVIEW_MODEL $REVIEW_EFFORT"; fi
+}
+fix_model() {  # "model effort" of the fix for the review just done: escalated when that review was
+  if escalated "$REV_DONE"; then echo "$ESC_FIX_MODEL $ESC_FIX_EFFORT"; else echo "$FIX_MODEL $FIX_EFFORT"; fi
+}
+
 # switch_from_fable EPOCH_OR_EMPTY [inside]: Fable hit its limit; remember until when, so coding uses Opus meanwhile.
 # "inside": Claude Code already moved the running session to Opus (--fallback-model); only the next batches change.
 switch_from_fable() {
@@ -632,13 +649,20 @@ EOF
 }
 
 prompt_review() {
-  local id="$1" title="$2" n="$3" sha="$4"
+  local id="$1" title="$2" n="$3" sha="$4" esc=""
+  if escalated $((REV_DONE + 1)); then
+    esc="
+This is an escalated review: the earlier reviews of this milestone ran on a smaller model and rejected it at least
+once, and the fixes were made by a smaller model too. Read those reviews and fix notes, and check that every
+required fix really landed and works. If you find only [minor] problems, the build moves on without fixing them."
+  fi
   cat <<EOF
 You are the reviewer for milestone $id ($title) of the build described in $SPEC. This is review $n of at most
 $MAX_REVIEWS. You did not write this code. Fresh session.
-
+$esc
 This is a lenient, quick review. After the last review the build moves on to the next milestone whatever you decide,
-so the goal is to catch what would really hurt, not to polish. Speed matters: the whole build is waiting on you.
+so the goal is to catch what would really hurt, not to polish. The goal of the whole build is to build every
+milestone first; fine tuning and error handling come after. Speed matters: the whole build is waiting on you.
 
 $(common_rules "$id")
 
@@ -657,13 +681,20 @@ Everything else (style, naming, extra edge cases, documentation, small spec gaps
 tests you would like to add) goes under suggestions and never causes a rejection. List at most 3 required fixes, the
 most important ones. When in doubt, approve.
 
-Do not edit code. Write build/$id/review-$n.md with: the verdict; "Required fixes" as a numbered list (each with
-file, problem, how to verify); then suggestions.
+Tag every required fix with one of:
+- [blocking]: the next milestones would be built on something broken: the acceptance test fails for a real reason,
+  a crash, lost data, an earlier feature that no longer works, or something a later milestone needs is missing.
+- [minor]: a real defect, but the next milestones can be built on top of it and it can wait for the fine-tuning pass
+  after the build (for example one failing edge case, a check that is too strict, a wrong number in a report).
+
+Do not edit code. Write build/$id/review-$n.md with: the verdict; "Required fixes" as a numbered list (each with its
+tag, file, problem, how to verify); then suggestions.
 For M0, review PLAN.md against the spec instead of code.
 
-End your final message with exactly one of these lines:
+End your final message with exactly one of these lines (the second number counts the [blocking] fixes, 0 when every
+required fix is [minor]):
 REVIEW_VERDICT: APPROVED
-REVIEW_VERDICT: REJECTED <number of required fixes>
+REVIEW_VERDICT: REJECTED <number of required fixes> BLOCKING <number of them tagged [blocking]>
 EOF
 }
 
@@ -770,6 +801,7 @@ finish_milestone() {  # finish_milestone approved|moved: commit build/ and print
 
 run_milestone() {
   local id="${MS_IDS[$MS_INDEX]}" title="${MS_TITLES[$MS_INDEX]}" res verdict count model effort
+  local fmodel feffort rmodel reffort blocking
   mkdir -p "$BUILD_DIR/$id"
 
   if [ "$PHASE" = "build" ]; then
@@ -789,10 +821,11 @@ run_milestone() {
 
   while true; do
     if [ "$PHASE" = "fix" ]; then
-      read -r model effort <<< "$(coding_model "$FIX_MODEL" "$FIX_EFFORT")"
-      say FIX "$id applying review $REVIEW_N fixes ($LAST_REJECT_COUNT required, $model)"
+      read -r fmodel feffort <<< "$(fix_model)"
+      read -r model effort <<< "$(coding_model "$fmodel" "$feffort")"
+      say FIX "$id applying review $REVIEW_N fixes ($LAST_REJECT_COUNT required, $model, $effort effort)"
       set_phase "fixing" "review $REVIEW_N fixes, $model"
-      marked_batch fix "$FIX_MODEL" "$FIX_EFFORT" "$(prompt_fix "$id" "$title" "$REVIEW_N")"
+      marked_batch fix "$fmodel" "$feffort" "$(prompt_fix "$id" "$title" "$REVIEW_N")"
       res=$(result_line "$BATCH_TXT" FIX_RESULT)
       case "$res" in
         *BLOCKED*) stop_build "fixer says it needs you: ${res#*BLOCKED}" ;;
@@ -810,10 +843,12 @@ run_milestone() {
 
     # a review interrupted by a kill or crash is redone under the same number
     if [ "$INTERRUPTED" != "1" ]; then REVIEW_N=$((REVIEW_N + 1)); fi
-    say REVIEW "$id review $REVIEW_N ($REVIEW_MODEL, $((REV_DONE + 1))/$MAX_REVIEWS, lenient)"
-    set_phase "reviewing" "review $REVIEW_N, $REVIEW_MODEL, $((REV_DONE + 1))/$MAX_REVIEWS"
+    read -r rmodel reffort <<< "$(review_model)"
+    local rkind="lenient"; escalated $((REV_DONE + 1)) && rkind="escalated, lenient"
+    say REVIEW "$id review $REVIEW_N ($rmodel, $reffort effort, $((REV_DONE + 1))/$MAX_REVIEWS, $rkind)"
+    set_phase "reviewing" "review $REVIEW_N, $rmodel, $((REV_DONE + 1))/$MAX_REVIEWS"
     save_state
-    marked_batch review "$REVIEW_MODEL" "$REVIEW_EFFORT" "$(prompt_review "$id" "$title" "$REVIEW_N" "$MS_START_SHA")"
+    marked_batch review "$rmodel" "$reffort" "$(prompt_review "$id" "$title" "$REVIEW_N" "$MS_START_SHA")"
     verdict=$(result_line "$BATCH_TXT" REVIEW_VERDICT)
 
     if [[ "$verdict" == *APPROVED* ]]; then
@@ -822,10 +857,18 @@ run_milestone() {
     fi
 
     count=$(printf '%s' "$verdict" | grep -oE '[0-9]+' | head -1); count=${count:-1}
+    blocking=$(printf '%s' "$verdict" | grep -oE 'BLOCKING[^0-9]*[0-9]+' | grep -oE '[0-9]+' | head -1)
+    blocking=${blocking:-$count}   # no BLOCKING count: every required fix counts as blocking
     [ -z "$verdict" ] && say WARN "$id review ended without a verdict line, counted as rejected"
     LAST_REJECT_COUNT=$count; ISSUES_FOUND=$((ISSUES_FOUND + count))
-    say REJECT "$id review $REVIEW_N: $count required fix(es), see $BUILD_DIR/$id/review-$REVIEW_N.md"
+    say REJECT "$id review $REVIEW_N: $count required fix(es), $blocking blocking, see $BUILD_DIR/$id/review-$REVIEW_N.md"
     REV_DONE=$((REV_DONE + 1))
+    if escalated "$REV_DONE" && [ "$blocking" = "0" ]; then
+      say NOTE "$id the escalated review found only minor problems: moving on without fixing them (see $BUILD_DIR/open-issues.md)"
+      note_open_issues "minor only, left for the fine-tuning pass"
+      finish_milestone moved
+      return 0
+    fi
     if [ "$REV_DONE" -ge "$MAX_REVIEWS" ]; then
       if [ "$FINAL_FIX" != "1" ]; then
         note_open_issues "left open"
@@ -963,13 +1006,13 @@ load_state
 if [ -n "$UNTIL" ]; then
   uidx=-1
   for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$UNTIL" ] && uidx=$i; done
-  [ "$uidx" -lt 0 ] && { echo "unknown milestone: $UNTIL (use M0 to M17)"; exit 2; }
+  [ "$uidx" -lt 0 ] && { echo "unknown milestone: $UNTIL (use M0 to M24)"; exit 2; }
 fi
 
 if [ -n "$FROM" ]; then
   idx=-1
   for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$FROM" ] && idx=$i; done
-  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use M0 to M17)"; exit 2; }
+  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use M0 to M24)"; exit 2; }
   MS_INDEX=$idx; STOPPED=0; start_milestone
   say START "restarting from $FROM ${MS_TITLES[$MS_INDEX]}, as you asked"
 elif [ ! -f "$STATE" ]; then
@@ -995,9 +1038,14 @@ fi
 [ "$TOTAL_START" = "0" ] && TOTAL_START=$(now_epoch)
 
 check_claude
-say START "build runner: ${#MS_IDS[@]} batches (M0 to M17), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
-say START "coding: $BUILD_MODEL ($BUILD_EFFORT), $LIMIT_MODEL ($LIMIT_EFFORT) while $BUILD_MODEL is at its limit. Reviews: $REVIEW_MODEL ($REVIEW_EFFORT), lenient, at most $MAX_REVIEWS per milestone, then it moves on. Log: $LOG"
-[ "$FALLBACK" = "1" ] && say START "fable batches run with --fallback-model $LIMIT_MODEL: when fable runs out mid-batch, Claude Code carries on with $LIMIT_MODEL in the same session"
+say START "build runner: ${#MS_IDS[@]} batches (M0 to M24), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
+if [ "$BUILD_MODEL" = "fable" ] || [ "$FIX_MODEL" = "fable" ]; then
+  say START "coding: builds $BUILD_MODEL ($BUILD_EFFORT), fixes $FIX_MODEL ($FIX_EFFORT), $LIMIT_MODEL ($LIMIT_EFFORT) while fable is at its limit. Reviews: $REVIEW_MODEL ($REVIEW_EFFORT), lenient, at most $MAX_REVIEWS per milestone, then it moves on. Log: $LOG"
+  [ "$FALLBACK" = "1" ] && say START "fable batches run with --fallback-model $LIMIT_MODEL: when fable runs out mid-batch, Claude Code carries on with $LIMIT_MODEL in the same session"
+else
+  say START "coding: builds $BUILD_MODEL ($BUILD_EFFORT effort); reviews 1 to $FIRST_REVIEWS on $REVIEW_MODEL ($REVIEW_EFFORT effort) with fixes on $FIX_MODEL ($FIX_EFFORT effort); fable is not used. Log: $LOG"
+  say START "escalation: reviews $((FIRST_REVIEWS + 1)) to $MAX_REVIEWS on $ESC_REVIEW_MODEL ($ESC_REVIEW_EFFORT effort) with fixes on $ESC_FIX_MODEL ($ESC_FIX_EFFORT effort); an escalated review with only minor problems moves on without a fix; after review $MAX_REVIEWS it moves on whatever the verdict"
+fi
 fable_limited && say NOTE "fable is still at its usage limit until $(date -d "@$(( FABLE_UNTIL - VOFF ))" '+%a %H:%M' 2>/dev/null): coding on $LIMIT_MODEL until then"
 start_ticker
 
@@ -1015,6 +1063,14 @@ while [ "$MS_INDEX" -lt "${#MS_IDS[@]}" ]; do
       exit 0
     fi
     say NEXT "${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]}"
+    if [ -f "$BUILD_DIR/PAUSE" ]; then
+      pause_at=$(tr -d ' \r\n' < "$BUILD_DIR/PAUSE")
+      if [ -z "$pause_at" ] || [ "$pause_at" = "${MS_IDS[$MS_INDEX]}" ]; then
+        stop_ticker; save_state
+        say STOP "paused before ${MS_IDS[$MS_INDEX]}: $BUILD_DIR/PAUSE exists. Delete it, then run: bash build-runner.sh"
+        exit 0
+      fi
+    fi
   fi
 done
 
