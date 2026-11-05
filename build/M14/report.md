@@ -61,9 +61,9 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
   300, CLAUDE.md, build/progress.md, build/HUMAN_TODO.md.
 - Earlier milestones touched (M14 depends on them): M9 (the test's sandbox, harness, golden.py, gallery.py,
   catalog.py), M10 (project.py, visual/common.py, plan_validate.py, plan9.py, events.py, the frozen index.html),
-  M11 (mechanical.py: the 3D scale, the transients, the short-lived elements; common.py's sample times), M12 (its
-  test only: three checks that read the user's profile now use placeholder drafts). Their fake-only tests were run
-  again (below).
+  M11 (mechanical.py: the 3D scale, the transients, the short-lived elements; common.py's sample times), M12 and M13
+  (their tests only: the checks that read the user's profile now use drafts of their own). Their fake-only tests were
+  run again (below).
 
 ## How to run the test
 
@@ -121,7 +121,9 @@ em dash scan. The recorded full run: build/M14/test-m14.log (77 passed, 0 failed
 - test-m12 asserted on the user's profile as it was at M12's time (section 1: no usable proof line, no Content
   strategy section; section 3: the honesty loop's premise of an empty proof); the user filled library/profile/voice.md
   and account.md on the morning of 2026-11-07, so three of its checks failed in the rerun with solution.py and gate.py
-  unchanged. The test now writes its own placeholder drafts for them (DECISIONS.md 305).
+  unchanged, and seven checks of test-m13's voice-profile block (which edit the drafts' placeholders and rebuild them)
+  failed the same way. test-m12 now writes its own placeholder drafts; test-m13 starts from the drafts as they were
+  when it was written, kept as pipeline/tests/fixtures/profile/ (DECISIONS.md 305).
 
 ## Known gaps
 

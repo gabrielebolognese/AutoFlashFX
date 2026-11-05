@@ -168,9 +168,13 @@ assert_eq "$(jq_py "$F" 'd["is_error"]')/$(jq_py "$F" 'd["session_id"]')" "true/
 cls="$(python pipeline/lib/errors.py classify --rc 1 --stdout "$F" --stderr "$RD1/02-expansion/calls/001-x.err" --tz Europe/Rome 2>/dev/null || true)"
 assert_true "the injected result is classified as a usage limit with its reset time ($cls)" python -c 'import json, sys; d = json.loads(sys.argv[1]); assert d["class"] == "limit" and d["limit"]["reset"]' "$cls"
 
-# build-voice-profile --force on a copy of the profile keeps the hand-written parts
+# build-voice-profile --force on a copy of the profile keeps the hand-written parts. The copy is the drafts as they
+# were when this block was written (pipeline/tests/fixtures/profile/, placeholders and all): the user's filled profile
+# stays out of the tests (DECISIONS.md 305)
 sandbox_init
 P="$SANDBOX/library/profile"
+cp "$REPO_DIR/pipeline/tests/fixtures/profile/voice.md" "$P/voice.md"
+cp "$REPO_DIR/pipeline/tests/fixtures/profile/account.md" "$P/account.md"
 python - "$P" <<'EOF'
 import sys
 p = sys.argv[1]
