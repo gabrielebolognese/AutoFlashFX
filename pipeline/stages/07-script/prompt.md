@@ -62,7 +62,11 @@ pause. If they cannot say the point back after one listen, the reel failed, howe
 - Full sentences with a subject and a verb. No telegraph style and no strings of fragments: "All caps labels. Fake
   one, two, three." is a list of notes, not speech. One short punchline is fine where it lands a point.
 - Plain words. A term the viewer would have to look up (distributional convergence, a design token, a hex code read
-  out) is either explained in the same beat in everyday words or left out. A name only when the viewer needs it.
+  out) is either explained in the same beat in everyday words or left out. Insider words count too: if the viewer
+  would not say it to a friend (tells, non-steps, a scope, the brief, defaults, a plugin marketplace), say what it
+  means instead. A name only when the viewer needs it.
+- Examples: at most one beat lists them, with the one or two the viewer recognizes on sight. Three beats of
+  examples in a row lose the thread.
 - Use the 2 to 4 facts the point needs, explained, rather than squeezing them all in. A fact left out costs
   nothing; a line nobody understands costs the reel.
 

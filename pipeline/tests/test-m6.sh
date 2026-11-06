@@ -470,9 +470,9 @@ c = d["checks"]["detail"]; print("    detect " + str(c["detect"]["overall"]) + "
 for k in "ab": print("    draft " + k + ": " + d["drafts"][k]["tone"] + ", cut " + str(d["drafts"][k]["cut"]["before_words"]) + " -> " + str(d["drafts"][k]["cut"]["after_words"]) + " words (" + str(d["drafts"][k]["cut"]["removed_pct"]) + "%)")
 for e in d["rounds_log"]: print("    round " + str(e["round"]) + " draft " + e["draft"] + ": " + e["action"] + ", ok " + str(e["ok"]) + (", " + e["note"][:100] if e["note"] else ""))
 for f in d["flags"]: print("    flag: " + f)' "$S/script.json"
-assert_true "script.json: two drafts in two different tones, the pick decision with a reason, the claims checked, detect.py PASS" python -c '
+assert_true "script.json: two drafts in two different tones, the pick decision with a reason, the claims checked, the detect gate passes (BURSTINESS reported, not gated: DECISIONS.md 338)" python -c '
 import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8"))
-ok = set(d["drafts"]) == {"a", "b"} and d["drafts"]["a"]["tone"] != d["drafts"]["b"]["tone"] and d["pick"]["reason"] and d["pick"]["winner"] == d["picked"] and d["checks"]["detail"]["claims"]["status"] == "checked" and d["checks"]["detail"]["detect"]["verdict"] == "PASS" and 1 <= d["rounds"] <= 3
+ok = set(d["drafts"]) == {"a", "b"} and d["drafts"]["a"]["tone"] != d["drafts"]["b"]["tone"] and d["pick"]["reason"] and d["pick"]["winner"] == d["picked"] and d["checks"]["detail"]["claims"]["status"] == "checked" and d["checks"]["detail"]["detect"]["ok"] and 1 <= d["rounds"] <= 3
 sys.exit(0 if ok else 1)' "$S/script.json"
 assert_true "script.json: the spoken tracks hold no digits (numbers written out)" python -c '
 import json, re, sys; d = json.load(open(sys.argv[1], encoding="utf-8")); bad = [b["id"] for b in d["beats"] if re.search(r"\d", b["spoken"])]; print(bad); sys.exit(0 if not bad else 1)' "$S/script.json"
