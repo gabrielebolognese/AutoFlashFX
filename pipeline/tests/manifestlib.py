@@ -26,7 +26,7 @@ SKIP_DIRS = ("__pycache__",)                            # disposable caches, lef
 SKIP_SUFFIX = (".pyc",)
 
 # Engine: stays where it is, never moves (14.1)
-ENGINE_TOP = {"pipeline", "tools", "build", "node_modules", ".git", ".gitignore", ".gitattributes", "run.sh", "config.json",
+ENGINE_TOP = {"pipeline", "tools", "build", "node_modules", ".git", ".gitignore", ".gitattributes", "run.sh", "config.json", "channels",
               "package.json", "package-lock.json", "requirements.txt", "build-runner.sh", "BUILD_SPEC.md", "CHANNELS.md",
               "CLAUDE.md", "DECISIONS.md", "PLAN.md", "README.md", ".claude", ".github"}
 

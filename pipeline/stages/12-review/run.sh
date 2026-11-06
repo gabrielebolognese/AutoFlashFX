@@ -41,7 +41,7 @@ for f in 10-build/project/index.html 10-build/plan.json 10-build/events.json 11-
   [ -f "$RUN_DIR/$f" ] || stage_fail "$f is missing: the stage that writes it did not run"
 done
 command -v ffmpeg >/dev/null 2>&1 || stage_fail "ffmpeg is not on PATH"
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 ROUND="$(state_get "$RUN_DIR" rounds.review 0 2>/dev/null)"; case "$ROUND" in ''|*[!0-9]*) ROUND=0 ;; esac
 ROUND=$((ROUND + 1))
 TOTAL=$(( $(cfg caps.review_rounds_opus 3) + $(cfg caps.review_rounds_fable 2) ))

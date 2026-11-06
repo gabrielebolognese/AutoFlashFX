@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# test-no-emdash.sh: no em dash (U+2014) in any tracked or new text file, except library/hooks.txt (the user's
+# test-no-emdash.sh: no em dash (U+2014) in any tracked or new text file, except channels/*/library/hooks.txt (the user's
 # file) and pipeline/vendor/ (third-party code). Checks bytes with Python, not grep.
 #   bash pipeline/tests/test-no-emdash.sh
 set -u

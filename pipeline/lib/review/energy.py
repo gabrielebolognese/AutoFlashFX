@@ -319,13 +319,9 @@ def load_json(path: str):
 
 
 def default_tokens_path() -> str:
-    """The style's tokens.json (config paths.tokens under the repo, or styles/paper-cards/tokens.json)."""
-    try:
-        from motion import common as mcommon
-        return mcommon.tokens_path()
-    except Exception:  # noqa: BLE001
-        here = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(here))), "styles", "paper-cards", "tokens.json")
+    """The style's tokens.json (config paths.tokens in the channel folder)."""
+    from motion import common as mcommon
+    return mcommon.tokens_path()
 
 
 def run_cli(a) -> int:

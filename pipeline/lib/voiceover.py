@@ -172,10 +172,11 @@ def fmt_s(x: float) -> str:
 class Ctx:
     def __init__(self, config_path: str = "", root: str = "", repo: str = ""):
         self.repo = (repo or os.environ.get("REELS_REPO") or REPO).replace("\\", "/")
-        self.root = (root or os.environ.get("REELS_ROOT") or self.repo).replace("\\", "/")
+        # root: the channel folder (library/, styles/ and logs/ of the channel; BUILD_SPEC.md 14.3)
+        self.root = (root or os.environ.get("REELS_CHANNEL_ROOT") or self.repo).replace("\\", "/")
         cfg = config_path or os.environ.get("REELS_CONFIG") or ""
         if not cfg:
-            cfg = f"{self.root}/config.json" if os.path.isfile(winpath(f"{self.root}/config.json")) else f"{self.repo}/config.json"
+            cfg = f"{self.repo}/config.json"
         self.config_path = cfg
         self.config = load_json(cfg, {}) or {}
 
@@ -194,7 +195,7 @@ def engine_file(ctx: Ctx) -> str:
     env = os.environ.get("REELS_ENGINE_FILE")
     if env:
         return winpath(env).replace("\\", "/")
-    return f"{ctx.root}/{ctx.cfg('paths.voice_dir', 'library/voice')}/engine.txt"
+    return f"{ctx.root}/{ctx.cfg('paths.voice_dir')}/engine.txt"
 
 
 def parse_engine_file(path: str) -> dict:
@@ -1019,7 +1020,7 @@ class Stage:
         self.script = load_json(self.script_path, None)
         if not self.script or not self.script.get("beats"):
             raise RuntimeError("07-script/script.json is missing or has no beats")
-        pron_path = f"{self.ctx.root}/{self.ctx.cfg('paths.profile', 'library/profile')}/pronunciations.txt"
+        pron_path = f"{self.ctx.root}/{self.ctx.cfg('paths.profile')}/pronunciations.txt"
         self.entries = read_pronunciations(pron_path)
         self.pron_path = pron_path
         for b in self.script["beats"]:

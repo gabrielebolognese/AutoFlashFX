@@ -37,7 +37,7 @@
 #                                                 summary, commit, reason, class, root_cause, user_action, fatal}
 #   review_write_result FILE key=value...         write a result JSON
 #
-# The fixer may edit only the paths in config review.fixer_paths (pipeline, motion-lib/candidates): its tools are
+# The fixer may edit only the paths in config review.fixer_paths (pipeline and channels/<id>/motion-lib/candidates for the run's channel): its tools are
 # pre-approved on those paths only, the protected files are denied (ai.sh), and pipeline/lib/treeguard.py puts back
 # anything it changed elsewhere without touching the user's own uncommitted files. The fixer does not commit: this
 # script runs the verify command again, appends the known-issues line and commits `autofix(<stage>): <summary>`.
@@ -46,7 +46,9 @@ REVIEW_KIND=""; REVIEW_CYCLE=0; REVIEW_CAP=0; REVIEW_DONE=0; REVIEW_N=1; REVIEW_
 
 review_known_issues_file() { printf '%s/%s' "$REELS_REPO" "$(cfg paths.known_issues pipeline/knowledge/known-issues.md)"; }
 
-review_fixer_paths() { cfg review.fixer_paths '["pipeline","motion-lib/candidates"]' | tr -d '[]"' | tr ',' ' '; }
+review_fixer_paths() {  # config review.fixer_paths with {channel} replaced by this run's channel (BUILD_SPEC.md 14.4)
+  local out; out="$(cfg review.fixer_paths | tr -d '[]"' | tr ',' ' ')"; printf '%s' "${out//\{channel\}/$REELS_CHANNEL}"
+}
 
 # ------------------------------------------------------------------ runner side
 
@@ -196,14 +198,14 @@ review_error_file() {  # RUN_DIR STAGE N RC "MSG" "CMD"
     echo; echo "## Git diff since the last successful run"; echo
     if [ -n "$lastgood" ] && git -C "$REELS_REPO" cat-file -e "$lastgood^{commit}" 2>/dev/null; then
       echo "The last successful run (an export) was at commit $lastgood. Committed changes since then under pipeline/ and motion-lib/:"; echo
-      echo '```'; git -C "$REELS_REPO" diff --stat "$lastgood" -- pipeline motion-lib 2>/dev/null | tail -n 40; echo '```'; echo
-      echo '```diff'; git -C "$REELS_REPO" diff "$lastgood" -- pipeline motion-lib 2>/dev/null | head -n 400; echo '```'; echo
+      echo '```'; git -C "$REELS_REPO" diff --stat "$lastgood" -- pipeline "channels/$REELS_CHANNEL/motion-lib" 2>/dev/null | tail -n 40; echo '```'; echo
+      echo '```diff'; git -C "$REELS_REPO" diff "$lastgood" -- pipeline "channels/$REELS_CHANNEL/motion-lib" 2>/dev/null | head -n 400; echo '```'; echo
     else
       echo "No successful run is recorded yet (logs/.last-good-sha), so only the uncommitted changes follow."; echo
     fi
     echo "Uncommitted changes under pipeline/ and motion-lib/ (git status, then the diff):"; echo
-    echo '```'; git -C "$REELS_REPO" status --porcelain -- pipeline motion-lib 2>/dev/null | head -n 60; echo '```'; echo
-    echo '```diff'; git -C "$REELS_REPO" diff -- pipeline motion-lib 2>/dev/null | head -n 300; echo '```'; echo
+    echo '```'; git -C "$REELS_REPO" status --porcelain -- pipeline "channels/$REELS_CHANNEL/motion-lib" 2>/dev/null | head -n 60; echo '```'; echo
+    echo '```diff'; git -C "$REELS_REPO" diff -- pipeline "channels/$REELS_CHANNEL/motion-lib" 2>/dev/null | head -n 300; echo '```'; echo
     echo "## Previous error and fix files for this stage"; echo
     local prev=0 f k
     for f in "$run_dir"/errors/E*.md; do
@@ -292,7 +294,7 @@ review_cycle() {  # RUN_DIR STAGE LABEL N KIND CYCLE CAP RC "MSG" "CMD"
     echo; echo "## Paths"; echo
     echo "- repo root (your working directory): $REELS_REPO"
     echo "- run folder: $run_dir"
-    echo "- state root (ideas.txt, runs/, logs/): $REELS_ROOT"
+    echo "- the channel folder (ideas.txt, runs/, logs/, library/, styles/): $REELS_CHANNEL_ROOT (channel $REELS_CHANNEL)"
     if [ "$kind" = fable ]; then
       echo; echo "## Escalation"; echo
       echo "You are the escalation reviewer: the earlier review cycles (their E and F files are in the report) did not fix this. Look for what they missed, question their root cause, and prefer a different fix."

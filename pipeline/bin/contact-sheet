@@ -7,6 +7,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 [ $# -eq 3 ] || { sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 command -v ffmpeg >/dev/null 2>&1 || { echo "contact-sheet: ffmpeg is not on PATH" >&2; exit 1; }
 exec "$REELS_PY" "$LIB/visual" contact-sheet "$1" "$2" "$3"

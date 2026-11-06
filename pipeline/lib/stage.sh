@@ -107,7 +107,7 @@ sys.exit(0 if any(f.get("text") == sys.argv[2] for f in flags if isinstance(f, d
 }
 
 profile_file() {
-  local path="$REELS_ROOT/$(cfg paths.profile library/profile)/$1"
+  local path; path="$(chcfg paths.profile)/$1"
   [ -f "$path" ] || return 1
   printf '%s' "$path"
 }

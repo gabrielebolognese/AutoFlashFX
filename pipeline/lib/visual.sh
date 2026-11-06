@@ -28,9 +28,9 @@ visual_pass_run() {
   local script="$RUN_DIR/07-script/script.json" words="$RUN_DIR/08-voiceover/words.json"
   [ -f "$script" ] || stage_fail "07-script/script.json is missing: the script stage did not run"
   [ -f "$words" ] || stage_fail "08-voiceover/words.json is missing: the voiceover stage did not run"
-  local style_dir="$REELS_REPO/$(cfg paths.style_dir styles/paper-cards)" lib_dir="$REELS_REPO/$(cfg paths.motion_lib motion-lib)"
-  local tokens="$REELS_REPO/$(cfg paths.tokens styles/paper-cards/tokens.json)"
-  for f in "$style_dir/style.md" "$style_dir/tweaks.md" "$style_dir/vocabulary.md" "$tokens" "$lib_dir/catalog.json" "$REELS_REPO/library/brand/brand.json"; do
+  local style_dir lib_dir; style_dir="$(chcfg paths.style_dir)"; lib_dir="$(chcfg paths.motion_lib)"
+  local tokens; tokens="$(chcfg paths.tokens)"
+  for f in "$style_dir/style.md" "$style_dir/tweaks.md" "$style_dir/vocabulary.md" "$tokens" "$lib_dir/catalog.json" "$REELS_LIBRARY/brand/brand.json"; do
     [ -f "$f" ] || stage_fail "$f is missing (the preflight checks it; run bash pipeline/bin/preflight)"
   done
   if [ "$pass" != animations ]; then

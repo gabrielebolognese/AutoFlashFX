@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 """The protected files guard around every model call (BUILD_SPEC.md section 3, DECISIONS.md 13).
 
-Model calls may not write to ideas.txt, library/, styles/ or exports/. ai() denies the Edit and Write tools on
-those paths, and this script is the second net: a snapshot of the protected text files before the call and a
+Model calls may not write to any channel's ideas.txt, library/ or styles/, or to exports/. ai() denies the Edit and
+Write tools on those paths, and this script is the second net: a snapshot of the protected text files before the call and a
 check after it. A changed, removed or added file is restored from the snapshot and reported, so ai() can raise a
 code error. exports/ is only listed (renders are too big to copy): a change there is reported, not restored.
 
-Protected set: <root>/ideas.txt; text files (.md, .txt, .json) under <root>/library/ and <repo>/styles/ (skipping
-voice recordings, refs/, analysis/, .cache/ and previews/); the names and sizes of the entries in <root>/exports/.
+Protected set, for every channel under <root>/channels/: ideas.txt; text files (.md, .txt, .json) under library/ and
+styles/ (skipping voice recordings, refs/, analysis/, .cache/ and previews/); and the names and sizes of the entries
+in <root>/exports/. --repo is accepted and ignored (the styles are channel data since M18).
 
 Usage:
   protect.py snapshot --root ROOT --repo REPO --dir DIR     write DIR/manifest.json and copies under DIR/files/
@@ -23,6 +24,8 @@ import json
 import os
 import shutil
 import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import paths  # noqa: E402  (the names inside a channel folder)
 
 TEXT_EXT = (".md", ".txt", ".json")
 SKIP_DIRS = {"refs", "analysis", ".cache", "previews", "voice", "__pycache__", ".git"}
@@ -51,29 +54,37 @@ def sha1_of(path: str) -> str:
     return h.hexdigest()
 
 
-def protected_files(root: str, repo: str) -> dict[str, str]:
-    """relative key -> absolute path, for every protected text file that exists."""
+def protected_files(root: str, repo: str = "") -> dict[str, str]:
+    """root-relative key -> absolute path, for every protected text file of every channel that exists:
+    channels/<id>/ideas.txt, channels/<id>/library/** and channels/<id>/styles/** (BUILD_SPEC.md 14.4)."""
     found: dict[str, str] = {}
-    ideas = os.path.join(root, "ideas.txt")
-    if os.path.isfile(ideas):
-        found["root/ideas.txt"] = ideas
-    for label, base in (("root/library", os.path.join(root, "library")), ("repo/styles", os.path.join(repo, "styles"))):
-        if not os.path.isdir(base):
-            continue
-        for dirpath, dirnames, filenames in os.walk(base):
-            dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
-            for name in filenames:
-                if name.lower().endswith(TEXT_EXT):
-                    full = os.path.join(dirpath, name)
-                    rel = os.path.relpath(full, base).replace("\\", "/")
-                    found[f"{label}/{rel}"] = full
-                    if len(found) > MAX_FILES:
-                        return found
+    chans = os.path.join(root, "channels")
+    try:
+        ids = sorted(d for d in os.listdir(chans) if os.path.isdir(os.path.join(chans, d)))
+    except OSError:
+        return found
+    for cid in ids:
+        ideas = os.path.join(chans, cid, paths.IDEAS_FILE)
+        if os.path.isfile(ideas):
+            found[f"channels/{cid}/{paths.IDEAS_FILE}"] = ideas
+        for sub in (paths.LIBRARY_DIR, paths.STYLES_DIR):
+            base = os.path.join(chans, cid, sub)
+            if not os.path.isdir(base):
+                continue
+            for dirpath, dirnames, filenames in os.walk(base):
+                dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+                for name in filenames:
+                    if name.lower().endswith(TEXT_EXT):
+                        full = os.path.join(dirpath, name)
+                        rel = os.path.relpath(full, base).replace("\\", "/")
+                        found[f"channels/{cid}/{sub}/{rel}"] = full
+                        if len(found) > MAX_FILES:
+                            return found
     return found
 
 
 def exports_listing(root: str) -> dict[str, int]:
-    base = os.path.join(root, "exports")
+    base = os.path.join(root, paths.EXPORTS_DIR)
     out: dict[str, int] = {}
     if not os.path.isdir(base):
         return out
@@ -95,14 +106,10 @@ def exports_listing(root: str) -> dict[str, int]:
     return out
 
 
-def abs_for(key: str, root: str, repo: str) -> str:
-    if key == "root/ideas.txt":
-        return os.path.join(root, "ideas.txt")
-    if key.startswith("root/library/"):
-        return os.path.join(root, "library", key[len("root/library/"):])
-    if key.startswith("repo/styles/"):
-        return os.path.join(repo, "styles", key[len("repo/styles/"):])
-    raise ValueError(key)
+def abs_for(key: str, root: str, repo: str = "") -> str:
+    if not key.startswith("channels/") or ".." in key.split("/"):
+        raise ValueError(key)
+    return os.path.join(root, key)
 
 
 def cmd_snapshot(args) -> int:

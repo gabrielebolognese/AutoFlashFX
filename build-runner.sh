@@ -892,27 +892,30 @@ ensure_git() {
   if [ ! -f .gitignore ]; then
     say START "no .gitignore yet, writing the runner's default one"
     cat > .gitignore <<'EOF'
-runs/
-exports/
-logs/
-.locks/
+/exports/
+/logs/
+/.locks/
+channels/*/runs/
+channels/*/logs/
+channels/*/.locks/
+channels/*/.cache/
 .env
 node_modules/
 __pycache__/
 *.mp4
 *.mov
-library/voice/
-styles/*/refs/
-styles/*/analysis/
-styles/sfx/**/*.wav
-styles/sfx/**/*.mp3
-styles/sfx/**/*.aif
-styles/sfx/**/*.aiff
-styles/sfx/**/*.ogg
-styles/sfx/**/*.flac
-styles/sfx/**/*.m4a
-styles/sfx/.cache/
-styles/sfx/previews/
+channels/*/library/voice/
+channels/*/styles/*/refs/
+channels/*/styles/*/analysis/
+channels/*/styles/sfx/**/*.wav
+channels/*/styles/sfx/**/*.mp3
+channels/*/styles/sfx/**/*.aif
+channels/*/styles/sfx/**/*.aiff
+channels/*/styles/sfx/**/*.ogg
+channels/*/styles/sfx/**/*.flac
+channels/*/styles/sfx/**/*.m4a
+channels/*/styles/sfx/.cache/
+channels/*/styles/sfx/previews/
 build/state.env
 build/.status
 build/status.txt

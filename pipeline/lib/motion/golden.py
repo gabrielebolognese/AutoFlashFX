@@ -398,7 +398,7 @@ def run(args) -> int:
         for p in problems:
             print("plan: " + p)
         return 1
-    brand_dir = args.brand or os.path.join(common.REPO, "library", "brand")
+    brand_dir = args.brand or common.paths.brand()
     out_dir = args.out
     os.makedirs(out_dir, exist_ok=True)
     try:

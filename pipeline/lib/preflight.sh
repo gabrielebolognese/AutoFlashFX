@@ -1,19 +1,21 @@
 # pipeline/lib/preflight.sh: the startup checks (BUILD_SPEC.md section 3), table-driven by preflight.require in
-# config.json. Source common.sh, log.sh and config.sh first.
+# config.json, for one channel (REELS_CHANNEL; channel.json is validated first, 14.4). Source common.sh, log.sh and
+# config.sh first.
 #
-#   preflight_run     returns 0 when every hard check passes. On a hard failure it writes logs/STOPPED.md with the
-#                     diagnosis and the exact fix, prints a STOP line and returns 3 (a systemic failure).
+#   preflight_run     returns 0 when every hard check passes. On a hard failure it writes the channel's logs/STOPPED.md
+#                     with the diagnosis and the exact fix, prints a STOP line and returns 3 (a systemic failure).
+#                     "{channel}" in a fix text is the channel id.
 #
 # Entry fields in preflight.require:
 #   check: command | python_module | file | disk | shell | voice | brand
 #                 voice (M7): pipeline/lib/voiceover.py engine-check, the voice config of library/voice/engine.txt:
 #                 its interpreter exists and imports kokoro, one interpreter imports faster_whisper; the check's
 #                 notes (a missing engine.txt, another engine named, missing lines) are warnings
-#                 brand (M10): library/brand/brand.json under the repo parses and every asset it lists exists with
+#                 brand (M10): library/brand/brand.json of the channel parses and every asset it lists exists with
 #                 its use_on, width and height (BUILD_SPEC.md 2.7)
 #   name          command or module name
 #   min_version   command: the first X.Y[.Z] of "<name> --version" must be at least this
-#   path          file: relative to the repo, or to the state root when in_root is true
+#   path          file: relative to the repo, or to the channel folder when in_channel is true
 #   min_free_gb   disk: free space under the state root
 #   cmd           shell: a command that must exit 0
 #   level         hard (default) or warn
@@ -49,18 +51,22 @@ preflight_write_stopped() {  # args: "problem|fix" ...
     local i=1
     for f in "$@"; do echo "$i. ${f#*|}"; i=$((i + 1)); done
     echo
-    echo "Then start the runner again: bash run.sh"
+    echo "Then start the runner again: bash run.sh --channel $REELS_CHANNEL"
   } > "$REELS_LOGS/STOPPED.md"
 }
 
 preflight_run() {
   local failures=() warnings=() modules=() module_levels=() module_fixes=()
   local n_tools=0 n_files=0 free_gb=""
-  local check name path in_root min_version min_free_gb cmd level fix problem have full vout vrc vline
+  local check name path in_channel min_version min_free_gb cmd level fix problem have full vout vrc vline
   local sep=$'\x1f'
-  while IFS="$sep" read -r check name path in_root min_version min_free_gb cmd level fix; do
+  local cj_problems
+  cj_problems="$("$REELS_PY" "$REELS_PIPELINE/lib/config.py" validate 2>&1 </dev/null)" \
+    || failures+=("channel.json is not valid: $(printf '%s' "$cj_problems" | head -n 1)|fix channels/$REELS_CHANNEL/channel.json (schema: pipeline/schemas/channel.schema.json)")
+  while IFS="$sep" read -r check name path in_channel min_version min_free_gb cmd level fix; do
     [ -z "$check" ] && continue
     level="${level:-hard}"
+    fix="${fix//\{channel\}/$REELS_CHANNEL}"
     problem=""
     case "$check" in
       command)
@@ -78,7 +84,7 @@ preflight_run() {
         continue
         ;;
       file)
-        if [ "$in_root" = "true" ]; then full="$REELS_ROOT/$path"; else full="$REELS_REPO/$path"; fi
+        if [ "$in_channel" = "true" ]; then full="$(chpath "$path")"; else full="$REELS_REPO/$path"; fi
         if [ -e "$full" ]; then n_files=$((n_files + 1)); else problem="$path is missing ($full)"; fi
         ;;
       disk)
@@ -92,10 +98,11 @@ preflight_run() {
         ;;
       brand)
         # M10 (BUILD_SPEC.md 2.7): library/brand/brand.json under the repo parses and every asset it lists exists
-        vout="$("$REELS_PY" - "$REELS_REPO" 2>&1 <<'PYEOF'
+        vout="$("$REELS_PY" - "$REELS_CHANNEL_ROOT" "$REELS_LIBRARY" 2>&1 <<'PYEOF'
 import json, os, sys
-repo = sys.argv[1]
-path = os.path.join(repo, "library", "brand", "brand.json")
+repo = sys.argv[1]  # the channel folder: brand.json lists its assets relative to it
+library = sys.argv[2]
+path = os.path.join(library, "brand", "brand.json")
 if not os.path.isfile(path):
     print("library/brand/brand.json is missing"); sys.exit(1)
 try:
@@ -140,7 +147,7 @@ PYEOF
     if [ -n "$problem" ]; then
       if [ "$level" = "warn" ]; then warnings+=("$problem (fix: $fix)"); else failures+=("$problem|$fix"); fi
     fi
-  done < <(cfg_rows preflight.require check name path in_root min_version min_free_gb cmd level fix)
+  done < <(cfg_rows preflight.require check name path in_channel min_version min_free_gb cmd level fix)
 
   local n_modules=${#modules[@]} missing i m
   if [ "$n_modules" -gt 0 ]; then

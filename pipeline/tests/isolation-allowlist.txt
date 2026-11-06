@@ -1,0 +1,43 @@
+# pipeline/tests/isolation-allowlist.txt: the literal paths that test-isolation.sh part 1 (isolation_scan.py) accepts, one by one, each with
+# its reason (BUILD_SPEC.md 14.5). Format: `glob | regex | reason`. The glob matches the file's path under the root, the regex the
+# line. New code gets no entry here: it builds paths to channel data through pipeline/lib/paths.sh and paths.py.
+#
+# Not scanned at all: pipeline/tests/ (the tests build the folder layout on purpose; test-isolation part 2, from M19, proves the
+# behavior), pipeline/vendor/ (third-party code), pipeline/knowledge/, formats/*/template/, and every text file that is not
+# shell or Python (prompts, schemas, docs, HTML: labels for people and models, never path building).
+#
+# ---- labels in messages and in text a person reads (no path is built from them)
+pipeline/bin/build-sfx-map | label="styles/sfx" | the label of the pack in a message: shown to the user, nothing is opened with it
+pipeline/bin/build-voice-profile | sample_label="library/voice/ | a label that names the sample in the report, the file itself is $VOICE_DIR/...
+pipeline/bin/doctor | dir_size "(exports|runs|logs)/" | the label of a size line in the report
+pipeline/bin/render-golden | tests/fixtures/runs/test-idea | the frozen fixture run under pipeline/tests/fixtures (engine data, not channel data)
+pipeline/bin/setup-venv | echo "library/voice/engine.txt exists | a message that names the file
+pipeline/lib/ai.sh | what="exports/ listing" | the reason text of a protected-files error
+pipeline/lib/log.sh | say INFO "logs/runner.log reached | a message for the person watching the terminal
+pipeline/lib/motion/__main__.py | help="library/brand | the help text of an option
+pipeline/lib/motion/golden.py | replace\("library/brand/", ""\) | brand.json lists asset paths as library/brand/<file> relative to the channel folder: the prefix is cut off a string, no path is opened with it
+pipeline/lib/motion/golden.py | golden.mp4 the render | the text of the README the golden builder writes
+pipeline/lib/visual/common.py | replace\("library/brand/", ""\) | brand.json lists asset paths as library/brand/<file> relative to the channel folder: the prefix is cut off a string
+pipeline/lib/visual/plan9.py | (lines = \[f"motion-lib/catalog.json|lines = \[f"golden/test-idea/plan.json) | the headings of the digests the director model reads
+pipeline/lib/voiceover.py | src = \{"file": "library/voice/engine.txt" | the voiceover trail names where the voice settings came from: a label in the report
+pipeline/lib/voiceprofile.py | memo_name or 'library/voice/memo | text written into the generated profile
+pipeline/stages/05-hooks/run.sh | stage_fail "library/.hooks.index.json | a message
+pipeline/stages/05-hooks/run.sh | n_lib=".*template_source | the field name template_source = "library" is a value in the hooks index, not a folder
+# ---- JSON field names and values that are the same word as a folder (nothing is opened with them)
+pipeline/lib/hooks.py | "source": "library" | a value of the hooks index: where a hook template came from (the user's list)
+pipeline/lib/hooks.py | "source": "library/hooks.txt" | the hooks index records the name of its source file for people
+pipeline/lib/hooks.py | "library": sum | a JSON field of a stats line
+pipeline/lib/logcheck.py | "exports": | a key of the story of the log (the number of exports)
+pipeline/lib/protect.py | "exports": | a key of the snapshot manifest: the listing of the exports folder
+pipeline/lib/state.py | for attr in \("run_dir", "runs", "schemas"\) | attribute names of an argparse namespace
+pipeline/lib/export.py | for attr in \("run_dir", "exports", "root"\) | attribute names of an argparse namespace
+pipeline/lib/export.py | name="exports" | the name of the numbering lock, a lock name and not a path
+pipeline/lib/sfx/overrides.py | for prefix in \("styles/sfx/", "sfx/"\) | the user writes an override as styles/sfx/<file> or sfx/<file>: the prefix is cut off a line of text
+pipeline/lib/config.py | (CHANNEL_PATH_KEYS|"tokens", "sfx_dir") | the names of the config `paths` keys that are channel data, not folders
+pipeline/lib/visual/plan9.py | out\["golden"\] = golden_md | the key of a digest file name
+# ---- the locks: the numbering of exports is shared by every channel until M19 (BUILD_SPEC.md 14.6), so its lock is a global one
+pipeline/lib/runner.sh | REELS_GLOBAL_LOCKS/exports | the global exports lock (numbering is shared until M19): the lock folder is named exports
+pipeline/lib/runner.sh | REELS_LOCKS/exports | removes the lock folder the single-channel layout used before M18
+pipeline/lib/motion/__main__.py | ("golden"|cmd == "golden") | the name of the golden sub-command of the motion tools
+pipeline/lib/protect.py | manifest.get\("exports" | a key of the snapshot manifest: the listing of the exports folder
+pipeline/lib/voiceover.py | "runs": runs | a JSON field: the runs of silence found in a wav, not the runs/ folder

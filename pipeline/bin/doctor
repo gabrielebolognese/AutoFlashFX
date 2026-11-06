@@ -1,27 +1,37 @@
 #!/usr/bin/env bash
 # doctor: one read-only health report of the reels pipeline (PLAN.md M13). Changes nothing, starts nothing.
 #
-#   bash pipeline/bin/doctor [--quick]
+#   bash pipeline/bin/doctor [--quick] [--channel <id>]
 #
-# Sections: versions (bash, git, python, node, ffmpeg, ffprobe, claude, and the Node packages against the pins of
-# package.json), disk (free space against config runner.min_free_gb, the size of runs/, exports/ and logs/), voice
-# (bash pipeline/bin/setup-venv --check: the kokoro interpreter and the faster-whisper one; skipped with --quick),
-# freshness (the sound effects map, tokens.json, the hooks index), runner (alive or not, logs/status.txt checked line
-# by line with pipeline/lib/logcheck.py, its age, runner.log and its rotated files, the story of the last session),
-# queue and logs (ideas.txt, history.txt counts, blocked.txt, logs/STOPPED.md, limits.log, known-issues.md).
+# The engine once: versions (bash, git, python, node, ffmpeg, ffprobe, claude, and the Node packages against the pins
+# of package.json), disk (free space against config runner.min_free_gb, the size of exports/), voice (bash
+# pipeline/bin/setup-venv --check: the kokoro interpreter and the faster-whisper one; skipped with --quick),
+# known-issues.md. Then every channel (or the one given): channel.json against its schema and the engine keys it
+# overrides, the size of its runs/ and logs/, freshness (the sound effects map, tokens.json, the hooks index), runner
+# (alive or not, logs/status.txt checked line by line with pipeline/lib/logcheck.py, its age, runner.log and its
+# rotated files, the story of the last session), queue and logs (ideas.txt, history.txt counts, blocked.txt,
+# logs/STOPPED.md, limits.log).
 # Every line starts with OK, WARN or FAIL. Exit 0 when no line is FAIL, 1 otherwise.
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
 source "$REELS_PIPELINE/lib/log.sh"
 source "$REELS_PIPELINE/lib/config.sh"
 quick=0
-for a in "$@"; do
-  case "$a" in
+want="${REELS_CHANNEL:-}"
+while [ $# -gt 0 ]; do
+  case "$1" in
     --quick) quick=1 ;;
-    -h|--help) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    *) echo "doctor: unknown option $a" >&2; exit 2 ;;
+    --channel) [ $# -ge 2 ] || { echo "doctor: --channel needs an id" >&2; exit 2; }; want="$2"; shift ;;
+    --channel=*) want="${1#--channel=}" ;;
+    -h|--help) sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "doctor: unknown option $1" >&2; exit 2 ;;
   esac
+  shift
 done
+if [ -n "$want" ] && { ! reels_valid_channel_id "$want" || [ ! -f "$REELS_CHANNELS_DIR/$want/channel.json" ]; }; then
+  echo "doctor: unknown channel '$want'. Channels:" >&2; reels_channel_list_text >&2; exit 2
+fi
+unset REELS_CHANNEL; reels_paths_init; reels_config_refresh   # the engine part runs without a channel
 FAILS=0; WARNS=0
 ok()   { printf 'OK    %s\n' "$*"; }
 warn() { WARNS=$((WARNS + 1)); printf 'WARN  %s\n' "$*"; }
@@ -71,14 +81,15 @@ free_gb="$(df -kP "$REELS_ROOT" 2>/dev/null | awk 'NR == 2 { printf "%d", $4 / 1
 if [ -z "$free_gb" ]; then warn "cannot read the free space under $REELS_ROOT"
 elif [ "$free_gb" -lt "$min_gb" ]; then bad "only $free_gb GB free under $REELS_ROOT (the runner needs $min_gb GB; old run folders under runs/ can go)"
 else ok "$free_gb GB free under $REELS_ROOT (minimum $min_gb GB)"; fi
-sizes=""
-for d in runs exports logs; do
-  [ -d "$REELS_ROOT/$d" ] || continue
-  n="$(find "$REELS_ROOT/$d" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l | tr -d ' ')"
-  s="$(du -sh "$REELS_ROOT/$d" 2>/dev/null | cut -f1)"
-  sizes="${sizes:+$sizes, }$d/ ${s:-?} ($n $(plural "$n" entry | sed 's/entrys/entries/'))"
-done
-[ -n "$sizes" ] && ok "$sizes"
+dir_size() {  # dir_size <label> <folder>: "label SIZE (N entries)" or nothing when the folder is missing
+  [ -d "$2" ] || return 0
+  local n s
+  n="$(find "$2" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l | tr -d ' ')"
+  s="$(du -sh "$2" 2>/dev/null | cut -f1)"
+  printf '%s %s (%s %s)' "$1" "${s:-?}" "$n" "$(plural "$n" entry | sed 's/entrys/entries/')"
+}
+sz="$(dir_size "exports/" "$REELS_EXPORTS")"
+[ -n "$sz" ] && ok "$sz"
 
 if [ "$quick" = 0 ]; then
   head1 "voice"
@@ -94,17 +105,31 @@ if [ "$quick" = 0 ]; then
   [ "$vrc" = 0 ] || bad "setup-venv --check exited $vrc: bash pipeline/bin/setup-venv installs what is missing"
 fi
 
-head1 "freshness"
+channel_report() {  # channel_report <id>: every check that belongs to one channel
+  reels_set_channel "$1" || { bad "cannot use channel $1"; return; }
+head1 "channel $REELS_CHANNEL: channel.json"
+if out="$("$REELS_PY" "$REELS_PIPELINE/lib/config.py" validate 2>&1)"; then
+  ok "channels/$REELS_CHANNEL/channel.json is valid ($(cfg_channel_enabled | sed 's/true/enabled/;s/false/disabled/'))"
+else
+  bad "channel.json: $(printf '%s' "$out" | head -n 1)"
+fi
+ovr="$("$REELS_PY" "$REELS_PIPELINE/lib/config.py" overrides 2>/dev/null | tr '
+' ' ')"
+[ -n "$ovr" ] && warn "this channel overrides engine keys: $ovr"
+sz="$(dir_size "runs/" "$REELS_RUNS") $(dir_size "logs/" "$REELS_LOGS")"
+[ -n "$(printf '%s' "$sz" | tr -d ' ')" ] && ok "$sz"
+
+head1 "channel $REELS_CHANNEL: freshness"
 if out="$(bash "$REELS_PIPELINE/bin/build-sfx-map" --check 2>&1)"; then ok "$(printf '%s' "$out" | tail -n 1)"
 else warn "sound effects map: $(printf '%s' "$out" | tail -n 1) (S11 rebuilds it at its start; bash pipeline/bin/build-sfx-map now)"; fi
 if out="$(bash "$REELS_PIPELINE/bin/build-tokens" --check 2>&1)"; then ok "$(printf '%s' "$out" | tail -n 1)"
 else warn "tokens: $(printf '%s' "$out" | tail -n 1) (bash pipeline/bin/build-tokens)"; fi
-hooks="$("$REELS_PY" - "$REELS_ROOT" "$REELS_PIPELINE/lib" <<'EOF'
+hooks="$("$REELS_PY" - "$REELS_LIBRARY" "$REELS_PIPELINE/lib" <<'EOF'
 import json, os, sys
 root = sys.argv[1]
 sys.path.insert(0, sys.argv[2])
 from hooks import source_hash  # the indexer's own hash (the text read with its line endings normalized)
-src, idx = os.path.join(root, "library", "hooks.txt"), os.path.join(root, "library", ".hooks.index.json")
+src, idx = os.path.join(root, "hooks.txt"), os.path.join(root, ".hooks.index.json")
 if not os.path.isfile(src):
     print("WARN library/hooks.txt is missing"); sys.exit()
 if not os.path.isfile(idx):
@@ -122,7 +147,7 @@ EOF
 )"
 case "$hooks" in OK*) ok "${hooks#OK }" ;; *) warn "${hooks#WARN }" ;; esac
 
-head1 "runner"
+head1 "channel $REELS_CHANNEL: runner"
 pid=""
 [ -f "$REELS_LOCKS/runner/pid" ] && { read -r pid _ < "$REELS_LOCKS/runner/pid"; } 2>/dev/null
 alive=0
@@ -170,7 +195,7 @@ else
   ok "no logs/runner.log yet"
 fi
 
-head1 "queue and logs"
+head1 "channel $REELS_CHANNEL: queue and logs"
 queue="$("$REELS_PY" "$REELS_PIPELINE/lib/ideas.py" count --file "$REELS_IDEAS" 2>/dev/null || echo "?")"
 ok "ideas.txt: $queue $(plural "$queue" idea) queued"
 hist="$REELS_LOGS/history.txt"
@@ -212,8 +237,17 @@ if [ -s "$REELS_LOGS/limits.log" ]; then
 else
   ok "limits.log: no usage limit met yet"
 fi
+}
+
 ki="$REELS_PIPELINE/knowledge/known-issues.md"
 [ -f "$ki" ] && ok "known-issues.md: $(grep -c '^- ' "$ki") fix $(plural 2 line)"
+
+if [ -n "$want" ]; then channel_report "$want"
+else
+  ids="$(reels_channel_ids)"
+  [ -n "$ids" ] || warn "no channel under channels/"
+  for id in $ids; do channel_report "$id"; done
+fi
 
 printf '\n%s\n' "doctor: $FAILS $(plural "$FAILS" problem), $WARNS $(plural "$WARNS" warning)"
 [ "$FAILS" = 0 ]

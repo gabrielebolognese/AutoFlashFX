@@ -45,6 +45,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from model_choice import split_label  # noqa: E402
+import paths  # noqa: E402
 
 ID_LENGTH = 12
 MIN_SIMILARITY = 0.9
@@ -78,7 +79,7 @@ def log_line(root: str, tag: str, text: str) -> None:
     line = f"[{datetime.now():%H:%M}] {tag:<6} {text}"
     print(line, file=sys.stderr)
     try:
-        logs = os.path.join(root, "logs")
+        logs = os.path.join(root, paths.LOGS_DIR)
         os.makedirs(logs, exist_ok=True)
         with open(os.path.join(logs, "runner.log"), "a", encoding="utf-8", newline="\n") as f:
             f.write(line + "\n")
@@ -187,10 +188,10 @@ class QueueLock:
     name is "ideas" for the queue and "exports" for the export numbering (export.py)."""
 
     def __init__(self, root: str, stale_s: float = DEFAULT_STALE_S, wait_s: float = DEFAULT_WAIT_S,
-                 name: str = "ideas"):
+                 name: str = "ideas", locks_dir: str | None = None):
         self.root = root
         self.name = name
-        self.dir = os.path.join(root, ".locks", name)
+        self.dir = os.path.join(locks_dir or os.path.join(root, paths.LOCKS_DIR), name)
         self.stale_s = stale_s
         self.wait_s = wait_s
 
@@ -258,7 +259,7 @@ class QueueLock:
 def mark_new(root: str, ids: list[str], queue: int, source: str) -> None:
     """Record each addition in logs/.new-ideas: epoch, id, queue size, source. The runner reads and clears it."""
     try:
-        logs = os.path.join(root, "logs")
+        logs = os.path.join(root, paths.LOGS_DIR)
         os.makedirs(logs, exist_ok=True)
         with open(os.path.join(logs, ".new-ideas"), "a", encoding="utf-8", newline="\n") as f:
             for one in ids:
@@ -400,7 +401,7 @@ def main(argv=None) -> int:
             sp.add_argument("--file", required=True, help="ideas.txt")
         sp.add_argument("--plain", action="store_true", help="human output instead of JSON")
         if root:
-            sp.add_argument("--root", help="state root holding .locks/ and logs/ (default: the file's folder)")
+            sp.add_argument("--root", help="the channel folder, holding .locks/ and logs/ (default: the file's folder)")
         if lock:
             sp.add_argument("--stale", type=float, default=DEFAULT_STALE_S, help="seconds before a lock is stale")
             sp.add_argument("--wait", type=float, default=DEFAULT_WAIT_S, help="seconds to wait for the lock")

@@ -21,6 +21,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/log.sh"
 source "$LIB/config.sh"
 source "$LIB/state.sh"
@@ -38,8 +39,8 @@ for a in "$@"; do
 done
 note() { [ "$quiet" = 1 ] || printf '%s\n' "$*"; }
 
-HOOKS_FILE="$REELS_ROOT/$(cfg paths.hooks library/hooks.txt)"
-LIB_DIR="$REELS_ROOT/$(cfg paths.library library)"
+HOOKS_FILE="$(chcfg paths.hooks)"
+LIB_DIR="$(chcfg paths.library)"
 INDEX="$LIB_DIR/.hooks.index.json"
 LINT="$LIB_DIR/hooks.lint.txt"
 STATS="$LIB_DIR/.hooks.stats.json"

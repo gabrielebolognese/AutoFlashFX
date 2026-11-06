@@ -16,6 +16,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/config.sh"
 make_plan=0; out=""; fixtures=""; pass=()
 while [ $# -gt 0 ]; do
@@ -28,8 +29,8 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
-[ -n "$out" ] || out="$REELS_REPO/$(cfg paths.golden golden)/test-idea"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
+[ -n "$out" ] || out="$(chcfg paths.golden)/test-idea"
 [ -n "$fixtures" ] || fixtures="$REELS_PIPELINE/tests/fixtures/runs/test-idea"
 out="$(reels_mixed "$out")"; fixtures="$(reels_mixed "$fixtures")"
 mkdir -p "$out"
@@ -44,4 +45,4 @@ fi
 if [ "$make_plan" = 1 ] || [ ! -f "$out/plan.json" ]; then
   "$REELS_PY" "$LIB/motion" golden-plan --script "$script" --words "$words" --out "$out/plan.json" || exit 1
 fi
-exec "$REELS_PY" "$LIB/motion" golden --plan "$out/plan.json" --out "$out" --voice "$voice" --words "$words" --assets "$assets" --brand "$REELS_REPO/library/brand" "${pass[@]}"
+exec "$REELS_PY" "$LIB/motion" golden --plan "$out/plan.json" --out "$out" --voice "$voice" --words "$words" --assets "$assets" --brand "$REELS_LIBRARY/brand" "${pass[@]}"

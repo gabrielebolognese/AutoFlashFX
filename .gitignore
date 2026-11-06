@@ -14,39 +14,46 @@ venv/
 
 # Node (HyperFrames, Puppeteer)
 node_modules/
-motion-lib/.harness/
 .harness/
-motion-lib/renders/
-golden/*/project/renders/
+channels/*/motion-lib/.harness/
+channels/*/motion-lib/renders/
+channels/*/golden/*/project/renders/
 out/
 dist/
 .hyperframes/
 .env
 .env.*
 
-# Runner state (BUILD_SPEC.md section 1), anchored to the root: pipeline/tests/fixtures/runs/ holds frozen test data
+# Runner state (BUILD_SPEC.md section 1 and 14.3): the channel folders, each its own. The shared exports/, logs/ and .locks/
+# stay anchored to the root (pipeline/tests/fixtures/runs/ holds frozen test data)
 /runs/
 /exports/
 /logs/
 /.locks/
-library/voice/*
-!library/voice/README.txt
-library/.hooks.index.json
-library/hooks.lint.txt
+channels/*/runs/
+channels/*/logs/
+channels/*/.locks/
+channels/*/.cache/
+channels/*/stories/
+channels/*/library/voice/*
+!channels/*/library/voice/README.txt
+channels/*/library/.hooks.index.json
+channels/*/library/hooks.lint.txt
+channels/*/library/character/photos/
 
 # Reference videos, analysis frames, sound pack audio and caches
-styles/*/refs/
-styles/*/analysis/
-styles/sfx/**/*.wav
-styles/sfx/**/*.mp3
-styles/sfx/**/*.MP3
-styles/sfx/**/*.aif
-styles/sfx/**/*.aiff
-styles/sfx/**/*.ogg
-styles/sfx/**/*.flac
-styles/sfx/**/*.m4a
-styles/sfx/.cache/
-styles/sfx/previews/
+channels/*/styles/*/refs/
+channels/*/styles/*/analysis/
+channels/*/styles/sfx/**/*.wav
+channels/*/styles/sfx/**/*.mp3
+channels/*/styles/sfx/**/*.MP3
+channels/*/styles/sfx/**/*.aif
+channels/*/styles/sfx/**/*.aiff
+channels/*/styles/sfx/**/*.ogg
+channels/*/styles/sfx/**/*.flac
+channels/*/styles/sfx/**/*.m4a
+channels/*/styles/sfx/.cache/
+channels/*/styles/sfx/previews/
 
 # Large media: raw footage and renders
 *.mp4
@@ -66,7 +73,40 @@ build/PAUSE
 voicetests/
 
 # The golden reel: the render and the per-run reports are rebuilt by render-golden; the project's fonts and vendor
-# files are copies of motion-lib/assets
+# files are copies of the channel's motion-lib/assets
+channels/*/golden/*/golden.mp4
+channels/*/golden/*/render.json
+channels/*/golden/*/probe.json
+channels/*/golden/*/check.json
+channels/*/golden/*/project/assets/fonts/
+channels/*/golden/*/project/assets/vendor/
+channels/*/golden/*/project/assets/vo.wav
+channels/*/golden/*/project/.hyperframes/
+channels/*/golden/*/project/renders/
+channels/*/golden/*/.sheet/
+channels/*/motion-lib/.hyperframes/
+
+# LEGACY-ROOT-RULES-BEGIN: the rules of the layout before M18 (BUILD_SPEC.md 14.3). They keep the data that is still at the root
+# ignored until migrate-channels has moved it; the commit after the move deletes this block.
+motion-lib/.harness/
+motion-lib/renders/
+golden/*/project/renders/
+library/voice/*
+!library/voice/README.txt
+library/.hooks.index.json
+library/hooks.lint.txt
+styles/*/refs/
+styles/*/analysis/
+styles/sfx/**/*.wav
+styles/sfx/**/*.mp3
+styles/sfx/**/*.MP3
+styles/sfx/**/*.aif
+styles/sfx/**/*.aiff
+styles/sfx/**/*.ogg
+styles/sfx/**/*.flac
+styles/sfx/**/*.m4a
+styles/sfx/.cache/
+styles/sfx/previews/
 golden/*/golden.mp4
 golden/*/render.json
 golden/*/probe.json
@@ -75,6 +115,6 @@ golden/*/project/assets/fonts/
 golden/*/project/assets/vendor/
 golden/*/project/assets/vo.wav
 golden/*/project/.hyperframes/
-golden/*/project/renders/
 golden/*/.sheet/
 motion-lib/.hyperframes/
+# LEGACY-ROOT-RULES-END

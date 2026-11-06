@@ -34,6 +34,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import paths  # noqa: E402
 import state as state_lib  # noqa: E402
 import solution as solution_lib  # noqa: E402
 from ideas import LockTimeout, QueueLock, winpath  # noqa: E402
@@ -78,7 +79,7 @@ def find_export_of(exports: str, run_id: str) -> int | None:
 
 def write_activity(root: str, text: str) -> None:
     try:
-        logs = os.path.join(root, "logs")
+        logs = os.path.join(root, paths.LOGS_DIR)
         os.makedirs(logs, exist_ok=True)
         with open(os.path.join(logs, ".activity"), "w", encoding="utf-8", newline="\n") as f:
             f.write(f"{int(time.time())}\t{text}\n")
@@ -168,7 +169,7 @@ def cmd_run(args) -> int:
         return 0
     manifest, sources = load_manifest(run_dir)
     os.makedirs(exports, exist_ok=True)
-    with QueueLock(root, args.stale, args.wait, name="exports"):
+    with QueueLock(root, args.stale, args.wait, name="exports", locks_dir=args.locks_dir):
         existing = find_export_of(exports, run_id)
         if existing is not None:
             record_export(run_dir, number=existing, intent=existing, assembled=True, moved=True,
@@ -230,7 +231,8 @@ def main(argv=None) -> int:
     sp = sub.add_parser("run")
     sp.add_argument("--run-dir", required=True)
     sp.add_argument("--exports", required=True)
-    sp.add_argument("--root", required=True)
+    sp.add_argument("--root", required=True, help="the channel folder (its logs/ get the activity line)")
+    sp.add_argument("--locks-dir", default=None, help="folder of the exports lock (the global locks: numbering is shared)")
     sp.add_argument("--stale", type=float, default=60.0)
     sp.add_argument("--wait", type=float, default=30.0)
     sp.add_argument("--crash-at", choices=("assembled", "moved"))

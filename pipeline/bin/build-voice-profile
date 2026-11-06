@@ -23,6 +23,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/log.sh"
 source "$LIB/config.sh"
 source "$LIB/state.sh"
@@ -48,8 +49,8 @@ kept_note() {  # kept_note <compose or account JSON> <file>: name the hand-writt
   return 0
 }
 
-PROFILE_DIR="$REELS_ROOT/$(cfg paths.profile library/profile)"
-VOICE_DIR="$REELS_ROOT/$(cfg paths.voice_dir library/voice)"
+PROFILE_DIR="$(chcfg paths.profile)"
+VOICE_DIR="$(chcfg paths.voice_dir)"
 VENDOR="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)"
 TEMPLATE="$VENDOR/templates/voice.md"
 WORK="$REELS_LOGS/voice-profile"
@@ -156,7 +157,7 @@ if [ -n "$measure_file" ]; then
   wpm="$("$REELS_PY" -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); print(int(d.get("wpm", 0) or 0))' "$measure_file")"
   speech="$("$REELS_PY" -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); print(int(float(d.get("speech_seconds", 0))))' "$measure_file")"
   if [ "${wpm:-0}" -ge 80 ] && [ "${wpm:-0}" -le 260 ] && [ "${speech:-0}" -ge 30 ]; then
-    "$REELS_PY" "$VP" set-wpm --config "$REELS_CONFIG" --wpm "$wpm" >/dev/null && note "config.json voice.wpm = $wpm (measured from $speech s of speech in $sample_label)"
+    "$REELS_PY" "$VP" set-wpm --config "$REELS_CHANNEL_ROOT/channel.json" --wpm "$wpm" >/dev/null && note "channel.json config.voice.wpm = $wpm (measured from $speech s of speech in $sample_label)"
   else
     note "the measured pace ($wpm wpm over $speech s) is too short or out of range to set config.json voice.wpm"
   fi

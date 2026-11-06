@@ -29,15 +29,15 @@ ideas_first() { ideas_py first --file "$REELS_IDEAS" "$@"; }
 ideas_id()    { printf '%s' "$1" | ideas_py id; }
 
 ideas_append() {
-  printf '%s' "$1" | ideas_py append --file "$REELS_IDEAS" --root "$REELS_ROOT" --stale "$(ideas_stale)" \
+  printf '%s' "$1" | ideas_py append --file "$REELS_IDEAS" --root "$REELS_CHANNEL_ROOT" --stale "$(ideas_stale)" \
     --source "${2:-runner}"
 }
 
 ideas_remove() {
   if [ $# -ge 2 ]; then
-    printf '%s' "$2" | ideas_py remove --file "$REELS_IDEAS" --root "$REELS_ROOT" --stale "$(ideas_stale)" \
+    printf '%s' "$2" | ideas_py remove --file "$REELS_IDEAS" --root "$REELS_CHANNEL_ROOT" --stale "$(ideas_stale)" \
       --id "$1" --text-stdin
   else
-    ideas_py remove --file "$REELS_IDEAS" --root "$REELS_ROOT" --stale "$(ideas_stale)" --id "$1" </dev/null
+    ideas_py remove --file "$REELS_IDEAS" --root "$REELS_CHANNEL_ROOT" --stale "$(ideas_stale)" --id "$1" </dev/null
   fi
 }

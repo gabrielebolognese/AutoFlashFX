@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# migrate-channels: executes the move manifest of the channels plan (BUILD_SPEC.md 14.13) with the checks, the undo and the log.
+#
+#   bash pipeline/bin/migrate-channels [--ms M18] [--root DIR] [--dry-run]     the moves of the milestone, verified
+#   bash pipeline/bin/migrate-channels --undo [--ms M18] [--root DIR]          the exact reverse, checked against the before-listing
+#   bash pipeline/bin/migrate-channels --verify [--ms M18] [--root DIR]        the verification alone
+#
+# The code is pipeline/lib/migrate.py (its header says what a run does). It refuses to start while any video runner is alive (a
+# channel lock or the old root lock): exit 5 and "stop the video runner (Ctrl+C in its window), then run bash build-runner.sh
+# again". Other exit codes: 0 ok, 2 refused or unusable input, 3 a check failed (everything undone), 4 an undo did not restore
+# the folder. Anything else after the options (--manifest, --build-dir, --plan, --allow-dirty, --min-free-gb, --no-prepare) goes
+# to migrate.py as it is.
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+cmd=run
+root="$REELS_ROOT"
+args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --undo) cmd=undo ;;
+    --verify) cmd=verify ;;
+    --root) root="$2"; args+=(--root "$2"); shift ;;
+    -h|--help) sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) args+=("$1") ;;
+  esac
+  shift
+done
+alive=""
+if [ "$cmd" = run ] || [ "$cmd" = undo ]; then
+  for f in "$root"/.locks/runner/pid "$root"/channels/*/.locks/runner/pid; do
+    [ -f "$f" ] || continue
+    pid=""; { read -r pid _ < "$f"; } 2>/dev/null
+    if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then alive="$alive $f (pid $pid)"; fi
+  done
+fi
+if [ -n "$alive" ]; then
+  echo "migrate-channels: a video runner is alive:$alive" >&2
+  echo "BLOCKED: stop the video runner (Ctrl+C in its window), then run bash build-runner.sh again" >&2
+  exit 5
+fi
+case " ${args[*]:-} " in *" --root "*) ;; *) args+=(--root "$root") ;; esac
+exec "$REELS_PY" "$REELS_PIPELINE/lib/migrate.py" "$cmd" "${args[@]}"

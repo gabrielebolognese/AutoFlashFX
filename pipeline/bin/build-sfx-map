@@ -21,6 +21,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/log.sh"
 source "$LIB/config.sh"
 source "$LIB/state.sh"
@@ -49,8 +50,8 @@ if [ -n "$dir" ]; then
   PACK="$(reels_mixed "$(cd "$dir" && pwd)")"
   MAP="$PACK/sfx-map.json"
 else
-  PACK="$REELS_REPO/$(cfg paths.sfx_dir styles/sfx)"
-  MAP="$REELS_REPO/$(cfg sfx.map styles/sfx/sfx-map.json)"
+  PACK="$(chcfg paths.sfx_dir)"
+  MAP="$(chcfg sfx.map)"
 fi
 [ -d "$PACK" ] || { echo "build-sfx-map: the sound pack folder $PACK is missing (BUILD_SPEC.md 2.6: styles/sfx/ with the sound files)" >&2; exit 2; }
 WORK="$REELS_LOGS/build-sfx-map"

@@ -118,7 +118,7 @@ exp_json="$RUN_DIR/02-expansion/expansion.json"
 [ -f "$judge" ] || stage_fail "06-judge/judge.json is missing: the judge stage did not run"
 [ -f "$facts" ] || stage_fail "01-research/facts.md is missing: the research stage did not run"
 [ -f "$exp_json" ] || stage_fail "02-expansion/expansion.json is missing: the expansion stage did not run"
-style_dir="$REELS_REPO/$(cfg paths.style_dir styles/paper-cards)"
+style_dir="$(chcfg paths.style_dir)"
 voice=""; voice_text="(library/profile/voice.md does not exist yet: assume a direct, plain-spoken creator who talks to developers and builders in short sentences, no hype.)"
 if voice="$(profile_file voice.md)"; then
   voice_text="$(tr -d '\r' < "$voice")"

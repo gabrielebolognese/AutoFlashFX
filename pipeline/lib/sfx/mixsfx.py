@@ -34,6 +34,7 @@ if LIB not in sys.path:
     sys.path.insert(0, LIB)
 from common import clean, load_json, save_json, save_text, setup_streams, winpath  # noqa: E402
 import assign  # noqa: E402
+import paths  # noqa: E402
 import level  # noqa: E402
 import pick  # noqa: E402
 import place  # noqa: E402
@@ -67,18 +68,15 @@ def log(text: str) -> None:
 class Ctx:
     def __init__(self, run_dir: str, stage_dir: str):
         self.repo = (os.environ.get("REELS_REPO") or REPO).replace("\\", "/")
-        self.root = (os.environ.get("REELS_ROOT") or self.repo).replace("\\", "/")
+        self.root = (os.environ.get("REELS_CHANNEL_ROOT") or os.environ.get("REELS_ROOT") or self.repo).replace("\\", "/")
         self.run_dir = winpath(run_dir).replace("\\", "/")
         self.stage_dir = winpath(stage_dir or os.path.join(self.run_dir, "11-sfx")).replace("\\", "/")
-        cfg_path = os.environ.get("REELS_CONFIG") or ""
-        if not cfg_path:
-            cand = f"{self.root}/config.json"
-            cfg_path = cand if os.path.isfile(winpath(cand)) else f"{self.repo}/config.json"
+        cfg_path = os.environ.get("REELS_CONFIG") or f"{self.repo}/config.json"
         self.config = load_json(cfg_path, {}) or {}
-        sfx_rel = str(self.cfg("paths.sfx_dir", "styles/sfx"))
-        self.sfx_dir = (os.environ.get("REELS_SFX_DIR") or f"{self.repo}/{sfx_rel}").replace("\\", "/")
+        sfx_rel = str(self.cfg("paths.sfx_dir"))
+        self.sfx_dir = (os.environ.get("REELS_SFX_DIR") or f"{self.root}/{sfx_rel}").replace("\\", "/")
         self.map_path = f"{self.sfx_dir}/sfx-map.json"
-        self.logs = (os.environ.get("REELS_LOGS") or f"{self.root}/logs").replace("\\", "/")
+        self.logs = (os.environ.get("REELS_LOGS") or f"{self.root}/{paths.LOGS_DIR}").replace("\\", "/")
         state = load_json(f"{self.run_dir}/state.json", {}) or {}
         self.run_id = str(state.get("run_id") or os.path.basename(self.run_dir.rstrip("/")))
         self.idea_id = str((state.get("idea") or {}).get("id") or self.run_id)
@@ -340,7 +338,7 @@ def hook2_events(ctx: Ctx, plan2: dict) -> list[dict] | None:
     except ImportError as exc:
         log(f"hook 2: cannot import the events reader ({exc})")
         return None
-    os.environ.setdefault("REELS_MOTION_LIB", f"{ctx.repo}/{ctx.cfg('paths.motion_lib', 'motion-lib')}")
+    os.environ.setdefault("REELS_MOTION_LIB", f"{ctx.root}/{ctx.cfg('paths.motion_lib')}")
     ev = events_mod.build_events(project, plan2, verify=False)
     return ev.get("events", [])
 

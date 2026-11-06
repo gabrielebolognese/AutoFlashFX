@@ -8,7 +8,7 @@
 Writes DIR/NN-<name>.png (1080 px wide by default, the first screen only; --full-page for the whole page, capped
 at 4 screens) and the sidecar DIR/NN-<name>.json with url, final_url, title, status, width, height, full_page,
 captured (date and time), checked (date). DIR is --out-dir or $REELS_ASSETS_DIR and must sit inside the runs
-folder ($REELS_RUNS, else $REELS_ROOT/runs; the system temp folder only when neither is set): the tool never
+folder ($REELS_RUNS, else runs/ of $REELS_CHANNEL_ROOT; the system temp folder only when neither is set): the tool never
 writes anywhere else, so a model that calls it cannot touch library/, styles/ or ideas.txt through it. The same URL captured twice in one
 folder returns the first capture (--again forces a new one).
 
@@ -36,6 +36,8 @@ import re
 import sys
 import tempfile
 import time
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import paths  # noqa: E402
 
 BLOCK_STATUSES = {401, 403, 429, 503}
 BLOCK_TEXTS = ("just a moment", "verify you are human", "verify that you are human", "access denied",
@@ -68,15 +70,15 @@ def safe_name(name: str) -> str:
 
 
 def allowed_roots() -> list[str]:
-    """Where the tool may write: the runs folder of the state root ($REELS_RUNS, else $REELS_ROOT/runs); the system
+    """Where the tool may write: the runs folder of the channel ($REELS_RUNS, else runs/ of $REELS_CHANNEL_ROOT); the system
     temp folder only when neither is set (a bare call from a shell or a unit test)."""
     roots = []
     runs = os.environ.get("REELS_RUNS")
     if runs:
         roots.append(winpath(runs))
-    root = os.environ.get("REELS_ROOT")
-    if root:
-        roots.append(os.path.join(winpath(root), "runs"))
+    channel_root = os.environ.get("REELS_CHANNEL_ROOT")
+    if channel_root:
+        roots.append(os.path.join(winpath(channel_root), paths.RUNS_DIR))
     if not roots:
         roots.append(tempfile.gettempdir())
     return [os.path.normcase(os.path.abspath(r)) for r in roots]

@@ -30,8 +30,8 @@ for f in 10-build/events.json 10-build/plan.json 10-build/draft.mp4 08-voiceover
   [ -f "$RUN_DIR/$f" ] || stage_fail "$f is missing: the stage that writes it did not run"
 done
 command -v ffmpeg >/dev/null 2>&1 || stage_fail "ffmpeg is not on PATH (the mix is rendered with it)"
-export REELS_SFX_DIR="${REELS_SFX_DIR:-$REELS_REPO/$(cfg paths.sfx_dir styles/sfx)}"
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+export REELS_SFX_DIR="${REELS_SFX_DIR:-$(chcfg paths.sfx_dir)}"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 
 # 1. the memory map, refreshed (BUILD_SPEC.md 2.6 item 9; the contract of this stage)
 if [ "${REELS_SFX_NO_BUILD:-0}" != 1 ]; then

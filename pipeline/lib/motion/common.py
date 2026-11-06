@@ -1,7 +1,7 @@
 """pipeline/lib/motion/common.py: shared helpers of the motion library tools (M9): paths, the component files and
 their declared variables, tokens.json, JSON and text files written with LF.
 
-The library is the HyperFrames project under motion-lib/ (config paths.motion_lib): compositions/<id>.html are the
+The library is the HyperFrames project under the channel's motion-lib/ (config paths.motion_lib): compositions/<id>.html are the
 approved components, candidates/<id>.html the ones that failed the frame match, assets/ the fonts, the vendored
 libraries, the shared CSS and JS, catalog.json the index, gallery/ the human-facing page, stills and frame-match.md.
 """
@@ -14,6 +14,11 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+_LIB = os.path.dirname(HERE)
+if _LIB not in sys.path:
+    sys.path.insert(0, _LIB)
+import paths  # noqa: E402  (the one module that knows the layout: the library and the style are the channel's)
+import config as reels_config  # noqa: E402
 FPS = 30
 CLIP_START_COMPONENTS = ("hero-3d", "icon-3d", "video-card")  # drawn from the hf-seek time: the compiler sets clip_start to the host's data-start (M16: video-card)
 
@@ -32,11 +37,17 @@ def mixed(path: str) -> str:
 
 
 def motion_lib_dir() -> str:
-    return mixed(os.environ.get("REELS_MOTION_LIB") or os.path.join(REPO, "motion-lib"))
+    if os.environ.get("REELS_MOTION_LIB"):
+        return mixed(os.environ["REELS_MOTION_LIB"])
+    paths.require_channel()
+    return mixed(paths.cfg_path(reels_config.load(), "paths.motion_lib"))
 
 
 def style_dir() -> str:
-    return mixed(os.environ.get("REELS_STYLE_DIR") or os.path.join(REPO, "styles", "paper-cards"))
+    if os.environ.get("REELS_STYLE_DIR"):
+        return mixed(os.environ["REELS_STYLE_DIR"])
+    paths.require_channel()
+    return mixed(paths.cfg_path(reels_config.load(), "paths.style_dir"))
 
 
 def tokens_path() -> str:

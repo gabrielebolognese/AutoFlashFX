@@ -87,7 +87,7 @@ ai_next_number() {  # the next NNN in a calls folder
 
 ai_protected_rules() {  # the --disallowedTools rules for the protected files (config review.protected_paths)
   local paths p rules=()
-  paths="$(cfg review.protected_paths '["ideas.txt","library","styles","exports"]' | tr -d '[]"' | tr ',' ' ')"
+  paths="$(cfg review.protected_paths | tr -d '[]"' | tr ',' ' ')"
   for p in $paths; do
     case "$p" in
       *.*) rules+=("Edit($p)" "Write($p)" "MultiEdit($p)") ;;

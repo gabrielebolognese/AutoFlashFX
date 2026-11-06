@@ -141,7 +141,7 @@ runner_write_stopped() {  # runner_write_stopped "<title>" "<diagnosis>" "<fix>"
     echo "## Fix"
     for fix in "$@"; do reels_undash fix; echo "$n. $fix"; n=$((n + 1)); done
     echo
-    echo "Then start the runner again: bash run.sh"
+    echo "Then start the runner again: bash run.sh --channel $REELS_CHANNEL"
   } > "$REELS_LOGS/STOPPED.md"
 }
 
@@ -799,7 +799,7 @@ runner_position() {  # runner_position <k> <queue now> -> "k/total": total count
 
 runner_main() {
   ONCE="${ONCE:-0}"
-  mkdir -p "$REELS_ROOT/runs" "$REELS_ROOT/exports" "$REELS_LOGS" "$REELS_LOCKS"
+  mkdir -p "$REELS_RUNS" "$REELS_EXPORTS" "$REELS_LOGS" "$REELS_LOCKS"
   [ -f "$REELS_IDEAS" ] || : > "$REELS_IDEAS"
   runner_lock_take || return 1
   trap 'runner_on_signal INT' INT
@@ -808,9 +808,6 @@ runner_main() {
   preflight_run || return $?
   runner_load_stages || { say ERROR "cannot load the stage table (pipeline/lib/state.py stages)"; return 1; }
 
-  REELS_RUNS="$REELS_ROOT/$(cfg paths.runs runs)"
-  REELS_EXPORTS="$REELS_ROOT/$(cfg paths.exports exports)"
-  export REELS_RUNS REELS_EXPORTS
   POLL_SECONDS="${REELS_POLL_SECONDS:-$(cfg runner.poll_seconds 120)}"
   HEARTBEAT_EVERY="${REELS_STATUS_EVERY:-$(cfg runner.status_every_seconds 300)}"
   TICK_SECONDS="${REELS_TICK_SECONDS:-1}"
@@ -820,10 +817,15 @@ runner_main() {
   if [ ! -s "$REELS_LOGS/.last-good-sha" ]; then  # the baseline for the error reports' git diff (review.sh)
     git -C "$REELS_REPO" rev-parse HEAD > "$REELS_LOGS/.last-good-sha" 2>/dev/null || rm -f "$REELS_LOGS/.last-good-sha"
   fi
-  if [ -d "$REELS_LOCKS/exports" ]; then
-    rm -rf "$REELS_LOCKS/exports"  # only a runner takes it, and this is the only runner: a leftover from a crash
-    say WARN "removed a leftover exports lock from a previous runner"
+  if [ -d "$REELS_GLOBAL_LOCKS/exports" ]; then  # the numbering lock is global: another channel's runner may hold it right now
+    local xpid="" xrest
+    { read -r xpid xrest < "$REELS_GLOBAL_LOCKS/exports/pid"; } 2>/dev/null || xpid=""
+    if [ -z "$xpid" ] || ! ps -p "$xpid" >/dev/null 2>&1; then
+      rm -rf "$REELS_GLOBAL_LOCKS/exports"  # a leftover from a crash (the holder is gone)
+      say WARN "removed a leftover exports lock from a previous runner"
+    fi
   fi
+  if [ -d "$REELS_LOCKS/exports" ]; then rm -rf "$REELS_LOCKS/exports"; fi  # the lock before M18 lived in the channel's own folder
 
   LOG_ROTATE_CHECKED="$EPOCHSECONDS"; reels_log_rotate || true   # logs/runner.log over logs.rotate_mb (M13)
   runner_banner

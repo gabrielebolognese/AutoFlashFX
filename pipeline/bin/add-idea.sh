@@ -2,11 +2,12 @@
 # add-idea.sh: append ideas to ideas.txt through the queue lock. The only supported way to add an idea while
 # the runner is running (editing the file by hand can race with the runner's own rewrite).
 #
-#   bash pipeline/bin/add-idea.sh "{first idea} {second idea}"
+#   bash pipeline/bin/add-idea.sh [--channel <id>] "{first idea} {second idea}"
 #   bash pipeline/bin/add-idea.sh "an idea without braces"        (braces are added for you)
 #   echo "{an idea}" | bash pipeline/bin/add-idea.sh
 #   bash pipeline/bin/add-idea.sh "{[important] an idea that could blow up}"   (its escalations may use fable)
 #
+# --channel <id> (or REELS_CHANNEL) picks the channel's ideas.txt; with exactly one channel it is the default.
 # Prints one line: "added N idea(s) to ideas.txt (queue: M)", plus ", marked important" for a labelled idea
 # (DECISIONS.md 333: only those ever use fable). Each addition is also recorded in logs/.new-ideas,
 # which the runner reads to print its NEW line.
@@ -16,10 +17,22 @@ source "$REELS_PIPELINE/lib/config.sh"
 source "$REELS_PIPELINE/lib/ideas.sh"
 
 input=""
+args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --channel) [ $# -ge 2 ] || { echo "add-idea: --channel needs an id" >&2; exit 2; }; reels_set_channel "$2" || exit 2; shift ;;
+    --channel=*) reels_set_channel "${1#--channel=}" || exit 2 ;;
+    -h|--help) sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) args+=("$1") ;;
+  esac
+  shift
+done
+reels_require_channel
+set -- "${args[@]+"${args[@]}"}"
 if [ $# -gt 0 ]; then
   for arg in "$@"; do
     case "$arg" in
-      -h|--help) sed -n '2,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+      -h|--help) sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
       *\{*) input="${input}${arg}"$'\n' ;;
       *) input="${input}{${arg}}"$'\n' ;;
     esac
@@ -42,5 +55,5 @@ source_name="${REELS_SOURCE:-}"
 if [ -z "$source_name" ]; then
   if [ -n "${CLAUDECODE:-}" ]; then source_name="Claude Code"; else source_name="add-idea.sh"; fi
 fi
-printf '%s' "$input" | ideas_py append --file "$REELS_IDEAS" --root "$REELS_ROOT" --stale "$(ideas_stale)" \
+printf '%s' "$input" | ideas_py append --file "$REELS_IDEAS" --root "$REELS_CHANNEL_ROOT" --stale "$(ideas_stale)" \
   --source "$source_name" --plain

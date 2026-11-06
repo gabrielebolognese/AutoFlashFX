@@ -28,7 +28,7 @@ exp_json="$RUN_DIR/02-expansion/expansion.json"
 JUDGE="$LIB/judge.py"
 VENDOR="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)"
 [ -f "$VENDOR/hookscore.py" ] || stage_fail "$VENDOR/hookscore.py is missing (the vendored instagram-agent-skill scripts, BUILD_SPEC.md section 10)"
-STATS="$REELS_ROOT/$(cfg paths.library library)/.hooks.stats.json"
+STATS="$(chcfg paths.library)/.hooks.stats.json"
 min_score="$(cfg judge.min_hookscore 50)"; min_surv="$(cfg judge.min_survivors 4)"; top_n="$(cfg judge.top_n 4)"
 timeout_s="$(cfg timeouts.judge_seconds 900)"
 

@@ -8,9 +8,10 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/config.sh"
 for a in "$@"; do case "$a" in -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac; done
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 [ -f "$REELS_MOTION_LIB/catalog.json" ] || "$REELS_PY" "$LIB/motion" catalog --write >/dev/null || exit 2
 args=("$@")
 if ! printf '%s\n' "$@" | grep -q -- '--gpu' && [ -f "$REELS_MOTION_LIB/webgl.json" ]; then

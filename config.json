@@ -1,6 +1,5 @@
 {
   "version": "0.1.0",
-  "style": "paper-cards",
   "models": {
     "research": {
       "model": "sonnet",
@@ -97,139 +96,6 @@
     "overrun_min_s": 0.4,
     "lead_s": 0.05,
     "tail_s": 0.2
-  },
-  "voice": {
-    "wpm": 186,
-    "loudness_lufs": -14,
-    "true_peak_dbtp": -1.5
-  },
-  "sfx": {
-    "map": "styles/sfx/sfx-map.json",
-    "normalize_peak_dbfs": -12,
-    "base_gain_db": {
-      "transition_slow": -8,
-      "transition_fast": -8,
-      "attention": -12,
-      "hero_enter": -10,
-      "ui_click": -14,
-      "stamp": -8,
-      "number": -14,
-      "success": -10,
-      "typing": -16,
-      "negative": -10,
-      "hook_hit": -6,
-      "notification": -10
-    },
-    "max_per_10s": 4,
-    "min_spacing_ms": 250,
-    "min_db_under_voice": 8,
-    "attention_interval_s": [
-      8,
-      12
-    ],
-    "slow_transition_ms": 400,
-    "sync_tolerance_ms": 33,
-    "build": {
-      "pool_size": [
-        5,
-        8
-      ],
-      "min_pool": 3,
-      "min_confidence": 0.6,
-      "min_fit": 0.25,
-      "preview_gap_s": 1.0,
-      "whoosh": {
-        "fast_max_s": 0.35,
-        "fast_sharp_max_s": 0.6,
-        "sharp_attack_s": 0.08,
-        "slow_min_s": 0.8,
-        "swell_attack_s": 0.2,
-        "long_min_s": 1.5
-      },
-      "quality": {
-        "clip_runs": 10,
-        "min_snr_db": 30,
-        "min_snr_duration_s": 0.5,
-        "too_long_factor": 2,
-        "max_effective_s": 5,
-        "silent_dbfs": -60
-      },
-      "cue_windows": {
-        "transition_slow": [
-          0.4,
-          2.5
-        ],
-        "transition_fast": [
-          0.08,
-          0.8
-        ],
-        "attention": [
-          0.08,
-          0.7
-        ],
-        "hero_enter": [
-          0.03,
-          0.7
-        ],
-        "ui_click": [
-          0.01,
-          0.4
-        ],
-        "stamp": [
-          0.05,
-          1.0
-        ],
-        "number": [
-          0.01,
-          0.35
-        ],
-        "success": [
-          0.1,
-          1.8
-        ],
-        "typing": [
-          0.4,
-          30
-        ],
-        "negative": [
-          0.08,
-          1.8
-        ],
-        "hook_hit": [
-          0.2,
-          2.5
-        ],
-        "notification": [
-          0.15,
-          2.5
-        ]
-      }
-    },
-    "calm_beats": [
-      "stake",
-      "pain-payoff"
-    ],
-    "attention_gap_s": 6,
-    "attention_min_start_ms": 2000,
-    "series_gap_ms": 2000,
-    "fade_ms": 30,
-    "tail_guard_ms": 50,
-    "voice_window_ms": 600,
-    "voice_floor_under_peak_db": 12,
-    "verify_passes": 5,
-    "recent_reels": 2,
-    "max_shift_ms": 150,
-    "peak_search_ms": 500
-  },
-  "lengths": {
-    "default_s": [
-      25,
-      40
-    ],
-    "list_s": [
-      45,
-      75
-    ]
   },
   "research": {
     "tools": "WebSearch WebFetch Read Bash",
@@ -418,12 +284,12 @@
     "fixer_tools": "Read Glob Grep Edit Write Bash",
     "fixer_paths": [
       "pipeline",
-      "motion-lib/candidates"
+      "channels/{channel}/motion-lib/candidates"
     ],
     "protected_paths": [
-      "ideas.txt",
-      "library",
-      "styles",
+      "channels/*/ideas.txt",
+      "channels/*/library",
+      "channels/*/styles",
       "exports"
     ],
     "settle_ms": 600,
@@ -460,21 +326,7 @@
     "min_free_gb": 10
   },
   "paths": {
-    "ideas": "ideas.txt",
-    "runs": "runs",
     "exports": "exports",
-    "logs": "logs",
-    "locks": ".locks",
-    "library": "library",
-    "hooks": "library/hooks.txt",
-    "profile": "library/profile",
-    "voice_dir": "library/voice",
-    "styles": "styles",
-    "style_dir": "styles/paper-cards",
-    "tokens": "styles/paper-cards/tokens.json",
-    "sfx_dir": "styles/sfx",
-    "motion_lib": "motion-lib",
-    "golden": "golden",
     "vendor": "pipeline/vendor/ig-agent-skill",
     "known_issues": "pipeline/knowledge/known-issues.md",
     "venv_python": ".venv-tts/Scripts/python.exe",
@@ -532,38 +384,44 @@
       },
       {
         "check": "voice",
-        "fix": "write library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"
+        "fix": "write channels/{channel}/library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"
       },
       {
         "check": "file",
         "path": "styles/sfx/sfx-map.json",
+        "in_channel": true,
         "level": "warn",
-        "fix": "bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW)"
+        "fix": "bash pipeline/bin/build-sfx-map (measures channels/{channel}/styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW)"
       },
       {
         "check": "file",
         "path": "styles/paper-cards/style.md",
-        "fix": "restore it: git checkout -- styles/paper-cards/style.md"
+        "in_channel": true,
+        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/style.md"
       },
       {
         "check": "file",
         "path": "styles/paper-cards/tweaks.md",
-        "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"
+        "in_channel": true,
+        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/tweaks.md"
       },
       {
         "check": "file",
         "path": "styles/paper-cards/vocabulary.md",
-        "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"
+        "in_channel": true,
+        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/vocabulary.md"
       },
       {
         "check": "file",
         "path": "styles/paper-cards/tokens.json",
+        "in_channel": true,
         "fix": "bash pipeline/bin/build-tokens (derives tokens.json from style.md plus tweaks.md; the visual stages read it)"
       },
       {
         "check": "file",
         "path": "motion-lib/catalog.json",
-        "fix": "restore the motion library: git checkout -- motion-lib, then python pipeline/lib/motion catalog --write"
+        "in_channel": true,
+        "fix": "restore the motion library: git checkout -- channels/{channel}/motion-lib, then python pipeline/lib/motion catalog --write"
       },
       {
         "check": "file",
@@ -572,13 +430,13 @@
       },
       {
         "check": "brand",
-        "fix": "restore the FlashFX brand kit: git checkout -- library/brand (brand.json and every logo file it lists; BUILD_SPEC.md 2.7)"
+        "fix": "restore the brand kit: git checkout -- channels/{channel}/library/brand (brand.json and every logo file it lists; BUILD_SPEC.md 2.7)"
       },
       {
         "check": "file",
         "path": "library/hooks.txt",
-        "in_root": true,
-        "fix": "restore it: git checkout -- library/hooks.txt (one hook per line, __ marks the blank)"
+        "in_channel": true,
+        "fix": "restore it: git checkout -- channels/{channel}/library/hooks.txt (one hook per line, __ marks the blank)"
       },
       {
         "check": "disk",

@@ -21,6 +21,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/config.sh"
 
 do_check=0; do_whisper=0; do_kokoro=0; force=0
@@ -98,7 +99,7 @@ if [ "$do_check" = 1 ]; then
     rc=1
     if [ "$auto" = 1 ]; then
       case "$out" in *"faster_whisper"*) do_whisper=1 ;; esac
-      engine_file="$REELS_ROOT/$(cfg paths.voice_dir library/voice)/engine.txt"
+      engine_file="$(chcfg paths.voice_dir)/engine.txt"
       if [ ! -f "$engine_file" ] && ! [ -f "$KOKORO_PY" ]; then do_kokoro=1; fi
       case "$out" in *"cannot import kokoro"*|*"does not exist"*) [ -f "$engine_file" ] && echo "library/voice/engine.txt exists: its interpreter is yours, nothing is installed here (BUILD_SPEC.md M7); fix the python line or run setup-venv --kokoro and point engine.txt at $KOKORO_PY" ;; esac
     fi

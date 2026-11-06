@@ -38,7 +38,7 @@ runner_banner() {
   fallback="none"  # one voice per reel, no fallback (BUILD_SPEC.md 2.5)
   queue="$(ideas_count 2>/dev/null || echo 0)"
   queue="${queue:-0}"
-  sfx_map="$REELS_REPO/$(cfg sfx.map styles/sfx/sfx-map.json)"
+  sfx_map="$(chcfg sfx.map)"
   if [ -f "$sfx_map" ]; then
     sfx_count="$("$REELS_PY" -c 'import json, sys
 m = json.load(open(sys.argv[1], encoding="utf-8-sig"))
@@ -46,7 +46,7 @@ print(len(m.get("files", [])), "files")' "$sfx_map" 2>/dev/null || echo "unreada
   fi
   sha="$(git -C "$REELS_REPO" rev-parse --short HEAD 2>/dev/null || true)"
   say START "reels autopilot v${version}${sha:+ (${sha})} | queue: $queue $(plural "$queue" idea) | style: $style | voice: $primary | sfx map: $sfx_count"
-  say INFO "root: $REELS_ROOT | mode: $([ "${ONCE:-0}" = 1 ] && echo "once (stops when the queue is empty)" || echo "forever (Ctrl+C stops it, a restart resumes)")${REELS_DUMMY:+ | dummy stages: $REELS_DUMMY}"
+  say INFO "root: $REELS_ROOT | channel: $REELS_CHANNEL | mode: $([ "${ONCE:-0}" = 1 ] && echo "once (stops when the queue is empty)" || echo "forever (Ctrl+C stops it, a restart resumes)")${REELS_DUMMY:+ | dummy stages: $REELS_DUMMY}"
   if [ "$queue" -gt 0 ]; then
     local n=0 id text
     while IFS=$'\t' read -r id text; do

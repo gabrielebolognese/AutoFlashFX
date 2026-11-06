@@ -36,6 +36,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from errors import undash  # noqa: E402
 import solution as solution_lib  # noqa: E402
+import paths  # noqa: E402
+import config as reels_config  # noqa: E402
 
 STAGE = "14-export"
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -200,7 +202,7 @@ def gather(run_dir: str, config: dict) -> dict:
         "solution": {"type": stype, "name": clean((sol or {}).get("name")), "url": clean((sol or {}).get("url"))},
         "solution_line": solution_lib.line_text(sol), "solution_rules": rules,
         "beats": "\n".join(beats) or "(no script beats found)", "one_idea": clean(one_idea[:1500], one_line=False) or "(no brief)",
-        "voice": voice_hints(read_text(os.path.join(os.environ.get("REELS_ROOT") or REPO, "library", "profile", "voice.md"))),
+        "voice": voice_hints(read_text(os.path.join(paths.cfg_path(reels_config.load(), "paths.profile"), "voice.md"))),
         "hashtag_min": int(tags[0]), "hashtag_max": int(tags[1]), "body_min": int(body[0]), "body_max": int(body[1]),
         "first_line_max": int(cap_cfg.get("first_line_max_chars", 125)),
         "needs_review": [f"{f.get('stage', '?')}: {clean(f.get('text'))}" for f in flags if isinstance(f, dict) and clean(f.get("text"))],

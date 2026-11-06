@@ -24,13 +24,14 @@ Engines:
 
 import argparse
 import json
+import os
 import random
 import re
 import shutil
 import sys
 from pathlib import Path
 
-DEFAULT_REF = Path("library/voice/reference.wav")
+DEFAULT_REF = Path(os.environ.get("REELS_LIBRARY", ".")) / "voice" / "reference.wav"   # the channel's library (pipeline/lib/paths.sh)
 
 
 def sentences(text, max_len=250):

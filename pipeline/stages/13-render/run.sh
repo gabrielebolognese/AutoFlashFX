@@ -30,7 +30,7 @@ done
 for tool in ffmpeg ffprobe node; do
   command -v "$tool" >/dev/null 2>&1 || stage_fail "$tool is not on PATH (the final render needs HyperFrames and ffmpeg)"
 done
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 
 ERR_FILE="$OUT/.last-error"
 rm -f "$ERR_FILE"

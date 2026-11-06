@@ -52,7 +52,7 @@ relay() {  # the Python's stdout: relay lines become runner actions, everything 
 
 REELS_BASH="$(reels_mixed "${BASH:-bash}")"; export REELS_BASH   # Git's bash for the S7 rewrite call (a Windows Python's bare `bash` is the WSL launcher)
 set -o pipefail
-"$REELS_PY" "$LIB/voiceover.py" --config "$REELS_CONFIG" --root "$REELS_ROOT" --repo "$REELS_REPO" \
+"$REELS_PY" "$LIB/voiceover.py" --config "$REELS_CONFIG" --root "$REELS_CHANNEL_ROOT" --repo "$REELS_REPO" \
   run "$RUN_DIR" --stage-dir "$OUT" --s7 "$S7" 2>&1 | relay
 rc=${PIPESTATUS[0]}
 set +o pipefail

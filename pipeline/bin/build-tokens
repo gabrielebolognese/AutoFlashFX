@@ -16,6 +16,7 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/config.sh"
 
 force=0; check=0; verify=0; quiet=0; style_dir=""; out=""; css=""
@@ -33,13 +34,13 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
-[ -n "$style_dir" ] || style_dir="$REELS_REPO/$(cfg paths.style_dir styles/paper-cards)"
-[ -n "$out" ] || out="$REELS_REPO/$(cfg paths.tokens styles/paper-cards/tokens.json)"
+[ -n "$style_dir" ] || style_dir="$(chcfg paths.style_dir)"
+[ -n "$out" ] || out="$(chcfg paths.tokens)"
 if [ -z "$css" ]; then
-  css="$REELS_REPO/$(cfg paths.motion_lib motion-lib)/assets/tokens.css"
+  css="$(chcfg paths.motion_lib)/assets/tokens.css"
 fi
 style_dir="$(reels_mixed "$style_dir")"
-fonts_dir="$REELS_REPO/$(cfg paths.motion_lib motion-lib)/assets/fonts"
+fonts_dir="$(chcfg paths.motion_lib)/assets/fonts"
 TOK="$LIB/tokens.py"
 
 if [ "$check" = 1 ]; then

@@ -32,7 +32,7 @@ done
 command -v ffmpeg >/dev/null 2>&1 || stage_fail "ffmpeg is not on PATH (the draft is downscaled with it)"
 command -v ffprobe >/dev/null 2>&1 || stage_fail "ffprobe is not on PATH"
 [ -f "$REELS_REPO/node_modules/hyperframes/package.json" ] || stage_fail "node_modules/hyperframes is missing: bash pipeline/bin/setup-node"
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 [ -f "$REELS_MOTION_LIB/catalog.json" ] || stage_fail "$REELS_MOTION_LIB/catalog.json is missing: python pipeline/lib/motion catalog --write"
 ERR_FILE="$OUT/.last-error"
 rm -f "$ERR_FILE"

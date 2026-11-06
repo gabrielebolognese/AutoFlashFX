@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/schemas/channel.schema.json",
+  "title": "channels/<id>/channel.json (BUILD_SPEC.md 14.4)",
+  "type": "object",
+  "required": ["id", "name", "platform", "format"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]{1,23}$" },
+    "name": { "type": "string", "minLength": 1 },
+    "platform": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "instagram-reels, youtube-shorts (reserved: youtube-long)" },
+    "format": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "problem-solution-reel, serial-story (reserved: footage-short, vlog-long, interactive-story)" },
+    "language": { "type": "string", "minLength": 2 },
+    "timezone": { "type": "string" },
+    "enabled": { "type": "boolean" },
+    "daily_quota": { "type": "integer", "minimum": 0 },
+    "brand": {
+      "type": "object",
+      "properties": { "display_name": { "type": "string" }, "handle": { "type": "string" } },
+      "additionalProperties": true
+    },
+    "export": { "type": "object" },
+    "sources": {
+      "type": "object",
+      "properties": { "refs": { "type": "string" }, "sfx": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "config": {
+      "type": "object",
+      "description": "a partial config.json for this channel; the safety keys of review cannot be overridden",
+      "properties": {
+        "paths": {
+          "type": "object",
+          "propertyNames": { "enum": ["ideas", "runs", "logs", "locks", "library", "hooks", "profile", "voice_dir", "styles", "style_dir", "tokens", "sfx_dir", "motion_lib", "golden"] },
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
+        "review": { "type": "object" }
+      }
+    }
+  },
+  "additionalProperties": true
+}

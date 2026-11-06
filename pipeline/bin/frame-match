@@ -16,10 +16,11 @@ set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB="$(cd "$HERE/../lib" && pwd)"
 source "$LIB/common.sh"
+reels_require_channel
 source "$LIB/config.sh"
 for a in "$@"; do case "$a" in -h|--help) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;; esac; done
-[ -f "$REELS_REPO/$(cfg paths.tokens styles/paper-cards/tokens.json)" ] || bash "$HERE/build-tokens" --quiet || exit 2
-export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$REELS_REPO/$(cfg paths.motion_lib motion-lib)}"
+[ -f "$(chcfg paths.tokens)" ] || bash "$HERE/build-tokens" --quiet || exit 2
+export REELS_MOTION_LIB="${REELS_MOTION_LIB:-$(chcfg paths.motion_lib)}"
 args=("$@")
 if ! printf '%s\n' "$@" | grep -q -- '--gpu' && [ -f "$REELS_MOTION_LIB/webgl.json" ]; then
   mode="$("$REELS_PY" -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("harness_gpu", "auto"))' "$REELS_MOTION_LIB/webgl.json" 2>/dev/null || echo auto)"

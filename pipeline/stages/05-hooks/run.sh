@@ -41,7 +41,7 @@ exp_json="$RUN_DIR/02-expansion/expansion.json"
 # the hooks index, rebuilt only when library/hooks.txt changed (BUILD_SPEC.md 2.2: before every hooks stage)
 bash "$REELS_PIPELINE/bin/index-hooks" --quiet >> "$OUT/index-hooks.log" 2>&1 \
   || stage_fail "index-hooks failed (exit $?): $(tail -n 1 "$OUT/index-hooks.log" 2>/dev/null)"
-lib_dir="$REELS_ROOT/$(cfg paths.library library)"
+lib_dir="$(chcfg paths.library)"
 INDEX="$lib_dir/.hooks.index.json"
 STATS="$lib_dir/.hooks.stats.json"
 VENDOR_HOOKS="$REELS_REPO/$(cfg paths.vendor pipeline/vendor/ig-agent-skill)/hooks.json"

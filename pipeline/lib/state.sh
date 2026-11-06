@@ -25,8 +25,8 @@
 state_py() { "$REELS_PY" "$REELS_PIPELINE/lib/state.py" "$@"; }
 
 state_stages()      { state_py stages; }
-state_new()         { printf '%s' "$2" | state_py new --runs "${REELS_RUNS:-$REELS_ROOT/runs}" --id "$1"; }
-state_unfinished()  { state_py unfinished --runs "${REELS_RUNS:-$REELS_ROOT/runs}"; }
+state_new()         { printf '%s' "$2" | state_py new --runs "$REELS_RUNS" --id "$1"; }
+state_unfinished()  { state_py unfinished --runs "$REELS_RUNS"; }
 state_pickup()      { state_py pickup "$1"; }
 state_summary()     { state_py summary "$1"; }
 state_next()        { state_py next "$1"; }

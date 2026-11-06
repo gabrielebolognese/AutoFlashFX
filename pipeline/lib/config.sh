@@ -1,4 +1,5 @@
-# pipeline/lib/config.sh: read config.json. Source common.sh first.
+# pipeline/lib/config.sh: read the resolved config (config.json + the format's config + channel.json, BUILD_SPEC.md 14.4;
+# REELS_CONFIG, made current by common.sh's reels_config_refresh at every call). Source common.sh first.
 #
 #   cfg <dotted.key> [default]      prints the value: scalars as text, true/false, lists and objects as JSON.
 #                                   Missing key: prints the default when given, else fails with exit 1.
@@ -9,6 +10,7 @@
 # Model names and effort levels come from here and never from code (BUILD_SPEC.md section 3).
 
 cfg() {
+  reels_config_refresh 2>/dev/null
   "$REELS_PY" - "$REELS_CONFIG" "$1" "${2-}" "$#" <<'EOF'
 import json, sys
 sys.stdout.reconfigure(newline="\n")  # Windows Python writes CRLF to pipes otherwise
@@ -38,6 +40,7 @@ EOF
 }
 
 cfg_rows() {
+  reels_config_refresh 2>/dev/null
   "$REELS_PY" - "$REELS_CONFIG" "$@" <<'EOF'
 import json, sys
 sys.stdout.reconfigure(newline="\n")  # Windows Python writes CRLF to pipes otherwise
@@ -59,4 +62,15 @@ for row in cur if isinstance(cur, list) else []:
         values.append("" if value is None else str(value))
     print("\x1f".join(values))
 EOF
+}
+
+cfg_channel_enabled() {  # true or false: channel.json "enabled" of REELS_CHANNEL (true when absent)
+  "$REELS_PY" - "$REELS_CHANNEL_ROOT/channel.json" <<'PYEOF'
+import json, sys
+try:
+    with open(sys.argv[1], encoding="utf-8-sig") as f:
+        print("false" if json.load(f).get("enabled", True) is False else "true")
+except (OSError, ValueError):
+    print("true")
+PYEOF
 }

@@ -51,7 +51,7 @@ blocked_add() {
   reels_undash raw; reels_undash reason
   mkdir -p "$REELS_LOGS"
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1
-  rel="${run_dir#"$REELS_ROOT"/}"
+  rel="${run_dir#"$REELS_CHANNEL_ROOT"/}"
   {
     printf '# %s | blocked at %s | %s%s\n' "$stamp" "$stage" "$reason" "${rel:+ | $rel}"
     printf '{%s}\n' "$raw"

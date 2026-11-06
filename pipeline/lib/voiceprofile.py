@@ -22,7 +22,7 @@ inside `transcribe`.
         How I promote and the FlashFX spelling line, any section the user added, any section filled by hand that
         the rebuild only has placeholders for, the measured pace and excerpts when nothing was measured); the JSON
         output lists them in "kept"
-  voiceprofile.py set-wpm --config config.json --wpm N        rewrite voice.wpm in place, keeping the layout
+  voiceprofile.py set-wpm --config channels/<id>/channel.json --wpm N        rewrite voice.wpm in place, keeping the layout
   voiceprofile.py is-draft FILE                                exit 0 when the file still holds a [FILL IN]
 
 Texts from the model and from the transcript are cleaned of em dashes (errors.undash). Paths may be C:/... or
@@ -532,7 +532,7 @@ def cmd_set_wpm(args) -> int:
     raw = read_text(path)
     new, n = re.subn(r'("wpm"\s*:\s*)\d+', lambda m: m.group(1) + str(int(args.wpm)), raw, count=1)
     if n == 0:
-        print("voiceprofile.py set-wpm: no \"wpm\" key in config.json", file=sys.stderr)
+        print("voiceprofile.py set-wpm: no \"wpm\" key in the file", file=sys.stderr)
         return 2
     if new != raw:
         save_text(path, new)

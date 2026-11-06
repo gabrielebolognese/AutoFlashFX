@@ -216,7 +216,7 @@ def run_digest(args) -> int:
     if args.which == "animations":
         out["timeline"] = timeline_md(inp)
         out["catalog"] = catalog_md(cat)
-        out["golden"] = golden_md(os.path.join(common.REPO, str(common.cfg(inp.config, "paths.golden", "golden")), "test-idea"))
+        out["golden"] = golden_md(os.path.join(common.mcommon.paths.cfg_path(inp.config, "paths.golden"), "test-idea"))
         out["assets"] = assets_md(inp)
         out["solution"] = solution_md(inp, brand, toks)
     else:
@@ -233,7 +233,7 @@ def run_digest(args) -> int:
             plan_b_path = os.path.join(args.run_dir, "09b-text", "plan.json")
             merged = plan_merge.merge(plan_a, common.load_json(plan_b_path) if os.path.isfile(plan_b_path) else None, None, toks)
             out["transitions"] = transitions_md(merged, toks)
-            out["golden"] = golden_md(os.path.join(common.REPO, str(common.cfg(inp.config, "paths.golden", "golden")), "test-idea"))
+            out["golden"] = golden_md(os.path.join(common.mcommon.paths.cfg_path(inp.config, "paths.golden"), "test-idea"))
     for name, text in out.items():
         common.write_text(os.path.join(args.out, name + ".md"), common.undash(text))
     print(json.dumps({"ok": True, "files": sorted(out), "solution": inp.solution_info(), "idea_id": inp.idea_id}))

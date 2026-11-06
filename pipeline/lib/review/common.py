@@ -84,7 +84,7 @@ class Ctx:
 
     def __init__(self, run_dir: str, stage_dir: str = ""):
         self.repo = (os.environ.get("REELS_REPO") or REPO).replace("\\", "/")
-        self.root = (os.environ.get("REELS_ROOT") or self.repo).replace("\\", "/")
+        self.root = (os.environ.get("REELS_CHANNEL_ROOT") or os.environ.get("REELS_ROOT") or self.repo).replace("\\", "/")
         self.run_dir = mixed(run_dir)
         self.stage_dir = mixed(stage_dir or os.path.join(self.run_dir, "12-review"))
         self.config = vcommon.load_config()

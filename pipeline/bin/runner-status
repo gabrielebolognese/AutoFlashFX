@@ -1,33 +1,73 @@
 #!/usr/bin/env bash
-# runner-status: what is the runner doing? Prints whether a runner is alive, logs/status.txt (the latest status
-# line) and the last 20 lines of logs/runner.log. Mentions logs/STOPPED.md and logs/blocked.txt when they exist.
-#   bash pipeline/bin/runner-status [N]      N: lines of the log to show (default 20)
+# runner-status: what is each runner doing? Per channel: whether its runner is alive, logs/status.txt (the latest status
+# line) and the last lines of logs/runner.log; mentions logs/STOPPED.md and logs/blocked.txt when they exist. Without
+# arguments: one block per channel (BUILD_SPEC.md 14.6) and the global locks.
+#   bash pipeline/bin/runner-status [--channel <id>] [N]      N: lines of the log to show (default 20)
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
-n="${1:-20}"
-pid=""
-if [ -f "$REELS_LOCKS/runner/pid" ]; then read -r pid _ < "$REELS_LOCKS/runner/pid" || true; fi
-if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then
-  echo "runner: running (pid $pid)"
-elif [ -n "$pid" ]; then
-  echo "runner: not running (its last lock belonged to pid $pid, which is gone)"
-else
-  echo "runner: not running"
+n=20
+want="${REELS_CHANNEL:-}"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --channel) [ $# -ge 2 ] || { echo "runner-status: --channel needs an id" >&2; exit 2; }; want="$2"; shift ;;
+    --channel=*) want="${1#--channel=}" ;;
+    *[!0-9]*) echo "runner-status: unknown argument '$1' (use --channel <id> and a number of log lines)" >&2; exit 2 ;;
+    *) n="$1" ;;
+  esac
+  shift
+done
+
+channel_block() {  # channel_block <id> <lines>
+  local id="$1" lines="$2" pid="" st
+  reels_set_channel "$id" || return 1
+  if [ -f "$REELS_LOCKS/runner/pid" ]; then read -r pid _ < "$REELS_LOCKS/runner/pid" || true; fi
+  if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then
+    echo "runner: running (pid $pid)"
+  elif [ -n "$pid" ]; then
+    echo "runner: not running (its last lock belonged to pid $pid, which is gone)"
+  else
+    echo "runner: not running"
+  fi
+  if [ -f "$REELS_LOGS/status.txt" ] || { sleep 0.2; [ -f "$REELS_LOGS/status.txt" ]; }; then
+    # say() renames a new status.txt into place, so it can be missing for a moment: one more read after a pause
+    st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)" || { sleep 0.2; st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)"; }
+    echo "status: $st"
+  else
+    echo "status: no logs/status.txt yet (the runner has never started here)"
+  fi
+  [ -f "$REELS_LOGS/STOPPED.md" ] && echo "STOPPED: logs/STOPPED.md exists, read it for the diagnosis and the fix"
+  [ -s "$REELS_LOGS/blocked.txt" ] && echo "blocked: $(grep -c '^#' "$REELS_LOGS/blocked.txt") idea(s) in logs/blocked.txt"
+  if [ -f "$REELS_LOGS/runner.log" ]; then
+    echo "last $lines lines of logs/runner.log:"
+    tail -n "$lines" "$REELS_LOGS/runner.log"
+  else
+    echo "no logs/runner.log yet"
+  fi
+}
+
+if [ -n "$want" ]; then
+  if ! reels_valid_channel_id "$want" || [ ! -f "$REELS_CHANNELS_DIR/$want/channel.json" ]; then
+    echo "runner-status: unknown channel '$want'. Channels:" >&2; reels_channel_list_text >&2; exit 2
+  fi
+  channel_block "$want" "$n"
+  exit 0
 fi
-if [ -f "$REELS_LOGS/status.txt" ] || { sleep 0.2; [ -f "$REELS_LOGS/status.txt" ]; }; then
-  # say() renames a new status.txt into place, so it can be missing for a moment: one more read after a pause
-  st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)" || { sleep 0.2; st="$(cat "$REELS_LOGS/status.txt" 2>/dev/null)"; }
-  echo "status: $st"
-else
-  echo "status: no logs/status.txt yet (the runner has never started here)"
-fi
-[ -f "$REELS_LOGS/STOPPED.md" ] && echo "STOPPED: logs/STOPPED.md exists, read it for the diagnosis and the fix"
-[ -s "$REELS_LOGS/blocked.txt" ] && echo "blocked: $(grep -c '^#' "$REELS_LOGS/blocked.txt") idea(s) in logs/blocked.txt"
+ids="$(reels_channel_ids)"
+if [ -z "$ids" ]; then echo "no channel under channels/ (BUILD_SPEC.md 14.3)"; exit 0; fi
+first=1
+for id in $ids; do
+  [ "$first" = 1 ] || echo
+  first=0
+  echo "== channel $id =="
+  channel_block "$id" "$n"
+done
 echo
-if [ -f "$REELS_LOGS/runner.log" ]; then
-  echo "last $n lines of logs/runner.log:"
-  tail -n "$n" "$REELS_LOGS/runner.log"
-else
-  echo "no logs/runner.log yet"
-fi
+echo "global locks ($REELS_GLOBAL_LOCKS):"
+found=0
+for d in "$REELS_GLOBAL_LOCKS"/*/; do
+  [ -d "$d" ] || continue
+  found=1; pid=""; { read -r pid _ < "${d}pid"; } 2>/dev/null
+  if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then echo "  $(basename "$d"): held by pid $pid"; else echo "  $(basename "$d"): stale (pid ${pid:-?} gone)"; fi
+done
+[ "$found" = 1 ] || echo "  none held"
 exit 0

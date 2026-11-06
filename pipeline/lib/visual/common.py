@@ -79,6 +79,10 @@ def undash(text: str) -> str:
 # ------------------------------------------------------------------------------------------------ the style and the library
 
 def config_path() -> str:
+    """The resolved config (REELS_CONFIG, made by pipeline/lib/config.py), else the engine config.json."""
+    env = os.environ.get("REELS_CONFIG")
+    if env and os.path.isfile(env):
+        return env
     root = os.environ.get("REELS_ROOT") or REPO
     for p in (os.path.join(root, "config.json"), os.path.join(REPO, "config.json")):
         if os.path.isfile(p):
@@ -117,7 +121,10 @@ def catalog_by_id(cat: dict) -> dict:
 
 
 def brand_dir() -> str:
-    return mixed(os.environ.get("REELS_BRAND_DIR") or os.path.join(REPO, "library", "brand"))
+    if os.environ.get("REELS_BRAND_DIR"):
+        return mixed(os.environ["REELS_BRAND_DIR"])
+    mcommon.paths.require_channel()
+    return mixed(mcommon.paths.brand())
 
 
 def brand_json(path: str = "") -> dict:
