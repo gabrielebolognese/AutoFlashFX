@@ -1,0 +1,59 @@
+
+== 1. channel.json and the resolved config ==
+PASS  channel.json of flashfx is valid against pipeline/schemas/channel.schema.json
+PASS  validate fails: an id with a capital and a hyphen
+PASS  validate fails: an id that is not the folder name
+PASS  validate fails: no platform
+PASS  validate fails: no format
+PASS  validate fails: a quota that is not a number
+PASS  validate fails: a channel path key nobody knows
+PASS  validate fails: a safety key of review overridden by the channel
+PASS  validate fails: a source folder that is not text
+PASS  config.json has none of the channel-owned keys and keeps the engine keys and the four safety keys
+PASS  channel.json holds style, voice, sfx, lengths and the 14 paths with their old values
+PASS  the resolved config merges engine and channel: objects key by key, arrays replace, safety keys untouched
+PASS  a channel cannot override a safety key: the resolved config ignores it
+PASS  overrides lists the engine keys the channel sets (models, runner), not the channel's own or the format's
+PASS  doctor prints every engine key the channel overrides
+PASS  cfg reads voice.wpm from channel.json (the resolved config)
+PASS  an edit of channel.json shows at the next cfg call (the resolved file is made again)
+PASS  an edit of config.json shows at the next cfg call too
+PASS  without a channel cfg reads the engine config.json
+
+== 8. the real migration ==
+PASS  build/M18/dry-run.txt exists
+PASS  build/M18/move-manifest.tsv exists
+PASS  build/M18/manifest-diff.md exists
+PASS  build/M18/migration-log.tsv exists
+PASS  build/M18/undo-migration.sh exists
+PASS  build/M18/before-listing.tsv exists
+PASS  build/M18/migration-run.txt exists
+PASS  the migration's log ends verified
+PASS  the saved dry run says nothing changed
+FAIL  check-manifest.py --after passes on the real folder
+PASS  library is not at the root any more
+PASS  styles is not at the root any more
+PASS  motion-lib is not at the root any more
+PASS  golden is not at the root any more
+PASS  ideas.txt is not at the root any more
+PASS  channels/flashfx/channel.json exists
+PASS  channels/flashfx/ideas.txt exists
+PASS  channels/flashfx/library/hooks.txt exists
+PASS  channels/flashfx/styles/paper-cards/style.md exists
+PASS  channels/flashfx/motion-lib/catalog.json exists
+PASS  channels/flashfx/golden/test-idea/plan.json exists
+PASS  channels/flashfx/logs/runner.log exists
+PASS  the files that were ignored are ignored at the new path (voice, refs, analysis, sfx audio, renders)
+PASS  git status of the real folder is clean (the moves are committed)
+PASS  the legacy root ignore rules are gone
+PASS  no tracked file outside build/ names an old root path of the moved data in a way code would build
+PASS  preflight --channel flashfx passes ([09:41] READY  preflight ok: 8 tools, 2 python packages, 9 files, 130 GB free)
+PASS  doctor --quick passes (doctor: 0 problems, 3 warnings)
+
+== 9. test-isolation part 1, the files M18 changed, no em dash ==
+PASS  test-isolation.sh part 1 passes (test-isolation.sh: 21 passed, 0 failed)
+PASS  no em dash in any file (test-no-emdash.sh: 1 passed, 0 failed)
+PASS  pipeline/bin/migrate-channels, paths.sh, paths.py, config.py and the channel schema exist
+PASS  the engine code M18 wrote names no channel id (14.5: the engine never hard-codes a channel)
+
+test-m18.sh: 50 passed, 1 failed

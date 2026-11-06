@@ -1,0 +1,31 @@
+
+== 4. the recorded artifacts, the baseline machinery, the files M17 changed ==
+PASS  build/M17/inventory.md exists
+PASS  build/M17/inventory.tsv exists
+PASS  build/M17/refindex.tsv exists
+PASS  build/M17/refindex-data.tsv exists
+PASS  build/M17/move-manifest.tsv exists
+PASS  build/M17/config-keys.tsv exists
+PASS  build/M17/risks.md exists
+PASS  build/M17/riskiest-moves.md exists
+PASS  build/M17/report.md exists
+PASS  the recorded manifest has the columns of the spec
+PASS  check-manifest.py --after passes with M18's executed manifest (the moves that the recorded plan described)
+PASS  inventory.tsv has the columns of the spec
+PASS  risks.md marks every item BLOCKER or NOTE
+pipeline/tests/test-m17.sh: line 382: pycheck_file: command not found
+PASS  fakeresults parse: a failing test is recorded with its numbers
+PASS  fakeresults parse: the failing check is recorded
+PASS  fakeresults parse: a passing test
+PASS  fakeresults parse: exit 124 is a timeout
+PASS  compare: a known failure that now passes is fine (and a longer duration is not compared)
+PASS    ... it says test-b is fixed
+PASS  compare: a test that passed in the baseline and fails now is a problem
+PASS    ... it names the test
+PASS    ... and the new failing check
+PASS    ... the known failure of test-b is not a problem
+PASS  run-fake.sh --list names every fake-only test file
+PASS  git log e3e1bef..89fda33 (M17's own commits) lists only build/, pipeline/tests/, CLAUDE.md, PLAN.md, DECISIONS.md and the two runner-written files
+PASS  no em dash in any file
+
+test-m17.sh: 26 passed, 0 failed

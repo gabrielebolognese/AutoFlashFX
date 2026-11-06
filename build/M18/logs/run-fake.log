@@ -1,0 +1,32 @@
+run-fake: making a throwaway copy of the repo in /tmp/tmp.zYyGCaHLcm/repo
+08:50:39 run-fake: test-no-emdash (sections: all)
+08:51:28 run-fake: test-no-emdash pass in 45s
+08:51:28 run-fake: test-limits (sections: all)
+08:54:43 run-fake: test-limits pass in 192s
+08:54:43 run-fake: test-m1 (sections: all)
+09:02:37 run-fake: test-m1 pass in 472s
+09:02:37 run-fake: test-m2 (sections: all)
+09:51:41 run-fake: test-m2 error in 2942s
+09:51:42 run-fake: test-m3 (sections: 1 2 3 5 6 7 8 9 10)
+11:57:39 run-fake: test-m3 fail in 7554s
+11:57:40 run-fake: test-m4 (sections: 1 2)
+12:22:19 run-fake: test-m4 fail in 1477s
+12:22:19 run-fake: test-m5 (sections: 1 2)
+12:46:16 run-fake: test-m5 pass in 1433s
+12:46:16 run-fake: test-m6 (sections: 1 2)
+13:17:52 run-fake: test-m6 fail in 1891s
+13:17:52 run-fake: test-m7 (sections: 1 2)
+13:38:55 run-fake: test-m7 fail in 1262s
+13:38:55 run-fake: test-m8 (sections: 1 2)
+13:43:46 run-fake: test-m8 pass in 289s
+13:43:47 run-fake: test-m9 (sections: all)
+13:46:45 run-fake: test-m9 fail in 177s
+13:46:45 run-fake: test-m10 (sections: 1 2)
+14:14:51 run-fake: test-m10 fail in 1684s
+14:14:51 run-fake: test-m11 (sections: 1 2 3)
+15:24:34 run-fake: test-m11 pass in 4182s
+15:24:34 run-fake: test-m12 (sections: 1 2 3 5)
+15:48:51 run-fake: test-m12 pass in 1455s
+15:48:51 run-fake: test-m13 (sections: 1 2 4)
+16:31:36 run-fake: test-m13 fail in 2562s
+16:31:36 run-fake: test-m14 (sections: all)

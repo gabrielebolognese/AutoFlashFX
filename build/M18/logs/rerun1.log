@@ -1,0 +1,6 @@
+run-fake: making a throwaway copy of the repo in /tmp/tmp.IueP8s1PYp/repo
+13:49:56 run-fake: test-m9 (sections: all)
+14:22:02 run-fake: test-m9 fail in 1925s
+run-fake: 1 test files, 1 not passing, 1926 seconds, in a throwaway copy
+test     sections  status  passed  failed  exit  seconds  log
+test-m9  all       fail    74      6       1     1925     build/M18/rerun1/logs/test-m9.log

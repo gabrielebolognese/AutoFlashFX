@@ -1,0 +1,24 @@
+run-fake: making a throwaway copy of the repo in /tmp/tmp.PAe984H1iC/repo
+16:35:50 run-fake: test-m3 (sections: 1 2 3 5 6 7 8 9 10)
+18:35:22 run-fake: test-m3 fail in 7170s
+18:35:22 run-fake: test-m6 (sections: 1 2)
+19:13:16 run-fake: test-m6 fail in 2267s
+19:13:16 run-fake: test-m7 (sections: 1 2)
+19:31:21 run-fake: test-m7 fail in 1084s
+19:31:21 run-fake: test-m8 (sections: 1 2)
+19:35:41 run-fake: test-m8 pass in 259s
+19:35:42 run-fake: test-m9 (sections: all)
+20:12:26 run-fake: test-m9 pass in 2201s
+20:12:26 run-fake: test-m11 (sections: 1 2 3)
+21:19:05 run-fake: test-m11 pass in 3996s
+21:19:05 run-fake: test-m15 (sections: all)
+21:32:05 run-fake: test-m15 pass in 775s
+run-fake: 7 test files, 3 not passing, 17775 seconds, in a throwaway copy
+test      sections            status  passed  failed  exit  seconds  log
+test-m3   1 2 3 5 6 7 8 9 10  fail    372     2       1     7170     build/M18/runA/logs/test-m3.log
+test-m6   1 2                 fail    146     1       1     2267     build/M18/runA/logs/test-m6.log
+test-m7   1 2                 fail    115     1       1     1084     build/M18/runA/logs/test-m7.log
+test-m8   1 2                 pass    164     0       0     259      build/M18/runA/logs/test-m8.log
+test-m9   all                 pass    80      0       0     2201     build/M18/runA/logs/test-m9.log
+test-m11  1 2 3               pass    227     0       0     3996     build/M18/runA/logs/test-m11.log
+test-m15  all                 pass    127     0       0     775      build/M18/runA/logs/test-m15.log

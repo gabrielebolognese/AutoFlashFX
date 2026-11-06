@@ -1,0 +1,49 @@
+
+== 3. the dummy fingerprint of M17 inside channels/flashfx/runs/ ==
+PASS  REELS_DUMMY=all bash run.sh --channel flashfx --once exits 0
+PASS  the run folder tree equals the baseline's (106 entries, names normalized)
+PASS  the exports tree equals the baseline's (the export names change in M19)
+PASS  no runs/ at the root of the state root
+PASS  no ideas.txt at the root of the state root
+PASS  the runner log is in the channel's logs/
+PASS  history.txt is in the channel's logs/
+PASS  the history line says exported 1
+PASS  the banner names the channel
+PASS  no lock is left behind
+
+== 4. an unfinished run resumes at the same stage ==
+PASS  the planted run is interrupted in 04-angle
+PASS  the stages before it are done
+PASS  the runner finishes the moved run
+FAIL  the START line says it resumes after 3 stages (no match for 'START  idea 1/1 "Idea R.*" -> runs/resume-test \(resumed at .*, 3 stages done\)$' in /tmp/tmp.KTgFRew8pA/resume.out)
+PASS  the finished stages are not run again
+PASS  the resumed run exports
+PASS  no second run folder
+PASS  research ran once
+
+== 5. a model edit of a protected file is refused; protect.py for every channel ==
+PASS  a model call that edits channels/flashfx/library/hooks.txt is a code error
+PASS  channels/flashfx/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/library/hooks.txt is a code error
+PASS  channels/second/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/flashfx/styles/paper-cards/style.md is a code error
+PASS  channels/flashfx/styles/paper-cards/style.md is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/ideas.txt is a code error
+PASS  channels/second/ideas.txt is restored from the snapshot
+PASS  the error names the protected file
+FAIL  the call denies Edit on every channel's ideas.txt (no match for 'Edit\(channels/\*/ideas.txt\)' in /tmp/tmp.KTgFRew8pA/disallowed.txt)
+FAIL  and Write on every channel's library (no match for 'Write\(channels/\*/library/\*\*\)' in /tmp/tmp.KTgFRew8pA/disallowed.txt)
+FAIL  and Edit on every channel's styles (no match for 'Edit\(channels/\*/styles/\*\*\)' in /tmp/tmp.KTgFRew8pA/disallowed.txt)
+PASS  and on exports/
+PASS  protect.py snapshots the files of both channels
+PASS  protect.py reports a change in another channel's library
+PASS  a deleted ideas.txt is restored
+PASS  a file added to a channel's library is removed
+FAIL  a changed hooks file is restored (unexpected match for 'changed' in /tmp/tmp.8c8kbkLWgX/channels/second/library/hooks.txt)
+PASS  the report names the file with its channel path
+FAIL  review_fixer_paths: pipeline and the run's channel's candidates folder (expected 'pipeline channels/second/motion-lib/candidates', got 'pipeline  channels/second/motion-lib/candidates')
+pipeline/tests/test-m18.sh: line 386: syntax error near unexpected token `('
+pipeline/tests/test-m18.sh: line 386: `assert_eq "$(grep -c '^STEP ' "$T/dry.out")" "$nlines" "the dry run lists every M18 line of the manifest ($nlines)"'

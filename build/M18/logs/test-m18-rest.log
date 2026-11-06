@@ -1,0 +1,150 @@
+
+== 2. the front door: run.sh, add-idea.sh, preflight, runner-status, doctor ==
+PASS  run.sh without a channel exits 2
+PASS  run.sh without a channel says so
+PASS  run.sh without a channel lists flashfx with platform, format and status
+PASS  the list shows a disabled channel as disabled
+PASS  nothing ran
+PASS  run.sh --channel with an unknown id exits 2
+PASS  an unknown id is named
+PASS  run.sh --channel with a malformed id exits 2
+PASS  run.sh --channel with a disabled channel exits 2
+PASS  the refusal says the channel is disabled
+PASS  the refusal names --allow-disabled
+PASS  --allow-disabled runs the disabled channel (an empty queue, --once: exit 0)
+PASS  and its banner names it
+PASS  REELS_CHANNEL with an unknown id exits 2 as well
+PASS  an unknown option still exits 1
+PASS  no failure lines in the listing
+PASS  a second runner of the same channel refuses (exit 1)
+PASS  the refusal says another runner is running
+PASS  the first runner's lock is untouched
+PASS  the other channel has no lock
+PASS  add-idea.sh --channel second: the script's own one-line answer
+PASS  the idea is in channels/second/ideas.txt
+PASS  and not in flashfx's queue
+PASS  add-idea.sh without a channel, with several channels, exits 2
+PASS  and lists them
+PASS  REELS_CHANNEL picks the channel too
+PASS  preflight without a channel exits 2 and lists them
+PASS  preflight --channel with an unknown id exits 2
+PASS  runner-status without arguments exits 0
+PASS  runner-status prints a block for flashfx
+PASS  runner-status prints a block for the second channel
+PASS  runner-status prints the global locks
+PASS  runner-status --channel prints that channel only
+PASS  doctor --channel checks that channel
+PASS  doctor --channel leaves the other channels out
+PASS  doctor checks the engine once
+PASS  doctor without a channel checks the engine once
+PASS  doctor without a channel goes through flashfx
+PASS  doctor without a channel goes through the second channel
+
+== 4. an unfinished run resumes at the same stage ==
+PASS  the planted run is interrupted in 04-angle
+PASS  the stages before it are done
+PASS  the runner finishes the moved run
+PASS  the START line says it resumes after 3 stages
+PASS  the finished stages are not run again
+PASS  the resumed run exports
+PASS  no second run folder
+PASS  research ran once
+
+== 5. a model edit of a protected file is refused; protect.py for every channel ==
+PASS  a model call that edits channels/flashfx/library/hooks.txt is a code error
+PASS  channels/flashfx/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/library/hooks.txt is a code error
+PASS  channels/second/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/flashfx/styles/paper-cards/style.md is a code error
+PASS  channels/flashfx/styles/paper-cards/style.md is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/ideas.txt is a code error
+PASS  channels/second/ideas.txt is restored from the snapshot
+PASS  the error names the protected file
+FAIL  the call denies Edit on every channel's ideas.txt (no match for 'Edit\(channels/\*/ideas.txt\)' in /tmp/tmp.1sbSpeHFAe/disallowed.txt)
+FAIL  and Write on every channel's library (no match for 'Write\(channels/\*/library/\*\*\)' in /tmp/tmp.1sbSpeHFAe/disallowed.txt)
+FAIL  and Edit on every channel's styles (no match for 'Edit\(channels/\*/styles/\*\*\)' in /tmp/tmp.1sbSpeHFAe/disallowed.txt)
+PASS  and on exports/
+PASS  protect.py snapshots the files of both channels
+PASS  protect.py reports a change in another channel's library
+PASS  a deleted ideas.txt is restored
+PASS  a file added to a channel's library is removed
+FAIL  a changed hooks file is restored (unexpected match for 'changed' in /tmp/tmp.KOqdcQZwop/channels/second/library/hooks.txt)
+PASS  the report names the file with its channel path
+FAIL  review_fixer_paths: pipeline and the run's channel's candidates folder (expected 'pipeline channels/second/motion-lib/candidates', got 'pipeline  channels/second/motion-lib/candidates')
+
+== 6. migrate-channels on the rehearsal fixture ==
+PASS  the rehearsal fixture builds
+PASS  the dry run exits 0
+PASS  the dry run lists every M18 line of the manifest (17)
+PASS  the dry run says nothing changed
+PASS  the dry run changed nothing in the tree (checksums)
+PASS  the dry run writes manifest-diff.md
+PASS  the run exits 0
+PASS  the run ends verified
+PASS  the migration log has its final verified line
+PASS  the undo script is written
+PASS  a rewritten file was copied to premigrate/ first, at its old path
+PASS  library is gone from the old place
+PASS  styles is gone from the old place
+PASS  motion-lib is gone from the old place
+PASS  golden is gone from the old place
+PASS  runs is gone from the old place
+PASS  hooks.txt is in the channel
+PASS  the unfinished run moved with its channel
+PASS  history.txt moved
+PASS  the shared limits.log stays at the root
+PASS  the user's voicetests stay
+PASS  git status shows only renames (and build/)
+FAIL  a file that was ignored is still ignored at its new path
+PASS  so are the reference videos
+FAIL  x (unexpected match for 'styles/paper-cards' in C:/Users/there/AppData/Local/Temp/tmp.1sbSpeHFAe/fx/channels/flashfx/runs/2026-11-01_1000_done-idea/01-research/research.json)
+FAIL  the rewritten run files name the channel paths in every form and no old path: Traceback (most recent call last):   File "<stdin>", line 9, in <module> FileNotFoundError: [Errno 2] No such file or directory: 'C:/Users/there/AppData/Local/Temp/tmp.1sbSpeHFAe/fx/channels/flashfx/runs/2026-11-01_1000_done-idea/01-research/../../01-research/calls/001.out.json' 
+PASS  the captions file keeps its sections
+PASS  the RUN path of the captions file follows
+FAIL  check-manifest --after passes on the migrated fixture
+PASS  a second run exits 0
+PASS  a second run verifies and moves nothing
+PASS  a second run changed nothing
+PASS  the undo exits 0
+PASS  the undo checks the folder against the before-listing
+PASS  the undo brings back an identical tree (checksums)
+PASS  and git status is clean again
+PASS  the generated undo-migration.sh also brings back an identical tree
+PASS  the planted kill ends the run after 3 moves
+PASS  the folder is half moved (library is in the channel, runs is not)
+PASS  the next start exits 0
+PASS  the next start undoes the killed attempt first
+PASS  and checks the folder against that attempt's before-listing
+PASS  then migrates and verifies
+PASS  after kill, restart and undo the tree is identical again
+PASS  a live video runner refuses the migration (exit 5)
+PASS  and says what to do
+FAIL  uncommitted changes outside build/ refuse the migration (expected exit 2, got 1)
+PASS  and say so
+PASS  a second fixture with the old .gitignore builds
+PASS  a failed check ends with exit 3
+PASS  the failed check is the git check-ignore one
+PASS  the run says BLOCKED with the reason
+PASS  it undid everything and checked the folder
+PASS  the folder is identical to before
+
+== 7. two channels' dummy runners at the same time ==
+PASS  the flashfx runner exits 0
+PASS  the second channel's runner exits 0
+PASS  flashfx has its run folder
+PASS  the second channel has its run folder
+PASS  two exports (numbered one after the other: the numbering lock is global)
+PASS  flashfx printed its DONE line
+PASS  the second channel printed its DONE line
+PASS  each banner names its channel (flashfx)
+PASS  each banner names its channel (second)
+PASS  flashfx's history has its export
+PASS  the second channel's history has its export
+PASS  the histories do not mix
+PASS  the histories do not mix (2)
+FAIL  no lock is left behind, in any channel or at the root (expected '0', got '3')
+
+test-m18.sh: 127 passed, 11 failed

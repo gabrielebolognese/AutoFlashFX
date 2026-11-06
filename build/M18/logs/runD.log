@@ -1,0 +1,6 @@
+run-fake: making a throwaway copy of the repo in /tmp/tmp.pp2QuGaGYt/repo
+21:36:28 run-fake: test-m2 (sections: all)
+22:06:16 run-fake: test-m2 fail in 1786s
+run-fake: 1 test files, 1 not passing, 1789 seconds, in a throwaway copy
+test     sections  status  passed  failed  exit  seconds  log
+test-m2  all       fail    192     15      1     1786     build/M18/runD/logs/test-m2.log

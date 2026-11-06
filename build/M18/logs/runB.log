@@ -1,0 +1,42 @@
+run-fake: making a throwaway copy of the repo in /tmp/tmp.CYjym6wbMS/repo
+16:35:51 run-fake: test-no-emdash (sections: all)
+16:36:26 run-fake: test-no-emdash pass in 28s
+16:36:27 run-fake: test-limits (sections: all)
+16:38:19 run-fake: test-limits pass in 104s
+16:38:20 run-fake: test-m1 (sections: all)
+16:43:08 run-fake: test-m1 pass in 288s
+16:43:09 run-fake: test-m4 (sections: 1 2)
+17:16:37 run-fake: test-m4 pass in 2007s
+17:16:37 run-fake: test-m5 (sections: 1 2)
+17:35:49 run-fake: test-m5 pass in 1151s
+17:35:49 run-fake: test-m10 (sections: 1 2)
+18:12:39 run-fake: test-m10 pass in 2209s
+18:12:39 run-fake: test-m12 (sections: 1 2 3 5)
+18:41:09 run-fake: test-m12 pass in 1707s
+18:41:09 run-fake: test-m13 (sections: 1 2 4)
+19:20:03 run-fake: test-m13 pass in 2328s
+19:20:03 run-fake: test-m14 (sections: all)
+19:47:23 run-fake: test-m14 pass in 1637s
+19:47:23 run-fake: test-m16 (sections: 1 2 3 4 5 7)
+20:03:45 run-fake: test-m16 pass in 979s
+20:03:46 run-fake: test-m17 (sections: 1 2 3 4)
+20:08:04 run-fake: test-m17 fail in 255s
+20:08:04 run-fake: test-isolation (sections: part 1)
+20:08:57 run-fake: test-isolation pass in 51s
+20:08:57 run-fake: test-m18 (sections: 1 2 3 4 5 6 7 9)
+20:32:06 run-fake: test-m18 pass in 1387s
+run-fake: 13 test files, 1 not passing, 14176 seconds, in a throwaway copy
+test            sections         status  passed  failed  exit  seconds  log
+test-no-emdash  all              pass    1       0       0     28       build/M18/runB/logs/test-no-emdash.log
+test-limits     all              pass    94      0       0     104      build/M18/runB/logs/test-limits.log
+test-m1         all              pass    96      0       0     288      build/M18/runB/logs/test-m1.log
+test-m4         1 2              pass    202     0       0     2007     build/M18/runB/logs/test-m4.log
+test-m5         1 2              pass    196     0       0     1151     build/M18/runB/logs/test-m5.log
+test-m10        1 2              pass    134     0       0     2209     build/M18/runB/logs/test-m10.log
+test-m12        1 2 3 5          pass    180     0       0     1707     build/M18/runB/logs/test-m12.log
+test-m13        1 2 4            pass    100     0       0     2328     build/M18/runB/logs/test-m13.log
+test-m14        all              pass    74      0       0     1637     build/M18/runB/logs/test-m14.log
+test-m16        1 2 3 4 5 7      pass    166     0       0     979      build/M18/runB/logs/test-m16.log
+test-m17        1 2 3 4          fail    77      4       1     255      build/M18/runB/logs/test-m17.log
+test-isolation  part 1           pass    21      0       0     51       build/M18/runB/logs/test-isolation.log
+test-m18        1 2 3 4 5 6 7 9  pass    170     0       0     1387     build/M18/runB/logs/test-m18.log

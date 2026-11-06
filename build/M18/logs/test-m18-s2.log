@@ -1,0 +1,41 @@
+
+== 2. the front door: run.sh, add-idea.sh, preflight, runner-status, doctor ==
+PASS  run.sh without a channel exits 2
+PASS  run.sh without a channel says so
+PASS  run.sh without a channel lists flashfx with platform, format and status
+PASS  the list shows a disabled channel as disabled
+PASS  nothing ran
+PASS  run.sh --channel with an unknown id exits 2
+PASS  an unknown id is named
+PASS  run.sh --channel with a malformed id exits 2
+PASS  run.sh --channel with a disabled channel exits 2
+PASS  the refusal says the channel is disabled
+FAIL  /tmp/tmp.wSk0LdkcWT/off.out (no match for '--' in --allow-disabled)
+PASS  REELS_CHANNEL with an unknown id exits 2 as well
+PASS  an unknown option still exits 1
+PASS  no failure lines in the listing
+PASS  a second runner of the same channel refuses (exit 1)
+PASS  the refusal says another runner is running
+PASS  the first runner's lock is untouched
+PASS  the other channel has no lock
+PASS  add-idea.sh --channel second: the script's own one-line answer
+PASS  the idea is in channels/second/ideas.txt
+PASS  and not in flashfx's queue
+PASS  add-idea.sh without a channel, with several channels, exits 2
+PASS  and lists them
+PASS  REELS_CHANNEL picks the channel too
+PASS  preflight without a channel exits 2 and lists them
+PASS  preflight --channel with an unknown id exits 2
+PASS  runner-status without arguments exits 0
+FAIL  runner-status prints a block for flashfx (no match for '^== channel flashfx ==$' in /tmp/tmp.wSk0LdkcWT/rs.txt)
+FAIL  runner-status prints a block for the second channel (no match for '^== channel second ==$' in /tmp/tmp.wSk0LdkcWT/rs.txt)
+FAIL  runner-status prints the global locks (no match for '^global locks ' in /tmp/tmp.wSk0LdkcWT/rs.txt)
+PASS  runner-status --channel prints that channel only
+PASS  doctor --channel checks that channel
+PASS  doctor --channel leaves the other channels out
+PASS  doctor checks the engine once
+PASS  doctor without a channel checks the engine once
+PASS  doctor without a channel goes through flashfx
+FAIL  doctor without a channel goes through the second channel (no match for '== channel second: runner' in /tmp/tmp.wSk0LdkcWT/doc3.txt)
+pipeline/tests/test-m18.sh: line 275: syntax error near unexpected token `('
+pipeline/tests/test-m18.sh: line 275: `if cmp -s "$T/run-tree.txt" "$REPO_DIR/build/M17/baseline/fingerprint-run.txt"; then pass "the run folder tree equals the baseline's ($(grep -c . "$T/run-tree.txt") entries, names normalized)"'
