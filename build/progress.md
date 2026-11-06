@@ -531,3 +531,16 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   (372, 2: limit date and epoch), test-m6 (146, 1: the filled voice.md), test-m7 (115, 1: engine.txt names turbo). preflight and doctor --quick pass in a temp copy of the state
   files; the dummy fingerprint (REELS_DUMMY=all bash run.sh --once) is in baseline/fingerprint-*.txt. M18 and M19 call check-manifest.py (the gate of 14.13), regenerate the
   manifest before moving, and keep the baseline rule. Earlier milestones touched: none. DECISIONS.md 325 to 332.
+
+## M18 Channels
+- Status: built (2026-11-09); the real migration is done and verified. Report for you: build/M18/report.md.
+- Test command: `bash pipeline/tests/test-m18.sh` (sections 1 to 9, about 25 minutes; `M18_SECTIONS="1 2 6"` for some; section 8 checks the real
+  folder and runs preflight and doctor), `bash pipeline/tests/test-isolation.sh` (part 1), `bash pipeline/tests/run-fake.sh --out build/M18/baseline
+  --compare build/M17/baseline` (the baseline rule, about 7 hours).
+- Notes: FlashFX's data is in channels/flashfx/ (ideas.txt, library, styles, motion-lib, golden, logs); `bash run.sh --channel flashfx`. paths.sh and
+  paths.py are the one module that knows the layout; config.py makes the resolved config file (REELS_CONFIG); channel.json has style, voice, sfx, lengths
+  and the 14 channel paths; the review safety keys are per channel; pipeline/bin/migrate-channels (dry run, undo, kill recovery) moved the files
+  (build/M18/: dry-run.txt, move-manifest.tsv, manifest-diff.md, migration-log.tsv, undo-migration.sh, before-listing.tsv). Tests build
+  channels/flashfx/ in their sandboxes (lib.sh SANDBOX_CH). Not in M18: export names (M19), format.json (M20). Earlier milestones touched: M1 to M17
+  tests (paths), the config keys of M5 to M12 (moved to channel.json), M17's test-m17 (pinned commit range, recorded manifest after the move),
+  preflight (M1), protect.py (M3), export.py and ideas.py (M2, a locks dir and the paths module). DECISIONS.md 344 to 354.

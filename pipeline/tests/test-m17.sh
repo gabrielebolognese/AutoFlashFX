@@ -344,7 +344,15 @@ for f in inventory.md inventory.tsv refindex.tsv refindex-data.tsv move-manifest
   assert_file "$B/$f" "build/M17/$f exists"
 done
 if [ -f "$B/move-manifest.tsv" ]; then
-  assert_true "check-manifest.py passes on the recorded manifest and inventory" python "$PT/check-manifest.py" --manifest "$B/move-manifest.tsv" --inventory "$B/inventory.tsv"
+  if [ -f "$REPO_DIR/build/M18/migration-log.tsv" ] && grep -q "verified" "$REPO_DIR/build/M18/migration-log.tsv"; then
+    # M18 executed the plan: the old paths of the recorded manifest are gone from the folder, so it cannot be checked against it any more
+    # (the manifest of M18 is the plan written again right before the moves and checked then); what holds now is that the plan is well formed
+    # and that the moves it described hold, which check-manifest --after on M18's executed manifest says
+    assert_true "the recorded manifest has the columns of the spec" bash -c "head -n 1 '$B/move-manifest.tsv' | grep -q -P '^seq	ms	scope	method	old	new	git	files	bytes	sha256	check	reason\$'"
+    assert_true "check-manifest.py --after passes with M18's executed manifest (the moves that the recorded plan described)" python "$PT/check-manifest.py" --after --manifest "$REPO_DIR/build/M18/move-manifest.tsv"
+  else
+    assert_true "check-manifest.py passes on the recorded manifest and inventory" python "$PT/check-manifest.py" --manifest "$B/move-manifest.tsv" --inventory "$B/inventory.tsv"
+  fi
 fi
 assert_true "inventory.tsv has the columns of the spec" bash -c "head -n 1 '$B/inventory.tsv' | grep -q -P '^path\tkind\tsize\tfiles\tgit\ttop\$'"
 assert_true "risks.md marks every item BLOCKER or NOTE" bash -c "! grep -v -E '^(- \*\*(BLOCKER|NOTE) |#|\$|Written by|None)' '$B/risks.md' | grep -q ."

@@ -96,3 +96,11 @@ Each line: milestone, what to do, where.
   you trust the scripts.
 - M27: watch build/M27/samples/: two parts of one story made with automatic gate decisions, for the look and the
   sound. They are not the channel's real first story, which starts with your own G1.
+- M18: the video runner needs a channel now. Start it with `bash run.sh --channel flashfx` (add `--once` to stop when the queue is empty);
+  `bash run.sh` alone prints the channels and exits 2. Everything else works as before; `bash pipeline/bin/add-idea.sh "{...}"` still adds to
+  flashfx while it is the only channel (`--channel <id>` once there are two).
+- M18: your files moved with git (nothing was edited): ideas.txt, library/ (hooks, profile, voice, brand), styles/ (the look and the sound pack),
+  motion-lib/ and golden/ are now under channels/flashfx/, and the runner's logs under channels/flashfx/logs/. The tracked renames are committed. Your
+  OneDrive folder will sync the move as renames. build/M18/ has the dry run, the executed manifest, manifest-diff.md and the migration log.
+- M18: `motion-lib/webgl.json` and the 39 gallery players hold the old absolute path of this folder; they were pointed at channels/flashfx/motion-lib/
+  by a text replacement. If you want them regenerated, run `bash pipeline/bin/gallery` and `bash pipeline/bin/webgl-test` (both take a few minutes).

@@ -5,11 +5,26 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M17 Control check: done (2026-11-08). Next: M18 Channels, then M19 to M27: the channels plan (BUILD_SPEC.md section 14, explained in
+- M18 Channels: done (2026-11-09): FlashFX's data moved into channels/flashfx/ (verified, undo script kept in build/M18/), every path to
+  channel data goes through pipeline/lib/paths.sh and paths.py, `bash run.sh --channel <id>` (see "The channels" below). Next: M19 Exports and
+  channels side by side, then M20 to M27 (the rest of) the channels plan: the channels plan (BUILD_SPEC.md section 14, explained in
   CHANNELS.md; the editable project is M21; M22 learning from feedback for every channel, 14.14; M23 to M27 the second channel
   `scenarios`, 14.10, from the user's documents in build/channel2/). The build is driven by `bash build-runner.sh` (a build/PAUSE
   file stops it between milestones; every milestone to M27 is specified, so no pause is needed); its log is build/build.log and its per-milestone reports are in build/M<n>/.
-  M16 (Director, components and the energy loop) is done too (2026-11-08).
+  M16 (Director, components and the energy loop) is done too (2026-11-08); M17 (control check) is done (2026-11-08).
+- M18 added: pipeline/lib/paths.sh and paths.py (the one module that knows the layout: REELS_CHANNEL, REELS_CHANNEL_ROOT, REELS_IDEAS, REELS_LOGS,
+  REELS_LOCKS, REELS_RUNS, REELS_LIBRARY, REELS_STYLES, REELS_MOTIONLIB, REELS_GOLDEN, REELS_EXPORTS, REELS_GLOBAL_LOCKS; `chpath <rel>`, `chcfg <key>`,
+  paths.ch(rel); another channel's folder or export folder is refused with exit 3), pipeline/lib/config.py (config.json + the format's config + channel.json,
+  deep-merged; REELS_CONFIG is the resolved file channels/<id>/.cache/config.resolved.json that common.sh makes again whenever a source is newer,
+  REELS_CONFIG_ENGINE is config.json), pipeline/schemas/channel.schema.json, channels/flashfx/channel.json (style, voice, sfx, lengths and the 14
+  channel paths moved out of config.json, values unchanged), run.sh --channel and --allow-disabled, per-channel runner locks, logs, history and
+  status, add-idea.sh --channel, preflight --channel (checks the channel's files, channel.json validated first), runner-status (one block per
+  channel, --channel), doctor (the engine once, then every channel, --channel; prints the engine keys a channel overrides), the review safety
+  keys per channel (config review.protected_paths channels/*/ideas.txt, channels/*/library, channels/*/styles, exports; fixer_paths with {channel};
+  protect.py walks every channel), pipeline/bin/migrate-channels with pipeline/lib/migrate.py (dry run, rehearsal fixture, undo, kill recovery,
+  verification), pipeline/tests/isolation_scan.py with isolation-allowlist.txt, test-isolation.sh part 1 and test-m18.sh (DECISIONS.md 344 to 354).
+  The tests build their sandboxes with channels/flashfx/ inside (lib.sh: SANDBOX_CH, SANDBOX_CH_M, resolved_config); the numbering lock of exports/
+  is global (REELS_GLOBAL_LOCKS) until M19.
 - M17 added only tools and records, nothing the runner uses: pipeline/tests/manifestlib.py, inventory.py, refindex.py, make-manifest.py,
   check-manifest.py, risk-scan.py, run-fake.sh (every fake-only test in a throwaway copy, `--compare DIR` is the baseline rule), fakeresults.py,
   make-test-copy.sh, m17-baseline.sh, m17-fixture.py, m17-simulate.py, m17-summary.py and test-m17.sh (`bash pipeline/tests/test-m17.sh`, about 5
@@ -179,64 +194,84 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   names another engine), never another engine or voice; config voice.wpm (186, at engine.txt speed 1.1) is its measured pace.
 
 ## Folder map
-- `ideas.txt`: the idea queue (one idea per `{...}` block). `run.sh`: the video runner. `config.json`: models, engines,
-  caps, paths.
-- `exports/N/`: finished reels (`N.mp4`, `Ncaptions.txt`, `Nhook2.mp4`).
-- `library/`: curated by the user: hooks.txt, profile/ (account.md, voice.md, deliverables.txt, pronunciations.txt),
-  voice/ (reference.wav, reference_long.wav, engine.txt, memo.*). Derived by the pipeline, never edited by hand:
+- `run.sh`: the video runner (`bash run.sh --channel <id>`). `config.json`: the engine's settings (models, tts, caps, errors, timeouts, runner,
+  render, preflight, logs, the engine paths, the review safety keys, and until M20 the format's keys). `pipeline/`, `tools/`: the engine.
+- `channels/<id>/`: one folder per channel (BUILD_SPEC.md 14.3): `channel.json` (identity, platform, format, quota, the channel-owned config: style,
+  voice, sfx, lengths, paths), `ideas.txt` (the idea queue, one idea per `{...}` block), `library/`, `styles/`, `motion-lib/`, `golden/`, `runs/`,
+  `logs/`, `.locks/`, `.cache/` (the resolved config). Today one channel exists: `channels/flashfx/`. Everything below that names library/, styles/,
+  motion-lib/, golden/, runs/, logs/ or ideas.txt means the same path inside the channel's folder.
+- `exports/`: finished reels of every channel (today `N/` with `N.mp4`, `Ncaptions.txt`, `Nhook2.mp4`; M19 renames them `<id>-N`). `logs/` and `.locks/` at
+  the root: only what is shared (limits.log, engine.log, editor files; the global locks) from M19 on.
+- `library/` (in the channel): curated by the user: hooks.txt, profile/ (account.md, voice.md, deliverables.txt, pronunciations.txt),
+  voice/ (reference.wav, reference_long.wav, engine.txt, memo.*), brand/ (FlashFX's brand kit). Derived by the pipeline, never edited by hand:
   .hooks.index.json and hooks.lint.txt (ignored by git), .hooks.stats.json (the judge's picks and wins; commit it
   when you want a snapshot), hooks.suggested.txt (new hook shapes the model noticed; move them into hooks.txt
-  yourself). `bash pipeline/bin/index-hooks` rebuilds the index when hooks.txt changed;
-  `bash pipeline/bin/build-voice-profile [--force]` rebuilds voice.md and account.md (from library/voice/memo.*
+  yourself). `REELS_CHANNEL=<id> bash pipeline/bin/index-hooks` rebuilds the index when hooks.txt changed;
+  `REELS_CHANNEL=<id> bash pipeline/bin/build-voice-profile [--force]` rebuilds voice.md and account.md (from library/voice/memo.*
   when it exists, else the template with [FILL IN] placeholders plus the pace measured from the reference
-  recordings).
-- `styles/paper-cards/`: the look (style.md, tweaks.md, vocabulary.md, tokens.json, refs/, analysis/).
+  recordings). The tools that work on one channel's data take REELS_CHANNEL (with exactly one channel folder it is the default for them).
+- `styles/paper-cards/` (in the channel): the look (style.md, tweaks.md, vocabulary.md, tokens.json, refs/, analysis/).
   `styles/sfx/`: the sound effects pack (the user's audio files, ignored by git) and its memory map: sfx-map.json,
   SFX-MAP.md, previews/<cue type>.wav with .txt and .cache/ are generated by `bash pipeline/bin/build-sfx-map`
   (measurements, pools of 5 to 8 per cue type, one indexer call for new files with unclear names; a no-op when
   nothing changed; `--check` says whether the map is current); overrides.txt is the user's (`ban: path`,
   `pin: cue type: path`, kept on every rebuild).
-- `motion-lib/`: approved HyperFrames components, candidates/, gallery/, assets/pc-motion.js (the motion grammar
+- `motion-lib/` (in the channel): approved HyperFrames components, candidates/, gallery/, assets/pc-motion.js (the motion grammar
   every component uses: M14). `golden/`: example reels for the visual director (energy.json: the golden's energy).
-- `pipeline/`: lib/ (bash and Python libraries), stages/ (one folder per stage: CONTRACT.md, schema.json, dummy.sh,
-  and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
+- `pipeline/`: lib/ (bash and Python libraries, paths.sh and paths.py first), schemas/ (channel.schema.json), stages/ (one folder per stage: CONTRACT.md,
+  schema.json, dummy.sh, and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
   instagram-agent-skill), knowledge/known-issues.md, tests/.
-- `runs/`: one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
+- `runs/` (in the channel): one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
   its outputs, stage.log, .done and calls/ with every model call's raw output; errors/E<n>.md and fixes/F<n>.md
-  from the review and fix loop). `logs/`: runner.log (rotated at 50 MB into runner.log.1 to .3), status.txt, history.txt, blocked.txt, limits.log,
+  from the review and fix loop). `logs/` (in the channel): runner.log (rotated at 50 MB into runner.log.1 to .3), status.txt, history.txt, blocked.txt, limits.log,
   suggested-ideas.txt, sfx-usage.json, STOPPED.md.
 - `tools/analyze_refs.py`: reference video analyzer. `build/`, `build-runner.sh`: the automated build (temporary).
 
+## The channels (from M18)
+- One engine, several channels, each with exactly one format and one platform (BUILD_SPEC.md section 14; CHANNELS.md explains the design). Channel ids are
+  lowercase letters and digits. Today: `flashfx` (FlashFX, instagram-reels, problem-solution-reel). Planned: `scenarios` (Gabryverse, youtube-shorts,
+  serial-story, M23 to M27), later ones in 14.11.
+- Start one: `bash run.sh --channel flashfx [--once]` (or REELS_CHANNEL=flashfx). `bash run.sh` alone exits 2 and lists the channels; an unknown or
+  disabled id exits 2 (`--allow-disabled` is for tests). One runner per channel; runners of different channels may run side by side (each in its own terminal).
+- Where a channel's files are: `channels/<id>/` (the folder map above). `exports/` is shared. Status per channel:
+  `bash pipeline/bin/runner-status [--channel <id>]`, `bash pipeline/bin/doctor [--quick] [--channel <id>]`, `bash pipeline/bin/preflight --channel <id>`.
+- A channel's session never reads or edits another channel's folder: the paths module refuses it (exit 3), model calls may not write to any channel's
+  ideas.txt, library/ or styles/ (config review.protected_paths), the fixer edits only pipeline/ and the run's channels/<id>/motion-lib/candidates/.
+- The files moved in M18 by `bash pipeline/bin/migrate-channels` (the log, the dry run, the executed manifest and `undo-migration.sh` are in build/M18/).
+
 ## How to start the runner (from M2 on)
-- `bash run.sh` processes ideas forever; `bash run.sh --once` stops when the queue is empty. Results appear in
+- `bash run.sh --channel flashfx` processes the channel's ideas forever; add `--once` to stop when the queue is empty. Results appear in
   `exports/N/`. Stop it with Ctrl+C; restarting resumes the unfinished run.
-- A missing hard dependency writes logs/STOPPED.md with the exact fix. `bash pipeline/bin/preflight` runs the
+- A missing hard dependency writes the channel's logs/STOPPED.md with the exact fix. `bash pipeline/bin/preflight --channel flashfx` runs the
   checks alone. Every stage is real (M12): one idea takes 1 to 3 hours on this PC;
-  `REELS_DUMMY=all bash run.sh --once` exercises the loop with dummy stages (it removes the processed ideas from
-  ideas.txt and writes dummy files into exports/, so use it in a copy or re-add the idea afterwards).
-- `bash pipeline/bin/runner-status` prints whether a runner is alive, the latest status line and the log tail.
-- `bash pipeline/bin/doctor` (read-only, about 30 s; `--quick` skips the voice check) reports versions, the Node
-  packages against their pins, disk, the voice interpreters, the freshness of the sfx map, tokens and hooks index, the
-  runner and its status line, the last session's story, blocked ideas, STOPPED.md and limits; exit 1 on a FAIL line.
+  `REELS_DUMMY=all bash run.sh --channel flashfx --once` exercises the loop with dummy stages (it removes the processed ideas from
+  ideas.txt and writes dummy files into exports/, so use it in a copy (a temp REELS_ROOT) or re-add the idea afterwards).
+- `bash pipeline/bin/runner-status [--channel <id>]` prints, per channel, whether a runner is alive, the latest status line and the log tail, and the global locks.
+- `bash pipeline/bin/doctor [--quick] [--channel <id>]` (read-only, about 30 s; `--quick` skips the voice check) reports the engine once (versions, the Node
+  packages against their pins, disk, the voice interpreters), then for every channel: channel.json, the engine keys it overrides, the freshness of the sfx map, tokens and
+  hooks index, the runner and its status line, the last session's story, blocked ideas, STOPPED.md and limits; exit 1 on a FAIL line.
 - The terminal lines: REEL (heartbeat every 5 minutes), IDLE, START, STEP, GATE, ANGLE, DONE, DROP, BLOCK, NEW,
   NEXT, FLAG, STOP, and the error lines LIMIT, RESUME, RETRY, ERROR, FIXED, ESCAL.
 
 ## Rules for Claude Code sessions in this folder
-- **Braces rule:** when the user's message contains text in `{...}`, append each braced block to ideas.txt by
-  running `bash pipeline/bin/add-idea.sh "{...}"` (never by editing the file), then confirm in one line with the
+- **Braces rule:** when the user's message contains text in `{...}`, append each braced block to the channel's ideas.txt by
+  running `bash pipeline/bin/add-idea.sh --channel <id> "{...}"` (never by editing the file), then confirm in one line with the
   script's own output ("added 1 idea to ideas.txt (queue: N)"). Keep a `[important]` label inside the braces as the
-  user wrote it (`{[important] ...}`, at the start or the end): the script then says "marked important".
+  user wrote it (`{[important] ...}`, at the start or the end): the script then says "marked important". The channel comes from the user's
+  words around the braces ("for scenarios", "scenarios:", "flashfx idea"). With one enabled channel (today flashfx) it is that one; when the user
+  names none and more than one channel is enabled, ask which one in one short question before adding.
 - **Models (DECISIONS.md 333 to 335):** Sonnet is the main model of the reels (research, hooks, gate, judge, script,
   the builder, the code error reviewer, and the visual director's fine tuning after a failed review round); Opus makes
   the first plan of each visual pass (the design) and the edit review (qa). The escalations (visual director and
   builder after 3 failed review rounds, the error reviewer's last cycle) run on Opus, and on Fable only for an idea
   marked `[important]`: no other idea ever runs Fable (pipeline/lib/model_choice.py enforces it in ai()). An
   `"important"` override in config.json models.<role> applies to the marked ideas only.
-- **"What is the runner doing?":** read `logs/status.txt` and the end of `logs/runner.log`, or run
-  `bash pipeline/bin/runner-status`.
-- **Curated by the user, do not edit without asking:** `library/`, `styles/`, `ideas.txt` (only through
-  add-idea.sh). The runner's own fixer may edit only `pipeline/` and `motion-lib/candidates/`.
-- **Reading the logs:** `logs/history.txt` has one line per finished idea (`date | idea | solution | exported N`,
+- **"What is the runner doing?":** read `channels/<id>/logs/status.txt` and the end of `channels/<id>/logs/runner.log`, or run
+  `bash pipeline/bin/runner-status` (one block per channel).
+- **Curated by the user, do not edit without asking:** `channels/*/library/`, `channels/*/styles/`, `channels/*/ideas.txt` (only through
+  add-idea.sh). The runner's own fixer may edit only `pipeline/` and the run's `channels/<id>/motion-lib/candidates/`. A session working for one channel
+  never edits another channel's folder.
+- **Reading the logs** (each channel's own, in `channels/<id>/logs/`): `logs/history.txt` has one line per finished idea (`date | idea | solution | exported N`,
   `dropped: reason` or `blocked: reason`; solution is flashfx, external, method, or `-` before S2 decided); `logs/blocked.txt` lists blocked ideas with the reason so they can be re-added;
   `logs/STOPPED.md` exists only after a systemic stop and contains the diagnosis and the exact fix;
   `logs/limits.log` has every usage limit wait with its target time; `logs/suggested-ideas.txt` holds the ideas
@@ -251,7 +286,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 - **Automatic fixes (BUILD_SPEC.md 4.2):** a code error in a stage is reviewed and fixed by the runner itself: the
   report is `runs/<id>/errors/E<n>.md`, the verdict `runs/<id>/fixes/F<n>.md`, the fix a commit `autofix(<stage>):
   ...` plus a line in pipeline/knowledge/known-issues.md. The fixer may edit only pipeline/ and
-  motion-lib/candidates/. Usage limits and temporary errors never reach the reviewer: a failed model call is
+  channels/<id>/motion-lib/candidates/. Usage limits and temporary errors never reach the reviewer: a failed model call is
   waited out and retried inside the stage (ai.sh), a failed stage script by the runner itself (LIMIT, RESUME,
   RETRY lines; DECISIONS.md 88). A runner restarted during a review cycle resumes that cycle (DECISIONS.md 89).
 - **Never write an em dash** in any file, prompt, caption, script or terminal message. Use commas, colons, periods
@@ -259,7 +294,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   may contain one: `say` cleans every terminal line, and anything else composed from such text goes through
   `reels_undash VAR` or `undash TEXT` (pipeline/lib/log.sh) or errors.py's `undash()` first.
 - **Python:** `python3` is the Windows Store stub and does nothing. Always run `python` (3.13). Text to speech runs
-  under the interpreter named in library/voice/engine.txt (the kokoro venv, Python 3.11; the defaults of
+  under the interpreter named in the channel's library/voice/engine.txt (the kokoro venv, Python 3.11; the defaults of
   BUILD_SPEC.md 2.5 point at C:/Users/there/venvs/kokoro/Scripts/python.exe) and transcription under config
   tts.whisper_python (the user's chatterbox venv, Python 3.11, which has faster-whisper), else the first of the
   voice interpreter, `.venv-tts/Scripts/python.exe` and `python` that imports faster_whisper; `bash

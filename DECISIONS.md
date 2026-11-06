@@ -2712,3 +2712,68 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     held); "you decide" takes the recommended option. The format's code names no character: the protagonist's name and
     the speaker tags come from channel.json, the voices from engine.txt's `voice_<speaker>` keys (a single `voice` key,
     FlashFX, works as before). The model roles reuse the existing config models keys, so DECISIONS.md 333 to 335 hold.
+344. **The paths module and the fixed layout (M18).** pipeline/lib/paths.sh and paths.py are the one place that knows the folder layout (BUILD_SPEC.md
+    14.5). The names inside a channel folder are fixed by 14.3 (ideas.txt, library, styles, motion-lib, golden, runs, logs, .locks), so paths.sh exports
+    them as variables without a Python call at every `source` (REELS_IDEAS, REELS_LOGS, REELS_LOCKS, REELS_RUNS, REELS_LIBRARY, REELS_STYLES,
+    REELS_MOTIONLIB, REELS_GOLDEN, REELS_CHANNEL_ROOT, REELS_EXPORTS, REELS_GLOBAL_LOCKS, REELS_GLOBAL_LOGS), and paths.py gives the same values
+    (`reels_paths_dump` and `python pipeline/lib/paths.py dump` print the same lines; test-isolation compares them). The sub-locations that depend on the
+    style (paths.style_dir, tokens, sfx_dir, motion_lib, hooks, profile, voice_dir) stay config keys in channel.json and resolve with `chcfg <key>` or
+    `paths.cfg_path(cfg, key)` against the channel folder; code that is handed a channel folder (ideas.py, export.py, protect.py) joins the constants
+    paths.LOGS_DIR, LOCKS_DIR, IDEAS_FILE, LIBRARY_DIR, STYLES_DIR, EXPORTS_DIR. The module refuses (exit 3, an ERROR line) a path inside another
+    channel's folder or another channel's export folder (`<id>-N`), and logs every resolved path with REELS_PATH_TRACE=1 (REELS_PATH_TRACE_FILE).
+345. **The resolved config is a file (M18).** Fifteen scripts and modules take `--config "$REELS_CONFIG"` or read REELS_CONFIG, so making the merged config
+    (config.json, the format's config, channel.json; config.py) a file keeps all of them working unchanged: REELS_CONFIG is channels/<id>/.cache/
+    config.resolved.json, made again by common.sh's reels_config_refresh at every `cfg` call when config.json, channel.json or a format.json is newer
+    (a test or a person editing a file sees the new value at once), written aside and renamed. Without a channel REELS_CONFIG is the engine config.json
+    (REELS_CONFIG_ENGINE always is). The format layer reads pipeline/formats/<format>/format.json `config` when the file exists (M20). The safety keys of
+    review are dropped from the format and channel layers, and config.py validate reports a channel that sets one.
+346. **Which scripts need a channel (M18).** run.sh never guesses: no channel (no --channel, no REELS_CHANNEL) exits 2 and lists the channels, as an unknown
+    or malformed id and a disabled channel do (--allow-disabled for tests). The tools that work on one channel's data (index-hooks, build-sfx-map,
+    build-voice-profile, build-tokens, frame-match, gallery, render-golden, webgl-test, mix-sfx, setup-venv, contact-sheet) call reels_require_channel:
+    REELS_CHANNEL, or the only channel folder when there is exactly one (so today's habits keep working), else exit 2 with the list. add-idea.sh,
+    preflight, runner-status and doctor also take --channel.
+347. **The safety keys per channel (M18).** config review.protected_paths is channels/*/ideas.txt, channels/*/library, channels/*/styles and exports
+    (the Edit and Write denials of every model call, relative to the repo, which is the working directory of the calls); review.fixer_paths is pipeline
+    and channels/{channel}/motion-lib/candidates, with {channel} replaced by the run's channel in review.sh (so the fixer's commit and its tree guard
+    allow that channel's candidates only). protect.py snapshots and restores the ideas.txt, library and styles text files of every folder under
+    channels/ (keys are root-relative paths such as channels/flashfx/library/hooks.txt) and lists exports/; --repo is accepted and ignored.
+348. **Exports numbering stays global in M18.** The export names are M19's, so N is still the highest number in exports/ plus one for every channel, and its
+    lock .locks/exports is the global one (REELS_GLOBAL_LOCKS, export.py --locks-dir); the channel's activity line still goes to the channel's logs.
+    A runner removes a leftover exports lock at its start only when the holder's pid is gone (another channel's runner may hold it).
+349. **migrate-channels (M18).** pipeline/lib/migrate.py behind pipeline/bin/migrate-channels follows 14.13: the manifest is written again from the folder
+    right before the moves (make-manifest.py, check-manifest.py, manifest-diff.md against the M17 plan), a before-listing and the undo script are written
+    first, tracked folders move with git mv (a folder is renamed whole, its ignored files included, falling back to a rename plus `git add -A`), the rest
+    by rename with retries (copy, verify, delete only when a rename is impossible), the rewrites copy each file to build/M18/premigrate/ at its old
+    path first and list it in rewritten-files.txt, and the verification covers checksums or count and bytes, the listing, git status (renames only),
+    git check-ignore at every new path of a formerly ignored file and no old path in a rewritten file; a failed check undoes everything and checks the
+    folder against the before-listing (exit 3, BLOCKED). The undo is state-driven (it moves back whatever is at a new path and not at the old one), so a
+    kill at any moment is undone by the next start before anything else. The runner check is in the bash wrapper (it has `ps`): exit 5 with the text the
+    spec asks for. MIGRATE_KILL_AFTER=N is the test hook for a kill halfway.
+350. **How the real migration went (M18).** The code, the new .gitignore (the channels/*/ rules plus a block of the legacy root rules, so that git status stayed
+    clean before the move and every file stayed ignored) and channels/flashfx/channel.json were committed first; the runner-written tracked files had no
+    changes, so no snapshot commit was needed; the 11 manifest lines moved 7,259 files (ideas.txt, library, styles, motion-lib, golden by git mv, five logs
+    items by rename, voicetests stays); the legacy block was deleted in the commit of the renames, and the 39 gallery players and webgl.json, which hold the
+    repository's old absolute path, were pointed at channels/flashfx/motion-lib/ by text replacement (the gallery tool writes the same). manifestlib.py's
+    ENGINE_TOP gained `channels`: M18 creates channels/<id>/channel.json before the moves, so check-manifest does not ask for a line for it.
+351. **The tests after the move (M18).** lib.sh sandbox_init builds channels/flashfx/ in the sandbox (SANDBOX_CH and SANDBOX_CH_M are its folder, REELS_CHANNEL
+    is exported, TEST_CHANNEL changes it): ideas.txt, library, the style files, tokens.json, sfx-map.json, motion-lib/catalog.json and the brand kit that the
+    preflight reads now come from the channel folder in every sandbox (they were read from the repo before); SANDBOX_WPM pins voice.wpm in the sandbox's
+    channel.json; `resolved_config` makes the resolved config file for the code that takes --config. The edits of the existing tests are mechanical:
+    `$SANDBOX/<folder>` and `$REPO_DIR/<folder>` became `.../channels/flashfx/<folder>` (391 occurrences), ideas.py and the voiceover's `--root` is the
+    channel folder, the protected-file denials and the protect.py keys name channels/*/..., test-m5's set-wpm test copies channel.json, test-m17's check of
+    its own commits is pinned to e3e1bef..89fda33 (build/state.env's MS_START_SHA belongs to the milestone that builds), no_emdash.py skips
+    channels/*/library/hooks.txt (a glob, the user's file is never edited to pass a test). Each edit is listed in build/M18/report.md.
+352. **Preflight per channel (M18).** preflight.require entries get `in_channel` (the path is relative to the channel folder; `in_root` is gone) and the fix
+    texts may hold `{channel}`; the brand check opens the channel's library/brand; channel.json is validated first (a failure is a hard stop with the
+    schema named); STOPPED.md is the channel's and says `bash run.sh --channel <id>`. The terminal lines keep their text (logs/STOPPED.md,
+    runs/<id>): they are relative to the channel folder, and the log they appear in is the channel's.
+353. **The static isolation check (M18).** pipeline/tests/isolation_scan.py (test-isolation.sh part 1) flags a literal path to channel data in the engine's code
+    outside paths.sh and paths.py: a variable followed by one of the folders, a quoted folder name used as a path part, a path string that starts with
+    one, `ideas.txt`. It scans shell and Python code of pipeline/ (not tests, vendor, knowledge, templates), tools/ and run.sh; prompts, schemas and
+    docs are labels for people and models, not path building. A line that is a message (say, echo, note, print, raise, an argparse help text) passes;
+    the other exceptions are 32 entries of pipeline/tests/isolation-allowlist.txt, each with its reason (`glob | regex | reason`; an entry without a
+    reason is refused; test-isolation proves that a planted violation fails and that an entry lets exactly its line through). Part 2, the canary test, is M19's.
+354. **What M18 left for later.** The export names and the numbering per channel are M19's (14.13: the M19 lines of the manifest), format.json and the
+    FlashFX names in shared stages are M20's (isolation-allowlist.txt lists the ones that exist), the shared limit file, heavy.sh and logs/engine.log are
+    M19's (limits.log is still the channel's logs/limits.log), and `bash pipeline/bin/new-channel` is M19's. build-runner.sh's default .gitignore (written
+    only when none exists) uses the channels/*/ rules.

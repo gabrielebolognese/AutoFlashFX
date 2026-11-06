@@ -206,7 +206,10 @@ assert_rc 2 "$rc" "run.sh --channel with a malformed id exits 2"
 env -u REELS_CHANNEL bash "$REPO_DIR/run.sh" --channel off --once > "$T/off.out" 2>&1; rc=$?
 assert_rc 2 "$rc" "run.sh --channel with a disabled channel exits 2"
 assert_grep 'is disabled' "$T/off.out" "the refusal says the channel is disabled"
-assert_grep -- '--allow-disabled' "$T/off.out" "the refusal names --allow-disabled"
+assert_grep 'allow-disabled' "$T/off.out" "the refusal names --allow-disabled"
+( cd "$SANDBOX" && env -u REELS_CHANNEL NO_COLOR=1 timeout 900 bash "$REPO_DIR/run.sh" --channel off --once --allow-disabled ) > "$T/offrun.out" 2>&1; rc=$?
+assert_rc 0 "$rc" "--allow-disabled runs the disabled channel (an empty queue, --once: exit 0)"
+assert_grep 'channel: off' "$T/offrun.out" "and its banner names it"
 REELS_CHANNEL=nonexistent bash "$REPO_DIR/run.sh" --once > "$T/envunknown.out" 2>&1; rc=$?
 assert_rc 2 "$rc" "REELS_CHANNEL with an unknown id exits 2 as well"
 bash "$REPO_DIR/run.sh" --bogus > "$T/bogus.out" 2>&1; rc=$?
@@ -241,7 +244,7 @@ out="$(env -u REELS_CHANNEL bash "$REPO_DIR/pipeline/bin/preflight" 2>&1)"; rc=$
 assert_rc 2 "$rc" "preflight without a channel exits 2 and lists them"
 out="$(bash "$REPO_DIR/pipeline/bin/preflight" --channel nonexistent 2>&1)"; rc=$?
 assert_rc 2 "$rc" "preflight --channel with an unknown id exits 2"
-bash "$REPO_DIR/pipeline/bin/runner-status" > "$T/rs.txt" 2>&1; rc=$?
+env -u REELS_CHANNEL bash "$REPO_DIR/pipeline/bin/runner-status" > "$T/rs.txt" 2>&1; rc=$?
 assert_rc 0 "$rc" "runner-status without arguments exits 0"
 assert_grep '^== channel flashfx ==$' "$T/rs.txt" "runner-status prints a block for flashfx"
 assert_grep '^== channel second ==$' "$T/rs.txt" "runner-status prints a block for the second channel"
@@ -252,7 +255,7 @@ bash "$REPO_DIR/pipeline/bin/doctor" --quick --channel second > "$T/doc2.txt" 2>
 assert_grep '== channel second: channel.json' "$T/doc2.txt" "doctor --channel checks that channel"
 assert_not_grep '== channel flashfx' "$T/doc2.txt" "doctor --channel leaves the other channels out"
 assert_grep '^== versions' "$T/doc2.txt" "doctor checks the engine once"
-bash "$REPO_DIR/pipeline/bin/doctor" --quick > "$T/doc3.txt" 2>&1
+env -u REELS_CHANNEL bash "$REPO_DIR/pipeline/bin/doctor" --quick > "$T/doc3.txt" 2>&1
 assert_eq "$(grep -c '^== versions' "$T/doc3.txt")" "1" "doctor without a channel checks the engine once"
 assert_grep '== channel flashfx: runner' "$T/doc3.txt" "doctor without a channel goes through flashfx"
 assert_grep '== channel second: runner' "$T/doc3.txt" "doctor without a channel goes through the second channel"
