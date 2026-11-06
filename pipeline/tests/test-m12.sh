@@ -166,7 +166,7 @@ assert_eq "$(python -c 'import json, sys; print(",".join(sorted(p["kind"] for p 
 printf '{"type": "flashfx", "name": "FlashFX", "url": "https://flashfx.app"}' > "$W/sol-flash.json"
 chk="$(python pipeline/lib/solution.py check --solution "$W/sol-flash.json" --texts "$W/texts.json")"
 assert_eq "$(python -c 'import json, sys; print(",".join(sorted(p["kind"] for p in json.loads(sys.argv[1])["problems"])))' "$chk")" "ad_language,made_in_flashfx" "solution.py check (flashfx): the mention is allowed, made-in and the sales phrase are not"
-prompt_text="$(python pipeline/lib/solution.py prompt --run-dir "$RD" --voice "$W/voice-draft.md" --account "$W/account-draft.md" --history "$SANDBOX_M/channels/flashfx/logs/history.txt" --deliverables library/profile/deliverables.txt)"
+prompt_text="$(python pipeline/lib/solution.py prompt --run-dir "$RD" --voice "$W/voice-draft.md" --account "$W/account-draft.md" --history "$SANDBOX_M/channels/flashfx/logs/history.txt" --deliverables channels/flashfx/library/profile/deliverables.txt)"
 assert_true "solution.py prompt: the rules, the empty proof, the balance and the keyword rule" python -c 'import sys
 t = sys.argv[1]
 sys.exit(0 if all(x in t for x in ("Problem-first reels", "no Content strategy section", "Proof I can use\" is empty", "1 flashfx, 1 external, 1 method", "flashfx -> FLASH", "external -> LINK")) else 1)' "$prompt_text"
@@ -179,7 +179,7 @@ assert_grep "^## Solution candidates" "$RD2/01-research/facts.md" "facts.md: the
 assert_grep "^- external: the frontend-design skill \(anthropics/skills\) \(https://github.com/anthropics/skills\): " "$RD2/01-research/facts.md" "facts.md: the candidate line"
 assert_true "research.json with candidates validates" python "$VALIDATE" pipeline/stages/01-research/schema.json "$RD2/01-research/research.json"
 assert_true "the fake research fixture validates against the model schema" python "$VALIDATE" pipeline/stages/01-research/model.schema.json "$FAKE_M4/01-research.json"
-res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$FAKE_M4/02-expansion.json" --deliverables library/profile/deliverables.txt --written-by 02-expansion --round 0 --idea "$TEST_IDEA")"
+res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$FAKE_M4/02-expansion.json" --deliverables channels/flashfx/library/profile/deliverables.txt --written-by 02-expansion --round 0 --idea "$TEST_IDEA")"
 assert_eq "$(jf "$res" ok),$(jf "$res" keyword),$(jf "$res" solution_type)" "true,LINK,external" "expansion.py: an external decision takes the keyword LINK (the model wrote SKILL)"
 assert_file "$RD2/02-expansion/solution.json" "expansion.py writes 02-expansion/solution.json"
 assert_eq "$(json_get "$RD2/02-expansion/solution.json" type)/$(json_get "$RD2/02-expansion/solution.json" keyword)/$(json_get "$RD2/02-expansion/solution.json" deliverable_link)" "external/LINK/https://github.com/anthropics/skills" "solution.json: type, keyword, the deliverable is the tool's link"
@@ -187,7 +187,7 @@ assert_grep "^Solution decision: external \(the frontend-design skill \(anthropi
 assert_grep "^Comment keyword: LINK\. Deliverable \(existing\): the link to " "$RD2/02-expansion/expansion.md" "expansion.md: the LINK deliverable"
 assert_true "expansion.json with the decision validates" python "$VALIDATE" pipeline/stages/02-expansion/schema.json "$RD2/02-expansion/expansion.json"
 assert_true "the fake expansion fixtures validate against the model schema (m4 and m12)" bash -c "python '$VALIDATE' pipeline/stages/02-expansion/model.schema.json '$FAKE_M4/02-expansion.json' && python '$VALIDATE' pipeline/stages/02-expansion/model.schema.json '$FAKE_M12/02-expansion.json'"
-res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$FAKE_M12/02-expansion.json" --deliverables library/profile/deliverables.txt --written-by 02-expansion --round 0 --idea "$TEST_IDEA")"
+res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$FAKE_M12/02-expansion.json" --deliverables channels/flashfx/library/profile/deliverables.txt --written-by 02-expansion --round 0 --idea "$TEST_IDEA")"
 assert_eq "$(jf "$res" ok),$(jf "$res" keyword),$(jf "$res" solution_type)" "true,FLASH,flashfx" "expansion.py: a flashfx decision takes the keyword FLASH"
 assert_grep "^Comment keyword: FLASH\. Deliverable \(existing\): access to FlashFX, the editor shown in the reel \(https://flashfx.app\)$" "$RD2/02-expansion/expansion.md" "expansion.md: FLASH with deliverables.txt's entry"
 python - "$FAKE_M4/02-expansion.json" "$W/bad-url.json" "$W/method.json" "$W/no-type.json" <<'EOF'
@@ -197,11 +197,11 @@ b = json.loads(json.dumps(base)); b["solution_decision"]["url"] = "https://examp
 m = json.loads(json.dumps(base)); m["solution_decision"] = {"type": "method", "name": "copy the skill folder by hand", "url": "", "reason": "a method"}; m["keyword"] = "SKILL"; json.dump(m, open(sys.argv[3], "w", encoding="utf-8"))
 n = json.loads(json.dumps(base)); n["solution_decision"] = {"type": "product", "name": "", "url": "", "reason": ""}; json.dump(n, open(sys.argv[4], "w", encoding="utf-8"))
 EOF
-res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/bad-url.json" --deliverables library/profile/deliverables.txt --written-by 02-expansion --round 0)"
+res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/bad-url.json" --deliverables channels/flashfx/library/profile/deliverables.txt --written-by 02-expansion --round 0)"
 assert_true "expansion.py: an external URL that is not a source of facts.md is refused" grep -q "is not a source of facts.md" <<<"$res"
-res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/method.json" --deliverables library/profile/deliverables.txt --written-by 02-expansion --round 0)"
+res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/method.json" --deliverables channels/flashfx/library/profile/deliverables.txt --written-by 02-expansion --round 0)"
 assert_eq "$(jf "$res" ok),$(jf "$res" keyword),$(jf "$res" solution_type),$(jf "$res" deliverable_status)" "true,SKILL,method,new" "expansion.py: a method keeps the model's keyword (NEW deliverable)"
-res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/no-type.json" --deliverables library/profile/deliverables.txt --written-by 02-expansion --round 0)"
+res="$(python pipeline/lib/expansion.py compose --run-dir "$RD2" --model-out "$W/no-type.json" --deliverables channels/flashfx/library/profile/deliverables.txt --written-by 02-expansion --round 0)"
 assert_true "expansion.py: an unknown type is refused" grep -q "type must be flashfx, external or method" <<<"$res"
 assert_true "expansion.py: an empty reason is refused" grep -q "reason is empty" <<<"$res"
 # the dummy S2 writes a solution too
@@ -236,7 +236,7 @@ assert_true "the frozen gate.json carries H" test "$(json_get "$FROZEN/03-gate/g
 
 # the script's solution rules (script_checks.py)
 python pipeline/lib/script_checks.py setup --config "$(REELS_ROOT="$REPO_DIR" resolved_config)" --brief "$FROZEN/05-hooks/brief.md" --judge "$FROZEN/06-judge/judge.json" --expansion "$FROZEN/02-expansion/expansion.json" \
-  --voice library/profile/voice.md --tweaks styles/paper-cards/tweaks.md --style styles/paper-cards/style.md --wpm 195 --rounds 3 --solution "$FROZEN/02-expansion/solution.json" --out "$W/plan.json" >/dev/null
+  --voice channels/flashfx/library/profile/voice.md --tweaks channels/flashfx/styles/paper-cards/tweaks.md --style channels/flashfx/styles/paper-cards/style.md --wpm 195 --rounds 3 --solution "$FROZEN/02-expansion/solution.json" --out "$W/plan.json" >/dev/null
 assert_eq "$(json_get "$W/plan.json" solution_decision.type)" "external" "script setup: the plan carries the solution decision"
 assert_grep "Never mention FlashFX" <(json_get "$W/plan.json" solution_rules) "script setup: the rules text for an external solution"
 cp "$FROZEN/07-script/draft-a.r2.json" "$W/clean.json"
@@ -323,8 +323,8 @@ assert_true "captions: a method reads method: name" grep -q -x "method: copy the
 
 # S13's checks (finalrender.py check) on the golden render: the video details pass; HyperFrames' own audio path misses
 # the loudness target (DECISIONS.md: that is why S13 muxes the mix with ffmpeg)
-if [ -f golden/test-idea/golden.mp4 ] && [ -f "$FROZEN/08-voiceover/vo.wav" ]; then
-  res="$(python pipeline/lib/finalrender.py check --file golden/test-idea/golden.mp4 --voice "$FROZEN/08-voiceover/vo.wav")"
+if [ -f channels/flashfx/golden/test-idea/golden.mp4 ] && [ -f "$FROZEN/08-voiceover/vo.wav" ]; then
+  res="$(python pipeline/lib/finalrender.py check --file channels/flashfx/golden/test-idea/golden.mp4 --voice "$FROZEN/08-voiceover/vo.wav")"
   assert_eq "$(jf "$res" failing)" '["loudness"]' "finalrender check: the golden render passes every video and container check and fails only the loudness (HyperFrames' audio path, +3 LU)"
   assert_true "finalrender check: the duration matches the voice within 0.2 s" python -c 'import json, sys; d = json.loads(sys.argv[1])["checks"]["duration"]; sys.exit(0 if d["ok"] and abs(d["diff_s"]) <= 0.2 else 1)' "$res"
 else

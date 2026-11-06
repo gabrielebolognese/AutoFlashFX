@@ -225,13 +225,13 @@ print("sizes", "ok" if all(1 <= len(c["words"]) <= 4 for c in limited) else "bad
 EOF
   cat /tmp/m10-chunks.txt | sed 's/^/    /'
   assert_true "the plain chunker leaves chunks wider than the caption line (the M9 gap)" test "$(grep '^plain' /tmp/m10-chunks.txt | cut -d' ' -f3)" -gt 0
-  assert_eq "$(grep '^limited' /tmp/m10-chunks.txt | cut -d' ' -f3)" "0" "with the width limit no chunk is wider than $(json_get styles/paper-cards/tokens.json zones.caption.max_width) px"
+  assert_eq "$(grep '^limited' /tmp/m10-chunks.txt | cut -d' ' -f3)" "0" "with the width limit no chunk is wider than $(json_get channels/flashfx/styles/paper-cards/tokens.json zones.caption.max_width) px"
   assert_grep "^words ok" /tmp/m10-chunks.txt "the width-limited chunks keep every spoken word in order"
   assert_grep "^sizes ok" /tmp/m10-chunks.txt "the width-limited chunks hold 1 to 4 words"
   tmp="$(mktemp -d)"; python pipeline/stages/09-plan/pass-schemas.py "$(mixed "$tmp")" >/dev/null
   same=1; for st in 09a-animations 09b-text 09c-transitions; do cmp -s "$tmp/$st/schema.json" "pipeline/stages/$st/schema.json" || same=0; done; rm -rf "$tmp"
   assert_eq "$same" "1" "the three pass schemas are the ones pass-schemas.py generates from 09-plan/schema.json"
-  assert_true "the merged plan schema accepts the golden plan" python "$VALIDATE" pipeline/stages/09-plan/schema.json golden/test-idea/plan.json
+  assert_true "the merged plan schema accepts the golden plan" python "$VALIDATE" pipeline/stages/09-plan/schema.json channels/flashfx/golden/test-idea/plan.json
   # the preflight's brand check: the repo passes; a sandbox with a broken brand.json stops with the fix
   assert_true "bash pipeline/bin/preflight passes in the repo (brand.json and every logo file present)" bash pipeline/bin/preflight
   sandbox_init --with-pipeline
@@ -239,7 +239,7 @@ EOF
   ( cd "$SANDBOX" && NO_COLOR=1 bash "$SANDBOX/pipeline/bin/preflight" ) >/tmp/m10-preflight.txt 2>&1; rc=$?
   assert_rc 3 $rc "a brand.json that lists a missing file stops the preflight (exit 3)"
   assert_grep "brand.json lists files that do not exist" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md names the missing logo file"
-  assert_grep "git checkout -- library/brand" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md gives the exact fix"
+  assert_grep "git checkout -- channels/flashfx/library/brand" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md gives the exact fix"
   sandbox_cleanup
 fi
 
@@ -328,7 +328,7 @@ project, repo = sys.argv[1], sys.argv[2]
 sys.path.insert(0, os.path.join(repo, "pipeline", "lib"))
 from motion import common as mc, harness
 from PIL import Image
-brand = json.load(open(os.path.join(repo, "library", "brand", "brand.json"), encoding="utf-8-sig"))
+brand = json.load(open(os.path.join(repo, "channels", "flashfx", "library", "brand", "brand.json"), encoding="utf-8-sig"))
 assets = {a["path"].replace("library/brand/", ""): a for a in brand["assets"]}
 inst = json.load(open(os.path.join(project, "instances.json"), encoding="utf-8-sig"))["instances"]
 spots = {"headline": ("kicker_mark", "#hl-mark img"), "end-card": ("lockup", "#ec-lockup img"), "dm-card": ("avatar", "#dm-avatar img"), "logo-tile": ("image", "#lt-main img")}
@@ -349,7 +349,7 @@ with harness.Harness(lib=project) as h:
         m = h.measure(comp, props, [2.5], [sel])["rows"][0][sel]
         if not m or not m.get("h"):
             print(i["instance"], "NO-IMG", rel); continue
-        im = Image.open(os.path.join(repo, "library", "brand", rel)); want = im.size[0] / im.size[1]
+        im = Image.open(os.path.join(repo, "channels", "flashfx", "library", "brand", rel)); want = im.size[0] / im.size[1]
         natural = (m.get("nw") or 0) / (m.get("nh") or 1)
         ok = m.get("fit") == "contain" and abs(natural - want) / want <= 0.02
         n += 1

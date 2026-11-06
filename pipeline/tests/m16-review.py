@@ -79,7 +79,7 @@ def energy_run(rd: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("work")
-    ap.add_argument("--golden", default=os.path.join(REPO, "golden", "test-idea"))
+    ap.add_argument("--golden", default=os.path.join(REPO, "channels", "flashfx", "golden", "test-idea"))
     a = ap.parse_args()
     work = os.path.abspath(a.work).replace("\\", "/")
     os.makedirs(work, exist_ok=True)

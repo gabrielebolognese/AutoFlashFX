@@ -166,7 +166,7 @@ say("digest-lists-the-recordings", "Page recordings (5)" in md and "research/05-
 cat = plan9.catalog_md(common.catalog())
 say("digest-lists-the-new-components", all(f"### {c}" in cat for c in "screenshot-zoom,video-card,card-fan,card-grid,timeline-scrubber,cursor,mock-site-card,swatch-row,swatch-card".split(",")))
 # a research video and a plan that never plays one: the warning of the real_motion rule
-plan = json.load(open(os.path.join("golden", "test-idea", "plan.json"), encoding="utf-8"))
+plan = json.load(open(os.path.join("channels", "flashfx", "golden", "test-idea", "plan.json"), encoding="utf-8"))
 for s in plan["scenes"]:
     for c in s["components"]:
         if c["component"] == "video-card":

@@ -25,7 +25,7 @@ def main() -> int:
     common.setup_streams()
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
-    ap.add_argument("--plan", default=os.path.join(REPO, "golden", "test-idea", "plan.json"))
+    ap.add_argument("--plan", default=os.path.join(REPO, "channels", "flashfx", "golden", "test-idea", "plan.json"))
     a = ap.parse_args()
     out = common.mixed(a.out)
     src = os.path.join(REPO, "pipeline", "tests", "fixtures", "runs", "test-idea")

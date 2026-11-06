@@ -424,11 +424,11 @@ EOF
     env -u REELS_ROOT python - "$REPO_DIR" <<'EOF' >/tmp/m14-host.txt
 import os, sys, re
 repo = sys.argv[1]
-idx = open(os.path.join(repo, "golden", "test-idea", "project", "index.html"), encoding="utf-8").read()
+idx = open(os.path.join(repo, "channels", "flashfx", "golden", "test-idea", "project", "index.html"), encoding="utf-8").read()
 m = re.search(r'<div id="paper-canvas"[^>]*>', idx)
 host = m.group(0) if m else ""
 print("host", "ok" if host and "data-no-timeline" not in host and '"seed"' in host and '"duration"' in host else host[:200] or "no canvas host")
-print("pcm", "ok" if os.path.isfile(os.path.join(repo, "golden", "test-idea", "project", "assets", "pc-motion.js")) else "missing")
+print("pcm", "ok" if os.path.isfile(os.path.join(repo, "channels", "flashfx", "golden", "test-idea", "project", "assets", "pc-motion.js")) else "missing")
 EOF
     cat /tmp/m14-host.txt
     assert_grep "^host ok" /tmp/m14-host.txt "the golden project's canvas host is seeded, runs the reel's length and has a timeline"

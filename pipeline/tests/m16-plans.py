@@ -134,7 +134,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["check", "write"])
     ap.add_argument("dir", nargs="?", default="")
-    ap.add_argument("--plan", default=os.path.join(REPO, "golden", "test-idea", "plan.json"))
+    ap.add_argument("--plan", default=os.path.join(REPO, "channels", "flashfx", "golden", "test-idea", "plan.json"))
     ap.add_argument("--out", default="")
     a = ap.parse_args()
     if a.cmd == "write":
