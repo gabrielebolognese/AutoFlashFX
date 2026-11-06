@@ -272,25 +272,25 @@ check_multi() {  # check_multi <driver out dir> <fake|real>: the acceptance chec
   source "$D/result.env"
   S="$(cygpath -u "$SANDBOX_M" 2>/dev/null || printf '%s' "$SANDBOX_M")"
   printf '   sandbox %s; run 1 %s s, run 2 %s s\n' "$SANDBOX_M" "$((T1 - T0))" "$((T2 - T1))"
-  grep -E "$ts_regex(START|STEP|GATE|ANGLE|LIMIT|RESUME|DONE|DROP|BLOCK|NEXT|IDLE|ERROR|FIXED|ESCAL|STOP)|fault injected|interrupted" "$S/logs/runner.log" | grep -v 'STEP   ' | sed 's/^/    /' | head -60
+  grep -E "$ts_regex(START|STEP|GATE|ANGLE|LIMIT|RESUME|DONE|DROP|BLOCK|NEXT|IDLE|ERROR|FIXED|ESCAL|STOP)|fault injected|interrupted" "$S/channels/flashfx/logs/runner.log" | grep -v 'STEP   ' | sed 's/^/    /' | head -60
   assert_eq "$LIMIT_FIRED/$KILL_FIRED" "1/1" "$mode: the simulated limit and the kill both fired in the second idea"
   assert_eq "$RC1" "137" "$mode: run 1 ended killed (exit 137) during the second idea"
   assert_eq "$LOCK_LEFT/$PID_LEFT" "1/1" "$mode: the killed runner left its lock and the stage's pid file, as a real crash does"
   assert_eq "$RC2" "0" "$mode: the restarted runner (run 2) finishes the queue and exits 0"
   assert_eq "$RC3" "130" "$mode: run 3 (forever mode) stops on SIGTERM with exit 130"
   # the story
-  python "$LOGCHECK" story $(story_files "$S/logs") --allow-crash $([ "$mode" = fake ] && echo "--heartbeat 1") --json "$D/story.json" > "$D/story.out" 2>&1; local rc=$?
+  python "$LOGCHECK" story $(story_files "$S/channels/flashfx/logs") --allow-crash $([ "$mode" = fake ] && echo "--heartbeat 1") --json "$D/story.json" > "$D/story.out" 2>&1; local rc=$?
   assert_rc 0 $rc "$mode: runner.log tells the full story with no problem ($(python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8")); print("; ".join(d["problems"][:6]))' "$D/story.json" 2>/dev/null))"
   assert_eq "$(jq_py "$D/story.json" 'len(d["sessions"])')" "3" "$mode: three runner sessions (run 1, the restart, the forever mode)"
   assert_eq "$(jq_py "$D/story.json" 'sorted(set(i["run"] for i in d["ideas"] if i["outcome"] in ("done", "dropped", "blocked")))' | python -c 'import json, sys; print(len(json.load(sys.stdin)))')" "3" "$mode: every idea ended exported, dropped or blocked"
   assert_eq "$(jq_py "$D/story.json" '[(i["session"], i["k"], i["outcome"]) for i in d["ideas"] if i["outcome"] == "interrupted"]')" '[[1, 2, "interrupted"]]' "$mode: only the second idea of session 1 was interrupted (the kill)"
   assert_eq "$(jq_py "$D/story.json" '[(i["resumed"], i["resumed_at"], i.get("resumed_after_crash", False)) for i in d["sessions"][1]["ideas"][:1]]')" '[[true, "checking idea (gate)", true]]' "$mode: the restart resumed the same idea at the same stage (S3)"
-  assert_grep "${ts_regex}INFO   S3 checking idea \(gate\): attempt 2 \(the previous one was interrupted\)$" "$S/logs/runner.log" "$mode: S3 runs again as attempt 2 after the interruption"
+  assert_grep "${ts_regex}INFO   S3 checking idea \(gate\): attempt 2 \(the previous one was interrupted\)$" "$S/channels/flashfx/logs/runner.log" "$mode: S3 runs again as attempt 2 after the interruption"
   assert_eq "$(jq_py "$D/story.json" '[(l["idea"], l["session"], l["kind"], l["resume_text"]) for l in d["limits"]]')" '[[2, 1, "session", "limit reset, continuing: expanding idea"]]' "$mode: one LIMIT (session limit) in the second idea, followed by its RESUME line"
-  assert_grep "${ts_regex}LIMIT  session limit hit, resuming at [0-9]{2}:[0-9]{2} \(\+2 min margin\)$" "$S/logs/runner.log" "$mode: the LIMIT line names the time it resumes at (reset plus the margin)"
-  assert_grep "\| session limit \| reset 20[0-9-]+ [0-9:]+ \| waiting until 20[0-9-]+ [0-9:]+ \(reset \+ 120 s\) \|" "$S/logs/limits.log" "$mode: limits.log has the target time"
-  assert_grep "resumed after the session limit" "$S/logs/limits.log" "$mode: limits.log has the resume"
-  RD2="$(jq_py "$D/story.json" 'd["sessions"][0]["ideas"][1]["run"]')"; RD2="$S/runs/$RD2"
+  assert_grep "${ts_regex}LIMIT  session limit hit, resuming at [0-9]{2}:[0-9]{2} \(\+2 min margin\)$" "$S/channels/flashfx/logs/runner.log" "$mode: the LIMIT line names the time it resumes at (reset plus the margin)"
+  assert_grep "\| session limit \| reset 20[0-9-]+ [0-9:]+ \| waiting until 20[0-9-]+ [0-9:]+ \(reset \+ 120 s\) \|" "$S/channels/flashfx/logs/limits.log" "$mode: limits.log has the target time"
+  assert_grep "resumed after the session limit" "$S/channels/flashfx/logs/limits.log" "$mode: limits.log has the resume"
+  RD2="$(jq_py "$D/story.json" 'd["sessions"][0]["ideas"][1]["run"]')"; RD2="$S/channels/flashfx/runs/$RD2"
   local fj next sid1 sid2
   fj="$(grep -l '"fault": "REELS_FAULT limit"' "$RD2"/02-expansion/calls/*.json 2>/dev/null | head -n 1)"
   assert_true "$mode: the faulted S2 call is in the call log ($(basename "${fj:-none}"))" test -n "$fj"
@@ -330,20 +330,20 @@ for i in d["ideas"]:
     [ "$mode" = real ] && { [ -s "$S/exports/$n/${n}hook2.mp4" ] || ok_files=0; }
   done
   assert_eq "$ok_files" "1" "$mode: every export has its N.mp4 and Ncaptions.txt$([ "$mode" = real ] && echo " and Nhook2.mp4")"
-  assert_eq "$(grep -c . "$S/logs/history.txt")" "3" "$mode: history.txt has one line per idea"
-  assert_eq "$(grep -c -E '\| (exported [0-9]+|dropped: .+|blocked: .+)$' "$S/logs/history.txt")" "3" "$mode: each history line says exported N, dropped or blocked with a reason"
+  assert_eq "$(grep -c . "$S/channels/flashfx/logs/history.txt")" "3" "$mode: history.txt has one line per idea"
+  assert_eq "$(grep -c -E '\| (exported [0-9]+|dropped: .+|blocked: .+)$' "$S/channels/flashfx/logs/history.txt")" "3" "$mode: each history line says exported N, dropped or blocked with a reason"
   assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "$mode: ideas.txt is empty"
-  assert_no_file "$S/logs/STOPPED.md" "$mode: no logs/STOPPED.md"
+  assert_no_file "$S/channels/flashfx/logs/STOPPED.md" "$mode: no logs/STOPPED.md"
   # status.txt at every sampled moment, and at the end
   python "$LOGCHECK" samples "$D/samples.txt" > "$D/samples.out" 2>&1; rc=$?
   assert_rc 0 $rc "$mode: status.txt was a valid status line at every sampled moment ($(cat "$D/samples.out"))"
-  assert_rc 0 "$(python "$LOGCHECK" status "$S/logs/status.txt" >/dev/null 2>&1; echo $?)" "$mode: the final status.txt is valid"
-  assert_eq "$(ls -a "$S/logs" | grep -c '^\.status\.')" "0" "$mode: no .status.* file left behind"
+  assert_rc 0 "$(python "$LOGCHECK" status "$S/channels/flashfx/logs/status.txt" >/dev/null 2>&1; echo $?)" "$mode: the final status.txt is valid"
+  assert_eq "$(ls -a "$S/channels/flashfx/logs" | grep -c '^\.status\.')" "0" "$mode: no .status.* file left behind"
   assert_grep "${ts_regex}IDLE   no ideas in ideas.txt, checking every 2 s \(idle 0 min\) \| today: [0-9]+ exported, [0-9]+ dropped" "$D/run3.out" "$mode: the forever mode's IDLE line"
   assert_grep "${ts_regex}INFO   stopped by the user \(TERM\)$" "$D/run3.out" "$mode: the forever mode's stop line"
   assert_grep "${ts_regex}IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked in " "$D/run3.out" "$mode: the summary line on the empty queue"
-  no_emdash_in "$mode: no em dash in the exports and the logs" "$S/logs/runner.log" "$S/logs/history.txt" "$S/logs/limits.log" "$S/logs/status.txt" \
-    $(ls "$S"/exports/*/*captions.txt 2>/dev/null) $(ls "$S/logs/blocked.txt" 2>/dev/null) "$D/run1.out" "$D/run2.out" "$D/run3.out"
+  no_emdash_in "$mode: no em dash in the exports and the logs" "$S/channels/flashfx/logs/runner.log" "$S/channels/flashfx/logs/history.txt" "$S/channels/flashfx/logs/limits.log" "$S/channels/flashfx/logs/status.txt" \
+    $(ls "$S"/exports/*/*captions.txt 2>/dev/null) $(ls "$S/channels/flashfx/logs/blocked.txt" 2>/dev/null) "$D/run1.out" "$D/run2.out" "$D/run3.out"
 }
 
 if want 2; then

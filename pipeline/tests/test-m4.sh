@@ -41,7 +41,7 @@ LATER_DUMMIES="$(dummy_after 04-angle)"
 state_get() { python "$STATE_PY" get "$@"; }
 run_dirs() { ls -d "$SANDBOX"/channels/flashfx/runs/*/ 2>/dev/null | sed 's|/$||'; }
 first_run() { run_dirs | head -n 1; }
-run_of() { printf '%s/%s' "$SANDBOX" "$(grep -o -E -m1 'runs/[^[:space:]]+' "$1")"; }  # the run folder named by a run's START line (ls sorts "<id>-2" before "<id>" here)
+run_of() { printf '%s/channels/flashfx/%s' "$SANDBOX" "$(grep -o -E -m1 'runs/[^[:space:]]+' "$1")"; }  # the run folder named by a run's START line (ls sorts "<id>-2" before "<id>" here)
 
 run_once() {  # run_once <outfile> [env...]: the sandbox's own run.sh (REELS_REPO is the sandbox copy of the repo)
   local out="$1"; shift
@@ -401,7 +401,7 @@ need = {"Bash(gh auth *)", "Bash(gh gist *)", "Bash(gh repo clone *)", "Bash(gh 
 sys.exit(0 if all(need <= set(calls[n - 1]["disallowed"]) for n in (1, 4, 6)) else 1)' "$FAKE_CLAUDE_LOG"
 assert_eq "$(fake_field 3 tools)" '[""]' "S3: the gate has no tools"
 assert_eq "$(fake_field 2 tools)" '[""]' "S2: the expansion has no tools"
-assert_true "S1: the protected files are denied" grep -q 'Edit(ideas.txt)' <<<"$(fake_field 1 disallowed)"
+assert_true "S1: the protected files are denied" grep -q 'Edit(channels/\*/ideas.txt)' <<<"$(fake_field 1 disallowed)"
 assert_eq "$(fake_field 1 schema)" "true" "S1: a JSON schema is passed"
 assert_true "every call is saved under calls/" test -f "$RD/03-gate/calls/003-gate-r3.json" -a -f "$RD/04-angle/calls/002-angle-r2-try1.json"
 assert_eq "$(state_get "$RD" sessions.A)" "$sidA" "state.json: sessions.A holds the session id"
