@@ -187,7 +187,7 @@ sys.path.insert(0, os.path.join("pipeline", "lib"))
 from visual import common, kinetic, plan9, plan_validate, plan_merge
 toks = common.tokens()
 frozen = "pipeline/tests/fixtures/runs/test-idea"
-golden = common.load_json("golden/test-idea/plan.json")
+golden = common.load_json("channels/flashfx/golden/test-idea/plan.json")
 ctx = plan_validate.Context.from_run(frozen)
 def say(name, ok, detail=""):
     print(name, "ok" if ok else "FAIL " + str(detail)[:300])
@@ -311,7 +311,7 @@ say("director-group-kept", not errors and g is not None and g["words"][g["anchor
 dg = "build/M15/tmp/test/digest"
 class A: pass
 a = A(); a.run_dir = run; a.out = dg; a.which = "text"
-shutil.copy2("golden/test-idea/plan.json", run + "/09a-animations/plan.json")
+shutil.copy2("channels/flashfx/golden/test-idea/plan.json", run + "/09a-animations/plan.json")
 plan9.run_digest(a)
 text = open(dg + "/chunks.md", encoding="utf-8").read()
 say("digest-modes", "Caption modes per scene" in text and "importance number" in text and "the pipeline's own choice: group mode" in text and "importance payoff" in text, text[-600:])
@@ -364,7 +364,7 @@ EOF
   # the validator CLI names the rule of a planted plan
   python - <<'EOF'
 import copy, json, os, sys
-p = json.load(open("golden/test-idea/plan.json", encoding="utf-8-sig"))
+p = json.load(open("channels/flashfx/golden/test-idea/plan.json", encoding="utf-8-sig"))
 g0 = next(c for c in p["captions"] if c.get("mode") == "group")
 g0["layout"]["motion"] = {"kind": "none"}
 json.dump(p, open("build/M15/tmp/test/bad-static-group.json", "w", encoding="utf-8", newline="\n"))
@@ -372,7 +372,7 @@ EOF
   python "$VISUAL" validate "$W/bad-static-group.json" --run-dir "$FROZEN" >"$W/bad-cli.txt" 2>&1; rc=$?
   assert_rc 1 $rc "the validator CLI fails the planted plan"
   assert_grep "^rule=caption_modes: caption [0-9]+ .*the group does not move" "$W/bad-cli.txt" "the validator names the rule and the caption"
-  python "$VISUAL" validate golden/test-idea/plan.json --run-dir "$FROZEN" >"$W/good-cli.txt" 2>&1; rc=$?
+  python "$VISUAL" validate channels/flashfx/golden/test-idea/plan.json --run-dir "$FROZEN" >"$W/good-cli.txt" 2>&1; rc=$?
   assert_rc 0 $rc "the validator CLI passes the golden plan ($(tail -n 1 "$W/good-cli.txt"))"
 fi
 
@@ -386,7 +386,7 @@ import json, os, sys
 sys.path.insert(0, os.path.join("pipeline", "lib"))
 from visual import common, kinetic, plan_validate
 toks = common.tokens()
-plan = common.load_json("golden/test-idea/plan.json")
+plan = common.load_json("channels/flashfx/golden/test-idea/plan.json")
 def say(name, ok, detail=""):
     print(name, "ok" if ok else "FAIL " + str(detail)[:300])
 caps = plan["captions"]
@@ -422,7 +422,7 @@ EOF
   # planted: a caption word that does not move (rise 0) and a group that does not move
   python - <<'EOF'
 import json, os, sys
-p = json.load(open("golden/test-idea/plan.json", encoding="utf-8-sig"))
+p = json.load(open("channels/flashfx/golden/test-idea/plan.json", encoding="utf-8-sig"))
 w = next(c for c in p["captions"] if c.get("mode") == "word")
 w["motion"] = {"kind": "rise", "px": 0}
 g = next(c for c in p["captions"] if c.get("mode") == "group")
@@ -453,14 +453,14 @@ if want 4; then
   # planted copy 1: a card with text under a caption group, 120 characters of text, a caption group over a text chip
   python - <<'EOF'
 import copy, json
-p = json.load(open("golden/test-idea/plan.json", encoding="utf-8-sig"))
+p = json.load(open("channels/flashfx/golden/test-idea/plan.json", encoding="utf-8-sig"))
 g = next(c for c in p["captions"] if c.get("mode") == "group")
 s = next(s for s in p["scenes"] if s["id"] == g["scene"])
 s["components"].append({"id": "s6-light-chip-9", "component": "light-chip", "start_ms": g["start_ms"] + 100, "end_ms": g["end_ms"], "role": "label", "props": {"x": 120, "y": 300, "text": "a chip over the group"}})
 s2 = next(s for s in p["scenes"] if s["id"] == "s2")
 s2["components"].append({"id": "s2-card-9", "component": "card", "start_ms": s2["start_ms"] + 200, "end_ms": s2["end_ms"], "role": "support", "props": {"x": 90, "y": 1000, "w": 900, "title": "x" * 38, "body": "y" * 45, "enter": "rise"}})
 json.dump(p, open("build/M15/tmp/test/plan-p1.json", "w", encoding="utf-8", newline="\n"))
-q = copy.deepcopy(json.load(open("golden/test-idea/plan.json", encoding="utf-8-sig")))
+q = copy.deepcopy(json.load(open("channels/flashfx/golden/test-idea/plan.json", encoding="utf-8-sig")))
 w = next(c for c in q["captions"] if c.get("mode") == "word")
 w["motion"] = {"kind": "rise", "px": 0}
 g = next(c for c in q["captions"] if c.get("mode") == "group")
@@ -510,14 +510,14 @@ if want 5; then
   assert_rc 0 $rc "the catalog matches the files ($(tail -n 1 "$W/cat.txt"))"
   python - <<'EOF' >"$W/cat2.txt" 2>&1
 import json, os
-c = {x["id"]: x for x in json.load(open("motion-lib/catalog.json", encoding="utf-8-sig"))["components"]}
+c = {x["id"]: x for x in json.load(open("channels/flashfx/motion-lib/catalog.json", encoding="utf-8-sig"))["components"]}
 def say(name, ok, detail=""):
     print(name, "ok" if ok else "FAIL " + str(detail)[:200])
 say("word-approved", c.get("caption-word", {}).get("status") == "approved" and c["caption-word"]["kind"] == "captions" and c["caption-word"]["item"] == 7)
 say("group-approved", c.get("caption-group", {}).get("status") == "approved" and c["caption-group"]["kind"] == "captions")
-say("line-retired", "caption-line" not in c and not os.path.exists("motion-lib/compositions/caption-line.html") and os.path.exists("motion-lib/retired/caption-line.html"))
+say("line-retired", "caption-line" not in c and not os.path.exists("channels/flashfx/motion-lib/compositions/caption-line.html") and os.path.exists("channels/flashfx/motion-lib/retired/caption-line.html"))
 say("props", {"words_json", "y", "emphasis_ratio"} <= {p["id"] for p in c["caption-word"]["props"]} and {"groups_json"} <= {p["id"] for p in c["caption-group"]["props"]})
-say("beat-map-any", {"caption-word", "caption-group"} <= set(json.load(open("styles/paper-cards/tokens.json", encoding="utf-8-sig"))["beat_map"]["any"]) and "caption-line" not in json.load(open("styles/paper-cards/tokens.json", encoding="utf-8-sig"))["beat_map"]["any"])
+say("beat-map-any", {"caption-word", "caption-group"} <= set(json.load(open("channels/flashfx/styles/paper-cards/tokens.json", encoding="utf-8-sig"))["beat_map"]["any"]) and "caption-line" not in json.load(open("channels/flashfx/styles/paper-cards/tokens.json", encoding="utf-8-sig"))["beat_map"]["any"])
 EOF
   for k in word-approved group-approved line-retired props beat-map-any; do assert_grep "^$k ok" "$W/cat2.txt" "catalog: $k"; done
   bash "$REPO_DIR/pipeline/bin/frame-match" --only caption-word,caption-group >"$W/fm.txt" 2>&1; rc=$?
@@ -526,9 +526,9 @@ EOF
   assert_grep "^caption-word: pass" "$W/fm.txt" "caption-word: pass (the fade, the exit, the next word one frame after, never static)"
   assert_grep "^caption-group: pass" "$W/fm.txt" "caption-group: pass (the fade, the exit, never static)"
   hf_json lint --json "$LIB" >"$W/lint.json" 2>/dev/null
-  assert_true "npx hyperframes lint: no errors on motion-lib/" python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); sys.exit(0 if d.get("errorCount") == 0 else 1)' "$W/lint.json"
+  assert_true "npx hyperframes lint: no errors on channels/flashfx/motion-lib/" python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); sys.exit(0 if d.get("errorCount") == 0 else 1)' "$W/lint.json"
   ( cd "$LIB" && hf_json check --json --timeout 120000 --samples 12 ) >"$W/check.json" 2>/dev/null
-  assert_true "npx hyperframes check: ok on motion-lib/" python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); sys.exit(0 if d.get("ok") else 1)' "$W/check.json"
+  assert_true "npx hyperframes check: ok on channels/flashfx/motion-lib/" python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8-sig")); sys.exit(0 if d.get("ok") else 1)' "$W/check.json"
 fi
 
 # ------------------------------------------------------------------------------------------------ 6. em dashes
@@ -536,9 +536,9 @@ if want 6; then
   section "6. no em dash in the files M15 wrote"
   no_emdash_in "no em dash in the M15 files" pipeline/lib/visual/kinetic.py pipeline/lib/visual/plan9.py pipeline/lib/visual/plan_validate.py pipeline/lib/visual/common.py \
     pipeline/lib/motion/captions.py pipeline/lib/motion/golden.py pipeline/lib/motion/goldenplan.py pipeline/lib/review/mechanical.py pipeline/lib/review/common.py \
-    pipeline/lib/script_checks.py pipeline/lib/tokens.py motion-lib/compositions/caption-word.html motion-lib/compositions/caption-group.html motion-lib/retired/caption-line.html \
+    pipeline/lib/script_checks.py pipeline/lib/tokens.py channels/flashfx/motion-lib/compositions/caption-word.html channels/flashfx/motion-lib/compositions/caption-group.html channels/flashfx/motion-lib/retired/caption-line.html \
     pipeline/stages/09b-text/prompt.md pipeline/stages/09b-text/model.schema.json pipeline/stages/07-script/prompt.md pipeline/tests/test-m15.sh pipeline/tests/m15-frames.py pipeline/tests/m15-mkrun.py \
-    golden/test-idea/plan.json styles/paper-cards/tokens.json
+    channels/flashfx/golden/test-idea/plan.json channels/flashfx/styles/paper-cards/tokens.json
 fi
 
 test_summary

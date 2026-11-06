@@ -109,10 +109,10 @@ EOF
   assert_eq "$(json_get "$OUT" zones.caption.safe_zone_exception)" "false" "the safe-zone exception is dropped"
   assert_true "the accepted-proposal tokens still verify against the sources" python "$TOK" verify --style-dir "$SD" --tokens "$OUT"
   # the repo's own tokens
-  assert_true "the repo's tokens.json is current" bash pipeline/bin/build-tokens --check
-  assert_true "the repo's tokens.json validates" python "$VALIDATE" pipeline/lib/tokens.schema.json styles/paper-cards/tokens.json
-  assert_true "the repo's tokens.json verifies against the sources" bash pipeline/bin/build-tokens --verify
-  assert_file "$LIB/assets/tokens.css" "motion-lib/assets/tokens.css exists"
+  assert_true "the repo's tokens.json is current" env -u REELS_ROOT bash pipeline/bin/build-tokens --check
+  assert_true "the repo's tokens.json validates" python "$VALIDATE" pipeline/lib/tokens.schema.json channels/flashfx/styles/paper-cards/tokens.json
+  assert_true "the repo's tokens.json verifies against the sources" env -u REELS_ROOT bash pipeline/bin/build-tokens --verify
+  assert_file "$LIB/assets/tokens.css" "channels/flashfx/motion-lib/assets/tokens.css exists"
   sandbox_cleanup
 fi
 
@@ -120,9 +120,9 @@ fi
 if want 2; then
   section "2. the library: lint, check, catalog, logo spots, stills"
   lint="$(hf_json lint --json "$LIB")"
-  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on motion-lib/"
+  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on channels/flashfx/motion-lib/"
   check="$(cd "$LIB" && hf_json check --json --timeout 90000 --samples 12)"
-  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on motion-lib/"
+  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on channels/flashfx/motion-lib/"
   assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("browserSkipped") else "false")')" "false" "the browser audits ran"
   assert_true "the catalog agrees with the component files" python "$MOTION" catalog
   CAT="$LIB/catalog.json"
@@ -163,8 +163,8 @@ lib = common.motion_lib_dir()
 def ratio(path):
     im = Image.open(path); return im.size[0] / im.size[1]
 jobs = [
-    ("logo-tile", {"image": "assets/brand/mark/mark-gradient.png", "size": 200, "image_pad": 20}, "#lt-main img", ratio(os.path.join(repo, "library/brand/mark/mark-gradient.png"))),
-    ("end-card", {"lockup": "assets/brand/lockup/lockup-gradient-on-light.png", "lockup_w": 360}, "#ec-lockup img", ratio(os.path.join(repo, "library/brand/lockup/lockup-gradient-on-light.png"))),
+    ("logo-tile", {"image": "assets/brand/mark/mark-gradient.png", "size": 200, "image_pad": 20}, "#lt-main img", ratio(os.path.join(repo, "channels/flashfx/library/brand/mark/mark-gradient.png"))),
+    ("end-card", {"lockup": "assets/brand/lockup/lockup-gradient-on-light.png", "lockup_w": 360}, "#ec-lockup img", ratio(os.path.join(repo, "channels/flashfx/library/brand/lockup/lockup-gradient-on-light.png"))),
     ("dm-card", {"avatar": "assets/brand/mark/avatar-dark.png", "avatar_size": 120}, "#dm-avatar img", 1.0),
     ("headline", {"kicker_mark": "assets/brand/mark/mark-gradient.png"}, "#hl-mark img", None),
 ]
@@ -213,7 +213,7 @@ fi
 # ------------------------------------------------------------------------------------------------ 3. frame-match
 if want 3; then
   section "3. frame-match against the style's numbers and the reference strips"
-  bash pipeline/bin/frame-match >/tmp/m9-fm.txt 2>&1; rc=$?
+  env -u REELS_ROOT bash pipeline/bin/frame-match >/tmp/m9-fm.txt 2>&1; rc=$?
   tail -3 /tmp/m9-fm.txt
   assert_rc 0 $rc "frame-match passes every component"
   FM="$LIB/gallery/frame-match.md"; FMJ="$LIB/gallery/frame-match.json"
@@ -240,14 +240,14 @@ EOF
   assert_grep "^approved-pass ok" /tmp/m9-fm2.txt "every component in compositions/ passes"
   assert_grep "^md-rows ok" /tmp/m9-fm2.txt "frame-match.md has a row per component"
   assert_grep "^candidates-listed ok" /tmp/m9-fm2.txt "the candidates (if any) are listed with their numbers"
-  if [ -d styles/paper-cards/analysis ]; then
+  if [ -d channels/flashfx/styles/paper-cards/analysis ]; then
     assert_true "the reference strips were correlated (analysis/ exists on this PC)" test "$(grep '^strips' /tmp/m9-fm2.txt | cut -d' ' -f2)" -ge 15
   fi
   # the gallery page with one still per component
-  bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
+  env -u REELS_ROOT bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
   assert_rc 0 $rc "the gallery page builds"
   G="$LIB/gallery/index.html"
-  assert_file "$G" "motion-lib/gallery/index.html exists"
+  assert_file "$G" "channels/flashfx/motion-lib/gallery/index.html exists"
   python - "$LIB/catalog.json" "$G" "$LIB" <<'EOF' >/tmp/m9-gal.txt
 import json, os, sys
 cat = json.load(open(sys.argv[1], encoding="utf-8-sig")); g = open(sys.argv[2], encoding="utf-8").read(); lib = sys.argv[3]
@@ -263,21 +263,21 @@ fi
 # ------------------------------------------------------------------------------------------------ 4. golden
 if want 4; then
   section "4. the golden reel"
-  PLAN="golden/test-idea/plan.json"; VO="pipeline/tests/fixtures/runs/test-idea/08-voiceover/vo.wav"
+  PLAN="channels/flashfx/golden/test-idea/plan.json"; VO="pipeline/tests/fixtures/runs/test-idea/08-voiceover/vo.wav"
   if [ ! -f "$VO" ]; then
     fail "the frozen voice $VO is missing: run M7_SECTIONS=3 bash pipeline/tests/test-m7.sh once"
   else
-    bash pipeline/bin/render-golden --make-plan >/tmp/m9-golden.txt 2>&1; rc=$?
+    env -u REELS_ROOT bash pipeline/bin/render-golden --make-plan >/tmp/m9-golden.txt 2>&1; rc=$?
     tail -5 /tmp/m9-golden.txt
     assert_rc 0 $rc "render-golden builds, checks, renders and probes clean"
-    assert_file "$PLAN" "golden/test-idea/plan.json exists"
+    assert_file "$PLAN" "channels/flashfx/golden/test-idea/plan.json exists"
     assert_true "plan.json validates against pipeline/stages/09-plan/schema.json" python "$VALIDATE" pipeline/stages/09-plan/schema.json "$PLAN"
-    assert_file golden/test-idea/golden.mp4 "golden.mp4 rendered"
-    assert_file golden/test-idea/contact-sheet.png "the contact sheet exists"
-    assert_file golden/test-idea/README.md "README.md exists"
-    assert_file golden/test-idea/project/index.html "the project exists"
-    assert_eq "$(json_get golden/test-idea/check.json ok)" "true" "npx hyperframes check passed on the golden project"
-    probe="$(ffprobe -v error -show_entries stream=codec_type,width,height,r_frame_rate:format=duration -of json golden/test-idea/golden.mp4)"
+    assert_file channels/flashfx/golden/test-idea/golden.mp4 "golden.mp4 rendered"
+    assert_file channels/flashfx/golden/test-idea/contact-sheet.png "the contact sheet exists"
+    assert_file channels/flashfx/golden/test-idea/README.md "README.md exists"
+    assert_file channels/flashfx/golden/test-idea/project/index.html "the project exists"
+    assert_eq "$(json_get channels/flashfx/golden/test-idea/check.json ok)" "true" "npx hyperframes check passed on the golden project"
+    probe="$(ffprobe -v error -show_entries stream=codec_type,width,height,r_frame_rate:format=duration -of json channels/flashfx/golden/test-idea/golden.mp4)"
     want="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VO")"
     python - "$probe" "$want" <<'EOF' >/tmp/m9-probe.txt
 import json, sys
@@ -320,10 +320,10 @@ fi
 # ------------------------------------------------------------------------------------------------ 5. webgl
 if want 5; then
   section "5. the WebGL test"
-  bash pipeline/bin/webgl-test --out "$LIB/webgl.json" >/tmp/m9-webgl.txt 2>&1; rc=$?
+  env -u REELS_ROOT bash pipeline/bin/webgl-test --out "$LIB/webgl.json" >/tmp/m9-webgl.txt 2>&1; rc=$?
   tail -3 /tmp/m9-webgl.txt
   assert_rc 0 $rc "webgl-test runs"
-  assert_file "$LIB/webgl.json" "motion-lib/webgl.json written"
+  assert_file "$LIB/webgl.json" "channels/flashfx/motion-lib/webgl.json written"
   assert_true "webgl.json has a verdict" test -n "$(json_get "$LIB/webgl.json" webgl)"
   assert_true "webgl.json names the harness mode" test -n "$(json_get "$LIB/webgl.json" harness_gpu)"
   assert_grep "summary" "$LIB/webgl.json" "webgl.json has a summary line"
@@ -333,10 +333,10 @@ fi
 if want 6; then
   section "6. no em dash in the files M9 wrote"
   files=(pipeline/lib/tokens.py pipeline/lib/tokens.schema.json pipeline/bin/build-tokens pipeline/bin/frame-match pipeline/bin/gallery pipeline/bin/render-golden
-         pipeline/bin/webgl-test pipeline/bin/setup-node pipeline/stages/09-plan/schema.json styles/paper-cards/tokens.json motion-lib/catalog.json
-         motion-lib/index.html motion-lib/assets/paper-cards.css motion-lib/assets/paper-cards.js motion-lib/gallery/index.html motion-lib/gallery/frame-match.md)
-  for f in pipeline/lib/motion/*.py motion-lib/compositions/*.html; do files+=("$f"); done
-  [ -f golden/test-idea/plan.json ] && files+=(golden/test-idea/plan.json golden/test-idea/README.md)
+         pipeline/bin/webgl-test pipeline/bin/setup-node pipeline/stages/09-plan/schema.json channels/flashfx/styles/paper-cards/tokens.json channels/flashfx/motion-lib/catalog.json
+         channels/flashfx/motion-lib/index.html channels/flashfx/motion-lib/assets/paper-cards.css channels/flashfx/motion-lib/assets/paper-cards.js channels/flashfx/motion-lib/gallery/index.html channels/flashfx/motion-lib/gallery/frame-match.md)
+  for f in pipeline/lib/motion/*.py channels/flashfx/motion-lib/compositions/*.html; do files+=("$f"); done
+  [ -f channels/flashfx/golden/test-idea/plan.json ] && files+=(channels/flashfx/golden/test-idea/plan.json channels/flashfx/golden/test-idea/README.md)
   existing=(); for f in "${files[@]}"; do [ -f "$f" ] && existing+=("$f"); done
   no_emdash_in "no em dash in the M9 files" "${existing[@]}"
 fi

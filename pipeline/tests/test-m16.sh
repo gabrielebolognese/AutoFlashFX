@@ -78,14 +78,14 @@ if want 1; then
   for c in ${NINE//,/ }; do assert_grep "^$c: pass" "$W/fm.txt" "frame-match: $c passes (its main animation, the life checks, the strips)"; done
   python - <<'EOF' >"$W/fm2.txt" 2>&1
 import json
-r = json.load(open("motion-lib/gallery/frame-match.json", encoding="utf-8"))["results"]
+r = json.load(open("channels/flashfx/motion-lib/gallery/frame-match.json", encoding="utf-8"))["results"]
 nine = "screenshot-zoom,video-card,card-fan,card-grid,timeline-scrubber,cursor,mock-site-card,swatch-row,swatch-card".split(",")
 by = {x["id"]: x for x in r}
 print("report-has-all-components", "ok" if len(by) >= 38 and all(i in by for i in nine) else "FAIL " + str(len(by)))
 print("report-energy-measured", "ok" if all((by[i].get("energy") or {}).get("moving_share_pct") is not None for i in nine) else "FAIL")
 bad = [i for i in nine if not any(c["check"].startswith("life: never static") for c in by[i]["checks"])]
 print("report-life-checks-run", "ok" if not bad else "FAIL " + str(bad))
-cat = {c["id"]: c for c in json.load(open("motion-lib/catalog.json", encoding="utf-8"))["components"]}
+cat = {c["id"]: c for c in json.load(open("channels/flashfx/motion-lib/catalog.json", encoding="utf-8"))["components"]}
 print("catalog-has-energy", "ok" if all(cat[i].get("energy") for i in nine) else "FAIL " + str([i for i in nine if not cat[i].get("energy")]))
 print("catalog-beat-map", "ok" if all(cat[i]["beat_types"] for i in nine) else "FAIL")
 vid = cat["video-card"]
@@ -98,10 +98,10 @@ EOF
     pass "no composition keeps a tween or an onUpdate of its own (the new ones too: pc-motion.js's move helpers)"
   fi
   lint="$(hf_json lint --json "$LIB")"
-  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on motion-lib/"
+  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on channels/flashfx/motion-lib/"
   check="$(cd "$LIB" && hf_json check --json --timeout 120000 --samples 12)"
-  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on motion-lib/"
-  bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
+  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on channels/flashfx/motion-lib/"
+  env -u REELS_ROOT bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
   assert_rc 0 $rc "the gallery page builds"
   for c in ${NINE//,/ }; do assert_grep "stills/$c.png" "$LIB/gallery/index.html" "the gallery shows $c"; assert_file "$LIB/gallery/stills/$c.png" "still of $c"; done
 fi
@@ -194,7 +194,7 @@ if want 4; then
      && [ "$GOLDEN/golden.mp4" -nt "$LIB/compositions/video-card.html" ]; then fresh=0; fi
   if [ "$fresh" = 1 ]; then
     t0=$EPOCHSECONDS
-    bash pipeline/bin/render-golden --make-plan >"$W/golden.txt" 2>&1; rc=$?
+    env -u REELS_ROOT bash pipeline/bin/render-golden --make-plan >"$W/golden.txt" 2>&1; rc=$?
     printf '   (the golden render took %s s)\n' "$((EPOCHSECONDS - t0))"
     assert_rc 0 $rc "render-golden rebuilds the golden reel from the plan ($(tail -n 1 "$W/golden.txt" | cut -c1-100))"
   else
@@ -208,8 +208,8 @@ from review import energy, energy_check
 from visual import common
 def say(n, ok, d=""): print(n, "ok" if ok else "FAIL " + str(d))
 toks = common.tokens()
-plan = json.load(open("golden/test-idea/plan.json", encoding="utf-8"))
-rep = energy.measure_video("golden/test-idea/golden.mp4", plan=plan, tokens=toks)
+plan = json.load(open("channels/flashfx/golden/test-idea/plan.json", encoding="utf-8"))
+rep = energy.measure_video("channels/flashfx/golden/test-idea/golden.mp4", plan=plan, tokens=toks)
 w = rep["whole"]
 print("   the reel: " + energy.summary_line(w, rep["check"]))
 for name, c in rep["check"]["checks"].items():
@@ -229,8 +229,8 @@ for s in rep["scenes"]:
             bad.append((s["id"], name, c["got"], c["want"]))
 say("every-scene-at-80-percent-of-every-target", not bad, bad)
 say("energy-check-agrees", not energy_check.scene_issues(json.loads(json.dumps(rep)), share))
-json.dump({"written_by": "pipeline/tests/test-m16.sh", "video": "golden/test-idea/golden.mp4", "targets": rep["targets"], "scene_bounds": bounds, "whole": w, "check": rep["check"],
-           "scenes": [{"id": s["id"], "beat_type": s["beat_type"], "measures": s["measures"]} for s in rep["scenes"]]}, open("golden/test-idea/energy.json", "w", encoding="utf-8", newline="\n"), indent=1)
+json.dump({"written_by": "pipeline/tests/test-m16.sh", "video": "channels/flashfx/golden/test-idea/golden.mp4", "targets": rep["targets"], "scene_bounds": bounds, "whole": w, "check": rep["check"],
+           "scenes": [{"id": s["id"], "beat_type": s["beat_type"], "measures": s["measures"]} for s in rep["scenes"]]}, open("channels/flashfx/golden/test-idea/energy.json", "w", encoding="utf-8", newline="\n"), indent=1)
 # the plan uses the new components where the energy comes from
 kinds = {c["component"] for s in plan["scenes"] for c in s["components"]}
 new = kinds & set("screenshot-zoom,video-card,card-fan,card-grid,timeline-scrubber,cursor,mock-site-card,swatch-row,swatch-card".split(","))
@@ -304,16 +304,16 @@ fi
 if want 7; then
   section "7. no em dash in the files M16 wrote"
   no_emdash_in "no em dash in the M16 components, helpers and sources" \
-    motion-lib/assets/pc-motion.js motion-lib/compositions/screenshot-zoom.html motion-lib/compositions/video-card.html motion-lib/compositions/card-fan.html \
-    motion-lib/compositions/card-grid.html motion-lib/compositions/timeline-scrubber.html motion-lib/compositions/cursor.html motion-lib/compositions/mock-site-card.html \
-    motion-lib/compositions/swatch-row.html motion-lib/compositions/swatch-card.html pipeline/lib/motion/demo_assets.py pipeline/lib/motion/catalog.py pipeline/lib/motion/expectations.py \
+    channels/flashfx/motion-lib/assets/pc-motion.js channels/flashfx/motion-lib/compositions/screenshot-zoom.html channels/flashfx/motion-lib/compositions/video-card.html channels/flashfx/motion-lib/compositions/card-fan.html \
+    channels/flashfx/motion-lib/compositions/card-grid.html channels/flashfx/motion-lib/compositions/timeline-scrubber.html channels/flashfx/motion-lib/compositions/cursor.html channels/flashfx/motion-lib/compositions/mock-site-card.html \
+    channels/flashfx/motion-lib/compositions/swatch-row.html channels/flashfx/motion-lib/compositions/swatch-card.html pipeline/lib/motion/demo_assets.py pipeline/lib/motion/catalog.py pipeline/lib/motion/expectations.py \
     pipeline/lib/motion/goldenplan.py pipeline/lib/screenshot.py pipeline/lib/research.py pipeline/lib/visual/plan_validate.py pipeline/lib/visual/plan9.py pipeline/lib/visual/common.py \
     pipeline/lib/review/energy_check.py pipeline/lib/review/liveness.py pipeline/lib/review/route.py pipeline/lib/review/edit.py pipeline/lib/review/mechanical.py pipeline/lib/review/__main__.py
   no_emdash_in "no em dash in the M16 prompts, schemas, contracts and tests" \
     pipeline/stages/01-research/prompt.md pipeline/stages/01-research/CONTRACT.md pipeline/stages/01-research/schema.json pipeline/stages/09a-animations/prompt.md \
     pipeline/stages/09c-transitions/prompt.md pipeline/stages/12-review/prompt.md pipeline/stages/12-review/model.schema.json pipeline/stages/12-review/run.sh \
     pipeline/tests/test-m16.sh pipeline/tests/m16-lib.py pipeline/tests/m16-plans.py pipeline/tests/m16-recording.py pipeline/tests/m16-review.py pipeline/tests/sandbox-config.py \
-    golden/test-idea/plan.json golden/test-idea/README.md golden/test-idea/energy.json config.json
+    channels/flashfx/golden/test-idea/plan.json channels/flashfx/golden/test-idea/README.md channels/flashfx/golden/test-idea/energy.json config.json
 fi
 
 test_summary

@@ -68,9 +68,9 @@ print("\n".join(bad)); sys.exit(1 if bad else 0)' "$@" >/tmp/m14-emdash.txt; the
 if want 1; then
   section "1. the energy meter, the calibration, the tokens"
   sandbox_init
-  assert_file "$ENERGY_JSON" "styles/paper-cards/analysis/energy.json exists (the calibration)"
-  if [ -d styles/paper-cards/refs/look ] && [ -f "$ENERGY_JSON" ]; then
-    python "$REVIEW" energy calibrate --refs styles/paper-cards/refs --out "$SANDBOX_M/energy.json" --index styles/paper-cards/analysis/index.md >/tmp/m14-cal.txt 2>&1; rc=$?
+  assert_file "$ENERGY_JSON" "channels/flashfx/styles/paper-cards/analysis/energy.json exists (the calibration)"
+  if [ -d channels/flashfx/styles/paper-cards/refs/look ] && [ -f "$ENERGY_JSON" ]; then
+    python "$REVIEW" energy calibrate --refs channels/flashfx/styles/paper-cards/refs --out "$SANDBOX_M/energy.json" --index channels/flashfx/styles/paper-cards/analysis/index.md >/tmp/m14-cal.txt 2>&1; rc=$?
     assert_rc 0 $rc "the meter measures the nine reference videos again"
     python - "$ENERGY_JSON" "$SANDBOX_M/energy.json" <<'EOF' >/tmp/m14-cal2.txt
 import json, sys
@@ -94,7 +94,7 @@ EOF
     assert_grep "^medians ok" /tmp/m14-cal2.txt "the look medians are reproduced within 1 point"
     assert_grep "^nine ok" /tmp/m14-cal2.txt "energy.json holds the nine references"
   else
-    printf 'the reference videos are not on this PC (styles/paper-cards/refs/): the calibration check is skipped\n'
+    printf 'the reference videos are not on this PC (channels/flashfx/styles/paper-cards/refs/): the calibration check is skipped\n'
   fi
   if [ -f "$M13_REEL" ]; then
     python "$REVIEW" energy "$M13_REEL" --out "$SANDBOX_M/m13.json" >/tmp/m14-m13.txt 2>&1; rc=$?
@@ -115,9 +115,9 @@ EOF
     printf 'build/M13/rerun/1.mp4 is not on this PC: the M13 reel check is skipped\n'
   fi
   # the tokens
-  assert_true "the repo's tokens.json is current" bash pipeline/bin/build-tokens --check
+  assert_true "the repo's tokens.json is current" env -u REELS_ROOT bash pipeline/bin/build-tokens --check
   assert_true "tokens.json validates against the schema" python "$VALIDATE" pipeline/lib/tokens.schema.json "$TOKENS"
-  assert_true "tokens.json verifies against the sources" bash pipeline/bin/build-tokens --verify
+  assert_true "tokens.json verifies against the sources" env -u REELS_ROOT bash pipeline/bin/build-tokens --verify
   assert_eq "$(json_get "$TOKENS" energy.calibration.source)" "analysis/energy.json" "the targets come from the calibration"
   python - "$TOKENS" "$ENERGY_JSON" <<'EOF' >/tmp/m14-tok.txt
 import json, math, sys
@@ -144,7 +144,7 @@ EOF
   assert_grep "m-safe-bottom: 1440;" "$CSS" "tokens.css exposes the safe edges for the hold's room"
   # the Energy override line
   mkdir -p "$SANDBOX/channels/flashfx/styles/paper-cards"
-  cp styles/paper-cards/style.md styles/paper-cards/tweaks.md "$SANDBOX/channels/flashfx/styles/paper-cards/"
+  cp channels/flashfx/styles/paper-cards/style.md channels/flashfx/styles/paper-cards/tweaks.md "$SANDBOX/channels/flashfx/styles/paper-cards/"
   printf '\n- **Energy:** moving 45, middle 50, pixels 3.5, still 12, longest 1.5\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/tweaks.md"
   bash pipeline/bin/build-tokens --style-dir "$SANDBOX_M/channels/flashfx/styles/paper-cards" --out "$SANDBOX_M/tokens.json" --css "$SANDBOX_M/tokens.css" >/dev/null 2>&1; rc=$?
   assert_rc 0 $rc "a sandbox build with an Energy line in tweaks.md"
@@ -159,7 +159,7 @@ fi
 # ------------------------------------------------------------------------------------------------ 2. the library
 if want 2; then
   section "2. the library on pc-motion.js: frame-match, the life checks, the energy of each component"
-  bash pipeline/bin/frame-match >/tmp/m14-fm.txt 2>&1; rc=$?
+  env -u REELS_ROOT bash pipeline/bin/frame-match >/tmp/m14-fm.txt 2>&1; rc=$?
   tail -3 /tmp/m14-fm.txt
   assert_rc 0 $rc "frame-match passes every component (the style's numbers, the strips, the life checks)"
   FMJ="$LIB/gallery/frame-match.json"
@@ -229,13 +229,13 @@ EOF
   done
   # lint and check, the gallery
   lint="$(hf_json lint --json "$LIB")"
-  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on motion-lib/"
-  bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
+  assert_eq "$(printf '%s' "$lint" | python -c 'import json, sys; print(json.load(sys.stdin).get("errorCount"))')" "0" "npx hyperframes lint: no errors on channels/flashfx/motion-lib/"
+  env -u REELS_ROOT bash pipeline/bin/gallery --no-stills >/dev/null 2>&1; rc=$?
   assert_rc 0 $rc "the gallery page builds"
   assert_grep "Energy \(alone, 4 s\):" "$LIB/gallery/index.html" "the gallery shows each component's energy measures"
   assert_not_grep "data-no-timeline" "$LIB/index.html" "the showreel's canvas host is driven by the runtime (no data-no-timeline)"
   check="$(cd "$LIB" && hf_json check --json --timeout 120000 --samples 12)"
-  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on motion-lib/"
+  assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on channels/flashfx/motion-lib/"
 fi
 
 # ------------------------------------------------------------------------------------------------ 3. icon-3d, the canvas layers
@@ -391,16 +391,16 @@ if want 4; then
   elif [ ! -f "$BEFORE" ]; then
     fail "build/M14/golden-energy-before.json is missing (the old golden's numbers)"
   else
-    plan_before="$(python -c 'import hashlib, sys; print(hashlib.sha1(open(sys.argv[1], "rb").read()).hexdigest())' golden/test-idea/plan.json)"
-    bash pipeline/bin/render-golden >/tmp/m14-golden.txt 2>&1; rc=$?
+    plan_before="$(python -c 'import hashlib, sys; print(hashlib.sha1(open(sys.argv[1], "rb").read()).hexdigest())' channels/flashfx/golden/test-idea/plan.json)"
+    env -u REELS_ROOT bash pipeline/bin/render-golden >/tmp/m14-golden.txt 2>&1; rc=$?
     tail -4 /tmp/m14-golden.txt
     assert_rc 0 $rc "render-golden builds, checks, renders and probes clean with the new library"
-    plan_after="$(python -c 'import hashlib, sys; print(hashlib.sha1(open(sys.argv[1], "rb").read()).hexdigest())' golden/test-idea/plan.json)"
+    plan_after="$(python -c 'import hashlib, sys; print(hashlib.sha1(open(sys.argv[1], "rb").read()).hexdigest())' channels/flashfx/golden/test-idea/plan.json)"
     assert_eq "$plan_after" "$plan_before" "the plan did not change (the same plan, the new library)"
-    assert_eq "$(json_get golden/test-idea/check.json ok)" "true" "npx hyperframes check passed on the golden project"
-    python "$REVIEW" energy golden/test-idea/golden.mp4 --plan golden/test-idea/plan.json --out golden/test-idea/energy.json >/tmp/m14-genergy.txt 2>&1
+    assert_eq "$(json_get channels/flashfx/golden/test-idea/check.json ok)" "true" "npx hyperframes check passed on the golden project"
+    python "$REVIEW" energy channels/flashfx/golden/test-idea/golden.mp4 --plan channels/flashfx/golden/test-idea/plan.json --out channels/flashfx/golden/test-idea/energy.json >/tmp/m14-genergy.txt 2>&1
     head -1 /tmp/m14-genergy.txt
-    python - "$BEFORE" golden/test-idea/energy.json <<'EOF' >/tmp/m14-gcmp.txt
+    python - "$BEFORE" channels/flashfx/golden/test-idea/energy.json <<'EOF' >/tmp/m14-gcmp.txt
 import json, sys
 a = json.load(open(sys.argv[1], encoding="utf-8-sig"))["whole"]; b = json.load(open(sys.argv[2], encoding="utf-8-sig"))["whole"]
 better = {"moving_share_pct": b["moving_share_pct"] > a["moving_share_pct"], "middle_moving_share_pct": b["middle_moving_share_pct"] > a["middle_moving_share_pct"],
@@ -418,8 +418,8 @@ EOF
     cat /tmp/m14-gcmp.txt
     assert_grep "^every-measure ok" /tmp/m14-gcmp.txt "the re-rendered golden measures higher than before on every movement measure (moving share, middle band, pixels changing)"
     assert_grep "^doubled ok" /tmp/m14-gcmp.txt "its moving share at least doubled"
-    assert_file golden/test-idea/energy.json "golden/test-idea/energy.json written"
-    assert_file golden/test-idea/contact-sheet.png "the contact sheet exists"
+    assert_file channels/flashfx/golden/test-idea/energy.json "channels/flashfx/golden/test-idea/energy.json written"
+    assert_file channels/flashfx/golden/test-idea/contact-sheet.png "the contact sheet exists"
     # the compiler mounts the canvas seeded and driven, and pc-motion.js travels with the project
     python - "$REPO_DIR" <<'EOF' >/tmp/m14-host.txt
 import os, sys, re
@@ -441,10 +441,10 @@ if want 5; then
   section "5. no em dash in the files M14 wrote"
   files=(pipeline/lib/review/energy.py pipeline/lib/review/__main__.py pipeline/lib/tokens.py pipeline/lib/tokens.schema.json pipeline/lib/motion/framematch.py
          pipeline/lib/motion/expectations.py pipeline/lib/motion/harness.py pipeline/lib/motion/catalog.py pipeline/lib/motion/gallery.py pipeline/lib/motion/golden.py
-         pipeline/tests/test-m14.sh styles/paper-cards/tokens.json motion-lib/catalog.json motion-lib/assets/pc-motion.js motion-lib/assets/paper-cards.js
-         motion-lib/assets/paper-cards.css motion-lib/assets/tokens.css motion-lib/gallery/frame-match.md motion-lib/index.html)
-  for f in motion-lib/compositions/*.html; do files+=("$f"); done
-  [ -f golden/test-idea/energy.json ] && files+=(golden/test-idea/energy.json)
+         pipeline/tests/test-m14.sh channels/flashfx/styles/paper-cards/tokens.json channels/flashfx/motion-lib/catalog.json channels/flashfx/motion-lib/assets/pc-motion.js channels/flashfx/motion-lib/assets/paper-cards.js
+         channels/flashfx/motion-lib/assets/paper-cards.css channels/flashfx/motion-lib/assets/tokens.css channels/flashfx/motion-lib/gallery/frame-match.md channels/flashfx/motion-lib/index.html)
+  for f in channels/flashfx/motion-lib/compositions/*.html; do files+=("$f"); done
+  [ -f channels/flashfx/golden/test-idea/energy.json ] && files+=(channels/flashfx/golden/test-idea/energy.json)
   [ -f build/M14/report.md ] && files+=(build/M14/report.md)
   existing=(); for f in "${files[@]}"; do [ -f "$f" ] && existing+=("$f"); done
   no_emdash_in "no em dash in the M14 files" "${existing[@]}"
