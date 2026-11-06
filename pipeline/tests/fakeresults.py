@@ -60,6 +60,18 @@ def read_results(d):
     return rows, fails
 
 
+def volatile(text):
+    """A failing check with what changes from run to run left out (M18: the temp folder of a sandbox, the run folder's stamp, a clock time,
+    the seconds of a timing check), so a known failure is recognized in the next run: the same check, not the same temp folder."""
+    text = re.sub(r"/tmp/tmp\.[A-Za-z0-9]+", "/tmp/<t>", text)
+    text = re.sub(r"20\d\d-\d\d-\d\d_\d{4}", "<stamp>", text)
+    text = re.sub(r"\[\d\d:\d\d\]", "[<time>]", text)
+    text = re.sub(r"\d+s for 2 ideas", "Ns for 2 ideas", text)
+    text = re.sub(r"gaps n=[^)]*", "gaps", text)
+    text = text.replace("/channels/flashfx/", "/")   # M18: the data of a sandbox moved into its channel folder; the check is the same
+    return text
+
+
 def compare(base_dir, new_dir):
     base, base_fails = read_results(base_dir)
     new, new_fails = read_results(new_dir)
@@ -71,7 +83,8 @@ def compare(base_dir, new_dir):
             continue
         if b["status"] == "pass" and n["status"] != "pass":
             problems.append("%s: passed in the baseline, now %s" % (name, n["status"]))
-        extra = new_fails.get(name, set()) - base_fails.get(name, set())
+        known = {volatile(x) for x in base_fails.get(name, set())}
+        extra = {e for e in new_fails.get(name, set()) if volatile(e) not in known}
         for e in sorted(extra):
             if b["status"] == "pass" or e:
                 problems.append("%s: new failing check: %s" % (name, e))

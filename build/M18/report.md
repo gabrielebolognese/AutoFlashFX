@@ -47,7 +47,31 @@ problems and 0 warnings. The 39 gallery players and `webgl.json` held the reposi
 
 ## Test results
 
-RESULTS_PLACEHOLDER
+`bash pipeline/tests/run-fake.sh` (every fake-only test in a throwaway copy), run in three parts because one run takes about 7 hours: the
+parts are build/M18/runA, runB, runC, runD (logs and results.tsv in each), assembled into `build/M18/baseline/` (results.tsv, failures.tsv, logs/,
+summary.txt). The baseline rule against `build/M17/baseline` gives **0 problems** (`python pipeline/tests/fakeresults.py compare build/M17/baseline
+build/M18/baseline`):
+
+| test | result now | baseline (M17) |
+|---|---|---|
+| test-no-emdash, test-limits (94), test-m1 (96) | pass | pass |
+| test-m2 | 192 passed, 15 failed: the same 15 checks (the 300 s timeout of the two-idea dummy run) | 192 / 15 (known failure) |
+| test-m3 | 372 passed, 2 failed: limit date and epoch | 372 / 2 (known failure) |
+| test-m4 (202), m5 (196), m8 (164), m9 (80), m10 (134), m11 (227), m12 (180), m13 (100), m14 (74), m15 (127), m16 (166) | pass | pass |
+| test-m6 | 146 passed, 1 failed: the filled voice.md | 146 / 1 (known failure) |
+| test-m7 | 115 passed, 1 failed: the S8 setup line (the real pronunciations.txt) | 115 / 1 (known failure) |
+| test-m17 | 81 passed | 80 |
+| test-isolation (part 1) | 21 passed | new |
+| test-m18 (sections 1 to 7 and 9 in the suite) | 170 passed; section 8 (the real folder) run separately | new |
+
+Two things about the run itself. test-m2 is timing sensitive (a 300 s budget for two dummy ideas): started while another suite ran it failed
+30 checks, alone it gives the baseline's 192 / 15, so m2 was run alone (runD). And `fakeresults.py compare` matched a known failure by its exact text,
+which holds the sandbox's temp folder, a clock time and now `channels/flashfx/` in a path: it now leaves those out (`volatile()`), so the same check
+in the next run is the same check (test-m17's planted comparisons still pass).
+
+Section 8 of test-m18 (the real folder: build/M18's records, `check-manifest.py --after`, `git check-ignore` at the new paths, `preflight --channel
+flashfx`, `doctor --quick`) passes; the `--after` check right after the migration had 0 problems (build/M18/after-check.txt), and later it differs only
+by the bytes of logs/runner.log, logs/status.txt and motion-lib that the folder keeps writing.
 
 ## Known gaps
 

@@ -1,0 +1,624 @@
+{
+  "version": "0.1.0",
+  "style": "paper-cards",
+  "models": {
+    "research": {
+      "model": "sonnet",
+      "effort": "high"
+    },
+    "gate": {
+      "model": "sonnet",
+      "effort": "medium"
+    },
+    "judge": {
+      "model": "sonnet",
+      "effort": "medium"
+    },
+    "script": {
+      "model": "sonnet",
+      "effort": "high"
+    },
+    "visual_director": {
+      "model": "opus",
+      "effort": "high"
+    },
+    "visual_director_fix": {
+      "model": "sonnet",
+      "effort": "high"
+    },
+    "builder": {
+      "model": "sonnet",
+      "effort": "high"
+    },
+    "qa": {
+      "model": "opus",
+      "effort": "medium"
+    },
+    "reviewer": {
+      "model": "sonnet",
+      "effort": "high"
+    },
+    "cut": {
+      "model": "sonnet",
+      "effort": "medium"
+    },
+    "checks": {
+      "model": "sonnet",
+      "effort": "medium"
+    },
+    "fixer": {
+      "model": "sonnet",
+      "effort": "medium"
+    },
+    "builder_escalation": {
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
+    },
+    "reviewer_escalation": {
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
+    },
+    "indexer": {
+      "model": "haiku",
+      "effort": "low"
+    },
+    "probe": {
+      "model": "haiku",
+      "effort": "low"
+    },
+    "visual_director_escalation": {
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
+    },
+    "limit_fallback": {
+      "model": "opus"
+    }
+  },
+  "tts": {
+    "device": "cpu",
+    "whisper_model": "small",
+    "whisper_python": "C:/Users/there/venvs/chatterbox/Scripts/python.exe",
+    "whisper_pad_s": 0.5,
+    "wer_fail_pct": 3,
+    "wer_flag_max_pct": 8,
+    "overrun_pct": 15,
+    "overrun_min_s": 0.4,
+    "lead_s": 0.05,
+    "tail_s": 0.2
+  },
+  "voice": {
+    "wpm": 186,
+    "loudness_lufs": -14,
+    "true_peak_dbtp": -1.5
+  },
+  "sfx": {
+    "map": "styles/sfx/sfx-map.json",
+    "normalize_peak_dbfs": -12,
+    "base_gain_db": {
+      "transition_slow": -8,
+      "transition_fast": -8,
+      "attention": -12,
+      "hero_enter": -10,
+      "ui_click": -14,
+      "stamp": -8,
+      "number": -14,
+      "success": -10,
+      "typing": -16,
+      "negative": -10,
+      "hook_hit": -6,
+      "notification": -10
+    },
+    "max_per_10s": 4,
+    "min_spacing_ms": 250,
+    "min_db_under_voice": 8,
+    "attention_interval_s": [
+      8,
+      12
+    ],
+    "slow_transition_ms": 400,
+    "sync_tolerance_ms": 33,
+    "build": {
+      "pool_size": [
+        5,
+        8
+      ],
+      "min_pool": 3,
+      "min_confidence": 0.6,
+      "min_fit": 0.25,
+      "preview_gap_s": 1.0,
+      "whoosh": {
+        "fast_max_s": 0.35,
+        "fast_sharp_max_s": 0.6,
+        "sharp_attack_s": 0.08,
+        "slow_min_s": 0.8,
+        "swell_attack_s": 0.2,
+        "long_min_s": 1.5
+      },
+      "quality": {
+        "clip_runs": 10,
+        "min_snr_db": 30,
+        "min_snr_duration_s": 0.5,
+        "too_long_factor": 2,
+        "max_effective_s": 5,
+        "silent_dbfs": -60
+      },
+      "cue_windows": {
+        "transition_slow": [
+          0.4,
+          2.5
+        ],
+        "transition_fast": [
+          0.08,
+          0.8
+        ],
+        "attention": [
+          0.08,
+          0.7
+        ],
+        "hero_enter": [
+          0.03,
+          0.7
+        ],
+        "ui_click": [
+          0.01,
+          0.4
+        ],
+        "stamp": [
+          0.05,
+          1.0
+        ],
+        "number": [
+          0.01,
+          0.35
+        ],
+        "success": [
+          0.1,
+          1.8
+        ],
+        "typing": [
+          0.4,
+          30
+        ],
+        "negative": [
+          0.08,
+          1.8
+        ],
+        "hook_hit": [
+          0.2,
+          2.5
+        ],
+        "notification": [
+          0.15,
+          2.5
+        ]
+      }
+    },
+    "calm_beats": [
+      "stake",
+      "pain-payoff"
+    ],
+    "attention_gap_s": 6,
+    "attention_min_start_ms": 2000,
+    "series_gap_ms": 2000,
+    "fade_ms": 30,
+    "tail_guard_ms": 50,
+    "voice_window_ms": 600,
+    "voice_floor_under_peak_db": 12,
+    "verify_passes": 5,
+    "recent_reels": 2,
+    "max_shift_ms": 150,
+    "peak_search_ms": 500
+  },
+  "lengths": {
+    "default_s": [
+      25,
+      40
+    ],
+    "list_s": [
+      45,
+      75
+    ]
+  },
+  "research": {
+    "tools": "WebSearch WebFetch Read Bash",
+    "allowed": [
+      "WebSearch",
+      "WebFetch",
+      "Read",
+      "Bash(gh repo view *)",
+      "Bash(gh release list *)",
+      "Bash(gh release view *)",
+      "Bash(gh api repos/*)",
+      "Bash(bash pipeline/bin/screenshot *)"
+    ],
+    "denied": [
+      "Bash(gh auth *)",
+      "Bash(gh gist *)",
+      "Bash(gh repo clone *)",
+      "Bash(gh release download *)",
+      "Bash(gh * create *)",
+      "Bash(gh * delete *)",
+      "Bash(gh * edit *)",
+      "Bash(gh * comment *)",
+      "Bash(gh * merge *)",
+      "Bash(gh * close *)",
+      "Bash(gh * reopen *)",
+      "Bash(gh * review *)",
+      "Bash(gh * fork *)",
+      "Bash(gh * sync *)",
+      "Bash(gh * transfer *)",
+      "Bash(gh * lock *)",
+      "Bash(gh * upload *)",
+      "Bash(gh * run *)",
+      "Bash(gh * rerun *)",
+      "Bash(gh * cancel *)",
+      "Bash(gh * set *)",
+      "Bash(gh * add *)",
+      "Bash(gh * archive *)",
+      "Bash(gh * rename *)",
+      "Bash(gh api* -X*)",
+      "Bash(gh api* --method*)",
+      "Bash(gh api* -f*)",
+      "Bash(gh api* -F*)",
+      "Bash(gh api* --field*)",
+      "Bash(gh api* --raw-field*)",
+      "Bash(gh api* --input*)"
+    ],
+    "max_assets": 6,
+    "screenshot_width": 1080,
+    "screenshot_height": 1920,
+    "expansion_chars": [
+      500,
+      1500
+    ],
+    "expansion_tries": 3
+  },
+  "hooks": {
+    "shortlist": 24,
+    "per_family": 2,
+    "fit_weight_other": 0.35,
+    "min_hooks": 12,
+    "max_hooks": 20,
+    "min_families": 3,
+    "min_for_judge": 4,
+    "spoken_max_words": 8,
+    "spoken_max_seconds": 3,
+    "on_screen_max_words": 6,
+    "tries": 3,
+    "brief_tokens": [
+      2000,
+      3000
+    ],
+    "brief_tries": 3
+  },
+  "judge": {
+    "min_hookscore": 50,
+    "min_survivors": 4,
+    "top_n": 4
+  },
+  "script": {
+    "tones": [
+      "warning",
+      "insider",
+      "contrarian",
+      "calm expert",
+      "confession"
+    ],
+    "overshoot_pct": 25,
+    "cut_pct": 20,
+    "cut_range_pct": [
+      10,
+      30
+    ],
+    "cut_tries": 2,
+    "detect_min_overall": 70,
+    "detect_min_check": 55,
+    "hook_max_s": 3,
+    "beat_max_s": 4,
+    "stake_max_s": 5,
+    "abstract_run": 3,
+    "length_tolerance_pct": 15,
+    "card_max_words": 6,
+    "min_body_beats": 2
+  },
+  "visual": {
+    "min_distinct_components": 5,
+    "max_same_in_a_row": 2,
+    "title_max_words": 6,
+    "body_max_words": 14,
+    "breath_set_piece_lead_ms": 60,
+    "snap_tolerance_ms": 34,
+    "zone_tolerance_px": 24,
+    "max_cut_share": 0.34,
+    "director_tools": "Read Glob",
+    "build_fix_rounds": 2,
+    "three_d_heavy_objects": 2,
+    "hook2_max_s": 3.5,
+    "hook2_hold_ms": 800,
+    "draft_quality": "draft",
+    "draft_crf": 20,
+    "energy_rules": "error",
+    "hero_motion_share": 0.7,
+    "layers_share": 0.6
+  },
+  "caps": {
+    "angle_rounds": 2,
+    "script_rounds": 3,
+    "review_rounds_opus": 3,
+    "review_rounds_fable": 2,
+    "error_review_cycles": 3,
+    "escalation_cycles": 1,
+    "systemic_block_streak": 3
+  },
+  "errors": {
+    "transient_backoff_seconds": [
+      60,
+      240,
+      960
+    ],
+    "unparsed_limit_sleep_seconds": 1800,
+    "probe_every_seconds": 1800,
+    "repeated_signature_skip": 2,
+    "log_tail_lines": 200,
+    "classify_tail_lines": 40,
+    "script_limit_retries": 2
+  },
+  "timeouts": {
+    "model_call_seconds": 3600,
+    "research_seconds": 2700,
+    "angle_seconds": 2700,
+    "expansion_seconds": 900,
+    "gate_seconds": 900,
+    "screenshot_seconds": 60,
+    "index_seconds": 600,
+    "hooks_seconds": 1200,
+    "brief_seconds": 1200,
+    "judge_seconds": 900,
+    "script_seconds": 1800,
+    "cut_seconds": 900,
+    "checks_seconds": 900,
+    "pick_seconds": 900,
+    "transcribe_seconds": 1800,
+    "tts_seconds": 1800,
+    "align_seconds": 1800,
+    "loudness_seconds": 300,
+    "profile_seconds": 1200,
+    "plan_seconds": 1800,
+    "build_seconds": 2400,
+    "check_seconds": 900,
+    "events_seconds": 900,
+    "render_draft_seconds": 3600,
+    "reviewer_seconds": 2400,
+    "fixer_seconds": 2400,
+    "verify_seconds": 900,
+    "probe_seconds": 300,
+    "sfx_seconds": 1200,
+    "mechanical_seconds": 1800,
+    "style_seconds": 1200,
+    "edit_review_seconds": 1800,
+    "render_final_seconds": 5400,
+    "render_hook2_seconds": 1200,
+    "mux_seconds": 900,
+    "caption_seconds": 900
+  },
+  "review": {
+    "reviewer_tools": "Read Glob Grep WebSearch WebFetch",
+    "fixer_tools": "Read Glob Grep Edit Write Bash",
+    "fixer_paths": [
+      "pipeline",
+      "motion-lib/candidates"
+    ],
+    "protected_paths": [
+      "ideas.txt",
+      "library",
+      "styles",
+      "exports"
+    ],
+    "settle_ms": 600,
+    "emphasis_settle_ms": 150,
+    "zone_tolerance_px": 4,
+    "caption_band_above_px": 180,
+    "caption_band_below_px": 80,
+    "min_font_px": 24,
+    "caption_min_size_share": 0.9,
+    "contrast_min": 4.5,
+    "contrast_display_min": 2.7,
+    "emphasis_tolerance_ms": 80,
+    "avatar_min_px": 112,
+    "cadence_tolerance_pct": 20,
+    "palette_delta_e": 5,
+    "palette_min_share_pct": 90,
+    "aac_peak_tolerance_db": 0.5,
+    "wer_max_pct": 5,
+    "qa_tools": "Read Glob",
+    "energy_check": true,
+    "energy_scene_share": 0.8,
+    "liveness": true,
+    "min_edge_elements": 4,
+    "early_stop": true
+  },
+  "runner": {
+    "poll_seconds": 120,
+    "status_every_seconds": 300,
+    "limit_margin_seconds": 120,
+    "timezone": "Europe/Rome",
+    "sleep_scale": 1,
+    "lock_stale_seconds": 60,
+    "lock_wait_seconds": 30,
+    "min_free_gb": 10
+  },
+  "paths": {
+    "ideas": "ideas.txt",
+    "runs": "runs",
+    "exports": "exports",
+    "logs": "logs",
+    "locks": ".locks",
+    "library": "library",
+    "hooks": "library/hooks.txt",
+    "profile": "library/profile",
+    "voice_dir": "library/voice",
+    "styles": "styles",
+    "style_dir": "styles/paper-cards",
+    "tokens": "styles/paper-cards/tokens.json",
+    "sfx_dir": "styles/sfx",
+    "motion_lib": "motion-lib",
+    "golden": "golden",
+    "vendor": "pipeline/vendor/ig-agent-skill",
+    "known_issues": "pipeline/knowledge/known-issues.md",
+    "venv_python": ".venv-tts/Scripts/python.exe",
+    "kokoro_python": "C:/Users/there/venvs/kokoro/Scripts/python.exe"
+  },
+  "preflight": {
+    "require": [
+      {
+        "check": "command",
+        "name": "claude",
+        "fix": "npm install -g @anthropic-ai/claude-code, then run claude once and log in"
+      },
+      {
+        "check": "command",
+        "name": "ffmpeg",
+        "fix": "winget install Gyan.FFmpeg, then open a new terminal"
+      },
+      {
+        "check": "command",
+        "name": "ffprobe",
+        "fix": "ffprobe ships with ffmpeg: winget install Gyan.FFmpeg, then open a new terminal"
+      },
+      {
+        "check": "command",
+        "name": "python",
+        "min_version": "3.11",
+        "fix": "install Python 3.13 from python.org with 'Add to PATH'; 'python' must resolve to it (python3 is the Windows Store stub)"
+      },
+      {
+        "check": "command",
+        "name": "node",
+        "min_version": "22.0",
+        "fix": "install Node 22 LTS from nodejs.org"
+      },
+      {
+        "check": "command",
+        "name": "gh",
+        "fix": "winget install GitHub.cli, then gh auth login"
+      },
+      {
+        "check": "command",
+        "name": "git",
+        "fix": "install Git for Windows from git-scm.com"
+      },
+      {
+        "check": "python_module",
+        "name": "jsonschema",
+        "fix": "bash pipeline/bin/setup-python"
+      },
+      {
+        "check": "python_module",
+        "name": "playwright",
+        "level": "warn",
+        "fix": "bash pipeline/bin/setup-python (installs playwright and its Chromium; without it the research stage takes no screenshots)"
+      },
+      {
+        "check": "voice",
+        "fix": "write library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"
+      },
+      {
+        "check": "file",
+        "path": "styles/sfx/sfx-map.json",
+        "level": "warn",
+        "fix": "bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW)"
+      },
+      {
+        "check": "file",
+        "path": "styles/paper-cards/style.md",
+        "fix": "restore it: git checkout -- styles/paper-cards/style.md"
+      },
+      {
+        "check": "file",
+        "path": "styles/paper-cards/tweaks.md",
+        "fix": "restore it: git checkout -- styles/paper-cards/tweaks.md"
+      },
+      {
+        "check": "file",
+        "path": "styles/paper-cards/vocabulary.md",
+        "fix": "restore it: git checkout -- styles/paper-cards/vocabulary.md"
+      },
+      {
+        "check": "file",
+        "path": "styles/paper-cards/tokens.json",
+        "fix": "bash pipeline/bin/build-tokens (derives tokens.json from style.md plus tweaks.md; the visual stages read it)"
+      },
+      {
+        "check": "file",
+        "path": "motion-lib/catalog.json",
+        "fix": "restore the motion library: git checkout -- motion-lib, then python pipeline/lib/motion catalog --write"
+      },
+      {
+        "check": "file",
+        "path": "node_modules/hyperframes/package.json",
+        "fix": "bash pipeline/bin/setup-node (installs the pinned hyperframes, gsap and three packages and the render browser)"
+      },
+      {
+        "check": "brand",
+        "fix": "restore the FlashFX brand kit: git checkout -- library/brand (brand.json and every logo file it lists; BUILD_SPEC.md 2.7)"
+      },
+      {
+        "check": "file",
+        "path": "library/hooks.txt",
+        "in_root": true,
+        "fix": "restore it: git checkout -- library/hooks.txt (one hook per line, __ marks the blank)"
+      },
+      {
+        "check": "disk",
+        "min_free_gb": 10,
+        "fix": "free at least 10 GB on the drive that holds the repo (renders live in runs/ and exports/)"
+      },
+      {
+        "check": "shell",
+        "cmd": "gh auth status",
+        "level": "warn",
+        "fix": "gh auth login (the research stage needs it from M4 on)"
+      }
+    ]
+  },
+  "render": {
+    "draft_resolution": "540x960",
+    "final_resolution": "1080x1920",
+    "fps": 30,
+    "quality": "looks",
+    "audio_bitrate_k": 160,
+    "audio_channels": 1,
+    "duration_tolerance_s": 0.2,
+    "loudness_tolerance_lu": 1.0,
+    "true_peak_tolerance_db": 0.5,
+    "hook2_max_s": 3.5
+  },
+  "caption": {
+    "first_line_max_chars": 125,
+    "hashtags": [
+      3,
+      5
+    ],
+    "body_chars": [
+      150,
+      900
+    ],
+    "tries": 2
+  },
+  "logs": {
+    "rotate_mb": 50,
+    "rotate_keep": 3
+  }
+}

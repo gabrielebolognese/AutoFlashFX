@@ -71,7 +71,7 @@ def main(dest):
     w(dest, ".gitattributes", "* text=auto eol=lf\n")
     w(dest, "README.md", "fixture\n")
     w(dest, "CLAUDE.md", "# fixture\n\nFinished reels are in exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4). Hooks: library/hooks.txt.\n")
-    shutil.copyfile(os.path.join(REPO, "config.json"), os.path.join(dest, "config.json"))
+    shutil.copyfile(os.path.join(HERE, "fixtures", "m17-config.json"), os.path.join(dest, "config.json"))   # the config.json of M17 (before M18 moved its channel keys)
     w(dest, "run.sh", "#!/usr/bin/env bash\nsource pipeline/lib/common.sh\necho run\n")
     # planted references in the engine
     w(dest, "pipeline/lib/x.sh",
