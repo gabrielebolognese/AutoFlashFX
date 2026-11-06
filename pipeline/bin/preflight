@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
-# preflight: run the startup checks on their own (the same checks run.sh runs before the loop).
-# Exit 0 when the runner can start; 3 and logs/STOPPED.md when a hard dependency is missing.
-#   bash pipeline/bin/preflight
+# preflight: run the startup checks on their own (the same checks run.sh runs before the loop), for one channel.
+# Exit 0 when the runner can start; 3 and the channel's logs/STOPPED.md when a hard dependency is missing; 2 for an unknown
+# channel or none given (the channels are listed).
+#   bash pipeline/bin/preflight --channel <id>        (REELS_CHANNEL=<id> works too)
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
 source "$REELS_PIPELINE/lib/log.sh"
 source "$REELS_PIPELINE/lib/config.sh"
 source "$REELS_PIPELINE/lib/preflight.sh"
+want="${REELS_CHANNEL:-}"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --channel) [ $# -ge 2 ] || { echo "preflight: --channel needs an id" >&2; exit 2; }; want="$2"; shift ;;
+    --channel=*) want="${1#--channel=}" ;;
+    -h|--help) sed -n '2,6p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "preflight: unknown option '$1' (use --channel <id>)" >&2; exit 2 ;;
+  esac
+  shift
+done
+if [ -z "$want" ]; then
+  echo "preflight: no channel given. Use --channel <id>. Channels:" >&2; reels_channel_list_text >&2; exit 2
+fi
+if ! reels_valid_channel_id "$want" || [ ! -f "$REELS_CHANNELS_DIR/$want/channel.json" ]; then
+  echo "preflight: unknown channel '$want'. Channels:" >&2; reels_channel_list_text >&2; exit 2
+fi
+reels_set_channel "$want" || exit 2
 mkdir -p "$REELS_LOGS"
 preflight_run

@@ -49,13 +49,13 @@
  "hyperframes": {
   "browser-gpu": {
    "ok": true,
-   "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\.harness\\webgl-hf\\browser-gpu\\frame-00-at-93.5s.png",
+   "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\channels\\flashfx\\motion-lib\\.harness\\webgl-hf\\browser-gpu\\frame-00-at-93.5s.png",
    "drawn_share": 0.2684,
    "drew": true
   },
   "no-browser-gpu": {
    "ok": true,
-   "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\.harness\\webgl-hf\\no-browser-gpu\\frame-00-at-93.5s.png",
+   "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\channels\\flashfx\\motion-lib\\.harness\\webgl-hf\\no-browser-gpu\\frame-00-at-93.5s.png",
    "drawn_share": 0.2694,
    "drew": true
   }
