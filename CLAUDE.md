@@ -223,7 +223,14 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 ## Rules for Claude Code sessions in this folder
 - **Braces rule:** when the user's message contains text in `{...}`, append each braced block to ideas.txt by
   running `bash pipeline/bin/add-idea.sh "{...}"` (never by editing the file), then confirm in one line with the
-  script's own output ("added 1 idea to ideas.txt (queue: N)").
+  script's own output ("added 1 idea to ideas.txt (queue: N)"). Keep a `[important]` label inside the braces as the
+  user wrote it (`{[important] ...}`, at the start or the end): the script then says "marked important".
+- **Models (DECISIONS.md 333 to 335):** Sonnet is the main model of the reels (research, hooks, gate, judge, script,
+  the builder, the code error reviewer, and the visual director's fine tuning after a failed review round); Opus makes
+  the first plan of each visual pass (the design) and the edit review (qa). The escalations (visual director and
+  builder after 3 failed review rounds, the error reviewer's last cycle) run on Opus, and on Fable only for an idea
+  marked `[important]`: no other idea ever runs Fable (pipeline/lib/model_choice.py enforces it in ai()). An
+  `"important"` override in config.json models.<role> applies to the marked ideas only.
 - **"What is the runner doing?":** read `logs/status.txt` and the end of `logs/runner.log`, or run
   `bash pipeline/bin/runner-status`.
 - **Curated by the user, do not edit without asking:** `library/`, `styles/`, `ideas.txt` (only through

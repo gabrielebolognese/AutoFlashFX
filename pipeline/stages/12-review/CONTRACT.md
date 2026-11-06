@@ -49,8 +49,10 @@ with NEEDS REVIEW. The runner never stops here.
 - every issue carries one of [voice], [animation], [text], [transition], [sfx]; the fix routing reopens the earliest owner
   (08-voiceover, 09a-animations, 09b-text, 09c-transitions or 11-sfx), every stage after it and this stage
 - a [voice] issue routes only when it names a word in quotes (the voice is deterministic); otherwise it is a flag
-- caps: review_rounds_opus (3) rounds with the opus director and builder, then review_rounds_fable (2) with fable (the
-  visual passes switch to models.visual_director_escalation when rounds.review reaches review_rounds_opus; S10's
+- caps: review_rounds_opus (3) rounds with the main director and builder (the passes run again after a failed round
+  are fine tuned by models.visual_director_fix, sonnet), then review_rounds_fable (2) escalated rounds (the
+  visual passes switch to models.visual_director_escalation when rounds.review reaches review_rounds_opus: opus,
+  fable only on an idea marked [important], DECISIONS.md 334 and 335; S10's
   builder switches at 2, DECISIONS.md 225); the round after the last cap exports with NEEDS REVIEW and the notes
 - every pixel-based threshold is applied at the composition's size in the harness (exact) and scaled to the draft's
   540x960 in the video checks

@@ -239,7 +239,8 @@ runner_result_reason() {  # the reason a stage gave in result.json (exit 10 or 2
 
 runner_export_number() {  # the number the export will get (export.py assigns it under the lock; one runner, so the same)
   local n
-  n="$(export_next_number 2>/dev/null | tr -d '')"
+  n="$(export_next_number 2>/dev/null | tr -d '
+')"
   printf '%s' "${n:-?}"
 }
 
@@ -522,13 +523,13 @@ runner_review_loop() {  # stage label activity rc msg sig cmd -> 0 restart the s
         return $?
         ;;
       fable)
-        model_name="$(cfg models.reviewer_escalation.model fable)"
+        model_name="$(ai_model_name reviewer_escalation "$RUN_DIR")"
         kind_text="escalated review, $model_name"
         [ -n "$pending" ] || say ESCAL "$label still failing after $REVIEW_DONE $(plural "$REVIEW_DONE" review), escalating to $model_name"
         set_activity "error in $label: escalated review ($model_name)"
         ;;
       *)
-        model_name="$(cfg models.reviewer.model opus)"
+        model_name="$(ai_model_name reviewer "$RUN_DIR")"
         kind_text="cycle $REVIEW_CYCLE/$REVIEW_CAP, $model_name"
         set_activity "error in $label: reviewing (cycle $REVIEW_CYCLE/$REVIEW_CAP, $model_name)"
         ;;
@@ -723,6 +724,8 @@ runner_process_run() {  # -> 0 run ended (any outcome), 2 systemic stop requeste
     IN_RUN=0
     return 2
   fi
+  local important=""
+  [ "$(json_field "$summary" idea_important false)" = true ] && important=" [important: escalations may use fable]"
   eval "$(json_eval "$summary" RUN_ID=run_id IDEA_ID=idea_id IDEA_TEXT=idea_text IDEA_RAW=idea_raw \
     ELAPSED_BASE=accumulated SESSION_STARTED=session_started ISSUES_FIXED=issues_fixed ISSUES_OPEN=issues_open \
     done_n=stages_done phase=next.phase next_act=next.activity)"
@@ -733,9 +736,9 @@ runner_process_run() {  # -> 0 run ended (any outcome), 2 systemic stop requeste
   STAGE_STARTED="$EPOCHSECONDS"
   LAST_HEARTBEAT="$EPOCHSECONDS"
   if [ "$RESUMED" = 1 ]; then
-    say START "idea $(runner_position "$SESSION_N" "$queue") \"$(cut_text "$IDEA_TEXT" 40)\" -> runs/$RUN_ID (resumed at $(runner_next_text "${phase:-stage}" "$next_act"), $done_n $(plural "$done_n" stage) done)"
+    say START "idea $(runner_position "$SESSION_N" "$queue") \"$(cut_text "$IDEA_TEXT" 40)\"$important -> runs/$RUN_ID (resumed at $(runner_next_text "${phase:-stage}" "$next_act"), $done_n $(plural "$done_n" stage) done)"
   else
-    say START "idea $(runner_position "$SESSION_N" "$queue") \"$(cut_text "$IDEA_TEXT" 40)\" -> runs/$RUN_ID"
+    say START "idea $(runner_position "$SESSION_N" "$queue") \"$(cut_text "$IDEA_TEXT" 40)\"$important -> runs/$RUN_ID"
   fi
   set_activity "starting"
   rc=0

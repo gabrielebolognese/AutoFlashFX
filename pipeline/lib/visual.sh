@@ -73,10 +73,18 @@ visual_pass_run() {
   local tools timeout_s try=1 res rc sid="" role=visual_director review_round
   tools="$(cfg visual.director_tools "Read Glob")"
   timeout_s="$(cfg timeouts.plan_seconds 1800)"
-  # the review loop (M11): after caps.review_rounds_opus failed rounds the escalated director (fable) plans the fix
+  # who plans (DECISIONS.md 335): the first plan is the design (models.visual_director, opus); a plan made again after
+  # a failed review round is fine tuning (models.visual_director_fix, sonnet); after caps.review_rounds_opus failed
+  # rounds the escalated director plans it (models.visual_director_escalation: opus, fable on an idea marked important)
   review_round="$(state_get "$RUN_DIR" rounds.review 0 2>/dev/null)"; case "$review_round" in ''|*[!0-9]*) review_round=0 ;; esac
-  if [ "$review_round" -ge "$(cfg caps.review_rounds_opus 3)" ] && cfg models.visual_director_escalation.model >/dev/null 2>&1; then role=visual_director_escalation; fi
-  say INFO "S9: $act for $(json_field "$dres" idea_id "$IDEA_ID") (solution $sol): asking the visual director$([ "$role" = visual_director_escalation ] && echo " ($(cfg models.visual_director_escalation.model), review round $review_round)")$([ -n "$review_notes" ] && echo " with the edit review's notes")"
+  role="$($REELS_PY "$REELS_PIPELINE/lib/model_choice.py" director-role "$review_round" --config "$REELS_CONFIG" 2>/dev/null)" || role=visual_director
+  [ -n "$role" ] || role=visual_director
+  local why="the design"
+  case "$role" in
+    visual_director_fix) why="fine tuning after review round $review_round" ;;
+    visual_director_escalation) why="escalated, review round $review_round" ;;
+  esac
+  say INFO "S9: $act for $(json_field "$dres" idea_id "$IDEA_ID") (solution $sol): asking the visual director ($(ai_model_name "$role" "$RUN_DIR"), $why)$([ -n "$review_notes" ] && echo " with the edit review's notes")"
   while :; do
     if [ -n "$sid" ]; then
       ai "$role" "$OUT" "$prompt" --resume "$sid" --schema "$here/model.schema.json" --tools "$tools" --timeout "$timeout_s" --name "$pass-try$try" --activity "$act"; rc=$?

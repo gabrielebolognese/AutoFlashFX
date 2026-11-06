@@ -21,7 +21,8 @@
 #   2. S11 and S12 through the runner with the fake qa editor: the pass (lines, activities, review.json, filmstrips, the
 #      prompt), then a planted [text] issue (the fake editor fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #      S11 and S12 run again, round 2 passes, the state and the log show it
-#   3. the cap: an editor that always fails with an [sfx] issue: 5 rounds (3 opus, 2 fable), then the export with the
+#   3. the cap: an editor that always fails with an [sfx] issue: 5 rounds (3 main, 2 escalated: opus on an idea without
+#      the [important] label, DECISIONS.md 334), then the export with the
 #      NEEDS REVIEW flag and the notes; the sound pass changes with the feedback each round
 #   4. the real editor and the real transcription on the frozen draft (1 model call)
 #   5. no em dash in the files M11 wrote
@@ -385,7 +386,7 @@ r = route.decide(ctx, 1, ok, ok, ok, good)
 print("pass", "ok" if r["pass"] and r["verdict"] == "pass" and not r["routing"]["reopen"] else r["verdict"])
 low = dict(good, scores=dict(good["scores"], hierarchy=3), issues=[{"tag": "text", "text": "the s4 chip doubles the title", "scene": "s4"}])
 r = route.decide(ctx, 1, ok, ok, ok, low)
-print("text", "ok" if (not r["pass"] and r["verdict"] == "fix" and r["routing"]["owners"] == ["09b-text"] and r["routing"]["reopen"] == ["09b-text", "09c-transitions", "10-build", "11-sfx", "12-review"] and r["routing"]["activity"] == "fixing [text] issues (round 2, opus)") else str(r["routing"]))
+print("text", "ok" if (not r["pass"] and r["verdict"] == "fix" and r["routing"]["owners"] == ["09b-text"] and r["routing"]["reopen"] == ["09b-text", "09c-transitions", "10-build", "11-sfx", "12-review"] and r["routing"]["activity"] == "fixing [text] issues (round 2, sonnet)") else str(r["routing"]))
 mech_bad = {"pass": False, "issues": [{"tag": "animation", "kind": "right_rail", "text": "a chip in the rail"}]}
 r = route.decide(ctx, 1, mech_bad, ok, ok, good)
 print("code-fail", "ok" if (not r["pass"] and r["verdict"] == "fix" and r["routing"]["owners"] == ["09a-animations"] and r["routing"]["reopen"][0] == "09a-animations" and "09b-text" in r["routing"]["reopen"]) else str(r["routing"]))
@@ -396,7 +397,7 @@ voice2 = dict(voice, issues=[{"tag": "voice", "text": "the word \"Anthropic's\" 
 r = route.decide(ctx, 1, ok, ok, ok, voice2)
 print("voice-word", "ok" if (r["verdict"] == "fix" and r["routing"]["owners"] == ["08-voiceover"] and r["routing"]["reopen"][0] == "08-voiceover" and "10-build" in r["routing"]["reopen"]) else str(r["routing"]))
 r = route.decide(ctx, 4, ok, ok, ok, low)
-print("fable", "ok" if r["routing"]["activity"] == "fixing [text] issues (round 5, fable)" and r["routing"]["next_model"][0] == "fable" else r["routing"]["activity"])
+print("escalated", "ok" if r["routing"]["activity"] == "fixing [text] issues (round 5, opus)" and r["routing"]["next_model"][0] == "opus" else r["routing"]["activity"])
 r = route.decide(ctx, 5, ok, ok, ok, low)
 print("cap", "ok" if (r["verdict"] == "cap" and not r["routing"]["reopen"] and r["flags"] and "still failing after 5 rounds" in r["flags"][0]) else str(r["verdict"]) + str(r["flags"])[:80])
 ad = dict(good, scores=dict(good["scores"], look=3), branding_natural=False, branding_note="the lockup is huge")
@@ -408,11 +409,11 @@ print("notes", "ok" if ("the s4 chip doubles the title" in notes_b and "Notes fr
 EOF
   sed 's/^/    /' /tmp/m11-route.txt
   assert_grep "^pass ok" /tmp/m11-route.txt "routing: every check passed and every score 4 or more is a pass"
-  assert_grep "^text ok" /tmp/m11-route.txt "routing: a [text] issue reopens 09b-text, 09c, S10, S11 and S12 with the activity \"fixing [text] issues (round 2, opus)\""
+  assert_grep "^text ok" /tmp/m11-route.txt "routing: a [text] issue reopens 09b-text, 09c, S10, S11 and S12 with the activity \"fixing [text] issues (round 2, sonnet)\""
   assert_grep "^code-fail ok" /tmp/m11-route.txt "routing: a failing code check routes by its tag even when the editor's scores pass"
   assert_grep "^voice-flag ok" /tmp/m11-route.txt "routing: a [voice] issue naming no word becomes a flag, not a loop"
   assert_grep "^voice-word ok" /tmp/m11-route.txt "routing: a [voice] issue naming a word in quotes reopens S8 and everything after it"
-  assert_grep "^fable ok" /tmp/m11-route.txt "routing: after the opus rounds the fix goes to fable"
+  assert_grep "^escalated ok" /tmp/m11-route.txt "routing: after the main rounds the fix escalates (opus: the test idea has no [important] label)"
   assert_grep "^cap ok" /tmp/m11-route.txt "routing: the fifth failed round exports with the NEEDS REVIEW notes"
   assert_grep "^ad ok" /tmp/m11-route.txt "routing: branding that feels like an ad is an [animation] issue"
   assert_grep "^notes ok" /tmp/m11-route.txt "routing: the re-run pass gets its notes, a later pass a context note, an untouched pass nothing"
@@ -477,7 +478,7 @@ if want 2; then
   assert_rc 0 $rc "text loop: the runner exits 0"
   assert_grep "${ts_regex}WARN   S12: review round 1 failed \(2 issues; scores stop 4, hierarchy 3, .*\): back to 09b-text, then every step after it runs again$" "$OUT" "text loop: round 1 fails and names 09b-text"
   assert_grep "${ts_regex}STEP   reviewing: mechanical checks done \([0-9hms]+\) -> planning text$" "$OUT" "text loop: S12 hands over to S9b"
-  assert_grep "${ts_regex}INFO   S9: planning text for .*: asking the visual director with the edit review's notes$" "$OUT" "text loop: the text pass runs again with the review's notes"
+  assert_grep "${ts_regex}INFO   S9: planning text for .*: asking the visual director \(sonnet, fine tuning after review round 1\) with the edit review's notes$" "$OUT" "text loop: the text pass runs again with the review's notes (sonnet fine tunes)"
   assert_grep "${ts_regex}STEP   planning text done \([0-9hms]+\) -> planning transitions$" "$OUT" "text loop: then the transitions pass"
   assert_grep "${ts_regex}STEP   planning transitions done \([0-9hms]+\) -> building visuals$" "$OUT" "text loop: then the build"
   assert_grep "${ts_regex}STEP   building visuals done \([0-9hms]+\) -> adding sound effects$" "$OUT" "text loop: then the sounds"
@@ -486,7 +487,7 @@ if want 2; then
   assert_grep "${ts_regex}DONE   exported #[0-9]+ -> exports/[0-9]+/ \([0-9]+ min, 1 issue fixed\)" "$OUT" "text loop: the run continued to the (dummy) export, with the review counted as one issue fixed"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "text loop: no ERROR or BLOCK line"
   assert_eq "$(fake_calls)" "4" "text loop: four model calls: the editor twice, the director for 9b and 9c"
-  assert_grep "^activity: fixing \[text\] issues \(round 2, opus\)$" "$RD/12-review/stage.log" "text loop: the activity \"fixing [text] issues (round 2, opus)\" was published"
+  assert_grep "^activity: fixing \[text\] issues \(round 2, sonnet\)$" "$RD/12-review/stage.log" "text loop: the activity \"fixing [text] issues (round 2, sonnet)\" was published"
   for st in 09b-text 09c-transitions 10-build 11-sfx 12-review; do
     assert_eq "$(python "$STATE_PY" get "$RD" "stages.$st.reopened" 0)" "1" "text loop: state.json counts one reopen of $st"
   done
@@ -527,11 +528,11 @@ if want 3; then
   assert_rc 0 $rc "cap: the runner exits 0"
   for r in 1 2 3 4; do assert_grep "${ts_regex}WARN   S12: review round $r failed \(1 issues; scores .*sound 2.*\): back to 11-sfx, then every step after it runs again$" "$OUT" "cap: round $r fails and goes back to S11"; done
   assert_grep "${ts_regex}WARN   S12: review round 5 failed and the 5 rounds are used up: exporting with NEEDS REVIEW" "$OUT" "cap: round 5 ends the loop"
-  assert_grep "${ts_regex}FLAG   needs review: edit review: still failing after 5 rounds \(3 opus, 2 fable\); exported as it is. Scores: .*Open issues: \[sfx\]" "$OUT" "cap: the NEEDS REVIEW flag carries the scores and the notes"
+  assert_grep "${ts_regex}FLAG   needs review: edit review: still failing after 5 rounds \(3 main, 2 escalated on opus\); exported as it is. Scores: .*Open issues: \[sfx\]" "$OUT" "cap: the NEEDS REVIEW flag carries the scores and the notes"
   assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "cap: the run still exports (the dummy export)"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "cap: no ERROR or BLOCK line"
   assert_eq "$(fake_calls)" "5" "cap: five editor calls, one per round"
-  for pair in "2, opus" "3, opus" "4, fable" "5, fable"; do assert_grep "^activity: fixing \[sfx\] issues \(round $pair\)$" "$RD/12-review/stage.log" "cap: the activity \"fixing [sfx] issues (round $pair)\" was published"; done
+  for pair in "2, sonnet" "3, sonnet" "4, opus" "5, opus"; do assert_grep "^activity: fixing \[sfx\] issues \(round $pair\)$" "$RD/12-review/stage.log" "cap: the activity \"fixing [sfx] issues (round $pair)\" was published"; done
   assert_eq "$(python "$STATE_PY" get "$RD" rounds.review 0)" "5" "cap: rounds.review is 5"
   assert_eq "$(python "$STATE_PY" get "$RD" stages.11-sfx.reopened 0)" "4" "cap: S11 ran five times (reopened four times)"
   assert_eq "$(python "$STATE_PY" get "$RD" stages.12-review.reopened 0)" "4" "cap: S12 ran five times"

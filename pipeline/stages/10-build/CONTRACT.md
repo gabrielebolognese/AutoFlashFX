@@ -43,7 +43,8 @@ repair step when the check fails.
 failure, a validator failure of the merged plan).
 
 ## Model and session
-The builder repair call: config models.builder, or models.builder_escalation when the plan has
+The builder repair call: config models.builder (sonnet), or models.builder_escalation (opus; fable only on an idea
+marked [important], DECISIONS.md 334) when the plan has
 config visual.three_d_heavy_objects 3D objects or more, or state.json rounds.review is 2 or more (S12's rounds,
 M11). Fresh session per repair round, tools Read, Glob, Grep, Edit, Write and `npx hyperframes` in the project
 folder, timeout timeouts.build_seconds. No call when the check passes at once.
