@@ -113,3 +113,68 @@ PASS  exactly one export
 PASS  one history line
 
 == 4. crashes around the export: no duplicate, no gap ==
+pipeline/tests/test-m2.sh: line 38: 44344 Killed                  ( cd "$SANDBOX" && env NO_COLOR=1 "$@" timeout 300 bash "$REPO_DIR/run.sh" --once ) > "$out" 2>&1
+PASS  the runner died at the planted point (exit 137)
+PASS  the crash is announced
+PASS  the export was assembled in runs/<id>/export/
+PASS  nothing moved into exports/ yet
+PASS  state.json records the intended number
+PASS  state.json has no export number yet
+PASS  the exports lock is left behind
+PASS  restart after the crash exits 0
+PASS  the leftover exports lock is cleared at startup
+PASS  the restart resumes at the export
+PASS  the export completes as #1
+PASS  exactly one export after the crash
+PASS  the staging folder is gone
+PASS  one history line
+PASS  the idea is removed once
+pipeline/tests/test-m2.sh: line 38: 47740 Killed                  ( cd "$SANDBOX" && env NO_COLOR=1 "$@" timeout 300 bash "$REPO_DIR/run.sh" --once ) > "$out" 2>&1
+PASS  the runner died right after the move (exit 137)
+PASS  exports/2 exists after the move
+PASS  state.json does not know the number yet
+PASS  the run is still unfinished
+PASS  no history line yet
+PASS  restart after the second crash exits 0
+PASS  the moved export is recognized as #2
+PASS  no exports/3: no duplicate
+PASS  exactly one history line for #2
+PASS  the run is finished
+PASS  the idea is removed
+
+== 5. drop, code error, FLAG and invalid output ==
+FAIL  the runner continues past a drop and a block and exits 0 (expected exit 0, got 124)
+PASS  DROP line
+PASS  NEXT after the drop
+PASS  ERROR line with the last log line
+PASS  BLOCK line (the reviewer's verdict: only the user can fix it)
+FAIL  NEXT after the block (no match for '^\[[0-9]{2}:[0-9]{2}\] NEXT   idea 3/3 "Idea C' in /tmp/tmp.JOnjM87r2V/paths.out)
+PASS  FLAG line printed by the stage
+FAIL  the third idea exports as #1: no gap for dropped or blocked ideas (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #1 -> exports/1/' in /tmp/tmp.JOnjM87r2V/paths.out)
+FAIL  summary counts (no match for '^\[[0-9]{2}:[0-9]{2}\] IDLE   queue empty: this session 1 exported, 1 dropped, 1 blocked' in /tmp/tmp.JOnjM87r2V/paths.out)
+FAIL  only exports/1 (expected '1', got '')
+PASS  history: dropped line
+PASS  history: blocked line
+FAIL  history: exported line (no match for '^20[0-9-]+ [0-9:]+ \| Idea C: ffmpeg loudnorm in two passes for reels \| external \| exported 1$' in /tmp/tmp.JOnjM87r2V/channels/flashfx/logs/history.txt)
+PASS  blocked.txt: the reason line
+PASS  blocked.txt: the idea in braces, ready to re-add
+FAIL  ideas.txt is empty (expected '0', got '1')
+FAIL  the dropped and blocked run folders are kept (expected '3', got '2')
+FAIL  state.json statuses (expected 'dropped,blocked,exported', got 'dropped,blocked')
+FAIL  captions: NEEDS REVIEW section when flagged (no match for '^NEEDS REVIEW$' in /tmp/tmp.JOnjM87r2V/exports/1/1captions.txt)
+FAIL  captions: the flag text (no match for '^07-script: dummy soft check failed in 07-script$' in /tmp/tmp.JOnjM87r2V/exports/1/1captions.txt)
+PASS  the code error counts as an open issue
+PASS  the failed stage kept its log
+PASS  stage.log has the stage's own output
+PASS  an invalid output does not stop the runner
+PASS  ERROR line names the schema violation
+PASS  an invalid output is a code error: reviewed, then blocked on the reviewer's verdict
+PASS  blocked.txt gets the idea
+
+== 6. forever mode: IDLE, NEW, a second runner refused, SIGTERM ==
+PASS  banner with an empty queue
+PASS  mode line
+PASS  summary line first
+PASS  IDLE line with the poll interval, idle minutes and today's counts
+PASS  a second runner refuses to start while one runs
+PASS  it names the running pid

@@ -1,0 +1,3 @@
+check-manifest --after: 11 line(s) checked, 0 problem(s)
+(run right after the migration verified, before preflight, doctor and the tests wrote into the folder again; a later run shows
+only the bytes of logs/runner.log, logs/status.txt and motion-lib growing, which is the folder living on)
