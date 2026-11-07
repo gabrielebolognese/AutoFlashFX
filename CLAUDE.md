@@ -5,8 +5,8 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M13 Hardening: done (2026-11-02). Next: M14 Motion grammar and energy meter, M15 Kinetic captions and text
-  discipline, M16 Director, components and the energy loop (BUILD_SPEC.md section 5, Motion and energy rules), then
+- M14 Motion grammar and energy meter: done (2026-11-07). Next: M15 Kinetic captions and text discipline, M16
+  Director, components and the energy loop (BUILD_SPEC.md section 5, Motion and energy rules E3, E4, E8, E9), then
   M17 Control check and M18 to M24: the channels plan (BUILD_SPEC.md section 14, explained in CHANNELS.md; the
   editable project is M21). The build is driven by `bash build-runner.sh` (`--until M16` stops after M16; a
   build/PAUSE file stops it between milestones); its log is build/build.log and its per-milestone reports are in
@@ -82,7 +82,21 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   profile (voiceprofile.py merge_keep), S8 and S12 passing the reel's names to faster-whisper as hotwords (DECISIONS.md
   283; S8 also accepts "130" heard for "one thirty", S7's rewrite refuses a respelled name, S7's share-identity check
   compares word stems, 09b checks the zones rule, S8 accepts more transcription spellings: DECISIONS.md 284 to
-  287), pipeline/tests/m13-run.sh (the three-idea driver) and pipeline/tests/fixtures/ideas/three-ideas.txt. Run every
+  287), pipeline/tests/m13-run.sh (the three-idea driver) and pipeline/tests/fixtures/ideas/three-ideas.txt, M14: the
+  energy meter pipeline/lib/review/energy.py (`python pipeline/lib/review energy <video> [--plan merged.json]`: the
+  moving share, the middle band, the pixels changing, the still stretches and the longest still of a reel and of each
+  scene against tokens.json energy.targets; `energy calibrate --refs styles/paper-cards/refs --out
+  styles/paper-cards/analysis/energy.json` measures the nine references), tokens.json `motion.grammar` (the Motion and
+  energy rules as values: pipeline/lib/tokens.py GRAMMAR, exposed as `--m-*` in motion-lib/assets/tokens.css) and
+  `energy` (the targets: 70 percent of the look references' medians, 41, 46, 3.3, 15 percent and 2 s on this PC; an
+  `- **Energy:** moving 45, still 12` line in tweaks.md overrides them), the shared motion grammar
+  motion-lib/assets/pc-motion.js (PCM.life: main animation, inertia, hold, exit; the combined zoom and parallax
+  rotation; PCM.canvas: the edge and ambient layers; PCM.idle: the mascot; PCM.depth: the 2.5D parts; count-ups and
+  typing as setter tweens because HyperFrames seeks with GSAP events suppressed) that every component uses (every
+  element component has a `hold` prop: calm, normal, lively), paper-canvas with a timeline, `seed` and `duration` props
+  and the layers, icon-3d (Three.js extruded SVG paths and primitives, a CSS-extruded fallback, `mode` auto|webgl|css),
+  frame-match's life checks (never static for 0.5 s, the inertia 2 to 4 s) and per-component energy (catalog.json
+  `energy`, the gallery's energy line), golden/test-idea/energy.json and build/M14/golden-energy-before.json. Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4
@@ -91,7 +105,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
   `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
   `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` and `M13_SECTIONS="1 2 4" bash pipeline/tests/test-m13.sh`
-  (about 20 minutes) are the fake-only tests).
+  (about 20 minutes) are the fake-only tests; `bash pipeline/tests/test-m14.sh` makes no model call, about 35 minutes:
+  frame-match on every component and the golden render).
 - Every stage is real from M12 on: `bash run.sh` turns each idea into exports/N/ (N.mp4, Ncaptions.txt, Nhook2.mp4).
   `REELS_DUMMY=all bash run.sh --once` runs the whole loop with dummy stages; `REELS_DUMMY=13,14 bash run.sh --once`
   skips the final render and the caption. S13 writes runs/<id>/13-render/final.mp4, hook2.mp4, video.mp4 (the silent
@@ -135,8 +150,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   (measurements, pools of 5 to 8 per cue type, one indexer call for new files with unclear names; a no-op when
   nothing changed; `--check` says whether the map is current); overrides.txt is the user's (`ban: path`,
   `pin: cue type: path`, kept on every rebuild).
-- `motion-lib/`: approved HyperFrames components, candidates/, gallery/. `golden/`: example reels for the visual
-  director.
+- `motion-lib/`: approved HyperFrames components, candidates/, gallery/, assets/pc-motion.js (the motion grammar
+  every component uses: M14). `golden/`: example reels for the visual director (energy.json: the golden's energy).
 - `pipeline/`: lib/ (bash and Python libraries), stages/ (one folder per stage: CONTRACT.md, schema.json, dummy.sh,
   and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
   instagram-agent-skill), knowledge/known-issues.md, tests/.

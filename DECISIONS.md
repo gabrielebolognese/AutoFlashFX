@@ -2217,3 +2217,20 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     and footprint, plan_validate.py and events.py know icon-3d; the frozen fixtures' index.html canvas hosts), M11
     (mechanical.py's clip_start for icon-3d), M1 (config: nothing). The frozen test projects rebuild from the plans
     with the new library, so M10 to M13's fake tests exercise it.
+299. **What the golden reel measures after the rewrite (the same plan, the new library):** moving share 13.0 to 27.0
+    percent (doubled, as the acceptance test asks), middle band 12.0 to 29.4, pixels changing 1.0 to 1.42, still
+    stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s (build/M14/golden-energy-before.json against
+    golden/test-idea/energy.json); frozen frames fell from 25 to 4 percent. The gain came from three things in this
+    order: the window cards' screenshots scrolling inside their frames (24 px per second, enlarged a quarter for the
+    room: the two window scenes went from 10 and 32 percent moving to 92 and 55), the longer combined entrances (the
+    zoom and parallax over 15 frames instead of a bare 8-frame rise) and the inertia's first second. The holds
+    themselves (2 to 8 px per second, a tenth of a degree per frame) are subtle at 108x192 by the spec's own numbers:
+    they end the frozen frames and the still stretches, not the moving share. The golden still misses every target
+    (41, 46, 3.3, 15, 2): that is M15's kinetic captions and M16's content motion, camera and layered scenes, as the
+    spec plans. The render took 112 s (90 s before: the 3D parallax and the canvas layers cost about a quarter).
+300. **Found on the way:** the Bash tool truncates a command near 8 KB, so every multi-file change of this milestone
+    is a patch script under build/M14/tmp/ run by python; two harnesses writing the same page file corrupt each other
+    (the tag); a zero-duration GSAP tween at position 0 is not rendered when the timeline is seeked to exactly 0
+    (the caption chunk's initial state is set at once, outside the timeline); a zero-height plane inside a rotated
+    3D card projects a few px tall, so a growing bar starts at a hair and its first frame is read against its own
+    baseline; a fit that reads frames after the landing is biased toward a shorter move once the inertia exists.

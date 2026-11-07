@@ -422,3 +422,32 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   the second three-idea run (build/M13/real2) is the one section 3 passes on. Earlier milestones touched: M3 (a test
   timing), M6 (script_checks.py, the rewrite prompt), M7 (voiceover.py, whisper_worker.py), M10 (plan_validate.py,
   plan9.py, visual.sh, test-m10.sh), M11 (audio_check.py). DECISIONS.md 276 to 287. Report: build/M13/report.md.
+
+## M14 Motion grammar and energy meter
+- Status: done (2026-11-07). The test has five sections: 1 the energy meter (the nine reference videos reproduced from
+  styles/paper-cards/analysis/energy.json with a worst difference of 0.0; the M13 reel build/M13/rerun/1.mp4 fails all five
+  targets and measures the spec's 16, 15, 1.2, 29 percent and 2.8 s; tokens.json energy.targets 41, 46, 3.3, 15 and 2
+  derived from the look medians; the Energy override line; tokens.css's --m-* variables; the schema and the source check),
+  2 the library (frame-match on the 28 components with the life checks: every main animation still within 1 frame and 10
+  percent of its reference numbers, every strip at r 0.62 or more, no visible element still for 0.5 s, the inertia 2 to
+  2.6 s after the landing, every component's energy measured alone; catalog.json with icon-3d; no tween or ease outside
+  pc-motion.js; `npx hyperframes lint` and `check` clean; the gallery with the energy line), 3 icon-3d with WebGL and with
+  its CSS fallback, the canvas layers for three seeds out of every text zone, without text, 30 to 70 percent outside, under
+  20 px per second, 4 the golden reel rendered again from the same plan (every energy measure better than before, the
+  moving share doubled: 13.0 to 27.0 percent), 5 the em dash scan. Results: sections 1 and 3 run together, 34 passed, 0
+  failed; sections 2, 4 and 5 (build/M14/tmp/test-m14-s245.log) 35 passed, 4 failed before the last fit and caption fixes,
+  then sections 2 and 5 again (build/M14/tmp/test-m14-s25.log): see the counts below. After the touches to their code:
+  test-m9 section 1 27 passed (its sandbox re-proposes the six accepted tweaks lines), test-m10 fake sections 134 passed;
+  the full reruns of the fake-only tests of M9 to M13 are listed at the end of this section.
+- Test command: `bash pipeline/tests/test-m14.sh` (no model call, about 35 minutes: frame-match on every component and
+  the golden render; `M14_SECTIONS="1 3"` the quick sections, about 3 minutes); `bash pipeline/tests/run-all.sh` includes it.
+- Notes: the meter is pipeline/lib/review/energy.py (`python pipeline/lib/review energy <video> [--plan merged.json]`,
+  `energy calibrate --refs ... --out analysis/energy.json`); the grammar is motion-lib/assets/pc-motion.js (PCM.life: main
+  animation, inertia, hold, exit, with E2's zoom and parallax rotation; PCM.canvas: the edge and ambient layers; PCM.idle,
+  PCM.depth, PCM.camera, PCM.scroll, setter-driven count-ups and typing) and every composition was rewritten on it; icon-3d
+  is the new component; tokens.json gained motion.grammar and energy (pipeline/lib/tokens.py GRAMMAR, the calibration
+  file as a third source, the `- **Energy:** ...` override); frame-match measures 4.33 s per component at a quarter scale
+  with the life and energy checks; golden.py seeds the canvas per reel and copies pc-motion.js. Earlier milestones touched:
+  M9 (test-m9's sandbox, harness.py's tag and 3D-aware measures, golden.py, gallery.py, catalog.py), M10 (project.py,
+  visual/common.py, plan_validate.py, plan9.py, events.py, the frozen index.html canvas hosts), M11 (mechanical.py).
+  DECISIONS.md 288 to 300. Report: build/M14/report.md.
