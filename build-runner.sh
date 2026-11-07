@@ -11,6 +11,7 @@
 # Usage (Git Bash, from the instagramReels folder):
 #   bash build-runner.sh                 start, or resume where it stopped
 #   bash build-runner.sh --from M5       restart from a milestone
+#   bash build-runner.sh --until M16     stop after that milestone (combine with --from); a plain restart continues
 #   bash build-runner.sh --review-plan   pause after M0 so you can read PLAN.md
 #   bash build-runner.sh --status        print the latest status line and exit
 #   bash build-runner.sh --check         check that Claude Code runs with these settings, then exit
@@ -44,11 +45,13 @@ CLAUDE_BIN="${CLAUDE_BIN:-claude}"
 read -r -a PERM_FLAGS <<< "${PERM_FLAGS:---permission-mode auto --permission-prompts none}"
 SLEEP_SCALE="${SLEEP_SCALE:-1}"                 # tests only: 0.001 makes every wait near instant
 
-MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13)
+MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17)
 MS_TITLES=("Plan" "Skeleton" "Runner core and terminal output" "Error system"
            "Research, expansion, gate, angle" "Profile and hooks" "Script" "Voiceover"
            "Sound effects memory map" "Motion library" "Visual stages"
-           "Sound effects pass and review loop" "Final render, caption, export, end to end" "Hardening")
+           "Sound effects pass and review loop" "Final render, caption, export, end to end" "Hardening"
+           "Motion grammar and energy meter" "Kinetic captions and text discipline"
+           "Director, components and the energy loop" "Editable project export")
 
 BUILD_DIR="build"; STATE="$BUILD_DIR/state.env"; STATUS_FILE="$BUILD_DIR/.status"
 LOG="$BUILD_DIR/build.log"; STATUS_TXT="$BUILD_DIR/status.txt"; TODO="$BUILD_DIR/HUMAN_TODO.md"
@@ -932,10 +935,11 @@ check_claude() {  # one tiny call with the same flags the batches use
 
 # ---------------------------------------------------------------- main
 [ "${BUILD_RUNNER_LIB_ONLY:-0}" = "1" ] && return 0 2>/dev/null
-FROM=""; REVIEW_PLAN=0; CHECK_ONLY=0
+FROM=""; UNTIL=""; REVIEW_PLAN=0; CHECK_ONLY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --from) FROM="$2"; shift ;;
+    --until) UNTIL="$2"; shift ;;
     --review-plan) REVIEW_PLAN=1 ;;
     --status) if [ -f "$STATUS_TXT" ]; then cat "$STATUS_TXT"; elif line=$(status_line); then echo "$line"; else echo "not started"; fi; exit 0 ;;
     --check) CHECK_ONLY=1 ;;
@@ -956,10 +960,16 @@ ensure_git
 [ -f "$TODO" ] || printf '# Things the build needs from you\n\nEach line: milestone, what to do, where.\n\n' > "$TODO"
 load_state
 
+if [ -n "$UNTIL" ]; then
+  uidx=-1
+  for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$UNTIL" ] && uidx=$i; done
+  [ "$uidx" -lt 0 ] && { echo "unknown milestone: $UNTIL (use M0 to M17)"; exit 2; }
+fi
+
 if [ -n "$FROM" ]; then
   idx=-1
   for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$FROM" ] && idx=$i; done
-  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use M0 to M13)"; exit 2; }
+  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use M0 to M17)"; exit 2; }
   MS_INDEX=$idx; STOPPED=0; start_milestone
   say START "restarting from $FROM ${MS_TITLES[$MS_INDEX]}, as you asked"
 elif [ ! -f "$STATE" ]; then
@@ -985,7 +995,7 @@ fi
 [ "$TOTAL_START" = "0" ] && TOTAL_START=$(now_epoch)
 
 check_claude
-say START "build runner: ${#MS_IDS[@]} batches (M0 to M13), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
+say START "build runner: ${#MS_IDS[@]} batches (M0 to M17), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
 say START "coding: $BUILD_MODEL ($BUILD_EFFORT), $LIMIT_MODEL ($LIMIT_EFFORT) while $BUILD_MODEL is at its limit. Reviews: $REVIEW_MODEL ($REVIEW_EFFORT), lenient, at most $MAX_REVIEWS per milestone, then it moves on. Log: $LOG"
 [ "$FALLBACK" = "1" ] && say START "fable batches run with --fallback-model $LIMIT_MODEL: when fable runs out mid-batch, Claude Code carries on with $LIMIT_MODEL in the same session"
 fable_limited && say NOTE "fable is still at its usage limit until $(date -d "@$(( FABLE_UNTIL - VOFF ))" '+%a %H:%M' 2>/dev/null): coding on $LIMIT_MODEL until then"
@@ -1000,6 +1010,10 @@ while [ "$MS_INDEX" -lt "${#MS_IDS[@]}" ]; do
   MS_INDEX=$((MS_INDEX + 1))
   if [ "$MS_INDEX" -lt "${#MS_IDS[@]}" ]; then
     start_milestone
+    if [ -n "$UNTIL" ] && [ "${MS_IDS[$((MS_INDEX - 1))]}" = "$UNTIL" ]; then
+      say DONE "stopped after $UNTIL, as you asked (--until). Run bash build-runner.sh to continue with ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]}"
+      exit 0
+    fi
     say NEXT "${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]}"
   fi
 done

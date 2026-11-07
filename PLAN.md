@@ -623,12 +623,95 @@ Acceptance test: `bash pipeline/tests/test-m13.sh`
   dash in any export or log.
 - Runtime: several hours.
 
-## M14 Editable project export (spec S15)
+## M14 Motion grammar and energy meter (spec section 5, Motion and energy rules E0, E1, E2, E5, E6, E7)
 
-Depends on: M12 (the export, the final composition, cues.json, words.json), M13 (the hardened runner loop), M9 (the
-motion-lib components to annotate), the editor repo at /c/Users/there/OneDrive/Desktop/editor (config.json
+Depends on: M9 (the motion library, tokens, frame-match, the gallery, webgl.json), M13 (a real reel to measure:
+build/M13/rerun/1.mp4), the style's reference videos in styles/paper-cards/refs/.
+
+Creates:
+- `pipeline/lib/review/energy.py` and the `energy` command of `python pipeline/lib/review`: 30 fps, 108x192 grayscale,
+  the per-frame mean change, frozen, subtle, medium and big frames, the moving share, the middle band, the pixels
+  changing per frame, the still stretches, whole reel and per scene (scene times from a merged plan);
+  `styles/paper-cards/analysis/energy.json` (the nine references measured; the look references' median).
+- `pipeline/lib/tokens.py`: tokens.json `motion` (phase durations, eases, hold speeds, 3D angles and perspective, the
+  edge layer, the caption fonts and ratios for M15) and `energy` (70% of the look references' median), tweaks.md
+  overrides; motion-lib/assets/tokens.css.
+- `motion-lib/assets/pc-motion.js`: main animation, inertia, hold (calm, normal, lively), exit; combined main
+  animations (zoom, 3D parallax rotation, move; power3 or power4 in-out; the rotation 2 to 4 frames late; the
+  decelerating tail that never reaches zero); the 2.5D scene container and its camera. Every component in
+  motion-lib/compositions/ rewritten on it.
+- paper-canvas: the edge filler layer (elements 30 to 70% outside the frame, at most 20 px per second, no text) and the
+  ambient layer (stars, dots, small clouds); the mascot's idle.
+- `motion-lib/compositions/icon-3d.html` (Three.js, low poly, extruded SVG and primitives, on webgl.json's backend)
+  with its CSS-extruded fallback.
+- frame-match: the main animation against the references as before, plus an inertia and hold check; the gallery with
+  each component's energy; golden.mp4 rendered again from the same plan.
+- Tests: `pipeline/tests/test-m14.sh`.
+
+Acceptance test: `bash pipeline/tests/test-m14.sh`
+- energy.py reproduces energy.json within 1 point and fails the M13 reel on every target.
+- Every component, rendered alone for 4 s: never static for 0.5 s, its main animation still frame-matches, its inertia
+  lasts 2 to 4 s.
+- icon-3d renders with WebGL and with the fallback; the edge and ambient layers stay out of every text zone.
+- The re-rendered golden reel beats its old numbers on every measure, its moving share at least doubled.
+- The fake-only tests of M9 to M13 still pass.
+- Runtime: 30 to 60 minutes (renders).
+
+## M15 Kinetic captions and text discipline (spec section 5, Motion and energy rules E3, E4)
+
+Depends on: M14 (pc-motion.js, tokens `motion`), M10 (9b and the plan schema), M6 (script.json), M7 (words.json).
+
+Creates:
+- `motion-lib/compositions/caption-word.html` and `caption-group.html` on pc-motion.js (caption-line retired from the
+  catalog).
+- `pipeline/lib/visual/kinetic.py`: the group layout engine (roles, at least 3 fonts, the anchor at 2 to 3 times the
+  caption size, the stacked lines matching the anchor's height, asymmetry, the group caption zone, the right rail).
+- S7: each beat's importance in script.json; 9b: the caption mode per beat, the group's words, anchor and layout; the
+  plan schema fields; the validator and S12 mechanical rules of E4 and "no caption static".
+- Tests: `pipeline/tests/test-m15.sh`, kinetic.py fixtures, planted-fault plans.
+
+Acceptance test: `bash pipeline/tests/test-m15.sh`
+- "the quick brown fox" lays out as spec E3 (three fonts, "quick" and "brown" at half the anchor's size with their
+  combined height equal to the anchor's within 2 px, asymmetric, inside the zone); 6 long words fit or split; no group
+  word below the caption size.
+- On the golden plan: word mode in normal talk, groups on the important beats, every caption word moving on every frame.
+- The planted faults are caught: 120 characters on a card, a 40 px label, a group caption over a text card, a static
+  caption word.
+- The fake-only tests of M9 to M14 still pass.
+- Runtime: 20 to 40 minutes.
+
+## M16 Director, components and the energy loop (spec section 5, Motion and energy rules E8, E9)
+
+Depends on: M14, M15, M12 (the whole pipeline for the real test run), M11 (S12).
+
+Creates:
+- New components on pc-motion.js: screenshot-zoom (pan, zoom, highlight box), card-fan, card-grid, video-card,
+  timeline-scrubber, cursor, mock-site-card, swatch-row and swatch-card; their catalog entries, beat map lines and
+  gallery stills; frame-match where a reference exists.
+- S1: the page recordings (Playwright, 5 to 8 s scroll, 1080 wide) next to the screenshots; assets.json lists them.
+- The 9a, 9b and 9c prompts around the Motion and energy rules; the validator rules of E9 (a moving element in every
+  scene's hero zone, the fill, the layers, the camera frequency, transition variety, the hook's frame 0).
+- A new golden reel (golden/test-idea/) meeting every energy target, with a HUMAN_TODO to review it.
+- S12: the energy check first, per-scene routing to 9a, the "no element static" and edge checks, the energy score in
+  the edit review, the early stop.
+- Tests: `pipeline/tests/test-m16.sh`, one failing fixture plan per new rule, a fake qa that repeats its verdict.
+
+Acceptance test: `bash pipeline/tests/test-m16.sh`
+- The new golden reel meets every energy target, every scene at least 80% of each target.
+- Each new validator rule fails its fixture; the golden plan passes.
+- The test idea from scratch with the real models gives a reel that meets the targets (or exports after the loop with
+  its numbers in NEEDS REVIEW), with edit review scores on stopping the scroll, motion variety and nothing generic
+  above the M13 reel's 3.
+- The early stop fires on the repeating fake qa; the fake-only tests of M9 to M15 still pass; the time per reel grows
+  by at most 20%.
+- Runtime: 2 to 4 hours (one real reel, renders).
+
+## M17 Editable project export (spec S15)
+
+Depends on: M16 (the motion and caption components the project mirrors), M12 (the export, the final composition,
+cues.json, words.json), M13 (the hardened runner loop), M9 (the motion-lib components to annotate), the editor repo at /c/Users/there/OneDrive/Desktop/editor (config.json
 `editor.repo`; read only) and its stable copy next to it (`editor.stable_dir`, created by editor-stable.sh), Node 22
-and the Puppeteer harness of M11. S15 and every spec line marked (M14) are built and reviewed here only.
+and the Puppeteer harness of M11. S15 and every spec line marked (M17) are built and reviewed here only.
 
 Creates:
 - `pipeline/stages/s15-project/` (run.sh, CONTRACT.md, schema files): the capture (`capture.mjs`: Puppeteer seeks
@@ -695,7 +778,7 @@ Acceptance test: `bash pipeline/tests/test-m14.sh`
 ## Dependency graph
 
 ```
-M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13 -> M14
+M0 -> M1 -> M2 -> M3 -> M4 -> M5 -> M6 -> M7 -> M10 -> M11 -> M12 -> M13 -> M14 -> M15 -> M16 -> M17
                     \-> M8 ------------------------/
                     \-> M9 (needs M7 fixtures) ---/
 ```

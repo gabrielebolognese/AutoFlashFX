@@ -5,8 +5,10 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M13 Hardening: done (2026-11-02). Next: M14 Editable project export (S15): pending. The build is driven by
-  `bash build-runner.sh`; its log is build/build.log and its per-milestone reports are in build/M<n>/.
+- M13 Hardening: done (2026-11-02). Next: M14 Motion grammar and energy meter, M15 Kinetic captions and text
+  discipline, M16 Director, components and the energy loop (BUILD_SPEC.md section 5, Motion and energy rules), then
+  M17 Editable project export (S15): pending. The build is driven by `bash build-runner.sh` (`--until M16` stops
+  after M16); its log is build/build.log and its per-milestone reports are in build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
   faster_whisper), the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py,

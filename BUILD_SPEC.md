@@ -57,7 +57,7 @@ instagramReels/
   config.json                models, engines, caps, paths (section 9)
   ideas.txt                  the idea queue, I edit it (2.1)
   exports/                   finished reels: 1/, 2/, 3/ ... (section 8)
-    N/project/               the editable Shorts Editor project (S15) (M14)
+    N/project/               the editable Shorts Editor project (S15) (M17)
   library/                   everything I curate
     hooks.txt                my hook templates (2.2)
     profile/                 account.md  voice.md  deliverables.txt  pronunciations.txt (2.3)
@@ -73,16 +73,16 @@ instagramReels/
   pipeline/
     lib/                     bash: ai.sh limits.sh review.sh state.sh ideas.sh status.sh log.sh
     stages/                  one folder per stage: run script, prompt.md, CONTRACT.md, schema.json
-                             s15-project/ (the editable project, S15) (M14)
+                             s15-project/ (the editable project, S15) (M17)
     bin/                     add-idea.sh, index-hooks, build-sfx-map, mix-sfx, screenshot, helpers
-                             rebuild-project.sh  editor-stable.sh (M14)
+                             rebuild-project.sh  editor-stable.sh (M17)
     vendor/ig-agent-skill/   MIT scripts from Jakeschincariol/instagram-agent-skill, with its LICENSE (section 10)
     knowledge/known-issues.md   symptom -> fix lines, written by the fixer (4.2)
     tests/
   tools/analyze_refs.py      already exists: reference video analyzer
   runs/                      one working folder per idea (machine only)
   logs/                      runner.log  status.txt  history.txt  blocked.txt  limits.log  suggested-ideas.txt  sfx-usage.json
-                             editor-gaps.md  editor-capabilities.json  editor-upgrade.json (M14)
+                             editor-gaps.md  editor-capabilities.json  editor-upgrade.json (M17)
 ```
 
 Git: initialize a repo (if build-runner.sh has not). Track code, the text files in library/ and styles/, and the
@@ -157,6 +157,7 @@ refills the generated parts.
 - Derive tokens.json from style.md plus tweaks.md: colors, fonts, type scale, zones, margins, border and shadow
   sizes, motion timings, caption rules, pacing limits. Regenerate it whenever either file's hash changes.
   Validators and checks read tokens.json and never hardcode style numbers.
+- tokens.json also holds `motion` and `energy` (Motion and energy rules E9). (M14)
 - All of this is read-only at runtime.
 
 ### 2.5 library/voice/
@@ -267,8 +268,8 @@ by me and read-only at runtime: never modify, regenerate or redraw these files.
   5. take the next idea
 
   When ideas.txt has no idea: with --once, exit; otherwise check again every 120 seconds, forever.
-- Between ideas, never during a run: advance the stable editor copy and run the capability upgrade when the (M14)
-  editor's capabilities changed (S15). run.sh also keeps the stable copy's server on port 5310 running. (M14)
+- Between ideas, never during a run: advance the stable editor copy and run the capability upgrade when the (M17)
+  editor's capabilities changed (S15). run.sh also keeps the stable copy's server on port 5310 running. (M17)
 - Startup preflight: claude, ffmpeg, ffprobe, python, node, gh, the Python packages, disk space, engine.txt and its
   interpreter importing kokoro (2.5), style files, tokens.json, the sfx map, library/brand/brand.json and every file
   it lists (2.7). A missing hard dependency is a systemic failure: write logs/STOPPED.md with the exact fix and exit.
@@ -386,8 +387,155 @@ that it counts as a code error.
 4. **Then the review** (S12): every check on the complete draft. A fix goes back to the step that owns it, and every
    step after it runs again (a visual fix moves events, so S11 runs again).
 5. **Then the final render and the export** (S13, S14).
-6. **Then the editable project** (S15): built from the final composition after the export is assembled; it never (M14)
-   changes the MP4. (M14)
+6. **Then the editable project** (S15): built from the final composition after the export is assembled; it never (M17)
+   changes the MP4. (M17)
+
+### Motion and energy rules (M14 to M16)
+
+Why: the reels built through M13 copied the references' individual moves (enters, pops, count-ups, scene changes) and
+their rhythm (new motion starts about 1.5 times a second, as in the references), but not their energy. Measured on
+the M13 reel against the two look references: 16% of frames carry medium or big motion against 55 to 64%; the
+middle of the screen moves 15% of the time against 58 to 74%; 1.2% of the pixels change per frame against 4.6 to
+4.9%. In the references the content itself keeps moving: video plays inside window cards, numbers count, code types,
+cards fan out and tilt, and nothing stops between events. These rules make energy a requirement that the pipeline
+builds (M14, M15), plans (M16), measures and fixes (M16). They hold for every style; the style supplies the values
+(fonts, sizes, colors, speeds) through tokens.json. M14 builds E0, E1, E2, E5, E6 and E7 in the motion library; M15
+builds E3 and E4; M16 builds E8 and E9 in the director, the new components, the golden reel and the review loop.
+Earlier milestones are not reviewed against this section.
+
+**E0. Energy, measured.**
+- `pipeline/lib/review/energy.py` measures a video as a whole and scene by scene (scene times from the plan): 30 fps,
+  a 108x192 grayscale copy, and for every frame the mean absolute change against the previous frame (0 to 255). A
+  frame is frozen below 0.05, subtle from 0.05 to 0.6, medium from 0.6 to 4, big from 4.
+- The measures: the moving share (medium plus big frames); the middle-band moving share (the middle third of the
+  screen, where the hero content sits); the pixels changing per frame (the share of pixels that change by more than 8);
+  the share of time inside still stretches of 1 s or more; the longest still stretch.
+- It is calibrated once on the style's reference videos (styles/<style>/refs/) and the reference numbers are written
+  to styles/<style>/analysis/energy.json. The targets are 70% of the look references' median, kept in tokens.json
+  (energy) and overridable by an "Energy" line in tweaks.md. For paper-cards: moving share at least 42%, middle band
+  at least 46%, at least 3.3% of the pixels changing per frame, still stretches at most 15% of the time, the longest
+  at most 2 s.
+- The M13 reel (build/M13/rerun/1.mp4) measures 16%, 15%, 1.2%, 29% and 2.8 s: it fails every target, as it should.
+
+**E1. The life of every element: main animation, inertia, hold, exit. Nothing ever stops moving.**
+- An animation is not 0.5 s long; it lasts 2 to 4 s and more. The 0.3 to 0.6 s everyone sees as "the animation" is
+  only its main part. Every element on screen (cards, chips, icons, logos, images, numbers, caption words and caption
+  groups) lives through four phases:
+  1. **Main animation** (0.3 to 0.6 s): the visible event, for example a pop in, a fly-in or a zoom in. Its opacity and
+     position frames still follow the style's measured enters (style.md Motion: opacity over 5 frames, position over
+     8 frames, the pops' overshoot).
+  2. **Inertia** (the next 2 to 4 s): the motion does not stop when the main animation lands. It carries on in the same
+     direction and slows down, like an object with mass: a card that rose keeps rising, a card that zoomed in keeps
+     growing (for example scale 1.00 to 1.04), a card that turned keeps settling its rotation. The inertia follows a
+     decelerating ease-out (cubic or quart) whose speed never reaches zero.
+  3. **Hold**: until the element leaves, it keeps a slow, steady motion in the same direction: a drift of 2 to 8 px per
+     second, a parallax rotation of 0.2 to 0.6 degrees per second, or a scale creep of 0.2 to 0.5% per second. Three
+     hold levels (calm, normal, lively) set the speed; the director picks one per scene.
+  4. **Exit** (0.2 to 0.4 s, ease-in), or the scene change carries the element out.
+- Rule: no visible element is ever static. At every frame each element moves at least at the calm hold speed, either
+  through its inertia or through its hold (measured from the composition, E9). Elements that form a group (a card and
+  its children, a caption group) hold in one shared direction.
+
+**E2. Combined animations, never a single property.**
+- A main animation combines at least two properties at once, never a bare pop or a bare fade: for example a zoom in
+  (scale 0.85 to 1.0, or 1.15 to 1.0 from a close start) together with a 3D parallax rotation (rotateY or rotateX from
+  8 to 15 degrees down to 0 to 2, inside a perspective of 1200 to 1600 px) and a short move.
+- The curve: the main animation uses an ease-in-out of power 3 or 4 (GSAP power3.inOut or power4.inOut: it starts
+  slowly, does the middle fast), and the inertia then continues on a decelerating ease-out, so the move ends slower
+  and slower and never stops dead.
+- The rotation is slightly slowed: it lags the scale and the position by 2 to 4 frames and settles last.
+- The style's own enter timings (E1 step 1) stay the reference for the opacity and position frames; the combined
+  properties ride on top of them.
+
+**E3. Captions: two modes, always moving.**
+- **Word mode** (normal talk): one word at a time, on its spoken word time (words.json), in the style's caption font
+  and size. The emphasis words (script.json's emphasis list) change font and size: the style's emphasis font
+  (paper-cards: Instrument Serif italic) at 1.25 to 1.5 times the caption size, with the style's accent box where the
+  style has one. Every word drifts while it is on screen (it rises 8 to 16 px over its life, or turns 2 to 4 degrees of
+  parallax rotation) and never stands still.
+- **Group mode** (the captions become the graphic): used when the voice says something important (the hook, a key
+  claim, a number, the payoff, the line before the ask) and above all when the beat has no clear or relevant graphic to
+  show. A group of 2 to 6 words fills the hero zone as kinetic typography:
+  - **Different fonts:** at least 3 fonts in any group of 3 words or more (paper-cards: Inter Tight at a heavy weight,
+    Instrument Serif italic, and Caveat or Space Grotesk; tokens.json lists the caption fonts).
+  - **Different sizes and lines, never one line:** the anchor word (the most important one) is the biggest, at 2 to 3
+    times the caption size. The other words stack beside it so that their lines together match the anchor's height.
+    Example, "the quick brown fox": "the" is big; "quick" sits right of it at half the size of "the", top aligned;
+    "brown" sits under "quick" at the same size, so "quick" plus "brown" are as tall as "the"; "fox" goes on the next
+    line, offset to one side; at least three different fonts across the four words.
+  - **Never symmetric:** lines start at different x, there is no centered stack of equal lines, and the group's
+    bounding box leans to one side and leaves air on the other.
+  - **Timing and motion:** each word appears on its spoken word time with the combined animation of E2 at word scale
+    and stays until the group leaves. The group moves as one block in one direction (a slow rise of 20 to 40 px over
+    its life, or a parallax rotation of 3 to 6 degrees), and leaves together.
+  - No word in a group is smaller than the caption size.
+- One mode at a time: word mode whenever any other text is on screen (E4); group mode only in beats whose hero zone
+  holds no other text.
+- A deterministic layout engine (`pipeline/lib/visual/kinetic.py`) places every group from its words, their roles
+  (anchor, secondary, connector) and the zone, so the result fits the text zones and the right-rail rule. The
+  director chooses the mode and the anchor; the engine places the words; no model positions words by hand.
+
+**E4. Text discipline: graphics first.**
+- The goal is graphics and animation, not text. On-screen text (cards, labels, chips, code) appears only when strictly
+  necessary; an icon, a number, an image, a logo or a motion that shows the idea comes first. Cut text wherever a
+  graphic can carry the meaning.
+- At most 100 characters of non-caption text on screen at any moment (every visible card, label, chip and code line
+  together).
+- No text on a graphic is smaller than the caption font size (paper-cards: the 67 px caption size at 1080 wide). A
+  graphic that would need smaller text needs less text.
+- When a graphic carries text, the captions are in word mode, never in group mode.
+
+**E5. Edges: the frame is a window, not a box.**
+- Animations must not look confined by the frame. At the very edges, above all the left and right sides, a filler
+  layer of slow elements sits partly behind the borders (30 to 70% of each element outside the frame): soft cards,
+  chips, thumbnails, shapes, dots or stars in the style's palette, behind the content and quieter than it (lower
+  contrast or opacity, smaller motion).
+- They are slow (at most 20 px per second, moving with a parallax slower than the content), change little through the
+  reel (the same set drifts; it may be swapped at the major scene changes), carry no text, and never cover a text zone
+  or the hero element.
+- The references show the effect: tilted cards and thumbnails running off the sides, stars drifting off frame.
+
+**E6. The center: clean, but deep.**
+- The center holds one clear idea at a time, uncluttered, yet with depth: a 2.5D parallax scene (layers at different
+  depths in a CSS 3D space under a slowly moving camera, each layer moving at its own speed) or a 3D icon (a low-poly
+  object turning slowly).
+- HyperFrames does both on this PC, so no other renderer is needed: CSS 3D transforms (perspective, rotateX, rotateY,
+  translateZ, preserve-3d) render in the headless Chrome that draws every frame, and Three.js scenes run through the
+  hf-seek adapter on the WebGL backend M9 found (motion-lib/webgl.json: hardware ANGLE on the AMD GPU, SwiftShader as
+  the fallback). 3D icons are built in code: Three.js objects from extruded SVG paths and primitives (never generated
+  images or video), or, without WebGL, CSS-extruded icons (an SVG repeated in 8 to 16 depth layers).
+- 3D stays light (low poly, few objects, one 3D object in focus at a time) so the CPU renders keep their timeouts.
+
+**E7. Background life.**
+- The paper canvas carries an ambient layer like the look references: floating stars, dots and small clouds in the
+  style's palette, with a slow drift and twinkle, seeded per reel, never on a text zone.
+- The mascot idles in every scene it is in (a bob, a blink, a wiggle of its prop), on top of E1's hold.
+
+**E8. Composition and camera.**
+- The hero content fills 70 to 85% of the frame width; every scene layers at least 2 elements (the hero plus a
+  supporting chip, badge, stack or number); empty paper in the hero zone lasts at most 1 s.
+- A camera move (a push-in, a pull-back, a pan, or a slow orbit of the 2.5D scene) in at least 1 of every 3 scenes.
+- Scene changes vary: no transition type more than 3 times in a reel.
+- The hook moves from frame 0: its hero element is moving by frame 4, never empty paper waiting for it.
+- Lists and groups enter as stacks, fans or grids with staggers, not one card after another in the same spot.
+- Real motion inside the content wherever it exists: screen recordings of the real pages (S1), typing, counting, a
+  cursor that moves and clicks, a playhead that runs, bars that fill.
+
+**E9. How it is enforced.**
+- tokens.json gains `motion` (the phases' durations, the eases, the hold levels' speeds, the 3D angles and
+  perspective, the edge layer's speed and coverage, the caption modes' fonts and size ratios) and `energy` (E0's
+  targets), with this section's values unless tweaks.md overrides them.
+- The motion library implements E1, E2, E5, E6 and E7 once, in a shared helper (motion-lib/assets/pc-motion.js) that
+  every component uses; no component hand-rolls its own phases or curves.
+- The plan validator (S9) checks: every scene keeps a moving element in the hero zone; caption modes and E4's limits
+  (characters, sizes, word mode under text); E8's fill, layers, camera frequency, transition variety and the hook's
+  frame 0.
+- S12 runs the energy check (E0, whole reel and per scene) first and routes the failing scenes to 9a with their
+  numbers as [animation] issues; its mechanical checks add "no element static for more than 0.5 s" (transforms
+  sampled from the composition), E4's character count and minimum text size, and the edge layer's presence; the edit
+  review scores energy explicitly.
+- Early stop: when two review rounds in a row end with the same scores and the same issues, the loop stops and the
+  reel exports with NEEDS REVIEW instead of repeating itself.
 
 ### S1 Research (session A, model: research)
 - Goal: get the facts right as of today. Not virality: I already validated the idea before writing it.
@@ -404,6 +552,8 @@ that it counts as a code error.
   - solution candidates: the best available ways to solve the idea's problem (external tools and GitHub repos with
     name and URL, methods with no product), each with its sources. When the idea names its solution, research that
     one first.
+  - recordings: a 5 to 8 s scroll video of each key page (Playwright, 1080 wide) next to its screenshot, for the (M16)
+    video and window cards (Motion and energy rules E8). (M16)
 - Rules: never invent anything; if a key fact cannot be verified, say so; do not get around sites that block
   automated access.
 
@@ -510,6 +660,8 @@ that it counts as a code error.
   score, timing within 15%): continue with a NEEDS REVIEW flag.
 - Output: 07-script/script.json. Each beat has: type, display, spoken, emphasis words, and the on-screen card text
   (6 words or fewer).
+- Each beat also carries its importance (hook, key claim, number, payoff, pre-ask or normal), which picks the (M15)
+  caption mode (Motion and energy rules E3); card texts are written for E4 (graphics first). (M15)
 
 ### S8 Voiceover (no model)
 - **Engine:** only the one in library/voice/engine.txt (2.5): kokoro with voice af_bella, called through engine.txt's
@@ -551,6 +703,11 @@ Shared inputs: script.json and words.json; style.md and tweaks.md (tweaks win), 
 motion-lib catalog (each component's props, its sound events and a preview still); the golden reels (plan plus
 contact sheet); the research assets; library/brand/brand.json and the reel's solution (02-expansion/solution.json).
 
+Every pass follows the Motion and energy rules: 9a plans E1, E2 and E5 to E8 (the hold level of each scene, the (M16)
+combined main animations, the camera, the layers, the edges, the depth at the center); 9c varies the transitions (M16)
+(E8). (M16)
+9b plans E3 and E4: the caption mode of each beat, each group's words and anchor, and the text budget. (M15)
+
 1. **9a Animations** (09a-animations/plan.json): scenes and their components. Per beat: start and end ms snapped to
    word boundaries, the component (from motion-lib only) and its props, the entrance and exit motion, emphasis hits
    (word, ms, effect), the progress tracker's state (list items, or beats when there is no list), set pieces, an
@@ -589,6 +746,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
 - A HyperFrames composition made from motion-lib components:
   - captions per the style: chunks of 1 to 4 words, gray turning to ink as each word is spoken, accent on the
     emphasis word
+  - from M15 the captions follow Motion and energy rules E3 instead: word mode and group mode, never chunks (M15)
+  - every component's phases, curves, edges, background and depth come from motion-lib/assets/pc-motion.js (M14)
+    (Motion and energy rules E1, E2, E5 to E7) (M14)
   - the progress tracker
   - tokens.json as CSS variables
   - 3D through the Three.js adapter, only where the style allows it and only with the WebGL backend that M9 found
@@ -602,11 +762,11 @@ An invalid pass gets one retry with the validator errors, then the review path.
   width and height, object-fit contain). The card around a logo keeps the style's shadow; the logo itself gets none.
 - A new component only when the plan needs one the library lacks. Write it to motion-lib/candidates/, use it in this
   reel only, and flag NEEDS REVIEW. Candidates join the library only with my approval.
-- Editor annotations: every component part that should become its own layer in the editable project (card, (M14)
-  title, body, icon, chip, tag, stamp, tracker cell, logo, caption box) carries `data-ed-layer`, a readable (M14)
-  `data-ed-name`, and `data-ed-kind` (text, shape, image, group, dynamic, background, tracker, caption) when the (M14)
-  kind is not obvious. Annotations never change how anything looks. New candidates in motion-lib/candidates/ (M14)
-  follow the same rule. (M14)
+- Editor annotations: every component part that should become its own layer in the editable project (card, (M17)
+  title, body, icon, chip, tag, stamp, tracker cell, logo, caption box) carries `data-ed-layer`, a readable (M17)
+  `data-ed-name`, and `data-ed-kind` (text, shape, image, group, dynamic, background, tracker, caption) when the (M17)
+  kind is not obvious. Annotations never change how anything looks. New candidates in motion-lib/candidates/ (M17)
+  follow the same rule. (M17)
 - Also build the hook 2 alternate clip: the hook beat's visuals with hook 2's on-screen text and timing, 3.5 seconds
   at most.
 - Render a silent draft at 540x960 (draft.mp4: half resolution, same timing and fps) for the next stages. Every
@@ -636,9 +796,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
    - a failure is corrected automatically (offsets, gains) and verified again; if it persists, the review path
 6. Outputs: 11-sfx/cues.json (event, cue type, file, time, gain), sfx_stem.wav, the mixed draft (draft_mixed.mp4), and
    11-sfx/sound-map.txt (one readable line per sound: time, cue type, file name, the visual event it sits on).
-   cues.json records for each sound: the event, the cue type, the file, the start time in ms, the trim in and out (M14)
-   points in ms within the file, the fade-out in ms and the final gain in dB, so S15 can rebuild the sound edit (M14)
-   exactly (the sound itself does not change). (M14)
+   cues.json records for each sound: the event, the cue type, the file, the start time in ms, the trim in and out (M17)
+   points in ms within the file, the fade-out in ms and the final gain in dB, so S15 can rebuild the sound edit (M17)
+   exactly (the sound itself does not change). (M17)
 - If the sfx map is missing or empty, render voice only and add a NEEDS REVIEW flag.
 
 ### S12 Review and fix loop
@@ -651,6 +811,12 @@ An invalid pass gets one retry with the validator errors, then the review path.
   - only the fonts in tokens.json, at no less than its minimum sizes
   - no overlaps, nothing off-canvas, contrast at least 4.5:1
   - each emphasis lands within 80 ms of its word
+  - the edge and ambient layers (Motion and energy rules E5, E7) are exempt from the off-canvas and overlap (M14)
+    checks: they sit behind the content and never under text (M14)
+  - E4: at most 100 characters of non-caption text on screen, no graphic text below the caption size, word mode (M15)
+    under any other text; no caption word or group static (M15)
+  - no element static for more than 0.5 s (transforms sampled from the composition, E1), and the edge layer (M16)
+    present (E5) (M16)
   - branding (tweaks.md "Branding (FlashFX account)"): the CTA beat contains the FlashFX lockup, at least 300px wide,
     and the DM card's FlashFX avatar
   - no FlashFX logo outside the CTA when the solution is not FlashFX
@@ -659,6 +825,8 @@ An invalid pass gets one retry with the validator errors, then the review path.
   - every logo keeps its aspect ratio; the bolt is at least 64px tall (the DM avatar at least 112px across, which
     keeps its bolt at 64px; bolt sizes from brand.json's bolt_height); clear space of at least a quarter of the
     bolt's height around marks and lockups
+- **Energy check** (Motion and energy rules E0; it runs first, needs no model): the reel and each scene against (M16)
+  tokens.json energy; the failing scenes go back to 9a with their numbers as [animation] issues. (M16)
 - **Style conformance.** Run tools/analyze_refs.py on draft_mixed.mp4 and compare with styles/paper-cards/analysis:
   - visual-change median and maximum within the reference range (plus or minus 20%)
   - at least 90% of non-image pixels within ΔE 5 of a token color (logo PNGs count as image pixels)
@@ -678,10 +846,13 @@ An invalid pass gets one retry with the validator errors, then the review path.
   (the problem, the share line, the keyword). It also checks that the branding feels natural, not like an ad (an
   issue tagged [animation]). It passes when every score is at least 4. Every issue it lists carries a
   tag: [voice], [animation], [text], [transition] or [sfx].
+  It also scores energy: does every scene keep moving, with inertia, depth and edges (E1 to E8). (M16)
 - **Fix routing:** each issue goes back to the step that owns it (S8, 9a, 9b, 9c or S11), then S10, S11 and S12 run
   again as needed.
 - **Loop caps:** at most 3 rounds with the Opus builder, then 2 rounds with the Fable builder. Still failing: export
   anyway, with NEEDS REVIEW and the review notes in the captions file. Never stop.
+- **Early stop** (Motion and energy rules E9): two rounds in a row with the same scores and the same issues (M16)
+  end the loop, and the reel exports with NEEDS REVIEW. (M16)
 
 ### S13 Final render
 - Render with HyperFrames: 1080x1920, 30 fps, H.264 high profile, yuv420p, AAC 48 kHz, with the approved mix.
@@ -696,7 +867,7 @@ An invalid pass gets one retry with the validator errors, then the review path.
 - Run the vendor caption.py lint and humanize.py on it.
 - Export as described in section 8.
 
-### S15 Editable project (M14; scripts in pipeline/stages/s15-project/; no model call except the upgrade in step 8)
+### S15 Editable project (M17; scripts in pipeline/stages/s15-project/; no model call except the upgrade in step 8)
 
 Runs after S14 has assembled the export in runs/<id>/export/ and before the move to exports/N/. It never changes
 N.mp4, Nhook2.mp4 or the existing sections of Ncaptions.txt. Nhook2.mp4 gets no project.
@@ -1016,7 +1187,7 @@ when the queue empties.
 - exports/N/N.mp4: the reel.
 - exports/N/Ncaptions.txt: the captions file (format below).
 - exports/N/Nhook2.mp4: the alternate hook clip, up to 3.5 seconds, using hook 2 in the same style.
-- exports/N/project/: the editable project (S15); the EDITOR section of Ncaptions.txt says how to open it. (M14)
+- exports/N/project/: the editable project (S15); the EDITOR section of Ncaptions.txt says how to open it. (M17)
 - After the export: delete the idea from ideas.txt and write the history line.
 
 Ncaptions.txt format:
@@ -1048,9 +1219,9 @@ FACTS AND SOURCES
 RUN
 runs/<id>
 
-EDITOR (M14)
-Project: exports/N/project (open <editor.url>?open=exports/N/project, or Open project and pick that folder) (M14)
-Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M14)
+EDITOR (M17)
+Project: exports/N/project (open <editor.url>?open=exports/N/project, or Open project and pick that folder) (M17)
+Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M17)
 ```
 
 ## 9. config.json
@@ -1075,10 +1246,10 @@ Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M14)
 - **timeouts:** one per step, in seconds, generous for a CPU-only PC (text to speech, alignment, renders, model
   calls), because heavy steps run slower than real time (section 0, Hardware).
 - **style:** paper-cards. Plus paths.
-- **editor:** repo (the FlashFXeditor folder: /c/Users/there/OneDrive/Desktop/editor), stable_dir (the stable (M14)
-  copy S15 uses: next to repo, named like it with -stable added), port (5310), url (http://localhost:5310/, where I (M14)
-  open reel projects), projects_root (this instagramReels folder: the projects folder I choose in the editor, so (M14)
-  `?open=exports/N/project` works), project (true), cap_minutes (25), parity_ssim (0.97). (M14)
+- **editor:** repo (the FlashFXeditor folder: /c/Users/there/OneDrive/Desktop/editor), stable_dir (the stable (M17)
+  copy S15 uses: next to repo, named like it with -stable added), port (5310), url (http://localhost:5310/, where I (M17)
+  open reel projects), projects_root (this instagramReels folder: the projects folder I choose in the editor, so (M17)
+  `?open=exports/N/project` works), project (true), cap_minutes (25), parity_ssim (0.97). (M17)
 
 ## 10. Vendored tools
 
@@ -1189,8 +1360,80 @@ Keep it short and current:
     voice.md (2.3) instead of rebuilding them from the template.
   - Test: 3 ideas back to back, unattended; a simulated limit in the middle of a run; the logs and status lines tell
     the full story; build-voice-profile --force on a copy of the profile keeps its hand-written Brand section.
-- **M14 Editable project export (S15).** S15 and every line of this spec marked (M14) are built and reviewed in
-  M14 only; earlier milestones are not reviewed against them.
+- **M14 Motion grammar and energy meter** (section 5, Motion and energy rules E0, E1, E2, E5, E6, E7; the motion
+  library level). The lines of this spec marked (M14) are built and reviewed here; the reels' look stays the style's.
+  - Builds:
+    - `pipeline/lib/review/energy.py` (E0), run as `python pipeline/lib/review energy <video> [--plan merged.json]`:
+      the whole-reel and per-scene measures; its calibration on the style's reference videos into
+      styles/paper-cards/analysis/energy.json; the targets in tokens.json `energy`.
+    - tokens.json `motion` and `energy` (pipeline/lib/tokens.py), with E1 to E9's values unless tweaks.md overrides
+      them; motion-lib/assets/tokens.css exposes them.
+    - `motion-lib/assets/pc-motion.js`, the shared motion grammar every component uses: the four phases of E1 (main
+      animation on the style's measured enter frames, 2 to 4 s of decelerating inertia, the calm, normal and lively
+      holds, the exit), the combined main animations of E2 (zoom plus 3D parallax rotation plus move, power3 or power4
+      in-out, the rotation lagging by 2 to 4 frames, the decelerating tail), the 2.5D scene container with a slowly
+      moving camera and layers at their own depths (E6). Every existing component is moved onto it; no component
+      keeps its own phase or curve code.
+    - the edge filler layer (E5) and the ambient layer (E7) in paper-canvas, seeded per reel, with the mascot's idle.
+    - `icon-3d`: a Three.js component (low poly, built in code from extruded SVG paths and primitives, turning slowly,
+      on the WebGL backend of motion-lib/webgl.json) with a CSS-extruded fallback (an SVG in 8 to 16 depth layers).
+    - the gallery shows each component's energy measures; frame-match keeps checking the main animation against the
+      references and a new check measures the inertia and the hold; the golden reel is rendered again with the new
+      library (same plan) and its numbers recorded.
+  - Test: the meter reproduces the reference numbers of energy.json within 1 point and fails the M13 reel
+    (build/M13/rerun/1.mp4) on every target; every component rendered alone for 4 s is never static (no 0.5 s
+    window without motion), its main animation still frame-matches its reference, and its inertia lasts 2 to 4 s;
+    icon-3d renders with WebGL and with its fallback; the edge and ambient layers stay out of every text zone and
+    hold no text; the re-rendered golden reel measures higher than before on every energy measure, its moving share
+    at least doubled; the earlier milestones' fake-only tests still pass.
+- **M15 Kinetic captions and text discipline** (section 5, Motion and energy rules E3 and E4). The lines of this spec
+  marked (M15) are built and reviewed here.
+  - Builds:
+    - the two caption modes as components on pc-motion.js, replacing caption-line: `caption-word` (one word at a time
+      on its spoken time, emphasis words in the emphasis font at 1.25 to 1.5 times the size with the accent box,
+      every word drifting) and `caption-group` (the group as the graphic: at least 3 fonts, the anchor at 2 to 3 times
+      the caption size, the stacked lines matching the anchor's height, asymmetric, each word on its spoken time, the
+      group moving as one block and leaving together).
+    - `pipeline/lib/visual/kinetic.py`, the deterministic group layout engine (word roles, fonts, size ratios, stacked
+      lines, asymmetry, the fit inside the group caption zone, no word below the caption size, the right-rail rule);
+      tokens.json gains the caption fonts, the size ratios and the group caption zone (the hero zone).
+    - script.json's per-beat importance (S7) and 9b's plan fields: the caption mode of each beat, the group's words,
+      anchor and layout; the choice rule (group mode on important beats and on beats without a clear graphic, word
+      mode under any other text).
+    - the plan validator and S12 mechanical rules of E4 (100 characters of non-caption text on screen, no graphic
+      text below the caption size, word mode under text) and "no caption word or group static".
+  - Test: kinetic.py on "the quick brown fox" gives the E3 example (three fonts; "quick" and "brown" stacked at half
+    the anchor's size, their combined height equal to the anchor's within 2 px; asymmetric; inside the zone); a group
+    of 6 long words fits or splits into two groups; no group word is below the caption size; on the golden plan the
+    captions run one word at a time in normal talk and as groups on the important beats, and every caption word
+    moves on every frame; the planted faults are caught (a card with 120 characters, a 40 px label, a group caption
+    over a text card, a static caption word); the earlier milestones' fake-only tests still pass.
+- **M16 Director, components and the energy loop** (section 5, Motion and energy rules E8 and E9; the stage level).
+  The lines of this spec marked (M16) are built and reviewed here.
+  - Builds:
+    - new components on pc-motion.js, each in the gallery and frame-matched where a reference exists: screenshot pan
+      and zoom with a highlight box, card fan or deck, card grid, video card (a recording or a clip playing inside a
+      card), timeline scrubber (a playhead running over thumbnails), cursor (moves and clicks), mock website card,
+      color swatches (a row filling in on spoken words, and a single swatch card). The catalog, the beat map and the
+      director's component list gain them.
+    - S1's page recordings: a 5 to 8 s scroll video of each key page (Playwright, 1080 wide) next to its screenshot,
+      played by the video and window cards.
+    - the 9a, 9b and 9c prompts rewritten around the Motion and energy rules (hold level per scene, combined main
+      animations, camera every 3 scenes, at least 2 layers, the hero filling 70 to 85% of the width, the edges, the
+      depth at the center, varied transitions, the hook moving by frame 4, text only when strictly necessary); the
+      validator rules of E9.
+    - a new golden reel (golden/test-idea/), planned by hand to meet every energy target, with a HUMAN_TODO to review
+      it; the director copies it.
+    - S12: the energy check first with per-scene routing to 9a, the "no element static" and edge layer checks, the
+      energy score in the edit review, and the early stop.
+  - Test: the new golden reel meets every energy target of tokens.json, and every scene reaches at least 80% of each
+    target; the validator fails one fixture plan per new rule and passes the golden plan; the test idea, run from
+    scratch with the real models (as test-m12 section 4), gives a reel that meets the energy targets, or exports after
+    the loop with its numbers in NEEDS REVIEW, and the edit review's scores on stopping the scroll, motion variety and
+    nothing generic are above the M13 reel's 3; the early stop fires with a fake qa that repeats its verdict; the
+    earlier milestones' fake-only tests still pass; the time per reel grows by at most 20%.
+- **M17 Editable project export (S15).** S15 and every line of this spec marked (M17) are built and reviewed in
+  M17 only; earlier milestones are not reviewed against them.
   - Builds: pipeline/stages/s15-project/ (capture, mapping, sprite, overlay and plate rendering, writing,
     validation, parity and layout checks), baseline-capabilities.json, the S15 validator,
     pipeline/bin/editor-stable.sh (clone, advance, build, the server on port 5310),
@@ -1227,4 +1470,4 @@ Keep it short and current:
 Posting to Instagram (I post manually from exports/); music; multiple accounts, each with its own voice (its own
 engine file, like engine-puck.txt), its own style folder and its own content, run by the same pipeline and chosen
 per idea; series; processing ideas in parallel;
-FlashFX-v2 (.ffx) projects as a target (the Shorts Editor project of S15 is in). (M14)
+FlashFX-v2 (.ffx) projects as a target (the Shorts Editor project of S15 is in). (M17)
