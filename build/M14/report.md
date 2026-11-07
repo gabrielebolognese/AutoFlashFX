@@ -61,7 +61,8 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
   300, CLAUDE.md, build/progress.md, build/HUMAN_TODO.md.
 - Earlier milestones touched (M14 depends on them): M9 (the test's sandbox, harness, golden.py, gallery.py,
   catalog.py), M10 (project.py, visual/common.py, plan_validate.py, plan9.py, events.py, the frozen index.html),
-  M11 (mechanical.py). Their fake-only tests were run again (below).
+  M11 (mechanical.py: the 3D scale, the transients, and common.py's landed sample time). Their fake-only tests were
+  run again (below).
 
 ## How to run the test
 
@@ -82,10 +83,12 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   contrast warnings as M9).
 - Section 3: icon-3d draws with WebGL (data-webgl 1, 16 percent of its area) and with the fallback (data-webgl 0,
   12 layers, turning); the layers for three seeds stay out of the text zones over 40 s, hold no text, sit 30 to 70
-  percent outside and move under 20 px per second.
+  percent outside and move under 20 px per second; the review sees the DM card's texts arriving (scale 0.85 at the
+  first frame), settled (scale 1 or more, the 28 px labels at 28 px or more) and leaving.
 - Section 4: the golden builds, checks and renders in about 2 to 3 minutes; every energy measure better than before, the moving
   share doubled (13.0 to 28.1).
-- The full run: 71 passed, 0 failed (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1).
+- The full run: 71 passed, 0 failed (section 1: 25, section 2: 29, section 3: 7, section 4: 9, section 5: 1);
+  section 3 run again after the transients fix: 10 passed, the 7 before plus the 3 review checks (build/M14/test-m14-s3.log).
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
 - Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the
@@ -102,6 +105,11 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   lockup at 1146, and the validator's CTA exemption follows the band exception (DECISIONS.md 302). The window card's
   screenshot scrolls by its object-position (the image box stays inside the window; the review's off-canvas rule had
   flagged the transformed image).
+- The review judged elements mid-entrance: a sample inside a DM card's first frames read its 28 px labels as 23 px
+  (E2's scale 0.85 times a 2D reading of the rotated transform). The grammar now marks every element's main animation
+  and exit windows (data-pcm-main, data-pcm-exit), the review reads the scale in 3D and leaves arriving and leaving
+  elements to the next sample, and the "landed" sample sits after the combined animation (DECISIONS.md 303; test-m14
+  section 3 checks it on the DM card).
 
 ## Known gaps
 

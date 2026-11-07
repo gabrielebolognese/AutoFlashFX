@@ -170,9 +170,13 @@ def read_hosts(project: str) -> list[dict]:
 
 def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
     """{ms: [labels]}: every beat (the scene start plus settle_ms, or its middle when short, and its middle), every
-    emphasis hit (plus the box's fade), every instance's landing, the CTA's built state."""
+    emphasis hit (plus the box's fade), every instance's landing (after the combined main animation and its lagging
+    rotation, E2: the grammar's main frames plus the lag, from tokens.json motion.grammar), the CTA's built state."""
     settle = int(ctx.c("review.settle_ms", 600))
     em_lead = int(ctx.c("review.emphasis_settle_ms", 150))
+    grammar = ((ctx.toks.get("motion") or {}).get("grammar") or {}) if isinstance(getattr(ctx, "toks", None), dict) else {}
+    main_frames = int((grammar.get("main") or {}).get("frames", 18)) + int((grammar.get("main") or {}).get("rotate_lag_frames", 3))
+    main_ms = int(round(main_frames * 1000.0 / 30.0))
     times: dict = {}
 
     def add(ms: int, label: str):
@@ -190,8 +194,14 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
             add(int(h.get("ms", a)) + em_lead, f"emphasis {h.get('word')}")
         for c in s.get("components", []):
             land = c.get("land_ms")
-            if land is not None and int(land) + 100 < b:
-                add(int(land) + 100, f"{c['id']} landed")
+            if land is None:
+                continue
+            last = min(b, int(c.get("end_ms", b)))
+            settled = max(int(land), int(c.get("start_ms", land)) + main_ms) + 100
+            for t in (settled, int(land) + 100):
+                if t < last:
+                    add(t, f"{c['id']} landed")
+                    break
     cta = ctx.cta_scene()
     if cta:
         add(int(cta["end_ms"]) - 300, "the CTA built")

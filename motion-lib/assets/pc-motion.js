@@ -247,6 +247,9 @@
       rotLand = at + F(lag) + F(mainFrames);
       rotEnd = r1;
     }
+    // the main animation's window, for the review (S12 does not judge an element while it arrives: the zoom and the
+    // rotation are transients by design, E2)
+    if (kind !== "none") PCM.mark(el, "data-pcm-main", at, Math.max(land, scaleLand, rotLand));
     // 3. the inertia and the hold ............................................................................
     var until = o.until !== undefined && o.until !== null ? o.until : (hasExit ? exitAt : at + N.horizon);
     until = Math.max(until, land + F(1), scaleLand + F(1), rotLand + F(1));
@@ -293,24 +296,35 @@
     var from = o.from || { x: 0, y: 0 };
     var name = o.el || el.id;
     if (type === "cut") { tl.set(el, { opacity: 0 }, at); PC.event("exit", at, { el: name, type: type }); return at; }
+    var end;
     if (type === "fade") {  // a plain fade (the caption chunk replace: 2 frames out)
       var df = o.frames || 2;
       tl.to(el, { opacity: 0, duration: F(df), ease: "none" }, at);
-      PC.event("exit", at, { el: name, type: type }); return at + F(df);
-    }
-    if (type === "fall") {
+      end = at + F(df);
+    } else if (type === "fall") {
       var ff = o.frames || 10;
       tl.to(el, { y: from.y + (o.distance || 1700), rotation: o.tilt === undefined ? 2 : o.tilt, duration: F(ff), ease: "power2.in" }, at);
-      PC.event("exit", at, { el: name, type: type }); return at + F(ff);
-    }
-    if (type === "push") {
+      end = at + F(ff);
+    } else if (type === "push") {
       var pf = o.frames || 6;
       tl.to(el, { x: from.x - (o.distance || 1300), duration: F(pf), ease: "power2.in" }, at);
-      PC.event("exit", at, { el: name, type: type }); return at + F(pf);
+      end = at + F(pf);
+    } else {
+      type = "fade-blur";
+      var bf = o.frames || 4;
+      tl.to(el, { opacity: 0, filter: "blur(8px)", duration: F(bf), ease: "power2.in" }, at);
+      end = at + F(bf);
     }
-    var bf = o.frames || 4;  // fade-blur
-    tl.to(el, { opacity: 0, filter: "blur(8px)", duration: F(bf), ease: "power2.in" }, at);
-    PC.event("exit", at, { el: name, type: "fade-blur" }); return at + F(bf);
+    PCM.mark(el, "data-pcm-exit", at, end);  // the leaving window, for the review (the element is not judged mid-exit)
+    PC.event("exit", at, { el: name, type: type });
+    return end;
+  };
+
+  // PCM.mark(el, name, from, to): a window of the element's life in local seconds, "from,to", read by the review (S12):
+  // data-pcm-main is the main animation (E1 phase 1 with E2's zoom and rotation), data-pcm-exit the exit (phase 4)
+  PCM.mark = function (el, name, from, to) {
+    if (!el || !el.setAttribute || !(to > from)) return;
+    el.setAttribute(name, from.toFixed(4) + "," + to.toFixed(4));
   };
 
   // a hold alone (an element that is already visible, a group container): the steady drift, rotation or creep

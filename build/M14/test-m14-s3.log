@@ -1,0 +1,28 @@
+
+== 3. icon-3d with WebGL and with its fallback; the edge and ambient layers out of every text zone ==
+webgl-attr 1 drawn 0.1602
+webgl ok
+css-attr 0 layers 12 drawn 0.0785 longest unchanged run 0
+fallback ok
+review-rows {0.1: [('FlashFX', 0.851, 'main'), ('Comment T', 0.851, 'main')], 0.5: [('FlashFX', 0.999, 'main'), ('Instagram', 0.999, 'main'), ('now', 0.999, 'main'), ('Comment T', 0.999, 'main')], 1: [('FlashFX', 1.015, ''), ('Instagram', 1.015, ''), ('now', 1.015, ''), ('Comment T', 1.015, '')], 2: [('FlashFX', 1.039, ''), ('Instagram', 1.039, ''), ('now', 1.039, ''), ('Comment T', 1.039, '')], 2.6: [('FlashFX', 1.045, 'exit'), ('Instagram', 1.045, 'exit'), ('now', 1.045, 'exit'), ('Comment T', 1.045, 'exit')]}
+review-arriving ok
+review-settled ok
+review-leaving ok
+counts [(7, 6, 16), (1234, 6, 16), (98765, 6, 16)]
+layers-present ok
+zones-clear ok
+no-text ok
+edges-outside ok
+speeds ok
+PASS  icon-3d renders with WebGL (data-webgl 1, the canvas draws)
+PASS  icon-3d renders with its CSS-extruded fallback (8 to 16 layers, drawn, turning)
+PASS  the canvas builds its edge and ambient layers for three seeds
+PASS  the edge and ambient layers stay out of every text zone over 40 s
+PASS  the layers hold no text
+PASS  every edge element sits 30 to 70 percent outside the frame (a few px of sway allowed)
+PASS  the edge layer moves at most 20 px per second, the ambient layer slower
+PASS  the review sees the DM card's texts arriving for the combined animation (data-pcm-main), the scale read in 3D (0.85 at the first frame)
+PASS  once landed the texts are judged, their scale at least 1 (the inertia grows): the 28 px labels read 28 px or more
+PASS  the review sees the texts leaving during the exit (data-pcm-exit)
+
+test-m14.sh: 10 passed, 0 failed

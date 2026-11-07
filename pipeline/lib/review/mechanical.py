@@ -57,13 +57,31 @@ REVIEW_JS = r"""
     return op;
   };
   const scaleOf = (el) => {
+    // the length of the transformed basis vectors (the 3D matrix's first two columns): a parallax rotation (E2) does
+    // not read as a smaller scale the way hypot(a, b) did (cos 12 degrees)
     let s = 1, node = el;
     while (node && node.id !== "stage" && node !== document.body) {
       const cs = getComputedStyle(node);
-      try { const m = new DOMMatrixReadOnly(cs.transform); const k = Math.hypot(m.a, m.b); if (k > 0) s *= k; } catch (e) {}
+      try { const m = new DOMMatrixReadOnly(cs.transform); const k = Math.max(Math.hypot(m.m11, m.m12, m.m13), Math.hypot(m.m21, m.m22, m.m23)); if (k > 0) s *= k; } catch (e) {}
       node = node.parentElement;
     }
     return s;
+  };
+  // the grammar marks every element's main animation (data-pcm-main) and exit (data-pcm-exit) windows in local
+  // seconds (pc-motion.js PCM.mark): an element inside one of them, or inside an ancestor's, is arriving or leaving
+  const transientAt = (el, t) => {
+    let node = el;
+    while (node && node.id !== "stage" && node !== document.body) {
+      for (const name of ["data-pcm-main", "data-pcm-exit"]) {
+        const v = node.getAttribute(name);
+        if (!v) continue;
+        const parts = v.split(",");
+        const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
+        if (isFinite(a) && isFinite(b) && t >= a - 1e-4 && t < b - 1e-4) return name === "data-pcm-main" ? "main" : "exit";
+      }
+      node = node.parentElement;
+    }
+    return "";
   };
   const bgOf = (el) => {
     let node = el;
@@ -98,7 +116,8 @@ REVIEW_JS = r"""
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
         images.push({ id: el.id || "", cls: String(el.className || ""), src: el.getAttribute("src") || "", x: r.left, y: r.top, w: r.width, h: r.height,
-                      opacity: effOpacity(el), nw: el.naturalWidth, nh: el.naturalHeight, fit: cs.objectFit, bg: bgOf(el.parentElement), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10) });
+                      opacity: effOpacity(el), nw: el.naturalWidth, nh: el.naturalHeight, fit: cs.objectFit, bg: bgOf(el.parentElement), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10),
+                      transient: transientAt(el, t) });
         continue;
       }
       if (tag === "SCRIPT" || tag === "STYLE" || tag === "svg" || el.closest("svg") || tag === "CANVAS") continue;
@@ -111,7 +130,7 @@ REVIEW_JS = r"""
       texts.push({ id: el.id || "", cls: String(el.className || ""), parent_cls: String((el.parentElement && el.parentElement.className) || ""), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10), anc: ancestorsOf(el),
                    text: (el.textContent || "").trim().slice(0, 60), x: tb.left, y: tb.top, w: tb.width, h: tb.height, ex: r.left, ey: r.top, ew: r.width, eh: r.height,
                    opacity: effOpacity(el), font: cs.fontFamily, size: parseFloat(cs.fontSize), weight: cs.fontWeight, color: cs.color, scale: scaleOf(el),
-                   bg: bgOf(el), ignore: el.hasAttribute("data-layout-ignore") || !!el.closest("[data-layout-ignore]") });
+                   bg: bgOf(el), ignore: el.hasAttribute("data-layout-ignore") || !!el.closest("[data-layout-ignore]"), transient: transientAt(el, t) });
     }
     rows.push({ t: t, texts: texts, images: images });
   }
@@ -259,7 +278,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     harness_errors: list[str] = []
     fonts_seen: dict = {}
     issues: list[dict] = []
-    counts = {"hosts": 0, "texts": 0, "images": 0, "times": len(check_ms), "screenshots": 0}
+    counts = {"hosts": 0, "texts": 0, "images": 0, "times": len(check_ms), "screenshots": 0, "transient": 0}
     gpu = "auto"
     with harness.Harness(lib=ctx.project, gpu=gpu) as h:
         for host in hosts:
@@ -350,6 +369,11 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
         n_checked_texts += len(texts)
         for tx in texts:
             counts["texts"] += 1
+            if tx.get("transient"):
+                # arriving or leaving (E1's main animation with E2's zoom and rotation, or the exit): a transient by
+                # design, judged at the next sample of its life
+                counts["transient"] += 1
+                continue
             x0, y0, x1, y1 = tx["x"], tx["y"], tx["x"] + tx["w"], tx["y"] + tx["h"]
             where = f"\"{tx['text']}\" ({tx['component']} {tx['instance']}, scene {tx['scene']}, {rc.fmt_ms(T)})"
             k = (tx["instance"], tx["text"])
@@ -394,8 +418,8 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 need = c_large if display else c_min
                 if ratio < need - 0.05:
                     add(rc.issue("text", "contrast", f"text {where} has a contrast of {ratio:.2f}:1 against its background ({f'the accent family, {c_large:g}:1 allowed' if display else f'{c_min:g}:1 needed'})", tx["scene"], tx["instance"], T, ratio=round(ratio, 2)), ("contrast",) + k)
-        # overlaps between different elements
-        vis = [t for t in texts if not t.get("ignore")]
+        # overlaps between different elements (the arriving and leaving ones left out)
+        vis = [t for t in texts if not t.get("ignore") and not t.get("transient")]
         for i in range(len(vis)):
             for j in range(i + 1, len(vis)):
                 a, b = vis[i], vis[j]
@@ -410,6 +434,9 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                         ("overlap", a["instance"], a["text"], b["instance"], b["text"]))
         for im in images:
             counts["images"] += 1
+            if im.get("transient"):
+                counts["transient"] += 1
+                continue
             x0, y0, x1, y1 = im["x"], im["y"], im["x"] + im["w"], im["y"] + im["h"]
             if x0 < -tol or y0 < -tol or x1 > rc.CANVAS_W + tol or y1 > rc.CANVAS_H + tol:
                 add(rc.issue("animation", "off_canvas", f"the image {im['src']} ({im['instance']}) is off the canvas at {rc.fmt_ms(T)}", im["scene"], im["instance"], T))
@@ -449,7 +476,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     logo_rows = []
     for T in check_ms:
         for im in per_time[T]["images"]:
-            if im["src"].startswith("assets/brand/"):
+            if im["src"].startswith("assets/brand/") and not im.get("transient"):
                 logo_rows.append((T, im))
     seen_logo: set = set()
     for T, im in logo_rows:

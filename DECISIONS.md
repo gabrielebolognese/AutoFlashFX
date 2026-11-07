@@ -2251,3 +2251,19 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     M9's by these two numbers; the M14 test still renders it without regenerating it ("the same plan") and compares it
     with its own hash. The window card's scrolling screenshot moved from a transform to its object-position at the
     same time: the image box never leaves the window, so the review's off-canvas rule stays quiet.
+303. **Also found by the M11 rerun: the review judged elements mid-entrance.** With E2 every entering element starts
+    at scale 0.85 (0.92 small, 1.15 close) and rotated 12 degrees, and the review's font rule multiplied a text's font
+    size by a 2D reading of its transform (hypot(a, b), which is cos 12 degrees under a rotateY), so a sample inside the
+    first frames of a DM card read its 28 px labels as 23 px. Three changes. The grammar marks every element's main
+    animation window on the element itself (`data-pcm-main="from,to"` in local seconds, from the start to the end of
+    the zoom and the lagging rotation: 21 frames) and its exit window (`data-pcm-exit`), both set once when the
+    timeline is built (PCM.mark). The review reads the scale as the length of the transformed basis vectors (the 3D
+    matrix's first two columns: a rotation is not a scale) and does not judge a text or an image while it, or one of
+    its ancestors, is inside such a window: arriving and leaving elements are transients by design (E1 phases 1 and 4),
+    judged at the next sample of their life; mechanical.json counts them (counts.transient). The "landed" sample time
+    of decision 245 moves to after the combined animation (the component's start plus the grammar's main frames plus
+    the rotation lag plus 100 ms, or its landing plus 100 ms when its life is shorter), so the zone and overlap checks
+    read the element at rest rather than at 0.98 scale and 5 degrees. Once landed the grammar only grows an element
+    (the inertia's scale 0.04 and the hold's creep go up), so a text never reads smaller than its designed size after
+    its entrance: the 24 px floor stays a rule about the design. test-m14 section 3 checks the three states on the DM
+    card.

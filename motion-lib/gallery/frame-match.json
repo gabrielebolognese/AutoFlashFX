@@ -1,6 +1,3580 @@
 {
- "run": "2026-11-07T13:19:32",
+ "run": "2026-11-07T13:46:12",
  "results": [
+  {
+   "id": "camera-move",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "shrink: end scale",
+     "expected": 0.4583333333333333,
+     "measured": 0.458,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "shrink: frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #cm-window",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v02/extra/s30_zoom27.png",
+     "r": 0.899,
+     "ref_onset": 6,
+     "cur_onset": 36,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_zoom27.png",
+      "r": 0.899,
+      "ref_onset": 6,
+      "cur_onset": 36,
+      "frames": 11
+     },
+     {
+      "strip": "v05/extra/s30_windowshrink_f520.png",
+      "r": 0.872,
+      "ref_onset": 8,
+      "cur_onset": 37,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "camera",
+     "t": 0.6,
+     "el": "cm-stage",
+     "kind": "pullback",
+     "end": 0.8666666666666667
+    },
+    {
+     "type": "window",
+     "t": 0.667,
+     "el": "cm-window"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 6.9,
+    "middle_moving_share_pct": 7.7,
+    "pixels_changing_pct": 1.93,
+    "still_share_pct": 79.2,
+    "longest_still_s": 3.43,
+    "mean_change": 0.994,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "caption-line",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "exit: frames to fade out",
+     "expected": 2,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 1,
+     "measured": 2,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #cap-c0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 43,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_031.0_highlight.png",
+     "r": 0.972,
+     "ref_onset": 6,
+     "cur_onset": 14,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_capswap_008.0.png",
+      "r": 0.857,
+      "ref_onset": 15,
+      "cur_onset": 39,
+      "frames": 7
+     },
+     {
+      "strip": "v01/extra/s30_sc18.png",
+      "r": 0.909,
+      "ref_onset": 0,
+      "cur_onset": 27,
+      "frames": 7
+     },
+     {
+      "strip": "v06/extra/s30_031.0_highlight.png",
+      "r": 0.972,
+      "ref_onset": 6,
+      "cur_onset": 14,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "caption_overflow",
+     "t": 0.2,
+     "chunk": 0,
+     "width": 775.140625,
+     "scale": 0.7998548650446492
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 0.2,
+     "el": "cap-c0-w0"
+    },
+    {
+     "type": "caption_word",
+     "t": 0.2,
+     "chunk": 0,
+     "text": "You",
+     "em": false
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 0.45,
+     "el": "cap-c0-w1"
+    },
+    {
+     "type": "caption_word",
+     "t": 0.45,
+     "chunk": 0,
+     "text": "ship",
+     "em": false
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 0.7,
+     "el": "cap-c0-w2"
+    },
+    {
+     "type": "caption_box_fade",
+     "t": 0.7,
+     "el": "cap-c0-w2-box"
+    },
+    {
+     "type": "caption_word",
+     "t": 0.7,
+     "chunk": 0,
+     "text": "Claude",
+     "em": true
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 0.95,
+     "el": "cap-c0-w3"
+    },
+    {
+     "type": "caption_box_fade",
+     "t": 0.95,
+     "el": "cap-c0-w3-box"
+    },
+    {
+     "type": "caption_word",
+     "t": 0.95,
+     "chunk": 0,
+     "text": "Code",
+     "em": true
+    },
+    {
+     "type": "fade",
+     "t": 1.333,
+     "el": "cap-c0"
+    },
+    {
+     "type": "caption_chunk",
+     "t": 0.2,
+     "chunk": 0,
+     "end": 1.4,
+     "words": 4
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 1.45,
+     "el": "cap-c1-w0"
+    },
+    {
+     "type": "caption_word",
+     "t": 1.45,
+     "chunk": 1,
+     "text": "client",
+     "em": false
+    },
+    {
+     "type": "caption_word_fade",
+     "t": 1.8,
+     "el": "cap-c1-w1"
+    },
+    {
+     "type": "caption_word",
+     "t": 1.8,
+     "chunk": 1,
+     "text": "sites.",
+     "em": false
+    },
+    {
+     "type": "fade",
+     "t": 2.833,
+     "el": "cap-c1"
+    },
+    {
+     "type": "caption_chunk",
+     "t": 1.45,
+     "chunk": 1,
+     "end": 2.9,
+     "words": 2
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.09,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.036,
+    "longest_still_run": 43,
+    "static_windows": 32,
+    "frames": 130
+   }
+  },
+  {
+   "id": "card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 4,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #card-box",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #card-mascot",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #card-box",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.3 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_hook_000.0.png",
+     "r": 0.938,
+     "ref_onset": 5,
+     "cur_onset": 8,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.938,
+      "ref_onset": 5,
+      "cur_onset": 8,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_001.0_card.png",
+      "r": 0.881,
+      "ref_onset": 4,
+      "cur_onset": 4,
+      "frames": 11
+     },
+     {
+      "strip": "v07/extra/s30_000.0_hook.png",
+      "r": 0.924,
+      "ref_onset": 4,
+      "cur_onset": 3,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "card-box"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "card-box"
+    },
+    {
+     "type": "mascot",
+     "t": 0.4,
+     "el": "card-mascot"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 7.7,
+    "middle_moving_share_pct": 12.3,
+    "pixels_changing_pct": 0.49,
+    "still_share_pct": 90.0,
+    "longest_still_s": 3.9,
+    "mean_change": 0.189,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "chart-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "grow: h growth frames (fit)",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 2,
+     "measured": [
+      2
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #cc",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #cc-bar-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #cc-bar-1",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #cc-bar-3",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #cc-val-3",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #cc",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.3 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_bars_f1426.png",
+     "r": 0.986,
+     "ref_onset": 2,
+     "cur_onset": 15,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_bars_f1426.png",
+      "r": 0.986,
+      "ref_onset": 2,
+      "cur_onset": 15,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_048.0_bars.png",
+      "r": 0.89,
+      "ref_onset": 11,
+      "cur_onset": 13,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "cc"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "cc"
+    },
+    {
+     "type": "bar",
+     "t": 0.267,
+     "el": "cc-bar-0",
+     "end": 0.6666666666666667
+    },
+    {
+     "type": "value",
+     "t": 0.6,
+     "el": "cc-val-0"
+    },
+    {
+     "type": "bar",
+     "t": 0.333,
+     "el": "cc-bar-1",
+     "end": 0.7333333333333334
+    },
+    {
+     "type": "value",
+     "t": 0.667,
+     "el": "cc-val-1"
+    },
+    {
+     "type": "bar",
+     "t": 0.4,
+     "el": "cc-bar-2",
+     "end": 0.8
+    },
+    {
+     "type": "value",
+     "t": 0.733,
+     "el": "cc-val-2"
+    },
+    {
+     "type": "bar",
+     "t": 0.467,
+     "el": "cc-bar-3",
+     "end": 0.8666666666666667
+    },
+    {
+     "type": "value",
+     "t": 0.8,
+     "el": "cc-val-3"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 12.3,
+    "middle_moving_share_pct": 16.9,
+    "pixels_changing_pct": 0.56,
+    "still_share_pct": 85.4,
+    "longest_still_s": 3.7,
+    "mean_change": 0.247,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "chat-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 1.15,
+     "measured": 1.154,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #chat",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #chat-input",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #chat-send",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #chat",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.3 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_070.9_typing_tail.png",
+     "r": 0.959,
+     "ref_onset": 4,
+     "cur_onset": 9,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_004.4_caption_tag.png",
+      "r": 0.927,
+      "ref_onset": 5,
+      "cur_onset": 81,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_070.9_typing_tail.png",
+      "r": 0.959,
+      "ref_onset": 4,
+      "cur_onset": 9,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "chat"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "chat"
+    },
+    {
+     "type": "typing",
+     "t": 0.4,
+     "el": "chat-input",
+     "end": 2.4316666666666666,
+     "chars": 53
+    },
+    {
+     "type": "send",
+     "t": 2.532,
+     "el": "chat-send"
+    },
+    {
+     "type": "reply",
+     "t": 2.865,
+     "el": "chat-reply"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 10.8,
+    "pixels_changing_pct": 0.28,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.133,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "check-badge",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.16,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #cb-badge",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 51,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #cb-badge",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.17,
+     "ok": true,
+     "unit": "s (hold speed 4.74 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_check_f1200.png",
+     "r": 0.98,
+     "ref_onset": 3,
+     "cur_onset": 2,
+     "frames": 15
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_035.6_checks.png",
+      "r": 0.869,
+      "ref_onset": 1,
+      "cur_onset": 12,
+      "frames": 15
+     },
+     {
+      "strip": "v06/extra/s30_065.6_ticks.png",
+      "r": 0.891,
+      "ref_onset": 13,
+      "cur_onset": 2,
+      "frames": 15
+     },
+     {
+      "strip": "v04/extra/s30_check_f1200.png",
+      "r": 0.98,
+      "ref_onset": 3,
+      "cur_onset": 2,
+      "frames": 15
+     },
+     {
+      "strip": "v03/extra/s30_cta_058.0.png",
+      "r": 0.929,
+      "ref_onset": 1,
+      "cur_onset": 2,
+      "frames": 15
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "check",
+     "t": 0,
+     "el": "cb-badge"
+    },
+    {
+     "type": "check_peak",
+     "t": 0.233,
+     "el": "cb-badge"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 1.5,
+    "pixels_changing_pct": 0.03,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.015,
+    "longest_still_run": 51,
+    "static_windows": 71,
+    "frames": 130
+   }
+  },
+  {
+   "id": "dark-chip",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.01 to 0.03",
+     "measured": 0.02,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #chip",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 113,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #chip",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.47,
+     "ok": true,
+     "unit": "s (hold speed 5.11 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_004.4_caption_tag.png",
+     "r": 0.955,
+     "ref_onset": 5,
+     "cur_onset": 8,
+     "frames": 6
+    },
+    "strips": [
+     {
+      "strip": "v01/extra/s30_sc05.png",
+      "r": 0.778,
+      "ref_onset": 3,
+      "cur_onset": 8,
+      "frames": 6
+     },
+     {
+      "strip": "v07/extra/s30_004.4_caption_tag.png",
+      "r": 0.955,
+      "ref_onset": 5,
+      "cur_onset": 8,
+      "frames": 6
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "chip"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.067,
+     "el": "chip"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 2.3,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.021,
+    "longest_still_run": 113,
+    "static_windows": 98,
+    "frames": 130
+   }
+  },
+  {
+   "id": "dm-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "life: never static #dm",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #dm",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.05 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_hook_000.0.png",
+     "r": 0.914,
+     "ref_onset": 5,
+     "cur_onset": 8,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.914,
+      "ref_onset": 5,
+      "cur_onset": 8,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_001.0_card.png",
+      "r": 0.896,
+      "ref_onset": 4,
+      "cur_onset": 18,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "dm"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "dm"
+    },
+    {
+     "type": "notification",
+     "t": 0.267,
+     "el": "dm"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 5.4,
+    "middle_moving_share_pct": 12.3,
+    "pixels_changing_pct": 0.34,
+    "still_share_pct": 91.5,
+    "longest_still_s": 3.97,
+    "mean_change": 0.144,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "end-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 6,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 6,
+     "measured": [
+      6,
+      6,
+      6
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 2,
+     "measured": 2.0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #ec-card",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #ec-verb",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #ec-pill",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #ec-lines",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #ec-lockup",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #ec-mascot-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #ec-card",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.67,
+     "ok": true,
+     "unit": "s (hold speed 9.86 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_038.9_end.png",
+     "r": 0.974,
+     "ref_onset": 2,
+     "cur_onset": 41,
+     "frames": 9
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_cta43.png",
+      "r": 0.902,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 9
+     },
+     {
+      "strip": "v07/extra/s30_041.0_end.png",
+      "r": 0.955,
+      "ref_onset": 4,
+      "cur_onset": 29,
+      "frames": 9
+     },
+     {
+      "strip": "v08/extra/s30_038.9_end.png",
+      "r": 0.974,
+      "ref_onset": 2,
+      "cur_onset": 41,
+      "frames": 9
+     },
+     {
+      "strip": "v09/extra/s30_049.7_end.png",
+      "r": 0.968,
+      "ref_onset": 3,
+      "cur_onset": 40,
+      "frames": 9
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "ec-card"
+    },
+    {
+     "type": "land",
+     "t": 0.2,
+     "el": "ec-card"
+    },
+    {
+     "type": "verb",
+     "t": 0.2,
+     "el": "ec-verb"
+    },
+    {
+     "type": "pill",
+     "t": 0.4,
+     "el": "ec-pill"
+    },
+    {
+     "type": "typing",
+     "t": 0.6,
+     "el": "ec-keyword",
+     "end": 0.9333333333333333,
+     "chars": 5
+    },
+    {
+     "type": "lines",
+     "t": 0.6,
+     "el": "ec-lines"
+    },
+    {
+     "type": "mascot",
+     "t": 0.8,
+     "el": "ec-mascot-0",
+     "move": "walk"
+    },
+    {
+     "type": "mascot",
+     "t": 0.833,
+     "el": "ec-mascot-1",
+     "move": "walk"
+    },
+    {
+     "type": "mascot",
+     "t": 0.867,
+     "el": "ec-mascot-2",
+     "move": "walk"
+    },
+    {
+     "type": "mascot",
+     "t": 0.9,
+     "el": "ec-mascot-3",
+     "move": "walk"
+    },
+    {
+     "type": "mascot",
+     "t": 0.933,
+     "el": "ec-mascot-4",
+     "move": "walk"
+    },
+    {
+     "type": "mascots",
+     "t": 0.8,
+     "el": "ec-row"
+    },
+    {
+     "type": "lockup",
+     "t": 1.267,
+     "el": "ec-lockup"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 13.1,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.64,
+    "still_share_pct": 69.2,
+    "longest_still_s": 3.0,
+    "mean_change": 0.251,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "exit-move",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "exit: frames (fit, ease-in)",
+     "expected": 10,
+     "measured": 10,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "exit: leaves the frame",
+     "expected": "yes",
+     "measured": "yes",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "life: never static #xm-leaving",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #xm-next",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #xm-next",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.94 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v07/extra/s30_034.7_exit_counter.png",
+     "r": 0.965,
+     "ref_onset": 3,
+     "cur_onset": 26,
+     "frames": 13
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_003.2_badge_exit.png",
+      "r": 0.958,
+      "ref_onset": 15,
+      "cur_onset": 25,
+      "frames": 13
+     },
+     {
+      "strip": "v07/extra/s30_034.7_exit_counter.png",
+      "r": 0.965,
+      "ref_onset": 3,
+      "cur_onset": 26,
+      "frames": 13
+     },
+     {
+      "strip": "v08/extra/s30_010.6_scatter.png",
+      "r": 0.94,
+      "ref_onset": 0,
+      "cur_onset": 25,
+      "frames": 13
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "fall",
+     "t": 0.8,
+     "el": "xm-leaving"
+    },
+    {
+     "type": "fall",
+     "t": 0.8,
+     "end": 1.1333333333333333
+    },
+    {
+     "type": "enter",
+     "t": 0.8,
+     "el": "xm-next"
+    },
+    {
+     "type": "land",
+     "t": 1.067,
+     "el": "xm-next"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 8.5,
+    "middle_moving_share_pct": 10.0,
+    "pixels_changing_pct": 1.07,
+    "still_share_pct": 73.1,
+    "longest_still_s": 3.17,
+    "mean_change": 0.338,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "fly-in",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fly: distance y",
+     "expected": 930,
+     "measured": 930,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: frames (fit)",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "after: frames after the reference",
+     "expected": 4,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #fi",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #fi-mascot",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #fi",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.73,
+     "ok": true,
+     "unit": "s (hold speed 9.12 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v01/extra/s30_hook.png",
+     "r": 0.983,
+     "ref_onset": 4,
+     "cur_onset": 2,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_000.0_hook.png",
+      "r": 0.972,
+      "ref_onset": 8,
+      "cur_onset": 2,
+      "frames": 17
+     },
+     {
+      "strip": "v07/extra/s30_011.4_window_rise.png",
+      "r": 0.971,
+      "ref_onset": 22,
+      "cur_onset": 2,
+      "frames": 17
+     },
+     {
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.983,
+      "ref_onset": 4,
+      "cur_onset": 2,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "fi",
+     "move": "fly-in"
+    },
+    {
+     "type": "land",
+     "t": 0.467,
+     "el": "fi"
+    },
+    {
+     "type": "mascot",
+     "t": 0.6,
+     "el": "fi-mascot"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 9.2,
+    "middle_moving_share_pct": 9.2,
+    "pixels_changing_pct": 1.11,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.472,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "handwritten-callout",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #hc-wrap",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #hc-arrow",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 66,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #hc-wrap",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.53,
+     "ok": true,
+     "unit": "s (hold speed 5.42 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "hc-wrap"
+    },
+    {
+     "type": "arrow",
+     "t": 0,
+     "el": "hc-arrow"
+    },
+    {
+     "type": "draw",
+     "t": 0.133,
+     "el": "hc-arrow",
+     "end": 0.4666666666666667
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.017,
+    "longest_still_run": 66,
+    "static_windows": 56,
+    "frames": 130
+   }
+  },
+  {
+   "id": "headline",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "visible_at_zero: visible at frame 0",
+     "expected": 1,
+     "measured": 1,
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 3,
+     "measured": [
+      3,
+      3
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fade: opacity frames",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #hl-kicker",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #hl-lines",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 17,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v01/extra/s30_hook.png",
+     "r": 0.99,
+     "ref_onset": 5,
+     "cur_onset": 46,
+     "frames": 6
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.979,
+      "ref_onset": 4,
+      "cur_onset": 32,
+      "frames": 6
+     },
+     {
+      "strip": "v01/extra/s30_hook.png",
+      "r": 0.99,
+      "ref_onset": 5,
+      "cur_onset": 46,
+      "frames": 6
+     },
+     {
+      "strip": "v03/extra/s30_hook_000.0.png",
+      "r": 0.956,
+      "ref_onset": 4,
+      "cur_onset": 58,
+      "frames": 6
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "headline_overflow",
+     "t": 0,
+     "widest": 1184,
+     "scale": 0.7601351351351351
+    },
+    {
+     "type": "kicker_word",
+     "t": 0.1,
+     "el": ""
+    },
+    {
+     "type": "kicker_word",
+     "t": 0.2,
+     "el": ""
+    },
+    {
+     "type": "kicker_word",
+     "t": 0.3,
+     "el": ""
+    },
+    {
+     "type": "word_fade",
+     "t": 0.5,
+     "el": "hl-0"
+    },
+    {
+     "type": "word",
+     "t": 0.5,
+     "el": "hl-0",
+     "text": "Why"
+    },
+    {
+     "type": "word_fade",
+     "t": 0.6,
+     "el": "hl-1"
+    },
+    {
+     "type": "word",
+     "t": 0.6,
+     "el": "hl-1",
+     "text": "your"
+    },
+    {
+     "type": "word_fade",
+     "t": 0.7,
+     "el": "hl-2"
+    },
+    {
+     "type": "word",
+     "t": 0.7,
+     "el": "hl-2",
+     "text": "Claude"
+    },
+    {
+     "type": "word_fade",
+     "t": 0.8,
+     "el": "hl-3"
+    },
+    {
+     "type": "word",
+     "t": 0.8,
+     "el": "hl-3",
+     "text": "Code"
+    },
+    {
+     "type": "word_fade",
+     "t": 0.9,
+     "el": "hl-4"
+    },
+    {
+     "type": "word",
+     "t": 0.9,
+     "el": "hl-4",
+     "text": "cards"
+    },
+    {
+     "type": "word_fade",
+     "t": 1,
+     "el": "hl-5"
+    },
+    {
+     "type": "word",
+     "t": 1,
+     "el": "hl-5",
+     "text": "all"
+    },
+    {
+     "type": "word_fade",
+     "t": 1.1,
+     "el": "hl-6"
+    },
+    {
+     "type": "word",
+     "t": 1.1,
+     "el": "hl-6",
+     "text": "look"
+    },
+    {
+     "type": "word_fade",
+     "t": 1.2,
+     "el": "hl-7"
+    },
+    {
+     "type": "word",
+     "t": 1.2,
+     "el": "hl-7",
+     "text": "identical."
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.08,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.044,
+    "longest_still_run": 17,
+    "static_windows": 3,
+    "frames": 130
+   }
+  },
+  {
+   "id": "hero-3d",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "webgl: a WebGL context in the harness",
+     "expected": "yes",
+     "measured": "yes",
+     "ok": true,
+     "unit": "",
+     "warning": ""
+    },
+    {
+     "check": "life: never static #h3-shadow",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #h3-label",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still (a canvas draws itself)",
+     "expected": "< 15 frames",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": true,
+   "events": [
+    {
+     "type": "shadow",
+     "t": 0.2,
+     "el": "h3-shadow"
+    },
+    {
+     "type": "label",
+     "t": 0.6,
+     "el": "h3-label"
+    },
+    {
+     "type": "enter",
+     "t": 0.2,
+     "el": "h3-canvas",
+     "kind": "3d"
+    },
+    {
+     "type": "land",
+     "t": 0.6,
+     "el": "h3-canvas"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 3.8,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.4,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.187,
+    "longest_still_run": 4,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "icon-3d",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 12,
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "webgl: a WebGL context in the harness",
+     "expected": "yes",
+     "measured": "yes",
+     "ok": true,
+     "unit": "",
+     "warning": ""
+    },
+    {
+     "check": "life: never static #i3-shadow",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still (a canvas draws itself)",
+     "expected": "< 15 frames",
+     "measured": 11,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": true,
+   "events": [
+    {
+     "type": "shadow",
+     "t": 0.2,
+     "el": "i3-shadow"
+    },
+    {
+     "type": "enter",
+     "t": 0.2,
+     "el": "i3-stage",
+     "kind": "3d",
+     "icon": "bolt"
+    },
+    {
+     "type": "land",
+     "t": 0.6,
+     "el": "i3-stage"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 3.8,
+    "pixels_changing_pct": 0.09,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.043,
+    "longest_still_run": 11,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "light-chip",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #lchip",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 96,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #lchip",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.6,
+     "ok": true,
+     "unit": "s (hold speed 4.94 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_label_042.4.png",
+     "r": 0.963,
+     "ref_onset": 2,
+     "cur_onset": 10,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v03/extra/s30_label_042.4.png",
+      "r": 0.963,
+      "ref_onset": 2,
+      "cur_onset": 10,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "lchip"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.011,
+    "longest_still_run": 96,
+    "static_windows": 81,
+    "frames": 130
+   }
+  },
+  {
+   "id": "logo-tile",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.13,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "fly: distance x",
+     "expected": 188,
+     "measured": 188,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: overshoot px",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "fly: frames to settle",
+     "expected": 9,
+     "measured": 9,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #lt-main",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #lt-second",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 67,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #lt-main",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.27,
+     "ok": true,
+     "unit": "s (hold speed 4.88 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_003.8_logo_chain.png",
+     "r": 0.888,
+     "ref_onset": 9,
+     "cur_onset": 38,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_003.8_logo_chain.png",
+      "r": 0.888,
+      "ref_onset": 9,
+      "cur_onset": 38,
+      "frames": 17
+     },
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.883,
+      "ref_onset": 3,
+      "cur_onset": 0,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "lt-main"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.267,
+     "el": "lt-main"
+    },
+    {
+     "type": "slide",
+     "t": 0.567,
+     "el": "lt-second"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 3.1,
+    "pixels_changing_pct": 0.07,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.033,
+    "longest_still_run": 67,
+    "static_windows": 52,
+    "frames": 130
+   }
+  },
+  {
+   "id": "mascot",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #ms-wrap",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 12,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #ms-wrap",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.6,
+     "ok": true,
+     "unit": "s (hold speed 5.46 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_000.8_mascot_title.png",
+     "r": 0.981,
+     "ref_onset": 17,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_hook.png",
+      "r": 0.959,
+      "ref_onset": 4,
+      "cur_onset": 9,
+      "frames": 7
+     },
+     {
+      "strip": "v08/extra/s30_000.8_mascot_title.png",
+      "r": 0.981,
+      "ref_onset": 17,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "mascot",
+     "t": 0,
+     "el": "ms-wrap"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 1.5,
+    "pixels_changing_pct": 0.11,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.036,
+    "longest_still_run": 12,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "paper-canvas",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "canvas: renders",
+     "expected": "no page errors",
+     "measured": 0,
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "canvas: the edge and ambient layers exist",
+     "expected": "elements",
+     "measured": 7,
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "life: never static #paper-edge-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-edge-1",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-edge-2",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-edge-3",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-ambient-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-ambient-1",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #paper-ambient-2",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": null,
+    "strips": []
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "canvas_life",
+     "t": 0,
+     "el": "root",
+     "edges": 6,
+     "ambient": 16
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.01,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.022,
+    "longest_still_run": 4,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "pop",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "pop: overshoot",
+     "expected": "0.13 to 0.16",
+     "measured": 0.13,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 14,
+     "measured": 14,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #pop-el",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 107,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #pop-el",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.27,
+     "ok": true,
+     "unit": "s (hold speed 4.88 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v03/extra/s30_cta_058.0.png",
+     "r": 0.976,
+     "ref_onset": 2,
+     "cur_onset": 21,
+     "frames": 17
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_003.8_logo_chain.png",
+      "r": 0.953,
+      "ref_onset": 9,
+      "cur_onset": 19,
+      "frames": 17
+     },
+     {
+      "strip": "v03/extra/s30_cta_058.0.png",
+      "r": 0.976,
+      "ref_onset": 2,
+      "cur_onset": 21,
+      "frames": 17
+     },
+     {
+      "strip": "v09/extra/s30_002.3_stickers.png",
+      "r": 0.672,
+      "ref_onset": 2,
+      "cur_onset": 8,
+      "frames": 17
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "pop-el"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.267,
+     "el": "pop-el"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.009,
+    "longest_still_run": 107,
+    "static_windows": 92,
+    "frames": 130
+   }
+  },
+  {
+   "id": "progress-bar",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "grow: w growth frames (fit)",
+     "expected": 6,
+     "measured": 6,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: overshoot",
+     "expected": 0.16,
+     "measured": 0.16,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 3,
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 3,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #pb",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #pb-fill",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #pb-check",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #pb",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 8.92 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v01/extra/s30_card33.png",
+     "r": 0.827,
+     "ref_onset": 7,
+     "cur_onset": 17,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v01/extra/s30_card33.png",
+      "r": 0.827,
+      "ref_onset": 7,
+      "cur_onset": 17,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "pb"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "pb"
+    },
+    {
+     "type": "fill",
+     "t": 0.5,
+     "el": "pb-fill",
+     "end": 0.7
+    },
+    {
+     "type": "count_start",
+     "t": 0.5,
+     "el": "pb-pct"
+    },
+    {
+     "type": "count_end",
+     "t": 0.7,
+     "el": "pb-pct"
+    },
+    {
+     "type": "check",
+     "t": 0.667,
+     "el": "pb-check"
+    },
+    {
+     "type": "check_peak",
+     "t": 0.733,
+     "el": "pb-check"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.8,
+    "middle_moving_share_pct": 16.2,
+    "pixels_changing_pct": 0.26,
+    "still_share_pct": 87.7,
+    "longest_still_s": 3.8,
+    "mean_change": 0.11,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "speech-bubble",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "bubble: overshoot y px",
+     "expected": 40,
+     "measured": 41.0,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "bubble: frames to the peak",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "bubble: settle frames after the peak",
+     "expected": 9,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: overshoot",
+     "expected": "0.01 to 0.03",
+     "measured": 0.02,
+     "ok": true,
+     "unit": "ratio"
+    },
+    {
+     "check": "pop: frames to settle",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "pop: opacity within 4 frames",
+     "expected": "<= 4",
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #sb",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #sb-pill",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v08/extra/s30_038.9_end.png",
+     "r": 0.987,
+     "ref_onset": 2,
+     "cur_onset": 13,
+     "frames": 10
+    },
+    "strips": [
+     {
+      "strip": "v07/extra/s30_041.0_end.png",
+      "r": 0.926,
+      "ref_onset": 3,
+      "cur_onset": 9,
+      "frames": 10
+     },
+     {
+      "strip": "v08/extra/s30_038.9_end.png",
+      "r": 0.987,
+      "ref_onset": 2,
+      "cur_onset": 13,
+      "frames": 10
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "pop",
+     "t": 0,
+     "el": "sb"
+    },
+    {
+     "type": "pop",
+     "t": 0.367,
+     "el": "sb-pill"
+    },
+    {
+     "type": "pop_peak",
+     "t": 0.5,
+     "el": "sb-pill"
+    },
+    {
+     "type": "confetti",
+     "t": 0,
+     "el": "sb-confetti"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 3.8,
+    "middle_moving_share_pct": 20.0,
+    "pixels_changing_pct": 0.29,
+    "still_share_pct": 89.2,
+    "longest_still_s": 3.87,
+    "mean_change": 0.127,
+    "longest_still_run": 8,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "stat-number",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "count: frames to the final value",
+     "expected": 27.5,
+     "measured": 27,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #stat-wrap",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #stat-num",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #stat-wrap",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 8.68 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_count_f925.png",
+     "r": 0.939,
+     "ref_onset": 2,
+     "cur_onset": 41,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v08/extra/s30_007.8_countup.png",
+      "r": 0.908,
+      "ref_onset": 20,
+      "cur_onset": 36,
+      "frames": 11
+     },
+     {
+      "strip": "v03/extra/s30_count_044.9.png",
+      "r": 0.931,
+      "ref_onset": 5,
+      "cur_onset": 44,
+      "frames": 11
+     },
+     {
+      "strip": "v04/extra/s30_count_f925.png",
+      "r": 0.939,
+      "ref_onset": 2,
+      "cur_onset": 41,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "stat-wrap"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "stat-wrap"
+    },
+    {
+     "type": "count_start",
+     "t": 0.267,
+     "el": "stat-num"
+    },
+    {
+     "type": "count_end",
+     "t": 1.183,
+     "el": "stat-num"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 14.6,
+    "middle_moving_share_pct": 23.1,
+    "pixels_changing_pct": 0.32,
+    "still_share_pct": 74.6,
+    "longest_still_s": 3.23,
+    "mean_change": 0.203,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "strike-through",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "grow: w growth frames (fit)",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 2,
+     "measured": 2.0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #st-text",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 80,
+     "ok": true,
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
+    },
+    {
+     "check": "life: inertia after the landing #st-text",
+     "expected": "2.0 to 4.0 s",
+     "measured": 1.87,
+     "ok": true,
+     "unit": "s (hold speed 4.02 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_062.3_xstamp.png",
+     "r": 0.98,
+     "ref_onset": 3,
+     "cur_onset": 1,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_strike_f1007.png",
+      "r": 0.965,
+      "ref_onset": 2,
+      "cur_onset": 1,
+      "frames": 7
+     },
+     {
+      "strip": "v06/extra/s30_062.3_xstamp.png",
+      "r": 0.98,
+      "ref_onset": 3,
+      "cur_onset": 1,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "st-text"
+    },
+    {
+     "type": "strike",
+     "t": 0.5,
+     "el": "st-line"
+    },
+    {
+     "type": "typing",
+     "t": 0.7,
+     "el": "st-replacement",
+     "end": 1.7,
+     "chars": 15
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.02,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.012,
+    "longest_still_run": 80,
+    "static_windows": 65,
+    "frames": 130
+   }
+  },
+  {
+   "id": "table-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 28,
+     "measured": 28,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 7,
+     "measured": 7,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 3,
+     "measured": [
+      3
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #tb",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tb-row-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tb-row-1",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #tb",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.97,
+     "ok": true,
+     "unit": "s (hold speed 9.3 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_scene_f184.png",
+     "r": 0.978,
+     "ref_onset": 3,
+     "cur_onset": 10,
+     "frames": 10
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_scene_f184.png",
+      "r": 0.978,
+      "ref_onset": 3,
+      "cur_onset": 10,
+      "frames": 10
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "tb"
+    },
+    {
+     "type": "land",
+     "t": 0.233,
+     "el": "tb"
+    },
+    {
+     "type": "row",
+     "t": 0.133,
+     "el": "tb-row-0"
+    },
+    {
+     "type": "row",
+     "t": 0.233,
+     "el": "tb-row-1"
+    },
+    {
+     "type": "row",
+     "t": 0.333,
+     "el": "tb-row-2"
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 7.7,
+    "middle_moving_share_pct": 13.1,
+    "pixels_changing_pct": 0.51,
+    "still_share_pct": 90.0,
+    "longest_still_s": 3.9,
+    "mean_change": 0.22,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "terminal-card",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "enter: opacity frames",
+     "expected": 5,
+     "measured": 5,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: rise px",
+     "expected": 38,
+     "measured": 38,
+     "ok": true,
+     "unit": "px"
+    },
+    {
+     "check": "enter: position frames (fit)",
+     "expected": 8,
+     "measured": 8,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "enter: ease",
+     "expected": "ease-out",
+     "measured": "expo.out",
+     "ok": true,
+     "unit": ""
+    },
+    {
+     "check": "typing: frames per character",
+     "expected": 0.5,
+     "measured": 0.491,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #tc",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tc-line-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: inertia after the landing #tc",
+     "expected": "2.0 to 4.0 s",
+     "measured": 2.93,
+     "ok": true,
+     "unit": "s (hold speed 9.3 px/s)"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v06/extra/s30_070.9_typing_tail.png",
+     "r": 0.981,
+     "ref_onset": 4,
+     "cur_onset": 8,
+     "frames": 11
+    },
+    "strips": [
+     {
+      "strip": "v04/extra/s30_rewrite_f982.png",
+      "r": 0.861,
+      "ref_onset": 10,
+      "cur_onset": 18,
+      "frames": 11
+     },
+     {
+      "strip": "v06/extra/s30_070.9_typing_tail.png",
+      "r": 0.981,
+      "ref_onset": 4,
+      "cur_onset": 8,
+      "frames": 11
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "enter",
+     "t": 0,
+     "el": "tc"
+    },
+    {
+     "type": "land",
+     "t": 0.267,
+     "el": "tc"
+    },
+    {
+     "type": "typing",
+     "t": 0.533,
+     "el": "tc-line-0",
+     "end": 1.4833333333333334,
+     "chars": 57
+    },
+    {
+     "type": "typing",
+     "t": 1.683,
+     "el": "tc-line-1",
+     "end": 2.1666666666666665,
+     "chars": 29
+    },
+    {
+     "type": "typing",
+     "t": 2.367,
+     "el": "tc-line-2",
+     "end": 2.7333333333333334,
+     "chars": 22
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 10.0,
+    "middle_moving_share_pct": 11.5,
+    "pixels_changing_pct": 0.75,
+    "still_share_pct": 70.0,
+    "longest_still_s": 3.03,
+    "mean_change": 0.351,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
+  {
+   "id": "thumb-grid",
+   "pass": true,
+   "numbers_ok": true,
+   "strip_ok": true,
+   "checks": [
+    {
+     "check": "fade: opacity frames",
+     "expected": 4,
+     "measured": 4,
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 1,
+     "measured": [
+      1,
+      1
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "stagger: gap frames between neighbours",
+     "expected": 7,
+     "measured": [
+      7
+     ],
+     "ok": true,
+     "unit": "frames"
+    },
+    {
+     "check": "life: never static #tg-wrap",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tg-card-0",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tg-card-1",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tg-card-2",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: never static #tg-card-3",
+     "expected": "0 still windows of 0.5 s",
+     "measured": 0,
+     "ok": true,
+     "unit": "windows"
+    },
+    {
+     "check": "life: pixels never still",
+     "expected": "< 15 frames",
+     "measured": 0,
+     "ok": true,
+     "unit": "frames"
+    }
+   ],
+   "correlation": {
+    "best": {
+     "strip": "v04/extra/s30_deckgrid_f420.png",
+     "r": 0.974,
+     "ref_onset": 3,
+     "cur_onset": 26,
+     "frames": 7
+    },
+    "strips": [
+     {
+      "strip": "v02/extra/s30_grid34.png",
+      "r": 0.917,
+      "ref_onset": 5,
+      "cur_onset": 13,
+      "frames": 7
+     },
+     {
+      "strip": "v04/extra/s30_deckgrid_f420.png",
+      "r": 0.974,
+      "ref_onset": 3,
+      "cur_onset": 26,
+      "frames": 7
+     },
+     {
+      "strip": "v04/extra/s30_gridsettle_f444.png",
+      "r": 0.966,
+      "ref_onset": 1,
+      "cur_onset": 17,
+      "frames": 7
+     }
+    ]
+   },
+   "errors": [],
+   "webgl": null,
+   "events": [
+    {
+     "type": "card",
+     "t": 0,
+     "el": "tg-card-0"
+    },
+    {
+     "type": "card",
+     "t": 0,
+     "el": "tg-card-0",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.033,
+     "el": "tg-card-1"
+    },
+    {
+     "type": "card",
+     "t": 0.033,
+     "el": "tg-card-1",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.067,
+     "el": "tg-card-2"
+    },
+    {
+     "type": "card",
+     "t": 0.067,
+     "el": "tg-card-2",
+     "row": 0
+    },
+    {
+     "type": "card",
+     "t": 0.233,
+     "el": "tg-card-3"
+    },
+    {
+     "type": "card",
+     "t": 0.233,
+     "el": "tg-card-3",
+     "row": 1
+    },
+    {
+     "type": "card",
+     "t": 0.267,
+     "el": "tg-card-4"
+    },
+    {
+     "type": "card",
+     "t": 0.267,
+     "el": "tg-card-4",
+     "row": 1
+    },
+    {
+     "type": "card",
+     "t": 0.3,
+     "el": "tg-card-5"
+    },
+    {
+     "type": "card",
+     "t": 0.3,
+     "el": "tg-card-5",
+     "row": 1
+    },
+    {
+     "type": "honesty",
+     "t": 0,
+     "el": ""
+    }
+   ],
+   "frames_measured": 131,
+   "energy": {
+    "moving_share_pct": 6.2,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.24,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.159,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130
+   }
+  },
   {
    "id": "window-card",
    "pass": true,
@@ -66,39 +3640,39 @@
     {
      "check": "life: inertia after the landing #wc",
      "expected": "2.0 to 4.0 s",
-     "measured": 2.83,
+     "measured": 2.93,
      "ok": true,
-     "unit": "s (hold speed 9.21 px/s)"
+     "unit": "s (hold speed 9.3 px/s)"
     }
    ],
    "correlation": {
     "best": {
      "strip": "v07/extra/s30_011.4_window_rise.png",
-     "r": 0.973,
+     "r": 0.965,
      "ref_onset": 23,
-     "cur_onset": 22,
+     "cur_onset": 8,
      "frames": 11
     },
     "strips": [
      {
       "strip": "v07/extra/s30_011.4_window_rise.png",
-      "r": 0.973,
+      "r": 0.965,
       "ref_onset": 23,
-      "cur_onset": 22,
+      "cur_onset": 8,
       "frames": 11
      },
      {
       "strip": "v01/extra/s30_hook.png",
-      "r": 0.96,
+      "r": 0.958,
       "ref_onset": 5,
-      "cur_onset": 20,
+      "cur_onset": 22,
       "frames": 11
      },
      {
       "strip": "v03/extra/s30_hook_000.0.png",
-      "r": 0.924,
+      "r": 0.933,
       "ref_onset": 5,
-      "cur_onset": 6,
+      "cur_onset": 8,
       "frames": 11
      }
     ]
@@ -120,7 +3694,7 @@
      "type": "scroll",
      "t": 0.267,
      "el": "wc-img",
-     "end": 38.266666666666666,
+     "end": 30.666666666666664,
      "px": 912
     },
     {
@@ -131,12 +3705,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 79.2,
-    "middle_moving_share_pct": 82.3,
-    "pixels_changing_pct": 2.36,
+    "moving_share_pct": 96.2,
+    "middle_moving_share_pct": 96.9,
+    "pixels_changing_pct": 2.74,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.732,
+    "mean_change": 0.825,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130

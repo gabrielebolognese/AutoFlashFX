@@ -435,7 +435,8 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   its CSS fallback, the canvas layers for three seeds out of every text zone, without text, 30 to 70 percent outside, under
   20 px per second, 4 the golden reel rendered again from the same plan (every energy measure better than before, the
   moving share doubled: 13.0 to 28.1 percent), 5 the em dash scan. Results: the full run (build/M14/test-m14.log) 71 passed, 0
-  failed in 37 minutes (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1); the partial runs
+  failed in 37 minutes (section 1: 25, section 2: 29, section 3: 7, section 4: 9, section 5: 1; section 3 has 10 checks since
+  the transients fix, build/M14/test-m14-s3.log: 10 passed); the partial runs
   before it (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame. After the touches to their code:
   test-m9 section 1 27 passed (its sandbox re-proposes the six accepted tweaks lines), test-m10 fake sections 134 passed;
   the full reruns of the fake-only tests of M9 to M13 are listed at the end of this section.
@@ -449,5 +450,6 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   file as a third source, the `- **Energy:** ...` override); frame-match measures 4.33 s per component at a quarter scale
   with the life and energy checks; golden.py seeds the canvas per reel and copies pc-motion.js. Earlier milestones touched:
   M9 (test-m9's sandbox, harness.py's tag and 3D-aware measures, golden.py, gallery.py, catalog.py), M10 (project.py,
-  visual/common.py, plan_validate.py, plan9.py, events.py, the frozen index.html canvas hosts), M11 (mechanical.py).
-  DECISIONS.md 288 to 300. Report: build/M14/report.md.
+  visual/common.py, plan_validate.py, plan9.py, events.py, the frozen index.html canvas hosts), M11 (mechanical.py: the
+  scale read in 3D, arriving and leaving elements left to the next sample; common.py: the landed sample after the
+  combined animation). DECISIONS.md 288 to 303. Report: build/M14/report.md.

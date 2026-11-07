@@ -96,7 +96,10 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   element component has a `hold` prop: calm, normal, lively), paper-canvas with a timeline, `seed` and `duration` props
   and the layers, icon-3d (Three.js extruded SVG paths and primitives, a CSS-extruded fallback, `mode` auto|webgl|css),
   frame-match's life checks (never static for 0.5 s, the inertia 2 to 4 s) and per-component energy (catalog.json
-  `energy`, the gallery's energy line), golden/test-idea/energy.json and build/M14/golden-energy-before.json. Run every
+  `energy`, the gallery's energy line), golden/test-idea/energy.json and build/M14/golden-energy-before.json, the
+  review's reading of the grammar's transients (PCM.mark sets `data-pcm-main` and `data-pcm-exit` on every element,
+  the review reads the scale in 3D, does not judge an element while it arrives or leaves and samples "landed" after
+  the combined animation: DECISIONS.md 303). Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4
