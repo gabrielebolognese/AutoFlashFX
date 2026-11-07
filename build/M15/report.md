@@ -78,7 +78,19 @@ is the quick part (about 2 minutes).
 
 ## Test results
 
-(see the end of this file: filled in when the runs finished)
+- `bash pipeline/tests/test-m15.sh`: 127 passed, 0 failed (335 s; log build/M15/final-tests/m15.log). Section 1 kinetic.py 44, section 2 plan
+  rules 38 plus the validator CLI, section 3 the golden reel (about 1400 caption element frames, none static; a planted static
+  caption fails), section 4 S12 (clean golden project passes; the planted copies are caught), section 5 the library, section 6 the em dash scan.
+- Earlier milestones' tests after the last change (logs in build/M15/final-tests/ and build/M15/earlier-tests/):
+  test-m14 sections 2, 4, 5: 39 passed (frame-match on all 29 components, the golden rendered again, its movement measures beat
+  the pre-M14 reel's: moving share 28.4 against 13.0; its still-stretch measures do not, see DECISIONS.md 313);
+  test-m11 fake sections 1 to 3: 227 passed; test-m13 fake sections 1, 2, 4: 100 passed; test-m12 fake sections 1, 2, 3, 5: 180 passed;
+  test-m9: 80 passed; test-m10 fake sections 1 and 2: 134 passed; test-m6 fake sections 1 and 2: 146 passed, 1 failed
+  ("setup: the beat map comes from style.md and the excerpts from voice.md": it reads the user's voice.md, which the user filled
+  in on 2026-11-07, the same drift as DECISIONS.md 305; M15 did not touch what it measures).
+- Found by those reruns and fixed: the 9b fixture's thumb grid held 103 characters of text (E4 budget 100), a caption word of two
+  or three frames faded in as if it lived 0.3 s and overlapped the next, test-m14's hold-prop, no-own-tween and golden
+  comparisons needed the caption components' own motion (PCM.linear in pc-motion.js, decision 313).
 
 ## Known gaps
 

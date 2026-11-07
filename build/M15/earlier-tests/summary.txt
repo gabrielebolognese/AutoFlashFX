@@ -1,0 +1,7 @@
+m11: test-m11.sh: 194 passed, 33 failed, 2374 s
+m11: test-m11.sh: 194 passed, 33 failed, 1913 s
+m9: test-m9.sh: 80 passed, 0 failed, 1233 s
+m14: test-m14.sh: 36 passed, 3 failed, 872 s
+m6: test-m6.sh: 146 passed, 1 failed, 1434 s
+m9: test-m9.sh: 80 passed, 0 failed, 1088 s
+m12: test-m12.sh: 180 passed, 0 failed, 966 s

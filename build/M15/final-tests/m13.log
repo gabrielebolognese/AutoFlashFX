@@ -1,0 +1,135 @@
+
+== 1. units: the log checker, the rotation, the status line, the fault injection, the voice profile, the doctor ==
+PASS  logcheck story: the good timeline has no problem ({"sessions": 1, "ideas": 2, "outcomes": ["done", "dropped"], "exports": [1], "limits": 1, "problems": []})
+PASS  logcheck: the outcomes done, dropped
+PASS  logcheck: the LIMIT line paired with its RESUME
+PASS  logcheck catches: a LIMIT without its RESUME
+PASS  logcheck catches: an idea silent for 12 minutes (a hang)
+PASS  logcheck catches: a heartbeat with the wrong fixed count
+PASS  logcheck catches: a heartbeat with the wrong minute
+PASS  logcheck catches: a heartbeat naming another idea
+PASS  logcheck catches: a summary with wrong counts
+PASS  logcheck catches: a missing NEXT line
+PASS  logcheck catches: a broken STEP chain
+PASS  logcheck catches: an em dash in a line
+PASS  logcheck catches: a tag not padded to 6
+PASS  logcheck catches: an idea that never ends
+PASS  logcheck catches: a STOP line
+PASS  logcheck catches: exports with a gap
+PASS  logcheck catches: a crash that the next session does not resume
+PASS  logcheck --allow-crash: a crash resumed by the next session is a good story
+PASS  logcheck without --allow-crash: the same crash is a problem
+PASS  logcheck line: a valid line
+PASS  logcheck line: ANSI codes are refused
+PASS  logcheck status: a QUEUE line never belongs in status.txt
+PASS  logcheck samples: an empty sample after the first status is a problem
+PASS  rotation: a log under the size stays, one over it rotates every time
+PASS  rotation: runner.log plus 3 old files (logs.rotate_keep), the oldest deleted
+PASS  rotation: the new log starts with the INFO line naming the old one
+PASS  rotation: runner.log.1 holds the latest lines before the rotation
+PASS  rotation: the INFO line does not replace status.txt
+PASS  status.txt holds the latest line
+PASS  no .status.* file is left behind
+PASS  REELS_FAULT: only its stage and its idea, an unknown kind ignored, once only
+PASS  the fault's once-only marker in logs/.faults/
+PASS  the injected result: an error in the same session
+PASS  the injected result is classified as a usage limit with its reset time ({"class": "limit", "message": "You've hit your session limit · resets 11:43pm (Europe/Rome)", "detail": "session limit", "retry_after": null, "session_id": "sid-1", "structured": false, "api_error_status": null, "fatal": false, "resume_failed": false, "rc": 1, "limit": {"limit": true, "kind": "session", "message": "You've hit your session limit · resets 11:43pm (Europe/Rome)", "parsed": "time", "zone": "Europe/Rome", "note": "", "reset": 1794091380, "reset_iso": "2026-11-07 23:43", "target": 1794091500, "target_iso": "2026-11-07 23:45:00", "when": "23:43", "left": "6m"}, "json": true, "is_error": true})
+PASS  build-voice-profile --force exits 0
+PASS  account.md: the hand-written Brand section is kept word for word
+PASS  account.md: the Content strategy section is kept
+PASS  voice.md: How I promote is kept
+PASS  voice.md: the FlashFX spelling line is kept
+PASS  voice.md: the spelling line stays under 'Words I actually use'
+PASS  voice.md: a field filled by hand survives the template's placeholder
+PASS  voice.md: the measured pace survives a rebuild that measured nothing
+PASS  voice.md: the 5 verbatim excerpts survive
+PASS  the script names what it kept
+PASS  the previous account.md is copied into logs/voice-profile/
+PASS  a second --force rebuild changes nothing (idempotent)
+PASS  memo draft: the field the memo filled wins
+PASS  memo draft: a field only the old file had is kept
+PASS  memo draft: the spelling line stays in its section (The ask)
+PASS  memo draft: How I promote is kept
+PASS  a fresh account.md has the Brand section pointing at library/brand/
+PASS  doctor --quick exits 0 on a healthy sandbox (0 FAIL lines)
+PASS  doctor: the versions section
+PASS  doctor: the disk section
+PASS  doctor: the freshness section
+PASS  doctor: the runner section
+PASS  doctor: the queue and logs section
+PASS  doctor: the node packages against the pins
+PASS  doctor: the last status, checked
+PASS  doctor exits 1 on a broken status line and a STOPPED.md
+PASS  doctor: names the broken status line
+PASS  doctor: names STOPPED.md
+PASS  the dummy run with a 6 KB rotation exits 0
+PASS  the live run rotated logs/runner.log at least twice (2 rotated files)
+PASS  the rotated logs, read oldest first, tell one complete story ({"sessions": 1, "ideas": 3, "outcomes": ["done", "done", "done"], "exports": [1, 2, 3], "limits": 0, "problems": []})
+PASS  the story across the rotated files has the exports 1, 2, 3
+
+== 2. three ideas unattended with the fake claude: a simulated limit and a kill in the second idea, the restart, the story ==
+   sandbox C:/Users/there/AppData/Local/Temp/tmp.k3NsF3kTak; run 1 263 s, run 2 411 s
+    [23:44] START  reels autopilot v0.1.0 (24b2b29) | queue: 3 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [23:44] START  idea 1/3 "Claude Code's /init command: it reads yo..." -> runs/2026-11-07_2344_claude-codes-init-command-it
+    [23:45] ANGLE  gate failed (H): finding a better angle, round 1/2
+    [23:46] GATE   passed (P3 S3 C3 F ok H ok) after 1 angle round
+    [23:47] DONE   exported #1 -> exports/1/ (3 min, 0 issues fixed)
+    [23:47] NEXT   idea 2/3 "The Playwright MCP server lets Claude Co..."
+    [23:47] START  idea 2/3 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-07_2347_the-playwright-mcp-server-lets
+    [23:47] WARN   fault injected (REELS_FAULT limit:02-expansion@2): this call returns a session limit instead of reaching the model
+    [23:48] LIMIT  session limit hit, resuming at 23:52 (+2 min margin)
+    [23:48] RESUME limit reset, continuing: expanding idea
+    [23:48] WARN   fault injected (REELS_FAULT kill:03-gate@2): killing the runner and this stage now
+    [23:48] START  reels autopilot v0.1.0 (24b2b29) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [23:48] START  idea 1/2 "The Playwright MCP server lets Claude Co..." -> runs/2026-11-07_2347_the-playwright-mcp-server-lets (resumed at checking idea (gate), 2 stages done)
+    [23:48] INFO   S3 checking idea (gate): attempt 2 (the previous one was interrupted)
+    [23:49] ANGLE  gate failed (H): finding a better angle, round 1/2
+    [23:50] GATE   passed (P3 S3 C3 F ok H ok) after 1 angle round
+    [23:51] DONE   exported #2 -> exports/2/ (4 min, 0 issues fixed)
+    [23:51] NEXT   idea 2/2 "ffmpeg can cut a clip out of a huge vide..."
+    [23:51] START  idea 2/2 "ffmpeg can cut a clip out of a huge vide..." -> runs/2026-11-07_2351_ffmpeg-can-cut-a-clip
+    [23:53] ANGLE  gate failed (H): finding a better angle, round 1/2
+    [23:54] GATE   passed (P3 S3 C3 F ok H ok) after 1 angle round
+    [23:55] DONE   exported #3 -> exports/3/ (3 min, 0 issues fixed)
+    [23:55] IDLE   queue empty: this session 2 exported, 0 dropped, 0 blocked in 6m26s | today: 3 exported, 0 dropped
+    [23:55] START  reels autopilot v0.1.0 (24b2b29) | queue: 0 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [23:55] IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked in 1s | today: 3 exported, 0 dropped
+    [23:55] IDLE   no ideas in ideas.txt, checking every 2 s (idle 0 min) | today: 3 exported, 0 dropped
+PASS  fake: the simulated limit and the kill both fired in the second idea
+PASS  fake: run 1 ended killed (exit 137) during the second idea
+PASS  fake: the killed runner left its lock and the stage's pid file, as a real crash does
+PASS  fake: the restarted runner (run 2) finishes the queue and exits 0
+PASS  fake: run 3 (forever mode) stops on SIGTERM with exit 130
+PASS  fake: runner.log tells the full story with no problem ()
+PASS  fake: three runner sessions (run 1, the restart, the forever mode)
+PASS  fake: every idea ended exported, dropped or blocked
+PASS  fake: only the second idea of session 1 was interrupted (the kill)
+PASS  fake: the restart resumed the same idea at the same stage (S3)
+PASS  fake: S3 runs again as attempt 2 after the interruption
+PASS  fake: one LIMIT (session limit) in the second idea, followed by its RESUME line
+PASS  fake: the LIMIT line names the time it resumes at (reset plus the margin)
+PASS  fake: limits.log has the target time
+PASS  fake: limits.log has the resume
+PASS  fake: the faulted S2 call is in the call log (001-expansion-1.json)
+PASS  fake: the retry after the limit resumes the same session (fake-06d44a8a-f1f8-435d-96e9-8ffc6d582cbe)
+PASS  fake: the retried call in that session succeeds
+PASS  fake: every idea has heartbeat lines ([84, 36, 62, 87])
+PASS  fake: every idea that passed the gate has its GATE line and its stage STEPs
+PASS  fake: exports/ numbered 1 to 3 without gaps
+PASS  fake: every export has its N.mp4 and Ncaptions.txt
+PASS  fake: history.txt has one line per idea
+PASS  fake: each history line says exported N, dropped or blocked with a reason
+PASS  fake: ideas.txt is empty
+PASS  fake: no logs/STOPPED.md
+PASS  fake: status.txt was a valid status line at every sampled moment ({"samples": 771, "invalid": 0, "problems": []})
+PASS  fake: the final status.txt is valid
+PASS  fake: no .status.* file left behind
+PASS  fake: the forever mode's IDLE line
+PASS  fake: the forever mode's stop line
+PASS  fake: the summary line on the empty queue
+PASS  fake: no em dash in the exports and the logs
+
+== 4. no em dash in the files M13 wrote ==
+PASS  no em dash in the M13 sources, tests and fixtures
+
+test-m13.sh: 100 passed, 0 failed

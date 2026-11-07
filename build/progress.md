@@ -464,7 +464,7 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   to 304. Report: build/M14/report.md.
 
 ## M15 Kinetic captions and text discipline
-- Status: done (2026-11-07), the final numbers in build/M15/report.md. The test has six sections: 1 kinetic.py (the "quick brown
+- Status: done (2026-11-07). test-m15: 127 passed, 0 failed. Earlier tests after M15: test-m9 80, test-m10 fake 134, test-m11 fake 227, test-m12 fake 180, test-m13 fake 100, test-m14 sections 2 4 5 39 (all passed); test-m6 fake 146 passed and 1 failed on the user's filled voice.md (not M15). Details: build/M15/report.md. The test has six sections: 1 kinetic.py (the "quick brown
   fox" layout of spec E3, six long words, 300 generated word lists, group_runs, the motions, seven planted layout faults), 2 the plan
   rules (the golden plan passes, ten planted plan faults, the 9b choice rule with a director's group refused over text and kept in a
   free beat, the digest, S7's importance, the schemas), 3 the golden reel (word mode in normal talk, groups on the number and

@@ -1,0 +1,32 @@
+
+== 1. units: the log checker, the rotation, the status line, the fault injection, the voice profile, the doctor ==
+PASS  logcheck story: the good timeline has no problem ({"sessions": 1, "ideas": 2, "outcomes": ["done", "dropped"], "exports": [1], "limits": 1, "problems": []})
+PASS  logcheck: the outcomes done, dropped
+PASS  logcheck: the LIMIT line paired with its RESUME
+PASS  logcheck catches: a LIMIT without its RESUME
+PASS  logcheck catches: an idea silent for 12 minutes (a hang)
+PASS  logcheck catches: a heartbeat with the wrong fixed count
+PASS  logcheck catches: a heartbeat with the wrong minute
+PASS  logcheck catches: a heartbeat naming another idea
+PASS  logcheck catches: a summary with wrong counts
+PASS  logcheck catches: a missing NEXT line
+PASS  logcheck catches: a broken STEP chain
+PASS  logcheck catches: an em dash in a line
+PASS  logcheck catches: a tag not padded to 6
+PASS  logcheck catches: an idea that never ends
+PASS  logcheck catches: a STOP line
+PASS  logcheck catches: exports with a gap
+PASS  logcheck catches: a crash that the next session does not resume
+PASS  logcheck --allow-crash: a crash resumed by the next session is a good story
+PASS  logcheck without --allow-crash: the same crash is a problem
+PASS  logcheck line: a valid line
+PASS  logcheck line: ANSI codes are refused
+PASS  logcheck status: a QUEUE line never belongs in status.txt
+PASS  logcheck samples: an empty sample after the first status is a problem
+PASS  rotation: a log under the size stays, one over it rotates every time
+PASS  rotation: runner.log plus 3 old files (logs.rotate_keep), the oldest deleted
+PASS  rotation: the new log starts with the INFO line naming the old one
+PASS  rotation: runner.log.1 holds the latest lines before the rotation
+PASS  rotation: the INFO line does not replace status.txt
+PASS  status.txt holds the latest line
+PASS  no .status.* file is left behind

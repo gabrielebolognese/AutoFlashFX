@@ -110,12 +110,8 @@ window.__pcEvents = [];
                             inertia: { move: 0, scale: 0, rotate: 0 }, until: outAt, room: false, events: { enter: "caption_word_fade" } });
         // E3: every word rises 8 to 16 px over its life (or turns 2 to 4 degrees): a linear move, so its speed never reaches zero
         var life = Math.max(F(2), end - start);
-        if (typeof wd.turn === "number" && wd.turn) {
-          tl.fromTo(div, { rotationY: -wd.turn / 2 }, { rotationY: wd.turn / 2, duration: life, ease: "none", immediateRender: false }, start);
-        } else {
-          var rise = typeof wd.rise === "number" ? wd.rise : 12;
-          tl.fromTo(div, { y: rise / 2 }, { y: -rise / 2, duration: life, ease: "none", immediateRender: false }, start);
-        }
+        if (typeof wd.turn === "number" && wd.turn) PCM.linear(tl, div, start, life, { kind: "turn", deg: wd.turn });
+        else PCM.linear(tl, div, start, life, { kind: "rise", px: typeof wd.rise === "number" ? wd.rise : 12 });
         if (box) PCM.life(tl, box, { at: start, main: { kind: "fade", frames: v.box_frames, rise: v.box_rise, ease: "power1.out", zoom: false, rotate: false }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 }, until: start + F(1), room: false, events: { enter: "caption_box_fade" } });
         PCM.exit(tl, div, outAt, "fade", { frames: outF, el: div.id });
         tl.set(div, { opacity: 0, visibility: "hidden" }, end);

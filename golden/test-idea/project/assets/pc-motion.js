@@ -379,6 +379,21 @@
     return PCM.life(tl, el, { at: at, main: { kind: "none" }, hold: o.hold || "normal", until: until, inertia: { move: 0, scale: 0, rotate: 0 }, exit: o.exit, events: o.events });
   };
 
+  // PCM.life of a caption (Motion and energy rules E3, M15): a word rises 8 to 16 px, or a group 20 to 40 px, over its whole
+  // life (or turns 2 to 4, or 3 to 6, degrees of parallax rotation): one linear move, so its speed never reaches zero.
+  // o: {kind: "rise" | "turn", px, deg}; the move is centered on the element's rest position (half before, half after).
+  PCM.linear = function (tl, el, at, seconds, o) {
+    o = o || {};
+    if (o.kind === "turn") {
+      var dg = typeof o.deg === "number" ? o.deg : 3;
+      tl.fromTo(el, { rotationY: -dg / 2 }, { rotationY: dg / 2, duration: seconds, ease: "none", immediateRender: false }, at);
+    } else {
+      var px = typeof o.px === "number" ? o.px : 12;
+      tl.fromTo(el, { y: px / 2 }, { y: -px / 2, duration: seconds, ease: "none", immediateRender: false }, at);
+    }
+    return at + seconds;
+  };
+
   // ---------------------------------------------------------------- values rendered by a setter (count-ups, typing)
   // GSAP tweens the accessor property; its setter renders. No callback, so it works under suppressed events.
   PCM.driven = function (initial, render) {
