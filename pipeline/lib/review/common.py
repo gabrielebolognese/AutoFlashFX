@@ -174,9 +174,7 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
     rotation, E2: the grammar's main frames plus the lag, from tokens.json motion.grammar), the CTA's built state."""
     settle = int(ctx.c("review.settle_ms", 600))
     em_lead = int(ctx.c("review.emphasis_settle_ms", 150))
-    grammar = ((ctx.toks.get("motion") or {}).get("grammar") or {}) if isinstance(getattr(ctx, "toks", None), dict) else {}
-    main_frames = int((grammar.get("main") or {}).get("frames", 18)) + int((grammar.get("main") or {}).get("rotate_lag_frames", 3))
-    main_ms = int(round(main_frames * 1000.0 / 30.0))
+    main_ms = main_window_ms(ctx)
     times: dict = {}
 
     def add(ms: int, label: str):
@@ -196,16 +194,36 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
             land = c.get("land_ms")
             if land is None:
                 continue
+            start = int(c.get("start_ms", land))
             last = min(b, int(c.get("end_ms", b)))
-            settled = max(int(land), int(c.get("start_ms", land)) + main_ms) + 100
-            for t in (settled, int(land) + 100):
-                if t < last:
-                    add(t, f"{c['id']} landed")
-                    break
+            settled = max(int(land), start + main_ms) + 100
+            if settled < last:
+                add(settled, f"{c['id']} landed")
+            else:
+                # a life shorter than the main animation window: the element is judged once, at the last sample of its
+                # life that is not an exit (mechanical.py), so the samples sit as late as they can
+                if int(land) + 100 < last:
+                    add(int(land) + 100, f"{c['id']} landed")
+                if last - 50 > start + 100:
+                    add(last - 50, f"{c['id']} last")
     cta = ctx.cta_scene()
     if cta:
         add(int(cta["end_ms"]) - 300, "the CTA built")
     return dict(sorted(times.items()))
+
+
+def main_window_ms(ctx: Ctx) -> int:
+    """The combined main animation's window in ms (E2: the grammar's main frames plus the rotation's lag, 21 frames):
+    an element is arriving until then (pc-motion.js data-pcm-main), tokens.json motion.grammar.main."""
+    toks = getattr(ctx, "toks", None)
+    grammar = ((toks.get("motion") or {}).get("grammar") or {}) if isinstance(toks, dict) else {}
+    main = grammar.get("main") or {}
+    return int(round((int(main.get("frames", 18)) + int(main.get("rotate_lag_frames", 3))) * 1000.0 / 30.0))
+
+
+def short_lived(ctx: Ctx, start_ms: int, end_ms: int) -> bool:
+    """True when the element's life holds no settled sample (its landed sample would fall at or after its end)."""
+    return int(start_ms) + main_window_ms(ctx) + 100 >= int(end_ms)
 
 
 # ------------------------------------------------------------------------------------------------ colors

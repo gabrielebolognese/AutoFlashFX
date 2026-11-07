@@ -350,6 +350,18 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     except OSError:
         pass
 
+    # a short-lived instance (its life shorter than the main animation window: a chip on a last word) never settles,
+    # so it is judged once, at the last check time of its life that is not an exit, for its geometry
+    for host in hosts:
+        if host.get("no_timeline") or host["component"] == "paper-canvas" or not rc.short_lived(ctx, host["start_ms"], host["end_ms"]):
+            continue
+        cands = [T for T in check_ms if any(t["instance"] == host["id"] and t.get("transient") != "exit" for t in per_time[T]["texts"] + per_time[T]["images"])]
+        if cands:
+            T_last = max(cands)
+            for t in per_time[T_last]["texts"] + per_time[T_last]["images"]:
+                if t["instance"] == host["id"] and t.get("transient") != "exit":
+                    t["judge_anyway"] = True
+
     # ---------------------------------------------------------------- the rules, at the check times
     seen_issue: set = set()
 
@@ -369,9 +381,9 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
         n_checked_texts += len(texts)
         for tx in texts:
             counts["texts"] += 1
-            if tx.get("transient"):
+            if tx.get("transient") and not tx.get("judge_anyway"):
                 # arriving or leaving (E1's main animation with E2's zoom and rotation, or the exit): a transient by
-                # design, judged at the next sample of its life
+                # design, judged at the next sample of its life (a short-lived instance once, at its last sample)
                 counts["transient"] += 1
                 continue
             x0, y0, x1, y1 = tx["x"], tx["y"], tx["x"] + tx["w"], tx["y"] + tx["h"]
@@ -402,6 +414,8 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             if families and fam not in families:
                 add(rc.issue("text", "font_family", f"text {where} uses the font {fam}, not one of tokens.json ({', '.join(sorted(families))})", tx["scene"], tx["instance"], T), ("font_family",) + k)
             eff = float(tx["size"]) * float(tx.get("scale") or 1)
+            if tx.get("transient"):
+                eff = float(tx["size"])  # a short-lived element judged mid-zoom: its size is the designed one
             if not tx.get("ignore") and eff < min_font - 0.5:
                 add(rc.issue("text", "font_size", f"text {where} is {eff:.0f} px, under the {min_font:.0f} px floor", tx["scene"], tx["instance"], T), ("font_size",) + k)
             if tx.get("captions") and eff < cap_font * cap_min_share - 0.5:
@@ -419,7 +433,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 if ratio < need - 0.05:
                     add(rc.issue("text", "contrast", f"text {where} has a contrast of {ratio:.2f}:1 against its background ({f'the accent family, {c_large:g}:1 allowed' if display else f'{c_min:g}:1 needed'})", tx["scene"], tx["instance"], T, ratio=round(ratio, 2)), ("contrast",) + k)
         # overlaps between different elements (the arriving and leaving ones left out)
-        vis = [t for t in texts if not t.get("ignore") and not t.get("transient")]
+        vis = [t for t in texts if not t.get("ignore") and (not t.get("transient") or t.get("judge_anyway"))]
         for i in range(len(vis)):
             for j in range(i + 1, len(vis)):
                 a, b = vis[i], vis[j]
@@ -434,7 +448,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                         ("overlap", a["instance"], a["text"], b["instance"], b["text"]))
         for im in images:
             counts["images"] += 1
-            if im.get("transient"):
+            if im.get("transient") and not im.get("judge_anyway"):
                 counts["transient"] += 1
                 continue
             x0, y0, x1, y1 = im["x"], im["y"], im["x"] + im["w"], im["y"] + im["h"]
@@ -476,7 +490,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     logo_rows = []
     for T in check_ms:
         for im in per_time[T]["images"]:
-            if im["src"].startswith("assets/brand/") and not im.get("transient"):
+            if im["src"].startswith("assets/brand/") and (not im.get("transient") or im.get("judge_anyway")):
                 logo_rows.append((T, im))
     seen_logo: set = set()
     for T, im in logo_rows:

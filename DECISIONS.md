@@ -2267,7 +2267,10 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     read the element at rest rather than at 0.98 scale and 5 degrees. Once landed the grammar only grows an element
     (the inertia's scale 0.04 and the hold's creep go up), so a text never reads smaller than its designed size after
     its entrance: the 24 px floor stays a rule about the design. test-m14 section 3 checks the three states on the DM
-    card.
+    card. An element whose whole life is shorter than that window (a chip on a scene's last word, 630 ms in the test
+    idea) would never be judged, so it is judged once, at the last sample of its life that is not an exit (check_times
+    adds one 50 ms before its end, where the zoom and the rotation are nearly settled), for its geometry and with its
+    designed size; the M11 test's planted chip above the safe top found this.
 304. **Also found by the M11 rerun: the hold fits the room.** The CTA's DM card drops in and lands with its bottom 2 px
     above the safe bottom (decision 302); E1's inertia (16 px, downward: the drop's direction) and the normal hold's
     drift (4 px per second) then carried its message to y 1449 by the end of the ask beat, below the safe bottom of
