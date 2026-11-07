@@ -120,7 +120,7 @@ def to_component_words(entries: list[dict], clip_start_ms: int) -> list[dict]:
             start = int(w["start_ms"])
             nxt = int(words[k + 1]["start_ms"]) if k + 1 < len(words) else int(e["end_ms"])
             end = min(nxt - FRAME_MS, int(w["end_ms"]) + WORD_HOLD_MS)
-            end = max(end, start + 3 * FRAME_MS)
+            end = max(end, start + 2 * FRAME_MS)   # a word is on screen two frames at the least (it never overlaps the next one by more than a frame)
             item = {"w": w["word"], "t": round((start - clip_start_ms) / 1000, 3), "end": round((end - clip_start_ms) / 1000, 3), "em": bool(w.get("emphasis"))}
             if mo.get("kind") == "turn":
                 item["turn"] = float(mo.get("deg", 3)) * (1 if k % 2 == 0 else -1)
