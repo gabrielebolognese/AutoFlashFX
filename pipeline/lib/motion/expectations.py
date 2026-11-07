@@ -94,14 +94,21 @@ def build(tokens: dict) -> dict:
         strips=["v03/extra/s30_label_042.4.png"], still_at=0.5,
         life={"selector": "#lchip", "at": 0})
 
-    E["caption-line"] = dict(
-        props={}, frames=90, selectors=["#cap-c0", "#cap-c0-w0", "#cap-c0-w2", "#cap-c0-w2-box", "#cap-c1", "#cap-c1-w0"],
-        checks=[{"kind": "fade", "selector": "#cap-c0-w0", "at": 0.2, "frames": cap["word_frames"]},
-                {"kind": "fade", "selector": "#cap-c0-w2", "at": 0.7, "frames": cap["word_frames"]},
-                {"kind": "exit", "selector": "#cap-c0", "at": 1.4 - common.frames(cap["replace_out_frames"] + 1), "frames": cap["replace_out_frames"], "mode": "fade"},
-                {"kind": "after", "selector": "#cap-c1-w0", "ref_selector": "#cap-c0", "delay_frames": 1, "ref_mode": "gone"}],
-        strips=["v03/extra/s30_capswap_008.0.png", "v01/extra/s30_sc18.png", "v06/extra/s30_031.0_highlight.png"], still_at=1.1,
-        life={"selector": "#cap-c0", "at": 0.2, "no_inertia": True, "skip": ["#cap-c1", "#cap-c0-w0", "#cap-c0-w2", "#cap-c0-w2-box", "#cap-c1-w0"]})
+    E["caption-word"] = dict(
+        props={}, frames=90, selectors=["#cap-w0", "#cap-w1", "#cap-w2", "#cap-w2-box", "#cap-w3"],
+        checks=[{"kind": "fade", "selector": "#cap-w0", "at": 0.2, "frames": cap["word_frames"]},
+                {"kind": "fade", "selector": "#cap-w2", "at": 0.8, "frames": cap["word_frames"]},
+                {"kind": "exit", "selector": "#cap-w0", "at": 0.5 - common.frames(cap["replace_out_frames"] + 1), "frames": cap["replace_out_frames"], "mode": "fade"},
+                {"kind": "after", "selector": "#cap-w1", "ref_selector": "#cap-w0", "delay_frames": 1, "ref_mode": "gone"}],
+        strips=["v03/extra/s30_capswap_008.0.png", "v01/extra/s30_sc18.png", "v06/extra/s30_031.0_highlight.png"], still_at=1.0,
+        life={"selector": "#cap-w0", "at": 0.2, "no_inertia": True, "skip": ["#cap-w2-box"]})
+
+    E["caption-group"] = dict(
+        props={}, frames=100, selectors=["#grp-0", "#grp-0-w0", "#grp-0-w1", "#grp-0-w3"],
+        checks=[{"kind": "fade", "selector": "#grp-0-w0", "at": 0.2, "frames": 5},
+                {"kind": "exit", "selector": "#grp-0", "at": 4.0 - common.frames(5), "frames": 4, "mode": "fade"}],
+        strips=[], still_at=2.0,
+        life={"selector": "#grp-0", "at": 0.2, "no_inertia": True})
 
     E["dm-card"] = dict(
         props={"avatar": "assets/brand/mark/avatar-dark.png", "y": 700}, frames=20, selectors=["#dm"],

@@ -644,7 +644,6 @@
     "chars_per_frame": 1,
     "start_delay_frames": 8,
     "prompt": "",
-    "font_px": 28,
     "lines_json": "[{\"text\": \"/plugin install frontend-design@claude-plugins-official\", \"color\": \"accent\"}]",
     "honesty": "mock",
     "exit": "fall",

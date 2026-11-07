@@ -74,10 +74,7 @@ DESIGN = [
         {"component": "strike-through", "role": "hero", "at_word": "terracotta", "strike_word": "flagged", "props": {"x": 120, "y": 680, "text": "#D97757 on cream", "chip": True, "style": "line", "replacement": "AI look"}},
     ]},
     {"beat": "b6", "beat_type": "number", "components": [
-        {"component": "card", "role": "hero", "props": {"x": 90, "y": 500, "w": 900, "h": 500, "title": "The tells the skill names", "body": "", "enter": "rise"}},
-        {"component": "dark-chip", "role": "label", "at_word": "One", "props": {"x": 140, "y": 640, "text": "One accented headline word", "accent_word": "One"}},
-        {"component": "dark-chip", "role": "label", "at_word": "All", "props": {"x": 140, "y": 740, "text": "ALL CAPS labels", "accent_word": "ALL CAPS"}},
-        {"component": "dark-chip", "role": "label", "at_word": "Fake", "props": {"x": 140, "y": 840, "text": "Fake 01, 02, 03", "accent_word": "01, 02, 03"}},
+        {"component": "pop", "role": "hero", "props": {"kind": "badge", "icon": "star", "size": 150, "x": 800, "y": 330}},
     ]},
     {"beat": "b7", "beat_type": "mechanism", "components": [
         {"component": "check-badge", "role": "hero", "ticks_word": "plans", "props": {"mode": "list", "x": 160, "y": 620, "w": 760, "items_json": ["Plans 4 to 6 hex colors", "Reviews the layout", "Then codes"], "tick_gap_frames": 6}},
@@ -91,8 +88,7 @@ DESIGN = [
                                                                  "lines_json": [{"text": "/plugin install frontend-design@claude-plugins-official", "color": "accent"}, {"text": "Pick a scope: user or project", "color": "muted"}]}},
     ]},
     {"beat": "b10", "beat_type": "payoff", "components": [
-        {"component": "card", "role": "hero", "props": {"x": 90, "y": 560, "w": 900, "title": "Turns on by itself", "body": "Ask for frontend work and the skill is already on.", "mascot": "check", "enter": "rise"}},
-        {"component": "check-badge", "role": "support", "at_word": "itself", "props": {"mode": "badge", "x": 880, "y": 520, "size": 96}},
+        {"component": "check-badge", "role": "hero", "props": {"mode": "badge", "x": 800, "y": 330, "size": 160}},
     ]},
     {"beat": "b11", "beat_type": "ask", "cta": True, "components": [
         {"component": "end-card", "role": "cta", "props": {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "ditch the identical cards",
@@ -172,6 +168,17 @@ def build_plan(script: dict, words: dict, idea_id: str = "") -> dict:
     scene_of_beat = {s["beat"]: s["id"] for s in scenes}
     for ch in chunks:
         ch["scene"] = scene_of_beat.get(ch["scene"], ch["scene"])
+    # M15 (E3, E4): word mode in normal talk and under any text, groups where the hero zone holds no text (the same
+    # choice rule and layout engine the text pass uses)
+    from visual import plan9
+
+    class _Inp:  # the two inputs finalize_captions reads
+        pass
+    inp = _Inp()
+    inp.script, inp.words = script, words
+    chunks, _notes, _errors = plan9.finalize_captions(chunks, inp, {"scenes": scenes}, {"scenes": scenes}, toks)
+    if _errors:
+        raise RuntimeError("golden plan captions: " + "; ".join(_errors))
     plan = {
         "plan_version": 1, "style": "paper-cards", "idea_id": idea_id or script.get("idea_id", ""), "source": "golden-plan (pipeline/lib/motion/goldenplan.py)",
         "fps": 30, "duration_ms": tl.duration_ms, "voice": "08-voiceover/vo.wav",

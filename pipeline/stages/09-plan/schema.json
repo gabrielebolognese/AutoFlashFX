@@ -294,7 +294,7 @@
           "words": {
             "type": "array",
             "minItems": 1,
-            "maxItems": 4,
+            "maxItems": 6,
             "items": {
               "type": "object",
               "required": [
@@ -317,6 +317,39 @@
                 }
               }
             }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "word",
+              "group"
+            ],
+            "description": "E3: word mode (one word at a time on its spoken time) or group mode (the group as the graphic); a chunk without a mode is word mode (plans before M15)"
+          },
+          "importance": {
+            "type": "string",
+            "enum": [
+              "hook",
+              "key-claim",
+              "number",
+              "payoff",
+              "pre-ask",
+              "normal"
+            ],
+            "description": "the beat's importance from script.json, which picks the mode"
+          },
+          "anchor": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "group mode: the index of the anchor word in words"
+          },
+          "layout": {
+            "type": "object",
+            "description": "group mode: kinetic.py's placement of every word (fonts, sizes, boxes in canvas px), recomputed by the engine, never written by a model"
+          },
+          "motion": {
+            "type": "object",
+            "description": "E3: how the entry moves while on screen: {kind: rise, px} or {kind: turn, deg} (a word's life in word mode, the whole block's in group mode)"
           }
         }
       }

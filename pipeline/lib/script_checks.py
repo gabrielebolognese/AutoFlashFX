@@ -569,6 +569,42 @@ def filter_emphasis(words: list, display: str) -> list[str]:
     return out[:3]
 
 
+IMPORTANCE = ("hook", "key-claim", "number", "payoff", "pre-ask", "normal")
+
+
+def norm_importance(value) -> str:
+    """The model's importance word for a beat (hook, key claim, number, payoff, pre-ask, normal), or "" when it gave none."""
+    v = re.sub(r"[\s_]+", "-", clean(value).lower()) if value else ""
+    return v if v in IMPORTANCE else ""
+
+
+def derive_importance(beats: list[dict]) -> list[str]:
+    """Each beat's importance for the captions (BUILD_SPEC.md S7, Motion and energy rules E3): the hook, a key claim, a number,
+    the payoff, the line before the ask, or normal talk. The structure decides what it can (the hook beat, a number beat,
+    a payoff beat, the beat before the ask, a proof beat as a key claim); the model's own word only lifts a normal beat."""
+    out = []
+    n = len(beats)
+    for i, b in enumerate(beats):
+        t = b.get("type", "")
+        hint = norm_importance(b.get("importance"))
+        if i == 0 and t == "hook":
+            imp = "hook"
+        elif t == "ask":
+            imp = "normal"
+        elif t == "number":
+            imp = "number"
+        elif t == "payoff":
+            imp = "payoff"
+        elif i == n - 2 and n >= 2 and beats[-1].get("type") == "ask":
+            imp = "pre-ask"
+        elif t == "proof":
+            imp = "key-claim"
+        else:
+            imp = hint if hint in ("key-claim", "number", "payoff") else "normal"
+        out.append(imp)
+    return out
+
+
 def build_draft(answer: dict, plan: dict, label: str, tone: str, round_n: int, source: str) -> dict:
     pron = plan.get("pronunciations", [])
     hook = plan.get("hook", {})
@@ -596,7 +632,7 @@ def build_draft(answer: dict, plan: dict, label: str, tone: str, round_n: int, s
         beats.append({
             "id": f"b{i + 1}", "model_id": clean(b.get("id", "")), "type": btype, "display": display, "spoken": spoken,
             "emphasis": filter_emphasis(b.get("emphasis", []), display), "card": card,
-            "facts": normalize_facts(b.get("facts", [])), "spoken_changes": changes,
+            "facts": normalize_facts(b.get("facts", [])), "spoken_changes": changes, "importance": norm_importance(b.get("importance")),
         })
     ask_in = answer.get("ask", {}) if isinstance(answer, dict) and isinstance(answer.get("ask"), dict) else {}
     ask_beat = beats[-1] if beats and beats[-1]["type"] == "ask" else None
@@ -1344,9 +1380,10 @@ def cmd_compose(args) -> int:
             drafts_info[label] = {"tone": d.get("tone", ""), "file": os.path.basename(path), "round": d.get("round", 0),
                                   "words": d.get("words", {}), "cut": {k: d.get("cut", {}).get(k) for k in ("ok", "removed_pct", "before_words", "after_words", "chosen")}}
     beats = []
-    for b in draft["beats"]:
+    importance = derive_importance(draft["beats"])
+    for b, imp in zip(draft["beats"], importance):
         beats.append({"id": b["id"], "type": b["type"], "display": b["display"], "spoken": b["spoken"], "emphasis": b.get("emphasis", []),
-                      "card": b["card"], "card_words": card_words(b["card"]), "facts": b.get("facts", []),
+                      "importance": imp, "card": b["card"], "card_words": card_words(b["card"]), "facts": b.get("facts", []),
                       "seconds": next((r["dur"] for r in report["checks"]["beats"]["rows"] if r["id"] == b["id"]), None)})
     cut = draft.get("cut", {}) or {}
     script = {

@@ -72,6 +72,11 @@ Verbatim excerpts of the creator's real speech (match this register):
 - **card**: the big text on screen for the beat, 1 to 6 words (a value, a command, a label). For the hook it is the
   on-screen line above.
 - **emphasis**: 1 to 3 words copied from the display line that get the accent box.
+- **importance**: how much the line matters, one of hook (the first beat), key-claim (the claim the reel stands on),
+  number (the beat that carries the number), payoff (the delivery of the hook's promise), pre-ask (the line right
+  before the ask) or normal (everything else; most beats). It picks how the captions show the line: important lines
+  become big kinetic typography, normal talk runs word by word. The pipeline fixes the structural ones itself (hook,
+  number, payoff, the line before the ask), so mark a key-claim only where the line truly is the claim.
 - **facts**: the facts.md claim numbers the beat rests on, as "facts.md#n" (empty for the stake and the ask).
 
 ## Length and timing
@@ -108,6 +113,6 @@ Verbatim excerpts of the creator's real speech (match this register):
 
 Only this JSON object:
 {"tone": "{{TONE}}", "beats": [{"id": "b1", "type": "hook", "display": "...", "spoken": "...", "emphasis": ["..."],
-"card": "...", "facts": []}, {"id": "b2", "type": "stake", ...}, ..., {"id": "bN", "type": "ask", ...}],
+"importance": "hook", "card": "...", "facts": []}, {"id": "b2", "type": "stake", ...}, ..., {"id": "bN", "type": "ask", ...}],
 "ask": {"keyword": "{{KEYWORD}}", "line": "<the ask beat's display line>"}, "hook2": {"spoken": "<hook 2's spoken
 track>"}, "notes": "<one line on the choices you made, or empty>"}

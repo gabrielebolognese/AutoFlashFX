@@ -29,5 +29,5 @@ beat, not only the changed ones).
 
 ## Your answer
 
-Only the JSON object: {"tone": "{{TONE}}", "beats": [{"id", "type", "display", "spoken", "emphasis", "card", "facts"}, ...],
+Only the JSON object: {"tone": "{{TONE}}", "beats": [{"id", "type", "display", "spoken", "emphasis", "importance", "card", "facts"}, ...],
 "ask": {"keyword": "{{KEYWORD}}", "line": "..."}, "hook2": {"spoken": "..."}, "notes": "<what you changed, one line>"}

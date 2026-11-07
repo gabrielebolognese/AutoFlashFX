@@ -30,7 +30,8 @@ everything: the model writes, cuts, maps and picks.
   rewrite-line.schema.json.
 - script.json: tone, tones, picked, pick (order, winner, reason), drafts (both, with their cut), video_type,
   length_s, target_seconds, estimated_seconds, wpm, words, hook (hook 1), hook2 (display, spoken, card for the
-  alternate clip), beats[] (id b1.., type, display, spoken, emphasis of at most 3 words, card of 1 to 6 words,
+  alternate clip), beats[] (id b1.., type, display, spoken, emphasis of at most 3 words, importance (hook, key-claim, number, payoff, pre-ask or normal: M15, the pipeline fixes
+  the structural ones, script_checks.derive_importance; it picks the caption mode), card of 1 to 6 words,
   card_words, facts, seconds), ask (keyword, line, loop_word, deliverable), cut (before, after, removed_pct, ok),
   checks (ok, hard, soft, info, summary, detail: beats, structure, stake, ask, requirements, length, cards, hook,
   detect, humanize, claims), rounds, rounds_log, flags, pronunciations, spoken_changes, rewrites (S8's one-line

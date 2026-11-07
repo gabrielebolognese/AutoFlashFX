@@ -24,7 +24,7 @@ import os
 import re
 
 from motion import captions
-from visual import common, plan_merge, plan_validate
+from visual import common, plan_merge, plan_validate, kinetic
 
 ROLES = ["hero", "support", "label", "brand-slot", "logo", "set-piece", "cta", "notification", "text"]
 
@@ -66,7 +66,7 @@ def catalog_md(cat: dict, include_demo: bool = True) -> str:
              "IMAGE marks an image prop: it takes brand/<path from brand.json> or research/<file> (never another path, never drawn). "
              "Times in props are seconds local to the component's own start. Every component also takes exit and exit_at, which the transitions pass sets: never set them yourself.", ""]
     for c in cat["components"]:
-        if c.get("status") != "approved" or c["id"] in ("paper-canvas", "caption-line"):
+        if c.get("status") != "approved" or c["id"] in ("paper-canvas", "caption-line", "caption-word", "caption-group"):
             continue
         lines.append(f"### {c['id']} (item {c.get('item') or 'extra'}, kind {c.get('kind')}): {c.get('name')}")
         lines.append(f"- does: {c.get('does', '')}")
@@ -214,7 +214,7 @@ def run_digest(args) -> int:
         out["timeline"] = timeline_md(inp)
         out["scenes"] = scenes_md(plan_a)
         if args.which == "text":
-            out["chunks"] = chunks_md(baseline_chunks(inp, plan_a, toks))
+            out["chunks"] = chunks_md(baseline_chunks(inp, plan_a, toks)) + captions_guidance(inp, plan_a, toks)
         else:
             plan_b_path = os.path.join(args.run_dir, "09b-text", "plan.json")
             merged = plan_merge.merge(plan_a, common.load_json(plan_b_path) if os.path.isfile(plan_b_path) else None, None, toks)
@@ -479,30 +479,19 @@ def compose_text(answer: dict, inp: common.Inputs, plan_a: dict, toks: dict, cat
                 pos += 1
             if not ws:
                 continue
-            if len(ws) > max_words:
-                errors.append(f"chunk {gi} has {len(ws)} words; at most {max_words}")
+            hint_mode = g.get("mode") if g.get("mode") in ("word", "group") else None
+            limit = 6 if hint_mode == "group" else max_words
+            if len(ws) > limit:
+                errors.append(f"chunk {gi} has {len(ws)} words; at most {limit}" + ("" if hint_mode == "group" else " (a group caption holds up to 6: say mode group)"))
             n_em = sum(1 for e in entries if e["emphasis"])
             if n_em > max_em:
                 errors.append(f"chunk {gi} has {n_em} emphasis words; at most {max_em}")
-            chunks.append({"scene": scene_of.get(body[pos - 1].get("beat"), ""), "start_ms": entries[0]["start_ms"], "end_ms": entries[-1]["end_ms"], "words": entries})
-        # a chunk wider than the caption line is split at word boundaries (the style's line is 620 px)
-        split = []
-        for ch in chunks:
-            cur: list[dict] = []
-            for w in ch["words"]:
-                if cur and common.caption_chunk_width(cur + [w], toks) > max_w:
-                    split.append({"scene": ch["scene"], "start_ms": cur[0]["start_ms"], "end_ms": cur[-1]["end_ms"], "words": cur})
-                    cur = []
-                cur.append(w)
-            if cur:
-                split.append({"scene": ch["scene"], "start_ms": cur[0]["start_ms"], "end_ms": cur[-1]["end_ms"], "words": cur})
-        if len(split) != len(chunks):
-            notes.append(f"{len(split) - len(chunks)} chunks were wider than {max_w:.0f} px and were split")
-        chunks = split
-        for a, b in zip(chunks, chunks[1:]):
-            a["end_ms"] = max(a["end_ms"], b["start_ms"])
-        if chunks:
-            chunks[-1]["end_ms"] = min(tl.duration_ms, chunks[-1]["end_ms"] + 400)
+            entry = {"scene": scene_of.get(body[pos - 1].get("beat"), ""), "start_ms": entries[0]["start_ms"], "end_ms": entries[-1]["end_ms"], "words": entries}
+            if hint_mode:
+                entry["_mode"] = hint_mode
+            if g.get("anchor") not in (None, ""):
+                entry["_anchor"] = g.get("anchor")
+            chunks.append(entry)
     # the cards: text overrides on the 9a instances
     overrides = []
     inst = {c["id"]: (s, c) for s in plan_a["scenes"] for c in s["components"]}
@@ -538,11 +527,210 @@ def compose_text(answer: dict, inp: common.Inputs, plan_a: dict, toks: dict, cat
         if len(common.words_of(text)) > title_max:
             errors.append(f"label \"{text[:50]}\" has {len(common.words_of(text))} words; {title_max} or fewer")
         labels.append({"scene": str(l.get("scene")), "kind": kind, "text": text})
+    # E3 and E4: the mode, layout and motion of every caption entry, from the card texts as they stand now
+    base = plan_merge.merge(plan_a, {"captions": [], "overrides": overrides, "cards": [], "labels": labels}, None, toks)
+    if chunks:
+        chunks, fnotes, ferrors = finalize_captions(chunks, inp, plan_a, base, toks)
+        notes += fnotes
+        errors += ferrors
     plan_b = {"pass": "text", "captions": chunks, "overrides": overrides, "cards": [], "labels": labels, "notes": common.undash(str(answer.get("notes", "")))[:1000]}
     merged = plan_merge.merge(plan_a, plan_b, None, toks)
     plan_b["cards"] = merged.get("cards", [])
     plan_b["labels"] = merged.get("labels", [])
     return plan_b, errors, notes
+
+
+# ------------------------------------------------------------------------------------------------ M15: caption modes (E3, E4)
+
+def importance_by_scene(inp: common.Inputs, plan_a: dict) -> dict:
+    """script.json's importance of each beat, by scene id (a script from before M15 has none: normal)."""
+    beats = list((inp.script or {}).get("beats", []))
+    derived: list[str] = []
+    if any(not b.get("importance") for b in beats):
+        try:   # a script from before M15 has none: the structure decides (hook, number, payoff, the line before the ask)
+            import script_checks
+            derived = script_checks.derive_importance(beats)
+        except Exception:  # noqa: BLE001
+            derived = []
+    imp = {b["id"]: (b.get("importance") or (derived[i] if i < len(derived) else "normal")) for i, b in enumerate(beats)}
+    return {s["id"]: imp.get(s["beat"], "normal") for s in plan_a["scenes"]}
+
+
+def scene_state(plan: dict, scene: dict, toks: dict) -> dict:
+    """What the scene's hero zone holds: its text (characters, from the instances) and the graphics that block a group."""
+    texts = []
+    for c in scene["components"]:
+        for it in common.text_items(c["component"], c.get("props", {}), toks):
+            texts.append((c["id"], it["chars"]))
+    zone = kinetic.group_zone(toks)
+    blockers = []
+    for b in common.visible_boxes(plan, int(scene["start_ms"]), int(scene["end_ms"]), toks):
+        ox = min(b["x"] + b["w"], zone["x1"]) - max(b["x"], zone["x0"])
+        oy = min(b["y"] + b["h"], zone["y1"]) - max(b["y"], zone["y0"])
+        if ox > 8 and oy > 8:
+            blockers.append(b["id"])
+    return {"text_chars": sum(n for _i, n in texts), "text_instances": sorted({i for i, _n in texts}), "blockers": blockers}
+
+
+def captions_guidance(inp: common.Inputs, plan_a: dict, toks: dict) -> str:
+    """The caption-mode part of the 9b digest: per scene its importance, whether text or a graphic sits in the hero zone,
+    and the mode the pipeline would pick on its own (the director may override it where the rules allow)."""
+    imp = importance_by_scene(inp, plan_a)
+    g = kinetic.grammar(toks)
+    lo, hi = (g.get("group_words") or [2, 6])[:2]
+    lines = ["", "## Caption modes per scene (Motion and energy rules E3 and E4)", "",
+             f"Word mode: one word at a time on its spoken time, the emphasis words larger in the serif italic on the accent box, every word rising a little. "
+             f"Group mode: {lo} to {hi} words fill the hero zone as kinetic typography (the pipeline lays the words out: you only choose the words and the anchor, "
+             f"the most important word); it needs a hero zone with no text and no graphic under it, and it is the choice where the voice says something important "
+             f"or the scene has no graphic to show. Whenever any other text is on screen the captions are in word mode. At most "
+             f"{((toks.get('motion') or {}).get('grammar') or {}).get('text_budget', {}).get('max_chars_on_screen', 100)} characters of card, chip and code text on screen at once.", ""]
+    for s in plan_a["scenes"]:
+        if s.get("beat_type") in ("hook", "ask"):
+            continue
+        st = scene_state(plan_a, s, toks)
+        auto = "word"
+        if st["text_chars"] == 0 and (imp[s["id"]] != "normal" or not st["blockers"]):
+            auto = "group"
+        lines.append(f"- {s['id']} ({s['beat']}, {s['beat_type']}): importance {imp[s['id']]}; text on screen {st['text_chars']} characters"
+                     + (f" ({', '.join(st['text_instances'])})" if st["text_instances"] else "")
+                     + (f"; graphics in the hero zone: {', '.join(st['blockers'])}" if st["blockers"] else "; hero zone free")
+                     + f"; the pipeline's own choice: {auto} mode")
+    return "\n".join(lines) + "\n"
+
+
+def _anchor_index(words: list[dict], hint) -> int | None:
+    if isinstance(hint, int) and 0 <= hint < len(words):
+        return hint
+    if isinstance(hint, str) and hint.strip():
+        want = common.norm(hint)
+        for i, w in enumerate(words):
+            if common.norm(w["word"]) == want:
+                return i
+    return None
+
+
+def finalize_captions(chunks: list[dict], inp: common.Inputs, plan_a: dict, base: dict, toks: dict) -> tuple[list[dict], list[str], list[str]]:
+    """Mode, layout and motion of every caption entry (E3, E4). `chunks` are the word runs of the director's answer (or the
+    baseline), optionally with "_mode" (word | group) and "_anchor" hints; `base` is the plan with the card texts as they
+    are now. Without a hint the choice rule decides: word mode under any text, group mode where the hero zone holds no
+    text and the beat is important or has no graphic there, word mode otherwise. Groups of the pipeline's own choosing are
+    re-cut from the beat's words (group_runs); every group is laid out by kinetic.py, which splits one that does not fit."""
+    errors: list[str] = []
+    notes: list[str] = []
+    imp = importance_by_scene(inp, plan_a)
+    text_wins = common.text_windows(base, toks)
+    zone = kinetic.group_zone(toks)
+    scenes = {s["id"]: s for s in plan_a["scenes"]}
+    max_w = float((toks.get("zones") or {}).get("caption", {}).get("max_width", 620))
+
+    def text_over(a: int, b: int) -> str | None:
+        for (s0, s1, inst) in text_wins:
+            if a < s1 and s0 < b:
+                return inst
+        return None
+
+    def blockers(a: int, b: int) -> list[dict]:
+        out = []
+        for bx in common.visible_boxes(base, a, b, toks):
+            ox = min(bx["x"] + bx["w"], zone["x1"]) - max(bx["x"], zone["x0"])
+            oy = min(bx["y"] + bx["h"], zone["y1"]) - max(bx["y"], zone["y0"])
+            if ox > 8 and oy > 8:
+                out.append(bx)
+        return out
+
+    # 1. a mode for every entry
+    decided: list[dict] = []
+    for i, ch in enumerate(chunks):
+        hint = ch.pop("_mode", None)
+        anchor_hint = ch.pop("_anchor", None)
+        a, b = int(ch["start_ms"]), int(ch["end_ms"])
+        label = "chunk " + str(i) + " (" + " ".join(w["word"] for w in ch["words"]) + ")"
+        over = text_over(a, b)
+        scene_imp = imp.get(ch.get("scene", ""), "normal")
+        if hint == "group":
+            if over:
+                errors.append(f"{label} is a group caption but {over} shows text then: captions are in word mode whenever any other text is on screen (E4); use word mode for it, or take the text off the card")
+                mode, origin = "word", "forced"
+            elif len(ch["words"]) < 2 or len(ch["words"]) > 6:
+                errors.append(f"{label} is a group caption of {len(ch['words'])} words; a group holds 2 to 6")
+                mode, origin = "word", "forced"
+            else:
+                mode, origin = "group", "director"
+        elif hint == "word":
+            mode, origin = "word", "director"
+        elif over:
+            mode, origin = "word", "auto"
+        else:
+            free = not blockers(a, b)
+            mode, origin = ("group", "auto") if (scene_imp != "normal" or free) else ("word", "auto")
+        decided.append({"entry": ch, "mode": mode, "origin": origin, "anchor": anchor_hint, "importance": scene_imp})
+
+    # 2. the groups: a director's group as written, the pipeline's own groups re-cut from the beat's words
+    out: list[dict] = []
+    group_index = 0
+    i = 0
+    while i < len(decided):
+        d = decided[i]
+        if d["mode"] != "group":
+            out.append({**d["entry"], "mode": "word", "importance": d["importance"]})
+            i += 1
+            continue
+        j = i + 1
+        if d["origin"] == "auto":
+            while j < len(decided) and decided[j]["mode"] == "group" and decided[j]["origin"] == "auto" and decided[j]["entry"].get("scene") == d["entry"].get("scene"):
+                j += 1
+            words = [w for k in range(i, j) for w in decided[k]["entry"]["words"]]
+            runs = kinetic.group_runs(words, max_words=6, min_words=2)
+        else:
+            words = list(d["entry"]["words"])
+            runs = [words]
+        for run in runs:
+            a, b = int(run[0]["start_ms"]), int(run[-1]["end_ms"])
+            if len(run) < 2:
+                out.append({"scene": d["entry"].get("scene", ""), "start_ms": a, "end_ms": b, "words": run, "mode": "word", "importance": d["importance"]})
+                continue
+            avoid = [{k: bx[k] for k in ("x", "y", "w", "h")} for bx in blockers(a, b)]
+            anchor = _anchor_index(run, d["anchor"]) if d["origin"] == "director" else None
+            if anchor is None:
+                anchor = kinetic.choose_anchor(run, toks)
+            lays = kinetic.layout_groups(run, toks, anchors=anchor, index=group_index, avoid=avoid)
+            if any(not lay.get("ok") for lay in lays):
+                if d["origin"] == "director":
+                    errors.append(f"the group \"{' '.join(w['word'] for w in run)}\" cannot be laid out in the hero zone: {next(l['reason'] for l in lays if not l.get('ok'))}")
+                else:
+                    notes.append(f"the words \"{' '.join(w['word'] for w in run)}\" fit no group layout beside the graphics: word mode")
+                for k in range(0, len(run), 4):
+                    part = run[k:k + 4]
+                    out.append({"scene": d["entry"].get("scene", ""), "start_ms": int(part[0]["start_ms"]), "end_ms": int(part[-1]["end_ms"]), "words": part, "mode": "word", "importance": d["importance"]})
+                continue
+            for lay in lays:
+                lo, hi = lay["span"]
+                part = run[lo:hi + 1]
+                lay_clean = {k: v for k, v in lay.items() if k not in ("ok", "span")}
+                out.append({"scene": d["entry"].get("scene", ""), "start_ms": int(part[0]["start_ms"]), "end_ms": int(part[-1]["end_ms"]), "words": part, "mode": "group",
+                            "importance": d["importance"], "anchor": lay["anchor"], "layout": lay_clean, "motion": lay["motion"]})
+                group_index += 1
+        i = j
+
+    # 3. times and motion
+    out.sort(key=lambda e: int(e["start_ms"]))
+    for k, (a, b) in enumerate(zip(out, out[1:])):
+        gap = int(b["start_ms"]) - int(a["end_ms"])
+        a["end_ms"] = int(b["start_ms"]) if gap <= 1500 else int(a["end_ms"]) + 600
+    if out:
+        out[-1]["end_ms"] = min(common_duration(inp), int(out[-1]["end_ms"]) + 400)
+    for k, e in enumerate(out):
+        if e["mode"] == "word":
+            e["motion"] = kinetic.word_motion(k, toks)
+    n_group = sum(1 for e in out if e["mode"] == "group")
+    if n_group:
+        notes.append(f"{n_group} caption groups, {len(out) - n_group} word runs")
+    return out, notes, errors
+
+
+def common_duration(inp: common.Inputs) -> int:
+    tl = common.Timeline(inp.words)
+    return int(tl.duration_ms)
 
 
 # ------------------------------------------------------------------------------------------------ 9c transitions

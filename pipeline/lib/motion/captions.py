@@ -6,7 +6,11 @@ sentence end, at a pause of pause_ms or more, at a beat boundary and at the word
   chunk_words(words, emphasis_terms, max_words=4, pause_ms=150, max_width=None, width_fn=None) -> [{"start_ms", "end_ms", "scene"?, "words": [{"word", "start_ms", "end_ms", "emphasis"}]}]
       words: words.json entries [{"word", "start_ms", "end_ms", "beat"}] of one or more beats
       emphasis_terms: {beat id: ["term", ...]} from script.json (a term may be several words)
-  to_component_chunks(chunks, clip_start_ms) -> the caption-line component's chunks_json (seconds local to the clip)
+  to_component_chunks(chunks, clip_start_ms) -> the old caption-line component's chunks_json (seconds local to the clip)
+  word_entries(captions), group_entries(captions) -> the plan's caption entries by mode (M15: an entry without a mode
+      is word mode)
+  to_component_words(entries, clip_start_ms) -> caption-word's words_json: one word at a time, each with its life
+  to_component_groups(entries, clip_start_ms) -> caption-group's groups_json: the words with kinetic.py's layout
 """
 from __future__ import annotations
 
@@ -87,4 +91,56 @@ def to_component_chunks(chunks: list[dict], clip_start_ms: int) -> list[dict]:
             "end": round((c["end_ms"] - clip_start_ms) / 1000, 3),
             "words": [{"w": w["word"], "t": round((w["start_ms"] - clip_start_ms) / 1000, 3), "em": bool(w.get("emphasis"))} for w in c["words"]],
         })
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ M15: the two caption modes
+
+FRAME_MS = 1000.0 / 30
+WORD_HOLD_MS = 400   # a word stays on screen at most this long after it is spoken, even before a long pause
+
+
+def word_entries(caps: list[dict]) -> list[dict]:
+    return [c for c in caps if (c.get("mode") or "word") == "word"]
+
+
+def group_entries(caps: list[dict]) -> list[dict]:
+    return [c for c in caps if c.get("mode") == "group"]
+
+
+def to_component_words(entries: list[dict], clip_start_ms: int) -> list[dict]:
+    """caption-word's words_json for the word-mode entries (seconds local to the clip). A word stays until the next word
+    of its entry starts (one frame before it), the last word of an entry until the entry ends (one frame early), never
+    more than WORD_HOLD_MS after it was spoken."""
+    out = []
+    for e in entries:
+        words = e.get("words", [])
+        mo = e.get("motion") or {"kind": "rise", "px": 12}
+        for k, w in enumerate(words):
+            start = int(w["start_ms"])
+            nxt = int(words[k + 1]["start_ms"]) if k + 1 < len(words) else int(e["end_ms"])
+            end = min(nxt - FRAME_MS, int(w["end_ms"]) + WORD_HOLD_MS)
+            end = max(end, start + 3 * FRAME_MS)
+            item = {"w": w["word"], "t": round((start - clip_start_ms) / 1000, 3), "end": round((end - clip_start_ms) / 1000, 3), "em": bool(w.get("emphasis"))}
+            if mo.get("kind") == "turn":
+                item["turn"] = float(mo.get("deg", 3)) * (1 if k % 2 == 0 else -1)
+            else:
+                item["rise"] = float(mo.get("px", 12))
+            out.append(item)
+    return out
+
+
+def to_component_groups(entries: list[dict], clip_start_ms: int) -> list[dict]:
+    """caption-group's groups_json for the group-mode entries (seconds local to the clip, the layout in canvas px)."""
+    out = []
+    for e in entries:
+        lay = e.get("layout") or {}
+        lw = lay.get("words", [])
+        words = []
+        for k, w in enumerate(e.get("words", [])):
+            lwk = lw[k] if k < len(lw) else {}
+            words.append({"w": w["word"], "t": round((int(w["start_ms"]) - clip_start_ms) / 1000, 3), "font": lwk.get("font", "grotesk"), "color": lwk.get("color", "ink"),
+                          "px": lwk.get("px", 67), "x": lwk.get("x", 0), "y": lwk.get("y", 0), "bw": lwk.get("w", 0), "bh": lwk.get("h", lwk.get("px", 67)), "em": bool(w.get("emphasis"))})
+        out.append({"start": round((int(e["start_ms"]) - clip_start_ms) / 1000, 3), "end": round((int(e["end_ms"]) - clip_start_ms) / 1000, 3),
+                    "box": lay.get("box", {"x": 0, "y": 0, "w": 1080, "h": 1920}), "motion": e.get("motion") or lay.get("motion") or {"kind": "rise", "px": 30}, "words": words})
     return out

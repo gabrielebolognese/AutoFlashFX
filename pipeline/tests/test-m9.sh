@@ -306,14 +306,14 @@ outside = [c["id"] for s in p["scenes"] if s["id"] != cta["id"] for c in s["comp
 print("outside", "ok" if not outside else str(outside))
 hook = next(s for s in p["scenes"] if s["beat_type"] == "hook")
 print("hook-set-piece", "ok" if hook.get("hook_set_piece") and any(c["start_ms"] >= 2000 for c in hook["components"]) else "none")
-print("captions", "ok" if p["captions"] and all(1 <= len(c["words"]) <= 4 for c in p["captions"]) else "bad")
+print("captions", "ok" if p["captions"] and all((2 <= len(c["words"]) <= 6) if c.get("mode") == "group" else (1 <= len(c["words"]) <= 4) for c in p["captions"]) else "bad")  # M15: word runs of 1 to 4, groups of 2 to 6
 EOF
     cat /tmp/m9-plan.txt
     assert_grep "^dm ok" /tmp/m9-plan.txt "the CTA scene has the FlashFX DM card with avatar-dark.png"
     assert_grep "^lockup ok" /tmp/m9-plan.txt "the CTA scene's end card carries a FlashFX lockup"
     assert_grep "^outside ok" /tmp/m9-plan.txt "no FlashFX asset outside the CTA (the solution is not FlashFX)"
     assert_grep "^hook-set-piece ok" /tmp/m9-plan.txt "the hook has a set piece landing in the breath"
-    assert_grep "^captions ok" /tmp/m9-plan.txt "caption chunks of 1 to 4 words"
+    assert_grep "^captions ok" /tmp/m9-plan.txt "caption word runs of 1 to 4 words and groups of 2 to 6 (M15)"
   fi
 fi
 

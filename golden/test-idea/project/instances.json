@@ -355,112 +355,31 @@
    }
   },
   {
-   "instance": "s6-card-1",
-   "component": "card",
+   "instance": "s6-pop-1",
+   "component": "pop",
    "scene": "s6",
    "start_ms": 18860,
    "end_ms": 22730,
    "sound_events": [
     {
-     "event": "enter",
+     "event": "pop",
      "frame": 0,
-     "cue": "hero_enter",
-     "note": "only when the card is the scene's hero"
+     "cue": "ui_click"
     },
     {
-     "event": "land",
-     "frame": 8,
+     "event": "pop_peak",
+     "frame": "round(frames x 0.55)",
      "cue": null
-    },
-    {
-     "event": "mascot",
-     "frame": 12,
-     "cue": null,
-     "note": "when the mascot prop is set"
-    },
-    {
-     "event": "exit",
-     "frame": "exit_at x 30",
-     "cue": "transition",
-     "note": "when exit is set"
     }
    ],
    "props": {
-    "x": 90,
-    "y": 500,
-    "w": 900,
-    "h": 500,
-    "title": "The tells the skill names",
-    "body": "",
-    "enter": "rise",
+    "kind": "badge",
+    "icon": "star",
+    "size": 150,
+    "x": 800,
+    "y": 330,
     "exit": "fall",
     "exit_at": 3.537
-   }
-  },
-  {
-   "instance": "s6-dark-chip-2",
-   "component": "dark-chip",
-   "scene": "s6",
-   "start_ms": 18860,
-   "end_ms": 22730,
-   "sound_events": [
-    {
-     "event": "pop",
-     "frame": 0,
-     "cue": "ui_click"
-    }
-   ],
-   "props": {
-    "x": 140,
-    "y": 640,
-    "text": "One accented headline word",
-    "accent_word": "One",
-    "exit": "fall",
-    "exit_at": 3.537
-   }
-  },
-  {
-   "instance": "s6-dark-chip-3",
-   "component": "dark-chip",
-   "scene": "s6",
-   "start_ms": 20540,
-   "end_ms": 22730,
-   "sound_events": [
-    {
-     "event": "pop",
-     "frame": 0,
-     "cue": "ui_click"
-    }
-   ],
-   "props": {
-    "x": 140,
-    "y": 740,
-    "text": "ALL CAPS labels",
-    "accent_word": "ALL CAPS",
-    "exit": "fall",
-    "exit_at": 1.857
-   }
-  },
-  {
-   "instance": "s6-dark-chip-4",
-   "component": "dark-chip",
-   "scene": "s6",
-   "start_ms": 21560,
-   "end_ms": 22730,
-   "sound_events": [
-    {
-     "event": "pop",
-     "frame": 0,
-     "cue": "ui_click"
-    }
-   ],
-   "props": {
-    "x": 140,
-    "y": 840,
-    "text": "Fake 01, 02, 03",
-    "accent_word": "01, 02, 03",
-    "exit": "fall",
-    "exit_at": 0.837
    }
   },
   {
@@ -618,53 +537,10 @@
    }
   },
   {
-   "instance": "s10-card-1",
-   "component": "card",
-   "scene": "s10",
-   "start_ms": 34740,
-   "end_ms": 37730,
-   "sound_events": [
-    {
-     "event": "enter",
-     "frame": 0,
-     "cue": "hero_enter",
-     "note": "only when the card is the scene's hero"
-    },
-    {
-     "event": "land",
-     "frame": 8,
-     "cue": null
-    },
-    {
-     "event": "mascot",
-     "frame": 12,
-     "cue": null,
-     "note": "when the mascot prop is set"
-    },
-    {
-     "event": "exit",
-     "frame": "exit_at x 30",
-     "cue": "transition",
-     "note": "when exit is set"
-    }
-   ],
-   "props": {
-    "x": 90,
-    "y": 560,
-    "w": 900,
-    "title": "Turns on by itself",
-    "body": "Ask for frontend work and the skill is already on.",
-    "mascot": "check",
-    "enter": "rise",
-    "exit": "fall",
-    "exit_at": 2.657
-   }
-  },
-  {
-   "instance": "s10-check-badge-2",
+   "instance": "s10-check-badge-1",
    "component": "check-badge",
    "scene": "s10",
-   "start_ms": 35540,
+   "start_ms": 34740,
    "end_ms": 37730,
    "sound_events": [
     {
@@ -676,11 +552,11 @@
    ],
    "props": {
     "mode": "badge",
-    "x": 880,
-    "y": 520,
-    "size": 96,
+    "x": 800,
+    "y": 330,
+    "size": 160,
     "exit": "fall",
-    "exit_at": 1.857
+    "exit_at": 2.657
    }
   },
   {

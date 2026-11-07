@@ -17,6 +17,7 @@
           "display": {"type": "string"},
           "spoken": {"type": "string"},
           "emphasis": {"type": "array", "items": {"type": "string"}},
+          "importance": {"type": "string", "description": "hook, key-claim, number, payoff, pre-ask or normal: how much the line matters (it picks the caption mode); the pipeline fixes the structural ones"},
           "card": {"type": "string"},
           "facts": {"type": "array", "items": {"type": "string"}}
         }

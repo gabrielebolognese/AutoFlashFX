@@ -194,7 +194,7 @@ if want 1; then
   sandbox_init --with-review
   fake_whisper_on
   RD="$(seed_run)"
-  assert_file "$RD/10-build/project/compositions/caption-line.html" "the run's project was rebuilt from the frozen plan (compositions in place)"
+  assert_file "$RD/10-build/project/compositions/caption-word.html" "the run's project was rebuilt from the frozen plan (compositions in place)"
   assert_file "$RD/10-build/hook2/compositions/headline.html" "the hook 2 project was rebuilt too"
   assert_file "$RD/10-build/draft.mp4" "draft.mp4 present (frozen or rendered)"
   t0=$EPOCHSECONDS

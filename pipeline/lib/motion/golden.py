@@ -226,15 +226,18 @@ def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, a
                          f'data-variable-values=\'{attr_json(props)}\'></div>')
             events_hint.append({"instance": comp["id"], "component": comp["component"], "scene": s["id"], "start_ms": comp["start_ms"], "end_ms": comp["end_ms"],
                                 "sound_events": c.get("sound_events", []), "props": props})
-    if plan.get("captions"):
-        first = min(ch["start_ms"] for ch in plan["captions"])
-        last = max(ch["end_ms"] for ch in plan["captions"])
+    for mode, comp_id, host_id, convert in (("word", "caption-word", "captions", captions.to_component_words), ("group", "caption-group", "captions-groups", captions.to_component_groups)):
+        entries = captions.word_entries(plan.get("captions", [])) if mode == "word" else captions.group_entries(plan.get("captions", []))
+        if not entries:
+            continue
+        first = min(ch["start_ms"] for ch in entries)
+        last = max(ch["end_ms"] for ch in entries)
         clip_start = max(0, first - 200)
-        chunks = captions.to_component_chunks(plan["captions"], clip_start)
-        cap = by_id["caption-line"]
-        cap_props = {"chunks_json": json.dumps(chunks, ensure_ascii=False)}
-        hosts.append(f'      <div id="captions" class="clip" data-composition-id="captions" data-composition-src="{cap["file"]}" data-start="{clip_start / 1000:.3f}" data-duration="{(min(plan["duration_ms"], last + 100) - clip_start) / 1000:.3f}" '
-                     f'data-track-index="2" data-track-kind="captions" data-width="1080" data-height="1920" data-scene="captions" style="z-index: {cap.get("z", 5)}" data-variable-values=\'{attr_json(cap_props)}\'></div>')
+        data = convert(entries, clip_start)
+        cap = by_id[comp_id]
+        cap_props = {("words_json" if mode == "word" else "groups_json"): json.dumps(data, ensure_ascii=False)}
+        hosts.append(f'      <div id="{host_id}" class="clip" data-composition-id="{host_id}" data-composition-src="{cap["file"]}" data-start="{clip_start / 1000:.3f}" data-duration="{(min(plan["duration_ms"], last + 100) - clip_start) / 1000:.3f}" '
+                     f'data-track-index="2" data-track-kind="captions" data-width="1080" data-height="1920" data-scene="captions" data-component="{comp_id}" style="z-index: {cap.get("z", 5)}" data-variable-values=\'{attr_json(cap_props)}\'></div>')
     index = f"""<!doctype html>
 <html lang="en" data-resolution="portrait">
   <head>

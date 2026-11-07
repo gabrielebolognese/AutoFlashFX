@@ -338,65 +338,18 @@
    "emphasis_hits": [],
    "components": [
     {
-     "id": "s6-card-1",
-     "component": "card",
+     "id": "s6-pop-1",
+     "component": "pop",
      "start_ms": 18860,
      "end_ms": 22730,
      "props": {
-      "x": 90,
-      "y": 500,
-      "w": 900,
-      "h": 500,
-      "title": "The tells the skill names",
-      "body": "",
-      "enter": "rise"
+      "kind": "badge",
+      "icon": "star",
+      "size": 150,
+      "x": 800,
+      "y": 330
      },
      "role": "hero",
-     "honesty_label": null,
-     "assets": []
-    },
-    {
-     "id": "s6-dark-chip-2",
-     "component": "dark-chip",
-     "start_ms": 18860,
-     "end_ms": 22730,
-     "props": {
-      "x": 140,
-      "y": 640,
-      "text": "One accented headline word",
-      "accent_word": "One"
-     },
-     "role": "label",
-     "honesty_label": null,
-     "assets": []
-    },
-    {
-     "id": "s6-dark-chip-3",
-     "component": "dark-chip",
-     "start_ms": 20540,
-     "end_ms": 22730,
-     "props": {
-      "x": 140,
-      "y": 740,
-      "text": "ALL CAPS labels",
-      "accent_word": "ALL CAPS"
-     },
-     "role": "label",
-     "honesty_label": null,
-     "assets": []
-    },
-    {
-     "id": "s6-dark-chip-4",
-     "component": "dark-chip",
-     "start_ms": 21560,
-     "end_ms": 22730,
-     "props": {
-      "x": 140,
-      "y": 840,
-      "text": "Fake 01, 02, 03",
-      "accent_word": "01, 02, 03"
-     },
-     "role": "label",
      "honesty_label": null,
      "assets": []
     }
@@ -567,35 +520,17 @@
    ],
    "components": [
     {
-     "id": "s10-card-1",
-     "component": "card",
+     "id": "s10-check-badge-1",
+     "component": "check-badge",
      "start_ms": 34740,
      "end_ms": 37730,
      "props": {
-      "x": 90,
-      "y": 560,
-      "w": 900,
-      "title": "Turns on by itself",
-      "body": "Ask for frontend work and the skill is already on.",
-      "mascot": "check",
-      "enter": "rise"
+      "mode": "badge",
+      "x": 800,
+      "y": 330,
+      "size": 160
      },
      "role": "hero",
-     "honesty_label": null,
-     "assets": []
-    },
-    {
-     "id": "s10-check-badge-2",
-     "component": "check-badge",
-     "start_ms": 35540,
-     "end_ms": 37730,
-     "props": {
-      "mode": "badge",
-      "x": 880,
-      "y": 520,
-      "size": 96
-     },
-     "role": "support",
      "honesty_label": null,
      "assets": []
     }
@@ -687,7 +622,13 @@
      "end_ms": 4140,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
   },
   {
    "scene": "s2",
@@ -712,7 +653,13 @@
      "end_ms": 4960,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
   },
   {
    "scene": "s2",
@@ -737,7 +684,13 @@
      "end_ms": 5980,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
   },
   {
    "scene": "s2",
@@ -750,7 +703,13 @@
      "end_ms": 6340,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
   },
   {
    "scene": "s3",
@@ -769,7 +728,13 @@
      "end_ms": 7320,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
   },
   {
    "scene": "s3",
@@ -794,7 +759,13 @@
      "end_ms": 8200,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
   },
   {
    "scene": "s3",
@@ -813,7 +784,13 @@
      "end_ms": 8980,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
   },
   {
    "scene": "s3",
@@ -832,7 +809,13 @@
      "end_ms": 10060,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
   },
   {
    "scene": "s3",
@@ -851,7 +834,13 @@
      "end_ms": 10780,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
   },
   {
    "scene": "s3",
@@ -864,7 +853,13 @@
      "end_ms": 11140,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
   },
   {
    "scene": "s4",
@@ -895,7 +890,13 @@
      "end_ms": 12110,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
   },
   {
    "scene": "s4",
@@ -920,7 +921,13 @@
      "end_ms": 13490,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
   },
   {
    "scene": "s4",
@@ -933,7 +940,13 @@
      "end_ms": 14290,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
   },
   {
    "scene": "s4",
@@ -946,7 +959,13 @@
      "end_ms": 14810,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
   },
   {
    "scene": "s5",
@@ -965,7 +984,13 @@
      "end_ms": 15910,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
   },
   {
    "scene": "s5",
@@ -984,7 +1009,13 @@
      "end_ms": 16590,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
   },
   {
    "scene": "s5",
@@ -1009,7 +1040,13 @@
      "end_ms": 17850,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
   },
   {
    "scene": "s5",
@@ -1040,12 +1077,18 @@
      "end_ms": 18670,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
   },
   {
    "scene": "s6",
    "start_ms": 18860,
-   "end_ms": 19580,
+   "end_ms": 20540,
    "words": [
     {
      "word": "One",
@@ -1058,14 +1101,7 @@
      "start_ms": 19040,
      "end_ms": 19580,
      "emphasis": false
-    }
-   ]
-  },
-  {
-   "scene": "s6",
-   "start_ms": 19580,
-   "end_ms": 20540,
-   "words": [
+    },
     {
      "word": "headline",
      "start_ms": 19580,
@@ -1078,7 +1114,126 @@
      "end_ms": 20300,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 1,
+   "layout": {
+    "anchor": 1,
+    "anchor_px": 184.2,
+    "ratio": 2.749,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "One",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 73.7,
+      "x": 60.0,
+      "y": 512.4,
+      "w": 110.2,
+      "h": 73.7
+     },
+     {
+      "i": 1,
+      "text": "accented",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 184.2,
+      "x": 60.0,
+      "y": 589.0,
+      "w": 844.5,
+      "h": 184.2
+     },
+     {
+      "i": 2,
+      "text": "headline",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 77.4,
+      "x": 444.5,
+      "y": 780.6,
+      "w": 221.4,
+      "h": 77.4
+     },
+     {
+      "i": 3,
+      "text": "word.",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 77.4,
+      "x": 685.2,
+      "y": 780.6,
+      "w": 219.3,
+      "h": 77.4
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 512.4,
+     "w": 844.5,
+     "h": 345.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0
+      ],
+      "x": 60.0,
+      "y": 512.4,
+      "w": 110.2,
+      "h": 73.7
+     },
+     {
+      "words": [
+       1
+      ],
+      "x": 60.0,
+      "y": 589.0,
+      "w": 844.5,
+      "h": 184.2
+     },
+     {
+      "words": [
+       2,
+       3
+      ],
+      "x": 444.5,
+      "y": 780.6,
+      "w": 460.1,
+      "h": 77.4
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 1
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
   },
   {
    "scene": "s6",
@@ -1103,12 +1258,109 @@
      "end_ms": 21240,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 2,
+   "layout": {
+    "anchor": 2,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "right",
+    "words": [
+     {
+      "i": 0,
+      "text": "All",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 794.0,
+      "y": 522.9,
+      "w": 79.2,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "caps",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 893.4,
+      "y": 522.9,
+      "w": 126.6,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "labels.",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 370.1,
+      "y": 606.5,
+      "w": 649.9,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 370.1,
+     "y": 522.9,
+     "w": 649.9,
+     "h": 284.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1
+      ],
+      "x": 794.0,
+      "y": 522.9,
+      "w": 226.0,
+      "h": 80.4
+     },
+     {
+      "words": [
+       2
+      ],
+      "x": 370.1,
+      "y": 606.5,
+      "w": 649.9,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 1
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
   },
   {
    "scene": "s6",
    "start_ms": 21560,
-   "end_ms": 22060,
+   "end_ms": 22730,
    "words": [
     {
      "word": "Fake",
@@ -1121,14 +1373,7 @@
      "start_ms": 21700,
      "end_ms": 21960,
      "emphasis": false
-    }
-   ]
-  },
-  {
-   "scene": "s6",
-   "start_ms": 22060,
-   "end_ms": 22730,
-   "words": [
+    },
     {
      "word": "two,",
      "start_ms": 22060,
@@ -1141,7 +1386,120 @@
      "end_ms": 22520,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 3,
+   "layout": {
+    "anchor": 3,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "Fake",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 60.0,
+      "y": 522.9,
+      "w": 141.1,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "one,",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 221.2,
+      "y": 522.9,
+      "w": 112.2,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "two,",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 80.4,
+      "x": 353.5,
+      "y": 522.9,
+      "w": 178.1,
+      "h": 80.4
+     },
+     {
+      "i": 3,
+      "text": "three.",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 60.0,
+      "y": 606.5,
+      "w": 590.1,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 522.9,
+     "w": 590.1,
+     "h": 284.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2
+      ],
+      "x": 60.0,
+      "y": 522.9,
+      "w": 471.6,
+      "h": 80.4
+     },
+     {
+      "words": [
+       3
+      ],
+      "x": 60.0,
+      "y": 606.5,
+      "w": 590.1,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "turn",
+     "deg": 4.5,
+     "dir": 1
+    },
+    "relaxed": false,
+    "avoid": 1
+   },
+   "motion": {
+    "kind": "turn",
+    "deg": 4.5,
+    "dir": 1
+   }
   },
   {
    "scene": "s7",
@@ -1166,7 +1524,13 @@
      "end_ms": 23150,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
   },
   {
    "scene": "s7",
@@ -1191,7 +1555,13 @@
      "end_ms": 24270,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
   },
   {
    "scene": "s7",
@@ -1222,7 +1592,13 @@
      "end_ms": 25230,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
   },
   {
    "scene": "s7",
@@ -1241,7 +1617,13 @@
      "end_ms": 26230,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
   },
   {
    "scene": "s7",
@@ -1254,7 +1636,13 @@
      "end_ms": 26590,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
   },
   {
    "scene": "s8",
@@ -1267,7 +1655,13 @@
      "end_ms": 27270,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
   },
   {
    "scene": "s8",
@@ -1280,7 +1674,13 @@
      "end_ms": 27910,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
   },
   {
    "scene": "s8",
@@ -1305,7 +1705,13 @@
      "end_ms": 28530,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
   },
   {
    "scene": "s8",
@@ -1330,7 +1736,13 @@
      "end_ms": 29590,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
   },
   {
    "scene": "s8",
@@ -1343,7 +1755,13 @@
      "end_ms": 29910,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
   },
   {
    "scene": "s9",
@@ -1368,7 +1786,13 @@
      "end_ms": 31150,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
   },
   {
    "scene": "s9",
@@ -1387,7 +1811,13 @@
      "end_ms": 32170,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
   },
   {
    "scene": "s9",
@@ -1412,7 +1842,13 @@
      "end_ms": 33170,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
   },
   {
    "scene": "s9",
@@ -1431,7 +1867,13 @@
      "end_ms": 33990,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
   },
   {
    "scene": "s9",
@@ -1456,12 +1898,18 @@
      "end_ms": 34550,
      "emphasis": true
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
   },
   {
    "scene": "s10",
    "start_ms": 34740,
-   "end_ms": 35320,
+   "end_ms": 35540,
    "words": [
     {
      "word": "Then",
@@ -1486,20 +1934,144 @@
      "start_ms": 35120,
      "end_ms": 35320,
      "emphasis": false
-    }
-   ]
-  },
-  {
-   "scene": "s10",
-   "start_ms": 35320,
-   "end_ms": 36220,
-   "words": [
+    },
     {
      "word": "by",
      "start_ms": 35320,
      "end_ms": 35540,
      "emphasis": true
+    }
+   ],
+   "mode": "group",
+   "importance": "payoff",
+   "anchor": 4,
+   "layout": {
+    "anchor": 4,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "right",
+    "words": [
+     {
+      "i": 0,
+      "text": "Then",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 466.6,
+      "y": 522.9,
+      "w": 151.3,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "it",
+      "role": "connector",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 638.0,
+      "y": 522.9,
+      "w": 45.3,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "turns",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 80.4,
+      "x": 703.4,
+      "y": 522.9,
+      "w": 217.3,
+      "h": 80.4
+     },
+     {
+      "i": 3,
+      "text": "on",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 940.8,
+      "y": 522.9,
+      "w": 79.2,
+      "h": 80.4
+     },
+     {
+      "i": 4,
+      "text": "by",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 774.9,
+      "y": 606.5,
+      "w": 245.1,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 466.6,
+     "y": 522.9,
+     "w": 553.4,
+     "h": 284.6
     },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "x": 466.6,
+      "y": 522.9,
+      "w": 553.4,
+      "h": 80.4
+     },
+     {
+      "words": [
+       4
+      ],
+      "x": 774.9,
+      "y": 606.5,
+      "w": 245.1,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 1
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
+  },
+  {
+   "scene": "s10",
+   "start_ms": 35540,
+   "end_ms": 36760,
+   "words": [
     {
      "word": "itself",
      "start_ms": 35540,
@@ -1511,14 +2083,7 @@
      "start_ms": 35920,
      "end_ms": 36220,
      "emphasis": false
-    }
-   ]
-  },
-  {
-   "scene": "s10",
-   "start_ms": 36220,
-   "end_ms": 36760,
-   "words": [
+    },
     {
      "word": "you",
      "start_ms": 36220,
@@ -1537,12 +2102,139 @@
      "end_ms": 36760,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "group",
+   "importance": "payoff",
+   "anchor": 0,
+   "layout": {
+    "anchor": 0,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "itself",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 60.0,
+      "y": 518.4,
+      "w": 493.3,
+      "h": 201.0
+     },
+     {
+      "i": 1,
+      "text": "when",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 100.5,
+      "x": 577.4,
+      "y": 518.4,
+      "w": 203.9,
+      "h": 100.5
+     },
+     {
+      "i": 2,
+      "text": "you",
+      "role": "connector",
+      "font": "handwritten",
+      "color": "script",
+      "px": 100.5,
+      "x": 577.4,
+      "y": 618.9,
+      "w": 112.2,
+      "h": 100.5
+     },
+     {
+      "i": 3,
+      "text": "ask",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 84.4,
+      "x": 521.4,
+      "y": 727.5,
+      "w": 145.2,
+      "h": 84.4
+     },
+     {
+      "i": 4,
+      "text": "for",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 84.4,
+      "x": 687.6,
+      "y": 727.5,
+      "w": 93.7,
+      "h": 84.4
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 518.4,
+     "w": 721.3,
+     "h": 293.4
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [
+     1,
+     2
+    ],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2
+      ],
+      "x": 60.0,
+      "y": 518.4,
+      "w": 721.3,
+      "h": 201.0
+     },
+     {
+      "words": [
+       3,
+       4
+      ],
+      "x": 521.4,
+      "y": 727.5,
+      "w": 259.9,
+      "h": 84.4
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 1
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
   },
   {
    "scene": "s10",
    "start_ms": 36760,
-   "end_ms": 37920,
+   "end_ms": 38320,
    "words": [
     {
      "word": "frontend",
@@ -1556,7 +2248,13 @@
      "end_ms": 37520,
      "emphasis": false
     }
-   ]
+   ],
+   "mode": "word",
+   "importance": "payoff",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
   }
  ],
  "cards": [
@@ -1609,30 +2307,6 @@
    "zone": "hero"
   },
   {
-   "scene": "s6",
-   "component": "s6-card-1",
-   "text": "The tells the skill names",
-   "zone": "hero"
-  },
-  {
-   "scene": "s6",
-   "component": "s6-dark-chip-2",
-   "text": "One accented headline word",
-   "zone": "label"
-  },
-  {
-   "scene": "s6",
-   "component": "s6-dark-chip-3",
-   "text": "ALL CAPS labels",
-   "zone": "label"
-  },
-  {
-   "scene": "s6",
-   "component": "s6-dark-chip-4",
-   "text": "Fake 01, 02, 03",
-   "zone": "label"
-  },
-  {
    "scene": "s8",
    "component": "s8-window-card-1",
    "text": "claude.com/plugins",
@@ -1642,12 +2316,6 @@
    "scene": "s9",
    "component": "s9-terminal-card-1",
    "text": "Claude Code",
-   "zone": "hero"
-  },
-  {
-   "scene": "s10",
-   "component": "s10-card-1",
-   "text": "Turns on by itself",
    "zone": "hero"
   },
   {

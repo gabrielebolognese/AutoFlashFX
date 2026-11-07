@@ -66,6 +66,7 @@
           "display": {"type": "string", "minLength": 1},
           "spoken": {"type": "string", "minLength": 1},
           "emphasis": {"type": "array", "items": {"type": "string"}, "maxItems": 3},
+          "importance": {"type": "string", "enum": ["hook", "key-claim", "number", "payoff", "pre-ask", "normal"]},
           "card": {"type": "string", "pattern": "^\\s*\\S+(\\s+\\S+){0,5}\\s*$"},
           "card_words": {"type": "integer", "maximum": 6},
           "facts": {"type": "array", "items": {"type": "string"}},

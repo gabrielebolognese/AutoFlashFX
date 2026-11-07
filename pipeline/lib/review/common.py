@@ -162,7 +162,7 @@ def read_hosts(project: str) -> list[dict]:
             z = int(mz.group(1))
         hosts.append({"id": hid, "component": comp, "src": src, "start_ms": int(round(start * 1000)), "end_ms": int(round((start + dur) * 1000)),
                       "scene": attrs.get("data-scene", ""), "beat": attrs.get("data-beat", ""), "props": props, "z": z,
-                      "captions": attrs.get("data-track-kind") == "captions" or comp == "caption-line", "no_timeline": "data-no-timeline" in m.group("attrs")})
+                      "captions": attrs.get("data-track-kind") == "captions" or comp in ("caption-line", "caption-word", "caption-group"), "no_timeline": "data-no-timeline" in m.group("attrs")})
     return hosts
 
 
@@ -189,7 +189,7 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
         add(a + settle if b - a > 2 * settle else (a + b) // 2, f"beat {s.get('beat')} ({s.get('beat_type')}) settled")
         add((a + b) // 2, f"beat {s.get('beat')} middle")
         for h in s.get("emphasis_hits", []) or []:
-            add(int(h.get("ms", a)) + em_lead, f"emphasis {h.get('word')}")
+            add(int(h.get("ms", a)) + emphasis_lead_ms(ctx, int(h.get("ms", a))), f"emphasis {h.get('word')}")
         for c in s.get("components", []):
             land = c.get("land_ms")
             if land is None:
@@ -212,10 +212,33 @@ def check_times(ctx: Ctx, hosts: list[dict]) -> dict:
                     add(int(land) + 100, f"{c['id']} landed")
                 if leaves - 50 > start + 100:
                     add(leaves - 50, f"{c['id']} last")
+    for ch in ctx.plan.get("captions", []) or []:
+        if ch.get("mode") == "group" and ch.get("words"):
+            a0, b0 = int(ch["start_ms"]), int(ch["end_ms"])
+            add(a0 + min(900, max(100, (b0 - a0) // 2)), f"caption group \"{ch['words'][0]['word']}\" settled")
     cta = ctx.cta_scene()
     if cta:
         add(int(cta["end_ms"]) - 300, "the CTA built")
     return dict(sorted(times.items()))
+
+
+def emphasis_lead_ms(ctx: Ctx, ms: int) -> int:
+    """How long after an emphasis word starts the review looks for its accent box: review.emphasis_settle_ms (150), or less
+    for a word-mode caption word that is on screen for less than that (M15: a word stays until the next one starts)."""
+    lead = int(ctx.c("review.emphasis_settle_ms", 150))
+    starts = []
+    for ch in ctx.plan.get("captions", []) or []:
+        if ch.get("mode") == "group":
+            continue
+        for w in ch.get("words", []):
+            starts.append(int(w["start_ms"]))
+    starts.sort()
+    for i, t in enumerate(starts):
+        if abs(t - ms) <= 40:
+            nxt = starts[i + 1] if i + 1 < len(starts) else t + 400
+            life = max(60, min(400, nxt - t))
+            return int(min(lead, max(50, life * 0.5)))
+    return lead
 
 
 def main_window_ms(ctx: Ctx) -> int:

@@ -21,6 +21,13 @@ Rules, each issue tagged for the fix routing:
                 own kicker and serif phrase measure 2.8 to 3.0 (DECISIONS.md M11)                            [text]
   emphasis      each caption emphasis lands within review.emphasis_tolerance_ms (80) of its word (the caption line's
                 own events) and the word is on screen with its box                                             [text]
+  caption_mode  (M15, E3 and E4) a caption group (group mode) is judged in the group caption zone, not the caption band; no
+                group word is on screen while any other text is (captions are in word mode under text); no caption
+                word or group stands still (sampled twice inside its life: it must have moved)              [text]
+  text_budget   (M15, E4) at most 100 characters of non-caption text visible at any check time (the CTA's text is the
+                ask and is left out)                                                                         [text]
+  text_size     (M15, E4) no graphic text under the caption size: the sizes the library bakes in are listed as
+                warnings (review.text_size_baked: error makes them issues)                                   [animation]
   branding      the CTA has the FlashFX lockup (300 px or wider) and the DM card's avatar (112 px or wider); no
                 FlashFX logo outside the CTA unless the solution is flashfx; every logo file is in brand.json, drawn
                 with its aspect ratio locked, its use_on matching the luminance of the surface under it (the pixels behind
@@ -132,7 +139,7 @@ REVIEW_JS = r"""
       let tb = r;
       try { const range = document.createRange(); range.selectNodeContents(el); const rr = range.getBoundingClientRect(); if (rr.width > 0 && rr.height > 0) tb = rr; } catch (e) {}
       texts.push({ id: el.id || "", cls: String(el.className || ""), parent_cls: String((el.parentElement && el.parentElement.className) || ""), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10), anc: ancestorsOf(el),
-                   text: (el.textContent || "").trim().slice(0, 60), x: tb.left, y: tb.top, w: tb.width, h: tb.height, ex: r.left, ey: r.top, ew: r.width, eh: r.height,
+                   text: (el.textContent || "").trim().slice(0, 60), n: (el.textContent || "").trim().length, x: tb.left, y: tb.top, w: tb.width, h: tb.height, ex: r.left, ey: r.top, ew: r.width, eh: r.height,
                    opacity: effOpacity(el), font: cs.fontFamily, size: parseFloat(cs.fontSize), weight: cs.fontWeight, color: cs.color, scale: scaleOf(el),
                    bg: bgOf(el), ignore: el.hasAttribute("data-layout-ignore") || !!el.closest("[data-layout-ignore]"), transient: transientAt(el, t) });
     }
@@ -143,6 +150,42 @@ REVIEW_JS = r"""
 """
 
 VISIBLE = 0.5
+
+
+def caption_motion_pairs(host: dict) -> list[tuple[float, float, str]]:
+    """Two sample times (seconds local to the caption host) inside each word's or group's life, far enough apart for a rising
+    or turning caption to have moved: [(t1, t2, label)]. A life shorter than 0.25 s is not sampled."""
+    props = host.get("props") or {}
+    out: list[tuple[float, float, str]] = []
+    raw = props.get("words_json")
+    words = raw if isinstance(raw, list) else (json_loads(raw) if isinstance(raw, str) else [])
+    for k, w in enumerate(words or []):
+        try:
+            t, e = float(w["t"]), float(w.get("end", float(w["t"]) + 0.3))
+        except (KeyError, TypeError, ValueError):
+            continue
+        life = e - t
+        if life >= 0.25:
+            out.append((round(t + 0.35 * life, 4), round(t + 0.7 * life, 4), f"word {k}"))
+    raw = props.get("groups_json")
+    groups = raw if isinstance(raw, list) else (json_loads(raw) if isinstance(raw, str) else [])
+    for k, g in enumerate(groups or []):
+        try:
+            t, e = float(g["start"]), float(g["end"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        life = e - t
+        if life >= 0.5:
+            out.append((round(t + 0.4 * life, 4), round(t + 0.8 * life, 4), f"group {k}"))
+    return out
+
+
+def json_loads(text: str):
+    import json
+    try:
+        return json.loads(text)
+    except ValueError:
+        return []
 
 
 def first_family(font: str) -> str:
@@ -258,6 +301,12 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     min_font = float(ctx.c("review.min_font_px", 24))
     cap_font = float(((toks.get("type") or {}).get("caption") or {}).get("font_px", 67))
     cap_min_share = float(ctx.c("review.caption_min_size_share", 0.9))
+    grammar = ((toks.get("motion") or {}).get("grammar") or {})
+    gz = ((grammar.get("captions") or {}).get("group_zone")) or {"x0": margin_x, "y0": safe_top, "x1": rc.CANVAS_W - margin_x, "y1": float((z.get("hero") or {}).get("bottom_max", 1176))}
+    budget = int((grammar.get("text_budget") or {}).get("max_chars_on_screen", 100))
+    min_text_px = float((grammar.get("text_budget") or {}).get("min_text_px", cap_font))
+    baked_error = str(ctx.c("review.text_size_baked", "warn")) == "error"
+    min_move_px = float(ctx.c("review.caption_min_move_px", 0.25))
     families = {str(f.get("family")) for f in (toks.get("fonts") or {}).values() if f.get("family")}
     accents = rc.accent_tokens(toks)
     c_min, c_large = float(ctx.c("review.contrast_min", 4.5)), float(ctx.c("review.contrast_display_min", 2.7))
@@ -279,6 +328,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     os.makedirs(shots_dir, exist_ok=True)
     per_time: dict = {ms: {"texts": [], "images": []} for ms in all_ms}
     caption_events: list[dict] = []
+    still_captions: list[dict] = []
     harness_errors: list[str] = []
     fonts_seen: dict = {}
     issues: list[dict] = []
@@ -304,8 +354,27 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             res = h.page.evaluate(REVIEW_JS, {"id": comp["id"], "times": [round((T - host["start_ms"]) / 1000.0, 4) for T in local_ms]})
             if host.get("captions"):
                 for e in res.get("events", []):
-                    if e.get("type") in ("caption_word", "caption_chunk", "caption_overflow"):
+                    if e.get("type") in ("caption_word", "caption_chunk", "caption_overflow", "caption_group"):
                         caption_events.append({**e, "abs_ms": host["start_ms"] + float(e.get("t", 0)) * 1000.0})
+                # E3 and E1: nothing of the captions stands still: every word and group is read twice inside its life
+                pairs = caption_motion_pairs(host)
+                if pairs:
+                    extra = sorted({t for a, b, _lbl in pairs for t in (a, b)})
+                    res2 = h.page.evaluate(REVIEW_JS, {"id": comp["id"], "times": extra})
+                    by_t = {r["t"]: r for r in res2.get("rows", [])}
+                    for a, b, lbl in pairs:
+                        ra, rb = by_t.get(a), by_t.get(b)
+                        if not ra or not rb:
+                            continue
+                        counts["caption_pairs"] = counts.get("caption_pairs", 0) + 1
+                        ta = {t["idx"]: t for t in ra["texts"] if t["opacity"] >= VISIBLE}
+                        for t2 in rb["texts"]:
+                            t1 = ta.get(t2["idx"])
+                            if t1 is None or t2["opacity"] < VISIBLE:
+                                continue
+                            moved = max(abs(t1["x"] - t2["x"]), abs(t1["y"] - t2["y"]), abs(t1["w"] - t2["w"]), abs(t1["h"] - t2["h"]))
+                            if moved < min_move_px:
+                                still_captions.append({"instance": host["id"], "scene": host["scene"], "text": t2["text"], "ms": int(host["start_ms"] + b * 1000), "label": lbl, "moved_px": round(moved, 3)})
             harness_errors += [f"{host['id']}: {x}" for x in h.errors if "Failed to load resource" not in x][:3]
             for T, row in zip(local_ms, res.get("rows", [])):
                 shot = None
@@ -378,6 +447,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
 
     tag_place = lambda tx: "text" if tx.get("captions") else "animation"  # noqa: E731
     n_checked_texts = 0
+    small_text: dict = {}
     for T in check_ms:
         label = ", ".join(times.get(T, []))
         texts = per_time[T]["texts"]
@@ -395,7 +465,11 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             k = (tx["instance"], tx["text"])
             # zones
             in_band = band_top <= (y0 + y1) / 2 <= band_bottom
-            if tx.get("captions"):
+            is_group = "pc-gw" in (tx.get("cls") or "").split()
+            if tx.get("captions") and is_group:
+                if x0 < gz["x0"] - tol or x1 > gz["x1"] + tol or y0 < gz["y0"] - tol or y1 > gz["y1"] + tol:
+                    add(rc.issue("text", "zone", f"caption group word {where} is outside the group caption zone (x {x0:.0f}..{x1:.0f}, y {y0:.0f}..{y1:.0f}; the zone is x {gz['x0']:.0f}..{gz['x1']:.0f}, y {gz['y0']:.0f}..{gz['y1']:.0f})", tx["scene"], tx["instance"], T), ("zone",) + k)
+            elif tx.get("captions"):
                 if not in_band or x0 < cap_x0 - tol or x1 > cap_x1 + tol:
                     add(rc.issue("text", "zone", f"caption {where} is outside the caption band (x {x0:.0f}..{x1:.0f}, y {y0:.0f}..{y1:.0f}; the band is x {cap_x0:.0f}..{cap_x1:.0f} around y {cap_cy:.0f})", tx["scene"], tx["instance"], T), ("zone",) + k)
             else:
@@ -423,7 +497,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             if not tx.get("ignore") and eff < min_font - 0.5:
                 add(rc.issue("text", "font_size", f"text {where} is {eff:.0f} px, under the {min_font:.0f} px floor", tx["scene"], tx["instance"], T), ("font_size",) + k)
             if tx.get("captions") and eff < cap_font * cap_min_share - 0.5:
-                add(rc.issue("text", "caption_scaled", f"caption {where} was scaled to {eff:.0f} px (the chunk is wider than the {cap_x1 - cap_x0:.0f} px line): split it", tx["scene"], tx["instance"], T), ("caption_scaled",) + k)
+                add(rc.issue("text", "caption_scaled", f"caption {where} was scaled to {eff:.0f} px (the word is wider than the {cap_x1 - cap_x0:.0f} px line, or a group word is under the caption size {cap_font:.0f} px): fix the caption plan", tx["scene"], tx["instance"], T), ("caption_scaled",) + k)
             # contrast (only for text at full opacity: a word mid-fade reads as a dark smear over the paper)
             if tx.get("bg_rgb") is not None and tx["opacity"] >= 0.95:
                 fr, fg, fb, fa = rc.parse_css_color(tx["color"])
@@ -436,6 +510,23 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 need = c_large if display else c_min
                 if ratio < need - 0.05:
                     add(rc.issue("text", "contrast", f"text {where} has a contrast of {ratio:.2f}:1 against its background ({f'the accent family, {c_large:g}:1 allowed' if display else f'{c_min:g}:1 needed'})", tx["scene"], tx["instance"], T, ratio=round(ratio, 2)), ("contrast",) + k)
+        # E4 and E3 (M15): the characters of non-caption text on screen, group captions under text, graphic text sizes
+        shown = [t for t in texts if not t.get("captions") and not t.get("ignore") and t["scene"] != cta_id]
+        chars = sum(int(t.get("n") or len(t["text"])) for t in shown)
+        if chars > budget:
+            add(rc.issue("text", "text_budget", f"{chars} characters of non-caption text are on screen at {rc.fmt_ms(T)} ({label}); at most {budget} (E4: graphics first, cut the text a graphic can carry)", "", "", T), ("text_budget",))
+        counts["max_chars_on_screen"] = max(counts.get("max_chars_on_screen", 0), chars)
+        group_words = [t for t in texts if t.get("captions") and "pc-gw" in (t.get("cls") or "").split() and not t.get("transient")]
+        other_text = [t for t in shown if not t.get("transient")]
+        if group_words and other_text:
+            add(rc.issue("text", "caption_mode", f"a caption group (\"{group_words[0]['text']}\") is on screen with the text of {other_text[0]['instance']} (\"{other_text[0]['text'][:30]}\") at {rc.fmt_ms(T)}: captions are in word mode whenever any other text is on screen (E4)", group_words[0]["scene"], group_words[0]["instance"], T), ("caption_mode", group_words[0]["instance"], other_text[0]["instance"]))
+        for t in shown:
+            if t.get("transient"):
+                continue
+            eff_px = float(t["size"]) * float(t.get("scale") or 1)
+            if eff_px < min_text_px - 0.5:
+                key = (t["component"], first_family(t["font"]), round(float(t["size"])))
+                small_text.setdefault(key, [0, t["instance"], t["text"][:30]])[0] += 1
         # overlaps between different elements (the arriving and leaving ones left out)
         vis = [t for t in texts if not t.get("ignore") and (not t.get("transient") or t.get("judge_anyway"))]
         for i in range(len(vis)):
@@ -463,14 +554,25 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
 
     # ---------------------------------------------------------------- emphasis
     emphasis = {"checked": 0, "ok": 0, "results": []}
-    em_events = [e for e in caption_events if e.get("type") == "caption_word" and e.get("em")]
+    em_events = [e for e in caption_events if e.get("type") == "caption_word" and e.get("em") and e.get("mode") != "group"]
     for s in ctx.plan.get("scenes", []):
         for hit in s.get("emphasis_hits", []) or []:
-            word = rc.vcommon.norm(str(hit.get("word", "")))
+            toks_of_hit = str(hit.get("word", "")).split()
+            word = rc.vcommon.norm(toks_of_hit[0] if toks_of_hit else "")   # a phrase is timed by its first word (the plan's hit ms)
             ms = int(hit.get("ms", 0))
             emphasis["checked"] += 1
             cands = [e for e in em_events if rc.vcommon.norm(str(e.get("text", ""))) == word]
             best = min(cands, key=lambda e: abs(e["abs_ms"] - ms)) if cands else None
+            grp = [e for e in caption_events if e.get("type") == "caption_word" and e.get("mode") == "group" and rc.vcommon.norm(str(e.get("text", ""))) == word]
+            if grp and (best is None or abs(best["abs_ms"] - ms) > em_tol):
+                gbest = min(grp, key=lambda e: abs(e["abs_ms"] - ms))
+                gerr = gbest["abs_ms"] - ms
+                emphasis["results"].append({"word": hit.get("word"), "ms": ms, "box_ms": round(gbest["abs_ms"]), "error_ms": round(gerr), "on_screen": True, "ok": abs(gerr) <= em_tol, "note": "a word of a caption group (the anchor and the fonts carry it, no accent box)"})
+                if abs(gerr) <= em_tol:
+                    emphasis["ok"] += 1
+                else:
+                    add(rc.issue("text", "emphasis_timing", f"the emphasis on \"{hit.get('word')}\" lands {gerr:+.0f} ms from its word at {rc.fmt_ms(ms)} (caption group)", s["id"], "captions", ms))
+                continue
             if s.get("beat_type") in ("hook", "ask") and not cands:
                 emphasis["results"].append({"word": hit.get("word"), "ms": ms, "ok": True, "note": "no caption in this beat (the headline or the end card carries the words)"})
                 emphasis["ok"] += 1
@@ -480,7 +582,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 emphasis["results"].append({"word": hit.get("word"), "ms": ms, "ok": False})
                 continue
             err = best["abs_ms"] - ms
-            T = min(check_ms, key=lambda t: abs(t - (ms + 150))) if check_ms else None
+            T = min(check_ms, key=lambda t: abs(t - (ms + rc.emphasis_lead_ms(ctx, ms)))) if check_ms else None
             on_screen = any(t.get("captions") and rc.vcommon.norm(t["text"]) == word and "em" in (t.get("parent_cls") or "").split() for t in per_time.get(T, {}).get("texts", [])) if T is not None else True
             ok = abs(err) <= em_tol and on_screen
             emphasis["results"].append({"word": hit.get("word"), "ms": ms, "box_ms": round(best["abs_ms"]), "error_ms": round(err), "on_screen": on_screen, "ok": ok})
@@ -488,6 +590,22 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 emphasis["ok"] += 1
             else:
                 add(rc.issue("text", "emphasis_timing", f"the emphasis on \"{hit.get('word')}\" lands {err:+.0f} ms from its word at {rc.fmt_ms(ms)}" + ("" if on_screen else " and the boxed word is not on screen"), s["id"], "captions", ms))
+
+    # ---------------------------------------------------------------- M15: static captions, graphic text sizes
+    seen_static: set = set()
+    for sc in still_captions:
+        key = (sc["instance"], sc["text"], sc["label"])
+        if key in seen_static:
+            continue
+        seen_static.add(key)
+        add(rc.issue("text", "caption_static", f"the caption \"{sc['text']}\" ({sc['instance']}) does not move between two samples of its life ({sc['moved_px']} px at {rc.fmt_ms(sc['ms'])}): every caption word or group rises or turns while it is on screen (E3, E1)", sc["scene"], sc["instance"], sc["ms"]), ("caption_static", sc["instance"], sc["text"]))
+    warnings: list[str] = []
+    for (comp_id, fam, px), (n_seen, inst, sample) in sorted(small_text.items()):
+        msg = f"{comp_id} text \"{sample}\" in {fam} is {px} px, under the caption size {min_text_px:.0f} px (E4: {n_seen} samples)"
+        if baked_error:
+            add(rc.issue("animation", "text_size", f"{msg}; a graphic that needs smaller text needs less text", "", inst), ("text_size", comp_id, px))
+        else:
+            warnings.append(msg)
 
     # ---------------------------------------------------------------- branding
     branding = {"cta_scene": cta_id, "solution": ctx.solution.get("type"), "lockup": None, "avatar": None, "logos": [], "outside_cta": []}
@@ -580,7 +698,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
         add(rc.issue("animation", "brand_cta", "the plan has no CTA scene (no ask beat)", "", ""))
 
     images_by_time = {str(T): [[round(im["x"]), round(im["y"]), round(im["w"]), round(im["h"]), "logo" if im["src"].startswith("assets/brand/") else "image"] for im in per_time[T]["images"]] for T in sample_ms}
-    report = {"written_by": "12-review", "pass": not issues, "issues": issues, "counts": counts, "times": {str(k): v for k, v in times.items()},
+    report = {"written_by": "12-review", "pass": not issues, "issues": issues, "warnings": warnings, "counts": counts, "times": {str(k): v for k, v in times.items()},
               "fonts_seen": fonts_seen, "emphasis": emphasis, "branding": branding, "images_by_time": images_by_time, "harness_errors": harness_errors[:20],
               "thresholds": {"safe_top": safe_top, "safe_bottom": safe_bottom, "margin_x": margin_x, "caption_band": [band_top, band_bottom], "right_rail_x": rail_x,
                              "min_font_px": min_font, "contrast": [c_min, c_large], "emphasis_tolerance_ms": em_tol, "lockup_min": lockup_min, "bolt_min": bolt_min, "avatar_min": avatar_min}}

@@ -244,11 +244,11 @@
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 13.8,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.189,
+    "mean_change": 0.188,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -437,7 +437,7 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v04/extra/s30_count_f925.png",
-    "r": 0.937,
+    "r": 0.939,
     "run": "2026-11-07"
    },
    "energy": {
@@ -446,7 +446,7 @@
     "pixels_changing_pct": 0.32,
     "still_share_pct": 74.6,
     "longest_still_s": 3.23,
-    "mean_change": 0.206,
+    "mean_change": 0.203,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -597,13 +597,13 @@
     "checks_ok": 11,
     "checks": 11,
     "best_strip": "v08/extra/s30_038.9_end.png",
-    "r": 0.974,
+    "r": 0.973,
     "run": "2026-11-07"
    },
    "energy": {
     "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.64,
+    "pixels_changing_pct": 0.65,
     "still_share_pct": 69.2,
     "longest_still_s": 3.0,
     "mean_change": 0.251,
@@ -884,7 +884,7 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v07/extra/s30_004.4_caption_tag.png",
-    "r": 0.967,
+    "r": 0.955,
     "run": "2026-11-07"
    },
    "energy": {
@@ -893,9 +893,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.024,
-    "longest_still_run": 52,
-    "static_windows": 62,
+    "mean_change": 0.022,
+    "longest_still_run": 97,
+    "static_windows": 82,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1016,30 +1016,30 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.01,
-    "longest_still_run": 106,
-    "static_windows": 91,
+    "mean_change": 0.011,
+    "longest_still_run": 69,
+    "static_windows": 65,
     "frames": 130,
     "run": "2026-11-07"
    }
   },
   {
-   "id": "caption-line",
+   "id": "caption-word",
    "item": 7,
-   "name": "Caption line",
+   "name": "Caption word (word mode)",
    "kind": "captions",
-   "does": "The spoken words, one chunk of 1 to 4 words at a time, bare ink words centered at the style's caption position (tokens.json zones.caption.center_y, 1332 since 2026-11-07; the y prop overrides it), at most 620 px wide; each word fades in over 4 frames when spoken, emphasis words on accent boxes rising 9 px; the old chunk fades out over 2 frames, the next word on the following frame. Mounted once per reel over the body beats.",
-   "file": "compositions/caption-line.html",
+   "does": "Motion and energy rules E3, word mode (M15, replaces caption-line): the spoken words one at a time, each on its spoken word time, centered at the style's caption position (tokens.json zones.caption.center_y, 1332; the y prop overrides it). A word fades in over 4 frames with a small zoom and rises 8 to 16 px (or turns 2 to 4 degrees) over its whole life, so it never stands still; emphasis words change font and size (Instrument Serif italic at 1.25 to 1.5 times the caption size) on the accent box. Mounted once per reel over the word-mode entries of the plan's captions; never while a caption group is on screen.",
+   "file": "compositions/caption-word.html",
    "status": "approved",
-   "still": "gallery/stills/caption-line.png",
+   "still": "gallery/stills/caption-word.png",
    "z": 5,
    "measure": "#cap-layer",
    "props": [
     {
-     "id": "chunks_json",
+     "id": "words_json",
      "type": "string",
-     "default": "[{\"start\":0.2,\"end\":1.4,\"words\":[{\"w\":\"You\",\"t\":0.2},{\"w\":\"ship\",\"t\":0.45},{\"w\":\"Claude\",\"t\":0.7,\"em\":true},{\"w\":\"Code\",\"t\":0.95,\"em\":true}]},{\"start\":1.45,\"end\":2.9,\"words\":[{\"w\":\"client\",\"t\":1.45},{\"w\":\"sites.\",\"t\":1.8}]}]",
-     "label": "Caption chunks as JSON: [{\"start\":s,\"end\":s,\"words\":[{\"w\":\"You\",\"t\":s,\"em\":false}, ...]}, ...] (times local to this clip)"
+     "default": "[{\"w\":\"You\",\"t\":0.2,\"end\":0.5,\"rise\":8},{\"w\":\"ship\",\"t\":0.5,\"end\":0.8,\"rise\":13},{\"w\":\"Claude\",\"t\":0.8,\"end\":1.25,\"em\":true,\"rise\":9},{\"w\":\"Code\",\"t\":1.25,\"end\":1.7,\"em\":true,\"turn\":3},{\"w\":\"client\",\"t\":1.7,\"end\":2.1,\"rise\":10},{\"w\":\"sites.\",\"t\":2.1,\"end\":2.6,\"rise\":15},{\"w\":\"Clients\",\"t\":2.9,\"end\":3.3,\"rise\":11},{\"w\":\"spot\",\"t\":3.3,\"end\":3.6,\"turn\":3},{\"w\":\"it\",\"t\":3.6,\"end\":3.8,\"rise\":12},{\"w\":\"instantly.\",\"t\":3.8,\"end\":4.3,\"rise\":8}]",
+     "label": "Caption words as JSON: [{\"w\":\"Claude\",\"t\":s,\"end\":s,\"em\":false,\"rise\":px,\"turn\":deg}, ...] (times local to this clip; one word on screen at a time; rise 8 to 16 px or turn 2 to 4 degrees over each word life)"
     },
     {
      "id": "y",
@@ -1048,16 +1048,22 @@
      "label": "Cap center y (px; 0 = the caption position of the style, tokens.css --caption-y)"
     },
     {
-     "id": "max_w",
+     "id": "emphasis_ratio",
      "type": "number",
-     "default": 620,
-     "label": "Widest line (px)"
+     "default": 1.4,
+     "label": "Emphasis word size as a multiple of the caption size (1.25 to 1.5)"
     },
     {
      "id": "word_frames",
      "type": "number",
      "default": 4,
      "label": "Word fade frames"
+    },
+    {
+     "id": "main_frames",
+     "type": "number",
+     "default": 6,
+     "label": "Zoom frames of the combined main animation (a word lives a few frames)"
     },
     {
      "id": "box_frames",
@@ -1075,18 +1081,7 @@
      "id": "out_frames",
      "type": "number",
      "default": 2,
-     "label": "Chunk fade-out frames"
-    },
-    {
-     "id": "hold",
-     "type": "enum",
-     "default": "normal",
-     "label": "Hold level (the chunk drifts upward while it is on screen)",
-     "options": [
-      "calm",
-      "normal",
-      "lively"
-     ]
+     "label": "Word fade-out frames"
     }
    ],
    "beat_types": [
@@ -1097,33 +1092,28 @@
      "event": "caption_word",
      "frame": "each word's time",
      "cue": null
-    },
-    {
-     "event": "caption_chunk",
-     "frame": "each chunk's start",
-     "cue": null
     }
    ],
    "demo": {},
-   "demo_duration": 3,
+   "demo_duration": 4.5,
    "fallback": null,
    "frame_match": {
     "result": "pass",
-    "checks_ok": 6,
-    "checks": 6,
+    "checks_ok": 5,
+    "checks": 5,
     "best_strip": "v06/extra/s30_031.0_highlight.png",
-    "r": 0.972,
+    "r": 0.955,
     "run": "2026-11-07"
    },
    "energy": {
-    "moving_share_pct": 0.0,
+    "moving_share_pct": 0.8,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.09,
-    "still_share_pct": 100.0,
-    "longest_still_s": 4.33,
-    "mean_change": 0.038,
-    "longest_still_run": 35,
-    "static_windows": 20,
+    "pixels_changing_pct": 0.25,
+    "still_share_pct": 99.2,
+    "longest_still_s": 3.13,
+    "mean_change": 0.077,
+    "longest_still_run": 9,
+    "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1272,9 +1262,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.011,
-    "longest_still_run": 58,
-    "static_windows": 70,
+    "mean_change": 0.009,
+    "longest_still_run": 117,
+    "static_windows": 102,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1434,9 +1424,9 @@
     "pixels_changing_pct": 0.03,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.015,
-    "longest_still_run": 87,
-    "static_windows": 84,
+    "mean_change": 0.014,
+    "longest_still_run": 118,
+    "static_windows": 103,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -2177,7 +2167,7 @@
     "pixels_changing_pct": 0.24,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.158,
+    "mean_change": 0.159,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2333,8 +2323,8 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.033,
-    "longest_still_run": 67,
-    "static_windows": 52,
+    "longest_still_run": 35,
+    "static_windows": 36,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -2684,7 +2674,7 @@
     "checks_ok": 7,
     "checks": 7,
     "best_strip": "v01/extra/s30_hook.png",
-    "r": 0.983,
+    "r": 0.982,
     "run": "2026-11-07"
    },
    "energy": {
@@ -2693,7 +2683,7 @@
     "pixels_changing_pct": 1.11,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.474,
+    "mean_change": 0.473,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3025,7 +3015,7 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.109,
+    "mean_change": 0.108,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3176,7 +3166,7 @@
     "pixels_changing_pct": 1.31,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.76,
+    "mean_change": 0.759,
     "longest_still_run": 1,
     "static_windows": 0,
     "frames": 130,
@@ -3321,7 +3311,7 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
+    "mean_change": 0.044,
     "longest_still_run": 17,
     "static_windows": 3,
     "frames": 130,
@@ -3787,7 +3777,7 @@
     "pixels_changing_pct": 0.29,
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
-    "mean_change": 0.126,
+    "mean_change": 0.125,
     "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130,
@@ -3949,8 +3939,72 @@
     "pixels_changing_pct": 0.51,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.22,
+    "mean_change": 0.219,
     "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-07"
+   }
+  },
+  {
+   "id": "caption-group",
+   "item": null,
+   "name": "Caption group (group mode)",
+   "kind": "captions",
+   "does": "Motion and energy rules E3, group mode (M15): 2 to 6 spoken words as the graphic, filling the hero zone as kinetic typography: at least 3 fonts in a group of 3 words or more, the anchor word 2 to 3 times the caption size, the words beside it stacked to the anchor's height, never symmetric, each word on its spoken time with the combined animation of E2, the whole group moving as one block (a rise of 20 to 40 px or a parallax turn of 3 to 6 degrees) and leaving together. Every word is placed by pipeline/lib/visual/kinetic.py; the component draws the layout it is given. Only in beats whose hero zone holds no other text.",
+   "file": "compositions/caption-group.html",
+   "status": "approved",
+   "still": "gallery/stills/caption-group.png",
+   "z": 5,
+   "measure": "#grp-layer",
+   "props": [
+    {
+     "id": "groups_json",
+     "type": "string",
+     "default": "[{\"start\":0.2,\"end\":4.4,\"box\":{\"x\":60,\"y\":518.4,\"w\":559,\"h\":201},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":0.2,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518.4,\"bw\":323.4,\"bh\":201},{\"w\":\"quick\",\"t\":0.55,\"font\":\"serif-italic\",\"color\":\"accent-deep\",\"px\":100.5,\"x\":407.5,\"y\":518.4,\"bw\":211.1,\"bh\":100.5},{\"w\":\"brown\",\"t\":0.9,\"font\":\"handwritten\",\"color\":\"script\",\"px\":100.5,\"x\":407.5,\"y\":618.9,\"bw\":221.4,\"bh\":100.5},{\"w\":\"fox\",\"t\":1.25,\"font\":\"kicker\",\"color\":\"accent\",\"px\":84.4,\"x\":485.8,\"y\":727.5,\"bw\":143.1,\"bh\":84.4}]}]",
+     "label": "Caption groups as JSON: [{\"start\":s,\"end\":s,\"box\":{\"x\":px,\"y\":px,\"w\":px,\"h\":px},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":s,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518,\"bw\":323,\"bh\":201,\"em\":false}, ...]}, ...] (times local to this clip, the words laid out by pipeline/lib/visual/kinetic.py in canvas px)"
+    },
+    {
+     "id": "out_frames",
+     "type": "number",
+     "default": 4,
+     "label": "Exit frames (the group leaves together)"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "caption_word",
+     "frame": "each word's time",
+     "cue": null
+    },
+    {
+     "event": "caption_group",
+     "frame": "each group's start",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4.5,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 7,
+    "checks": 7,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-07"
+   },
+   "energy": {
+    "moving_share_pct": 3.1,
+    "middle_moving_share_pct": 3.8,
+    "pixels_changing_pct": 0.23,
+    "still_share_pct": 84.6,
+    "longest_still_s": 3.67,
+    "mean_change": 0.095,
+    "longest_still_run": 10,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
@@ -4107,7 +4161,7 @@
     "pixels_changing_pct": 0.34,
     "still_share_pct": 91.5,
     "longest_still_s": 3.97,
-    "mean_change": 0.144,
+    "mean_change": 0.145,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4264,7 +4318,7 @@
     "pixels_changing_pct": 0.4,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.187,
+    "mean_change": 0.189,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4464,7 +4518,7 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
+    "mean_change": 0.044,
     "longest_still_run": 11,
     "static_windows": 0,
     "frames": 130,
@@ -4544,7 +4598,7 @@
     "pixels_changing_pct": 0.01,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
+    "mean_change": 0.023,
     "longest_still_run": 4,
     "static_windows": 0,
     "frames": 130,

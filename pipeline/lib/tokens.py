@@ -152,8 +152,9 @@ GRAMMAR = {
     "mascot_idle": {"bob_px": 3, "blink_every_s": [2.6, 3.8], "prop_wiggle_deg": 6},
     "captions": {"fonts": ["grotesk", "serif-italic", "handwritten", "kicker"], "emphasis_size_ratio": [1.25, 1.5], "anchor_size_ratio": [2, 3],
                  "min_fonts_in_group": 3, "group_words": [2, 6], "word_rise_px": [8, 16], "word_rotate_deg": [2, 4], "group_rise_px": [20, 40],
-                 "group_rotate_deg": [3, 6], "note": "E3, built in M15"},
-    "text_budget": {"max_chars_on_screen": 100, "note": "E4, built in M15; the minimum text size is the caption font size"},
+                 "group_rotate_deg": [3, 6], "min_words_for_fonts": 3, "word_mode_words": [1, 4], "word_life_min_s": 0.2,
+                 "note": "E3 (M15): word mode one word at a time on its spoken time, group mode as the graphic; the group caption zone is the hero zone (kinetic.py places every word)"},
+    "text_budget": {"max_chars_on_screen": 100, "note": "E4 (M15): non-caption text on screen at any moment; the minimum text size is the caption font size"},
     "composition": {"hero_width_share": [0.7, 0.85], "min_layers_per_scene": 2, "empty_hero_max_s": 1, "camera_every_scenes": 3, "transition_type_max": 3,
                     "hook_moving_by_frame": 4, "note": "E8, built in M16"},
 }
@@ -182,6 +183,9 @@ def grammar_tokens(zones: dict, canvas: dict, type_scale: dict) -> dict:
     g["text_zones"] = text_zones(zones, canvas)
     g["text_budget"]["min_text_px"] = type_scale["caption"]["font_px"]
     g["captions"]["caption_px"] = type_scale["caption"]["font_px"]
+    hero = zones["hero"]
+    g["captions"]["group_zone"] = {"x0": zones["margin_x"], "y0": zones["safe_top"], "x1": canvas["width"] - zones["margin_x"], "y1": hero["bottom_max"],
+                                   "note": "the hero zone between the side margins; below the right rail's top line (zones.right_rail.from_y) a group's words end left of the rail"}
     return g
 
 
@@ -289,7 +293,7 @@ BEAT_TYPES = {
     "pain-payoff": ["card", "check-badge", "strike-through", "dark-chip", "light-chip", "window-card"],
     "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip"],
     "ask": ["end-card", "dm-card", "speech-bubble", "icon-3d"],
-    "any": ["paper-canvas", "caption-line", "mascot", "pop", "exit-move", "fly-in", "camera-move"],
+    "any": ["paper-canvas", "caption-word", "caption-group", "mascot", "pop", "exit-move", "fly-in", "camera-move"],
 }
 
 

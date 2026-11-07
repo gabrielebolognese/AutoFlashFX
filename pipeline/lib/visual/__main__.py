@@ -11,6 +11,7 @@
                 write events.json and the contact sheet (visual/project.py, visual/events.py)
   events        events.json of a built project (visual/events.py)
   contact-sheet one still per beat of a draft (visual/project.py)
+  kinetic       lay out a caption group from its words (visual/kinetic.py): `kinetic "the quick brown fox" [--anchor N] [--png out.png]`
 """
 from __future__ import annotations
 
@@ -78,7 +79,16 @@ def main(argv: list[str]) -> int:
     cs.add_argument("plan")
     cs.add_argument("out")
 
+    kn = sub.add_parser("kinetic")
+    kn.add_argument("text")
+    kn.add_argument("--anchor", type=int, default=None)
+    kn.add_argument("--png", default="")
+    kn.add_argument("--json", action="store_true")
+
     a = ap.parse_args(argv)
+    if a.cmd == "kinetic":
+        from visual import kinetic
+        return kinetic.run(a)
     if a.cmd == "digest":
         from visual import plan9
         return plan9.run_digest(a)
