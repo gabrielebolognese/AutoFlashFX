@@ -11,3 +11,4 @@ m10-fake (after rounds 17 to 20): test-m10.sh: 134 passed, 0 failed (the chain's
 m9 (after rounds 17 to 20): exit 0 test-m9.sh: 80 passed, 0 failed 1074 s
 m12-fake (after round 21, all fake sections): exit 0 test-m12.sh: 180 passed, 0 failed 686 s
 done8
+m13-fake (after round 22, all fake sections): exit 0 test-m13.sh: 100 passed, 0 failed 1060 s
