@@ -2287,3 +2287,11 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     grows; at y 700 it drifts as before (test-m14 section 3 checks both). The scale creep still moves a wide card's
     edges a few px outward over a long hold; the review's samples watch for it, and M16's energy loop can tune the
     hold levels and the room per scene with the real lives.
+305. **The tests never read the curated profile.** test-m12 section 1 checked `solution.py proof` and `prompt` against
+    library/profile/voice.md and account.md as they were at M12's time (a draft with no usable proof line, no Content
+    strategy section), and its section 3 (the honesty loop: a forced FlashFX solution fails H because no proof line
+    backs it) ran on the sandbox's copy of the same voice.md; the user filled both files on the morning of 2026-11-07
+    (commits 589c4f4 and 50218ae), so the M12 fake rerun of M14 failed those three checks with solution.py and gate.py
+    unchanged. The test now writes its own placeholder drafts for the two unit checks and into the honesty loop's
+    sandbox (the shape build-voice-profile writes before the user fills it). The rule: a test may read library/ files
+    it treats as opaque inputs (deliverables.txt, the sound pack), never assert on the user's curated text.

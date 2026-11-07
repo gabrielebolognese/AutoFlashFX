@@ -155,14 +155,18 @@ assert_eq "$(jf "$bal" last)" '["method", "flashfx", "external"]' "solution.py b
 assert_true "solution.py balance: the text names the counts" grep -q "1 flashfx, 1 external, 1 method" <<<"$(jf "$bal" text)"
 printf '# voice\n\n## Proof I can use\n\n- [FILL IN: a real number]\n- FlashFX renders a 30 s reel in under a minute on my laptop\n- 40 client reels shipped with it\n\n## The ask\n\n- x\n' > "$W/voice.md"
 assert_eq "$(python pipeline/lib/solution.py proof --voice "$W/voice.md" | paste -sd '|')" "FlashFX renders a 30 s reel in under a minute on my laptop|40 client reels shipped with it" "solution.py proof: the usable lines of Proof I can use (placeholders skipped)"
-assert_eq "$(python pipeline/lib/solution.py proof --voice library/profile/voice.md | grep -c .)" "0" "solution.py proof: the repo's draft voice.md has no usable proof line"
+# the drafts build-voice-profile writes before the user fills them (placeholders only, no Content strategy section);
+# the test never reads library/profile itself: the user's filled profile is theirs (DECISIONS.md 305)
+printf '# voice\n\n## Proof I can use\n\n- [FILL IN: a real number]\n- [FILL IN: a client result]\n\n## The ask\n\n- [FILL IN]\n' > "$W/voice-draft.md"
+printf '# account\n\n## Who follows\n\n- [FILL IN]\n\n## Deliverables\n\n- [FILL IN]\n' > "$W/account-draft.md"
+assert_eq "$(python pipeline/lib/solution.py proof --voice "$W/voice-draft.md" | grep -c .)" "0" "solution.py proof: a placeholder draft voice.md has no usable proof line"
 printf '{"b3 display": "Open FlashFX and press play", "b4 spoken": "I made this reel in flash F X", "b5 display": "Sign up today", "b6 display": "a plain line"}' > "$W/texts.json"
 chk="$(python pipeline/lib/solution.py check --solution "$RD/02-expansion/solution.json" --texts "$W/texts.json")"
 assert_eq "$(python -c 'import json, sys; print(",".join(sorted(p["kind"] for p in json.loads(sys.argv[1])["problems"])))' "$chk")" "ad_language,flashfx_mention,flashfx_mention,made_in_flashfx" "solution.py check (external): two FlashFX mentions, one made-in, one sales phrase"
 printf '{"type": "flashfx", "name": "FlashFX", "url": "https://flashfx.app"}' > "$W/sol-flash.json"
 chk="$(python pipeline/lib/solution.py check --solution "$W/sol-flash.json" --texts "$W/texts.json")"
 assert_eq "$(python -c 'import json, sys; print(",".join(sorted(p["kind"] for p in json.loads(sys.argv[1])["problems"])))' "$chk")" "ad_language,made_in_flashfx" "solution.py check (flashfx): the mention is allowed, made-in and the sales phrase are not"
-prompt_text="$(python pipeline/lib/solution.py prompt --run-dir "$RD" --voice library/profile/voice.md --account library/profile/account.md --history "$SANDBOX_M/logs/history.txt" --deliverables library/profile/deliverables.txt)"
+prompt_text="$(python pipeline/lib/solution.py prompt --run-dir "$RD" --voice "$W/voice-draft.md" --account "$W/account-draft.md" --history "$SANDBOX_M/logs/history.txt" --deliverables library/profile/deliverables.txt)"
 assert_true "solution.py prompt: the rules, the empty proof, the balance and the keyword rule" python -c 'import sys
 t = sys.argv[1]
 sys.exit(0 if all(x in t for x in ("Problem-first reels", "no Content strategy section", "Proof I can use\" is empty", "1 flashfx, 1 external, 1 method", "flashfx -> FLASH", "external -> LINK")) else 1)' "$prompt_text"
@@ -495,6 +499,18 @@ fi
 if want 3; then
 section "3. the honesty loop with the fake claude: a forced FlashFX solution fails H, S4 decides the skill, the gate passes on round 2, the run reaches the export"
 sandbox_init --with-pipeline
+# the premise of this section is a voice.md with no usable proof line; the user's filled profile stays out of the
+# test (DECISIONS.md 305)
+printf '# voice
+
+## Proof I can use
+
+- [FILL IN: a real number]
+
+## The ask
+
+- [FILL IN]
+' > "$SANDBOX/library/profile/voice.md"
 fast_mode
 fake_claude_on
 mkdir -p "$SANDBOX/fixtures"
