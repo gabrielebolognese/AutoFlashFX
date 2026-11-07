@@ -19,23 +19,23 @@
  "whole": {
   "frames": 1243,
   "seconds": 41.43,
-  "moving_share_pct": 27.0,
+  "moving_share_pct": 26.9,
   "middle_moving_share_pct": 29.4,
-  "pixels_changing_pct": 1.42,
+  "pixels_changing_pct": 1.41,
   "still_share_pct": 30.0,
   "longest_still_s": 2.43,
   "still_stretches": 8,
   "mean_change": 0.631,
   "classes": {
-   "frozen": 47,
-   "subtle": 861,
-   "medium": 296,
+   "frozen": 49,
+   "subtle": 860,
+   "medium": 295,
    "big": 39
   },
   "classes_pct": {
-   "frozen": 3.8,
-   "subtle": 69.3,
-   "medium": 23.8,
+   "frozen": 3.9,
+   "subtle": 69.2,
+   "medium": 23.7,
    "big": 3.1
   }
  },
@@ -51,7 +51,7 @@
   "checks": {
    "moving_share_pct": {
     "want": 41,
-    "got": 27.0,
+    "got": 26.9,
     "ok": false,
     "direction": "at least"
    },
@@ -63,7 +63,7 @@
    },
    "pixels_changing_pct": {
     "want": 3.3,
-    "got": 1.42,
+    "got": 1.41,
     "ok": false,
     "direction": "at least"
    },
@@ -162,7 +162,7 @@
     "still_share_pct": 34.7,
     "longest_still_s": 1.1,
     "still_stretches": 1,
-    "mean_change": 0.958,
+    "mean_change": 0.956,
     "classes": {
      "frozen": 0,
      "subtle": 74,
@@ -221,23 +221,23 @@
    "measures": {
     "frames": 143,
     "seconds": 4.77,
-    "moving_share_pct": 92.3,
+    "moving_share_pct": 91.6,
     "middle_moving_share_pct": 99.3,
-    "pixels_changing_pct": 2.78,
+    "pixels_changing_pct": 2.77,
     "still_share_pct": 0.0,
     "longest_still_s": 0.2,
     "still_stretches": 0,
     "mean_change": 1.097,
     "classes": {
      "frozen": 0,
-     "subtle": 11,
-     "medium": 127,
+     "subtle": 12,
+     "medium": 126,
      "big": 5
     },
     "classes_pct": {
      "frozen": 0.0,
-     "subtle": 7.7,
-     "medium": 88.8,
+     "subtle": 8.4,
+     "medium": 88.1,
      "big": 3.5
     }
    },
@@ -246,7 +246,7 @@
     "checks": {
      "moving_share_pct": {
       "want": 41,
-      "got": 92.3,
+      "got": 91.6,
       "ok": true,
       "direction": "at least"
      },
@@ -258,7 +258,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 2.78,
+      "got": 2.77,
       "ok": false,
       "direction": "at least"
      },
@@ -288,11 +288,11 @@
     "seconds": 3.73,
     "moving_share_pct": 14.3,
     "middle_moving_share_pct": 11.6,
-    "pixels_changing_pct": 0.85,
+    "pixels_changing_pct": 0.84,
     "still_share_pct": 29.5,
     "longest_still_s": 1.1,
     "still_stretches": 1,
-    "mean_change": 0.35,
+    "mean_change": 0.351,
     "classes": {
      "frozen": 0,
      "subtle": 96,
@@ -323,7 +323,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 0.85,
+      "got": 0.84,
       "ok": false,
       "direction": "at least"
      },
@@ -357,16 +357,16 @@
     "still_share_pct": 50.9,
     "longest_still_s": 1.9,
     "still_stretches": 1,
-    "mean_change": 0.153,
+    "mean_change": 0.152,
     "classes": {
-     "frozen": 6,
-     "subtle": 102,
+     "frozen": 8,
+     "subtle": 100,
      "medium": 4,
      "big": 0
     },
     "classes_pct": {
-     "frozen": 5.4,
-     "subtle": 91.1,
+     "frozen": 7.1,
+     "subtle": 89.3,
      "medium": 3.6,
      "big": 0.0
     }
@@ -418,7 +418,7 @@
     "seconds": 3.87,
     "moving_share_pct": 20.7,
     "middle_moving_share_pct": 19.8,
-    "pixels_changing_pct": 1.93,
+    "pixels_changing_pct": 1.92,
     "still_share_pct": 0.0,
     "longest_still_s": 0.93,
     "still_stretches": 0,
@@ -453,7 +453,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 1.93,
+      "got": 1.92,
       "ok": false,
       "direction": "at least"
      },
@@ -483,11 +483,11 @@
     "seconds": 4.17,
     "moving_share_pct": 10.4,
     "middle_moving_share_pct": 9.6,
-    "pixels_changing_pct": 0.53,
+    "pixels_changing_pct": 0.52,
     "still_share_pct": 54.4,
     "longest_still_s": 1.13,
     "still_stretches": 2,
-    "mean_change": 0.247,
+    "mean_change": 0.248,
     "classes": {
      "frozen": 0,
      "subtle": 112,
@@ -518,7 +518,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 0.53,
+      "got": 0.52,
       "ok": false,
       "direction": "at least"
      },
@@ -548,11 +548,11 @@
     "seconds": 3.2,
     "moving_share_pct": 55.2,
     "middle_moving_share_pct": 90.6,
-    "pixels_changing_pct": 2.68,
+    "pixels_changing_pct": 2.67,
     "still_share_pct": 0.0,
     "longest_still_s": 0.43,
     "still_stretches": 0,
-    "mean_change": 1.022,
+    "mean_change": 1.02,
     "classes": {
      "frozen": 0,
      "subtle": 43,
@@ -583,7 +583,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 2.68,
+      "got": 2.67,
       "ok": false,
       "direction": "at least"
      },
@@ -678,11 +678,11 @@
     "seconds": 3.0,
     "moving_share_pct": 20.0,
     "middle_moving_share_pct": 23.3,
-    "pixels_changing_pct": 2.25,
+    "pixels_changing_pct": 2.24,
     "still_share_pct": 42.2,
     "longest_still_s": 1.27,
     "still_stretches": 1,
-    "mean_change": 0.968,
+    "mean_change": 0.971,
     "classes": {
      "frozen": 0,
      "subtle": 72,
@@ -713,7 +713,7 @@
      },
      "pixels_changing_pct": {
       "want": 3.3,
-      "got": 2.25,
+      "got": 2.24,
       "ok": false,
       "direction": "at least"
      },

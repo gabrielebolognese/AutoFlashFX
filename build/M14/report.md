@@ -40,8 +40,8 @@ through tokens.json; the motion grammar adds the phases, curves, edges, backgrou
    pixels of a canvas); each component's energy measured alone (catalog.json `energy`, the gallery's energy line); the
    strip correlation finds the reference move anywhere in the move's frames; quarter-scale screenshots (12 minutes
    for the 28 components instead of over 30).
-7. **The golden reel rendered again from the same plan**: moving share 13.0 to 27.0 percent, middle band 12.0 to
-   29.4, pixels changing 1.0 to 1.42, still stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s
+7. **The golden reel rendered again from the same plan**: moving share 13.0 to 26.9 percent, middle band 12.0 to
+   29.4, pixels changing 1.0 to 1.41, still stretches 49.5 to 30.0 percent, longest still 2.8 to 2.43 s
    (golden/test-idea/energy.json against build/M14/golden-energy-before.json).
 
 ## Files
@@ -84,12 +84,19 @@ em dash scan. The recorded full run: build/M14/test-m14.log (71 passed, 0 failed
   12 layers, turning); the layers for three seeds stay out of the text zones over 40 s, hold no text, sit 30 to 70
   percent outside and move under 20 px per second.
 - Section 4: the golden builds, checks and renders in 112 s; every energy measure better than before, the moving
-  share doubled (13.0 to 27.0).
+  share doubled (13.0 to 26.9).
 - The full run: 71 passed, 0 failed (section 1: 25, section 2: 24, section 3: 10, section 4: 11, section 5: 1).
   Earlier partial runs (build/M14/tmp/) found the fit's end frame, the bar baseline and the caption chunk's first frame,
   all fixed before the full run.
 - Earlier milestones, fake-only tests after the changes: test-m10 sections 1 and 2, 134 passed (run once before the
   last component touches and again after); the others are listed in build/progress.md with their counts.
+
+## Found on the way
+
+- The caption line still sat at y 1480 although the user accepted the caption position of 1332 on 2026-11-07 (the
+  tokens, tokens.css and the review followed, the component's default did not): every reel's captions would have
+  failed S12's band check. caption-line now takes the style's position from tokens.css unless the plan gives one
+  (DECISIONS.md 301). Found by the M11 fake test's rerun; the fixtures and the golden were rebuilt.
 
 ## Known gaps
 

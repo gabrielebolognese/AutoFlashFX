@@ -1,6 +1,6 @@
 <html data-composition-variables='[
   {"id":"chunks_json","type":"string","label":"Caption chunks as JSON: [{\"start\":s,\"end\":s,\"words\":[{\"w\":\"You\",\"t\":s,\"em\":false}, ...]}, ...] (times local to this clip)","default":"[{\"start\":0.2,\"end\":1.4,\"words\":[{\"w\":\"You\",\"t\":0.2},{\"w\":\"ship\",\"t\":0.45},{\"w\":\"Claude\",\"t\":0.7,\"em\":true},{\"w\":\"Code\",\"t\":0.95,\"em\":true}]},{\"start\":1.45,\"end\":2.9,\"words\":[{\"w\":\"client\",\"t\":1.45},{\"w\":\"sites.\",\"t\":1.8}]}]"},
-  {"id":"y","type":"number","label":"Cap center y (px)","default":1480},
+  {"id":"y","type":"number","label":"Cap center y (px; 0 = the caption position of the style, tokens.css --caption-y)","default":0},
   {"id":"max_w","type":"number","label":"Widest line (px)","default":620},
   {"id":"word_frames","type":"number","label":"Word fade frames","default":4},
   {"id":"box_frames","type":"number","label":"Emphasis box fade frames","default":4},
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="assets/paper-cards.css">
   <style>
     /* caption-line (vocabulary.md 7, style.md Captions): the spoken words, one chunk of 1 to 4 words at a time, bare ink
-       words, sentence case, centered at the cap center y of tokens.json, at most 620 px wide. The chunk is laid out at
+       words, sentence case, centered at the cap center y of tokens.json (tokens.css --caption-y), at most 620 px wide. The chunk is laid out at
        its final width; each word appears in its own place when it is spoken (opacity 0 to 1 over 4 frames, plain fade:
        open question 12). Emphasis words sit on an accent box that fades in with the word, rising 9 px. The old chunk
        fades out over 2 frames; the next chunk's first word starts on the following frame. While a chunk is on screen it
@@ -34,8 +34,11 @@
   <script src="assets/pc-motion.js"></script>
   <script>
     (function () {
-      var v = PC.vars({ chunks_json: [], y: 1480, max_w: 620, word_frames: 4, box_frames: 4, box_rise: 9, out_frames: 2, hold: "normal" }, window.__hyperframes.getVariables());
+      var v = PC.vars({ chunks_json: [], y: 0, max_w: 620, word_frames: 4, box_frames: 4, box_rise: 9, out_frames: 2, hold: "normal" }, window.__hyperframes.getVariables());
       var layer = document.getElementById("cap-layer");
+      // the caption position is the style's (tokens.css --caption-y, from tokens.json zones.caption.center_y) unless the
+      // plan gives one: the user moved it from 1480 to 1332 on 2026-11-07 and the review checks the band around it
+      if (!(v.y > 0)) v.y = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-y")) || 1332;
       var chunks = Array.isArray(v.chunks_json) ? v.chunks_json : [];
       var fontPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--caption-font")) || 67;
       var tl = gsap.timeline({ paused: true });

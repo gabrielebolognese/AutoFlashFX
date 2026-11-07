@@ -1,5 +1,5 @@
 {
- "run": "2026-11-01T22:11:40",
+ "run": "2026-11-07T11:37:45",
  "paths": {
   "hardware": {
    "mode": "hardware",
@@ -16,7 +16,7 @@
     ]
    },
    "hero": {
-    "drawn_share": 0.3537,
+    "drawn_share": 0.3541,
     "drew": true,
     "component_webgl": true,
     "data_webgl": "1"
@@ -38,7 +38,7 @@
     ]
    },
    "hero": {
-    "drawn_share": 0.3537,
+    "drawn_share": 0.3541,
     "drew": true,
     "component_webgl": true,
     "data_webgl": "1"
@@ -50,13 +50,13 @@
   "browser-gpu": {
    "ok": true,
    "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\.harness\\webgl-hf\\browser-gpu\\frame-00-at-93.5s.png",
-   "drawn_share": 0.0605,
+   "drawn_share": 0.0911,
    "drew": true
   },
   "no-browser-gpu": {
    "ok": true,
    "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\.harness\\webgl-hf\\no-browser-gpu\\frame-00-at-93.5s.png",
-   "drawn_share": 0.0606,
+   "drawn_share": 0.0912,
    "drew": true
   }
  },

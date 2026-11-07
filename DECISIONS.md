@@ -2234,3 +2234,9 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     (the caption chunk's initial state is set at once, outside the timeline); a zero-height plane inside a rotated
     3D card projects a few px tall, so a growing bar starts at a hair and its first frame is read against its own
     baseline; a fit that reads frames after the landing is biased toward a shorter move once the inertia exists.
+301. **Found by the M11 rerun: the caption line still sat at y 1480.** The user accepted the "Caption position" proposal on
+    2026-11-07 (tokens.json zones.caption.center_y 1332, tokens.css --caption-y, the review's band around 1332), but
+    caption-line's `y` prop defaulted to 1480 and the compiler never passes one, so every reel's captions would have
+    failed S12's zone check from that day on. The default is now 0, meaning the style's position from tokens.css
+    (--caption-y); a plan may still give a y. The frozen M10 and M11 fixtures rebuild with it, the golden was rendered
+    once more (its energy numbers moved by a tenth of a point), and the gallery still shows the words in the band.

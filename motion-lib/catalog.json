@@ -1016,9 +1016,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.011,
-    "longest_still_run": 62,
-    "static_windows": 59,
+    "mean_change": 0.012,
+    "longest_still_run": 66,
+    "static_windows": 61,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1028,7 +1028,7 @@
    "item": 7,
    "name": "Caption line",
    "kind": "captions",
-   "does": "The spoken words, one chunk of 1 to 4 words at a time, bare ink words centered at cap center y 1480, at most 620 px wide; each word fades in over 4 frames when spoken, emphasis words on accent boxes rising 9 px; the old chunk fades out over 2 frames, the next word on the following frame. Mounted once per reel over the body beats.",
+   "does": "The spoken words, one chunk of 1 to 4 words at a time, bare ink words centered at the style's caption position (tokens.json zones.caption.center_y, 1332 since 2026-11-07; the y prop overrides it), at most 620 px wide; each word fades in over 4 frames when spoken, emphasis words on accent boxes rising 9 px; the old chunk fades out over 2 frames, the next word on the following frame. Mounted once per reel over the body beats.",
    "file": "compositions/caption-line.html",
    "status": "approved",
    "still": "gallery/stills/caption-line.png",
@@ -1044,8 +1044,8 @@
     {
      "id": "y",
      "type": "number",
-     "default": 1480,
-     "label": "Cap center y (px)"
+     "default": 0,
+     "label": "Cap center y (px; 0 = the caption position of the style, tokens.css --caption-y)"
     },
     {
      "id": "max_w",
@@ -1121,9 +1121,9 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.037,
-    "longest_still_run": 43,
-    "static_windows": 28,
+    "mean_change": 0.036,
+    "longest_still_run": 41,
+    "static_windows": 30,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1273,7 +1273,7 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.009,
-    "longest_still_run": 80,
+    "longest_still_run": 76,
     "static_windows": 86,
     "frames": 130,
     "run": "2026-11-07"
@@ -1434,9 +1434,9 @@
     "pixels_changing_pct": 0.03,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.015,
-    "longest_still_run": 87,
-    "static_windows": 87,
+    "mean_change": 0.014,
+    "longest_still_run": 118,
+    "static_windows": 103,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -1820,7 +1820,7 @@
     "pixels_changing_pct": 0.76,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.356,
+    "mean_change": 0.358,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2018,7 +2018,7 @@
     "pixels_changing_pct": 0.55,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
-    "mean_change": 0.245,
+    "mean_change": 0.244,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2323,7 +2323,7 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v02/extra/s30_hook.png",
-    "r": 0.889,
+    "r": 0.888,
     "run": "2026-11-07"
    },
    "energy": {
@@ -2332,9 +2332,9 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.033,
-    "longest_still_run": 67,
-    "static_windows": 52,
+    "mean_change": 0.034,
+    "longest_still_run": 38,
+    "static_windows": 23,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -2693,7 +2693,7 @@
     "pixels_changing_pct": 1.08,
     "still_share_pct": 91.5,
     "longest_still_s": 3.97,
-    "mean_change": 0.459,
+    "mean_change": 0.46,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2869,7 +2869,7 @@
     "pixels_changing_pct": 0.28,
     "still_share_pct": 93.8,
     "longest_still_s": 4.07,
-    "mean_change": 0.134,
+    "mean_change": 0.133,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3016,7 +3016,7 @@
     "checks_ok": 13,
     "checks": 13,
     "best_strip": "v01/extra/s30_card33.png",
-    "r": 0.897,
+    "r": 0.889,
     "run": "2026-11-07"
    },
    "energy": {
@@ -3025,7 +3025,7 @@
     "pixels_changing_pct": 0.27,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.109,
+    "mean_change": 0.11,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3321,9 +3321,9 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
-    "longest_still_run": 17,
-    "static_windows": 3,
+    "mean_change": 0.045,
+    "longest_still_run": 12,
+    "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -3479,7 +3479,7 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.8,
     "longest_still_s": 3.2,
-    "mean_change": 0.34,
+    "mean_change": 0.339,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3620,9 +3620,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.016,
-    "longest_still_run": 87,
-    "static_windows": 72,
+    "mean_change": 0.018,
+    "longest_still_run": 82,
+    "static_windows": 68,
     "frames": 130,
     "run": "2026-11-07"
    }
@@ -3944,12 +3944,12 @@
     "run": "2026-11-07"
    },
    "energy": {
-    "moving_share_pct": 8.5,
-    "middle_moving_share_pct": 11.5,
+    "moving_share_pct": 7.7,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.51,
-    "still_share_pct": 90.0,
-    "longest_still_s": 3.9,
-    "mean_change": 0.22,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.219,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4098,16 +4098,16 @@
     "checks_ok": 7,
     "checks": 7,
     "best_strip": "v03/extra/s30_hook_000.0.png",
-    "r": 0.908,
+    "r": 0.909,
     "run": "2026-11-07"
    },
    "energy": {
     "moving_share_pct": 6.2,
     "middle_moving_share_pct": 13.1,
-    "pixels_changing_pct": 0.34,
+    "pixels_changing_pct": 0.35,
     "still_share_pct": 92.3,
     "longest_still_s": 4.0,
-    "mean_change": 0.144,
+    "mean_change": 0.146,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4264,7 +4264,7 @@
     "pixels_changing_pct": 0.4,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.186,
+    "mean_change": 0.187,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4545,7 +4545,7 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.023,
-    "longest_still_run": 4,
+    "longest_still_run": 3,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-07"
