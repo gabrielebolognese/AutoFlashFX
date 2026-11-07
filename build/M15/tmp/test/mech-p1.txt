@@ -1,0 +1,7 @@
+mechanical: 5 issues; 21 hosts, 154 text boxes, 12 images at 37 times; emphasis 9/9; lockup ok, avatar ok
+  [text] text_budget: 142 characters of non-caption text are on screen at 4.06s (beat b2 (stake) settled); at most 100 (E4: graphics first, cut the text a graphic can carry)
+  [animation] zone: text "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" (card s2-card-9, scene s2, 5.05s) runs x 132..1055, outside the 60 px side margins
+  [animation] right_rail: text "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" (card s2-card-9, scene s2, 5.05s) reaches x 1055 in the lower half: the right 230 px are Instagram's buttons
+  [animation] right_rail: text "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" (card s2-card-9, scene s2, 5.05s) reaches x 1001 in the lower half: the right 230 px are Instagram's button
+  [text] caption_mode: a caption group ("One") is on screen with the text of s6-light-chip-9 ("a chip over the group") at 19.70s: captions are in word mode whenever any other text is 
+{"ok": true, "pass": false, "issues": 5}

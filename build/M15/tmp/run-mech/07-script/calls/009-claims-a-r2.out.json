@@ -1,0 +1,93 @@
+{
+ "claims": [
+  {
+   "beat": "b3",
+   "claim": "Anthropic's skill file names rounded cards, one radius, same grey shadow as a tell",
+   "status": "supported",
+   "facts": [
+    6
+   ],
+   "note": "Claim 6: identical rounded cards, one border-radius, same soft grey shadow."
+  },
+  {
+   "beat": "b4",
+   "claim": "Anthropic calls the cause 'distributional convergence'",
+   "status": "supported",
+   "facts": [
+    13
+   ],
+   "note": "Article blames LLM generic output on 'distributional convergence'."
+  },
+  {
+   "beat": "b5",
+   "claim": "Anthropic's terracotta (#D97757) on cream is flagged as an AI look in the skill",
+   "status": "supported",
+   "facts": [
+    5
+   ],
+   "note": "Skill lists cream near #F4F1EA with terracotta near #D97757, calling it Anthropic's own accent."
+  },
+  {
+   "beat": "b6",
+   "claim": "Skill flags one accented headline word, all-caps labels, and 01/02/03 markers on non-sequences",
+   "status": "supported",
+   "facts": [
+    7
+   ],
+   "note": "Claim 7 lists these; 'fake' = not a sequence."
+  },
+  {
+   "beat": "b7",
+   "claim": "With the skill, Claude plans 4 to 6 hex colors, reviews, then codes",
+   "status": "supported",
+   "facts": [
+    9
+   ],
+   "note": "Two-pass plan with 4-6 named hex colors, review, then code."
+  },
+  {
+   "beat": "b8",
+   "claim": "Listed as Anthropic verified",
+   "status": "supported",
+   "facts": [
+    14
+   ],
+   "note": "Marketplace page shows the badge."
+  },
+  {
+   "beat": "b8",
+   "claim": "1,134,112 installs / over a million installs as of November 2026",
+   "status": "supported",
+   "facts": [
+    14
+   ],
+   "note": "Count shown 2026-11-01; 'over a million' is a correct rounding down."
+  },
+  {
+   "beat": "b9",
+   "claim": "Install with /plugin install frontend-design@claude-plugins-official",
+   "status": "supported",
+   "facts": [
+    2
+   ],
+   "note": "Exact command in claim 2."
+  },
+  {
+   "beat": "b9",
+   "claim": "You pick a scope during install",
+   "status": "supported",
+   "facts": [],
+   "note": "Pitfalls: /plugin install opens a details panel and asks for a scope (user, project, local)."
+  },
+  {
+   "beat": "b10",
+   "claim": "Once installed it turns on by itself for frontend work",
+   "status": "supported",
+   "facts": [
+    4
+   ],
+   "note": "README: Claude automatically uses this skill for frontend work."
+  }
+ ],
+ "summary": "All script claims are backed by verified facts; the 'over a million' rounding is accurate and no overstatement found."
+}

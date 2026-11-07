@@ -1,0 +1,60 @@
+<html data-composition-variables='[
+  {"id":"dots","type":"boolean","label":"Dot grid","default":true},
+  {"id":"layers","type":"boolean","label":"The edge filler and the ambient layer (Motion and energy rules E5, E7)","default":true},
+  {"id":"seed","type":"number","label":"Seed per reel (the layers are laid out from it)","default":1},
+  {"id":"duration","type":"number","label":"How long the reel runs (s): the layers drift for this long","default":90},
+  {"id":"edges","type":"number","label":"Edge elements (3 per side)","default":6},
+  {"id":"ambient","type":"number","label":"Ambient elements (stars, dots, clouds)","default":16}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ dots: true, layers: true, seed: 1, duration: 90, edges: 6, ambient: 16 }, window.__hyperframes.getVariables());
+      var root = document.getElementById("root");
+      if (!v.dots) document.getElementById("paper-dots").style.display = "none";
+      var tl = gsap.timeline({ paused: true });
+      if (v.layers) {
+        // the layers sit over the dots and under every component (the canvas is z 0 in the reel)
+        PCM.canvas(tl, root, { seed: v.seed, duration: Math.max(4, v.duration), edges: Math.max(0, Math.round(v.edges)), ambient: Math.max(0, Math.round(v.ambient)) });
+      } else {
+        tl.set(root, { opacity: 1 }, 0);
+      }
+      window.__timelines["paper-canvas"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

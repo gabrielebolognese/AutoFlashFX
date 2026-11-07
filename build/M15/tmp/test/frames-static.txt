@@ -1,0 +1,4 @@
+hosts 2, elements 105, element frames checked 1335, static 100, first static at (4.027, '#cap-w2')
+  captions (caption-word): 79 elements, 1055 frames, 683 element frames, 1 static
+  captions-groups (caption-group): 26 elements, 547 frames, 652 element frames, 99 static
+all-moving FAIL

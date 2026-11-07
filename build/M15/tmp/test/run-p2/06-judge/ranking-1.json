@@ -1,0 +1,33 @@
+{
+ "ranking": [
+  "h07",
+  "h01",
+  "h14",
+  "h03",
+  "h05",
+  "h16",
+  "h15",
+  "h11"
+ ],
+ "notes": {
+  "h07": "Anthropic twist surprises; SKILL.md terracotta flag backs it. Confirm the count of 5.",
+  "h01": "Names the viewer's exact pain in plain words. Fully credible.",
+  "h14": "Spot-on pain plus empathy, but softer and less concrete than C.",
+  "h03": "Ties to the TELLS keyword. The confession isn't backed by any proof.",
+  "h05": "Depends on visuals. The spoken line is vague and doesn't state the problem.",
+  "h16": "Names the tool but misses the pain of clients spotting AI design.",
+  "h15": "'Instantly' is hype. 'Edits' misstates what a one-command skill install does.",
+  "h11": "Vague clickbait and an invented mistake story. Nothing specific to check."
+ },
+ "complete": true,
+ "shown": [
+  "h05",
+  "h11",
+  "h01",
+  "h16",
+  "h14",
+  "h07",
+  "h03",
+  "h15"
+ ]
+}

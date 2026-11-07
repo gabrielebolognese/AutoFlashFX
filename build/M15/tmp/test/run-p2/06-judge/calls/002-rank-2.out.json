@@ -1,0 +1,46 @@
+{
+ "ranking": [
+  "D",
+  "B",
+  "G",
+  "A",
+  "H",
+  "E",
+  "C",
+  "F"
+ ],
+ "notes": [
+  {
+   "label": "D",
+   "note": "Anthropic's own colour as an AI tell is surprising, specific and checkable."
+  },
+  {
+   "label": "B",
+   "note": "Names the viewer's identical-cards problem directly; reads clearly in one glance."
+  },
+  {
+   "label": "G",
+   "note": "True one-command promise; depends on strong visuals, on-screen text is generic."
+  },
+  {
+   "label": "A",
+   "note": "Names the pain, but the on-screen line is abstract and not concrete."
+  },
+  {
+   "label": "H",
+   "note": "Ties to TELLS, but the regret story has no proof in the profile."
+  },
+  {
+   "label": "E",
+   "note": "Reel is one command, not three edits; 'instantly' sounds like hype."
+  },
+  {
+   "label": "C",
+   "note": "Misses the real pain; the on-screen quote doesn't say what the reel is about."
+  },
+  {
+   "label": "F",
+   "note": "Made-up personal mistake; vague, no concrete hook or claim to check."
+  }
+ ]
+}

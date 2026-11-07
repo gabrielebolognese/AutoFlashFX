@@ -1,0 +1,104 @@
+{
+ "wins": {
+  "h07": 4,
+  "h01": 6,
+  "h14": 2,
+  "h05": 0
+ },
+ "order": [
+  "h01",
+  "h07",
+  "h14",
+  "h05"
+ ],
+ "winner": "h01",
+ "runner_up": "h07",
+ "results": [
+  {
+   "n": 1,
+   "first": "h07",
+   "second": "h01",
+   "winner": "h01",
+   "why": "X names the viewer's exact pain with Claude Code. W's '5' is unbacked and 'AI looks' is vague."
+  },
+  {
+   "n": 2,
+   "first": "h01",
+   "second": "h07",
+   "winner": "h01",
+   "why": "Identical cards is the viewer's own complaint, so the right builders stay. W's count is unbacked."
+  },
+  {
+   "n": 3,
+   "first": "h07",
+   "second": "h14",
+   "winner": "h07",
+   "why": "The Anthropic twist is concrete and checkable. Y's 'not your fault' is generic reassurance."
+  },
+  {
+   "n": 4,
+   "first": "h14",
+   "second": "h07",
+   "winner": "h07",
+   "why": "W has a specific, surprising, checkable fact. Y states a vague problem with no hook detail."
+  },
+  {
+   "n": 5,
+   "first": "h07",
+   "second": "h05",
+   "winner": "h07",
+   "why": "Z is vague without visuals and sets up no problem. W teases a surprising, real detail."
+  },
+  {
+   "n": 6,
+   "first": "h05",
+   "second": "h07",
+   "winner": "h07",
+   "why": "'Before/After' is generic. W's Anthropic tell gives a concrete reason to keep watching."
+  },
+  {
+   "n": 7,
+   "first": "h01",
+   "second": "h14",
+   "winner": "h01",
+   "why": "X names a concrete symptom, identical cards. Y's 'generic' is abstract and softer."
+  },
+  {
+   "n": 8,
+   "first": "h14",
+   "second": "h01",
+   "winner": "h01",
+   "why": "X's specific card problem is recognisable at a glance. Y's claim is broader and blander."
+  },
+  {
+   "n": 9,
+   "first": "h01",
+   "second": "h05",
+   "winner": "h01",
+   "why": "X sets up the viewer's pain clearly. Z promises a change but never says what changes."
+  },
+  {
+   "n": 10,
+   "first": "h05",
+   "second": "h01",
+   "winner": "h01",
+   "why": "Z's on-screen line says nothing without footage. X targets Claude Code builders directly."
+  },
+  {
+   "n": 11,
+   "first": "h14",
+   "second": "h05",
+   "winner": "h14",
+   "why": "Y at least names the problem and the audience. Z is too vague to stop the right viewer."
+  },
+  {
+   "n": 12,
+   "first": "h05",
+   "second": "h14",
+   "winner": "h14",
+   "why": "Y sets up the generic-look pain. Z gives no context for what the before/after is."
+  }
+ ],
+ "answered": 12,
+ "asked": 12
+}

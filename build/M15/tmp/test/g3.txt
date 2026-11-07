@@ -1,0 +1,11 @@
+normal-talk-word-mode ok
+important-beats-groups ok
+groups-only-without-text ok
+some-of-each ok
+every-entry-moves ok
+groups-3-fonts ok
+anchor-biggest ok
+anchor-2-to-3 ok
+emphasis-words-serif ok
+hosts ok
+compositions-copied ok

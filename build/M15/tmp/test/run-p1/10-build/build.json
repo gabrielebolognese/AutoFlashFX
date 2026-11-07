@@ -1,0 +1,46 @@
+{
+ "project": "C:/Users/there/AppData/Local/Temp/tmp.m191v87N4N/runs/2026-11-01_1916_claude-codes-frontend-design-skill/10-build\\project",
+ "hosts": 29,
+ "assets": [
+  "brand/lockup/lockup-gradient-on-light.png",
+  "brand/mark/avatar-dark.png",
+  "research/02-plugin-page.png",
+  "research/03-skill-md.png",
+  "research/04-blog.png"
+ ],
+ "webgl": true,
+ "render_flag": "--browser-gpu",
+ "three_d_objects": 1,
+ "builder_role": "builder",
+ "review_rounds": 0,
+ "flags": [
+  "the visual director wanted a component the library lacks (color-swatch-card: Shows real hex colors as swatches (#D97757 on #F4F1EA) with their codes, so the flagged palette is s); the reel uses library components instead"
+ ],
+ "fix_rounds": 0,
+ "written_by": "10-build",
+ "updated": "2026-11-01 19:24:10",
+ "check_ok": true,
+ "check_errors": [],
+ "check_warnings": 12,
+ "draft": "draft.mp4",
+ "draft_probe": {
+  "duration": 41.466016,
+  "video": {
+   "codec": "h264",
+   "width": 540,
+   "height": 960,
+   "fps": 30.0,
+   "profile": "High",
+   "pix_fmt": "yuv420p"
+  }
+ },
+ "render_seconds": 86.2,
+ "hook2": "hook2.mp4",
+ "hook2_ms": 3190,
+ "events": 120,
+ "events_verified": {
+  "checked": 79,
+  "changed": 79,
+  "failed": []
+ }
+}

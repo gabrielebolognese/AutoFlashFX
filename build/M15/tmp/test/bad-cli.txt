@@ -1,0 +1,4 @@
+rule=caption_modes: caption 18 ("One accented headline word."): the group does not move: it needs a slow rise or a parallax turn (E3, nothing is ever static)
+warning=zones: s3-window-card-1: the hero's bottom at y 1220 is under the style's hero zone (1176); fine as long as it stays off the caption band
+warning=text_size: text under the caption size, baked into the components: card body 34 px, card title 44 px, check-badge items_json 34 px, dark-chip text 28 px, dm-card message 32 px, dm-card sender 36 px, end-card line1 58 px, end-card line2 58 px (E4 wants 67 px or more: the library's sizes are the style's own, resizing them is open)
+plan NOT ok: 1 errors, 2 warnings, skipped hook2

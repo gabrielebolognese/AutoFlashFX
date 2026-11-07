@@ -1,0 +1,101 @@
+{
+ "duration_ms": 3190,
+ "instances": [
+  {
+   "instance": "h2-s1-headline-1",
+   "component": "headline",
+   "scene": "h2",
+   "start_ms": 0,
+   "end_ms": 3190,
+   "sound_events": [
+    {
+     "event": "word",
+     "frame": "each word's time",
+     "cue": null,
+     "note": "the hook set piece elsewhere takes hook_hit"
+    }
+   ],
+   "props": {
+    "kicker": "CLAUDE CODE SITES",
+    "kicker_mark": "",
+    "lines_json": [
+     "5 AI looks to avoid.",
+     "One is *Anthropic's.*"
+    ],
+    "words_json": [
+     {
+      "w": "Five",
+      "t": 0.05
+     },
+     {
+      "w": "AI",
+      "t": 0.19
+     },
+     {
+      "w": "looks",
+      "t": 0.41
+     },
+     {
+      "w": "to",
+      "t": 0.69
+     },
+     {
+      "w": "avoid.",
+      "t": 0.89
+     },
+     {
+      "w": "One",
+      "t": 1.41
+     },
+     {
+      "w": "is",
+      "t": 1.55
+     },
+     {
+      "w": "Anthropic's.",
+      "t": 1.73
+     }
+    ],
+    "kicker_at": 0.05,
+    "word_frames": 3,
+    "x": 90,
+    "w": 900,
+    "align": "center"
+   }
+  },
+  {
+   "instance": "h2-s1-hero-3d-2",
+   "component": "hero-3d",
+   "scene": "h2",
+   "start_ms": 2480,
+   "end_ms": 3190,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": "enter_at x 30",
+     "cue": "hook_hit",
+     "note": "when it is the hook's set piece"
+    },
+    {
+     "event": "land",
+     "frame": "enter_at x 30 + 12",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 300,
+    "y": 690,
+    "w": 480,
+    "h": 480,
+    "object": "card",
+    "spin": 40,
+    "tilt": 18,
+    "enter_at": 0,
+    "enter_frames": 12,
+    "label": "",
+    "clip_start": 2.48
+   }
+  }
+ ],
+ "assets": []
+}

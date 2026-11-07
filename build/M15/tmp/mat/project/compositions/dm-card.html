@@ -1,0 +1,73 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":110},
+  {"id":"y","type":"number","label":"Top (px)","default":1250},
+  {"id":"w","type":"number","label":"Width (px)","default":860},
+  {"id":"avatar","type":"string","label":"Round avatar image (assets/brand/mark/avatar-dark.png)","default":""},
+  {"id":"avatar_size","type":"number","label":"Avatar diameter (px, at least 112)","default":120},
+  {"id":"sender","type":"string","label":"Sender name","default":"FlashFX"},
+  {"id":"message","type":"string","label":"One message line","default":"Comment TELLS and I send you the checklist"},
+  {"id":"time_label","type":"string","label":"Time label","default":"now"},
+  {"id":"app_label","type":"string","label":"App label (small, grey)","default":"Instagram"},
+  {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"pop","label":"pop"},{"value":"drop","label":"drop from above"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* dm-card (branding, tweaks.md "Branding (FlashFX account)", BUILD_SPEC.md 2.7): the DM notification card of the
+       CTA beat, in the style's look: a surface card with a round avatar image (mark/avatar-dark.png, at least 112 px
+       across so its bolt stays 64 px tall), the sender name "FlashFX" and one message line. The avatar is an image file
+       with its aspect ratio locked, never redrawn. Enters with the style's card move (or a pop, or a drop from above),
+       combined with E2's zoom and parallax rotation, then E1's inertia and hold (pc-motion.js); its landing is the
+       notification sound event. vocabulary.md lists no such card; this one follows the window card's chrome-free variant. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #dm { display: flex; align-items: center; gap: 28px; padding: 26px 34px; box-sizing: border-box; }
+    #dm-avatar { flex: 0 0 auto; border-radius: 50%; overflow: hidden; background: var(--c-ink-chip); }
+    #dm-avatar img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    #dm-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    #dm-top { display: flex; align-items: baseline; gap: 14px; }
+    #dm-sender { font-weight: 800; font-size: 36px; letter-spacing: -0.01em; }
+    #dm-app { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 28px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; }
+    #dm-time { margin-left: auto; font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 28px; opacity: 0.55; }
+    #dm-message { font-weight: 600; font-size: 32px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  </style>
+  <div id="root" data-composition-id="dm-card" data-width="1080" data-height="1920">
+    <div id="dm" class="pc-card pc-el">
+      <div id="dm-avatar"><img id="dm-avatar-img" alt=""></div>
+      <div id="dm-text">
+        <div id="dm-top"><span id="dm-sender"></span><span id="dm-app"></span><span id="dm-time"></span></div>
+        <div id="dm-message"></div>
+      </div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 110, y: 1250, w: 860, avatar: "", avatar_size: 120, sender: "FlashFX", message: "", time_label: "now", app_label: "Instagram",
+        enter: "rise", enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("dm"), av = document.getElementById("dm-avatar"), img = document.getElementById("dm-avatar-img");
+      PC.place(card, { x: v.x, y: v.y, w: v.w });
+      var size = Math.max(112, v.avatar_size);
+      av.style.width = size + "px"; av.style.height = size + "px";
+      if (v.avatar) { img.src = v.avatar; } else { img.style.display = "none"; }
+      document.getElementById("dm-sender").textContent = v.sender;
+      document.getElementById("dm-app").textContent = v.app_label;
+      document.getElementById("dm-time").textContent = v.time_label;
+      document.getElementById("dm-message").textContent = v.message;
+      PCM.depth(card, [av, document.getElementById("dm-text")]);
+
+      var tl = gsap.timeline({ paused: true });
+      var main = v.enter === "pop" ? { kind: "pop", overshoot: 0.02, frames: 7 } : v.enter === "drop" ? { kind: "drop", rise: 60 } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: { type: v.exit, at: v.exit_at } });
+      PC.event("notification", life.land, { el: "dm" });
+      window.__timelines["dm-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

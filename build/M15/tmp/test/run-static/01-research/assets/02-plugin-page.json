@@ -1,0 +1,15 @@
+{
+ "ok": true,
+ "file": "02-plugin-page.png",
+ "name": "plugin-page",
+ "url": "https://claude.com/plugins/frontend-design",
+ "final_url": "https://claude.com/marketplace/plugins/frontend-design",
+ "title": "frontend-design | Claude by Anthropic",
+ "status": 200,
+ "width": 1080,
+ "height": 1920,
+ "full_page": false,
+ "captured": "2026-11-01 03:23",
+ "checked": "2026-11-01",
+ "seconds": 3.0
+}

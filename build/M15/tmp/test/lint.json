@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "errorCount": 0,
+  "warningCount": 0,
+  "infoCount": 0,
+  "findings": [],
+  "filesScanned": 30,
+  "_meta": {
+    "version": "0.8.226",
+    "latestVersion": "0.9.19",
+    "updateAvailable": true
+  }
+}
+

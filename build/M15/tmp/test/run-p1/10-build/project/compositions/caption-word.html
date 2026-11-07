@@ -1,0 +1,88 @@
+<html data-composition-variables='[
+  {"id":"words_json","type":"string","label":"Caption words as JSON: [{\"w\":\"Claude\",\"t\":s,\"end\":s,\"em\":false,\"rise\":px,\"turn\":deg}, ...] (times local to this clip; one word on screen at a time; rise 8 to 16 px or turn 2 to 4 degrees over each word life)","default":"[{\"w\":\"You\",\"t\":0.2,\"end\":0.467,\"rise\":8},{\"w\":\"ship\",\"t\":0.5,\"end\":0.767,\"rise\":13},{\"w\":\"Claude\",\"t\":0.8,\"end\":1.217,\"em\":true,\"rise\":9},{\"w\":\"Code\",\"t\":1.25,\"end\":1.667,\"em\":true,\"turn\":3},{\"w\":\"client\",\"t\":1.7,\"end\":2.067,\"rise\":10},{\"w\":\"sites.\",\"t\":2.1,\"end\":2.6,\"rise\":15},{\"w\":\"Clients\",\"t\":2.9,\"end\":3.267,\"rise\":11},{\"w\":\"spot\",\"t\":3.3,\"end\":3.567,\"turn\":3},{\"w\":\"it\",\"t\":3.6,\"end\":3.767,\"rise\":12},{\"w\":\"instantly.\",\"t\":3.8,\"end\":4.3,\"rise\":8}]"},
+  {"id":"y","type":"number","label":"Cap center y (px; 0 = the caption position of the style, tokens.css --caption-y)","default":0},
+  {"id":"emphasis_ratio","type":"number","label":"Emphasis word size as a multiple of the caption size (1.25 to 1.5)","default":1.4},
+  {"id":"word_frames","type":"number","label":"Word fade frames","default":4},
+  {"id":"main_frames","type":"number","label":"Zoom frames of the combined main animation (a word lives a few frames)","default":6},
+  {"id":"box_frames","type":"number","label":"Emphasis box fade frames","default":4},
+  {"id":"box_rise","type":"number","label":"Emphasis box rise (px)","default":9},
+  {"id":"out_frames","type":"number","label":"Word fade-out frames","default":2}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* caption-word (Motion and energy rules E3, word mode; replaces caption-line, M15): the spoken words one at a time,
+       each on its spoken word time, centered at the style's caption position (tokens.css --caption-y). A word fades in
+       over 4 frames with a small zoom (the combined main animation, E2, short because a word lives a few frames) and
+       rises 8 to 16 px, or turns 2 to 4 degrees of parallax rotation, over its whole life, so it never stands still
+       (E1). The emphasis words change font and size: the style's emphasis font (Instrument Serif italic) at 1.25 to 1.5
+       times the caption size, on the style's accent box. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    .pc-cw { position: absolute; left: 0; width: 1080px; text-align: center; white-space: nowrap; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--c-ink); }
+    .pc-cw .pc-caption-word { margin: 0; }
+    .pc-cw .pc-caption-word.em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; letter-spacing: 0; padding: 0 22px; }
+    .pc-cw .pc-caption-box { left: 0; right: 0; }
+  </style>
+  <div id="root" data-composition-id="caption-word" data-width="1080" data-height="1920">
+    <div id="cap-layer" class="pc-el" style="left: 0; top: 0; width: 1080px; height: 1920px;"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ words_json: [], y: 0, emphasis_ratio: 1.4, word_frames: 4, main_frames: 6, box_frames: 4, box_rise: 9, out_frames: 2 }, window.__hyperframes.getVariables());
+      var layer = document.getElementById("cap-layer");
+      var root = document.documentElement;
+      if (!(v.y > 0)) v.y = parseFloat(getComputedStyle(root).getPropertyValue("--caption-y")) || 1332;
+      var fontPx = parseFloat(getComputedStyle(root).getPropertyValue("--caption-font")) || 67;
+      var boxH = parseFloat(getComputedStyle(root).getPropertyValue("--emphasis-h")) || 78.75;
+      var boxRatio = boxH / fontPx;
+      var maxW = parseFloat(getComputedStyle(root).getPropertyValue("--caption-max-w")) || 620;
+      var words = Array.isArray(v.words_json) ? v.words_json : [];
+      var tl = gsap.timeline({ paused: true });
+      var F = PC.f;
+      words.forEach(function (wd, wi) {
+        var em = !!wd.em;
+        var px = em ? fontPx * v.emphasis_ratio : fontPx;
+        var div = PC.el("div", "pc-cw", layer);
+        div.id = "cap-w" + wi;
+        div.style.fontSize = px + "px";
+        div.style.top = (v.y - px * 0.5) + "px";
+        var span = PC.el("span", "pc-caption-word" + (em ? " em" : ""), div);
+        span.id = div.id + "-t";
+        var box = null;
+        if (em) { box = PC.el("span", "pc-caption-box", span); box.id = div.id + "-box"; box.style.top = "50%"; box.style.height = (px * boxRatio) + "px"; box.style.marginTop = (-(px * boxRatio) / 2 - 2) + "px"; }
+        PC.el("span", "pc-caption-text", span, wd.w);
+        // a word wider than the caption line scales down (the plan should not have let it through; the review sees it)
+        var width = 0;
+        try { var rg = document.createRange(); rg.selectNodeContents(span); width = rg.getBoundingClientRect().width; } catch (e) { width = span.scrollWidth; }
+        var fit = (width > maxW && width > 0) ? Math.max(0.6, maxW / width) : 1;
+        if (fit < 1) PC.event("caption_overflow", wd.t, { word: wi, width: width, scale: fit });
+        var start = typeof wd.t === "number" ? wd.t : 0;
+        var end = typeof wd.end === "number" && wd.end >= start + F(2) - 0.001 ? wd.end : start + 0.3;
+        // a word that lives only a few frames fades in and out faster (never a half-visible word)
+        var lifeF = Math.max(3, Math.round((end - start) * 30));
+        var inF = Math.max(2, Math.min(v.word_frames, Math.round(lifeF * 0.5)));
+        var outF = Math.max(1, Math.min(v.out_frames, Math.round(lifeF * 0.25)));
+        var outAt = Math.max(end - F(outF), start + F(inF));
+        gsap.set(div, { opacity: 0 });
+        gsap.set(span, { scale: fit, transformOrigin: "50% 50%" });
+        // the combined main animation (a fade with a small zoom, E2) and nothing else: the word's own motion below
+        PCM.life(tl, div, { at: start, main: { kind: "fade", frames: inF, rise: 0, zoom: "small", mainFrames: Math.max(inF, Math.min(v.main_frames, lifeF)), rotate: false }, hold: { kind: "none" },
+                            inertia: { move: 0, scale: 0, rotate: 0 }, until: outAt, room: false, events: { enter: "caption_word_fade" } });
+        // E3: every word rises 8 to 16 px over its life (or turns 2 to 4 degrees): a linear move, so its speed never reaches zero
+        var life = Math.max(F(2), end - start);
+        if (typeof wd.turn === "number" && wd.turn) PCM.linear(tl, div, start, life, { kind: "turn", deg: wd.turn });
+        else PCM.linear(tl, div, start, life, { kind: "rise", px: typeof wd.rise === "number" ? wd.rise : 12 });
+        if (box) PCM.life(tl, box, { at: start, main: { kind: "fade", frames: v.box_frames, rise: v.box_rise, ease: "power1.out", zoom: false, rotate: false }, hold: { kind: "none" }, inertia: { move: 0, scale: 0, rotate: 0 }, until: start + F(1), room: false, events: { enter: "caption_box_fade" } });
+        PCM.exit(tl, div, outAt, "fade", { frames: outF, el: div.id });
+        tl.set(div, { opacity: 0, visibility: "hidden" }, end);
+        PC.event("caption_word", start, { word: wi, text: wd.w, em: em, mode: "word" });
+      });
+      window.__timelines["caption-word"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

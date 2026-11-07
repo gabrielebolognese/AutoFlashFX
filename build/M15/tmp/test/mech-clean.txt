@@ -1,0 +1,2 @@
+mechanical: pass; 19 hosts, 146 text boxes, 12 images at 37 times; emphasis 9/9; lockup ok, avatar ok
+{"ok": true, "pass": true, "issues": 0}

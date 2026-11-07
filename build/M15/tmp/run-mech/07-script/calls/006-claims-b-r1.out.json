@@ -1,0 +1,119 @@
+{
+ "claims": [
+  {
+   "beat": "b3",
+   "claim": "The skill flags identical rounded cards, one border-radius, the same grey shadow rgba(0,0,0,.1) as tells",
+   "status": "supported",
+   "facts": [
+    6
+   ],
+   "note": "Claim 6 lists exactly these traits."
+  },
+  {
+   "beat": "b4",
+   "claim": "Headline tells: one accented word, all-caps labels, an arrow on buttons",
+   "status": "supported",
+   "facts": [
+    7
+   ],
+   "note": "Claim 7 names accenting one word in a headline, all-caps labels, and '→' added to button text."
+  },
+  {
+   "beat": "b5",
+   "claim": "Anthropic flags them all in SKILL.md",
+   "status": "supported",
+   "facts": [
+    6,
+    7
+   ],
+   "note": "Cards, shadow, radius (6) and headline/label/arrow tells (7) are all in SKILL.md."
+  },
+  {
+   "beat": "b5",
+   "claim": "SKILL.md updated September 2026",
+   "status": "supported",
+   "facts": [
+    11
+   ],
+   "note": "Numbers: last SKILL.md content update 2026-09-01 in the plugin repo (also 2026-09-03 in skills repo). Claim 11 is about the license, not the date, but the Numbers back it."
+  },
+  {
+   "beat": "b6",
+   "claim": "The skill warns against cream with terracotta",
+   "status": "supported",
+   "facts": [
+    5
+   ],
+   "note": "Claim 5 lists warm cream near #F4F1EA with terracotta accent near #D97757 as an AI look."
+  },
+  {
+   "beat": "b6",
+   "claim": "#D97757 is Anthropic's own accent",
+   "status": "supported",
+   "facts": [
+    5
+   ],
+   "note": "Claim 5 note: the skill calls #D97757 'Anthropic's own Claude-interaction accent'. The script says 'accent' without exact 'near', which is fine."
+  },
+  {
+   "beat": "b7",
+   "claim": "Unguided, models converge",
+   "status": "supported",
+   "facts": [
+    13
+   ],
+   "note": "Article says an LLM without guidance will almost always conform to the same defaults."
+  },
+  {
+   "beat": "b7",
+   "claim": "Anthropic calls it distributional convergence",
+   "status": "supported",
+   "facts": [
+    13
+   ],
+   "note": "Article blames 'distributional convergence'."
+  },
+  {
+   "beat": "b8",
+   "claim": "It makes Claude plan first, review for anything generic, then code",
+   "status": "supported",
+   "facts": [
+    9
+   ],
+   "note": "Claim 9 describes plan, review that revises generic things, then code."
+  },
+  {
+   "beat": "b9",
+   "claim": "Install with /plugin install frontend-design@claude-plugins-official",
+   "status": "supported",
+   "facts": [
+    2
+   ],
+   "note": "Exact command in claim 2."
+  },
+  {
+   "beat": "b10",
+   "claim": "You pick a scope when installing",
+   "status": "supported",
+   "facts": [],
+   "note": "Pitfalls: /plugin install opens a details panel and asks for a scope (user, project, local)."
+  },
+  {
+   "beat": "b10",
+   "claim": "It runs by itself on every frontend request",
+   "status": "overstated",
+   "facts": [
+    4
+   ],
+   "note": "Claim 4 says Claude automatically uses the skill for frontend work, not literally every request. Close, but 'every' is stronger than the source."
+  },
+  {
+   "beat": "b2",
+   "claim": "Clients will know Claude Code built it",
+   "status": "supported",
+   "facts": [],
+   "note": "Conclusion drawn in the creator's voice, treated as framing (clients can tell right away), not a claim to check."
+  }
+ ],
+ "summary": "Nearly all claims are backed by the research. Only 'every frontend request' in b10 is slightly stronger than the source's 'automatically for frontend work'."
+}

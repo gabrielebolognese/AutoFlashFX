@@ -1,0 +1,3 @@
+caption-group: pass (7/7 checks, strip r=none, moving 3.1%, longest still 3.67 s)
+caption-word: pass (5/5 checks, strip r=0.955, moving 0.8%, longest still 3.13 s)
+frame-match: 2 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md

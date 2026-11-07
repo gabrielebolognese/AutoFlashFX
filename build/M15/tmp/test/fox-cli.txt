@@ -1,0 +1,5 @@
+group 0 words 0..3: anchor "the" at 201.0 px (3.0 x caption), lean left, fonts grotesk, handwritten, kicker, serif-italic
+             the anchor    grotesk        201.0 px  x   60.0 y  518.4 w  323.4 h  201.0
+           quick secondary serif-italic   100.5 px  x  407.5 y  518.4 w  211.1 h  100.5
+           brown secondary handwritten    100.5 px  x  407.5 y  618.9 w  221.4 h  100.5
+             fox secondary kicker          84.4 px  x  485.8 y  727.5 w  143.1 h   84.4

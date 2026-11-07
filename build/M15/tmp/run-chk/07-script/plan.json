@@ -1,0 +1,82 @@
+{
+ "written_by": "07-script",
+ "checked": "2026-11-01",
+ "wpm": 195.0,
+ "video_type": "default",
+ "length_s": [
+  25.0,
+  40.0
+ ],
+ "length_source": "tweaks.md",
+ "target_seconds": 32.5,
+ "final_words": [
+  81,
+  130
+ ],
+ "write_words": [
+  121,
+  143
+ ],
+ "write_target": 132,
+ "beat_max_words": 13,
+ "stake_max_words": 16,
+ "hook_max_s": 3.0,
+ "beat_max_s": 4.0,
+ "stake_max_s": 5.0,
+ "abstract_run": 3,
+ "length_tolerance_pct": 15.0,
+ "card_max_words": 6,
+ "min_body_beats": 2,
+ "detect_min_overall": 70.0,
+ "detect_min_check": 55.0,
+ "cut_pct": 20.0,
+ "cut_range_pct": [
+  10,
+  30
+ ],
+ "cut_tries": 2,
+ "rounds": 3,
+ "tones": [
+  "insider",
+  "warning"
+ ],
+ "tone_source": "brief",
+ "tone_guide": {
+  "insider": "someone who read the actual file: exact values, the detail outsiders miss, said plainly",
+  "warning": "a heads-up from someone who got burned: name the risk early, stay factual, no fear-mongering"
+ },
+ "suggested_tones": [
+  "insider",
+  "warning",
+  "calm expert"
+ ],
+ "hook": {
+  "id": "h01",
+  "spoken": "Why your Claude Code cards all look identical.",
+  "on_screen": "IDENTICAL CARDS LOOK AI",
+  "family": "mistake-warning",
+  "template_id": "36baee5786",
+  "template": "Why your __ isn't working (and how to fix it).",
+  "marker": "Claude Code"
+ },
+ "hook2": {
+  "id": "h07",
+  "spoken": "5 AI looks to avoid. One is Anthropic's.",
+  "on_screen": "5 AI LOOKS. ONE IS ANTHROPIC'S",
+  "family": "tools-listicle"
+ },
+ "keyword": "TELLS",
+ "deliverable": "A one-page PDF checklist of the AI design tells named in the current SKILL.md, plus the exact install command for a Claude Code session and for the shell.",
+ "deliverable_status": "new",
+ "deliverable_link": "",
+ "identity": "if you ship landing pages or client sites built with Claude Code",
+ "problem": "Every site I build with AI ends up with the same rounded cards, soft grey shadows and all-caps labels, and clients can tell right away.",
+ "solution": "One command installs Anthropic's frontend-design skill in Claude Code. Claude then plans palette, type and layout, checks it for defaults, then codes.",
+ "one_true_thing": "One command, /plugin install frontend-design@claude-plugins-official, and the skill switches on by itself for frontend work. Its SKILL.md even flags Anthropic's own #D97757 terracotta as an AI tell.",
+ "pronunciations": [],
+ "beat_map": "| beat | component | videos (of 9) |\n|---|---|---|\n| hook (0 to 5s) | kicker plus headline with a serif-italic phrase, over one hero card or icon pair | v01, v02, v03, v07, v08 (5) |\n| proof / number | stat container or giant number, counting up | all 9 |\n| CTA | end card: \"Comment\" plus keyword, mascot or mascot row | all 9 |\n| any scene | mascot with a prop | v01, v02, v03, v05, v07, v08, v09 (7) |\n| fact / label | dark chip or tag | v01, v02, v04, v05, v07, v08, v09 (7) |\n| state | light pill or chip | v01, v02, v03, v04, v06, v08, v09 (7) |\n| done / yes | check badge or checklist ticks | v01, v03, v04, v06, v07, v08 (6) |\n| the tool | window card (browser or app) | v01, v02, v05, v07, v08 (5) |\n| how it works | terminal or code card that types | v01, v02, v05, v08, v09 (5) |\n| data | chart card (bars, line, gauge) | v03, v04, v05, v06, v07 (5) |\n| options / examples | grid, fan or deck of thumbnail cards | v01, v02, v04, v05, v06 (5) |\n| tool identity | logo tile or logo badge | v01, v02, v05, v06, v08 (5) |\n| \"not X\" / before and after | strike-through (line or X) | v02, v04, v06, v07, v09 (5) |\n| the prompt | chat card with an input bar or bubbles, typing | v01, v06, v07, v08 (4) |\n| progress | progress or meter bar | v01, v02, v03, v09 (4) |\n| aside | handwritten callout with an arrow | v02, v07, v08 (3) |\n| comparison | table card | v02, v04 (2) |\n| version 1 only | progress tracker | v04, v06, v09 (3) |\n| one-offs | stamp (v04), stone card (v06), sticker pop-off (v09), doodles (v01), speech bubble and confetti on the end card (v07, v08) | 1 or 2 each |",
+ "voice_excerpts": "1. \"This is how I normally talk on reels, with a normal energetic voice, with calm tone, etc.\" (0s to 6s)\n2. \"use FlashFX, the new motion graphics, the new motion graphics software\" (11s to 14s)\n3. \"creations. Or you can use FlashCC, which is a software that allows you to create carousels\" (23s to 28s)\n4. \"We will also need to cut silence. Here I see a lamp, a wardrobe and now I'm in my room walking\" (33s to 38s)\n5. \"but honestly I don't really care. I hope that the cloning actually feels good,\" (48s to 52s)",
+ "voice_present": true,
+ "idea_id": "c26c94b17281",
+ "idea_text": "Claude Code's frontend-design skill: it makes websites built with AI stop looking AI-generated. Show what it does and how to install it."
+}

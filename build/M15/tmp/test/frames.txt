@@ -1,0 +1,4 @@
+hosts 2, elements 105, element frames checked 1335, static 0
+  captions (caption-word): 79 elements, 1055 frames, 683 element frames, 0 static
+  captions-groups (caption-group): 26 elements, 547 frames, 652 element frames, 0 static
+all-moving ok

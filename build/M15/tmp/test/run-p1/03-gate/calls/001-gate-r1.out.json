@@ -1,0 +1,18 @@
+{
+ "scores": {
+  "P": 3,
+  "S": 3,
+  "C": 3
+ },
+ "F": "ok",
+ "evidence": {
+  "P": "Pain is specific and first-person: \"Every site I build with AI ends up with the same rounded cards, soft grey shadows and all-caps labels, and clients can tell right away.\" The solution answers it with a concrete step: \"One command installs Anthropic's frontend-design skill... Claude then plans palette, type and layout, checks it for defaults, then codes.\"",
+  "S": "Precise identity: \"if you ship landing pages or client sites built with Claude Code\". The takeaway makes sense without the video and is worth forwarding: \"identical rounded cards with rgba(0,0,0,.1) shadows, all-caps labels, and a → on button text\".",
+  "C": "Short keyword \"TELLS\". Concrete, realistic deliverable that matches the reel: \"A one-page PDF checklist of the AI design tells named in the current SKILL.md, plus the exact install command for a Claude Code session and for the shell.\" It can be built straight from claims 2 and 5 to 8.",
+  "F": "Core claim verified. Install command \"/plugin install frontend-design@claude-plugins-official\" and the shell form: claim 2 verified. \"switches on by itself\": claim 4 verified. \"#D97757 terracotta as an AI tell\": claim 5 verified (SKILL.md calls it \"Anthropic's own Claude-interaction accent\"). Rounded cards, rgba(0,0,0,.1), all-caps labels, arrow on buttons: claims 6 and 7 verified. \"plans palette, type and layout, checks it for defaults, then codes\": claim 9 verified. The expansion claims nothing from the unverified list."
+ },
+ "reason": "Strong across the board: a concrete pain that client-site builders will recognize, a one-command fix, and a forwardable list of named AI tells quoted from the current SKILL.md, every claim backed by verified primary sources.",
+ "angle_hint": "",
+ "different_topic": false,
+ "suggested_idea": ""
+}

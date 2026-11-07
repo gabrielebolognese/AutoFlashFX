@@ -1,0 +1,1 @@
+run folder C:/Users/there/OneDrive/Desktop/instagramReels/build/M15/tmp/test/run-static: plan plan-static.json, 39 caption entries, project built

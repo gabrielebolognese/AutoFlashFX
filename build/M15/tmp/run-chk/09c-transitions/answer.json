@@ -1,0 +1,65 @@
+{
+ "transitions": [
+  {
+   "from": "s1",
+   "to": "s2",
+   "type": "fall",
+   "why": "The hook card drops away slowly and lands on the calm stake beat, where clients spot the sameness."
+  },
+  {
+   "from": "s2",
+   "to": "s3",
+   "type": "fade-blur",
+   "why": "The SKILL.md evidence continues the same thought, showing why every site looks alike."
+  },
+  {
+   "from": "s3",
+   "to": "s4",
+   "type": "fade-blur",
+   "why": "The grey shadow leads straight into its cause, so a quiet blend keeps the line of thought."
+  },
+  {
+   "from": "s4",
+   "to": "s5",
+   "type": "push",
+   "why": "The beat turns from the cause to a before and after, and even Anthropic's palette gets struck out."
+  },
+  {
+   "from": "s5",
+   "to": "s6",
+   "type": "fade-blur",
+   "why": "The struck palette carries on into the list of tells, so this is the same thought."
+  },
+  {
+   "from": "s6",
+   "to": "s7",
+   "type": "push",
+   "why": "This is the story's turn from problem to fix: the tells push out and the skill's method steps in."
+  },
+  {
+   "from": "s7",
+   "to": "s8",
+   "type": "fade-blur",
+   "why": "The proof backs up the method just shown, so it's a continuing thought with a soft change."
+  },
+  {
+   "from": "s8",
+   "to": "s9",
+   "type": "cut",
+   "why": "A hard snap from the plugin page to the terminal tells the viewer it's time to act. It is the reel's only cut."
+  },
+  {
+   "from": "s9",
+   "to": "s10",
+   "type": "fall",
+   "why": "The install card drops away slowly into the calm payoff, where the skill turns on by itself."
+  },
+  {
+   "from": "s10",
+   "to": "s11",
+   "type": "fade-blur",
+   "why": "A gentle blend into the end card lets its top to bottom build carry the close."
+  }
+ ],
+ "notes": "Mostly fade-blur (5 of 10). The two falls go into calm beats (the stake and the payoff), the two pushes go where the story turns, and there is one cut, into the install step. No non-default type appears twice in a row."
+}

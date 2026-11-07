@@ -1,0 +1,72 @@
+{
+ "beats": [
+  {
+   "id": "b1",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "card": "IDENTICAL CARDS LOOK AI"
+  },
+  {
+   "id": "b2",
+   "display": "You ship Claude Code client sites. Clients spot it instantly.",
+   "spoken": "You ship Claude Code client sites. Clients spot it instantly.",
+   "card": "CLIENTS SPOT IT"
+  },
+  {
+   "id": "b3",
+   "display": "Anthropic's SKILL.md names it: rounded cards, one radius, same rgba(0,0,0,.1) shadow.",
+   "spoken": "Anthropic's skill file names it: rounded cards, one radius, same grey shadow.",
+   "card": "rgba(0,0,0,.1)"
+  },
+  {
+   "id": "b4",
+   "display": "It's not your fault. Anthropic calls it distributional convergence.",
+   "spoken": "It's not your fault. Anthropic calls it distributional convergence.",
+   "card": "DISTRIBUTIONAL CONVERGENCE"
+  },
+  {
+   "id": "b5",
+   "display": "Even Anthropic's #D97757 terracotta on cream is flagged as an AI look.",
+   "spoken": "Even Anthropic's terracotta on cream is flagged as an AI look.",
+   "card": "#D97757 ON #F4F1EA: AI LOOK"
+  },
+  {
+   "id": "b6",
+   "display": "One accented headline word. All-caps labels. Fake 01, 02, 03.",
+   "spoken": "One accented headline word. All caps labels. Fake one, two, three.",
+   "card": "01 / 02 / 03"
+  },
+  {
+   "id": "b7",
+   "display": "With it on, Claude plans 4 to 6 hex colors, reviews, then codes.",
+   "spoken": "With it on, Claude plans four to six hex colors, reviews, then codes.",
+   "card": "PLAN, REVIEW, CODE"
+  },
+  {
+   "id": "b8",
+   "display": "Anthropic verified. 1,134,112 installs as of November 2026.",
+   "spoken": "Anthropic verified. Over a million installs as of November.",
+   "card": "1,134,112 installs"
+  },
+  {
+   "id": "b9",
+   "display": "Type /plugin install frontend-design@claude-plugins-official. Pick a scope.",
+   "spoken": "Type slash plugin install frontend design at claude plugins official. Pick a scope.",
+   "card": "/plugin install frontend-design@claude-plugins-official"
+  },
+  {
+   "id": "b10",
+   "display": "Then it turns on by itself when you ask for frontend work.",
+   "spoken": "Then it turns on by itself when you ask for frontend work.",
+   "card": "TURNS ON BY ITSELF"
+  },
+  {
+   "id": "b11",
+   "display": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
+   "spoken": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
+   "card": "Comment TELLS"
+  }
+ ],
+ "ask_line": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
+ "notes": "Display is about 109 words (from 127). Cut \"Built with\" split in b2, \"the kit\" in b3, the repeated \"called\" phrasing in b4, \"own\" in b5, \"everywhere\" in b6, \"It's officially\" and \"Already\" in b8, \"Claude\" in b10, and \"the\" in b11. Facts are kept, and b1 is unchanged."
+}

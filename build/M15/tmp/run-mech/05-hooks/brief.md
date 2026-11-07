@@ -1,0 +1,132 @@
+# Brief: Claude Code's frontend-design skill: it makes websites built with AI stop looking AI-generated. Show
+
+- Written by 05-hooks on 2026-11-01 for run 2026-11-01_0940_claude-codes-frontend-design-skill. Facts and sources: 01-research/facts.md (cite claims by number). Hooks: 05-hooks/hooks.json; hook 1 and hook 2 are chosen by 06-judge (judge.json), the brief works with any of them.
+- Comment keyword: TELLS (NEW, to create: A one-page PDF checklist of the AI design tells named in the current SKILL.md, plus the exact install command for a Claude Code session and for the shell.). Share identity: if you ship landing pages or client sites built with Claude Code.
+- Video type: default (25 to 40 second (45 to 75 seconds for a list or explainer)). Suggested tones: insider, warning, calm expert.
+
+## The one idea
+
+AI-built sites look AI-built because the model keeps landing on the same defaults. Anthropic's frontend-design skill for Claude Code lists those defaults by name and makes Claude plan, review and only then code. You install it with one command, and after that it turns on by itself for frontend work. The reel stands on one specific true thing: the install is `/plugin install frontend-design@claude-plugins-official` (facts.md#2), the skill activates automatically for frontend requests (facts.md#4), and its SKILL.md even lists Anthropic's own terracotta "near #D97757" on cream as an AI tell (facts.md#5). The reel must not claim the skill guarantees a site never looks AI-made (facts.md#12), must not present the November 2025 advice (Inter, purple gradients, bold animation) as what the skill says today, and must not invent a before/after result, a client story or a personal number.
+
+## The viewer
+
+Who: someone who ships landing pages or client sites built with Claude Code, such as a freelancer, a small-agency developer or a solo founder. They code daily with Claude Code but aren't trained designers.
+
+Their problem, in their words: "Every site I build with AI ends up with the same rounded cards, soft grey shadows and all-caps labels, and clients can tell right away. I fix one thing and the next page comes out looking the same."
+
+The moment they feel it: they send a client a preview link, or post their launch page, and it looks like every other AI-made page in the feed. Same card grid, same shadow, a little label above every heading, an arrow on the button.
+
+## The promise and the payoff
+
+Every hook promises one of three things, and the body should cover all three in this order:
+
+1. **The reason** it looks identical. Paid by naming the tells (rounded cards, one border-radius, the rgba(0,0,0,.1) shadow, all-caps labels, the arrow on the button) plus Anthropic's diagnosis, "distributional convergence".
+2. **The list**. Paid by the beat that reads the tells off, with the twist that Anthropic's own #D97757 is on it.
+3. **The fix**. Paid by the install beat with the exact command on screen and "it turns on by itself."
+
+Match the payoff to the hook:
+- h03 "5 AI tells": the five from facts.md#7 are an accent on one word in a headline, all-caps labels, unnecessary labels above content, '01 / 02 / 03' on content that isn't a sequence, and a '→' on button text. Count them on screen.
+- h15 "3 edits": the accented word, the all-caps labels and the arrow.
+- h07 "5 AI looks": facts.md#5 spells out only two of the five (cream near #F4F1EA with terracotta near #D97757, and near-black with one acid-green or vermilion accent). Name those two and don't make up the rest.
+- h13 "two passes": the plan pass and the review pass (facts.md#9).
+- h05 "Before. After.": needs the creator's own two builds of the same prompt, filmed. With no footage, don't use this hook.
+
+The main payoff is the install command on screen, followed by "it turns on by itself."
+
+## Facts to use
+
+- **facts.md#2 (step)**: in a session, `/plugin install frontend-design@claude-plugins-official`. In the shell, `claude plugin install frontend-design@claude-plugins-official`. Show the exact strings.
+- **facts.md#3 (small print, for the PDF)**: Claude Code adds Anthropic's official marketplace the first time you start an interactive session, so there's usually no add step.
+- **facts.md#4 (mechanism)**: the skill activates automatically for frontend work, so you just ask Claude to build a UI. The README's example prompt, "Build a landing page for an AI security startup", works well as a demo.
+- **facts.md#5 (comparison, the twist)**: the skill lists five looks AI design clusters around, including a cream background "near #F4F1EA" with terracotta "near #D97757", and near-black with one acid-green or vermilion accent. It calls #D97757 "Anthropic's own Claude-interaction accent". This is the most shareable beat.
+- **facts.md#6 (comparison)**: the SaaS-card kit is a tell: identical rounded cards, one border-radius on everything, the same soft grey shadow `rgba(0,0,0,.1)`, and gradient washes as decoration. Say "the same soft grey shadow" and put the value on screen.
+- **facts.md#7 (list beat)**: the commonest tells are an accent on one word in a headline, all-caps labels and unnecessary labels above content. The skill also flags '01 / 02 / 03' on content that isn't a sequence and a '→' added to button text.
+- **facts.md#8 (comparison)**: fade-and-slide-up on every section and hover transitions on every card "read as AI-generated". The skill asks for one orchestrated moment instead.
+- **facts.md#9 (mechanism)**: Claude works in two passes. First a design plan (4 to 6 named hex colors, typefaces, a layout with ASCII wireframes, principles), then a review that revises anything generic, and only then code. Quality floor: responsive down to mobile, visible keyboard focus, reduced motion respected.
+- **facts.md#12 (honesty beat)**: "the brief's own words always win, including when it asks for one of these looks." Ask for cream and terracotta and you get it.
+- **facts.md#13 (the "not your fault" beat)**: Anthropic's article from November 12, 2025 says that without guidance an LLM landing page "will almost always conform to Inter fonts, purple gradients on white backgrounds, and minimal animations", and blames "distributional convergence". Use it only as the reason, never as current rules.
+- **facts.md#14 (proof)**: the Claude marketplace page shows "Anthropic verified" and 1,134,112 installs. Say "over a million installs, as of November 2026."
+- **facts.md#1 and #11 (proof, small print)**: it's official, living in anthropics/claude-plugins-official under plugins/frontend-design, Apache 2.0, version 1.1.1. SKILL.md was last updated on 2026-09-01.
+
+## Facts to avoid and pitfalls
+
+- **Outdated advice**: the November 2025 rules (avoid Inter and purple gradients, use bold animation) aren't the current SKILL.md. Quote the September 2026 tells only.
+- **Motion**: the marketplace page and the README still say "high-impact animations" and "scroll-triggered interactions", but the current SKILL.md says to use motion sparingly. Never say the skill adds scroll animations.
+- **Old home**: don't show or link the anthropics/claude-code repo. The plugin moved out of it.
+- **Where /plugin works**: only in an interactive session. In `claude -p` it replies "/plugin isn't available in this environment." From the shell, use `claude plugin install ...`.
+- **Fresh machine**: run `claude plugin marketplace add anthropics/claude-plugins-official` first. This goes in the PDF.
+- **Cloud sessions**: claude.ai/code doesn't load plugins installed locally.
+- **Not instant**: `/plugin install` opens a details panel and asks for a scope (user, project or local). Say "pick a scope and you're done."
+- **Not a filter**: it's guidance. Never say "never looks AI" or "undetectable".
+- **The other route**: anthropics/skills (example-skills@anthropic-agent-skills) installs 12 skills. If you want only this one, use frontend-design@claude-plugins-official.
+- **Safety note**: plugins can run hooks and MCP servers. This one contains only a skill. PDF only.
+- **Unverified, don't claim**: the exact install output ("Plugin is now active."), the token cost in the details pane, any before/after benchmark for the current version, and the secondhand LinkedIn quote.
+- **Personal claims**: the voice profile has no proof filled in. No invented client reactions, revenue, hours saved or site counts. First-person pain as framing is fine.
+
+## Suggested beat sheet
+
+Default reel, about 32 to 38 seconds, roughly 105 to 120 words at 195 wpm.
+
+1. **Hook (pain-payoff)**, 0 to 3 s: the judge's winning line, with its on-screen text over a generic AI-looking card grid.
+2. **Stake (pain-payoff)**, facts.md#6: "If you ship client sites with Claude Code, you know the look: rounded cards, one border-radius, the same soft grey shadow." On screen: `rgba(0,0,0,.1)`.
+3. **Mechanism**, facts.md#13: "Anthropic calls it distributional convergence. Without guidance, every model lands on the same page."
+4. **Comparison (twist)**, facts.md#5: "Their frontend-design skill lists the looks to avoid, and one is Anthropic's own terracotta, D97757, on cream." On screen: a swatch labelled "AI TELL".
+5. **Number/list**, facts.md#7 and #8: "Also on the list: one accented word in the headline, all-caps labels, 01 02 03 on things that aren't steps, an arrow on every button, fade-up on every section." Each tell gets its own card.
+6. **Mechanism**, facts.md#9: "With it on, Claude plans 4 to 6 colors, type and layout, reviews the plan for anything generic, and only then codes."
+7. **Step (payoff)**, facts.md#2 and #4: "One command: slash plugin install frontend-design at claude-plugins-official. Pick a scope, and it turns on by itself for frontend work." Hold the command on screen for 2 s or more.
+8. **Proof plus honesty**, facts.md#14 and #12: "Anthropic verified, over a million installs. And if your brief asks for a look, your brief wins." Cut the second sentence if the reel runs long.
+9. **The ask**: one of the closing lines below.
+
+## The ask
+
+Keyword: **TELLS**. Deliverable (NEW, to create): a one-page PDF checklist of the AI design tells named in the current SKILL.md:
+- the SaaS-card kit and the rgba(0,0,0,.1) shadow
+- the accented headline word, all-caps labels, unnecessary labels, false '01 / 02 / 03' and '→' on buttons
+- fade-up on every section and hover on every card
+- cream plus #D97757, and near-black plus acid-green
+
+Below the list go the install commands. In a session: `/plugin install frontend-design@claude-plugins-official`. In the shell: `claude plugin install frontend-design@claude-plugins-official`. Fresh machine: `claude plugin marketplace add anthropics/claude-plugins-official` first.
+
+Closing lines, each repeating a hook word so the replay loops:
+- "Comment TELLS and I'll send the checklist, so your next site doesn't look identical." (pairs with h01 and h14)
+- "Comment TELLS for every tell on one page, plus the one command." (pairs with h05, h06, h09 and h12)
+
+This is the only ask: no follow, no link in bio, no second keyword.
+
+## On-screen material
+
+Screenshots in 01-research/assets/:
+- **01-repo.png**: the GitHub folder plugins/frontend-design in anthropics/claude-plugins-official with its README and example prompts. Use it as proof that it's official (beat 7 or 8).
+- **02-plugin-page.png**: the marketplace page with the "Anthropic verified" badge, 1,134,112 installs and the Install button. Use it for beat 8. Crop out the cookie banner at the bottom right.
+- **03-skill-md.png**: SKILL.md with its frontmatter description and opening design principles, including the typographic tells. Use it for beats 4 and 5.
+- **04-blog.png**: the November 12, 2025 article opening on Inter fonts and purple gradients. Use it for beat 3 only, never as current rules. Crop out the cookie banner.
+- **05-install-docs.png**: the Claude Code docs page "Install and manage plugins". Use it behind beat 7.
+
+Cards:
+- `/plugin install frontend-design@claude-plugins-official` (the main card)
+- `#D97757` beside `#F4F1EA` as real swatches
+- `rgba(0,0,0,.1)`
+- `4 to 6 colors`, then `PLAN, REVIEW, CODE`
+- `1,134,112 installs`, labelled "as of Nov 2026"
+- `01 / 02 / 03` struck through
+
+## Words and tones
+
+Use: tells, defaults, generic, templated, rounded cards, soft grey shadow, all-caps labels, plan, review, then code, one command, turns on by itself, Anthropic verified, your brief wins.
+
+Avoid: "AI-proof", "undetectable", "guaranteed", "never looks AI again", "game-changer", "hack", "secret", "brand new" (it launched in November 2025 and was updated in September 2026). Also avoid any claim that it adds animations, and any Inter or purple-gradient rule presented as current.
+
+Spelling and saying:
+- **Claude Code**: two words, both capitalised.
+- **frontend-design**: lowercase with the hyphen on screen. Say "frontend design".
+- **/plugin install**: say "slash plugin install".
+- **@claude-plugins-official**: say "at claude plugins official".
+- **SKILL.md**: write it that way on screen. Say "the skill file".
+- **#D97757**: say "D 9 7 7 5 7", or "Anthropic's own terracotta" and let the screen carry the hex.
+
+The voice profile shows an energetic voice with a calm tone and plain, casual phrasing. Keep the sentences short and spoken.
+
+Tones that fit:
+- **insider**: the #D97757 twist and the exact rgba value feel like reading the actual file, which makes the reel worth forwarding.
+- **warning**: the viewer is shipping these tells to clients right now, so naming them lands like a heads-up.
+- **calm expert**: the plan, review, code mechanism and the honest "your brief wins" caveat build trust without hype.

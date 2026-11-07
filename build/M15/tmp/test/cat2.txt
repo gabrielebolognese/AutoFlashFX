@@ -1,0 +1,5 @@
+word-approved ok
+group-approved ok
+line-retired ok
+props ok
+beat-map-any ok

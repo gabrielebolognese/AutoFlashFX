@@ -1,0 +1,74 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":560},
+  {"id":"y","type":"number","label":"Top (px)","default":1150},
+  {"id":"text","type":"string","label":"The aside (1 or 2 short lines; a | breaks the line)","default":"same shadow|every time"},
+  {"id":"arrow","type":"enum","label":"Arrow direction from the text","default":"up-left","options":[{"value":"none","label":"none"},{"value":"up-left","label":"up-left"},{"value":"up-right","label":"up-right"},{"value":"down-left","label":"down-left"},{"value":"down-right","label":"down-right"}]},
+  {"id":"arrow_len","type":"number","label":"Arrow length (px)","default":150},
+  {"id":"text_frames","type":"number","label":"Text fade frames","default":6},
+  {"id":"draw_frames","type":"number","label":"Arrow draw frames","default":8},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* handwritten-callout (vocabulary.md 22): a hand-drawn aside with an arrow pointing at something, in the script
+       color and the handwritten face (lines 69 px apart, font about 58). Its motion was not measured: the text fades
+       in over 6 frames (the end-card build's fade) and the arrow draws itself over 8 frames. Text and arrow then drift
+       together (E1, pc-motion.js). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #hc-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+    #hc-text { white-space: pre; }
+    #hc-arrow { position: absolute; overflow: visible; }
+    #hc-arrow path { fill: none; stroke: var(--c-script); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <div id="root" data-composition-id="handwritten-callout" data-width="1080" data-height="1920">
+    <div id="hc-wrap" class="pc-el">
+      <div id="hc-text" class="pc-hand"></div>
+    </div>
+    <svg id="hc-arrow" class="pc-el" width="300" height="300" viewBox="0 0 300 300"><path id="hc-path" d=""/><path id="hc-head" d=""/></svg>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 560, y: 1150, text: "", arrow: "up-left", arrow_len: 150, text_frames: 6, draw_frames: 8, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("hc-wrap"), text = document.getElementById("hc-text"), svg = document.getElementById("hc-arrow");
+      var path = document.getElementById("hc-path"), head = document.getElementById("hc-head");
+      PC.place(wrap, { x: v.x, y: v.y });
+      text.textContent = String(v.text).split("|").join("\n");
+      // the arrow starts at the text's near corner and curves toward the target over arrow_len px
+      var dirs = { "up-left": [-1, -1], "up-right": [1, -1], "down-left": [-1, 1], "down-right": [1, 1] };
+      var d = dirs[v.arrow];
+      if (d) {
+        var L = v.arrow_len, cx = 150, cy = 150;
+        var ex = cx + d[0] * L * 0.75, ey = cy + d[1] * L;
+        var c1x = cx + d[0] * L * 0.1, c1y = cy + d[1] * L * 0.55;
+        path.setAttribute("d", "M" + cx + " " + cy + " Q" + c1x + " " + c1y + " " + ex + " " + ey);
+        var a = Math.atan2(ey - c1y, ex - c1x);
+        var h1x = ex - 22 * Math.cos(a - 0.55), h1y = ey - 22 * Math.sin(a - 0.55), h2x = ex - 22 * Math.cos(a + 0.55), h2y = ey - 22 * Math.sin(a + 0.55);
+        head.setAttribute("d", "M" + h1x + " " + h1y + " L" + ex + " " + ey + " L" + h2x + " " + h2y);
+        var ax = v.x + (d[0] < 0 ? -20 : text.offsetWidth + 20) - cx, ay = v.y + (d[1] < 0 ? 10 : text.offsetHeight - 10) - cy;
+        PC.place(svg, { x: ax, y: ay });
+      } else svg.style.display = "none";
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      // text and arrow share one life (the same fade, the same drift), so the arrow keeps pointing where it did
+      var main = { kind: "fade", frames: v.text_frames, rise: 6, ease: "none", zoom: false, rotate: 6, axis: "x" };
+      PCM.life(tl, wrap, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      if (d) {
+        PCM.life(tl, svg, { at: v.enter_at, main: main, hold: v.hold, exit: exit, events: { enter: "arrow" } });
+        var at = v.enter_at + PC.f(v.text_frames) - PC.f(2);
+        PCM.draw(tl, path, at, { frames: v.draw_frames, ease: "power1.inOut" });
+        PCM.draw(tl, head, at + PC.f(v.draw_frames) - PC.f(1), { frames: 3, ease: "power1.out" });
+        PC.event("draw", at, { el: "hc-arrow", end: at + PC.f(v.draw_frames + 2) });
+      }
+      window.__timelines["handwritten-callout"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

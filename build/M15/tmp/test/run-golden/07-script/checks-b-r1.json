@@ -1,0 +1,390 @@
+{
+ "ok": false,
+ "hard": [
+  {
+   "check": "facts",
+   "severity": "hard",
+   "beat": "b10",
+   "message": "b10: the claim 'It runs by itself on every frontend request' says more than facts.md backs (Claim 4 says Claude automatically uses the skill for frontend work, not literally every request. Close, but 'every' is stronger than the source.); reword it from a verified claim of facts.md or remove it",
+   "hint": ""
+  }
+ ],
+ "soft": [
+  {
+   "check": "detect",
+   "severity": "soft",
+   "beat": "",
+   "message": "detect.py scores 71 (needs 70 overall and 55 on every check): BURSTINESS 54 (variation 0.48 across 14 sentences (want 0.55+)): rewrite the rhythm: half the beats one sentence of 12 or 13 words, the other half two or three sentences of 3 or 4 words, alternating, and no sentence of 5 to 11 words anywhere but the hook; these beats have sentences of 5 to 11 words, the length the check reads as machine rhythm; rewrite each as either one sentence of 12 or 13 words or two to three sentences of 3 or 4 words, alternating the two shapes along the script: b4 (10 words); b5 (6, 4 words); b6 (11 words); b7 (3, 5 words); b8 (11 words); b11 (3, 8 words)",
+   "hint": ""
+  }
+ ],
+ "info": [],
+ "checks": {
+  "placeholders": {
+   "found": 0
+  },
+  "beats": {
+   "wpm": 195.0,
+   "rows": [
+    {
+     "id": "b1",
+     "type": "hook",
+     "start": 0.0,
+     "dur": 2.46,
+     "words": 8,
+     "spoken_words": 8,
+     "concrete": 2
+    },
+    {
+     "id": "b2",
+     "type": "stake",
+     "start": 2.46,
+     "dur": 3.69,
+     "words": 12,
+     "spoken_words": 12,
+     "concrete": 2
+    },
+    {
+     "id": "b3",
+     "type": "comparison",
+     "start": 6.15,
+     "dur": 3.08,
+     "words": 10,
+     "spoken_words": 8,
+     "concrete": 3
+    },
+    {
+     "id": "b4",
+     "type": "comparison",
+     "start": 9.23,
+     "dur": 3.38,
+     "words": 10,
+     "spoken_words": 11,
+     "concrete": 0
+    },
+    {
+     "id": "b5",
+     "type": "proof",
+     "start": 12.62,
+     "dur": 3.38,
+     "words": 10,
+     "spoken_words": 11,
+     "concrete": 2
+    },
+    {
+     "id": "b6",
+     "type": "comparison",
+     "start": 16.0,
+     "dur": 3.38,
+     "words": 11,
+     "spoken_words": 10,
+     "concrete": 1
+    },
+    {
+     "id": "b7",
+     "type": "mechanism",
+     "start": 19.38,
+     "dur": 2.46,
+     "words": 8,
+     "spoken_words": 8,
+     "concrete": 1
+    },
+    {
+     "id": "b8",
+     "type": "mechanism",
+     "start": 21.85,
+     "dur": 3.38,
+     "words": 11,
+     "spoken_words": 11,
+     "concrete": 1
+    },
+    {
+     "id": "b9",
+     "type": "step",
+     "start": 25.23,
+     "dur": 3.69,
+     "words": 7,
+     "spoken_words": 12,
+     "concrete": 1
+    },
+    {
+     "id": "b10",
+     "type": "payoff",
+     "start": 28.92,
+     "dur": 3.69,
+     "words": 12,
+     "spoken_words": 12,
+     "concrete": 0
+    },
+    {
+     "id": "b11",
+     "type": "ask",
+     "start": 32.62,
+     "dur": 3.38,
+     "words": 11,
+     "spoken_words": 11,
+     "concrete": 0
+    }
+   ],
+   "hook_seconds": 2.46,
+   "long_beats": [],
+   "abstract_runs": [],
+   "loop_word": "identical",
+   "vendor_notes": [
+    "Loops: the last beat repeats \"identical\" from the hook. Second watches are free reach.",
+    "Length is on target (33.8s against 32.5s)."
+   ],
+   "total_seconds_display": 33.85,
+   "total_seconds_spoken": 35.08
+  },
+  "structure": {
+   "types": [
+    "hook",
+    "stake",
+    "comparison",
+    "comparison",
+    "proof",
+    "comparison",
+    "mechanism",
+    "mechanism",
+    "step",
+    "payoff",
+    "ask"
+   ],
+   "body_beats": 7,
+   "stake_beats": 1,
+   "payoff": true
+  },
+  "stake": {
+   "seconds": 3.69,
+   "ends_at": 6.15,
+   "identity_words": [
+    "ship",
+    "landing",
+    "pages",
+    "client",
+    "sites",
+    "built",
+    "claude",
+    "code"
+   ],
+   "identity_hits": [
+    "built",
+    "claude",
+    "code"
+   ],
+   "identity_ok": true
+  },
+  "ask": {
+   "keyword": "TELLS",
+   "keyword_in_ask": true,
+   "second_asks": [],
+   "loop_word": "identical",
+   "line": "Comment TELLS now. I'll send the checklist before another identical launch."
+  },
+  "requirements": {
+   "problem": true,
+   "identity": true,
+   "keyword": true
+  },
+  "length": {
+   "seconds": 35.08,
+   "seconds_display": 33.85,
+   "seconds_spoken": 35.08,
+   "range": [
+    25.0,
+    40.0
+   ],
+   "ok": true,
+   "words": {
+    "display": 110,
+    "spoken": 114
+   }
+  },
+  "cards": {
+   "max_words": 6,
+   "bad": []
+  },
+  "hook": {
+   "verbatim": true,
+   "line": "Why your Claude Code cards all look identical."
+  },
+  "spoken": {
+   "beats_with_digits": []
+  },
+  "detect": {
+   "overall": 70.6,
+   "verdict": "REVIEW",
+   "ok": false,
+   "checks": {
+    "BURSTINESS": {
+     "score": 53.9,
+     "detail": "variation 0.48 across 14 sentences (want 0.55+)"
+    },
+    "SPECIFICITY": {
+     "score": 89.2,
+     "detail": "6 concrete markers, 5.4 per 100 words (want 4+)"
+    },
+    "SLOP DENSITY": {
+     "score": 100.0,
+     "detail": "0 stock terms, 0.0 per 100 words"
+    },
+    "FINGERPRINT": {
+     "score": 100.0,
+     "detail": "0 invisible, 0 em dash, 0 curly quote, 0 ellipsis, 0 hard space"
+    },
+    "VOICE": {
+     "score": 65.5,
+     "detail": "2.7 contractions, 1.8 personal pronouns per 100 words, 0 structural tell(s)"
+    }
+   },
+   "min_overall": 70.0,
+   "min_check": 55.0
+  },
+  "humanize": {
+   "invisible": 0,
+   "typographic": 0,
+   "lexical": 0,
+   "changed": [],
+   "structures": []
+  },
+  "claims": {
+   "status": "checked",
+   "n": 13,
+   "supported": 12,
+   "unsupported": 0,
+   "overstated": 1,
+   "not_a_claim": 0,
+   "claims": [
+    {
+     "beat": "b3",
+     "claim": "The skill flags identical rounded cards, one border-radius, the same grey shadow rgba(0,0,0,.1) as tells",
+     "status": "supported",
+     "facts": [
+      "facts.md#6"
+     ],
+     "note": "Claim 6 lists exactly these traits."
+    },
+    {
+     "beat": "b4",
+     "claim": "Headline tells: one accented word, all-caps labels, an arrow on buttons",
+     "status": "supported",
+     "facts": [
+      "facts.md#7"
+     ],
+     "note": "Claim 7 names accenting one word in a headline, all-caps labels, and '→' added to button text."
+    },
+    {
+     "beat": "b5",
+     "claim": "Anthropic flags them all in SKILL.md",
+     "status": "supported",
+     "facts": [
+      "facts.md#6",
+      "facts.md#7"
+     ],
+     "note": "Cards, shadow, radius (6) and headline/label/arrow tells (7) are all in SKILL.md."
+    },
+    {
+     "beat": "b5",
+     "claim": "SKILL.md updated September 2026",
+     "status": "supported",
+     "facts": [
+      "facts.md#11"
+     ],
+     "note": "Numbers: last SKILL.md content update 2026-09-01 in the plugin repo (also 2026-09-03 in skills repo). Claim 11 is about the license, not the date, but the Numbers back it."
+    },
+    {
+     "beat": "b6",
+     "claim": "The skill warns against cream with terracotta",
+     "status": "supported",
+     "facts": [
+      "facts.md#5"
+     ],
+     "note": "Claim 5 lists warm cream near #F4F1EA with terracotta accent near #D97757 as an AI look."
+    },
+    {
+     "beat": "b6",
+     "claim": "#D97757 is Anthropic's own accent",
+     "status": "supported",
+     "facts": [
+      "facts.md#5"
+     ],
+     "note": "Claim 5 note: the skill calls #D97757 'Anthropic's own Claude-interaction accent'. The script says 'accent' without exact 'near', which is fine."
+    },
+    {
+     "beat": "b7",
+     "claim": "Unguided, models converge",
+     "status": "supported",
+     "facts": [
+      "facts.md#13"
+     ],
+     "note": "Article says an LLM without guidance will almost always conform to the same defaults."
+    },
+    {
+     "beat": "b7",
+     "claim": "Anthropic calls it distributional convergence",
+     "status": "supported",
+     "facts": [
+      "facts.md#13"
+     ],
+     "note": "Article blames 'distributional convergence'."
+    },
+    {
+     "beat": "b8",
+     "claim": "It makes Claude plan first, review for anything generic, then code",
+     "status": "supported",
+     "facts": [
+      "facts.md#9"
+     ],
+     "note": "Claim 9 describes plan, review that revises generic things, then code."
+    },
+    {
+     "beat": "b9",
+     "claim": "Install with /plugin install frontend-design@claude-plugins-official",
+     "status": "supported",
+     "facts": [
+      "facts.md#2"
+     ],
+     "note": "Exact command in claim 2."
+    },
+    {
+     "beat": "b10",
+     "claim": "You pick a scope when installing",
+     "status": "supported",
+     "facts": [],
+     "note": "Pitfalls: /plugin install opens a details panel and asks for a scope (user, project, local)."
+    },
+    {
+     "beat": "b10",
+     "claim": "It runs by itself on every frontend request",
+     "status": "overstated",
+     "facts": [
+      "facts.md#4"
+     ],
+     "note": "Claim 4 says Claude automatically uses the skill for frontend work, not literally every request. Close, but 'every' is stronger than the source."
+    },
+    {
+     "beat": "b2",
+     "claim": "Clients will know Claude Code built it",
+     "status": "supported",
+     "facts": [],
+     "note": "Conclusion drawn in the creator's voice, treated as framing (clients can tell right away), not a claim to check."
+    }
+   ],
+   "summary": "Nearly all claims are backed by the research. Only 'every frontend request' in b10 is slightly stronger than the source's 'automatically for frontend work'."
+  }
+ },
+ "summary": {
+  "seconds": 35.1,
+  "words": 110,
+  "detect": 70.6,
+  "beats": 11,
+  "hard": 1,
+  "soft": 1,
+  "claims_unsupported": 1
+ },
+ "draft": "C:/Users/there/AppData/Local/Temp/tmp.fc9s3K8jk9/runs/2026-11-01_1117_claude-codes-frontend-design-skill/07-script/draft-b.r1.cut.json",
+ "label": "b",
+ "round": 1,
+ "checked": "2026-11-01 11:23:15"
+}

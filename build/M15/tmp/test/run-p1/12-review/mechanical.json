@@ -1,0 +1,547 @@
+{
+ "written_by": "12-review",
+ "pass": false,
+ "issues": [
+  {
+   "tag": "text",
+   "kind": "text_budget",
+   "text": "142 characters of non-caption text are on screen at 4.06s (beat b2 (stake) settled); at most 100 (E4: graphics first, cut the text a graphic can carry)",
+   "scene": "",
+   "instance": "",
+   "ms": 4060
+  },
+  {
+   "tag": "animation",
+   "kind": "zone",
+   "text": "text \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" (card s2-card-9, scene s2, 5.05s) runs x 132..1055, outside the 60 px side margins",
+   "scene": "s2",
+   "instance": "s2-card-9",
+   "ms": 5050
+  },
+  {
+   "tag": "animation",
+   "kind": "right_rail",
+   "text": "text \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" (card s2-card-9, scene s2, 5.05s) reaches x 1055 in the lower half: the right 230 px are Instagram's buttons",
+   "scene": "s2",
+   "instance": "s2-card-9",
+   "ms": 5050
+  },
+  {
+   "tag": "animation",
+   "kind": "right_rail",
+   "text": "text \"yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\" (card s2-card-9, scene s2, 5.05s) reaches x 1001 in the lower half: the right 230 px are Instagram's buttons",
+   "scene": "s2",
+   "instance": "s2-card-9",
+   "ms": 5050
+  },
+  {
+   "tag": "text",
+   "kind": "caption_mode",
+   "text": "a caption group (\"One\") is on screen with the text of s6-light-chip-9 (\"a chip over the group\") at 19.70s: captions are in word mode whenever any other text is on screen (E4)",
+   "scene": "captions",
+   "instance": "captions-groups",
+   "ms": 19700
+  }
+ ],
+ "warnings": [
+  "card text \"You ship Claude Code client si\" in Inter Tight is 34 px, under the caption size 67 px (E4: 6 samples)",
+  "card text \"Clients spot it instantly\" in Inter Tight is 44 px, under the caption size 67 px (E4: 6 samples)",
+  "check-badge text \"Plans 4 to 6 hex colors\" in Inter Tight is 34 px, under the caption size 67 px (E4: 6 samples)",
+  "handwritten-callout text \"Anthropic's\nown words\" in Caveat is 58 px, under the caption size 67 px (E4: 1 samples)",
+  "headline text \"CLAUDE\" in Space Grotesk is 30 px, under the caption size 67 px (E4: 9 samples)",
+  "light-chip text \"even Anthropic's palette\" in Inter Tight is 30 px, under the caption size 67 px (E4: 2 samples)",
+  "strike-through text \"#D97757 on cream\" in Inter Tight is 30 px, under the caption size 67 px (E4: 1 samples)",
+  "terminal-card text \"/plugin install frontend-desig\" in JetBrains Mono is 30 px, under the caption size 67 px (E4: 4 samples)",
+  "terminal-card text \"Claude Code\" in Space Grotesk is 28 px, under the caption size 67 px (E4: 2 samples)",
+  "window-card text \"SKILL.md\" in Space Grotesk is 28 px, under the caption size 67 px (E4: 3 samples)"
+ ],
+ "counts": {
+  "hosts": 21,
+  "texts": 154,
+  "images": 12,
+  "times": 37,
+  "screenshots": 108,
+  "transient": 74,
+  "caption_pairs": 13,
+  "max_chars_on_screen": 173
+ },
+ "times": {
+  "600": [
+   "beat b1 (hook) settled"
+  ],
+  "1730": [
+   "beat b1 middle"
+  ],
+  "1960": [
+   "emphasis identical"
+  ],
+  "4060": [
+   "beat b2 (stake) settled"
+  ],
+  "5050": [
+   "beat b2 middle"
+  ],
+  "6130": [
+   "emphasis instantly"
+  ],
+  "7240": [
+   "beat b3 (comparison) settled"
+  ],
+  "9020": [
+   "beat b3 middle"
+  ],
+  "10380": [
+   "emphasis same grey shadow"
+  ],
+  "11990": [
+   "beat b4 (mechanism) settled"
+  ],
+  "13260": [
+   "beat b4 middle"
+  ],
+  "13640": [
+   "emphasis distributional convergence"
+  ],
+  "15730": [
+   "beat b5 (comparison) settled"
+  ],
+  "17000": [
+   "beat b5 middle"
+  ],
+  "19460": [
+   "beat b6 (number) settled"
+  ],
+  "19700": [
+   "caption group \"One\" settled"
+  ],
+  "20800": [
+   "beat b6 middle"
+  ],
+  "21050": [
+   "caption group \"All\" settled"
+  ],
+  "22140": [
+   "caption group \"Fake\" settled"
+  ],
+  "23330": [
+   "beat b7 (mechanism) settled"
+  ],
+  "24810": [
+   "beat b7 middle"
+  ],
+  "25900": [
+   "emphasis then codes"
+  ],
+  "27040": [
+   "emphasis Anthropic verified"
+  ],
+  "27490": [
+   "beat b8 (proof) settled"
+  ],
+  "28500": [
+   "beat b8 middle"
+  ],
+  "30710": [
+   "beat b9 (step) settled"
+  ],
+  "32420": [
+   "beat b9 middle"
+  ],
+  "34180": [
+   "emphasis Pick a scope"
+  ],
+  "35140": [
+   "caption group \"Then\" settled"
+  ],
+  "35340": [
+   "beat b10 (payoff) settled"
+  ],
+  "35470": [
+   "emphasis by itself"
+  ],
+  "36150": [
+   "caption group \"itself\" settled"
+  ],
+  "36240": [
+   "beat b10 middle"
+  ],
+  "38120": [
+   "emphasis TELLS"
+  ],
+  "38330": [
+   "beat b11 (ask) settled"
+  ],
+  "39600": [
+   "beat b11 middle"
+  ],
+  "41160": [
+   "the CTA built"
+  ]
+ },
+ "fonts_seen": {
+  "Space Grotesk": 19,
+  "Inter Tight": 54,
+  "Instrument Serif": 3,
+  "Caveat": 5,
+  "JetBrains Mono": 4
+ },
+ "emphasis": {
+  "checked": 9,
+  "ok": 9,
+  "results": [
+   {
+    "word": "identical",
+    "ms": 1810,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   },
+   {
+    "word": "instantly",
+    "ms": 5980,
+    "box_ms": 5980,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "same grey shadow",
+    "ms": 10260,
+    "box_ms": 10260,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "distributional convergence",
+    "ms": 13490,
+    "box_ms": 13490,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "then codes",
+    "ms": 25750,
+    "box_ms": 25750,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Anthropic verified",
+    "ms": 26890,
+    "box_ms": 26890,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Pick a scope",
+    "ms": 34110,
+    "box_ms": 34110,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "by itself",
+    "ms": 35320,
+    "box_ms": 35320,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true,
+    "note": "a word of a caption group (the anchor and the fonts carry it, no accent box)"
+   },
+   {
+    "word": "TELLS",
+    "ms": 37970,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   }
+  ]
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "solution": "external",
+  "lockup": {
+   "instance": "s11-end-card-1",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "lockup/lockup-gradient-on-light.png",
+   "type": "lockup",
+   "box": {
+    "x": 390.0,
+    "y": 1126.7,
+    "w": 300.0,
+    "h": 118.2
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 96.0,
+   "surface": "light",
+   "surface_luminance": 0.839,
+   "contrast": 17.78,
+   "clear_space_px": 24.0
+  },
+  "avatar": {
+   "instance": "s11-dm-card-2",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "mark/avatar-dark.png",
+   "type": "avatar",
+   "box": {
+    "x": 130.8,
+    "y": 1293.4,
+    "w": 124.0,
+    "h": 124.0
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 71.0,
+   "surface": "dark",
+   "surface_luminance": 0.007,
+   "contrast": 9.11,
+   "clear_space_px": 17.7
+  },
+  "logos": [
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1139.6,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.834,
+    "contrast": 17.67,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 134.2,
+     "y": 1293.8,
+     "w": 123.2,
+     "h": 123.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 70.5,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.6
+   },
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1126.7,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.839,
+    "contrast": 17.78,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 130.8,
+     "y": 1293.4,
+     "w": 124.0,
+     "h": 124.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 71.0,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.7
+   }
+  ],
+  "outside_cta": []
+ },
+ "images_by_time": {
+  "500": [],
+  "1500": [],
+  "2500": [],
+  "3500": [],
+  "4500": [],
+  "5500": [],
+  "6500": [],
+  "7500": [
+   [
+    84,
+    421,
+    909,
+    795,
+    "image"
+   ]
+  ],
+  "8500": [
+   [
+    76,
+    399,
+    933,
+    817,
+    "image"
+   ]
+  ],
+  "9500": [
+   [
+    74,
+    387,
+    942,
+    830,
+    "image"
+   ]
+  ],
+  "10500": [
+   [
+    73,
+    381,
+    946,
+    835,
+    "image"
+   ]
+  ],
+  "11500": [],
+  "12500": [],
+  "13500": [],
+  "14500": [],
+  "15500": [],
+  "16500": [],
+  "17500": [],
+  "18500": [],
+  "19500": [],
+  "20500": [],
+  "21500": [],
+  "22500": [],
+  "23500": [],
+  "24500": [],
+  "25500": [],
+  "26500": [],
+  "27500": [
+   [
+    87,
+    408,
+    900,
+    729,
+    "image"
+   ]
+  ],
+  "28500": [
+   [
+    78,
+    385,
+    929,
+    750,
+    "image"
+   ]
+  ],
+  "29500": [
+   [
+    74,
+    371,
+    941,
+    764,
+    "image"
+   ]
+  ],
+  "30500": [],
+  "31500": [],
+  "32500": [],
+  "33500": [],
+  "34500": [],
+  "35500": [],
+  "36500": [],
+  "37500": [],
+  "38500": [
+   [
+    142,
+    1295,
+    121,
+    121,
+    "logo"
+   ]
+  ],
+  "39500": [
+   [
+    390,
+    1141,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    135,
+    1294,
+    123,
+    123,
+    "logo"
+   ]
+  ],
+  "40500": [
+   [
+    390,
+    1130,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    132,
+    1293,
+    124,
+    125,
+    "logo"
+   ]
+  ]
+ },
+ "harness_errors": [],
+ "thresholds": {
+  "safe_top": 230.0,
+  "safe_bottom": 1440.0,
+  "margin_x": 60.0,
+  "caption_band": [
+   1152.0,
+   1412.0
+  ],
+  "right_rail_x": 850.0,
+  "min_font_px": 24.0,
+  "contrast": [
+   4.5,
+   2.7
+  ],
+  "emphasis_tolerance_ms": 80.0,
+  "lockup_min": 300.0,
+  "bolt_min": 64.0,
+  "avatar_min": 112.0
+ }
+}

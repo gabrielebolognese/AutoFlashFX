@@ -1,0 +1,13 @@
+{
+ "type": "external",
+ "name": "frontend-design, the Claude Code plugin",
+ "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
+ "reason": "the idea names its solution: Anthropic's frontend-design plugin for Claude Code; FlashFX does not solve a web design problem",
+ "keyword": "LINK",
+ "deliverable": "the link to frontend-design, the Claude Code plugin (the link to the tool, skill or repo shown in the reel)",
+ "deliverable_link": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
+ "written_by": "02-expansion",
+ "round": 0,
+ "checked": "2026-11-01",
+ "notes": ["hand-written by M12 for the frozen M4 outputs (the real run of test-m12 section 4 replaces it)"]
+}

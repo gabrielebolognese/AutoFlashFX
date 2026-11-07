@@ -1,0 +1,201 @@
+{
+ "label": "b",
+ "tone": "warning",
+ "round": 1,
+ "source": "cut",
+ "created": "2026-11-01 11:22:48",
+ "beats": [
+  {
+   "id": "b1",
+   "model_id": "b1",
+   "type": "hook",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "emphasis": [
+    "identical"
+   ],
+   "card": "IDENTICAL CARDS LOOK AI",
+   "facts": [],
+   "spoken_changes": []
+  },
+  {
+   "id": "b2",
+   "model_id": "b2",
+   "type": "stake",
+   "display": "Send clients the preview link and they'll know Claude Code built it.",
+   "spoken": "Send clients the preview link and they'll know Claude Code built it.",
+   "emphasis": [
+    "they'll know"
+   ],
+   "card": "THEY'LL KNOW",
+   "facts": [],
+   "spoken_changes": []
+  },
+  {
+   "id": "b3",
+   "model_id": "b3",
+   "type": "comparison",
+   "display": "Same rounded cards. Same rgba(0,0,0,.1) shadow. One radius.",
+   "spoken": "Same rounded cards. Same grey shadow. One radius.",
+   "emphasis": [
+    "rgba(0,0,0,.1"
+   ],
+   "card": "rgba(0,0,0,.1)",
+   "facts": [
+    "facts.md#6"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b4",
+   "model_id": "b4",
+   "type": "comparison",
+   "display": "Headlines: one accented word, all-caps labels, an arrow on buttons.",
+   "spoken": "Headlines: one accented word, all caps labels, an arrow on buttons.",
+   "emphasis": [
+    "one accented word",
+    "all-caps labels"
+   ],
+   "card": "ALL-CAPS LABELS",
+   "facts": [
+    "facts.md#7"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b5",
+   "model_id": "b5",
+   "type": "proof",
+   "display": "Anthropic flags them all in SKILL.md, updated September 2026.",
+   "spoken": "Anthropic flags them all in its skill file, updated this September.",
+   "emphasis": [
+    "SKILL.md"
+   ],
+   "card": "SKILL.md, SEPT 2026",
+   "facts": [
+    "facts.md#7",
+    "facts.md#11"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b6",
+   "model_id": "b6",
+   "type": "comparison",
+   "display": "It also warns against cream with terracotta, #D97757, Anthropic's own accent.",
+   "spoken": "It also warns against cream with terracotta, Anthropic's own accent.",
+   "emphasis": [
+    "#D97757"
+   ],
+   "card": "#D97757 ON CREAM",
+   "facts": [
+    "facts.md#5"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b7",
+   "model_id": "b7",
+   "type": "mechanism",
+   "display": "Unguided, models converge. Anthropic calls it distributional convergence.",
+   "spoken": "Unguided, models converge. Anthropic calls it distributional convergence.",
+   "emphasis": [
+    "distributional convergence"
+   ],
+   "card": "DISTRIBUTIONAL CONVERGENCE",
+   "facts": [
+    "facts.md#13"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b8",
+   "model_id": "b8",
+   "type": "mechanism",
+   "display": "It makes Claude plan first, review for anything generic, then code.",
+   "spoken": "It makes Claude plan first, review for anything generic, then code.",
+   "emphasis": [
+    "plan first",
+    "anything generic"
+   ],
+   "card": "PLAN, REVIEW, CODE",
+   "facts": [
+    "facts.md#9"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b9",
+   "model_id": "b9",
+   "type": "step",
+   "display": "Fix it. Run /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "Fix it. Run slash plugin install frontend design at claude plugins official.",
+   "emphasis": [
+    "/plugin install"
+   ],
+   "card": "/plugin install frontend-design@claude-plugins-official",
+   "facts": [
+    "facts.md#2"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b10",
+   "model_id": "b10",
+   "type": "payoff",
+   "display": "Pick a scope, and it runs by itself on every frontend request.",
+   "spoken": "Pick a scope, and it runs by itself on every frontend request.",
+   "emphasis": [
+    "by itself"
+   ],
+   "card": "ON BY ITSELF",
+   "facts": [
+    "facts.md#4"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b11",
+   "model_id": "b11",
+   "type": "ask",
+   "display": "Comment TELLS now. I'll send the checklist before another identical launch.",
+   "spoken": "Comment TELLS now. I'll send the checklist before another identical launch.",
+   "emphasis": [
+    "TELLS"
+   ],
+   "card": "Comment TELLS",
+   "facts": [],
+   "spoken_changes": []
+  }
+ ],
+ "ask": {
+  "keyword": "TELLS",
+  "line": "Comment TELLS now. I'll send the checklist before another identical launch."
+ },
+ "hook2": {
+  "id": "h07",
+  "display": "5 AI looks to avoid. One is Anthropic's.",
+  "spoken": "Five AI looks to avoid. One is Anthropic's.",
+  "card": "5 AI LOOKS. ONE IS ANTHROPIC'S",
+  "spoken_changes": []
+ },
+ "notes": "Warning order: the risk the viewer is shipping comes first (the card kit, then the headline signs), then the source and the terracotta catch, then the cause, then the fix. The stake is the moment a client opens the preview link. The proof count and the 'your brief wins' caveat are left for the PDF so the body stays at 7 beats. The command's spoken sentence runs 10 words because it can't be split. The ask repeats 'identical' from the hook.",
+ "normalizer_notes": [],
+ "words": {
+  "display": 110,
+  "spoken": 114
+ },
+ "cut": {
+  "attempt": 1,
+  "ok": true,
+  "errors": [],
+  "before_words": 126,
+  "after_words": 110,
+  "removed_pct": 12.7,
+  "lost": [],
+  "notes": "Cut about 18 words (126 to about 108): dropped \"a\", \"just\", \"near\", \"right\", \"then the\", \"the same list\", \"Anthropic has a name\", merged short fragments; all facts, ids and order kept, b1 unchanged.",
+  "chosen": "attempt 1",
+  "tries": 1
+ },
+ "humanized": true
+}

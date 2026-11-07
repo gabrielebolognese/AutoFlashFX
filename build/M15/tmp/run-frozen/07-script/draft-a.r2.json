@@ -1,0 +1,202 @@
+{
+ "label": "a",
+ "tone": "insider",
+ "round": 2,
+ "source": "rewrite",
+ "created": "2026-11-01 11:24:25",
+ "beats": [
+  {
+   "id": "b1",
+   "model_id": "b1",
+   "type": "hook",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "emphasis": [
+    "identical"
+   ],
+   "card": "IDENTICAL CARDS LOOK AI",
+   "facts": [],
+   "spoken_changes": []
+  },
+  {
+   "id": "b2",
+   "model_id": "b2",
+   "type": "stake",
+   "display": "You ship Claude Code client sites. Clients spot it instantly.",
+   "spoken": "You ship Claude Code client sites. Clients spot it instantly.",
+   "emphasis": [
+    "instantly"
+   ],
+   "card": "CLIENTS SPOT IT",
+   "facts": [],
+   "spoken_changes": []
+  },
+  {
+   "id": "b3",
+   "model_id": "b3",
+   "type": "comparison",
+   "display": "Anthropic's skill file names it: rounded cards, one radius, same grey shadow.",
+   "spoken": "Anthropic's skill file names it: rounded cards, one radius, same grey shadow.",
+   "emphasis": [
+    "same grey shadow"
+   ],
+   "card": "rgba(0,0,0,.1)",
+   "facts": [
+    "facts.md#6"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b4",
+   "model_id": "b4",
+   "type": "mechanism",
+   "display": "It's not your fault. Anthropic calls it distributional convergence.",
+   "spoken": "It's not your fault. Anthropic calls it distributional convergence.",
+   "emphasis": [
+    "distributional convergence"
+   ],
+   "card": "DISTRIBUTIONAL CONVERGENCE",
+   "facts": [
+    "facts.md#13"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b5",
+   "model_id": "b5",
+   "type": "comparison",
+   "display": "Even Anthropic's #D97757 terracotta on cream is flagged as an AI look.",
+   "spoken": "Even Anthropic's terracotta on cream is flagged as an AI look.",
+   "emphasis": [
+    "#D97757"
+   ],
+   "card": "#D97757 ON #F4F1EA: AI LOOK",
+   "facts": [
+    "facts.md#5"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b6",
+   "model_id": "b6",
+   "type": "number",
+   "display": "One accented headline word. All-caps labels. Fake 01, 02, 03.",
+   "spoken": "One accented headline word. All caps labels. Fake one, two, three.",
+   "emphasis": [
+    "All-caps"
+   ],
+   "card": "01 / 02 / 03",
+   "facts": [
+    "facts.md#7"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b7",
+   "model_id": "b7",
+   "type": "mechanism",
+   "display": "With it on, Claude plans 4 to 6 hex colors, reviews, then codes.",
+   "spoken": "With it on, Claude plans four to six hex colors, reviews, then codes.",
+   "emphasis": [
+    "4 to 6",
+    "then codes"
+   ],
+   "card": "PLAN, REVIEW, CODE",
+   "facts": [
+    "facts.md#9"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b8",
+   "model_id": "b8",
+   "type": "proof",
+   "display": "Anthropic verified. 1,134,112 installs as of November 2026.",
+   "spoken": "Anthropic verified. Over a million installs as of November.",
+   "emphasis": [
+    "Anthropic verified",
+    "1,134,112"
+   ],
+   "card": "1,134,112 installs",
+   "facts": [
+    "facts.md#14"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b9",
+   "model_id": "b9",
+   "type": "step",
+   "display": "Type /plugin install frontend-design@claude-plugins-official. Pick a scope.",
+   "spoken": "Type slash plugin install frontend design at claude plugins official. Pick a scope.",
+   "emphasis": [
+    "/plugin install",
+    "Pick a scope"
+   ],
+   "card": "/plugin install frontend-design@claude-plugins-official",
+   "facts": [
+    "facts.md#2"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b10",
+   "model_id": "b10",
+   "type": "payoff",
+   "display": "Then it turns on by itself when you ask for frontend work.",
+   "spoken": "Then it turns on by itself when you ask for frontend work.",
+   "emphasis": [
+    "by itself"
+   ],
+   "card": "TURNS ON BY ITSELF",
+   "facts": [
+    "facts.md#4"
+   ],
+   "spoken_changes": []
+  },
+  {
+   "id": "b11",
+   "model_id": "b11",
+   "type": "ask",
+   "display": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
+   "spoken": "Comment TELLS below. I'll send the checklist. Ditch identical cards.",
+   "emphasis": [
+    "TELLS"
+   ],
+   "card": "Comment TELLS",
+   "facts": [],
+   "spoken_changes": []
+  }
+ ],
+ "ask": {
+  "keyword": "TELLS",
+  "line": "Comment TELLS below. I'll send the checklist. Ditch identical cards."
+ },
+ "hook2": {
+  "id": "h07",
+  "display": "5 AI looks to avoid. One is Anthropic's.",
+  "spoken": "Five AI looks to avoid. One is Anthropic's.",
+  "card": "5 AI LOOKS. ONE IS ANTHROPIC'S",
+  "spoken_changes": []
+ },
+ "notes": "b3 is down to 12 words: the display now reads 'skill file' and 'same grey shadow' like the spoken line, and rgba(0,0,0,.1) stays on the card. The broken emphasis was replaced with 'same grey shadow'. No other beat changed.",
+ "normalizer_notes": [],
+ "words": {
+  "display": 112,
+  "spoken": 118
+ },
+ "cut": {
+  "attempt": 1,
+  "ok": true,
+  "errors": [],
+  "before_words": 127,
+  "after_words": 114,
+  "removed_pct": 10.2,
+  "lost": [],
+  "notes": "Display is about 109 words (from 127). Cut \"Built with\" split in b2, \"the kit\" in b3, the repeated \"called\" phrasing in b4, \"own\" in b5, \"everywhere\" in b6, \"It's officially\" and \"Already\" in b8, \"Claude\" in b10, and \"the\" in b11. Facts are kept, and b1 is unchanged.",
+  "chosen": "attempt 1",
+  "tries": 1,
+  "from_round": 1
+ },
+ "humanized": true
+}

@@ -1,0 +1,546 @@
+{
+ "min_score": 50.0,
+ "checked": "2026-11-01 09:45",
+ "hooks": {
+  "h01": {
+   "score": 50.0,
+   "verdict": "OK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 46 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Claude, Code"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 100.0,
+     "detail": "speaks to the viewer"
+    }
+   }
+  },
+  "h02": {
+   "score": 43.4,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 59 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 75,
+     "detail": "1 concrete marker(s): Then"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h03": {
+   "score": 77.8,
+   "verdict": "STRONG",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "1 tension marker(s): wish",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 35 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 75,
+     "detail": "1 concrete marker(s): 5"
+    },
+    "STAKES": {
+     "score": 70.0,
+     "detail": "1 tension marker(s): wish"
+    },
+    "FRONTLOAD": {
+     "score": 100.0,
+     "detail": "payload at word 1"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h04": {
+   "score": 46.4,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 46 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Claude, Code"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h05": {
+   "score": 60.2,
+   "verdict": "OK",
+   "flags": [],
+   "weakest": "ADDRESS",
+   "weakest_detail": "third person, nobody in the room",
+   "checks": {
+    "LENGTH": {
+     "score": 80,
+     "detail": "4 words, 27 chars, ~1.5s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): After, One"
+    },
+    "STAKES": {
+     "score": 70.0,
+     "detail": "1 tension marker(s): before"
+    },
+    "FRONTLOAD": {
+     "score": 100.0,
+     "detail": "payload at word 1"
+    },
+    "ADDRESS": {
+     "score": 35.0,
+     "detail": "third person, nobody in the room"
+    }
+   }
+  },
+  "h06": {
+   "score": 46.4,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 45 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Claude, Code"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h07": {
+   "score": 50.6,
+   "verdict": "OK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 40 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "3 concrete marker(s): 5, Anthropic, One"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 100.0,
+     "detail": "payload at word 1"
+    },
+    "ADDRESS": {
+     "score": 35.0,
+     "detail": "third person, nobody in the room"
+    }
+   }
+  },
+  "h08": {
+   "score": 34.2,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "weakest_detail": "0 concrete marker(s) - no number, no name, nothing checkable",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 42 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 15.0,
+     "detail": "0 concrete marker(s) - no number, no name, nothing checkable"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h09": {
+   "score": 30.0,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "weakest_detail": "0 concrete marker(s) - no number, no name, nothing checkable",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "7 words, 53 chars, ~2.5s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 15.0,
+     "detail": "0 concrete marker(s) - no number, no name, nothing checkable"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 35.0,
+     "detail": "third person, nobody in the room"
+    }
+   }
+  },
+  "h10": {
+   "score": 42.2,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 44 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Claude, Code"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 35.0,
+     "detail": "third person, nobody in the room"
+    }
+   }
+  },
+  "h11": {
+   "score": 80.8,
+   "verdict": "STRONG",
+   "flags": [],
+   "weakest": "FRONTLOAD",
+   "weakest_detail": "payload at word 6, could move forward",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "7 words, 39 chars, ~2.5s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "3 concrete marker(s): Claude, Code"
+    },
+    "STAKES": {
+     "score": 100.0,
+     "detail": "2 tension marker(s): don't, mistake"
+    },
+    "FRONTLOAD": {
+     "score": 70.0,
+     "detail": "payload at word 6, could move forward"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h12": {
+   "score": 34.2,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "weakest_detail": "0 concrete marker(s) - no number, no name, nothing checkable",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "7 words, 49 chars, ~2.5s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 15.0,
+     "detail": "0 concrete marker(s) - no number, no name, nothing checkable"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 30.0,
+     "detail": "no payload word anywhere in the line"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h13": {
+   "score": 48.2,
+   "verdict": "WEAK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 44 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 75,
+     "detail": "1 concrete marker(s): two"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 70.0,
+     "detail": "payload at word 7, could move forward"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  },
+  "h14": {
+   "score": 80.8,
+   "verdict": "STRONG",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "1 tension marker(s): not",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 47 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Code, Not"
+    },
+    "STAKES": {
+     "score": 70.0,
+     "detail": "1 tension marker(s): not"
+    },
+    "FRONTLOAD": {
+     "score": 70.0,
+     "detail": "payload at word 6, could move forward"
+    },
+    "ADDRESS": {
+     "score": 100.0,
+     "detail": "speaks to the viewer"
+    }
+   }
+  },
+  "h15": {
+   "score": 55.4,
+   "verdict": "OK",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "0 tension marker(s) - nothing is at stake in this line",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "8 words, 45 chars, ~2.9s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 75,
+     "detail": "1 concrete marker(s): 3"
+    },
+    "STAKES": {
+     "score": 20.0,
+     "detail": "0 tension marker(s) - nothing is at stake in this line"
+    },
+    "FRONTLOAD": {
+     "score": 100.0,
+     "detail": "payload at word 1"
+    },
+    "ADDRESS": {
+     "score": 100.0,
+     "detail": "speaks to the viewer"
+    }
+   }
+  },
+  "h16": {
+   "score": 80.8,
+   "verdict": "STRONG",
+   "flags": [],
+   "weakest": "STAKES",
+   "weakest_detail": "1 tension marker(s): not",
+   "checks": {
+    "LENGTH": {
+     "score": 100.0,
+     "detail": "7 words, 48 chars, ~2.5s spoken (want 5-12 words)"
+    },
+    "SPECIFICITY": {
+     "score": 100.0,
+     "detail": "2 concrete marker(s): Fine, Use"
+    },
+    "STAKES": {
+     "score": 70.0,
+     "detail": "1 tension marker(s): not"
+    },
+    "FRONTLOAD": {
+     "score": 100.0,
+     "detail": "payload at word 2"
+    },
+    "ADDRESS": {
+     "score": 70.0,
+     "detail": "first person, no viewer named"
+    }
+   }
+  }
+ },
+ "survivors": [
+  "h01",
+  "h03",
+  "h05",
+  "h07",
+  "h11",
+  "h14",
+  "h15",
+  "h16"
+ ],
+ "dropped": [
+  {
+   "id": "h02",
+   "spoken": "I thought rounded cards were forever. Then frontend-design.",
+   "score": 43.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 43 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h04",
+   "spoken": "My exact Claude Code design workflow, copy it.",
+   "score": 46.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 46 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h06",
+   "spoken": "This one plugin changed my Claude Code sites.",
+   "score": 46.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 46 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h08",
+   "spoken": "The trick I swear by: one /plugin install.",
+   "score": 34.2,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 34 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h09",
+   "spoken": "Everyone overcomplicates AI design. It's one command.",
+   "score": 30.0,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 30 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h10",
+   "spoken": "In Claude Code, the devil's in the defaults.",
+   "score": 42.2,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 42 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h12",
+   "spoken": "What silently ruined my sites: one border-radius.",
+   "score": 34.2,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 34 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h13",
+   "spoken": "How I automated design review in two passes.",
+   "score": 48.2,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 48 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  }
+ ]
+}

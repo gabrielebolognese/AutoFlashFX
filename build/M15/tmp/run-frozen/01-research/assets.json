@@ -1,0 +1,62 @@
+[
+ {
+  "file": "assets/01-repo.png",
+  "name": "repo",
+  "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
+  "final_url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
+  "title": "claude-plugins-official/plugins/frontend-design at main · anthropics/claude-plugins-official · GitHub",
+  "captured": "2026-11-01 03:23",
+  "checked": "2026-11-01",
+  "width": 1080,
+  "height": 1920,
+  "what": "GitHub folder anthropics/claude-plugins-official/plugins/frontend-design with its README: what it does and example prompts."
+ },
+ {
+  "file": "assets/02-plugin-page.png",
+  "name": "plugin-page",
+  "url": "https://claude.com/plugins/frontend-design",
+  "final_url": "https://claude.com/marketplace/plugins/frontend-design",
+  "title": "frontend-design | Claude by Anthropic",
+  "captured": "2026-11-01 03:23",
+  "checked": "2026-11-01",
+  "width": 1080,
+  "height": 1920,
+  "what": "Claude marketplace page for frontend-design: Anthropic verified badge, 1,134,112 installs, Install in Claude Code button (cookie banner at bottom right)."
+ },
+ {
+  "file": "assets/03-skill-md.png",
+  "name": "skill-md",
+  "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+  "final_url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+  "title": "claude-plugins-official/plugins/frontend-design/skills/frontend-design/SKILL.md at main · anthropics/claude-plugins-official · GitHub",
+  "captured": "2026-11-01 03:23",
+  "checked": "2026-11-01",
+  "width": 1080,
+  "height": 1920,
+  "what": "The SKILL.md on GitHub: the frontmatter description and the opening design principles, including the list of typographic tells."
+ },
+ {
+  "file": "assets/04-blog.png",
+  "name": "blog",
+  "url": "https://claude.com/blog/improving-frontend-design-through-skills",
+  "final_url": "https://claude.com/resources/articles/improving-frontend-design-through-skills",
+  "title": "Improving frontend design through Skills | Claude by Anthropic",
+  "captured": "2026-11-01 03:23",
+  "checked": "2026-11-01",
+  "width": 1080,
+  "height": 1920,
+  "what": "Anthropic article 'Improving frontend design through Skills', November 12, 2025, opening on Inter fonts and purple gradients (cookie banner at bottom right)."
+ },
+ {
+  "file": "assets/05-install-docs.png",
+  "name": "install-docs",
+  "url": "https://code.claude.com/docs/en/discover-plugins",
+  "final_url": "https://code.claude.com/docs/en/discover-plugins",
+  "title": "Install and manage plugins - Claude Code Docs",
+  "captured": "2026-11-01 03:23",
+  "checked": "2026-11-01",
+  "width": 1080,
+  "height": 1920,
+  "what": "Claude Code docs page 'Install and manage plugins', with the /plugin install <name>@claude-plugins-official flow."
+ }
+]

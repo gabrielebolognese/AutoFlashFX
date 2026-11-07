@@ -1,0 +1,138 @@
+{
+ "hooks": [
+  {
+   "template_id": "36baee5786",
+   "family": "mistake-warning",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "on_screen": "IDENTICAL CARDS LOOK AI",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "1b6608da82",
+   "family": "transformation",
+   "spoken": "I thought rounded cards were forever. Then frontend-design.",
+   "on_screen": "STUCK WITH ROUNDED CARDS",
+   "marker": "frontend-design",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "4f6d7934a4",
+   "family": "story-confession",
+   "spoken": "5 AI tells I wish I'd known sooner.",
+   "on_screen": "5 AI DESIGN TELLS",
+   "marker": "5",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "173da6499b",
+   "family": "how-to-system",
+   "spoken": "My exact Claude Code design workflow, copy it.",
+   "on_screen": "PLAN, REVIEW, THEN CODE",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "v13",
+   "family": "transformation",
+   "spoken": "Before. After. One command.",
+   "on_screen": "BEFORE / AFTER",
+   "marker": "One",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "777847740a",
+   "family": "transformation",
+   "spoken": "This one plugin changed my Claude Code sites.",
+   "on_screen": "ONE PLUGIN",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "v11",
+   "family": "tools-listicle",
+   "spoken": "5 AI looks to avoid. One is Anthropic's.",
+   "on_screen": "5 AI LOOKS. ONE IS ANTHROPIC'S",
+   "marker": "5",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "8741ad2a7d",
+   "family": "how-to-system",
+   "spoken": "The trick I swear by: one /plugin install.",
+   "on_screen": "MY UI TRICK",
+   "marker": "/plugin install",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "0a2555da6d",
+   "family": "myth-contrarian",
+   "spoken": "Everyone overcomplicates AI design. It's one command.",
+   "on_screen": "IT'S ONE COMMAND",
+   "marker": "one",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "v22",
+   "family": "myth-contrarian",
+   "spoken": "In Claude Code, the devil's in the defaults.",
+   "on_screen": "THE DEVIL'S IN THE DEFAULTS",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "6c0c8478fe",
+   "family": "mistake-warning",
+   "spoken": "I made this Claude Code mistake. Don't.",
+   "on_screen": "DON'T SHIP THE AI LOOK",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "127fddd9bb",
+   "family": "mistake-warning",
+   "spoken": "What silently ruined my sites: one border-radius.",
+   "on_screen": "ONE BORDER-RADIUS EVERYWHERE",
+   "marker": "one",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "40ee06e783",
+   "family": "how-to-system",
+   "spoken": "How I automated design review in two passes.",
+   "on_screen": "AUTOMATED DESIGN REVIEW",
+   "marker": "two",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "v07",
+   "family": "mistake-warning",
+   "spoken": "Claude Code sites look generic. Not your fault.",
+   "on_screen": "AI CONVERGES ON ONE LOOK",
+   "marker": "Claude Code",
+   "marker_kind": "tool"
+  },
+  {
+   "template_id": "afebf11bea",
+   "family": "how-to-system",
+   "spoken": "3 small edits that instantly un-AI your site.",
+   "on_screen": "3 EDITS. LESS AI",
+   "marker": "3",
+   "marker_kind": "number"
+  },
+  {
+   "template_id": "v12",
+   "family": "myth-contrarian",
+   "spoken": "\"I'm not a designer.\" Fine. Use frontend-design.",
+   "on_screen": "\"I'M NOT A DESIGNER\"",
+   "marker": "frontend-design",
+   "marker_kind": "tool"
+  }
+ ],
+ "notes": "I wrote 16 hooks across 6 families. Every marker comes from facts.md: 5 tells (claim 7) and 5 looks (claim 5), two passes (claim 9), one border-radius (claim 6), and the 3 edits are the accented word, all-caps labels and the arrow (claim 7). The v07 'not your fault' rests on 'distributional convergence' (claim 13). I skipped the plural 'tools' templates because the research backs only one plugin. The v13 before/after hook only works if the creator actually films their own two builds, since there is no official benchmark.",
+ "suggested_shapes": [
+  "Your __ is telling everyone AI made it.",
+  "Even __'s own brand is on the list of things to avoid.",
+  "Delete these __ and nobody will guess it was AI."
+ ]
+}

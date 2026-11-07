@@ -1,0 +1,36 @@
+{
+ "problem": "Every site I build with AI ends up with the same rounded cards, soft grey shadows and all-caps labels, and clients can tell right away.",
+ "solution": "One command installs Anthropic's frontend-design skill in Claude Code. Claude then plans palette, type and layout, checks it for defaults, then codes.",
+ "share_identity": "if you ship landing pages or client sites built with Claude Code",
+ "takeaway": "Anthropic's skill lists AI tells to cut: identical rounded cards with rgba(0,0,0,.1) shadows, all-caps labels, and a → on button text.",
+ "keyword": "TELLS",
+ "deliverable": "A one-page PDF checklist of the AI design tells named in the current SKILL.md, plus the exact install command for a Claude Code session and for the shell.",
+ "deliverable_status": "new",
+ "one_true_thing": "One command, /plugin install frontend-design@claude-plugins-official, and the skill switches on by itself for frontend work. Its SKILL.md even flags Anthropic's own #D97757 terracotta as an AI tell.",
+ "evidence": [
+  {
+   "fact": 2,
+   "note": "Install command"
+  },
+  {
+   "fact": 4,
+   "note": "Turns on by itself for frontend work"
+  },
+  {
+   "fact": 5,
+   "note": "#D97757 terracotta flagged as a tell"
+  },
+  {
+   "fact": 6,
+   "note": "Rounded cards, rgba(0,0,0,.1) shadow"
+  },
+  {
+   "fact": 7,
+   "note": "All-caps labels, arrow on buttons"
+  },
+  {
+   "fact": 9,
+   "note": "Plan, review, then code"
+  }
+ ]
+}

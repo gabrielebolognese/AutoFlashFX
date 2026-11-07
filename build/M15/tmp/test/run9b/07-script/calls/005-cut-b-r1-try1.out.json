@@ -1,0 +1,72 @@
+{
+ "beats": [
+  {
+   "id": "b1",
+   "display": "Why your Claude Code cards all look identical.",
+   "spoken": "Why your Claude Code cards all look identical.",
+   "card": "IDENTICAL CARDS LOOK AI"
+  },
+  {
+   "id": "b2",
+   "display": "Send clients the preview link and they'll know Claude Code built it.",
+   "spoken": "Send clients the preview link and they'll know Claude Code built it.",
+   "card": "THEY'LL KNOW"
+  },
+  {
+   "id": "b3",
+   "display": "Same rounded cards. Same rgba(0,0,0,.1) shadow. One radius.",
+   "spoken": "Same rounded cards. Same grey shadow. One radius.",
+   "card": "rgba(0,0,0,.1)"
+  },
+  {
+   "id": "b4",
+   "display": "Headlines: one accented word, all-caps labels, an arrow on buttons.",
+   "spoken": "Headlines: one accented word, all caps labels, an arrow on buttons.",
+   "card": "ALL-CAPS LABELS"
+  },
+  {
+   "id": "b5",
+   "display": "Anthropic flags them all in SKILL.md, updated September 2026.",
+   "spoken": "Anthropic flags them all in its skill file, updated this September.",
+   "card": "SKILL.md, SEPT 2026"
+  },
+  {
+   "id": "b6",
+   "display": "It also warns against cream with terracotta, #D97757, Anthropic's own accent.",
+   "spoken": "It also warns against cream with terracotta, Anthropic's own accent.",
+   "card": "#D97757 ON CREAM"
+  },
+  {
+   "id": "b7",
+   "display": "Unguided, models converge. Anthropic calls it distributional convergence.",
+   "spoken": "Unguided, models converge. Anthropic calls it distributional convergence.",
+   "card": "DISTRIBUTIONAL CONVERGENCE"
+  },
+  {
+   "id": "b8",
+   "display": "It makes Claude plan first, review for anything generic, then code.",
+   "spoken": "It makes Claude plan first, review for anything generic, then code.",
+   "card": "PLAN, REVIEW, CODE"
+  },
+  {
+   "id": "b9",
+   "display": "Fix it. Run /plugin install frontend-design@claude-plugins-official.",
+   "spoken": "Fix it. Run slash plugin install frontend design at claude plugins official.",
+   "card": "/plugin install frontend-design@claude-plugins-official"
+  },
+  {
+   "id": "b10",
+   "display": "Pick a scope, and it runs by itself on every frontend request.",
+   "spoken": "Pick a scope, and it runs by itself on every frontend request.",
+   "card": "ON BY ITSELF"
+  },
+  {
+   "id": "b11",
+   "display": "Comment TELLS now. I'll send the checklist before another identical launch.",
+   "spoken": "Comment TELLS now. I'll send the checklist before another identical launch.",
+   "card": "Comment TELLS"
+  }
+ ],
+ "ask_line": "Comment TELLS now. I'll send the checklist before another identical launch.",
+ "notes": "Cut about 18 words (126 to about 108): dropped \"a\", \"just\", \"near\", \"right\", \"then the\", \"the same list\", \"Anthropic has a name\", merged short fragments; all facts, ids and order kept, b1 unchanged."
+}

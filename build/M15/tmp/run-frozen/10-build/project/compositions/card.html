@@ -1,0 +1,93 @@
+<html data-composition-variables='[
+         {"id":"x","type":"number","label":"Left (px)","default":90},
+         {"id":"y","type":"number","label":"Top (px)","default":560},
+         {"id":"w","type":"number","label":"Width (px)","default":900},
+         {"id":"h","type":"number","label":"Height (px, 0 = auto)","default":0},
+         {"id":"title","type":"string","label":"Title","default":"Clients spot it instantly"},
+         {"id":"body","type":"string","label":"Body text","default":"Rounded cards, one radius, the same grey shadow on every site."},
+         {"id":"image","type":"string","label":"Image path (assets/...), optional","default":""},
+         {"id":"image_h","type":"number","label":"Image height (px)","default":520},
+         {"id":"align","type":"enum","label":"Text align","default":"left","options":[{"value":"left","label":"left"},{"value":"center","label":"center"}]},
+         {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"fly-in","label":"fly-in"},{"value":"pop","label":"pop"},{"value":"none","label":"none"}]},
+         {"id":"enter_at","type":"number","label":"Entrance at (s)","default":0},
+         {"id":"rise","type":"number","label":"Rise distance (px)","default":38},
+         {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+         {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+         {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1},
+         {"id":"mascot","type":"string","label":"Mascot prop (empty = none): clapper, star, film, play, grid, check","default":""},
+         {"id":"mascot_corner","type":"enum","label":"Mascot corner","default":"top-right","options":[{"value":"top-right","label":"top-right"},{"value":"bottom-right","label":"bottom-right"}]},
+         {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+         {"id":"tilt","type":"number","label":"Tilt (degrees)","default":0}
+       ]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* card (vocabulary.md 1, Card enter): a surface card with an optional title, body and image. The default move for
+       anything new: opacity 0 to 1 over 5 frames, y +38 to 0 over 8 frames, expo.out (style.md Motion, Enter), combined
+       with the zoom and the parallax rotation of E2, then the inertia, the hold and the exit of E1 (pc-motion.js). The
+       card is a small 2.5D scene: image, title and body sit at their own depths under the hold's rotation (E6). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #card-box { padding: 48px 52px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; }
+    #card-image { width: 100%; overflow: hidden; border-radius: 18px; display: none; background: var(--c-surface-chrome); }
+    #card-image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    #card-image img.pc-logo-fit { object-fit: contain; object-position: center; }  /* a logo file keeps its aspect ratio (tweaks.md Branding) */
+    #card-title { display: none; }
+    #card-body { display: none; }
+    #card-mascot { position: absolute; display: none; }
+  </style>
+  <div id="root" data-composition-id="card" data-width="1080" data-height="1920">
+    <div id="card-box" class="pc-card pc-el">
+      <div id="card-image"><img id="card-img" alt=""></div>
+      <div id="card-title" class="pc-title"></div>
+      <div id="card-body" class="pc-body"></div>
+    </div>
+    <div id="card-mascot" class="pc-mascot pc-el"></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 560, w: 900, h: 0, title: "", body: "", image: "", image_h: 520, align: "left", enter: "rise",
+        enter_at: 0, rise: 38, hold: "normal", exit: "none", exit_at: -1, mascot: "", mascot_corner: "top-right", honesty: "none", tilt: 0 }, window.__hyperframes.getVariables());
+      var box = document.getElementById("card-box");
+      PC.place(box, v);
+      box.style.textAlign = v.align;
+      var parts = [];
+      if (v.title) { var t = document.getElementById("card-title"); t.textContent = v.title; t.style.display = "block"; parts.push(t); }
+      if (v.body) { var b = document.getElementById("card-body"); b.textContent = v.body; b.style.display = "block"; parts.push(b); }
+      if (v.image) {
+        var wrap = document.getElementById("card-image");
+        document.getElementById("card-img").src = v.image;
+        if (/\/brand\//.test(v.image)) document.getElementById("card-img").className = "pc-logo-fit";
+        wrap.style.height = v.image_h + "px"; wrap.style.display = "block";
+        parts.unshift(wrap);
+      }
+      if (v.tilt) box.style.rotate = v.tilt + "deg";
+      PC.honesty(box, v.honesty);
+      PCM.depth(box, parts);
+
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 930, tilt: 3.9, frames: 14 } : v.enter === "pop" ? { kind: "pop", overshoot: 0.02, frames: 7 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: v.rise };
+      var life = PCM.life(tl, box, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+
+      if (v.mascot) {
+        var m = document.getElementById("card-mascot");
+        m.innerHTML = PC.mascotSVG(v.mascot, getComputedStyle(document.documentElement).getPropertyValue("--c-mascot").trim());
+        m.style.display = "block";
+        var mw = 85, mh = 58;
+        m.style.left = (v.x + v.w - mw * 0.55) + "px";
+        if (v.mascot_corner === "bottom-right") {
+          m.style.top = (v.y + (v.h || box.offsetHeight) - mh * 0.6) + "px";
+        } else {
+          m.style.top = (v.y - mh * 0.55) + "px";
+        }
+        PCM.mascotEnter(tl, m, life.land, { hold: v.hold, exit: exit, until: life.until, seed: PC.hash(v.title + v.mascot) });
+      }
+      window.__timelines["card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

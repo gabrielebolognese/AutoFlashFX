@@ -1,0 +1,807 @@
+{
+ "written_by": "12-review",
+ "pass": true,
+ "issues": [],
+ "warnings": [
+  "card text \"Install once, then it runs aut\" in Inter Tight is 34 px, under the caption size 67 px (E4: 5 samples)",
+  "card text \"It's not your fault\" in Inter Tight is 44 px, under the caption size 67 px (E4: 21 samples)",
+  "check-badge text \"Plans 4 to 6 hex colors\" in Inter Tight is 34 px, under the caption size 67 px (E4: 21 samples)",
+  "dark-chip text \"rgba(0,0,0,.1)\" in Inter Tight is 28 px, under the caption size 67 px (E4: 22 samples)",
+  "headline text \"CLAUDE\" in Space Grotesk is 30 px, under the caption size 67 px (E4: 12 samples)",
+  "light-chip text \"frontend-design on\" in Inter Tight is 30 px, under the caption size 67 px (E4: 10 samples)",
+  "stat-number text \"installs\" in Inter Tight is 44 px, under the caption size 67 px (E4: 1 samples)",
+  "strike-through text \"#D97757 on #F4F1EA\" in Inter Tight is 30 px, under the caption size 67 px (E4: 2 samples)",
+  "terminal-card text \"/plugin\" in JetBrains Mono is 30 px, under the caption size 67 px (E4: 6 samples)",
+  "terminal-card text \"Claude Code\" in Space Grotesk is 28 px, under the caption size 67 px (E4: 6 samples)",
+  "thumb-grid text \"client site\" in Inter Tight is 26 px, under the caption size 67 px (E4: 27 samples)",
+  "window-card text \"SKILL.md\" in Space Grotesk is 28 px, under the caption size 67 px (E4: 11 samples)"
+ ],
+ "counts": {
+  "hosts": 28,
+  "texts": 370,
+  "images": 29,
+  "times": 77,
+  "screenshots": 223,
+  "transient": 139,
+  "caption_pairs": 14,
+  "max_chars_on_screen": 100
+ },
+ "times": {
+  "600": [
+   "beat b1 (hook) settled"
+  ],
+  "800": [
+   "s1-headline-1 landed"
+  ],
+  "1730": [
+   "beat b1 middle"
+  ],
+  "1960": [
+   "emphasis identical."
+  ],
+  "3200": [
+   "s1-hero-3d-2 landed"
+  ],
+  "4060": [
+   "beat b2 (stake) settled"
+  ],
+  "4260": [
+   "s2-thumb-grid-1 landed"
+  ],
+  "5050": [
+   "beat b2 middle"
+  ],
+  "6130": [
+   "emphasis instantly."
+  ],
+  "6180": [
+   "s2-dark-chip-2 landed"
+  ],
+  "6460": [
+   "s2-dark-chip-2 last"
+  ],
+  "7240": [
+   "beat b3 (comparison) settled"
+  ],
+  "7440": [
+   "s3-window-card-1 landed"
+  ],
+  "9020": [
+   "beat b3 middle"
+  ],
+  "10380": [
+   "emphasis same"
+  ],
+  "10640": [
+   "emphasis grey"
+  ],
+  "10930": [
+   "emphasis shadow."
+  ],
+  "11060": [
+   "s3-dark-chip-2 landed"
+  ],
+  "11990": [
+   "beat b4 (mechanism) settled"
+  ],
+  "12190": [
+   "s4-card-1 landed"
+  ],
+  "13260": [
+   "beat b4 middle"
+  ],
+  "13640": [
+   "emphasis distributional"
+  ],
+  "14290": [
+   "s4-dark-chip-2 landed"
+  ],
+  "14440": [
+   "emphasis convergence."
+  ],
+  "15730": [
+   "beat b5 (comparison) settled"
+  ],
+  "15930": [
+   "s5-card-1 landed"
+  ],
+  "16060": [
+   "emphasis terracotta"
+  ],
+  "16710": [
+   "s5-strike-through-2 landed"
+  ],
+  "17000": [
+   "beat b5 middle"
+  ],
+  "19460": [
+   "beat b6 (number) settled"
+  ],
+  "19660": [
+   "s6-card-1 landed"
+  ],
+  "19840": [
+   "s6-dark-chip-2 landed"
+  ],
+  "20590": [
+   "emphasis All"
+  ],
+  "20730": [
+   "emphasis caps"
+  ],
+  "20800": [
+   "beat b6 middle"
+  ],
+  "21340": [
+   "s6-dark-chip-3 landed"
+  ],
+  "22360": [
+   "s6-dark-chip-4 landed"
+  ],
+  "23330": [
+   "beat b7 (mechanism) settled"
+  ],
+  "23530": [
+   "s7-light-chip-1 landed"
+  ],
+  "24130": [
+   "emphasis four"
+  ],
+  "24310": [
+   "s7-check-badge-2 landed"
+  ],
+  "24320": [
+   "emphasis to"
+  ],
+  "24480": [
+   "emphasis six"
+  ],
+  "24550": [
+   "s7-mascot-3 landed"
+  ],
+  "24810": [
+   "beat b7 middle"
+  ],
+  "25900": [
+   "emphasis then"
+  ],
+  "26380": [
+   "emphasis codes."
+  ],
+  "27040": [
+   "emphasis Anthropic"
+  ],
+  "27420": [
+   "emphasis verified."
+  ],
+  "27490": [
+   "beat b8 (proof) settled"
+  ],
+  "27690": [
+   "s8-window-card-1 landed"
+  ],
+  "28070": [
+   "s8-check-badge-2 landed"
+  ],
+  "28410": [
+   "emphasis million"
+  ],
+  "28500": [
+   "beat b8 middle"
+  ],
+  "29090": [
+   "s8-stat-number-3 landed"
+  ],
+  "30710": [
+   "beat b9 (step) settled"
+  ],
+  "30720": [
+   "emphasis plugin"
+  ],
+  "30910": [
+   "s9-terminal-card-1 landed"
+  ],
+  "31300": [
+   "emphasis install"
+  ],
+  "32420": [
+   "beat b9 middle"
+  ],
+  "34180": [
+   "emphasis Pick"
+  ],
+  "34340": [
+   "s9-light-chip-2 landed"
+  ],
+  "34360": [
+   "s9-light-chip-2 last"
+  ],
+  "34520": [
+   "emphasis scope."
+  ],
+  "35340": [
+   "beat b10 (payoff) settled"
+  ],
+  "35430": [
+   "emphasis by"
+  ],
+  "35540": [
+   "s10-card-1 landed"
+  ],
+  "35690": [
+   "emphasis itself"
+  ],
+  "36240": [
+   "beat b10 middle"
+  ],
+  "36340": [
+   "s10-check-badge-2 landed"
+  ],
+  "37560": [
+   "s10-light-chip-3 landed"
+  ],
+  "38120": [
+   "emphasis TELLS"
+  ],
+  "38330": [
+   "beat b11 (ask) settled"
+  ],
+  "38530": [
+   "s11-end-card-1 landed"
+  ],
+  "38770": [
+   "s11-dm-card-2 landed"
+  ],
+  "39600": [
+   "beat b11 middle"
+  ],
+  "41160": [
+   "the CTA built"
+  ]
+ },
+ "fonts_seen": {
+  "Space Grotesk": 64,
+  "Inter Tight": 158,
+  "Instrument Serif": 7,
+  "JetBrains Mono": 6,
+  "Caveat": 4
+ },
+ "emphasis": {
+  "checked": 25,
+  "ok": 25,
+  "results": [
+   {
+    "word": "identical.",
+    "ms": 1810,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   },
+   {
+    "word": "instantly.",
+    "ms": 5980,
+    "box_ms": 5980,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "same",
+    "ms": 10260,
+    "box_ms": 10260,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "grey",
+    "ms": 10500,
+    "box_ms": 10500,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "shadow.",
+    "ms": 10780,
+    "box_ms": 10780,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "distributional",
+    "ms": 13490,
+    "box_ms": 13490,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "convergence.",
+    "ms": 14290,
+    "box_ms": 14290,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "terracotta",
+    "ms": 15910,
+    "box_ms": 15910,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "All",
+    "ms": 20540,
+    "box_ms": 20540,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "caps",
+    "ms": 20620,
+    "box_ms": 20620,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "four",
+    "ms": 23990,
+    "box_ms": 23990,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "to",
+    "ms": 24270,
+    "box_ms": 24270,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "six",
+    "ms": 24370,
+    "box_ms": 24370,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "then",
+    "ms": 25750,
+    "box_ms": 25750,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "codes.",
+    "ms": 26230,
+    "box_ms": 26230,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Anthropic",
+    "ms": 26890,
+    "box_ms": 26890,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "verified.",
+    "ms": 27270,
+    "box_ms": 27270,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "million",
+    "ms": 28290,
+    "box_ms": 28290,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "plugin",
+    "ms": 30570,
+    "box_ms": 30570,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "install",
+    "ms": 31150,
+    "box_ms": 31150,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "Pick",
+    "ms": 34110,
+    "box_ms": 34110,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "scope.",
+    "ms": 34370,
+    "box_ms": 34370,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "by",
+    "ms": 35320,
+    "box_ms": 35320,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "itself",
+    "ms": 35540,
+    "box_ms": 35540,
+    "error_ms": 0,
+    "on_screen": true,
+    "ok": true
+   },
+   {
+    "word": "TELLS",
+    "ms": 37970,
+    "ok": true,
+    "note": "no caption in this beat (the headline or the end card carries the words)"
+   }
+  ]
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "solution": "external",
+  "lockup": {
+   "instance": "s11-end-card-1",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "lockup/lockup-gradient-on-light.png",
+   "type": "lockup",
+   "box": {
+    "x": 390.0,
+    "y": 1126.7,
+    "w": 300.0,
+    "h": 118.2
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 96.0,
+   "surface": "light",
+   "surface_luminance": 0.839,
+   "contrast": 17.78,
+   "clear_space_px": 24.0
+  },
+  "avatar": {
+   "instance": "s11-dm-card-2",
+   "scene": "s11",
+   "ms": 41160,
+   "file": "mark/avatar-dark.png",
+   "type": "avatar",
+   "box": {
+    "x": 130.8,
+    "y": 1293.4,
+    "w": 124.0,
+    "h": 124.0
+   },
+   "fit": "contain",
+   "aspect_locked": true,
+   "bolt_px": 71.0,
+   "surface": "dark",
+   "surface_luminance": 0.007,
+   "contrast": 9.11,
+   "clear_space_px": 17.7
+  },
+  "logos": [
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 38770,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 140.3,
+     "y": 1294.7,
+     "w": 121.4,
+     "h": 121.4
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 69.5,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.4
+   },
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1139.6,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.834,
+    "contrast": 17.67,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 39600,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 134.2,
+     "y": 1293.8,
+     "w": 123.2,
+     "h": 123.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 70.5,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.6
+   },
+   {
+    "instance": "s11-end-card-1",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "lockup/lockup-gradient-on-light.png",
+    "type": "lockup",
+    "box": {
+     "x": 390.0,
+     "y": 1126.7,
+     "w": 300.0,
+     "h": 118.2
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 96.0,
+    "surface": "light",
+    "surface_luminance": 0.839,
+    "contrast": 17.78,
+    "clear_space_px": 24.0
+   },
+   {
+    "instance": "s11-dm-card-2",
+    "scene": "s11",
+    "ms": 41160,
+    "file": "mark/avatar-dark.png",
+    "type": "avatar",
+    "box": {
+     "x": 130.8,
+     "y": 1293.4,
+     "w": 124.0,
+     "h": 124.0
+    },
+    "fit": "contain",
+    "aspect_locked": true,
+    "bolt_px": 71.0,
+    "surface": "dark",
+    "surface_luminance": 0.007,
+    "contrast": 9.11,
+    "clear_space_px": 17.7
+   }
+  ],
+  "outside_cta": []
+ },
+ "images_by_time": {
+  "500": [],
+  "1500": [],
+  "2500": [],
+  "3500": [],
+  "4500": [],
+  "5500": [],
+  "6500": [],
+  "7500": [
+   [
+    84,
+    321,
+    909,
+    754,
+    "image"
+   ]
+  ],
+  "8500": [
+   [
+    76,
+    300,
+    933,
+    776,
+    "image"
+   ]
+  ],
+  "9500": [
+   [
+    74,
+    289,
+    942,
+    788,
+    "image"
+   ]
+  ],
+  "10500": [
+   [
+    73,
+    282,
+    946,
+    793,
+    "image"
+   ]
+  ],
+  "11500": [
+   [
+    191,
+    379,
+    665,
+    430,
+    "image"
+   ]
+  ],
+  "12500": [
+   [
+    134,
+    329,
+    811,
+    489,
+    "image"
+   ]
+  ],
+  "13500": [
+   [
+    129,
+    312,
+    828,
+    503,
+    "image"
+   ]
+  ],
+  "14500": [
+   [
+    127,
+    304,
+    834,
+    508,
+    "image"
+   ]
+  ],
+  "15500": [],
+  "16500": [],
+  "17500": [],
+  "18500": [],
+  "19500": [],
+  "20500": [],
+  "21500": [],
+  "22500": [],
+  "23500": [],
+  "24500": [],
+  "25500": [],
+  "26500": [],
+  "27500": [
+   [
+    87,
+    308,
+    900,
+    608,
+    "image"
+   ]
+  ],
+  "28500": [
+   [
+    78,
+    287,
+    929,
+    626,
+    "image"
+   ]
+  ],
+  "29500": [
+   [
+    74,
+    275,
+    941,
+    638,
+    "image"
+   ]
+  ],
+  "30500": [],
+  "31500": [],
+  "32500": [],
+  "33500": [],
+  "34500": [],
+  "35500": [],
+  "36500": [],
+  "37500": [],
+  "38500": [
+   [
+    142,
+    1295,
+    121,
+    121,
+    "logo"
+   ]
+  ],
+  "39500": [
+   [
+    390,
+    1141,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    135,
+    1294,
+    123,
+    123,
+    "logo"
+   ]
+  ],
+  "40500": [
+   [
+    390,
+    1130,
+    300,
+    118,
+    "logo"
+   ],
+   [
+    132,
+    1293,
+    124,
+    125,
+    "logo"
+   ]
+  ]
+ },
+ "harness_errors": [],
+ "thresholds": {
+  "safe_top": 230.0,
+  "safe_bottom": 1440.0,
+  "margin_x": 60.0,
+  "caption_band": [
+   1152.0,
+   1412.0
+  ],
+  "right_rail_x": 850.0,
+  "min_font_px": 24.0,
+  "contrast": [
+   4.5,
+   2.7
+  ],
+  "emphasis_tolerance_ms": 80.0,
+  "lockup_min": 300.0,
+  "bolt_min": 64.0,
+  "avatar_min": 112.0
+ }
+}

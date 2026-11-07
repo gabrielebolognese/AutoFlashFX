@@ -1,0 +1,5 @@
+mechanical: 3 issues; 19 hosts, 147 text boxes, 12 images at 37 times; emphasis 9/9; lockup ok, avatar ok
+  [animation] overlap: "Code" (captions) and "sites." (captions) overlap at 5.05s (beat b2 middle)
+  [text] caption_static: the caption "Code" (captions) does not move between two samples of its life (0.0 px at 4.59s): every caption word or group rises or turns while it is on screen 
+  [text] caption_static: the caption "One" (captions-groups) does not move between two samples of its life (0.0 px at 19.96s): every caption word or group rises or turns while it is on 
+{"ok": true, "pass": false, "issues": 3}

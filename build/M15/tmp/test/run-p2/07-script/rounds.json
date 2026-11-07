@@ -1,0 +1,32 @@
+[
+ {
+  "round": 1,
+  "draft": "a",
+  "action": "write, cut, check",
+  "ok": false,
+  "hard": 0,
+  "soft": 1,
+  "note": "b3 runs 4.3 s (14 words); no beat may run over 4 s: split it or cut it to 13 words",
+  "at": "2026-11-01 11:21:24"
+ },
+ {
+  "round": 1,
+  "draft": "b",
+  "action": "write, cut, check",
+  "ok": false,
+  "hard": 1,
+  "soft": 1,
+  "note": "b10: the claim 'It runs by itself on every frontend request' says more than facts.md backs (Claim 4 says Claude automatically uses the skill for frontend work, not literally every request. Close, but 'every' is stronger than the source.); reword it from a verified claim of facts.md or remove it",
+  "at": "2026-11-01 11:23:36"
+ },
+ {
+  "round": 2,
+  "draft": "a",
+  "action": "rewrite, check",
+  "ok": true,
+  "hard": 0,
+  "soft": 0,
+  "note": "",
+  "at": "2026-11-01 11:24:45"
+ }
+]

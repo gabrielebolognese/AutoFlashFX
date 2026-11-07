@@ -1,0 +1,846 @@
+{
+ "duration_ms": 41460,
+ "instances": [
+  {
+   "instance": "s1-headline-1",
+   "component": "headline",
+   "scene": "s1",
+   "start_ms": 0,
+   "end_ms": 3460,
+   "sound_events": [
+    {
+     "event": "word",
+     "frame": "each word's time",
+     "cue": null,
+     "note": "the hook set piece elsewhere takes hook_hit"
+    }
+   ],
+   "props": {
+    "kicker": "CLAUDE CODE SITES",
+    "kicker_mark": "",
+    "lines_json": "[\"Why your Claude Code\", \"cards all look\", \"*identical.*\"]",
+    "words_json": "[{\"w\": \"Why\", \"t\": 0.05}, {\"w\": \"your\", \"t\": 0.17}, {\"w\": \"Claude\", \"t\": 0.29}, {\"w\": \"Code\", \"t\": 0.59}, {\"w\": \"cards\", \"t\": 0.79}, {\"w\": \"all\", \"t\": 1.21}, {\"w\": \"look\", \"t\": 1.59}, {\"w\": \"identical.\", \"t\": 1.81}]",
+    "kicker_at": 0.05,
+    "word_frames": 3,
+    "x": 90,
+    "w": 900,
+    "align": "center",
+    "exit": "fall",
+    "exit_at": 3.127
+   }
+  },
+  {
+   "instance": "s1-hero-3d-2",
+   "component": "hero-3d",
+   "scene": "s1",
+   "start_ms": 2400,
+   "end_ms": 3460,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": "enter_at x 30",
+     "cue": "hook_hit",
+     "note": "when it is the hook's set piece"
+    },
+    {
+     "event": "land",
+     "frame": "enter_at x 30 + 12",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 300,
+    "y": 690,
+    "w": 480,
+    "h": 480,
+    "object": "card",
+    "spin": 40,
+    "tilt": 18,
+    "enter_at": 0,
+    "enter_frames": 12,
+    "label": "",
+    "exit": "fall",
+    "exit_at": 0.727,
+    "clip_start": 2.4
+   }
+  },
+  {
+   "instance": "s2-thumb-grid-1",
+   "component": "thumb-grid",
+   "scene": "s2",
+   "start_ms": 3460,
+   "end_ms": 6640,
+   "sound_events": [
+    {
+     "event": "card",
+     "frame": "row x 7 + col",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 340,
+    "w": 900,
+    "cols": 3,
+    "gap": 18,
+    "ratio": 1,
+    "items_json": "[{\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}, {\"label\": \"site\"}]",
+    "card_frames": 4,
+    "stagger_frames": 1,
+    "row_gap_frames": 7,
+    "honesty": "mock",
+    "exit": "fade-blur",
+    "exit_at": 3.047
+   }
+  },
+  {
+   "instance": "s2-dark-chip-2",
+   "component": "dark-chip",
+   "scene": "s2",
+   "start_ms": 5980,
+   "end_ms": 6640,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 980,
+    "text": "Clients spot it instantly",
+    "accent_word": "instantly",
+    "icon": "dot",
+    "exit": "fade-blur",
+    "exit_at": 0.527
+   }
+  },
+  {
+   "instance": "s3-window-card-1",
+   "component": "window-card",
+   "scene": "s3",
+   "start_ms": 6640,
+   "end_ms": 11390,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": "8 (rise) or 16 (fly-in)",
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": "land + 4",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 300,
+    "w": 900,
+    "h": 780,
+    "title": "SKILL.md",
+    "kind": "light",
+    "image": "assets/research/03-skill-md.png",
+    "image_fit": "cover-top",
+    "enter": "rise",
+    "mascot": "film",
+    "honesty": "sourced",
+    "exit": "fade-blur",
+    "exit_at": 4.617
+   }
+  },
+  {
+   "instance": "s3-dark-chip-2",
+   "component": "dark-chip",
+   "scene": "s3",
+   "start_ms": 10260,
+   "end_ms": 11390,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 1110,
+    "text": "rgba(0,0,0,.1)",
+    "accent_word": ".1",
+    "icon": "file",
+    "exit": "fade-blur",
+    "exit_at": 0.997
+   }
+  },
+  {
+   "instance": "s4-card-1",
+   "component": "card",
+   "scene": "s4",
+   "start_ms": 11390,
+   "end_ms": 15130,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "only when the card is the scene's hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": 12,
+     "cue": null,
+     "note": "when the mascot prop is set"
+    },
+    {
+     "event": "exit",
+     "frame": "exit_at x 30",
+     "cue": "transition",
+     "note": "when exit is set"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 300,
+    "w": 900,
+    "title": "It's not your fault",
+    "body": "",
+    "image": "assets/research/04-blog.png",
+    "image_h": 480,
+    "align": "left",
+    "enter": "rise",
+    "honesty": "sourced",
+    "exit": "push",
+    "exit_at": 3.473
+   }
+  },
+  {
+   "instance": "s4-dark-chip-2",
+   "component": "dark-chip",
+   "scene": "s4",
+   "start_ms": 13490,
+   "end_ms": 15130,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 960,
+    "text": "distributional convergence",
+    "accent_word": "convergence",
+    "icon": "file",
+    "exit": "push",
+    "exit_at": 1.373
+   }
+  },
+  {
+   "instance": "s5-card-1",
+   "component": "card",
+   "scene": "s5",
+   "start_ms": 15130,
+   "end_ms": 18860,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "only when the card is the scene's hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": 12,
+     "cue": null,
+     "note": "when the mascot prop is set"
+    },
+    {
+     "event": "exit",
+     "frame": "exit_at x 30",
+     "cue": "transition",
+     "note": "when exit is set"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 340,
+    "w": 900,
+    "h": 520,
+    "title": "Even Anthropic's palette",
+    "body": "",
+    "align": "left",
+    "enter": "rise",
+    "mascot": "star",
+    "exit": "fade-blur",
+    "exit_at": 3.597
+   }
+  },
+  {
+   "instance": "s5-strike-through-2",
+   "component": "strike-through",
+   "scene": "s5",
+   "start_ms": 15910,
+   "end_ms": 18860,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "strike",
+     "frame": "strike_at x 30",
+     "cue": "negative"
+    },
+    {
+     "event": "typing",
+     "frame": "strike + line_frames + 2",
+     "cue": "typing",
+     "note": "when a replacement is set"
+    }
+   ],
+   "props": {
+    "x": 150,
+    "y": 560,
+    "text": "#D97757 on #F4F1EA",
+    "style": "line",
+    "chip": true,
+    "replacement": "AI look",
+    "line_frames": 4,
+    "strike_at": 1.32,
+    "exit": "fade-blur",
+    "exit_at": 2.817
+   }
+  },
+  {
+   "instance": "s6-card-1",
+   "component": "card",
+   "scene": "s6",
+   "start_ms": 18860,
+   "end_ms": 22730,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "only when the card is the scene's hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": 12,
+     "cue": null,
+     "note": "when the mascot prop is set"
+    },
+    {
+     "event": "exit",
+     "frame": "exit_at x 30",
+     "cue": "transition",
+     "note": "when exit is set"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 340,
+    "w": 900,
+    "h": 520,
+    "title": "The tells it names",
+    "body": "",
+    "align": "left",
+    "enter": "rise",
+    "mascot": "grid",
+    "exit": "push",
+    "exit_at": 3.603
+   }
+  },
+  {
+   "instance": "s6-dark-chip-2",
+   "component": "dark-chip",
+   "scene": "s6",
+   "start_ms": 19040,
+   "end_ms": 22730,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 140,
+    "y": 500,
+    "text": "One accented headline word",
+    "accent_word": "One",
+    "exit": "push",
+    "exit_at": 3.423
+   }
+  },
+  {
+   "instance": "s6-dark-chip-3",
+   "component": "dark-chip",
+   "scene": "s6",
+   "start_ms": 20540,
+   "end_ms": 22730,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 140,
+    "y": 600,
+    "text": "All-caps labels",
+    "accent_word": "ALL CAPS",
+    "exit": "push",
+    "exit_at": 1.923
+   }
+  },
+  {
+   "instance": "s6-dark-chip-4",
+   "component": "dark-chip",
+   "scene": "s6",
+   "start_ms": 21560,
+   "end_ms": 22730,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 140,
+    "y": 700,
+    "text": "Fake 01, 02, 03",
+    "accent_word": "01, 02, 03",
+    "exit": "push",
+    "exit_at": 0.903
+   }
+  },
+  {
+   "instance": "s7-light-chip-1",
+   "component": "light-chip",
+   "scene": "s7",
+   "start_ms": 22730,
+   "end_ms": 26890,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 160,
+    "y": 340,
+    "text": "frontend-design on",
+    "exit": "fade-blur",
+    "exit_at": 4.027
+   }
+  },
+  {
+   "instance": "s7-check-badge-2",
+   "component": "check-badge",
+   "scene": "s7",
+   "start_ms": 23510,
+   "end_ms": 26890,
+   "sound_events": [
+    {
+     "event": "check",
+     "frame": 0,
+     "cue": "success",
+     "note": "list mode: one per tick, ticks_at then 4 frames apart"
+    }
+   ],
+   "props": {
+    "mode": "list",
+    "x": 160,
+    "y": 440,
+    "w": 760,
+    "items_json": [
+     "Plans 4 to 6 hex colors",
+     "Reviews",
+     "Then codes"
+    ],
+    "tick_frames": 3,
+    "tick_gap_frames": 20,
+    "ticks_at": 1.26,
+    "exit": "fade-blur",
+    "exit_at": 3.247
+   }
+  },
+  {
+   "instance": "s7-mascot-3",
+   "component": "mascot",
+   "scene": "s7",
+   "start_ms": 23750,
+   "end_ms": 26890,
+   "sound_events": [
+    {
+     "event": "mascot",
+     "frame": 0,
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 830,
+    "y": 400,
+    "prop": "check",
+    "move": "rise",
+    "frames": 4,
+    "exit": "fade-blur",
+    "exit_at": 3.007
+   }
+  },
+  {
+   "instance": "s8-window-card-1",
+   "component": "window-card",
+   "scene": "s8",
+   "start_ms": 26890,
+   "end_ms": 30110,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": "8 (rise) or 16 (fly-in)",
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": "land + 4",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 280,
+    "w": 900,
+    "h": 640,
+    "title": "claude.com/plugins",
+    "kind": "light",
+    "image": "assets/research/02-plugin-page.png",
+    "image_fit": "cover-top",
+    "enter": "rise",
+    "honesty": "sourced"
+   }
+  },
+  {
+   "instance": "s8-check-badge-2",
+   "component": "check-badge",
+   "scene": "s8",
+   "start_ms": 27270,
+   "end_ms": 30110,
+   "sound_events": [
+    {
+     "event": "check",
+     "frame": 0,
+     "cue": "success",
+     "note": "list mode: one per tick, ticks_at then 4 frames apart"
+    }
+   ],
+   "props": {
+    "mode": "badge",
+    "x": 920,
+    "y": 240,
+    "size": 96
+   }
+  },
+  {
+   "instance": "s8-stat-number-3",
+   "component": "stat-number",
+   "scene": "s8",
+   "start_ms": 28290,
+   "end_ms": 30110,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "a giant number is a hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "count_start",
+     "frame": "8 + count_delay_frames",
+     "cue": "number"
+    },
+    {
+     "event": "count_end",
+     "frame": "8 + count_delay_frames + count_frames",
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 780,
+    "value": 1134112,
+    "unit": "installs",
+    "container": "pill",
+    "icon": "download",
+    "honesty": "sourced"
+   }
+  },
+  {
+   "instance": "s9-terminal-card-1",
+   "component": "terminal-card",
+   "scene": "s9",
+   "start_ms": 30110,
+   "end_ms": 34740,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "typing",
+     "frame": "8 + start_delay_frames, then line by line",
+     "duration_frames": "chars / chars_per_frame",
+     "cue": "typing"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 340,
+    "w": 900,
+    "title": "Claude Code",
+    "mode": "type",
+    "chars_per_frame": 1,
+    "start_delay_frames": 8,
+    "prompt": "",
+    "lines_json": "[{\"text\": \"/plugin install frontend-design@claude-plugins-official\", \"color\": \"accent\"}]",
+    "honesty": "mock",
+    "exit": "fall",
+    "exit_at": 4.297
+   }
+  },
+  {
+   "instance": "s9-light-chip-2",
+   "component": "light-chip",
+   "scene": "s9",
+   "start_ms": 34110,
+   "end_ms": 34740,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 720,
+    "text": "Pick a scope",
+    "exit": "fall",
+    "exit_at": 0.297
+   }
+  },
+  {
+   "instance": "s10-card-1",
+   "component": "card",
+   "scene": "s10",
+   "start_ms": 34740,
+   "end_ms": 37730,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter",
+     "note": "only when the card is the scene's hero"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "mascot",
+     "frame": 12,
+     "cue": null,
+     "note": "when the mascot prop is set"
+    },
+    {
+     "event": "exit",
+     "frame": "exit_at x 30",
+     "cue": "transition",
+     "note": "when exit is set"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 340,
+    "w": 900,
+    "title": "Turns on by itself",
+    "body": "Install once, then it runs automatically.",
+    "align": "left",
+    "enter": "rise",
+    "exit": "fade-blur",
+    "exit_at": 2.857
+   }
+  },
+  {
+   "instance": "s10-check-badge-2",
+   "component": "check-badge",
+   "scene": "s10",
+   "start_ms": 35540,
+   "end_ms": 37730,
+   "sound_events": [
+    {
+     "event": "check",
+     "frame": 0,
+     "cue": "success",
+     "note": "list mode: one per tick, ticks_at then 4 frames apart"
+    }
+   ],
+   "props": {
+    "mode": "badge",
+    "x": 900,
+    "y": 300,
+    "size": 96,
+    "exit": "fade-blur",
+    "exit_at": 2.057
+   }
+  },
+  {
+   "instance": "s10-light-chip-3",
+   "component": "light-chip",
+   "scene": "s10",
+   "start_ms": 36760,
+   "end_ms": 37730,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 120,
+    "y": 700,
+    "text": "you ask for frontend work",
+    "exit": "fade-blur",
+    "exit_at": 0.837
+   }
+  },
+  {
+   "instance": "s11-end-card-1",
+   "component": "end-card",
+   "scene": "s11",
+   "start_ms": 37730,
+   "end_ms": 41460,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 6,
+     "cue": null
+    },
+    {
+     "event": "typing",
+     "frame": "2 x stagger_frames + fade_frames (18)",
+     "duration_frames": "len(keyword) x type_frames",
+     "cue": "typing"
+    },
+    {
+     "event": "mascots",
+     "frame": "4 x stagger_frames (24)",
+     "cue": null
+    },
+    {
+     "event": "lockup",
+     "frame": "after the typing",
+     "cue": null
+    }
+   ],
+   "props": {
+    "verb": "Comment",
+    "keyword": "TELLS",
+    "line1": "below, I'll send the checklist",
+    "line2": "Ditch identical cards",
+    "mascots_json": "[\"clapper\", \"star\", \"film\", \"play\", \"grid\"]",
+    "lockup": "assets/brand/lockup/lockup-gradient-on-light.png",
+    "lockup_w": 300,
+    "lockup_y": 1146,
+    "wobble": true
+   }
+  },
+  {
+   "instance": "s11-dm-card-2",
+   "component": "dm-card",
+   "scene": "s11",
+   "start_ms": 37970,
+   "end_ms": 41460,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "notification",
+     "frame": 8,
+     "cue": "notification"
+    }
+   ],
+   "props": {
+    "x": 110,
+    "y": 1266,
+    "w": 740,
+    "avatar": "assets/brand/mark/avatar-dark.png",
+    "avatar_size": 120,
+    "sender": "FlashFX",
+    "message": "Here's the checklist. Ditch identical cards.",
+    "time_label": "now",
+    "app_label": "Instagram",
+    "enter": "drop"
+   }
+  }
+ ],
+ "assets": [
+  "brand/lockup/lockup-gradient-on-light.png",
+  "brand/mark/avatar-dark.png",
+  "research/02-plugin-page.png",
+  "research/03-skill-md.png",
+  "research/04-blog.png"
+ ]
+}

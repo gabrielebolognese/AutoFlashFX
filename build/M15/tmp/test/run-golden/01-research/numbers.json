@@ -1,0 +1,82 @@
+{
+ "frontend_design_plugin_version": {
+  "name": "frontend-design plugin version",
+  "value": "1.1.1",
+  "unit": "version",
+  "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/.claude-plugin/plugin.json",
+  "checked": "2026-11-01",
+  "note": "Explicit version added on 2026-10-26."
+ },
+ "installs_on_claude_marketplace": {
+  "name": "Installs on Claude marketplace",
+  "value": 1134112,
+  "unit": "installs",
+  "url": "https://claude.com/marketplace/plugins/frontend-design",
+  "checked": "2026-11-01",
+  "note": "As shown on 2026-11-01."
+ },
+ "anthropics_claude_plugins_official_stars": {
+  "name": "anthropics/claude-plugins-official stars",
+  "value": 45583,
+  "unit": "GitHub stars",
+  "url": "https://github.com/anthropics/claude-plugins-official",
+  "checked": "2026-11-01",
+  "note": "From gh repo view on 2026-11-01."
+ },
+ "anthropics_skills_stars": {
+  "name": "anthropics/skills stars",
+  "value": 185914,
+  "unit": "GitHub stars",
+  "url": "https://github.com/anthropics/skills",
+  "checked": "2026-11-01",
+  "note": "From gh repo view on 2026-11-01."
+ },
+ "skill_md_size": {
+  "name": "SKILL.md size",
+  "value": "71 lines (44 loc) · 9.17 KB",
+  "unit": "file size",
+  "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+  "checked": "2026-11-01",
+  "note": "As shown in the GitHub file header."
+ },
+ "last_skill_md_content_update_plugin_repo": {
+  "name": "Last SKILL.md content update (plugin repo)",
+  "value": "2026-09-01",
+  "unit": "date",
+  "url": "https://github.com/anthropics/claude-plugins-official/commit/44490cccaf6d9f82fdeec9416fbf7c9bd72575dc",
+  "checked": "2026-11-01",
+  "note": "Commit \"Update /frontend-design SKILL.md\"."
+ },
+ "last_skill_md_update_anthropics_skills": {
+  "name": "Last SKILL.md update (anthropics/skills)",
+  "value": "2026-09-03",
+  "unit": "date",
+  "url": "https://github.com/anthropics/skills/commit/41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f",
+  "checked": "2026-11-01",
+  "note": "Commit \"Update frontend-design skill to avoid generic design defaults (#1713)\"."
+ },
+ "anthropic_article_publish_date": {
+  "name": "Anthropic article publish date",
+  "value": "November 12, 2025",
+  "unit": "date",
+  "url": "https://claude.com/resources/articles/improving-frontend-design-through-skills",
+  "checked": "2026-11-01",
+  "note": "The article calls the original prompt a \"~400 token prompt\". The current SKILL.md is much longer (9.17 KB)."
+ },
+ "palette_size_the_skill_asks_for": {
+  "name": "Palette size the skill asks for",
+  "value": "4-6 named hex values",
+  "unit": "colors",
+  "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+  "checked": "2026-11-01",
+  "note": "Part of the design-plan pass."
+ },
+ "line_length_default": {
+  "name": "Line length default",
+  "value": "less than 80 characters",
+  "unit": "characters",
+  "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+  "checked": "2026-11-01",
+  "note": ""
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "problem": "Every site I build with AI ends up with the same rounded cards, soft grey shadows and all-caps labels, and clients can tell right away.",
+ "solution": "Install Anthropic's official frontend-design skill in Claude Code with one command. It makes Claude plan a palette, type and layout, check that plan for generic defaults, and only then write code.",
+ "share_identity": "if you ship landing pages or client sites built with Claude Code",
+ "takeaway": "Anthropic's own skill lists the AI tells to cut: identical rounded cards with the same rgba(0,0,0,.1) shadow, all-caps labels, one word accented in the headline, and a → added to button text.",
+ "keyword": "TELLS",
+ "deliverable": "A one-page PDF checklist of the AI design tells named in the current SKILL.md, plus the exact install command for a Claude Code session and for the shell.",
+ "deliverable_status": "new",
+ "one_true_thing": "One command, /plugin install frontend-design@claude-plugins-official, and the skill switches on by itself for frontend work. Its SKILL.md even flags Anthropic's own #D97757 terracotta as an AI tell.",
+ "evidence": [
+  {
+   "fact": 2,
+   "note": "Install command: /plugin install frontend-design@claude-plugins-official"
+  },
+  {
+   "fact": 4,
+   "note": "Activates automatically for frontend work"
+  },
+  {
+   "fact": 5,
+   "note": "Cream plus #D97757 terracotta listed as an AI tell"
+  },
+  {
+   "fact": 6,
+   "note": "SaaS-card kit: identical rounded cards, rgba(0,0,0,.1) shadow"
+  },
+  {
+   "fact": 7,
+   "note": "All-caps labels, one accented headline word, arrow on button text"
+  },
+  {
+   "fact": 9,
+   "note": "Two passes: design plan, review for generic choices, then code"
+  }
+ ]
+}

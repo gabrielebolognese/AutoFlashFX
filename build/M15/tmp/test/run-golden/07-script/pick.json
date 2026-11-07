@@ -1,0 +1,12 @@
+{
+ "winner": "a",
+ "winner_position": 2,
+ "order": [
+  "b",
+  "a"
+ ],
+ "reason": "Draft 2 sounds more like his short, plain way of talking. Lines like \"You ship Claude Code client sites. Clients spot it instantly.\" and \"It's not your fault.\" are easy to say, and the ask \"Comment TELLS below. I'll send the checklist.\" comes across as a simple offer. Draft 1 has stiff lines he would trip on: \"Unguided, models converge.\" sounds written, and \"It makes Claude plan first\" uses \"It\" before the plugin is ever named. Its ask \"before another identical launch\" also reads like ad copy. Draft 2 still needs fixes: \"Ditch identical cards\" sounds like a slogan, and the number \"1,134,112\" is hard to say out loud.",
+ "notes": "Send clients the preview link and they'll know Claude Code built it.",
+ "lenient": false,
+ "decided": "2026-11-01 11:23:56"
+}
