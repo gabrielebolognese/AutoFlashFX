@@ -1,0 +1,2733 @@
+{
+ "plan_version": 1,
+ "style": "paper-cards",
+ "idea_id": "c26c94b17281",
+ "source": "golden-plan (pipeline/lib/motion/goldenplan.py)",
+ "fps": 30,
+ "duration_ms": 41460,
+ "voice": "08-voiceover/vo.wav",
+ "solution": {
+  "type": "external",
+  "name": "frontend-design, the Claude Code plugin",
+  "url": "https://claude.com/plugins/frontend-design",
+  "logo": null
+ },
+ "tracker": {
+  "enabled": false
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "dm_avatar": "brand/mark/avatar-dark.png",
+  "lockup": "brand/lockup/lockup-gradient-on-light.png",
+  "brand_slot": null,
+  "flashfx_allowed_outside_cta": false
+ },
+ "scenes": [
+  {
+   "id": "s1",
+   "beat": "b1",
+   "beat_type": "hook",
+   "start_ms": 0,
+   "end_ms": 3460,
+   "set_piece": true,
+   "hook_set_piece": true,
+   "honesty_label": "mock",
+   "emphasis_hits": [
+    {
+     "word": "identical",
+     "ms": 1810,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s1-headline-1",
+     "component": "headline",
+     "start_ms": 0,
+     "end_ms": 3460,
+     "props": {
+      "kicker": "CLAUDE CODE SITES",
+      "kicker_mark": "",
+      "lines_json": [
+       "Why your Claude Code",
+       "cards all look",
+       "*identical.*"
+      ],
+      "kicker_at": 0.05,
+      "x": 90,
+      "w": 900,
+      "align": "center",
+      "hold": "lively",
+      "words_json": [
+       {
+        "w": "Why",
+        "t": 0.05
+       },
+       {
+        "w": "your",
+        "t": 0.17
+       },
+       {
+        "w": "Claude",
+        "t": 0.29
+       },
+       {
+        "w": "Code",
+        "t": 0.59
+       },
+       {
+        "w": "cards",
+        "t": 0.79
+       },
+       {
+        "w": "all",
+        "t": 1.21
+       },
+       {
+        "w": "look",
+        "t": 1.59
+       },
+       {
+        "w": "identical.",
+        "t": 1.81
+       }
+      ]
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s1-mock-site-card-2",
+     "component": "mock-site-card",
+     "start_ms": 0,
+     "end_ms": 3460,
+     "props": {
+      "x": 90,
+      "y": 700,
+      "w": 900,
+      "h": 470,
+      "title": "",
+      "headline": "Same look",
+      "cta": "Go",
+      "tone": "ink",
+      "cta_at": 0.5,
+      "scroll_px_s": 220,
+      "honesty": "mock",
+      "hold": "lively",
+      "enter": "rise"
+     },
+     "role": "support",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s1-hero-3d-3",
+     "component": "hero-3d",
+     "start_ms": 2400,
+     "end_ms": 3460,
+     "props": {
+      "x": 620,
+      "y": 620,
+      "w": 330,
+      "h": 330,
+      "object": "card",
+      "spin": 40,
+      "tilt": 18,
+      "enter_at": 0.0,
+      "enter_frames": 12,
+      "label": ""
+     },
+     "role": "set-piece",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "beat": "b2",
+   "beat_type": "stake",
+   "start_ms": 3460,
+   "end_ms": 6640,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "mock",
+   "emphasis_hits": [
+    {
+     "word": "instantly",
+     "ms": 5980,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s2-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 3460,
+     "end_ms": 6640,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 760,
+      "title": "client-site.com",
+      "headline": "Same look",
+      "cta": "Get started",
+      "tone": "warm",
+      "cta_at": 0.8,
+      "scroll_px_s": 60,
+      "honesty": "mock",
+      "hold": "lively",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s2-pop-2",
+     "component": "pop",
+     "start_ms": 3460,
+     "end_ms": 6640,
+     "props": {
+      "kind": "badge",
+      "icon": "star",
+      "size": 130,
+      "x": 830,
+      "y": 340
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s2-cursor-3",
+     "component": "cursor",
+     "start_ms": 3560,
+     "end_ms": 6640,
+     "props": {
+      "points_json": [
+       {
+        "x": 820,
+        "y": 1100,
+        "at": 0
+       },
+       {
+        "x": 250,
+        "y": 905,
+        "at": 1.6,
+        "click": true
+       },
+       {
+        "x": 700,
+        "y": 700,
+        "at": 2.6
+       }
+      ],
+      "hold": "lively"
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s2-dark-chip-4",
+     "component": "dark-chip",
+     "start_ms": 5980,
+     "end_ms": 6640,
+     "props": {
+      "x": 440,
+      "y": 1120,
+      "text": "same look, every site",
+      "accent_word": "every site",
+      "icon": "dot"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "beat": "b3",
+   "beat_type": "comparison",
+   "start_ms": 6640,
+   "end_ms": 11390,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "same grey shadow",
+     "ms": 10260,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s3-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 6640,
+     "end_ms": 11390,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 780,
+      "image": "research/03-skill-md.png",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "zoom_to": 0.85,
+      "focus_json": [
+       {
+        "x": 0.33,
+        "y": 0.3,
+        "w": 0.4,
+        "h": 0.04,
+        "at": 0.16
+       },
+       {
+        "x": 0.34,
+        "y": 0.215,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 1.47
+       },
+       {
+        "x": 0.33,
+        "y": 0.575,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 2.66
+       },
+       {
+        "x": 0.34,
+        "y": 0.66,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 3.84
+       }
+      ]
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/03-skill-md.png"
+     ]
+    },
+    {
+     "id": "s3-pop-2",
+     "component": "pop",
+     "start_ms": 6640,
+     "end_ms": 11390,
+     "props": {
+      "kind": "badge",
+      "icon": "bolt",
+      "size": 130,
+      "x": 830,
+      "y": 340
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s3-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 10780,
+     "end_ms": 11390,
+     "props": {
+      "x": 440,
+      "y": 1120,
+      "text": "rgba(0,0,0,.1)",
+      "accent_word": ".1",
+      "icon": "file"
+     },
+     "role": "label",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "beat": "b4",
+   "beat_type": "mechanism",
+   "start_ms": 11390,
+   "end_ms": 15130,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "distributional convergence",
+     "ms": 13490,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s4-video-card-1",
+     "component": "video-card",
+     "start_ms": 11390,
+     "end_ms": 15130,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 760,
+      "video": "research/04-blog.mp4",
+      "title": "claude.com/blog",
+      "kind": "window",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/04-blog.mp4"
+     ]
+    },
+    {
+     "id": "s4-handwritten-callout-2",
+     "component": "handwritten-callout",
+     "start_ms": 12870,
+     "end_ms": 15130,
+     "props": {
+      "x": 560,
+      "y": 1030,
+      "text": "Anthropic's|own words",
+      "arrow": "up-left",
+      "arrow_len": 140
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s5",
+   "beat": "b5",
+   "beat_type": "comparison",
+   "start_ms": 15130,
+   "end_ms": 18860,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "mock",
+   "emphasis_hits": [],
+   "components": [
+    {
+     "id": "s5-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 15130,
+     "end_ms": 18860,
+     "props": {
+      "x": 90,
+      "y": 600,
+      "w": 900,
+      "h": 340,
+      "title": "",
+      "headline": "Terracotta",
+      "cta": "Go",
+      "tone": "warm",
+      "cta_at": 0.7,
+      "scroll_px_s": 140,
+      "honesty": "mock",
+      "hold": "lively",
+      "enter": "rise"
+     },
+     "role": "hero",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s5-swatch-row-2",
+     "component": "swatch-row",
+     "start_ms": 15130,
+     "end_ms": 18860,
+     "props": {
+      "x": 90,
+      "y": 965,
+      "w": 900,
+      "h": 120,
+      "gap": 20,
+      "honesty": "none",
+      "hold": "lively",
+      "colors_json": [
+       {
+        "color": "#D97757",
+        "at": 0.68
+       },
+       {
+        "color": "#FAF5EC",
+        "at": 1.36
+       }
+      ]
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s5-strike-through-3",
+     "component": "strike-through",
+     "start_ms": 17230,
+     "end_ms": 18860,
+     "props": {
+      "x": 200,
+      "y": 1100,
+      "text": "#D97757 on cream",
+      "chip": true,
+      "style": "line",
+      "replacement": "AI look",
+      "strike_at": 0.0
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s6",
+   "beat": "b6",
+   "beat_type": "number",
+   "start_ms": 18860,
+   "end_ms": 22730,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [],
+   "components": [
+    {
+     "id": "s6-video-card-1",
+     "component": "video-card",
+     "start_ms": 18860,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 860,
+      "w": 900,
+      "h": 300,
+      "video": "research/01-repo.mp4",
+      "kind": "frame",
+      "honesty": "none",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 1.2
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": [
+      "research/01-repo.mp4"
+     ]
+    },
+    {
+     "id": "s6-pop-2",
+     "component": "pop",
+     "start_ms": 18860,
+     "end_ms": 22730,
+     "props": {
+      "kind": "badge",
+      "icon": "star",
+      "size": 150,
+      "x": 800,
+      "y": 330
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s7",
+   "beat": "b7",
+   "beat_type": "mechanism",
+   "start_ms": 22730,
+   "end_ms": 26890,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "then codes",
+     "ms": 25750,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s7-video-card-1",
+     "component": "video-card",
+     "start_ms": 22730,
+     "end_ms": 26890,
+     "props": {
+      "x": 90,
+      "y": 540,
+      "w": 900,
+      "h": 400,
+      "video": "research/01-repo.mp4",
+      "kind": "frame",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 1.0
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/01-repo.mp4"
+     ]
+    },
+    {
+     "id": "s7-swatch-row-2",
+     "component": "swatch-row",
+     "start_ms": 22730,
+     "end_ms": 26890,
+     "props": {
+      "x": 90,
+      "y": 970,
+      "w": 900,
+      "h": 170,
+      "gap": 14,
+      "honesty": "none",
+      "hold": "lively",
+      "colors_json": [
+       {
+        "color": "#DC6532",
+        "at": 1.16
+       },
+       {
+        "color": "#1C110F",
+        "at": 1.76
+       },
+       {
+        "color": "#F5EEE3",
+        "at": 1.54
+       },
+       {
+        "color": "#289C5C",
+        "at": 2.01
+       },
+       {
+        "color": "#C9623C",
+        "at": 2.04
+       }
+      ]
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s8",
+   "beat": "b8",
+   "beat_type": "proof",
+   "start_ms": 26890,
+   "end_ms": 30110,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "Anthropic verified",
+     "ms": 26890,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s8-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 26890,
+     "end_ms": 30110,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 760,
+      "image": "research/02-plugin-page.png",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "zoom_to": 0.8,
+      "focus_json": [
+       {
+        "x": 0.27,
+        "y": 0.165,
+        "w": 0.5,
+        "h": 0.05,
+        "at": 0.0
+       },
+       {
+        "x": 0.27,
+        "y": 0.215,
+        "w": 0.5,
+        "h": 0.035,
+        "at": 0.28
+       },
+       {
+        "x": 0.76,
+        "y": 0.2,
+        "w": 0.22,
+        "h": 0.07,
+        "at": 1.02
+       },
+       {
+        "x": 0.76,
+        "y": 0.15,
+        "w": 0.22,
+        "h": 0.12,
+        "at": 1.14
+       },
+       {
+        "x": 0.27,
+        "y": 0.165,
+        "w": 0.5,
+        "h": 0.05,
+        "at": 2.6
+       }
+      ]
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/02-plugin-page.png"
+     ]
+    },
+    {
+     "id": "s8-stat-number-2",
+     "component": "stat-number",
+     "start_ms": 27910,
+     "end_ms": 30110,
+     "props": {
+      "x": 120,
+      "y": 1190,
+      "value": 1134112,
+      "unit": "installs",
+      "icon": "download",
+      "container": "pill",
+      "honesty": "sourced"
+     },
+     "role": "support",
+     "honesty_label": "sourced",
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s9",
+   "beat": "b9",
+   "beat_type": "step",
+   "start_ms": 30110,
+   "end_ms": 34740,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "Pick a scope",
+     "ms": 34110,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s9-terminal-card-1",
+     "component": "terminal-card",
+     "start_ms": 30110,
+     "end_ms": 34740,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "title": "Claude Code",
+      "mode": "type",
+      "chars_per_frame": 2,
+      "start_delay_frames": 8,
+      "prompt": "",
+      "hold": "lively",
+      "lines_json": [
+       {
+        "text": "/plugin install frontend-design@claude-plugins-official",
+        "color": "accent"
+       },
+       {
+        "text": "Pick a scope: user or project",
+        "color": "muted"
+       }
+      ]
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s9-video-card-2",
+     "component": "video-card",
+     "start_ms": 30110,
+     "end_ms": 34740,
+     "props": {
+      "x": 90,
+      "y": 700,
+      "w": 900,
+      "h": 470,
+      "video": "research/05-install-docs.mp4",
+      "kind": "frame",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 0.8
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/05-install-docs.mp4"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "s10",
+   "beat": "b10",
+   "beat_type": "payoff",
+   "start_ms": 34740,
+   "end_ms": 37730,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "by itself",
+     "ms": 35320,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s10-video-card-1",
+     "component": "video-card",
+     "start_ms": 34740,
+     "end_ms": 37730,
+     "props": {
+      "x": 90,
+      "y": 840,
+      "w": 900,
+      "h": 340,
+      "video": "research/02-plugin-page.mp4",
+      "kind": "frame",
+      "honesty": "none",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 0.6
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": [
+      "research/02-plugin-page.mp4"
+     ]
+    },
+    {
+     "id": "s10-check-badge-2",
+     "component": "check-badge",
+     "start_ms": 34740,
+     "end_ms": 37730,
+     "props": {
+      "mode": "badge",
+      "x": 800,
+      "y": 330,
+      "size": 160
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s11",
+   "beat": "b11",
+   "beat_type": "ask",
+   "start_ms": 37730,
+   "end_ms": 41460,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "TELLS",
+     "ms": 37970,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s11-end-card-1",
+     "component": "end-card",
+     "start_ms": 37730,
+     "end_ms": 41460,
+     "props": {
+      "verb": "Comment",
+      "keyword": "TELLS",
+      "line1": "and I send you the checklist",
+      "line2": "ditch the identical cards",
+      "lockup": "brand/lockup/lockup-gradient-on-light.png",
+      "lockup_w": 300,
+      "lockup_y": 1146,
+      "confetti_count": 130,
+      "confetti_at": 1.1,
+      "confetti_seconds": 2.4,
+      "hold": "lively"
+     },
+     "role": "cta",
+     "honesty_label": null,
+     "assets": [
+      "brand/lockup/lockup-gradient-on-light.png"
+     ]
+    },
+    {
+     "id": "s11-dm-card-2",
+     "component": "dm-card",
+     "start_ms": 37970,
+     "end_ms": 41460,
+     "props": {
+      "avatar": "brand/mark/avatar-dark.png",
+      "sender": "FlashFX",
+      "message": "Comment TELLS and I send the checklist",
+      "time_label": "",
+      "app_label": "Instagram",
+      "x": 110,
+      "y": 1266,
+      "w": 740,
+      "enter": "drop"
+     },
+     "role": "notification",
+     "honesty_label": null,
+     "assets": [
+      "brand/mark/avatar-dark.png"
+     ]
+    }
+   ]
+  }
+ ],
+ "captions": [
+  {
+   "scene": "s2",
+   "start_ms": 3460,
+   "end_ms": 4140,
+   "words": [
+    {
+     "word": "You",
+     "start_ms": 3460,
+     "end_ms": 3560,
+     "emphasis": false
+    },
+    {
+     "word": "ship",
+     "start_ms": 3560,
+     "end_ms": 3780,
+     "emphasis": false
+    },
+    {
+     "word": "Claude",
+     "start_ms": 3780,
+     "end_ms": 4140,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
+  },
+  {
+   "scene": "s2",
+   "start_ms": 4140,
+   "end_ms": 5300,
+   "words": [
+    {
+     "word": "Code",
+     "start_ms": 4140,
+     "end_ms": 4340,
+     "emphasis": false
+    },
+    {
+     "word": "client",
+     "start_ms": 4340,
+     "end_ms": 4660,
+     "emphasis": false
+    },
+    {
+     "word": "sites.",
+     "start_ms": 4660,
+     "end_ms": 4960,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
+  },
+  {
+   "scene": "s2",
+   "start_ms": 5300,
+   "end_ms": 5980,
+   "words": [
+    {
+     "word": "Clients",
+     "start_ms": 5300,
+     "end_ms": 5580,
+     "emphasis": false
+    },
+    {
+     "word": "spot",
+     "start_ms": 5580,
+     "end_ms": 5860,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 5860,
+     "end_ms": 5980,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
+  },
+  {
+   "scene": "s2",
+   "start_ms": 5980,
+   "end_ms": 6640,
+   "words": [
+    {
+     "word": "instantly.",
+     "start_ms": 5980,
+     "end_ms": 6340,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 6640,
+   "end_ms": 7320,
+   "words": [
+    {
+     "word": "Anthropic's",
+     "start_ms": 6640,
+     "end_ms": 7000,
+     "emphasis": false
+    },
+    {
+     "word": "skill",
+     "start_ms": 7000,
+     "end_ms": 7320,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 7320,
+   "end_ms": 8360,
+   "words": [
+    {
+     "word": "file",
+     "start_ms": 7320,
+     "end_ms": 7660,
+     "emphasis": false
+    },
+    {
+     "word": "names",
+     "start_ms": 7660,
+     "end_ms": 8020,
+     "emphasis": false
+    },
+    {
+     "word": "it:",
+     "start_ms": 8020,
+     "end_ms": 8200,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 8360,
+   "end_ms": 9400,
+   "words": [
+    {
+     "word": "rounded",
+     "start_ms": 8360,
+     "end_ms": 8640,
+     "emphasis": false
+    },
+    {
+     "word": "cards,",
+     "start_ms": 8640,
+     "end_ms": 8980,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 9400,
+   "end_ms": 10260,
+   "words": [
+    {
+     "word": "one",
+     "start_ms": 9400,
+     "end_ms": 9600,
+     "emphasis": false
+    },
+    {
+     "word": "radius,",
+     "start_ms": 9600,
+     "end_ms": 10060,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 10260,
+   "end_ms": 10780,
+   "words": [
+    {
+     "word": "same",
+     "start_ms": 10260,
+     "end_ms": 10500,
+     "emphasis": true
+    },
+    {
+     "word": "grey",
+     "start_ms": 10500,
+     "end_ms": 10780,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
+  },
+  {
+   "scene": "s3",
+   "start_ms": 10780,
+   "end_ms": 11390,
+   "words": [
+    {
+     "word": "shadow.",
+     "start_ms": 10780,
+     "end_ms": 11140,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
+  },
+  {
+   "scene": "s4",
+   "start_ms": 11390,
+   "end_ms": 12350,
+   "words": [
+    {
+     "word": "It's",
+     "start_ms": 11390,
+     "end_ms": 11570,
+     "emphasis": false
+    },
+    {
+     "word": "not",
+     "start_ms": 11570,
+     "end_ms": 11690,
+     "emphasis": false
+    },
+    {
+     "word": "your",
+     "start_ms": 11690,
+     "end_ms": 11810,
+     "emphasis": false
+    },
+    {
+     "word": "fault.",
+     "start_ms": 11810,
+     "end_ms": 12110,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
+  },
+  {
+   "scene": "s4",
+   "start_ms": 12350,
+   "end_ms": 13490,
+   "words": [
+    {
+     "word": "Anthropic",
+     "start_ms": 12350,
+     "end_ms": 12870,
+     "emphasis": false
+    },
+    {
+     "word": "calls",
+     "start_ms": 12870,
+     "end_ms": 13310,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 13310,
+     "end_ms": 13490,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
+  },
+  {
+   "scene": "s4",
+   "start_ms": 13490,
+   "end_ms": 14290,
+   "words": [
+    {
+     "word": "distributional",
+     "start_ms": 13490,
+     "end_ms": 14290,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
+  },
+  {
+   "scene": "s4",
+   "start_ms": 14290,
+   "end_ms": 15130,
+   "words": [
+    {
+     "word": "convergence.",
+     "start_ms": 14290,
+     "end_ms": 14810,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
+  },
+  {
+   "scene": "s5",
+   "start_ms": 15130,
+   "end_ms": 15910,
+   "words": [
+    {
+     "word": "Even",
+     "start_ms": 15130,
+     "end_ms": 15290,
+     "emphasis": false
+    },
+    {
+     "word": "Anthropic's",
+     "start_ms": 15290,
+     "end_ms": 15910,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
+  },
+  {
+   "scene": "s5",
+   "start_ms": 15910,
+   "end_ms": 16590,
+   "words": [
+    {
+     "word": "terracotta",
+     "start_ms": 15910,
+     "end_ms": 16430,
+     "emphasis": false
+    },
+    {
+     "word": "on",
+     "start_ms": 16430,
+     "end_ms": 16590,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
+  },
+  {
+   "scene": "s5",
+   "start_ms": 16590,
+   "end_ms": 17850,
+   "words": [
+    {
+     "word": "cream",
+     "start_ms": 16590,
+     "end_ms": 16870,
+     "emphasis": false
+    },
+    {
+     "word": "is",
+     "start_ms": 16870,
+     "end_ms": 17230,
+     "emphasis": false
+    },
+    {
+     "word": "flagged",
+     "start_ms": 17230,
+     "end_ms": 17850,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
+  },
+  {
+   "scene": "s5",
+   "start_ms": 17850,
+   "end_ms": 18860,
+   "words": [
+    {
+     "word": "as",
+     "start_ms": 17850,
+     "end_ms": 17970,
+     "emphasis": false
+    },
+    {
+     "word": "an",
+     "start_ms": 17970,
+     "end_ms": 18090,
+     "emphasis": false
+    },
+    {
+     "word": "AI",
+     "start_ms": 18090,
+     "end_ms": 18330,
+     "emphasis": false
+    },
+    {
+     "word": "look.",
+     "start_ms": 18330,
+     "end_ms": 18670,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
+  },
+  {
+   "scene": "s6",
+   "start_ms": 18860,
+   "end_ms": 20540,
+   "words": [
+    {
+     "word": "One",
+     "start_ms": 18860,
+     "end_ms": 19040,
+     "emphasis": false
+    },
+    {
+     "word": "accented",
+     "start_ms": 19040,
+     "end_ms": 19580,
+     "emphasis": false
+    },
+    {
+     "word": "headline",
+     "start_ms": 19580,
+     "end_ms": 19900,
+     "emphasis": false
+    },
+    {
+     "word": "word.",
+     "start_ms": 19900,
+     "end_ms": 20300,
+     "emphasis": false
+    }
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 1,
+   "layout": {
+    "anchor": 1,
+    "anchor_px": 167.5,
+    "ratio": 2.5,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "One",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 67.0,
+      "x": 60.0,
+      "y": 508.1,
+      "w": 98.8,
+      "h": 67.0
+     },
+     {
+      "i": 1,
+      "text": "accented",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 167.5,
+      "x": 60.0,
+      "y": 577.8,
+      "w": 766.3,
+      "h": 167.5
+     },
+     {
+      "i": 2,
+      "text": "headline",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 70.3,
+      "x": 410.2,
+      "y": 752.0,
+      "w": 202.8,
+      "h": 70.3
+     },
+     {
+      "i": 3,
+      "text": "word.",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 70.3,
+      "x": 630.6,
+      "y": 752.0,
+      "w": 195.6,
+      "h": 70.3
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 508.1,
+     "w": 766.3,
+     "h": 314.2
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0
+      ],
+      "x": 60.0,
+      "y": 508.1,
+      "w": 98.8,
+      "h": 67.0
+     },
+     {
+      "words": [
+       1
+      ],
+      "x": 60.0,
+      "y": 577.8,
+      "w": 766.3,
+      "h": 167.5
+     },
+     {
+      "words": [
+       2,
+       3
+      ],
+      "x": 410.2,
+      "y": 752.0,
+      "w": 416.1,
+      "h": 70.3
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 2
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
+  },
+  {
+   "scene": "s6",
+   "start_ms": 20540,
+   "end_ms": 21560,
+   "words": [
+    {
+     "word": "All",
+     "start_ms": 20540,
+     "end_ms": 20620,
+     "emphasis": false
+    },
+    {
+     "word": "caps",
+     "start_ms": 20620,
+     "end_ms": 20840,
+     "emphasis": false
+    },
+    {
+     "word": "labels.",
+     "start_ms": 20840,
+     "end_ms": 21240,
+     "emphasis": false
+    }
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 2,
+   "layout": {
+    "anchor": 2,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "right",
+    "words": [
+     {
+      "i": 0,
+      "text": "All",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 794.0,
+      "y": 522.9,
+      "w": 79.2,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "caps",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 893.4,
+      "y": 522.9,
+      "w": 126.6,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "labels.",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 370.1,
+      "y": 606.5,
+      "w": 649.9,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 370.1,
+     "y": 522.9,
+     "w": 649.9,
+     "h": 284.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1
+      ],
+      "x": 794.0,
+      "y": 522.9,
+      "w": 226.0,
+      "h": 80.4
+     },
+     {
+      "words": [
+       2
+      ],
+      "x": 370.1,
+      "y": 606.5,
+      "w": 649.9,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 2
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
+  },
+  {
+   "scene": "s6",
+   "start_ms": 21560,
+   "end_ms": 22730,
+   "words": [
+    {
+     "word": "Fake",
+     "start_ms": 21560,
+     "end_ms": 21700,
+     "emphasis": false
+    },
+    {
+     "word": "one,",
+     "start_ms": 21700,
+     "end_ms": 21960,
+     "emphasis": false
+    },
+    {
+     "word": "two,",
+     "start_ms": 22060,
+     "end_ms": 22200,
+     "emphasis": false
+    },
+    {
+     "word": "three.",
+     "start_ms": 22260,
+     "end_ms": 22520,
+     "emphasis": false
+    }
+   ],
+   "mode": "group",
+   "importance": "number",
+   "anchor": 3,
+   "layout": {
+    "anchor": 3,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "Fake",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 60.0,
+      "y": 522.9,
+      "w": 141.1,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "one,",
+      "role": "secondary",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 221.2,
+      "y": 522.9,
+      "w": 112.2,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "two,",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 80.4,
+      "x": 353.5,
+      "y": 522.9,
+      "w": 178.1,
+      "h": 80.4
+     },
+     {
+      "i": 3,
+      "text": "three.",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 60.0,
+      "y": 606.5,
+      "w": 590.1,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 522.9,
+     "w": 590.1,
+     "h": 284.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2
+      ],
+      "x": 60.0,
+      "y": 522.9,
+      "w": 471.6,
+      "h": 80.4
+     },
+     {
+      "words": [
+       3
+      ],
+      "x": 60.0,
+      "y": 606.5,
+      "w": 590.1,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "turn",
+     "deg": 4.5,
+     "dir": 1
+    },
+    "relaxed": false,
+    "avoid": 2
+   },
+   "motion": {
+    "kind": "turn",
+    "deg": 4.5,
+    "dir": 1
+   }
+  },
+  {
+   "scene": "s7",
+   "start_ms": 22730,
+   "end_ms": 23510,
+   "words": [
+    {
+     "word": "With",
+     "start_ms": 22730,
+     "end_ms": 22830,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 22830,
+     "end_ms": 22930,
+     "emphasis": false
+    },
+    {
+     "word": "on,",
+     "start_ms": 22930,
+     "end_ms": 23150,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
+  },
+  {
+   "scene": "s7",
+   "start_ms": 23510,
+   "end_ms": 24270,
+   "words": [
+    {
+     "word": "Claude",
+     "start_ms": 23510,
+     "end_ms": 23750,
+     "emphasis": false
+    },
+    {
+     "word": "plans",
+     "start_ms": 23750,
+     "end_ms": 23990,
+     "emphasis": false
+    },
+    {
+     "word": "four",
+     "start_ms": 23990,
+     "end_ms": 24270,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
+  },
+  {
+   "scene": "s7",
+   "start_ms": 24270,
+   "end_ms": 25450,
+   "words": [
+    {
+     "word": "to",
+     "start_ms": 24270,
+     "end_ms": 24370,
+     "emphasis": false
+    },
+    {
+     "word": "six",
+     "start_ms": 24370,
+     "end_ms": 24590,
+     "emphasis": false
+    },
+    {
+     "word": "hex",
+     "start_ms": 24590,
+     "end_ms": 24770,
+     "emphasis": false
+    },
+    {
+     "word": "colors,",
+     "start_ms": 24770,
+     "end_ms": 25230,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
+  },
+  {
+   "scene": "s7",
+   "start_ms": 25450,
+   "end_ms": 26230,
+   "words": [
+    {
+     "word": "reviews,",
+     "start_ms": 25450,
+     "end_ms": 25750,
+     "emphasis": false
+    },
+    {
+     "word": "then",
+     "start_ms": 25750,
+     "end_ms": 26230,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
+  },
+  {
+   "scene": "s7",
+   "start_ms": 26230,
+   "end_ms": 26890,
+   "words": [
+    {
+     "word": "codes.",
+     "start_ms": 26230,
+     "end_ms": 26590,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
+  },
+  {
+   "scene": "s8",
+   "start_ms": 26890,
+   "end_ms": 27270,
+   "words": [
+    {
+     "word": "Anthropic",
+     "start_ms": 26890,
+     "end_ms": 27270,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
+  },
+  {
+   "scene": "s8",
+   "start_ms": 27270,
+   "end_ms": 27910,
+   "words": [
+    {
+     "word": "verified.",
+     "start_ms": 27270,
+     "end_ms": 27910,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 8.0
+   }
+  },
+  {
+   "scene": "s8",
+   "start_ms": 27910,
+   "end_ms": 28530,
+   "words": [
+    {
+     "word": "Over",
+     "start_ms": 27910,
+     "end_ms": 28150,
+     "emphasis": false
+    },
+    {
+     "word": "a",
+     "start_ms": 28150,
+     "end_ms": 28290,
+     "emphasis": false
+    },
+    {
+     "word": "million",
+     "start_ms": 28290,
+     "end_ms": 28530,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 13.0
+   }
+  },
+  {
+   "scene": "s8",
+   "start_ms": 28530,
+   "end_ms": 29590,
+   "words": [
+    {
+     "word": "installs",
+     "start_ms": 28530,
+     "end_ms": 29390,
+     "emphasis": false
+    },
+    {
+     "word": "as",
+     "start_ms": 29390,
+     "end_ms": 29490,
+     "emphasis": false
+    },
+    {
+     "word": "of",
+     "start_ms": 29490,
+     "end_ms": 29590,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
+  },
+  {
+   "scene": "s8",
+   "start_ms": 29590,
+   "end_ms": 30110,
+   "words": [
+    {
+     "word": "November.",
+     "start_ms": 29590,
+     "end_ms": 29910,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "key-claim",
+   "motion": {
+    "kind": "rise",
+    "px": 14.0
+   }
+  },
+  {
+   "scene": "s9",
+   "start_ms": 30110,
+   "end_ms": 31150,
+   "words": [
+    {
+     "word": "Type",
+     "start_ms": 30110,
+     "end_ms": 30290,
+     "emphasis": false
+    },
+    {
+     "word": "slash",
+     "start_ms": 30290,
+     "end_ms": 30570,
+     "emphasis": false
+    },
+    {
+     "word": "plugin",
+     "start_ms": 30570,
+     "end_ms": 31150,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 10.0
+   }
+  },
+  {
+   "scene": "s9",
+   "start_ms": 31150,
+   "end_ms": 32170,
+   "words": [
+    {
+     "word": "install",
+     "start_ms": 31150,
+     "end_ms": 31510,
+     "emphasis": false
+    },
+    {
+     "word": "frontend",
+     "start_ms": 31510,
+     "end_ms": 32170,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 15.0
+   }
+  },
+  {
+   "scene": "s9",
+   "start_ms": 32170,
+   "end_ms": 33170,
+   "words": [
+    {
+     "word": "design",
+     "start_ms": 32170,
+     "end_ms": 32530,
+     "emphasis": false
+    },
+    {
+     "word": "at",
+     "start_ms": 32530,
+     "end_ms": 32810,
+     "emphasis": false
+    },
+    {
+     "word": "claude",
+     "start_ms": 32810,
+     "end_ms": 33170,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 11.0
+   }
+  },
+  {
+   "scene": "s9",
+   "start_ms": 33170,
+   "end_ms": 34110,
+   "words": [
+    {
+     "word": "plugins",
+     "start_ms": 33170,
+     "end_ms": 33550,
+     "emphasis": false
+    },
+    {
+     "word": "official.",
+     "start_ms": 33550,
+     "end_ms": 33990,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 16.0
+   }
+  },
+  {
+   "scene": "s9",
+   "start_ms": 34110,
+   "end_ms": 34740,
+   "words": [
+    {
+     "word": "Pick",
+     "start_ms": 34110,
+     "end_ms": 34250,
+     "emphasis": true
+    },
+    {
+     "word": "a",
+     "start_ms": 34250,
+     "end_ms": 34370,
+     "emphasis": true
+    },
+    {
+     "word": "scope.",
+     "start_ms": 34370,
+     "end_ms": 34550,
+     "emphasis": true
+    }
+   ],
+   "mode": "word",
+   "importance": "normal",
+   "motion": {
+    "kind": "rise",
+    "px": 12.0
+   }
+  },
+  {
+   "scene": "s10",
+   "start_ms": 34740,
+   "end_ms": 35540,
+   "words": [
+    {
+     "word": "Then",
+     "start_ms": 34740,
+     "end_ms": 34820,
+     "emphasis": false
+    },
+    {
+     "word": "it",
+     "start_ms": 34820,
+     "end_ms": 34900,
+     "emphasis": false
+    },
+    {
+     "word": "turns",
+     "start_ms": 34900,
+     "end_ms": 35120,
+     "emphasis": false
+    },
+    {
+     "word": "on",
+     "start_ms": 35120,
+     "end_ms": 35320,
+     "emphasis": false
+    },
+    {
+     "word": "by",
+     "start_ms": 35320,
+     "end_ms": 35540,
+     "emphasis": true
+    }
+   ],
+   "mode": "group",
+   "importance": "payoff",
+   "anchor": 4,
+   "layout": {
+    "anchor": 4,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "right",
+    "words": [
+     {
+      "i": 0,
+      "text": "Then",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 466.6,
+      "y": 522.9,
+      "w": 151.3,
+      "h": 80.4
+     },
+     {
+      "i": 1,
+      "text": "it",
+      "role": "connector",
+      "font": "handwritten",
+      "color": "script",
+      "px": 80.4,
+      "x": 638.0,
+      "y": 522.9,
+      "w": 45.3,
+      "h": 80.4
+     },
+     {
+      "i": 2,
+      "text": "turns",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 80.4,
+      "x": 703.4,
+      "y": 522.9,
+      "w": 217.3,
+      "h": 80.4
+     },
+     {
+      "i": 3,
+      "text": "on",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 80.4,
+      "x": 940.8,
+      "y": 522.9,
+      "w": 79.2,
+      "h": 80.4
+     },
+     {
+      "i": 4,
+      "text": "by",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 774.9,
+      "y": 606.5,
+      "w": 245.1,
+      "h": 201.0
+     }
+    ],
+    "box": {
+     "x": 466.6,
+     "y": 522.9,
+     "w": 553.4,
+     "h": 284.6
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "x": 466.6,
+      "y": 522.9,
+      "w": 553.4,
+      "h": 80.4
+     },
+     {
+      "words": [
+       4
+      ],
+      "x": 774.9,
+      "y": 606.5,
+      "w": 245.1,
+      "h": 201.0
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 2
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
+  },
+  {
+   "scene": "s10",
+   "start_ms": 35540,
+   "end_ms": 36760,
+   "words": [
+    {
+     "word": "itself",
+     "start_ms": 35540,
+     "end_ms": 35920,
+     "emphasis": true
+    },
+    {
+     "word": "when",
+     "start_ms": 35920,
+     "end_ms": 36220,
+     "emphasis": false
+    },
+    {
+     "word": "you",
+     "start_ms": 36220,
+     "end_ms": 36320,
+     "emphasis": false
+    },
+    {
+     "word": "ask",
+     "start_ms": 36320,
+     "end_ms": 36600,
+     "emphasis": false
+    },
+    {
+     "word": "for",
+     "start_ms": 36600,
+     "end_ms": 36760,
+     "emphasis": false
+    }
+   ],
+   "mode": "group",
+   "importance": "payoff",
+   "anchor": 0,
+   "layout": {
+    "anchor": 0,
+    "anchor_px": 201.0,
+    "ratio": 3.0,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "itself",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 201.0,
+      "x": 60.0,
+      "y": 518.4,
+      "w": 493.3,
+      "h": 201.0
+     },
+     {
+      "i": 1,
+      "text": "when",
+      "role": "secondary",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 100.5,
+      "x": 577.4,
+      "y": 518.4,
+      "w": 203.9,
+      "h": 100.5
+     },
+     {
+      "i": 2,
+      "text": "you",
+      "role": "connector",
+      "font": "handwritten",
+      "color": "script",
+      "px": 100.5,
+      "x": 577.4,
+      "y": 618.9,
+      "w": 112.2,
+      "h": 100.5
+     },
+     {
+      "i": 3,
+      "text": "ask",
+      "role": "secondary",
+      "font": "kicker",
+      "color": "accent",
+      "px": 84.4,
+      "x": 521.4,
+      "y": 727.5,
+      "w": 145.2,
+      "h": 84.4
+     },
+     {
+      "i": 4,
+      "text": "for",
+      "role": "connector",
+      "font": "serif-italic",
+      "color": "accent-deep",
+      "px": 84.4,
+      "x": 687.6,
+      "y": 727.5,
+      "w": 93.7,
+      "h": 84.4
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 518.4,
+     "w": 721.3,
+     "h": 293.4
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [
+     1,
+     2
+    ],
+    "rows": [
+     {
+      "words": [
+       0,
+       1,
+       2
+      ],
+      "x": 60.0,
+      "y": 518.4,
+      "w": 721.3,
+      "h": 201.0
+     },
+     {
+      "words": [
+       3,
+       4
+      ],
+      "x": 521.4,
+      "y": 727.5,
+      "w": 259.9,
+      "h": 84.4
+     }
+    ],
+    "fonts": [
+     "grotesk",
+     "handwritten",
+     "kicker",
+     "serif-italic"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": false,
+    "avoid": 2
+   },
+   "motion": {
+    "kind": "rise",
+    "px": 30.0
+   }
+  },
+  {
+   "scene": "s10",
+   "start_ms": 36760,
+   "end_ms": 38320,
+   "words": [
+    {
+     "word": "frontend",
+     "start_ms": 36760,
+     "end_ms": 37240,
+     "emphasis": false
+    },
+    {
+     "word": "work.",
+     "start_ms": 37240,
+     "end_ms": 37520,
+     "emphasis": false
+    }
+   ],
+   "mode": "word",
+   "importance": "payoff",
+   "motion": {
+    "kind": "rise",
+    "px": 9.0
+   }
+  }
+ ],
+ "cards": [
+  {
+   "scene": "s1",
+   "component": "s1-headline-1",
+   "text": "CLAUDE CODE SITES",
+   "zone": "hero"
+  },
+  {
+   "scene": "s2",
+   "component": "s2-mock-site-card-1",
+   "text": "client-site.com",
+   "zone": "hero"
+  },
+  {
+   "scene": "s2",
+   "component": "s2-dark-chip-4",
+   "text": "same look, every site",
+   "zone": "label"
+  },
+  {
+   "scene": "s3",
+   "component": "s3-dark-chip-3",
+   "text": "rgba(0,0,0,.1)",
+   "zone": "label"
+  },
+  {
+   "scene": "s4",
+   "component": "s4-video-card-1",
+   "text": "claude.com/blog",
+   "zone": "hero"
+  },
+  {
+   "scene": "s11",
+   "component": "s11-end-card-1",
+   "text": "TELLS",
+   "zone": "hero"
+  }
+ ],
+ "labels": [
+  {
+   "scene": "s1",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s2",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s3",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s4",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s5",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s7",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s8",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s8",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s9",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s1",
+   "text": "CLAUDE CODE SITES",
+   "kind": "kicker"
+  }
+ ],
+ "transitions": [
+  {
+   "from": "s1",
+   "to": "s2",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s2",
+   "to": "s3",
+   "type": "fall",
+   "duration_ms": 333
+  },
+  {
+   "from": "s3",
+   "to": "s4",
+   "type": "push",
+   "duration_ms": 267
+  },
+  {
+   "from": "s4",
+   "to": "s5",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s5",
+   "to": "s6",
+   "type": "fall",
+   "duration_ms": 333
+  },
+  {
+   "from": "s6",
+   "to": "s7",
+   "type": "cut",
+   "duration_ms": 0
+  },
+  {
+   "from": "s7",
+   "to": "s8",
+   "type": "push",
+   "duration_ms": 267
+  },
+  {
+   "from": "s8",
+   "to": "s9",
+   "type": "fade-blur",
+   "duration_ms": 133
+  },
+  {
+   "from": "s9",
+   "to": "s10",
+   "type": "push",
+   "duration_ms": 267
+  },
+  {
+   "from": "s10",
+   "to": "s11",
+   "type": "fall",
+   "duration_ms": 333
+  }
+ ],
+ "notes": "Planned by hand for the test idea (goldenplan.py DESIGN): the hook headline builds word by word on the spoken words and the 3D card lands in the breath; every body beat has one hero component and one element landing on its key word; the screenshots are real research assets (labelled real); the CTA follows tweaks.md Branding: the FlashFX DM card lands on the word TELLS and the lockup sits under the mascot row. Scene changes: fade-blur by default, a fall or a push where the beat turns (open question 3: B)."
+}

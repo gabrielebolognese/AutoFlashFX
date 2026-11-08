@@ -1,0 +1,22 @@
+{
+ "scores": {
+  "stop": 4,
+  "hierarchy": 4,
+  "look": 4,
+  "variety": 4,
+  "sync": 4,
+  "sound": 4,
+  "generic": 4,
+  "requirements": 4,
+  "energy": 3
+ },
+ "branding_natural": true,
+ "issues": [
+  {
+   "tag": "animation",
+   "text": "s3 stands still",
+   "scene": "s3"
+  }
+ ],
+ "summary": "ok"
+}

@@ -1,0 +1,12 @@
+long-exit-0 ok
+long-png-and-mp4-side-by-side ok
+long-h264-1080-wide-30fps ok
+long-no-sound ok
+long-5-to-8-seconds ok
+long-the-page-scrolls ok
+long-sidecar-says-recording ok
+short-saved-without-recording ok
+short-says-why ok
+no-record-flag ok
+assets-json-lists-the-recording ok
+assets-json-no-recording-for-the-short-page ok

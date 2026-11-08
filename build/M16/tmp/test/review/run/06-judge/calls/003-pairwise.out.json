@@ -1,0 +1,64 @@
+{
+ "comparisons": [
+  {
+   "n": 1,
+   "winner": "X",
+   "why": "X names the viewer's exact pain with Claude Code. W's '5' is unbacked and 'AI looks' is vague."
+  },
+  {
+   "n": 2,
+   "winner": "X",
+   "why": "Identical cards is the viewer's own complaint, so the right builders stay. W's count is unbacked."
+  },
+  {
+   "n": 3,
+   "winner": "W",
+   "why": "The Anthropic twist is concrete and checkable. Y's 'not your fault' is generic reassurance."
+  },
+  {
+   "n": 4,
+   "winner": "W",
+   "why": "W has a specific, surprising, checkable fact. Y states a vague problem with no hook detail."
+  },
+  {
+   "n": 5,
+   "winner": "W",
+   "why": "Z is vague without visuals and sets up no problem. W teases a surprising, real detail."
+  },
+  {
+   "n": 6,
+   "winner": "W",
+   "why": "'Before/After' is generic. W's Anthropic tell gives a concrete reason to keep watching."
+  },
+  {
+   "n": 7,
+   "winner": "X",
+   "why": "X names a concrete symptom, identical cards. Y's 'generic' is abstract and softer."
+  },
+  {
+   "n": 8,
+   "winner": "X",
+   "why": "X's specific card problem is recognisable at a glance. Y's claim is broader and blander."
+  },
+  {
+   "n": 9,
+   "winner": "X",
+   "why": "X sets up the viewer's pain clearly. Z promises a change but never says what changes."
+  },
+  {
+   "n": 10,
+   "winner": "X",
+   "why": "Z's on-screen line says nothing without footage. X targets Claude Code builders directly."
+  },
+  {
+   "n": 11,
+   "winner": "Y",
+   "why": "Y at least names the problem and the audience. Z is too vague to stop the right viewer."
+  },
+  {
+   "n": 12,
+   "winner": "Y",
+   "why": "Y sets up the generic-look pain. Z gives no context for what the before/after is."
+  }
+ ]
+}

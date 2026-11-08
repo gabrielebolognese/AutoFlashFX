@@ -1,0 +1,45 @@
+{
+ "written_by": "12-review",
+ "round": 1,
+ "verdict": "fix",
+ "scores": {
+  "stop": 4,
+  "hierarchy": 4,
+  "look": 4,
+  "variety": 4,
+  "sync": 4,
+  "sound": 4,
+  "generic": 4,
+  "requirements": 4,
+  "energy": 3
+ },
+ "summary": "ok",
+ "issues": [
+  {
+   "tag": "animation",
+   "text": "s3 stands still",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s3"
+  }
+ ],
+ "by_stage": {
+  "09a-animations": [
+   {
+    "tag": "animation",
+    "text": "s3 stands still",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s3"
+   }
+  ]
+ },
+ "reopen": [
+  "09a-animations",
+  "09b-text",
+  "09c-transitions",
+  "10-build",
+  "11-sfx",
+  "12-review"
+ ]
+}

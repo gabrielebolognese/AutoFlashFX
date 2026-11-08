@@ -1,0 +1,18 @@
+{
+ "ok": true,
+ "file": "01-long.png",
+ "name": "long",
+ "url": "http://127.0.0.1:50068/long.html",
+ "final_url": "http://127.0.0.1:50068/long.html",
+ "title": "Long page",
+ "status": 200,
+ "width": 1080,
+ "height": 1920,
+ "full_page": false,
+ "captured": "2026-11-08 11:42",
+ "checked": "2026-11-08",
+ "seconds": 15.1,
+ "recording": "01-long.mp4",
+ "recording_seconds": 6.2,
+ "recording_note": ""
+}

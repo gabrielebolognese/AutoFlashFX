@@ -132,3 +132,87 @@ PASS  exactly one export after the crash
 PASS  the staging folder is gone
 PASS  one history line
 PASS  the idea is removed once
+PASS  the runner died right after the move (exit 124)
+PASS  exports/2 exists after the move
+PASS  state.json does not know the number yet
+PASS  the run is still unfinished
+PASS  no history line yet
+PASS  restart after the second crash exits 0
+PASS  the moved export is recognized as #2
+PASS  no exports/3: no duplicate
+PASS  exactly one history line for #2
+PASS  the run is finished
+PASS  the idea is removed
+
+== 5. drop, code error, FLAG and invalid output ==
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.xhpu8gOPQJ
+PASS  the runner continues past a drop and a block and exits 0
+PASS  DROP line
+PASS  NEXT after the drop
+PASS  ERROR line with the last log line
+PASS  BLOCK line (the reviewer's verdict: only the user can fix it)
+PASS  NEXT after the block
+PASS  FLAG line printed by the stage
+PASS  the third idea exports as #1: no gap for dropped or blocked ideas
+PASS  summary counts
+PASS  only exports/1
+PASS  history: dropped line
+PASS  history: blocked line
+PASS  history: exported line
+PASS  blocked.txt: the reason line
+PASS  blocked.txt: the idea in braces, ready to re-add
+PASS  ideas.txt is empty
+PASS  the dropped and blocked run folders are kept
+PASS  state.json statuses
+PASS  captions: NEEDS REVIEW section when flagged
+PASS  captions: the flag text
+PASS  the code error counts as an open issue
+PASS  the failed stage kept its log
+PASS  stage.log has the stage's own output
+PASS  an invalid output does not stop the runner
+PASS  ERROR line names the schema violation
+PASS  an invalid output is a code error: reviewed, then blocked on the reviewer's verdict
+PASS  blocked.txt gets the idea
+
+== 6. forever mode: IDLE, NEW, a second runner refused, SIGTERM ==
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.AQ5aQnDnAv
+PASS  banner with an empty queue
+PASS  mode line
+PASS  summary line first
+PASS  IDLE line with the poll interval, idle minutes and today's counts
+PASS  a second runner refuses to start while one runs
+PASS  it names the running pid
+PASS  an idea added while idle is processed
+PASS  NEW line names the source and the queue size
+PASS  START after NEW
+PASS  the summary line again when the queue empties again
+PASS  IDLE line with today's count updated
+PASS  IDLE repeats at the heartbeat cadence (got 5 lines)
+PASS  status.txt holds the latest line while idle
+PASS  SIGTERM stops the runner
+PASS  the stop is announced
+PASS  the runner lock is released on SIGTERM
+
+== 7. a stage that is not built yet, and runner-status ==
+PASS  every stage has a run.sh: the not-built-yet stop no longer applies (section skipped)
+
+== 8. state.json damaged mid-run: one retry, then the systemic stop with STOPPED.md ==
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.lXkh0ivPf1
+PASS  the runner stops with exit 3 (a systemic stop, not a silent exit)
+PASS  WARN line: the failed state call is retried once, with state.py's message in short form
+PASS  ERROR line after the retry
+PASS  STOP line
+PASS  one ERROR line and one STOP line, no more
+PASS  the run neither goes on nor ends as blocked, dropped or exported
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder and the error in its diagnosis
+PASS  STOPPED.md fix 1: unlock the file and restart
+PASS  STOPPED.md fix 2: move the run folder out of runs/
+PASS  status.txt holds the STOP line
+PASS  the idea stays in ideas.txt
+PASS  no history line
+PASS  the runner lock is released
+PASS  runner-status: says the runner is not running
+PASS  runner-status: shows the STOP status line
+PASS  runner-status: mentions STOPPED.md
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.VaFSHGNuuH

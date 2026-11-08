@@ -1,0 +1,6 @@
+report-has-all-components ok
+report-energy-measured ok
+report-life-checks-run ok
+catalog-has-energy ok
+catalog-beat-map ok
+video-card-needs-clip-start ok

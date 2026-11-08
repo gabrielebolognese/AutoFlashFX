@@ -1,0 +1,30 @@
+
+== 5. S12: the energy check, the liveness checks, the energy score, the early stop ==
+PASS  review: energy-golden-passes
+PASS  review: energy-golden-whole-meets-every-target
+PASS  review: energy-scene-bounds-are-80-percent
+PASS  review: energy-planted-copy-made
+PASS  review: energy-frozen-scene-fails
+PASS  review: energy-issue-is-animation-with-numbers
+PASS  review: energy-routes-to-09a
+PASS  review: energy-in-the-review-record
+PASS  review: energy-still-video-fails-everywhere
+PASS  review: energy-ask-scene-left-out-of-the-routing
+PASS  review: energy-still-video-meter-reads-zero
+PASS  review: liveness-golden-clean
+PASS  review: liveness-counted
+PASS  review: liveness-static-element-caught
+PASS  review: liveness-missing-edge-layer-caught
+PASS  review: score-energy-is-scored
+PASS  review: score-energy-missing-counts-as-pass
+PASS  review: early-stop-same-scores-same-issues
+PASS  review: early-stop-flag-names-the-scores
+PASS  review: no-early-stop-when-the-scores-change
+PASS  review: no-early-stop-when-the-issues-change
+PASS  review: no-early-stop-in-round-1
+PASS  review: early-stop-can-be-switched-off
+PASS  review: cli-round-1-fix
+PASS  review: cli-round-2-stop
+PASS  review: run-sh-handles-stop-and-runs-the-energy-check-first
+
+test-m16.sh: 26 passed, 0 failed

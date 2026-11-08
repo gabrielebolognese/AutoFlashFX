@@ -1,0 +1,131 @@
+{
+ "written_by": "12-review",
+ "round": 2,
+ "pass": false,
+ "verdict": "stop",
+ "mechanical": {
+  "pass": true,
+  "issues": 0,
+  "texts": null,
+  "emphasis": null,
+  "emphasis_checked": null
+ },
+ "style": {
+  "pass": true,
+  "issues": 0,
+  "cadence": null,
+  "palette_share_pct": null,
+  "accent_max_pct": null,
+  "loudness": null
+ },
+ "audio": {
+  "pass": true,
+  "issues": 0,
+  "wer_pct": null,
+  "sfx_pass": null
+ },
+ "edit_review": {
+  "scores": {
+   "stop": 4,
+   "hierarchy": 4,
+   "look": 4,
+   "variety": 4,
+   "sync": 4,
+   "sound": 4,
+   "generic": 4,
+   "requirements": 4,
+   "energy": 3
+  },
+  "scored": {
+   "stop": "frame 1 stops the scroll",
+   "hierarchy": "hierarchy and legibility",
+   "look": "matches the look (would sit on the same account)",
+   "variety": "motion variety",
+   "sync": "sync with the voice",
+   "sound": "sound fit",
+   "generic": "nothing looks generic",
+   "requirements": "the requirements are visible (the problem, the share line, the keyword)",
+   "energy": "every scene keeps moving, with inertia, depth and edges (Motion and energy rules E1 to E8)"
+  },
+  "issues": [
+   {
+    "tag": "animation",
+    "text": "s3 stands still",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s3"
+   }
+  ],
+  "branding_natural": true,
+  "summary": "ok",
+  "answered": true
+ },
+ "issues": [
+  {
+   "tag": "animation",
+   "text": "s3 stands still",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s3"
+  }
+ ],
+ "routing": {
+  "owners": [
+   "09a-animations"
+  ],
+  "reopen": [],
+  "activity": "",
+  "next_model": [
+   "",
+   ""
+  ],
+  "flags_only": []
+ },
+ "cap": {
+  "reached": false,
+  "rounds_total": 5,
+  "opus": 3,
+  "fable": 2
+ },
+ "early_stop": {
+  "stop": true,
+  "same_scores": true,
+  "same_issues": true,
+  "issues": 1
+ },
+ "flags": [
+  "edit review: round 2 ended with the same scores and the same issues as round 1; the loop stops (early stop, Motion and energy rules E9) and the reel exports as it is. Scores: stop 4, hierarchy 4, look 4, variety 4, sync 4, sound 4, generic 4, requirements 4, energy 3. Open issues: [animation] s3 stands still"
+ ],
+ "summary": {
+  "round": 2,
+  "pass": false,
+  "verdict": "stop",
+  "scores": {
+   "stop": 4,
+   "hierarchy": 4,
+   "look": 4,
+   "variety": 4,
+   "sync": 4,
+   "sound": 4,
+   "generic": 4,
+   "requirements": 4,
+   "energy": 3
+  },
+  "low_scores": [
+   "energy"
+  ],
+  "checks_pass": true
+ },
+ "energy": {
+  "pass": true,
+  "issues": 0,
+  "failing_scenes": [],
+  "whole": {
+   "moving_share_pct": null,
+   "middle_moving_share_pct": null,
+   "pixels_changing_pct": null,
+   "still_share_pct": null,
+   "longest_still_s": null
+  }
+ }
+}

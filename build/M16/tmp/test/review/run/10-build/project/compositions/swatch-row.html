@@ -1,0 +1,74 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"y","type":"number","label":"Top (px)","default":620},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"h","type":"number","label":"Swatch height (px)","default":420},
+  {"id":"colors_json","type":"string","label":"The swatches as JSON: [{\"color\":\"#DC6532\",\"at\":0.4,\"label\":\"\"}] (color a hex value; at the second it fills in, the spoken word of that color; label optional, a hex code or a name)","default":"[{\"color\":\"#DC6532\",\"at\":0.3},{\"color\":\"#1C110F\",\"at\":0.9},{\"color\":\"#F5EEE3\",\"at\":1.5},{\"color\":\"#289C5C\",\"at\":2.1}]"},
+  {"id":"gap","type":"number","label":"Gap (px)","default":16},
+  {"id":"fill_frames","type":"number","label":"Frames one swatch takes to fill","default":10},
+  {"id":"enter_at","type":"number","label":"The row appears at (s)","default":0},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the row drifts and turns as one group)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* swatch-row (Motion and energy rules E8, bars that fill): a row of color swatches that fill in on the spoken words (each one
+       rises from the bottom of its slot over 10 frames, power3.out, with a small overshoot of its slot), then breathe and
+       drift as one group (E1). A label (a name or a hex code) is optional and counts as text. The swatches show the colors
+       the reel talks about: they are content, not the style's palette. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #sr { display: flex; }
+    .sr-slot { position: relative; flex: 1 1 0; border-radius: 26px; background: var(--c-surface); box-shadow: 0 0 0 var(--card-edge) var(--c-card-edge), 0 18px 26px -8px rgba(133, 112, 92, 0.32); overflow: hidden; }
+    .sr-fill { position: absolute; left: 0; right: 0; bottom: 0; top: 0; transform-origin: 50% 100%; }
+    .sr-label { position: absolute; left: 0; right: 0; bottom: 16px; text-align: center; font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 30px; color: #FFFFFF; mix-blend-mode: normal; text-shadow: 0 0 6px rgba(0, 0, 0, 0.35); }
+  </style>
+  <div id="root" data-composition-id="swatch-row" data-width="1080" data-height="1920">
+    <div id="sr-wrap" class="pc-el"><div id="sr"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 620, w: 900, h: 420, colors_json: [], gap: 16, fill_frames: 10, enter_at: 0, honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("sr-wrap"), row = document.getElementById("sr");
+      PC.place(wrap, { x: v.x, y: v.y, w: v.w, h: v.h });
+      row.style.gap = v.gap + "px"; row.style.height = v.h + "px";
+      var items = (Array.isArray(v.colors_json) ? v.colors_json : []).filter(function (c) { return c && typeof c.color === "string"; }).slice(0, 8);
+      if (!items.length) items = [{ color: "#DC6532", at: 0.3 }, { color: "#1C110F", at: 0.9 }, { color: "#F5EEE3", at: 1.5 }];
+      var slots = items.map(function (it, i) {
+        var s = PC.el("div", "sr-slot", row); s.id = "sr-slot-" + i;
+        var f = PC.el("div", "sr-fill", s); f.id = "sr-fill-" + i; f.style.background = it.color;
+        if (it.label) { var lb = PC.el("div", "sr-label", s, String(it.label)); var rgb = /^#?([0-9a-f]{6})$/i.exec(String(it.color)); var lum = 0;
+          if (rgb) { var n = parseInt(rgb[1], 16); lum = (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; }
+          lb.style.color = lum > 0.62 ? "#1C110F" : "#FFFFFF"; lb.style.textShadow = "none"; }
+        return { slot: s, fill: f };
+      });
+      var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      PCM.depth(wrap, [row]);
+      gsap.set(row, { transformStyle: "preserve-3d" });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "rise", rise: 30 }, hold: v.hold, inertia: { move: 14, scale: 0.02, rotate: 1.5 }, exit: exit });
+      items.forEach(function (it, i) {
+        var at = Math.max(v.enter_at + PC.f(4), v.enter_at + (it.at || 0.3 + 0.5 * i));
+        var s = slots[i];
+        PCM.prepare(s.slot);
+        gsap.set(s.slot, { z: (i % 2) * 14, force3D: true });
+        PCM.grow(tl, s.fill, at, { axis: "y", frames: v.fill_frames, event: "fill" });
+        PCM.pulse(tl, s.slot, at, { up: 5, down: 8, amp: 0.05 });
+        // a swatch breathes on after it filled: a slow sway of its slot, a few px and a turn of 1.6 degrees (never still)
+        PCM.sway(tl, s.slot, "y", 0, 7, 2.8 + 0.25 * i, 0.15 * i, Math.max(1, group.until - at), at + PC.f(10));
+        PCM.sway(tl, s.slot, "rotation", 0, 1.6, 3.1 + 0.3 * i, 0.2 * i, Math.max(1, group.until - at), at + PC.f(10));
+      });
+      if (honesty) PCM.life(tl, honesty, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: v.enter_at + PC.f(1), events: { enter: "honesty" } });
+      window.__timelines["swatch-row"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

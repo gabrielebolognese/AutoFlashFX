@@ -1,0 +1,331 @@
+{
+ "winner": {
+  "id": "h01",
+  "template_id": "36baee5786",
+  "template": "Why your __ isn't working (and how to fix it).",
+  "template_source": "library",
+  "family": "mistake-warning",
+  "spoken": "Why your Claude Code cards all look identical.",
+  "on_screen": "IDENTICAL CARDS LOOK AI",
+  "marker": "Claude Code",
+  "marker_kind": "tool",
+  "spoken_words": 8,
+  "spoken_seconds": 2.46,
+  "on_screen_words": 4,
+  "hookscore": 50.0,
+  "borda_points": 12,
+  "pairwise_wins": 6
+ },
+ "runner_up": {
+  "id": "h07",
+  "template_id": "v11",
+  "template": "{N} {things} that {outcome}. Number {k} is the one nobody uses.",
+  "template_source": "vendor",
+  "family": "tools-listicle",
+  "spoken": "5 AI looks to avoid. One is Anthropic's.",
+  "on_screen": "5 AI LOOKS. ONE IS ANTHROPIC'S",
+  "marker": "5",
+  "marker_kind": "number",
+  "spoken_words": 8,
+  "spoken_seconds": 2.46,
+  "on_screen_words": 6,
+  "hookscore": 50.6,
+  "borda_points": 14,
+  "pairwise_wins": 4
+ },
+ "reasons": [
+  "h01 over h07: X names the viewer's exact pain with Claude Code. W's '5' is unbacked and 'AI looks' is vague.",
+  "h01 over h07: Identical cards is the viewer's own complaint, so the right builders stay. W's count is unbacked.",
+  "h01 over h14: X names a concrete symptom, identical cards. Y's 'generic' is abstract and softer.",
+  "h01 over h14: X's specific card problem is recognisable at a glance. Y's claim is broader and blander.",
+  "h01 over h05: X sets up the viewer's pain clearly. Z promises a change but never says what changes.",
+  "h01 over h05: Z's on-screen line says nothing without footage. X targets Claude Code builders directly.",
+  "ranking 1 on h01: Names the viewer's exact pain in plain words. Fully credible.",
+  "ranking 2 on h01: Names the viewer's identical-cards problem directly; reads clearly in one glance.",
+  "ranking 1 on the runner-up h07: Anthropic twist surprises; SKILL.md terracotta flag backs it. Confirm the count of 5.",
+  "ranking 2 on the runner-up h07: Anthropic's own colour as an AI tell is surprising, specific and checkable."
+ ],
+ "criteria": [
+  "stops the scroll",
+  "sets up the problem",
+  "credible",
+  "fits the voice"
+ ],
+ "filtered_out": [
+  {
+   "id": "h02",
+   "spoken": "I thought rounded cards were forever. Then frontend-design.",
+   "score": 43.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 43 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h04",
+   "spoken": "My exact Claude Code design workflow, copy it.",
+   "score": 46.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 46 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h06",
+   "spoken": "This one plugin changed my Claude Code sites.",
+   "score": 46.4,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 46 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h08",
+   "spoken": "The trick I swear by: one /plugin install.",
+   "score": 34.2,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 34 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h09",
+   "spoken": "Everyone overcomplicates AI design. It's one command.",
+   "score": 30.0,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 30 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h10",
+   "spoken": "In Claude Code, the devil's in the defaults.",
+   "score": 42.2,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 42 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  },
+  {
+   "id": "h12",
+   "spoken": "What silently ruined my sites: one border-radius.",
+   "score": 34.2,
+   "flags": [],
+   "weakest": "SPECIFICITY",
+   "reason": "score 34 under 50 (weakest: SPECIFICITY: 0 concrete marker(s) - no number, no name, nothing checkable)"
+  },
+  {
+   "id": "h13",
+   "spoken": "How I automated design review in two passes.",
+   "score": 48.2,
+   "flags": [],
+   "weakest": "STAKES",
+   "reason": "score 48 under 50 (weakest: STAKES: 0 tension marker(s) - nothing is at stake in this line)"
+  }
+ ],
+ "hookscore": {
+  "h01": 50.0,
+  "h02": 43.4,
+  "h03": 77.8,
+  "h04": 46.4,
+  "h05": 60.2,
+  "h06": 46.4,
+  "h07": 50.6,
+  "h08": 34.2,
+  "h09": 30.0,
+  "h10": 42.2,
+  "h11": 80.8,
+  "h12": 34.2,
+  "h13": 48.2,
+  "h14": 80.8,
+  "h15": 55.4,
+  "h16": 80.8
+ },
+ "hookscore_min": 50.0,
+ "candidates": [
+  "h07",
+  "h01",
+  "h14",
+  "h05",
+  "h03",
+  "h16",
+  "h15",
+  "h11"
+ ],
+ "candidates_mode": "survivors",
+ "rankings": [
+  {
+   "call": 1,
+   "shown": [
+    "h05",
+    "h11",
+    "h01",
+    "h16",
+    "h14",
+    "h07",
+    "h03",
+    "h15"
+   ],
+   "ranking": [
+    "h07",
+    "h01",
+    "h14",
+    "h03",
+    "h05",
+    "h16",
+    "h15",
+    "h11"
+   ],
+   "notes": {
+    "h07": "Anthropic twist surprises; SKILL.md terracotta flag backs it. Confirm the count of 5.",
+    "h01": "Names the viewer's exact pain in plain words. Fully credible.",
+    "h14": "Spot-on pain plus empathy, but softer and less concrete than C.",
+    "h03": "Ties to the TELLS keyword. The confession isn't backed by any proof.",
+    "h05": "Depends on visuals. The spoken line is vague and doesn't state the problem.",
+    "h16": "Names the tool but misses the pain of clients spotting AI design.",
+    "h15": "'Instantly' is hype. 'Edits' misstates what a one-command skill install does.",
+    "h11": "Vague clickbait and an invented mistake story. Nothing specific to check."
+   },
+   "complete": true
+  },
+  {
+   "call": 2,
+   "shown": [
+    "h14",
+    "h01",
+    "h16",
+    "h07",
+    "h15",
+    "h11",
+    "h05",
+    "h03"
+   ],
+   "ranking": [
+    "h07",
+    "h01",
+    "h05",
+    "h14",
+    "h03",
+    "h15",
+    "h16",
+    "h11"
+   ],
+   "notes": {
+    "h07": "Anthropic's own colour as an AI tell is surprising, specific and checkable.",
+    "h01": "Names the viewer's identical-cards problem directly; reads clearly in one glance.",
+    "h05": "True one-command promise; depends on strong visuals, on-screen text is generic.",
+    "h14": "Names the pain, but the on-screen line is abstract and not concrete.",
+    "h03": "Ties to TELLS, but the regret story has no proof in the profile.",
+    "h15": "Reel is one command, not three edits; 'instantly' sounds like hype.",
+    "h16": "Misses the real pain; the on-screen quote doesn't say what the reel is about.",
+    "h11": "Made-up personal mistake; vague, no concrete hook or claim to check."
+   },
+   "complete": true
+  }
+ ],
+ "borda": {
+  "h07": 14,
+  "h01": 12,
+  "h14": 9,
+  "h03": 7,
+  "h05": 8,
+  "h16": 3,
+  "h15": 3,
+  "h11": 0
+ },
+ "top": [
+  "h07",
+  "h01",
+  "h14",
+  "h05"
+ ],
+ "pairwise": [
+  {
+   "n": 1,
+   "first": "h07",
+   "second": "h01",
+   "winner": "h01",
+   "why": "X names the viewer's exact pain with Claude Code. W's '5' is unbacked and 'AI looks' is vague."
+  },
+  {
+   "n": 2,
+   "first": "h01",
+   "second": "h07",
+   "winner": "h01",
+   "why": "Identical cards is the viewer's own complaint, so the right builders stay. W's count is unbacked."
+  },
+  {
+   "n": 3,
+   "first": "h07",
+   "second": "h14",
+   "winner": "h07",
+   "why": "The Anthropic twist is concrete and checkable. Y's 'not your fault' is generic reassurance."
+  },
+  {
+   "n": 4,
+   "first": "h14",
+   "second": "h07",
+   "winner": "h07",
+   "why": "W has a specific, surprising, checkable fact. Y states a vague problem with no hook detail."
+  },
+  {
+   "n": 5,
+   "first": "h07",
+   "second": "h05",
+   "winner": "h07",
+   "why": "Z is vague without visuals and sets up no problem. W teases a surprising, real detail."
+  },
+  {
+   "n": 6,
+   "first": "h05",
+   "second": "h07",
+   "winner": "h07",
+   "why": "'Before/After' is generic. W's Anthropic tell gives a concrete reason to keep watching."
+  },
+  {
+   "n": 7,
+   "first": "h01",
+   "second": "h14",
+   "winner": "h01",
+   "why": "X names a concrete symptom, identical cards. Y's 'generic' is abstract and softer."
+  },
+  {
+   "n": 8,
+   "first": "h14",
+   "second": "h01",
+   "winner": "h01",
+   "why": "X's specific card problem is recognisable at a glance. Y's claim is broader and blander."
+  },
+  {
+   "n": 9,
+   "first": "h01",
+   "second": "h05",
+   "winner": "h01",
+   "why": "X sets up the viewer's pain clearly. Z promises a change but never says what changes."
+  },
+  {
+   "n": 10,
+   "first": "h05",
+   "second": "h01",
+   "winner": "h01",
+   "why": "Z's on-screen line says nothing without footage. X targets Claude Code builders directly."
+  },
+  {
+   "n": 11,
+   "first": "h14",
+   "second": "h05",
+   "winner": "h14",
+   "why": "Y at least names the problem and the audience. Z is too vague to stop the right viewer."
+  },
+  {
+   "n": 12,
+   "first": "h05",
+   "second": "h14",
+   "winner": "h14",
+   "why": "Y sets up the generic-look pain. Z gives no context for what the before/after is."
+  }
+ ],
+ "pairwise_wins": {
+  "h07": 4,
+  "h01": 6,
+  "h14": 2,
+  "h05": 0
+ },
+ "regenerated": false,
+ "calls": 3,
+ "checked": "2026-11-01"
+}

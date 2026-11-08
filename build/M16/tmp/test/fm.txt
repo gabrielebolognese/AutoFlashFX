@@ -1,0 +1,10 @@
+card-fan: pass (6/6 checks, strip r=0.979, moving 10%, longest still 3.43 s)
+card-grid: pass (8/8 checks, strip r=0.984, moving 6.9%, longest still 3.93 s)
+cursor: pass (3/3 checks, strip r=none, moving 0%, longest still 4.33 s)
+mock-site-card: pass (7/7 checks, strip r=0.96, moving 37.7%, longest still 0.47 s)
+screenshot-zoom: pass (8/8 checks, strip r=0.983, moving 35.4%, longest still 1.37 s)
+swatch-card: pass (10/10 checks, strip r=0.974, moving 7.7%, longest still 3.83 s)
+swatch-row: pass (5/5 checks, strip r=0.995, moving 11.5%, longest still 1.6 s)
+timeline-scrubber: pass (8/8 checks, strip r=0.908, moving 3.8%, longest still 3.93 s)
+video-card: pass (7/7 checks, strip r=0.959, moving 70.8%, longest still 0.03 s)
+frame-match: 38 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md

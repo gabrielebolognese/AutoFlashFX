@@ -1,0 +1,17 @@
+tokens-composition ok
+rules-listed ok
+repair-hook-moves-from-frame-0 ok
+repair-leaves-an-early-hook-alone ok
+repair-transitions-vary ok
+repair-durations-follow-the-type ok
+repair-cuts-stay-at-a-third ok
+prompt-9a-energy ok
+prompt-9c-variety ok
+prompt-9b-text-last ok
+prompt-12-energy ok
+schema-12-energy ok
+digest-lists-the-recordings ok
+digest-lists-the-new-components ok
+real-motion-warns-when-no-recording-plays ok
+footprint-mock-site ok
+text-items-new-components ok

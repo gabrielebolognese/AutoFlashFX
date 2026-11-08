@@ -1,0 +1,18 @@
+{
+ "ok": true,
+ "file": "02-short.png",
+ "name": "short",
+ "url": "http://127.0.0.1:50068/short.html",
+ "final_url": "http://127.0.0.1:50068/short.html",
+ "title": "Short page",
+ "status": 200,
+ "width": 1080,
+ "height": 1920,
+ "full_page": false,
+ "captured": "2026-11-08 11:42",
+ "checked": "2026-11-08",
+ "seconds": 8.5,
+ "recording": null,
+ "recording_seconds": null,
+ "recording_note": "the page does not scroll (0 px of room)"
+}

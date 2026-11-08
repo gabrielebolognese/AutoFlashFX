@@ -1,0 +1,94 @@
+{
+ "labels": {
+  "W": "h07",
+  "X": "h01",
+  "Y": "h14",
+  "Z": "h05"
+ },
+ "comparisons": [
+  {
+   "n": 1,
+   "first": "W",
+   "second": "X",
+   "first_id": "h07",
+   "second_id": "h01"
+  },
+  {
+   "n": 2,
+   "first": "X",
+   "second": "W",
+   "first_id": "h01",
+   "second_id": "h07"
+  },
+  {
+   "n": 3,
+   "first": "W",
+   "second": "Y",
+   "first_id": "h07",
+   "second_id": "h14"
+  },
+  {
+   "n": 4,
+   "first": "Y",
+   "second": "W",
+   "first_id": "h14",
+   "second_id": "h07"
+  },
+  {
+   "n": 5,
+   "first": "W",
+   "second": "Z",
+   "first_id": "h07",
+   "second_id": "h05"
+  },
+  {
+   "n": 6,
+   "first": "Z",
+   "second": "W",
+   "first_id": "h05",
+   "second_id": "h07"
+  },
+  {
+   "n": 7,
+   "first": "X",
+   "second": "Y",
+   "first_id": "h01",
+   "second_id": "h14"
+  },
+  {
+   "n": 8,
+   "first": "Y",
+   "second": "X",
+   "first_id": "h14",
+   "second_id": "h01"
+  },
+  {
+   "n": 9,
+   "first": "X",
+   "second": "Z",
+   "first_id": "h01",
+   "second_id": "h05"
+  },
+  {
+   "n": 10,
+   "first": "Z",
+   "second": "X",
+   "first_id": "h05",
+   "second_id": "h01"
+  },
+  {
+   "n": 11,
+   "first": "Y",
+   "second": "Z",
+   "first_id": "h14",
+   "second_id": "h05"
+  },
+  {
+   "n": 12,
+   "first": "Z",
+   "second": "Y",
+   "first_id": "h05",
+   "second_id": "h14"
+  }
+ ]
+}

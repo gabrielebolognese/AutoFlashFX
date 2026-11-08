@@ -1,0 +1,28 @@
+energy-golden-passes ok
+energy-golden-whole-meets-every-target ok
+energy-scene-bounds-are-80-percent ok
+energy-planted-copy-made ok
+energy-frozen-scene-fails ok
+energy-issue-is-animation-with-numbers ok
+energy-routes-to-09a ok
+energy-in-the-review-record ok
+energy-still-video-fails-everywhere ok
+energy-ask-scene-left-out-of-the-routing ok
+energy-still-video-meter-reads-zero ok
+liveness-golden-clean ok
+liveness-counted ok
+liveness-static-element-caught ok
+liveness-missing-edge-layer-caught ok
+score-energy-is-scored ok
+score-energy-missing-counts-as-pass ok
+early-stop-same-scores-same-issues ok
+early-stop-flag-names-the-scores ok
+no-early-stop-when-the-scores-change ok
+no-early-stop-when-the-issues-change ok
+no-early-stop-in-round-1 ok
+early-stop-can-be-switched-off ok
+cli-round-1-fix ok
+cli-round-2-stop ok
+run-sh-handles-stop-and-runs-the-energy-check-first ok
+^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:/Users/there/OneDrive/Desktop/instagramReels/build/M16/tmp/test/review\\run\\12-review\\mechanical.json'

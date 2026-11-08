@@ -1,0 +1,87 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":60},
+  {"id":"y","type":"number","label":"Top (px)","default":760},
+  {"id":"w","type":"number","label":"Width (px)","default":960},
+  {"id":"thumbs_json","type":"string","label":"Thumbnails as JSON: [{\"image\":\"assets/...\"}] (no image = a placeholder frame; 6 to 10 read best)","default":"[{},{},{},{},{},{},{},{}]"},
+  {"id":"thumb_h","type":"number","label":"Thumbnail height (px)","default":150},
+  {"id":"seconds","type":"number","label":"How long the playhead takes from the left end to the right end (s)","default":4},
+  {"id":"start_after","type":"number","label":"The playhead starts running this long after the card lands (s)","default":0.3},
+  {"id":"show_time","type":"boolean","label":"Show the running time readout (digits only)","default":true},
+  {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"fly-in","label":"fly-in from below"},{"value":"none","label":"none"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"mock","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* timeline-scrubber (Motion and energy rules E8, "a playhead that runs"): an editing timeline in a card: a row of
+       thumbnail frames and an accent playhead that runs across them (linear, as a real playhead), the frame under it
+       lifting as it passes; a time readout counts with it (a setter tween: HyperFrames seeks with events suppressed). The
+       card lives like every element (pc-motion.js). Placeholders are paper tiles with a play glyph; the readout is digits. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #ts { box-sizing: border-box; padding: 34px 34px 40px; }
+    #ts-ruler { position: relative; height: 34px; margin-bottom: 14px; }
+    .ts-tick { position: absolute; top: 18px; width: 3px; height: 16px; background: var(--c-dot); border-radius: 2px; }
+    .ts-tick.big { top: 6px; height: 28px; }
+    #ts-time { position: absolute; right: 0; top: -6px; font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 34px; color: var(--c-ink); }
+    #ts-strip { position: relative; display: flex; gap: 10px; }
+    .ts-thumb { flex: 1 1 0; position: relative; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #F6EBE2, #EBD9CB); box-shadow: 0 0 0 2px var(--c-card-edge); }
+    .ts-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .ts-thumb svg { position: absolute; left: 50%; top: 50%; width: 36%; height: 36%; transform: translate(-50%, -50%); opacity: 0.5; }
+    #ts-head { position: absolute; top: -20px; bottom: -14px; width: 6px; margin-left: -3px; background: var(--c-accent); border-radius: 3px; box-shadow: 0 0 0 3px rgba(255, 250, 247, 0.9); }
+    #ts-head::before { content: ""; position: absolute; left: -11px; top: -2px; width: 28px; height: 28px; background: var(--c-accent); border-radius: 8px 8px 14px 14px; }
+  </style>
+  <div id="root" data-composition-id="timeline-scrubber" data-width="1080" data-height="1920">
+    <div id="ts" class="pc-card pc-el">
+      <div id="ts-ruler"><span id="ts-time">0:00</span></div>
+      <div id="ts-strip"><div id="ts-head"></div></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 60, y: 760, w: 960, thumbs_json: [], thumb_h: 150, seconds: 4, start_after: 0.3, show_time: true, enter: "rise", enter_at: 0, honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("ts"), strip = document.getElementById("ts-strip"), head = document.getElementById("ts-head"), ruler = document.getElementById("ts-ruler"), time = document.getElementById("ts-time");
+      PC.place(card, { x: v.x, y: v.y, w: v.w });
+      var thumbs = Array.isArray(v.thumbs_json) && v.thumbs_json.length ? v.thumbs_json.slice(0, 12) : [{}, {}, {}, {}, {}, {}, {}, {}];
+      var play = '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>';
+      var els = thumbs.map(function (t, i) {
+        var d = PC.el("div", "ts-thumb", strip); d.id = "ts-thumb-" + i; d.style.height = v.thumb_h + "px";
+        if (t && t.image) { var im = document.createElement("img"); im.src = t.image; im.alt = ""; d.appendChild(im); } else d.innerHTML = play;
+        return d;
+      });
+      for (var k = 0; k <= 20; k++) { var tk = PC.el("span", "ts-tick" + (k % 5 === 0 ? " big" : ""), ruler); tk.style.left = (k / 20 * 100) + "%"; }
+      if (!v.show_time) time.style.display = "none";
+      PC.honesty(card, v.honesty, { top: -50, right: 0 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      // the playhead runs from the left end to the right end of the strip, linear; it keeps its place at the end (a short rest
+      // then back to the start, so a long scene keeps playing: a loop of `seconds`)
+      var stripW = v.w - 68, at = life.land + v.start_after, end = life.until;
+      gsap.set(head, { x: 0 });
+      var loops = Math.max(1, Math.ceil((end - at) / v.seconds));
+      for (var L = 0; L < loops; L++) {
+        var t0 = at + L * v.seconds;
+        PCM.run(tl, head, "x", 0, stripW, t0, v.seconds);
+        PC.event("play", t0, { el: "ts-head", end: t0 + v.seconds });
+        PCM.readout(tl, time, t0, v.seconds);
+      }
+      // each thumbnail lifts a little as the playhead passes it and settles after (one tween pair per frame)
+      var tw = stripW / els.length;
+      els.forEach(function (d, i) {
+        var pass = at + (i + 0.5) / els.length * v.seconds;
+        PCM.pulse(tl, d, Math.max(at, pass - PC.f(3)), { up: 5, down: 12, amp: 0.04, lift: 10 });
+      });
+      window.__timelines["timeline-scrubber"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

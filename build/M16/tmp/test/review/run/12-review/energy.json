@@ -1,0 +1,1149 @@
+{
+ "written_by": "12-review",
+ "video": "C:/Users/there/OneDrive/Desktop/instagramReels/build/M16/tmp/test/review/run/10-build/draft.mp4",
+ "pass": false,
+ "whole": {
+  "frames": 1243,
+  "seconds": 41.43,
+  "moving_share_pct": 0.0,
+  "middle_moving_share_pct": 0.0,
+  "pixels_changing_pct": 0.0,
+  "still_share_pct": 100.0,
+  "longest_still_s": 41.43,
+  "still_stretches": 1,
+  "mean_change": 0.001,
+  "classes": {
+   "frozen": 1242,
+   "subtle": 1,
+   "medium": 0,
+   "big": 0
+  },
+  "classes_pct": {
+   "frozen": 99.9,
+   "subtle": 0.1,
+   "medium": 0.0,
+   "big": 0.0
+  }
+ },
+ "targets": {
+  "moving_share_pct": 41,
+  "middle_moving_share_pct": 46,
+  "pixels_changing_pct": 3.3,
+  "still_share_pct": 15,
+  "longest_still_s": 2.0
+ },
+ "scene_share": 0.8,
+ "scene_bounds": {
+  "moving_share_pct": 32.8,
+  "middle_moving_share_pct": 36.8,
+  "pixels_changing_pct": 2.64,
+  "still_share_pct": 18.75,
+  "longest_still_s": 2.5
+ },
+ "check": {
+  "pass": false,
+  "checks": {
+   "moving_share_pct": {
+    "want": 41,
+    "got": 0.0,
+    "ok": false,
+    "direction": "at least"
+   },
+   "middle_moving_share_pct": {
+    "want": 46,
+    "got": 0.0,
+    "ok": false,
+    "direction": "at least"
+   },
+   "pixels_changing_pct": {
+    "want": 3.3,
+    "got": 0.0,
+    "ok": false,
+    "direction": "at least"
+   },
+   "still_share_pct": {
+    "want": 15,
+    "got": 100.0,
+    "ok": false,
+    "direction": "at most"
+   },
+   "longest_still_s": {
+    "want": 2.0,
+    "got": 41.43,
+    "ok": false,
+    "direction": "at most"
+   }
+  }
+ },
+ "scenes": [
+  {
+   "id": "s1",
+   "beat": "b1",
+   "beat_type": "hook",
+   "start_ms": 0,
+   "end_ms": 3460,
+   "measures": {
+    "frames": 103,
+    "seconds": 3.43,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.43,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 103,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.43,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s2",
+   "beat": "b2",
+   "beat_type": "stake",
+   "start_ms": 3460,
+   "end_ms": 6640,
+   "measures": {
+    "frames": 95,
+    "seconds": 3.17,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.17,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 95,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.17,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s3",
+   "beat": "b3",
+   "beat_type": "comparison",
+   "start_ms": 6640,
+   "end_ms": 11390,
+   "measures": {
+    "frames": 143,
+    "seconds": 4.77,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.77,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 142,
+     "subtle": 1,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 99.3,
+     "subtle": 0.7,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 4.77,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s4",
+   "beat": "b4",
+   "beat_type": "mechanism",
+   "start_ms": 11390,
+   "end_ms": 15130,
+   "measures": {
+    "frames": 112,
+    "seconds": 3.73,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.73,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 112,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.73,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s5",
+   "beat": "b5",
+   "beat_type": "comparison",
+   "start_ms": 15130,
+   "end_ms": 18860,
+   "measures": {
+    "frames": 112,
+    "seconds": 3.73,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.73,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 112,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.73,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s6",
+   "beat": "b6",
+   "beat_type": "number",
+   "start_ms": 18860,
+   "end_ms": 22730,
+   "measures": {
+    "frames": 116,
+    "seconds": 3.87,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.87,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 116,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.87,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s7",
+   "beat": "b7",
+   "beat_type": "mechanism",
+   "start_ms": 22730,
+   "end_ms": 26890,
+   "measures": {
+    "frames": 125,
+    "seconds": 4.17,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.17,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 125,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 4.17,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s8",
+   "beat": "b8",
+   "beat_type": "proof",
+   "start_ms": 26890,
+   "end_ms": 30110,
+   "measures": {
+    "frames": 96,
+    "seconds": 3.2,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.2,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 96,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.2,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s9",
+   "beat": "b9",
+   "beat_type": "step",
+   "start_ms": 30110,
+   "end_ms": 34740,
+   "measures": {
+    "frames": 139,
+    "seconds": 4.63,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.63,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 139,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 4.63,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s10",
+   "beat": "b10",
+   "beat_type": "payoff",
+   "start_ms": 34740,
+   "end_ms": 37730,
+   "measures": {
+    "frames": 90,
+    "seconds": 3.0,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.0,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 90,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.0,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": false,
+    "bounds": {
+     "moving_share_pct": 32.8,
+     "middle_moving_share_pct": 36.8,
+     "pixels_changing_pct": 2.64,
+     "still_share_pct": 18.75,
+     "longest_still_s": 2.5
+    },
+    "failing": [
+     "longest_still_s",
+     "middle_moving_share_pct",
+     "moving_share_pct",
+     "pixels_changing_pct",
+     "still_share_pct"
+    ]
+   }
+  },
+  {
+   "id": "s11",
+   "beat": "b11",
+   "beat_type": "ask",
+   "start_ms": 37730,
+   "end_ms": 41460,
+   "measures": {
+    "frames": 112,
+    "seconds": 3.73,
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.73,
+    "still_stretches": 1,
+    "mean_change": 0.001,
+    "classes": {
+     "frozen": 112,
+     "subtle": 0,
+     "medium": 0,
+     "big": 0
+    },
+    "classes_pct": {
+     "frozen": 100.0,
+     "subtle": 0.0,
+     "medium": 0.0,
+     "big": 0.0
+    }
+   },
+   "check": {
+    "pass": false,
+    "checks": {
+     "moving_share_pct": {
+      "want": 41,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "middle_moving_share_pct": {
+      "want": 46,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "pixels_changing_pct": {
+      "want": 3.3,
+      "got": 0.0,
+      "ok": false,
+      "direction": "at least"
+     },
+     "still_share_pct": {
+      "want": 15,
+      "got": 100.0,
+      "ok": false,
+      "direction": "at most"
+     },
+     "longest_still_s": {
+      "want": 2.0,
+      "got": 3.73,
+      "ok": false,
+      "direction": "at most"
+     }
+    }
+   },
+   "scene_check": {
+    "pass": null,
+    "exempt": "the ask scene's content is fixed by the branding rules (tweaks.md): it counts in the reel's numbers only"
+   }
+  }
+ ],
+ "failing_scenes": [
+  "s1",
+  "s2",
+  "s3",
+  "s4",
+  "s5",
+  "s6",
+  "s7",
+  "s8",
+  "s9",
+  "s10"
+ ],
+ "issues": [
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s1 (hook, 0.0 to 3.5 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.43 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s1",
+   "instance": "",
+   "ms": 0,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.43
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s2 (stake, 3.5 to 6.6 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.17 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s2",
+   "instance": "",
+   "ms": 3460,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.17
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s3 (comparison, 6.6 to 11.4 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 4.77 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s3",
+   "instance": "",
+   "ms": 6640,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.77
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s4 (mechanism, 11.4 to 15.1 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.73 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s4",
+   "instance": "",
+   "ms": 11390,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.73
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s5 (comparison, 15.1 to 18.9 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.73 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s5",
+   "instance": "",
+   "ms": 15130,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.73
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s6 (number, 18.9 to 22.7 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.87 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s6",
+   "instance": "",
+   "ms": 18860,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.87
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s7 (mechanism, 22.7 to 26.9 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 4.17 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s7",
+   "instance": "",
+   "ms": 22730,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.17
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s8 (proof, 26.9 to 30.1 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3.2 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s8",
+   "instance": "",
+   "ms": 26890,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.2
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s9 (step, 30.1 to 34.7 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 4.63 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s9",
+   "instance": "",
+   "ms": 30110,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.63
+   }
+  },
+  {
+   "tag": "animation",
+   "kind": "energy",
+   "text": "scene s10 (payoff, 34.7 to 37.7 s) lacks energy: moving share 0% (at least 32.8%), middle band 0% (at least 36.8%), pixels changing 0% (at least 2.64%), still stretches 100% (at most 18.75%), longest still 3 s (at most 2.5 s); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "scene": "s10",
+   "instance": "",
+   "ms": 34740,
+   "severity": "major",
+   "measures": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.0,
+    "still_share_pct": 100.0,
+    "longest_still_s": 3.0
+   }
+  }
+ ],
+ "still_stretches": [
+  {
+   "start_s": 0.03,
+   "seconds": 41.43
+  }
+ ]
+}
