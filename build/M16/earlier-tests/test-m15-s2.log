@@ -1,0 +1,45 @@
+
+== 2. the plan rules, the 9b choice rule, S7's importance, the digest ==
+    budget-edge-passes FAIL [{'rule': 'text_budget', 'message': '108 characters of non-caption text are on screen between 30110 and 34740 ms (s9-terminal-card-1 title 20, s9-terminal-card-1 lines_json 55, s9-terminal-card-1 lines_json 29, s9-video-card-2 honesty 4); at most 100 at any moment (E4: graphics first, cut text where
+    legacy-chunks-pass FAIL [{'rule': 'hero_motion', 'message': "scene s1 (hook): a moving element of substance sits in the hero zone (y 640 to 1280) for only 31 percent of the scene; at least 70 percent is wanted (E9): make the hero card, recording or stack fill the middle of the screen from the scene's start to its end"}, {'
+    {"ok": true, "files": ["chunks", "scenes", "timeline"], "solution": {"type": "external", "name": "frontend-design, the Claude Code plugin", "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design", "logo": null}, "idea_id": "c26c94b17281"}
+PASS  plan rules: golden-passes
+PASS  plan rules: golden-warns-baked-sizes
+PASS  plan rules: fault-120-chars
+FAIL  plan rules: budget-edge-passes (no match for '^budget-edge-passes ok' in /c/Users/there/OneDrive/Desktop/instagramReels/build/M15/tmp/test/p2.txt)
+PASS  plan rules: fault-40px-label
+PASS  plan rules: fault-group-over-text
+PASS  plan rules: fault-group-over-graphic
+PASS  plan rules: fault-static-word
+PASS  plan rules: fault-static-group
+PASS  plan rules: fault-two-fonts
+PASS  plan rules: fault-small-group-word
+PASS  plan rules: fault-no-layout
+PASS  plan rules: fault-mode-overlap
+FAIL  plan rules: legacy-chunks-pass (no match for '^legacy-chunks-pass ok' in /c/Users/there/OneDrive/Desktop/instagramReels/build/M15/tmp/test/p2.txt)
+PASS  plan rules: importance-structure
+PASS  plan rules: compose-no-errors
+PASS  plan rules: compose-groups-in-free-beats
+PASS  plan rules: compose-word-under-text
+PASS  plan rules: compose-importance-carried
+PASS  plan rules: compose-every-word-once
+PASS  plan rules: compose-layouts-sound
+PASS  plan rules: compose-motion-everywhere
+PASS  plan rules: compose-group-sizes
+PASS  plan rules: compose-validates
+PASS  plan rules: director-group-over-text-refused
+PASS  plan rules: director-group-kept
+PASS  plan rules: digest-modes
+PASS  plan rules: s7-importance
+PASS  plan rules: s7-norm
+PASS  plan rules: script-schema-accepts-importance
+PASS  plan rules: script-schema-refuses-bad-importance
+PASS  plan rules: model-schema-has-importance
+PASS  plan rules: 9b-model-schema
+PASS  plan rules: plan-schema-accepts-golden
+PASS  plan rules: 9b-schema-accepts-modes
+PASS  the validator CLI fails the planted plan
+PASS  the validator names the rule and the caption
+PASS  the validator CLI passes the golden plan (plan ok: 0 errors, 3 warnings, skipped hook2)
+
+test-m15.sh: 36 passed, 2 failed

@@ -1,0 +1,5 @@
+no_emdash: 1 em dash(es) found
+build/M15/tmp/test/check.json:143
+FAIL  em dash found (see the lines above)
+
+test-no-emdash.sh: 0 passed, 1 failed

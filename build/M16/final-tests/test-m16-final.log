@@ -1,0 +1,193 @@
+
+== 1. the nine new components: catalog, behavior in the browser, frame-match, lint and check ==
+PASS  components: catalog-screenshot-zoom
+PASS  components: props-screenshot-zoom
+PASS  components: catalog-video-card
+PASS  components: props-video-card
+PASS  components: catalog-card-fan
+PASS  components: props-card-fan
+PASS  components: catalog-card-grid
+PASS  components: props-card-grid
+PASS  components: catalog-timeline-scrubber
+PASS  components: props-timeline-scrubber
+PASS  components: catalog-cursor
+PASS  components: props-cursor
+PASS  components: catalog-mock-site-card
+PASS  components: props-mock-site-card
+PASS  components: catalog-swatch-row
+PASS  components: props-swatch-row
+PASS  components: catalog-swatch-card
+PASS  components: props-swatch-card
+PASS  components: zoom-camera-travels
+PASS  components: zoom-highlight-draws
+PASS  components: zoom-never-empty
+PASS  components: video-plays
+PASS  components: video-muted-never-played
+PASS  components: video-loops
+PASS  components: video-holds-last-frame
+PASS  components: video-falls-back-to-still
+PASS  components: fan-opens
+PASS  components: fan-glides-on
+PASS  components: grid-wave
+PASS  components: scrubber-runs-linearly
+PASS  components: cursor-arrives
+PASS  components: cursor-presses-and-rings
+PASS  components: mock-site-builds
+PASS  components: mock-site-scrolls
+PASS  components: swatches-fill-on-their-words
+PASS  components: swatch-card-fills-and-types
+PASS  catalog.json matches the component files (catalog ok: 38 components, items 1 to 24 covered, the DM card present)
+PASS  frame-match: the nine pass (frame-match: 38 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md)
+PASS  frame-match: screenshot-zoom passes (its main animation, the life checks, the strips)
+PASS  frame-match: video-card passes (its main animation, the life checks, the strips)
+PASS  frame-match: card-fan passes (its main animation, the life checks, the strips)
+PASS  frame-match: card-grid passes (its main animation, the life checks, the strips)
+PASS  frame-match: timeline-scrubber passes (its main animation, the life checks, the strips)
+PASS  frame-match: cursor passes (its main animation, the life checks, the strips)
+PASS  frame-match: mock-site-card passes (its main animation, the life checks, the strips)
+PASS  frame-match: swatch-row passes (its main animation, the life checks, the strips)
+PASS  frame-match: swatch-card passes (its main animation, the life checks, the strips)
+PASS  library: report-has-all-components
+PASS  library: report-energy-measured
+PASS  library: report-life-checks-run
+PASS  library: catalog-has-energy
+PASS  library: catalog-beat-map
+PASS  library: video-card-needs-clip-start
+PASS  no composition keeps a tween or an onUpdate of its own (the new ones too: pc-motion.js's move helpers)
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  npx hyperframes check --json passes on motion-lib/
+PASS  the gallery page builds
+PASS  the gallery shows screenshot-zoom
+PASS  still of screenshot-zoom
+PASS  the gallery shows video-card
+PASS  still of video-card
+PASS  the gallery shows card-fan
+PASS  still of card-fan
+PASS  the gallery shows card-grid
+PASS  still of card-grid
+PASS  the gallery shows timeline-scrubber
+PASS  still of timeline-scrubber
+PASS  the gallery shows cursor
+PASS  still of cursor
+PASS  the gallery shows mock-site-card
+PASS  still of mock-site-card
+PASS  the gallery shows swatch-row
+PASS  still of swatch-row
+PASS  the gallery shows swatch-card
+PASS  still of swatch-card
+
+== 2. S1's page recordings: a scroll video next to the screenshot ==
+PASS  recordings: long-exit-0
+PASS  recordings: long-png-and-mp4-side-by-side
+PASS  recordings: long-h264-1080-wide-30fps
+PASS  recordings: long-no-sound
+PASS  recordings: long-5-to-8-seconds
+PASS  recordings: long-the-page-scrolls
+PASS  recordings: long-sidecar-says-recording
+PASS  recordings: short-saved-without-recording
+PASS  recordings: short-says-why
+PASS  recordings: no-record-flag
+PASS  recordings: assets-json-lists-the-recording
+PASS  recordings: assets-json-no-recording-for-the-short-page
+PASS  the research prompt tells the model about the recordings
+PASS  assets.json's schema has the recording fields
+PASS  the research contract describes the recordings
+
+== 3. the plan rules of E9: the golden plan passes, one planted plan per rule fails, the levels, the repairs, the prompts ==
+PASS  rules: golden-passes
+PASS  rules: golden-flags-energy
+PASS  rules: rule-hero_motion-fails
+PASS  rules: rule-hero_motion-isolated
+PASS  rules: rule-hero_fill-fails
+PASS  rules: rule-hero_fill-isolated
+PASS  rules: rule-layers-fails
+PASS  rules: rule-layers-isolated
+PASS  rules: rule-camera-fails
+PASS  rules: rule-camera-isolated
+PASS  rules: rule-hook_frame0-fails
+PASS  rules: rule-hook_frame0-isolated
+PASS  rules: rule-empty_paper-fails
+PASS  rules: rule-empty_paper-isolated
+PASS  rules: rule-list_entry-fails
+PASS  rules: rule-list_entry-isolated
+PASS  rules: rule-transition_variety-fails
+PASS  rules: rule-transition_variety-isolated
+PASS  rules: level-warn-reports-only
+PASS  rules: level-off-silent
+PASS  plans: tokens-composition
+PASS  plans: rules-listed
+PASS  plans: repair-hook-moves-from-frame-0
+PASS  plans: repair-leaves-an-early-hook-alone
+PASS  plans: repair-transitions-vary
+PASS  plans: repair-durations-follow-the-type
+PASS  plans: repair-cuts-stay-at-a-third
+PASS  plans: prompt-9a-energy
+PASS  plans: prompt-9c-variety
+PASS  plans: prompt-9b-text-last
+PASS  plans: prompt-12-energy
+PASS  plans: schema-12-energy
+PASS  plans: digest-lists-the-recordings
+PASS  plans: digest-lists-the-new-components
+PASS  plans: real-motion-warns-when-no-recording-plays
+PASS  plans: footprint-mock-site
+PASS  plans: text-items-new-components
+
+== 4. the golden reel: rebuilt from the new plan, every energy target met, every scene at 80 percent ==
+   (golden.mp4 is newer than the plan and the library: not rendered again; M16_RERENDER=1 forces it)
+PASS  golden.mp4 exists
+    the reel: moving share 81.8% (ok, at least 41%), middle band 92.2% (ok, at least 46%), pixels changing 4.11% (ok, at least 3.3%), still stretches 0.0% (ok, at most 15%), longest still 0.77 s (ok, at most 2.0 s)
+    s1 hook        moving 100.0, middle 100.0, pixels 3.49, still 0.0, longest 0.0
+    s2 stake       moving 95.8, middle 96.8, pixels 4.33, still 0.0, longest 0.1
+    s3 comparison  moving 60.1, middle 74.8, pixels 6.82, still 0.0, longest 0.67
+    s4 mechanism   moving 95.5, middle 100.0, pixels 4.3, still 0.0, longest 0.03
+    s5 comparison  moving 52.7, middle 97.3, pixels 2.82, still 0.0, longest 0.77
+    s6 number      moving 94.0, middle 100.0, pixels 3.49, still 0.0, longest 0.07
+    s7 mechanism   moving 96.8, middle 99.2, pixels 4.19, still 0.0, longest 0.03
+    s8 proof       moving 84.4, middle 93.8, pixels 3.38, still 0.0, longest 0.13
+    s9 step        moving 99.3, middle 99.3, pixels 5.88, still 0.0, longest 0.03
+    s10 payoff      moving 48.9, middle 96.7, pixels 3.09, still 0.0, longest 0.37
+    s11 ask         (the CTA's content is fixed by the branding rules: it counts in the reel's numbers only)
+PASS  golden: golden-meets-moving_share_pct
+PASS  golden: golden-meets-middle_moving_share_pct
+PASS  golden: golden-meets-pixels_changing_pct
+PASS  golden: golden-meets-still_share_pct
+PASS  golden: golden-meets-longest_still_s
+PASS  golden: every-scene-at-80-percent-of-every-target
+PASS  golden: energy-check-agrees
+PASS  golden: golden-uses-the-new-components
+PASS  golden: golden-has-the-energy-grammar
+PASS  the README lists the new golden's components
+
+== 5. S12: the energy check, the liveness checks, the energy score, the early stop ==
+PASS  review: energy-golden-passes
+PASS  review: energy-golden-whole-meets-every-target
+PASS  review: energy-scene-bounds-are-80-percent
+PASS  review: energy-planted-copy-made
+PASS  review: energy-frozen-scene-fails
+PASS  review: energy-issue-is-animation-with-numbers
+PASS  review: energy-routes-to-09a
+PASS  review: energy-in-the-review-record
+PASS  review: energy-still-video-fails-everywhere
+PASS  review: energy-ask-scene-left-out-of-the-routing
+PASS  review: energy-still-video-meter-reads-zero
+PASS  review: liveness-golden-clean
+PASS  review: liveness-counted
+PASS  review: liveness-static-element-caught
+PASS  review: liveness-missing-edge-layer-caught
+PASS  review: score-energy-is-scored
+PASS  review: score-energy-missing-counts-as-pass
+PASS  review: early-stop-same-scores-same-issues
+PASS  review: early-stop-flag-names-the-scores
+PASS  review: no-early-stop-when-the-scores-change
+PASS  review: no-early-stop-when-the-issues-change
+PASS  review: no-early-stop-in-round-1
+PASS  review: early-stop-can-be-switched-off
+PASS  review: cli-round-1-fix
+PASS  review: cli-round-2-stop
+PASS  review: run-sh-handles-stop-and-runs-the-energy-check-first
+
+== 7. no em dash in the files M16 wrote ==
+PASS  no em dash in the M16 components, helpers and sources
+PASS  no em dash in the M16 prompts, schemas, contracts and tests
+
+test-m16.sh: 166 passed, 0 failed

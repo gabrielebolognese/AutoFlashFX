@@ -1,0 +1,161 @@
+
+== 1. kinetic.py: the group layout engine ==
+    six-long-groups 2
+    huge-groups 2
+    random-groups 311
+PASS  kinetic: tokens-fonts
+PASS  kinetic: tokens-ratios
+PASS  kinetic: tokens-zone
+PASS  kinetic: fox-ok
+PASS  kinetic: fox-fonts
+PASS  kinetic: fox-anchor-ratio
+PASS  kinetic: fox-half-size
+PASS  kinetic: fox-stack-height
+PASS  kinetic: fox-top-aligned
+PASS  kinetic: fox-right-of-the
+PASS  kinetic: fox-next-line
+PASS  kinetic: fox-not-below-caption
+PASS  kinetic: fox-asymmetric
+PASS  kinetic: fox-inside-zone
+PASS  kinetic: fox-rail
+PASS  kinetic: fox-check-clean
+PASS  kinetic: fox-deterministic
+PASS  kinetic: fox-default-anchor
+PASS  kinetic: six-long-fit-or-split
+PASS  kinetic: six-long-no-small-word
+PASS  kinetic: six-long-clean
+PASS  kinetic: six-long-inside-zone
+PASS  kinetic: huge-split-or-relaxed
+PASS  kinetic: random-sound
+PASS  kinetic: random-no-small-word
+PASS  kinetic: random-resolved
+PASS  kinetic: runs-sizes
+PASS  kinetic: runs-order
+PASS  kinetic: runs-sentence-ends
+PASS  kinetic: runs-single-word
+PASS  kinetic: word-motion-range
+PASS  kinetic: group-motion-range
+PASS  kinetic: motion-check-flags-static
+PASS  kinetic: fault-two-fonts
+PASS  kinetic: fault-small-word
+PASS  kinetic: fault-off-zone
+PASS  kinetic: fault-stack
+PASS  kinetic: fault-rail
+PASS  kinetic: fault-symmetric
+PASS  kinetic: fault-static
+PASS  the kinetic CLI lays out the example
+PASS  the CLI draws the layout
+PASS  the CLI names the anchor and its size
+PASS  the CLI finds no problem in the example
+
+== 2. the plan rules, the 9b choice rule, S7's importance, the digest ==
+    {"ok": true, "files": ["chunks", "scenes", "timeline"], "solution": {"type": "external", "name": "frontend-design, the Claude Code plugin", "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design", "logo": null}, "idea_id": "c26c94b17281"}
+PASS  plan rules: golden-passes
+PASS  plan rules: golden-warns-baked-sizes
+PASS  plan rules: fault-120-chars
+PASS  plan rules: budget-edge-passes
+PASS  plan rules: fault-40px-label
+PASS  plan rules: fault-group-over-text
+PASS  plan rules: fault-group-over-graphic
+PASS  plan rules: fault-static-word
+PASS  plan rules: fault-static-group
+PASS  plan rules: fault-two-fonts
+PASS  plan rules: fault-small-group-word
+PASS  plan rules: fault-no-layout
+PASS  plan rules: fault-mode-overlap
+PASS  plan rules: legacy-chunks-pass
+PASS  plan rules: importance-structure
+PASS  plan rules: compose-no-errors
+PASS  plan rules: compose-groups-in-free-beats
+PASS  plan rules: compose-word-under-text
+PASS  plan rules: compose-importance-carried
+PASS  plan rules: compose-every-word-once
+PASS  plan rules: compose-layouts-sound
+PASS  plan rules: compose-motion-everywhere
+PASS  plan rules: compose-group-sizes
+PASS  plan rules: compose-validates
+PASS  plan rules: director-group-over-text-refused
+PASS  plan rules: director-group-kept
+PASS  plan rules: digest-modes
+PASS  plan rules: s7-importance
+PASS  plan rules: s7-norm
+PASS  plan rules: script-schema-accepts-importance
+PASS  plan rules: script-schema-refuses-bad-importance
+PASS  plan rules: model-schema-has-importance
+PASS  plan rules: 9b-model-schema
+PASS  plan rules: plan-schema-accepts-golden
+PASS  plan rules: 9b-schema-accepts-modes
+PASS  the validator CLI fails the planted plan
+PASS  the validator names the rule and the caption
+PASS  the validator CLI passes the golden plan (plan ok: 0 errors, 3 warnings, skipped hook2)
+
+== 3. the golden reel: modes and every caption moving on every frame ==
+PASS  the golden plan is built into a project (run folder C:/Users/there/OneDrive/Desktop/instagramReels/build/M15/tmp/test/run-golden: p)
+PASS  golden: normal-talk-word-mode
+PASS  golden: important-beats-groups
+PASS  golden: groups-only-without-text
+PASS  golden: some-of-each
+PASS  golden: every-entry-moves
+PASS  golden: groups-3-fonts
+PASS  golden: anchor-biggest
+PASS  golden: anchor-2-to-3
+PASS  golden: hosts
+PASS  golden: compositions-copied
+    (the frame by frame check took 59 s)
+    hosts 2, elements 105, element frames checked 1335, static 0
+      captions (caption-word): 79 elements, 1055 frames, 683 element frames, 0 static
+      captions-groups (caption-group): 26 elements, 547 frames, 652 element frames, 0 static
+    all-moving ok
+PASS  every caption word and group moves on every frame it is on screen
+PASS  the frame check says all-moving ok
+PASS  more than a thousand element frames checked, none static
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+OSError: [Errno 22] Invalid argument: 'build/M15/tmp/test/plan-static.json'
+PASS  planted: a static caption word and a static group fail the frame check
+PASS  planted: the frame check says FAIL
+PASS  planted: static frames are counted
+
+== 4. S12's mechanical checks: the clean golden project and the planted copies ==
+    (mechanical took 95 s)
+PASS  the mechanical checks run on the golden project
+PASS  the golden project passes every mechanical check ()
+PASS  caption groups were judged (check times for them, caption motion pairs sampled)
+PASS  the characters on screen were counted and stay under 100
+PASS  the text under the caption size is listed as warnings, not issues
+PASS  every emphasis hit is found (a phrase by its first word, a word of a group)
+    (mechanical on planted copy p1 took 94 s)
+PASS  the mechanical checks run on planted copy p1
+PASS  planted copy p1 fails
+    (mechanical on planted copy p2 took 143 s)
+PASS  the mechanical checks run on planted copy p2
+PASS  planted copy p2 fails
+    p1 kinds: caption_mode:text right_rail:animation text_budget:text zone:animation
+    p2 kinds: caption_static:text overlap:animation
+PASS  planted: a caption group on screen with a chip's text is caught (caption_mode, tagged text)
+PASS  planted: more than 100 characters of text on screen is caught (text_budget, tagged text)
+PASS  planted: a caption word that does not move is caught (caption_static, tagged text)
+PASS  planted: both the static word and the static group are named (the word's life and the group's)
+PASS  every planted issue carries a routing tag
+PASS  the baked-size switch exists in the code (review.text_size_baked)
+
+== 5. the library: the catalog, frame-match, lint and check ==
+PASS  the catalog matches the files (catalog ok: 38 components, items 1 to 24 covered, the DM card present)
+PASS  catalog: word-approved
+PASS  catalog: group-approved
+PASS  catalog: line-retired
+PASS  catalog: props
+PASS  catalog: beat-map-any
+    caption-group: pass (7/7 checks, strip r=none, moving 3.1%, longest still 3.67 s)
+    caption-word: pass (5/5 checks, strip r=0.955, moving 0.8%, longest still 3.13 s)
+    frame-match: 38 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
+PASS  frame-match passes caption-word and caption-group
+PASS  caption-word: pass (the fade, the exit, the next word one frame after, never static)
+PASS  caption-group: pass (the fade, the exit, never static)
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  npx hyperframes check: ok on motion-lib/
+
+== 6. no em dash in the files M15 wrote ==
+PASS  no em dash in the M15 files
+
+test-m15.sh: 127 passed, 0 failed

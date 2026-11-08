@@ -1,0 +1,99 @@
+
+== 6. the test idea end to end with the real models: research to export, energy loop included (2 to 4 hours) ==
+the real run took 153 min, kept at /tmp/tmp.9KnG7rsbGV/runs/2026-11-08_0422_claude-codes-frontend-design-skill
+    [04:59] INFO   S10: project built from the plan: 37 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/03-plugin-page.png, research/04-blog.png; builder role builder (1 3D objects)
+    [05:01] WARN   S10: hyperframes check found 1 error (layout: text_occluded: Text is hidden beneath an opaque element.)
+    [05:01] INFO   S10: the check found errors; asking the builder model to repair the project (round 1/2)
+    [05:07] WARN   S10: hyperframes check found 1 error (layout: text_occluded: Text is hidden beneath an opaque element.)
+    [05:07] INFO   S10: the check found errors; asking the builder model to repair the project (round 2/2)
+    [05:18] INFO   S10: hyperframes check ok (11 warnings)
+    [05:18] INFO   S10: events.json: 216 events (10 scene changes); 105 of 105 element events verified on screen
+    [05:21] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 164.8 s
+    [05:22] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 42.2 s
+    [05:22] STEP   building visuals done (22m31s) -> adding sound effects
+    [05:22] INFO   S11: 15 sounds placed (mandatory 6, transition 8, hero 1), 25 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [05:22] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+    [05:22] STEP   adding sound effects done (25s) -> reviewing: mechanical checks
+    [05:22] INFO   S12: review round 1/5 of the draft
+    [05:28] INFO   S12: code checks: energy 6 issues (moving 54.3%), mechanical 20 issues, style 2 issues, audio ok (voice WER 0.0%)
+    [05:30] WARN   S12: review round 1 failed (42 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 4, sound 4, generic 3, requirements 4, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+    [05:30] STEP   reviewing: mechanical checks done (7m40s) -> planning animations
+    [05:30] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [05:37] WARN   S9: the animations plan has 3 problems (beat_map: s6-strike-through-3: strike-through is not allowed for a mechanism beat (tokens.json beat_map: card, card-fan,...); asking the director once more
+    [05:39] INFO   S9: animations planned: 11 scenes, 33 component instances, 18 distinct (card, card-fan, card-grid, check-badge, cursor, dark-chip, dm-card, end-card, headline, hero-3d, light-chip, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+    [05:39] FLAG   needs review: the visual director wanted a component the library lacks: after-site-card: A mock website with a set palette, display or serif headline font and an asymmetric layout (no accent pill, no identical
+    [05:39] FLAG   needs review: the visual director wanted a component the library lacks: swatch-swap: A swatch in a swatch-row that gets crossed out and drops out of the row on a spoken word, so 'cuts generic choices' happ
+    [05:39] STEP   planning animations done (9m18s) -> planning text
+    [05:40] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [05:41] WARN   S9: the text plan has 1 problems (cards: s1-headline-1: the headline has 4 lines; 2 to 3 (style.md Hook)); asking the director once more
+    [05:42] INFO   S9: text planned: 45 caption chunks, 5 card texts changed, 7 labels, after one retry
+    [05:42] STEP   planning text done (3m07s) -> planning transitions
+    [05:43] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [05:44] INFO   S9: transitions planned: 10 transitions (3 cut, 3 fade-blur, 3 fall, 1 push); the merged plan passes the validator
+    [05:44] STEP   planning transitions done (1m39s) -> building visuals
+    [05:44] INFO   S10: project built from the plan: 36 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/02-skill.png, research/03-plugin-page.png; builder role builder (1 3D objects)
+    [05:45] WARN   S10: hyperframes check found 2 errors (layout: content_overlap: Two text blocks overlap and may render unreadable.)
+    [05:45] INFO   S10: the check found errors; asking the builder model to repair the project (round 1/2)
+    [05:54] INFO   S10: hyperframes check ok (6 warnings)
+    [05:54] INFO   S10: events.json: 193 events (10 scene changes); 95 of 95 element events verified on screen
+    [05:56] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 119.3 s
+    [05:57] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 36.2 s
+    [05:57] STEP   building visuals done (12m29s) -> adding sound effects
+    [05:57] INFO   S11: 15 sounds placed (mandatory 7, transition 7, hero 1), 32 candidates dropped by the rules; seed 1033259614; hook 2: 1 sounds
+    [05:57] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+    [05:57] STEP   adding sound effects done (20s) -> reviewing: mechanical checks
+    [05:57] INFO   S12: review round 2/5 of the draft
+    [06:01] INFO   S12: code checks: energy 6 issues (moving 52.8%), mechanical 3 issues, style ok, audio ok (voice WER 0.0%)
+    [06:03] WARN   S12: review round 2 failed (25 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 4, generic 3, requirements 4, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+    [06:03] STEP   reviewing: mechanical checks done (5m39s) -> planning animations
+    [06:03] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [06:10] WARN   S9: the animations plan has 2 problems (layers: scene s2 (stake): 2 or more elements are on screen together for only 22 percent of the scene; at least 60 percen...); asking the director once more
+    [06:11] INFO   S9: animations planned: 11 scenes, 39 component instances, 20 distinct (card, card-fan, card-grid, check-badge, cursor, dark-chip, dm-card, end-card, handwritten-callout, headline, hero-3d, light-chip, logo-tile, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+    [06:11] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-focus: A mock-site-card whose camera pushes in on named parts (background, button, feature cards, eyebrow) with an accent highl
+    [06:11] FLAG   needs review: the visual director wanted a component the library lacks: swatch-drop: A swatch row where one swatch (the terracotta default) is struck out and falls away on a word while a new swatch takes i
+    [06:11] FLAG   needs review: the visual director wanted a component the library lacks: fan-deal: A card-fan prop that deals one card forward (scale up, to the front) on a spoken word
+    [06:11] STEP   planning animations done (8m32s) -> planning text
+    [06:12] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [06:13] WARN   S9: the text plan has 1 problems (text_budget: 104 characters of non-caption text are on screen between 0 and 3270 ms (s1-headline-1 kicker 17, s1-headlin...); asking the director once more
+    [06:13] INFO   S9: text planned: 49 caption chunks, 9 card texts changed, 12 labels, after one retry
+    [06:13] STEP   planning text done (2m05s) -> planning transitions
+    [06:14] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [06:15] INFO   S9: transitions planned: 10 transitions (1 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+    [06:15] STEP   planning transitions done (1m20s) -> building visuals
+    [06:15] INFO   S10: project built from the plan: 41 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/03-plugin-page.png, research/04-blog.png; builder role builder_escalation (1 3D objects)
+    [06:16] INFO   S10: hyperframes check ok (11 warnings)
+    [06:16] INFO   S10: events.json: 244 events (10 scene changes); 110 of 110 element events verified on screen
+    [06:19] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 140.1 s
+    [06:20] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 58.2 s
+    [06:20] STEP   building visuals done (5m05s) -> adding sound effects
+    [06:21] INFO   S11: 15 sounds placed (mandatory 8, transition 6, hero 1), 35 candidates dropped by the rules; seed 1033259615; hook 2: 1 sounds
+    [06:21] INFO   S11: verified in 2 passes: every sound within 10.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+    [06:21] STEP   adding sound effects done (41s) -> reviewing: mechanical checks
+    [06:21] INFO   S12: review round 3/5 of the draft
+    [06:28] INFO   S12: code checks: energy 6 issues (moving 52.6%), mechanical 15 issues, style ok, audio ok (voice WER 0.0%)
+    [06:31] WARN   S12: review round 3 failed (37 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+    [06:31] STEP   reviewing: mechanical checks done (9m49s) -> planning animations
+    [06:31] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director (fable, review round 3) with the edit review's notes
+    [06:49] WARN   S9: the animations plan has 6 problems (beat_map: s6-strike-through-4: strike-through is not allowed for a mechanism beat (tokens.json beat_map: card, card-fan,...); asking the director once more
+    [06:53] INFO   S9: animations planned: 11 scenes, 40 component instances, 19 distinct (card-fan, check-badge, cursor, dark-chip, dm-card, end-card, handwritten-callout, headline, hero-3d, light-chip, logo-tile, mascot, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+    [06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-zoom: A camera that pans and zooms over the parts of a mock-site-card (the background, the button, the rounded cards, the eyeb
+    [06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-flip: One mock-site-card that flips from one tone to another on a word (cream to ink), keeping the address, so the before and 
+    [06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card prefilled: An option on mock-site-card to land with the headline, button and feature cards already built, so the site reads at once
+    [06:53] STEP   planning animations done (22m17s) -> planning text
+    [06:53] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director (fable, review round 3) with the edit review's notes
+PASS  the runner exits 0
+FAIL  DONE: exported #1 (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #1 -> exports/1/' in /tmp/tmp.9KnG7rsbGV/real.out)
+PASS  no BLOCK, DROP or STOP line
+FAIL  exports/1/1.mp4 (missing file /tmp/tmp.9KnG7rsbGV/exports/1/1.mp4)
+PASS  12-review/energy.json: the energy check ran
+FAIL  real run: reel-meets-the-targets-or-exports-with-its-numbers-in-needs-review ((False, False))
+FAIL  real run: edit-review-stop-above-the-M13-reels-3 ({'stop': 3, 'hierarchy': 3, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3})
+FAIL  real run: edit-review-variety-above-the-M13-reels-3 ({'stop': 3, 'hierarchy': 3, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3})
+FAIL  real run: edit-review-generic-above-the-M13-reels-3 ({'stop': 3, 'hierarchy': 3, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3})
+PASS  real run: time-per-reel-grows-by-at-most-20-percent
+   energy of the last round: {'moving_share_pct': 52.6, 'middle_moving_share_pct': 51.8, 'pixels_changing_pct': 2.9, 'still_share_pct': 7.6, 'longest_still_s': 1.6} targets {'moving_share_pct': 41, 'middle_moving_share_pct': 46, 'pixels_changing_pct': 3.3, 'still_share_pct': 15, 'longest_still_s': 2.0}
+   review rounds: ['review-r1.json', 'review-r2.json', 'review-r3.json'] verdict fix scores {'stop': 3, 'hierarchy': 3, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3}
+   the captions file:
+rm: cannot remove '/tmp/tmp.9KnG7rsbGV': Device or resource busy
+
+.m16-real-copy.sh: 4 passed, 6 failed

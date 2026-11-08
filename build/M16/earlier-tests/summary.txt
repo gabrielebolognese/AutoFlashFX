@@ -1,0 +1,10 @@
+test-m9: exit 0, 80 passed, 0 failed, 1106 s
+test-m10: exit 0, 134 passed, 0 failed, 1048 s
+test-m11: exit 1, 148 passed, 79 failed, 1841 s
+test-m12: exit 0, 180 passed, 0 failed, 1039 s
+test-m13: exit 0, 100 passed, 0 failed, 1857 s
+test-m14: exit 0, 39 passed, 0 failed, 1055 s
+test-m15: exit 1, 94 passed, 33 failed, 839 s
+test-no-emdash: exit 1, 0 passed, 1 failed, 26 s
+test-m2: exit 1, 192 passed, 15 failed, 3095 s
+done

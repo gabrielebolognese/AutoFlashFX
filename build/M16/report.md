@@ -1,7 +1,7 @@
 # M16 Director, components and the energy loop: report
 
 Spec: BUILD_SPEC.md section 5 (Motion and energy rules E8 and E9), section 12 (M16), the lines marked (M16) in S1, S9, S12;
-PLAN.md M16. Decisions: DECISIONS.md 314 to 320. Test: `bash pipeline/tests/test-m16.sh`.
+PLAN.md M16. Decisions: DECISIONS.md 314 to 324. Test: `bash pipeline/tests/test-m16.sh`.
 
 ## What was built
 
@@ -39,7 +39,7 @@ m16-recording.py,m16-review.py,sandbox-config.py}, golden stills of the nine und
 Changed: motion-lib/assets/pc-motion.js, motion-lib/compositions/end-card.html, motion-lib/{catalog.json,gallery/,index.html},
 pipeline/lib/{screenshot.py,research.py,tokens.py}, pipeline/lib/motion/{catalog,expectations,framematch,gallery,golden,goldenplan,harness,common}.py,
 pipeline/lib/visual/{common,plan9,plan_validate,events}.py, pipeline/lib/review/{mechanical,route,edit,__main__}.py,
-pipeline/stages/{01-research,09a-animations,09c-transitions,12-review} (prompts, schemas, contracts, run.sh), config.json,
+pipeline/stages/{01-research,09a-animations,09c-transitions,12-review} (prompts, schemas, contracts, run.sh), pipeline/lib/ai.sh (a launcher missing for a moment is waited out), pipeline/lib/visual/project.py (the draft downscale tried twice), config.json,
 styles/paper-cards/tokens.json and motion-lib/assets/tokens.css (regenerated), golden/test-idea/, pipeline/tests/{lib.sh,test-m11.sh},
 CLAUDE.md, DECISIONS.md, build/progress.md, build/HUMAN_TODO.md.
 
@@ -59,18 +59,42 @@ test idea with the real models (2 to 4 hours).
 
 ## Test results
 
-(filled in below by the final runs)
+**test-m16 sections 1 to 5 and 7: 166 passed, 0 failed** (build/M16/final-tests/test-m16-final.log; the golden render is reused: 3 minutes
+to rebuild it). The new golden reel (E0 meter, golden/test-idea/energy.json): moving share 82.1 percent, middle band 92.0, pixels
+changing 4.12, still stretches 0.0, longest still 0.77 s against the targets 41, 46, 3.3, 15 and 2 s; every scene but the CTA is above
+80 percent of every target (the CTA scene: moving 69.6, middle 60.7, pixels 1.89 against 2.64; its content is fixed by the branding
+rules, so S12 leaves it out of the per-scene routing).
+
+**Section 6, the test idea with the real models, has not passed.** Six real runs (DECISIONS.md 322, logs build/M16/final-tests/test-m16-real*.log,
+evidence in build/M16/real-run3 and real-run6): two were blocked by the machine (the Claude Code launcher replaced by an update at 03:22
+and 08:22: ai.sh now waits for it), one by the spec's voice rule at S8, one was stopped by hand, one went three rounds with the first
+guidance (energy 54 percent moving: the director chose weak heroes), and the last, with the improved guidance, measured in rounds 1 and 2
+moving 77.7 and 75.5 percent, middle band 79.6 and 74.2, pixels changing 4.79 and 5.27, still stretches 0.0 and 2.6 percent, longest still 0.77
+and 1.13 s (every energy target met), with edit review scores stop 3 then 4, hierarchy 3 then 4, look 4, variety 3, sync 3, sound 3, generic 3,
+requirements 3, energy 3; its issues were about meaning (no visible before and after in the hook, the problem site never shown, the payoff
+reusing the mock), and it was blocked in round 3 when the draft's ffmpeg downscale failed with no message (project.py now tries it twice). No run
+reached the export, so the 20 percent limit on the time per reel (M13: 141 minutes; a review round costs 25 to 45 minutes) and the scores
+on variety and generic above 3 are not shown. HUMAN_TODO asks for a run on a quiet machine.
+
+Earlier milestones' tests after the changes of M16 (fake-only sections; logs in build/M16/earlier-tests/): test-m9 80 passed, test-m10 134,
+test-m11 227, test-m12 180, test-m13 100, test-m14 sections 2 4 5: 39, test-m15 127, test-no-emdash 1: all passing. test-m2 passes 192 and
+fails 15 (its two dummy ideas take more than its 300 s limit: every dummy stage takes 4 to 10 s on this PC, which is busy with other
+runners; M16 touched nothing that runs in a dummy stage except the sandbox config switch), run again with the machine quiet it failed the
+same way: a timing check, not a behavior one, to be run again when the machine is idle (HUMAN_TODO).
 
 ## Known gaps
 
 - Nobody has judged the new components and the golden reel by eye (HUMAN_TODO).
 - The CTA scene's energy is limited by the branding rules; it only counts in the reel's numbers (its scene numbers: moving 70 percent,
   pixels changing 1.9 percent against a bound of 2.64).
+- The acceptance test's real run (section 6) has not passed: see Test results. The energy part works (the meter, the per-scene routing, the
+  numbers met in rounds 1 and 2 of the last run); what is open is the edit review's 3 on variety and generic, the unmeasured time per reel and
+  test-m2's timing check.
 - The golden reel uses five of the nine new components (screenshot-zoom, video-card, mock-site-card, swatch-row, cursor); card-fan,
   card-grid, timeline-scrubber and swatch-card are in the gallery and the catalog but not in the example.
 - The text sizes baked into the library stay under the caption size (a warning since M15).
 
 ## HUMAN_TODO items added
 
-Four lines (build/HUMAN_TODO.md, "M16:"): look at the components and the golden reel; the recordings in the first real reel; the energy
-rules are errors now (the switches); the CTA scene's energy.
+Five lines (build/HUMAN_TODO.md, "M16:"): look at the components and the golden reel; the recordings in the first real reel; the energy
+rules are errors now (the switches); the CTA scene's energy; a real run of the test idea on a quiet machine (section 6).

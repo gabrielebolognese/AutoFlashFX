@@ -133,7 +133,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   NEEDS REVIEW flag; config review.energy_check, liveness, early_stop, energy_scene_share, min_edge_elements), end-card's optional
   confetti, pipeline/tests/test-m16.sh with m16-lib.py, m16-recording.py, m16-plans.py, m16-review.py and sandbox-config.py (the test
   sandboxes of the milestones before M16 turn the energy rules, the energy check, the liveness checks and the early stop off:
-  SANDBOX_ENERGY=on keeps them on; DECISIONS.md 314 to 320). Run every
+  SANDBOX_ENERGY=on keeps them on; ai.sh waits for a Claude Code launcher that an update replaced for a moment; DECISIONS.md 314 to 324). Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4

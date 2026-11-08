@@ -284,6 +284,7 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
   local faulted=0 scale_before
   local backoff_n; backoff_n="$(error_backoff_count)"
   local prompt="$prompt_file"
+  local missing_tries=0
   while :; do
     n="$(ai_next_number "$calls")"
     base="$calls/$n${name:+-$name}"
@@ -308,6 +309,17 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
     fi
     printf 'ended: %(%Y-%m-%d %H:%M:%S)T\nrc: %s\n' -1 "$rc" >> "$base.meta"
     AI_CALL="$base.json"
+    # M16: the CLI missing for a moment (rc 127, or 126: an update of Claude Code replaces its launcher, which blocked two real runs of
+    # M16 at 03:22 and 08:22) is neither a code error nor a limit: wait and call again, a few times
+    if { [ "$rc" = 127 ] || [ "$rc" = 126 ]; } && [ "$faulted" = 0 ]; then
+      missing_tries=$((missing_tries + 1))
+      if [ "$missing_tries" -le "$(cfg ai.missing_cli_retries 10)" ]; then
+        say WARN "$role: the claude command could not be started (exit $rc: a Claude Code update replacing its launcher?), waiting $(cfg ai.missing_cli_wait_seconds 30) s and trying again ($missing_tries/$(cfg ai.missing_cli_retries 10))"
+        printf 'launcher missing: try %s\n' "$missing_tries" >> "$base.meta"
+        sleep "$(cfg ai.missing_cli_wait_seconds 30)"
+        continue
+      fi
+    fi
     if [ "$protect" = 1 ]; then
       local changed
       changed="$("$REELS_PY" "$REELS_PIPELINE/lib/protect.py" check --root "$REELS_ROOT" --repo "$REELS_REPO" --dir "$calls/.protect" --restore 2>/dev/null)"

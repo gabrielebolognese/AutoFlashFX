@@ -763,8 +763,12 @@ def rule_caption_modes(plan: dict, ctx: Context, rep: Report) -> None:
                 for w in words:
                     px = caption_px * (em_ratio if w.get("emphasis") else 1.0)
                     wid = common.text_width(w["word"], px, toks, "serif-italic" if w.get("emphasis") else "grotesk") + 28
-                    if wid > max_w + 1:
-                        rep.err("caption_modes", f"{label}: the word \"{w['word']}\" is about {wid:.0f} px wide at {px:.0f} px; the caption line is at most {max_w:.0f} px (word mode shows one word at a time)")
+                    if wid > max_w + 1 and not w.get("emphasis") and wid * 0.6 <= max_w:
+                        # one spoken word no chunking can shorten (a URL, a package name): caption-word.html scales it to the line (floor 0.6)
+                        # (found by the runner's own fixer in the M16 real run: "claude-plugins-official." stopped the text pass)
+                        rep.warn("caption_modes", f"{label}: the word \"{w['word']}\" is about {wid:.0f} px wide at {px:.0f} px, over the {max_w:.0f} px caption line; caption-word.html scales it to {max_w / wid:.2f}")
+                    elif wid > max_w + 1:
+                        rep.err("caption_modes", f"{label}: the word \"{w['word']}\" is about {wid:.0f} px wide at {px:.0f} px; the caption line is at most {max_w:.0f} px (word mode shows one word at a time)" + ("; drop its emphasis" if w.get("emphasis") else ""))
                 for p in kinetic.check_motion(ch, toks):
                     rep.err("caption_modes", f"{label}: {p}")
             continue
@@ -810,8 +814,17 @@ def rule_text_budget(plan: dict, ctx: Context, rep: Report) -> None:
     if over:
         worst = max(over, key=lambda r: r["chars"])
         parts = ", ".join(f"{inst} {prop} {n}" for inst, prop, n in worst["items"][:6])
+        # every over stretch is named by scene-less time and its items, the worst first (the runner's own fixer found that naming only the
+        # worst one let a retry fix it and miss the others, M16 real run)
+        others = []
+        seen = {(worst["from_ms"], worst["to_ms"])}
+        for r in sorted(over, key=lambda r: -r["chars"]):
+            if (r["from_ms"], r["to_ms"]) in seen or len(others) >= 5:
+                continue
+            seen.add((r["from_ms"], r["to_ms"]))
+            others.append(f"{r['chars']} between {r['from_ms']} and {r['to_ms']} ms (" + ", ".join(f"{inst} {prop} {n}" for inst, prop, n in r["items"][:6]) + ")")
         rep.err("text_budget", f"{worst['chars']} characters of non-caption text are on screen between {worst['from_ms']} and {worst['to_ms']} ms ({parts}); at most {limit} at any moment (E4: graphics first, cut text where a graphic can carry the meaning)"
-                + (f"; {len(over)} stretches are over" if len(over) > 1 else ""))
+                + (f"; {len(over)} stretches are over: also " + "; ".join(others) if others else ""))
 
 
 def rule_text_size(plan: dict, ctx: Context, rep: Report) -> None:

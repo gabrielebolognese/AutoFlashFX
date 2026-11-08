@@ -2513,4 +2513,38 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     is judged by its visible rect (`vx`, `vy`, `vw`, `vh`). (2) card-fan's labels overlapped each other when the cards turned about the pivot
     below the deck (their bottoms converge): the label is at the top of the card now, where the cards spread apart. (3) The catalog marks
     `video` as an image prop like `image` (the director's digest says IMAGE, and the validator checks research/<file>.mp4 exists).
-322. **M16: the real run.** (filled in by the final run: see build/M16/report.md)
+322. **M16: the real runs (test-m16 section 6), what they showed and what they changed.** Six runs of the test idea with the real models,
+    the logs in build/M16/final-tests/test-m16-real*.log, the evidence of the two useful ones in build/M16/real-run3 and real-run6.
+    Run 1 and run 5 were blocked by the machine: the `claude` launcher (npm/claude) is replaced by an update of Claude Code at about
+    03:22 and 08:22 and the next call finds no command (exit 127), which the error reviewer called an environment problem and blocked
+    the idea; ai.sh now waits and calls again (config ai.missing_cli_retries 10, ai.missing_cli_wait_seconds 30) on exit 126 or 127.
+    Run 4 was blocked at S8 by the spec's voice rule (a line af_bella cannot say, WER 14.3 percent). Run 2 was stopped by hand to fix
+    what it showed. Run 3 went through three review rounds with the first version of the guidance: the director chose a card fan, a
+    card grid and a swatch row as heroes (4 to 15 percent of their frames move alone), the reel measured moving 54, 53 and 53 percent
+    with 16 percent of the time in still stretches, the edit review stayed at 3 on stop, variety, generic and energy. What changed
+    after it: the catalog digest lists each component's measured energy alone and says which can carry a scene (video-card 71,
+    window-card 96, mock-site-card 40, screenshot-zoom 35 percent; a card, fan, grid, swatch row, terminal, chart or stat 4 to 15), the 9a
+    prompt makes a moving hero the rule (all scenes but two), `text_size` is checked in the animations pass (the text pass cannot
+    change a `font_px`), a camera-move without an image no longer counts as a camera scene (its empty placeholder label hid under the
+    cards and failed `hyperframes check`), the new components are allowed in every body beat, card-fan's cards carry an icon instead of
+    a play glyph, a one-word caption group speaks in word mode, and the edit review's prompt knows that the style's exit-then-enter
+    scene changes leave two to five near-empty frames and that the hook is judged by the first frames, not frame 1 alone. Run 6, with
+    all of it: round 1 measured moving share 77.7, middle band 79.6, pixels changing 4.79, still stretches 0.0, longest still 0.77 s
+    (every target met; two scenes 0.04 and 0.1 points short of the pixels bound), round 2 75.5, 74.2, 5.27, 2.6, 1.13 s; the edit
+    review: round 1 stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3; round 2 stop 4,
+    hierarchy 4, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3. Its issues were about meaning (the hook has no
+    visible before and after, the problem site never appears, the payoff reuses the dark mock), not about energy. The runner's own fixer
+    repaired two stops of the text pass on the way (a URL as one spoken word wider than the caption line: now a warning when
+    caption-word.html can scale it; the text budget message named only the worst stretch: now every stretch), both ported to the repo
+    (plan_validate.py). Run 6 was blocked in round 3 when the draft's ffmpeg downscale failed with an empty message on a busy machine
+    (project.py now tries it twice). So section 6 has not passed: no run reached the export, so the 20 percent on the time per reel
+    (141 minutes in M13) is unmeasured, and variety and generic stayed at 3. HUMAN_TODO asks for a quiet-machine run.
+323. **M16: what the first real runs cost per round.** A review round takes 25 to 45 minutes (9a 5 to 9 minutes with opus, 22 with fable,
+    9b and 9c 3 to 5, S10 6 to 20 with a builder repair, S12 7 to 10): three rounds are two hours. The time per reel therefore stays
+    within 20 percent over M13's only when the reel passes in its first rounds; the early stop (two identical rounds) never fired in run
+    3 or 6 because the scores moved a point between rounds.
+324. **M16: the earlier tests, final state.** test-m9 80, test-m10 fake 134, test-m11 fake 227, test-m12 fake 180, test-m13 fake 100,
+    test-m14 sections 2, 4, 5: 39, test-m15 127, test-no-emdash 1, all passing; test-m2 passed 192 and failed 15 on its timing (a run of
+    two ideas in 300 s) while two real pipelines were running, see build/M16/report.md for its rerun. The tests of M10 and M15 switch the
+    energy rules off for their frozen plans (REELS_ENERGY_RULES=off), the fake editors' answers of M11 gained the energy score, test-m15
+    follows the new golden plan's component ids.

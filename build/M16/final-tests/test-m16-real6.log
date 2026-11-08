@@ -1,0 +1,98 @@
+
+== 6. the test idea end to end with the real models: research to export, energy loop included (2 to 4 hours) ==
+the real run took 122 min, kept at /tmp/tmp.H8V5Wc2McI/runs/2026-11-08_0837_claude-codes-frontend-design-skill
+    [09:15] WARN   S9: the animations plan has 6 problems (beat_map: s12-chat-card-1: chat-card is not allowed for a payoff beat (tokens.json beat_map: card, card-fan, card-grid, ...); asking the director once more
+    [09:17] INFO   S9: animations planned: 13 scenes, 36 component instances, 19 distinct (card-grid, check-badge, cursor, dark-chip, dm-card, end-card, handwritten-callout, headline, hero-3d, light-chip, mascot, mock-site-card, pop, progress-bar, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+    [09:17] FLAG   needs review: the visual director wanted a component the library lacks: headline-recolor: A headline card in which one word switches to another color on a spoken word, to show the 'one headline word recolored' 
+    [09:17] FLAG   needs review: the visual director wanted a component the library lacks: mascot prop on screenshot-zoom and mock-site-card: A mascot corner prop on the moving heroes (screenshot-zoom, mock-site-card), so the mascot can ride the scene's main car
+    [09:17] STEP   planning animations done (7m05s) -> planning text
+    [09:18] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director
+    [09:19] WARN   S9: the text plan has 1 problems (caption_modes: caption 40 ("claude-plugins-official."): the word "claude-plugins-official." is about 784 px wide at 67 p...); asking the director once more
+    [09:20] ERROR  S9b planning text: exit 1: 09b-text: the text plan still has problems after the director's retry: chunk 39 (install front-end design at claude-plugins-official.) is a group caption but s1
+    [09:25] FIXED  S9b: An unsplittable spoken word too wide for a word caption was fatal; now a warning, renderer scales it (commit 7144903), restarting stage
+    [09:25] INFO   S9b planning text: attempt 2 after the fix
+    [09:25] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director
+    [09:26] INFO   S9: text planned: 47 caption chunks, 3 card texts changed, 16 labels
+    [09:26] STEP   planning text done (1m19s) -> planning transitions
+    [09:26] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director
+    [09:27] INFO   S9: transitions planned: 12 transitions (3 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+    [09:27] STEP   planning transitions done (1m17s) -> building visuals
+    [09:28] INFO   S10: project built from the plan: 38 hosts, 13 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-plugin.png, research/02-skillmd.png, research/03-blog.png, research/04-install.png, research/05-listing.png; builder role builder (1 3D objects)
+    [09:29] INFO   S10: hyperframes check ok (18 warnings)
+    [09:29] INFO   S10: events.json: 229 events (12 scene changes); 86 of 86 element events verified on screen
+    [09:32] INFO   S10: draft.mp4 540x960 30.0 fps, 42.97 s (plan 42.94 s), silent, rendered in 184.8 s
+    [09:33] INFO   S10: hook2.mp4 3.00 s (2970 ms planned), rendered in 53.6 s
+    [09:33] STEP   building visuals done (5m52s) -> adding sound effects
+    [09:34] INFO   S11: 15 sounds placed (mandatory 6, transition 9), 30 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+    [09:34] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.45 dB under the cap; mix -14.26 LUFS, -1.59 dBTP
+    [09:34] STEP   adding sound effects done (25s) -> reviewing: mechanical checks
+    [09:34] INFO   S12: review round 1/5 of the draft
+    [09:41] INFO   S12: code checks: energy 2 issues (moving 77.7%), mechanical 2 issues, style 1 issues, audio ok (voice WER 0.8%)
+    [09:43] WARN   S12: review round 1 failed (18 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3): back to 09a-animations 09b-text 11-sfx, then every step after it runs again
+    [09:43] STEP   reviewing: mechanical checks done (9m24s) -> planning animations
+    [09:43] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [09:50] WARN   S9: the animations plan has 6 problems (layers: scene s2 (stake): 2 or more elements are on screen together for only 29 percent of the scene; at least 60 percen...); asking the director once more
+    [09:51] INFO   S9: animations planned: 13 scenes, 39 component instances, 18 distinct (check-badge, cursor, dark-chip, dm-card, end-card, headline, hero-3d, icon-3d, light-chip, mascot, mock-site-card, progress-bar, screenshot-zoom, stat-number, swatch-row, terminal-card, thumb-grid, window-card); brand slot neutral, hook set piece true, after one retry
+    [09:51] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card tone ai-purple: A mock site with a purple gradient hero, Inter type and a white page, so the generic AI look reads instantly (the stake,
+    [09:51] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card headline_accent_word: Colors one headline word of the mock in a second color (ideally purple) on a spoken word, to show the tell 'one headline
+    [09:51] FLAG   needs review: the visual director wanted a component the library lacks: before-after split or wipe: Two site cards side by side, or a wipe from one to the other: the purple AI before and the warm designed after, wiping o
+    [09:51] STEP   planning animations done (8m03s) -> planning text
+    [09:51] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [09:53] WARN   S9: the text plan has 1 problems (text_budget: 113 characters of non-caption text are on screen between 2030 and 4370 ms (s1-headline-1 kicker 17, s1-head...); asking the director once more
+    [09:53] ERROR  S9b planning text: exit 1: 09b-text: the text plan still has problems after the director's retry: text_budget: 113 characters of non-caption text are on screen between 33210 and 37800 ms 
+    [09:56] FIXED  S9b: Text budget error named only the worst stretch, so retry missed s11; now every stretch is named (commit 033197d), restarting stage
+    [09:56] INFO   S9b planning text: attempt 2 after the fix
+    [09:56] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [09:57] WARN   S9: the text plan has 1 problems (text_budget: 110 characters of non-caption text are on screen between 2030 and 4370 ms (s1-headline-1 kicker 14, s1-head...); asking the director once more
+    [09:58] INFO   S9: text planned: 46 caption chunks, 6 card texts changed, 20 labels, after one retry
+    [09:58] STEP   planning text done (2m14s) -> planning transitions
+    [09:59] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [09:59] INFO   S9: transitions planned: 12 transitions (3 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+    [09:59] STEP   planning transitions done (1m09s) -> building visuals
+    [09:59] INFO   S10: project built from the plan: 42 hosts, 13 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-plugin.png, research/02-skillmd.png, research/03-blog.png, research/04-install.png, research/05-listing.png; builder role builder_escalation (2 3D objects)
+    [10:01] INFO   S10: hyperframes check ok (13 warnings)
+    [10:02] INFO   S10: events.json: 253 events (12 scene changes); 102 of 104 element events verified on screen, 2 not: s11-terminal-card-2:typing@36077, s13-icon-3d-3:enter@40720
+    [10:06] INFO   S10: draft.mp4 540x960 30.0 fps, 42.97 s (plan 42.94 s), silent, rendered in 246.4 s
+    [10:07] INFO   S10: hook2.mp4 3.00 s (2970 ms planned), rendered in 75.5 s
+    [10:07] STEP   building visuals done (8m02s) -> adding sound effects
+    [10:08] INFO   S11: 20 sounds placed (mandatory 9, transition 10, hero 1), 27 candidates dropped by the rules; seed 1033259614; hook 2: 2 sounds
+    [10:08] INFO   S11: verified in 2 passes: every sound within 15.0 ms of its event; closest to the voice 7.45 dB under the cap; mix -14.25 LUFS, -1.59 dBTP
+    [10:08] STEP   adding sound effects done (26s) -> reviewing: mechanical checks
+    [10:08] INFO   S12: review round 2/5 of the draft
+    [10:16] INFO   S12: code checks: energy 3 issues (moving 75.5%), mechanical 5 issues, style 2 issues, audio ok (voice WER 1.6%)
+    [10:17] WARN   S12: review round 2 failed (21 issues; scores stop 4, hierarchy 4, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3): back to 09a-animations 09b-text 11-sfx, then every step after it runs again
+    [10:17] STEP   reviewing: mechanical checks done (9m36s) -> planning animations
+    [10:18] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [10:24] WARN   S9: the animations plan has 5 problems (beat_map: s5-check-badge-3: check-badge is not allowed for a number beat (tokens.json beat_map: card, card-fan, card-gri...); asking the director once more
+    [10:26] INFO   S9: animations planned: 13 scenes, 38 component instances, 17 distinct (card-fan, check-badge, cursor, dark-chip, dm-card, end-card, headline, hero-3d, light-chip, mock-site-card, pop, progress-bar, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+    [10:26] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card tone ai-purple: A white page with a purple gradient hero, an Inter headline and identical rounded cards, so the generic AI look shows at
+    [10:26] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card headline_accent_word: Colors one headline word of the mock (for example 'future' in purple) on a spoken word, so the tell 'one headline word i
+    [10:26] FLAG   needs review: the visual director wanted a component the library lacks: before-after wipe or morph: Two site cards that wipe or flip from one to the other on a spoken word: the purple AI before turning into the warm, asy
+    [10:26] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card headline_at: Sets when the mock's headline starts building, so it types in the moment the card lands and never reads as an empty plac
+    [10:26] STEP   planning animations done (8m23s) -> planning text
+    [10:26] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [10:28] INFO   S9: text planned: 47 caption chunks, 2 card texts changed, 19 labels
+    [10:28] STEP   planning text done (1m39s) -> planning transitions
+    [10:28] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+    [10:29] INFO   S9: transitions planned: 12 transitions (3 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+    [10:29] STEP   planning transitions done (1m15s) -> building visuals
+    [10:29] INFO   S10: project built from the plan: 40 hosts, 13 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-plugin.png, research/02-skillmd.png, research/03-blog.png, research/04-install.png, research/05-listing.png; builder role builder_escalation (1 3D objects)
+    [10:31] INFO   S10: hyperframes check ok (16 warnings)
+    [10:32] INFO   S10: events.json: 279 events (12 scene changes); 107 of 107 element events verified on screen
+    [10:35] ERROR  S10 building visuals: exit 1: 10-build: the draft render failed at scale: 
+    [10:38] BLOCK  idea "Claude Code's frontend-design skill: it ..." blocked at S10: environment problem: The full-size HyperFrames render worked (196.7 s). The ffmpeg downscale after it failed. pipeline/lib/visual/project.py:94 calls ffmpeg_downscale (line 80), and render_scaled returned stage "scale" at line 100. render.json shows rc 3221225794 and empty stderr. That code is 0xC0000142, STATUS_DLL_INIT_FAILED: Windows could not start ffmpeg.exe at all, so ffmpeg never printed anything. This usually happens when desktop heap or process resources run out, often because the headless Chrome renders and the events harness leave chrome-headless-shell, node or ffmpeg processes running. Nothing changed in the code: the same command, inputs and code path made draft.mp4 at 09:32 and 10:06 in this run. The only commits since the last good export touch plan_validate.py caption and text-budget rules, which are not on this path. So this is a Windows resource problem on this PC, not a pipeline bug. One side effect: render_scaled deletes draft.full.mp4 (line 96) before it checks the ffmpeg result, so a retry has to render again. That costs time but did not cause the failure.. Needs you: Free the Windows process resources, then resume the run. In Task Manager (or in Git Bash with `taskkill //F //IM chrome-headless-shell.exe //T`, then the same for chrome.exe started by HyperFrames, and ffmpeg.exe), end any leftover chrome-headless-shell, headless chrome, node (npx hyperframes) and ffmpeg processes. If ffmpeg still fails to start, reboot the PC. Check that `ffmpeg -version` prints normally in Git Bash, then restart the runner so 10-build runs again for runs/2026-11-08_0837_claude-codes-frontend-design-skill.. Moved to logs/blocked.txt
+PASS  the runner exits 0
+FAIL  DONE: exported #1 (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #1 -> exports/1/' in /tmp/tmp.H8V5Wc2McI/real.out)
+FAIL  no BLOCK, DROP or STOP line (unexpected match for '^\[[0-9]{2}:[0-9]{2}\] (BLOCK|DROP|STOP)' in /tmp/tmp.H8V5Wc2McI/real.out)
+FAIL  exports/1/1.mp4 (missing file /tmp/tmp.H8V5Wc2McI/exports/1/1.mp4)
+PASS  12-review/energy.json: the energy check ran
+FAIL  real run: reel-meets-the-targets-or-exports-with-its-numbers-in-needs-review ((False, False))
+PASS  real run: edit-review-stop-above-the-M13-reels-3
+FAIL  real run: edit-review-variety-above-the-M13-reels-3 ({'stop': 4, 'hierarchy': 4, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3})
+FAIL  real run: edit-review-generic-above-the-M13-reels-3 ({'stop': 4, 'hierarchy': 4, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3})
+PASS  real run: time-per-reel-grows-by-at-most-20-percent
+   energy of the last round: {'moving_share_pct': 75.5, 'middle_moving_share_pct': 74.2, 'pixels_changing_pct': 5.27, 'still_share_pct': 2.6, 'longest_still_s': 1.13} targets {'moving_share_pct': 41, 'middle_moving_share_pct': 46, 'pixels_changing_pct': 3.3, 'still_share_pct': 15, 'longest_still_s': 2.0}
+   review rounds: ['review-r1.json', 'review-r2.json'] verdict fix scores {'stop': 4, 'hierarchy': 4, 'look': 4, 'variety': 3, 'sync': 3, 'sound': 3, 'generic': 3, 'requirements': 3, 'energy': 3}
+   the captions file:
+
+.m16-real-copy.sh: 4 passed, 6 failed

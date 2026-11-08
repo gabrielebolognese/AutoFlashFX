@@ -20,6 +20,7 @@ import json
 import os
 import shutil
 import subprocess
+import time
 
 from motion import golden
 from visual import common, plan_merge, plan_validate
@@ -92,6 +93,10 @@ def render_scaled(project: str, out_mp4: str, quality: str, gpu_flag: str, crf: 
         info["stage"] = "render"
         return info
     sc = ffmpeg_downscale(full, out_mp4, crf, max(120, timeout // 4))
+    if sc["rc"] != 0 or not os.path.isfile(out_mp4):
+        # M16: one more try (a real run of M16 lost its third review round to a downscale that failed with no message, on a busy machine)
+        time.sleep(5)
+        sc = ffmpeg_downscale(full, out_mp4, crf, max(120, timeout // 4))
     try:
         os.remove(full)
     except OSError:

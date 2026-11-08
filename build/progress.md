@@ -486,8 +486,9 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   test-m11). Report: build/M15/report.md.
 
 ## M16 Director, components and the energy loop
-- Status: done (2026-11-08). test-m16 sections 1 to 5 and 7: 166 passed, 0 failed (build/M16/final-tests/test-m16-a3.log); section 6, the test
-  idea from scratch with the real models, see build/M16/report.md. The test has seven sections: 1 the nine new components (catalog,
+- Status: done (2026-11-08). test-m16 sections 1 to 5 and 7: 166 passed, 0 failed (build/M16/final-tests/test-m16-final.log); section 6, the test
+  idea from scratch with the real models, has NOT passed: six runs, none reached the export (environment blocks, the voice rule), the
+  energy targets were met in rounds 1 and 2 of the last one, the edit review stayed at 3 on variety and generic (DECISIONS.md 322). The test has seven sections: 1 the nine new components (catalog,
   behavior in the browser harness, frame-match, no tween outside pc-motion.js, `npx hyperframes lint` and `check` on motion-lib/, the gallery),
   2 S1's recordings (a local web server with a long page and a short one: NN-name.mp4 next to the png, H.264, 1080 wide, 5 to 8 s, no
   sound, the page scrolls; none for a page that does not scroll; `--no-record`; assets.json), 3 the plan rules of E9 (the golden plan
@@ -513,4 +514,5 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   lib.sh; SANDBOX_ENERGY=on keeps them on). Earlier milestones touched: M9 (harness.py, gallery.py, catalog.py, expectations.py,
   frame-match --only keeps the report whole, goldenplan.py, golden.py, end-card.html, tokens.py), M10 (visual/common.py, plan9.py,
   plan_validate.py, events.py), M11 (mechanical.py, route.py, edit.py, the 12-review stage, test-m11's scores line), M12 (research.py,
-  screenshot.py). DECISIONS.md 314 to 322. Report: build/M16/report.md.
+  screenshot.py). DECISIONS.md 314 to 324. Report: build/M16/report.md. Also touched: pipeline/lib/ai.sh (a launcher missing for a moment
+  is waited out: ai.missing_cli_retries) and project.py (the draft's downscale is tried twice).

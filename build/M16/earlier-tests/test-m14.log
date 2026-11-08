@@ -1,0 +1,76 @@
+
+== 2. the library on pc-motion.js: frame-match, the life checks, the energy of each component ==
+video-card: pass (7/7 checks, strip r=0.959, moving 70.8%, longest still 0.03 s)
+window-card: pass (9/9 checks, strip r=0.965, moving 96.2%, longest still 0.03 s)
+frame-match: 38 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md
+PASS  frame-match passes every component (the style's numbers, the strips, the life checks)
+covered ok
+pass ok
+never-static ok
+life-checked 38 of 38
+inertia ok measured on 26 components
+energy ok
+four-seconds ok
+main-animations ok
+icon-3d ok
+PASS  every component in compositions/ was measured
+PASS  every component passes
+PASS  every main animation still frame-matches its reference numbers
+PASS  no visible element stands still for 0.5 s in any component rendered alone for 4 s
+PASS  the inertia after the landing lasts 2 to 4 s on every main element
+PASS  every component has its energy measured alone
+PASS  every component was measured for at least 4 s
+PASS  icon-3d passes frame-match
+PASS  the catalog agrees with the component files
+icon3d ok
+hold-prop ok
+canvas-props ok
+energy-in-catalog ok
+count 38
+PASS  catalog.json lists icon-3d approved, kind 3d with a css fallback, allowed in the hook
+PASS  every element component declares the hold prop
+PASS  the canvas declares seed, duration, layers, edges and ambient
+PASS  catalog.json carries every component's energy measures
+PASS  no composition keeps a tween or an onUpdate of its own (pc-motion.js holds the phases and the curves)
+PASS  every component loads pc-motion.js (38)
+PASS  pc-motion.js defines PCM.life
+PASS  pc-motion.js defines PCM.glide
+PASS  pc-motion.js defines PCM.canvas
+PASS  pc-motion.js defines PCM.idle
+PASS  pc-motion.js defines PCM.depth
+PASS  pc-motion.js defines PCM.exit
+PASS  pc-motion.js defines PCM.countUp
+PASS  pc-motion.js defines PCM.typeInto
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  the gallery page builds
+PASS  the gallery shows each component's energy measures
+PASS  the showreel's canvas host is driven by the runtime (no data-no-timeline)
+PASS  npx hyperframes check --json passes on motion-lib/
+
+== 4. the golden reel rendered again with the new library (same plan) ==
+project written: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\project (30 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.mp4, research/02-plugin-page.mp4, research/02-plugin-page.png, research/03-skill-md.png, research/04-blog.mp4, research/05-install-docs.mp4)
+hyperframes check: ok
+render: 166.1 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+contact sheet: C:/Users/there/OneDrive/Desktop/instagramReels/golden/test-idea\contact-sheet.png
+PASS  render-golden builds, checks, renders and probes clean with the new library
+PASS  the plan did not change (the same plan, the new library)
+PASS  npx hyperframes check passed on the golden project
+energy golden.mp4: 1244 frames, 41.47 s: moving share 81.8% (ok, at least 41%), middle band 92.2% (ok, at least 46%), pixels changing 4.11% (ok, at least 3.3%), still stretches 0.0% (ok, at most 15%), longest still 0.77 s (ok, at most 2.0 s): pass
+before {'moving_share_pct': 13.0, 'middle_moving_share_pct': 12.0, 'pixels_changing_pct': 1.0, 'still_share_pct': 49.5, 'longest_still_s': 2.8}
+after {'moving_share_pct': 81.8, 'middle_moving_share_pct': 92.2, 'pixels_changing_pct': 4.11, 'still_share_pct': 0.0, 'longest_still_s': 0.77}
+still-measures {'still_share_pct': True, 'longest_still_s': True}
+every-measure ok
+doubled ok
+PASS  the re-rendered golden measures higher than before on every movement measure (moving share, middle band, pixels changing)
+PASS  its moving share at least doubled
+PASS  golden/test-idea/energy.json written
+PASS  the contact sheet exists
+host ok
+pcm ok
+PASS  the golden project's canvas host is seeded, runs the reel's length and has a timeline
+PASS  the golden project carries pc-motion.js
+
+== 5. no em dash in the files M14 wrote ==
+PASS  no em dash in the M14 files
+
+test-m14.sh: 39 passed, 0 failed

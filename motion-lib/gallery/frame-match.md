@@ -1,6 +1,6 @@
 # frame-match: the library components against the style's numbers, the reference strips and the Motion and energy rules
 
-Run 2026-11-08 06:39 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png. The life checks (M14, E1): every component is measured for 4.3 s; no visible element stands still for 0.5 s (the calm hold speed over half a second), the main element's inertia ends 2.0 to 4.0 s after its landing, and the energy columns are the component's own frames measured as review/energy.py measures a reel.
+Run 2026-11-08 11:17 by pipeline/bin/frame-match. Tolerances: 1 frame on timings, 10 percent on distances and overshoots; a reference strip must correlate at r >= 0.5 (DECISIONS.md 29). Numbers: styles/paper-cards/vocabulary.md and style.md through tokens.json; strips: styles/paper-cards/analysis/<vXX>/extra/s30_*.png. The life checks (M14, E1): every component is measured for 4.3 s; no visible element stands still for 0.5 s (the calm hold speed over half a second), the main element's inertia ends 2.0 to 4.0 s after its landing, and the energy columns are the component's own frames measured as review/energy.py measures a reel.
 
 **38 pass, 0 fail** of 38 components.
 
@@ -10,7 +10,7 @@ Run 2026-11-08 06:39 by pipeline/bin/frame-match. Tolerances: 1 frame on timings
 | caption-group | pass | 7/7 | none | none | 3.1% | 0.23% | 3.67 s |
 | caption-word | pass | 5/5 | v06/extra/s30_031.0_highlight.png | 0.955 | 0.8% | 0.29% | 3.13 s |
 | card-fan | pass | 6/6 | v04/extra/s30_deckgrid_f420.png | 0.979 | 10% | 0.52% | 3.43 s |
-| card-grid | pass | 8/8 | v04/extra/s30_gridsettle_f444.png | 0.985 | 7.7% | 0.27% | 3.9 s |
+| card-grid | pass | 8/8 | v04/extra/s30_gridsettle_f444.png | 0.984 | 6.9% | 0.26% | 3.93 s |
 | card | pass | 10/10 | v03/extra/s30_hook_000.0.png | 0.938 | 7.7% | 0.49% | 3.9 s |
 | chart-card | pass | 13/13 | v04/extra/s30_bars_f1426.png | 0.985 | 12.3% | 0.56% | 3.7 s |
 | chat-card | pass | 10/10 | v06/extra/s30_070.9_typing_tail.png | 0.96 | 0% | 0.28% | 4.33 s |
@@ -28,21 +28,21 @@ Run 2026-11-08 06:39 by pipeline/bin/frame-match. Tolerances: 1 frame on timings
 | light-chip | pass | 4/4 | v03/extra/s30_label_042.4.png | 0.963 | 0% | 0.02% | 4.33 s |
 | logo-tile | pass | 10/10 | v08/extra/s30_003.8_logo_chain.png | 0.888 | 0% | 0.07% | 4.33 s |
 | mascot | pass | 4/4 | v08/extra/s30_000.8_mascot_title.png | 0.981 | 0% | 0.11% | 4.33 s |
-| mock-site-card | pass | 7/7 | v07/extra/s30_011.4_window_rise.png | 0.959 | 41.5% | 1.66% | 0.47 s |
+| mock-site-card | pass | 7/7 | v07/extra/s30_011.4_window_rise.png | 0.96 | 37.7% | 1.66% | 0.47 s |
 | paper-canvas | pass | 10/10 | none | none | 0% | 0.01% | 4.33 s |
 | pop | pass | 6/6 | v03/extra/s30_cta_058.0.png | 0.992 | 0% | 0.02% | 4.33 s |
 | progress-bar | pass | 13/13 | v01/extra/s30_card33.png | 0.827 | 0.8% | 0.26% | 3.8 s |
-| screenshot-zoom | pass | 8/8 | v07/extra/s30_011.4_window_rise.png | 0.983 | 35.4% | 2.92% | 1.37 s |
+| screenshot-zoom | pass | 8/8 | v07/extra/s30_011.4_window_rise.png | 0.983 | 35.4% | 2.93% | 1.37 s |
 | speech-bubble | pass | 9/9 | v08/extra/s30_038.9_end.png | 0.987 | 3.8% | 0.29% | 3.87 s |
 | stat-number | pass | 9/9 | v04/extra/s30_count_f925.png | 0.939 | 14.6% | 0.32% | 3.23 s |
 | strike-through | pass | 5/5 | v06/extra/s30_062.3_xstamp.png | 0.98 | 0% | 0.02% | 4.33 s |
-| swatch-card | pass | 10/10 | v07/extra/s30_011.4_window_rise.png | 0.974 | 6.9% | 0.38% | 3.83 s |
-| swatch-row | pass | 5/5 | v04/extra/s30_bars_f1426.png | 0.995 | 10.8% | 0.47% | 1.6 s |
+| swatch-card | pass | 10/10 | v07/extra/s30_011.4_window_rise.png | 0.974 | 7.7% | 0.41% | 3.83 s |
+| swatch-row | pass | 5/5 | v04/extra/s30_bars_f1426.png | 0.995 | 11.5% | 0.48% | 1.6 s |
 | table-card | pass | 10/10 | v04/extra/s30_scene_f184.png | 0.979 | 7.7% | 0.51% | 3.9 s |
 | terminal-card | pass | 9/9 | v06/extra/s30_070.9_typing_tail.png | 0.981 | 10% | 0.76% | 3.03 s |
 | thumb-grid | pass | 9/9 | v04/extra/s30_gridsettle_f444.png | 0.966 | 6.2% | 0.24% | 3.93 s |
-| timeline-scrubber | pass | 8/8 | v06/extra/s30_001.0_card.png | 0.893 | 3.8% | 0.38% | 3.93 s |
-| video-card | pass | 7/7 | v03/extra/s30_hook_000.0.png | 0.959 | 70.8% | 3.51% | 0.03 s |
+| timeline-scrubber | pass | 8/8 | v06/extra/s30_001.0_card.png | 0.908 | 3.8% | 0.38% | 3.93 s |
+| video-card | pass | 7/7 | v03/extra/s30_hook_000.0.png | 0.959 | 70.8% | 3.5% | 0.03 s |
 | window-card | pass | 9/9 | v07/extra/s30_011.4_window_rise.png | 0.965 | 96.2% | 2.74% | 0.03 s |
 
 ## camera-move: pass
@@ -97,9 +97,9 @@ Energy alone (131 frames): moving share 0.8 percent, middle band 0 percent, pixe
 | life: never static #cf-card-4 | 0 still windows of 0.5 s windows | 0 | yes |
 | life: pixels never still | < 15 frames frames | 0 | yes |
 
-Strips: v04/extra/s30_deckgrid_f420.png r=0.979; v02/extra/s30_grid34.png r=0.963
+Strips: v04/extra/s30_deckgrid_f420.png r=0.979; v02/extra/s30_grid34.png r=0.967
 
-Energy alone (131 frames): moving share 10 percent, middle band 20.8 percent, pixels changing 0.52 percent, longest still 3.43 s, mean change 0.206
+Energy alone (131 frames): moving share 10 percent, middle band 21.5 percent, pixels changing 0.52 percent, longest still 3.43 s, mean change 0.209
 
 ## card-grid: pass
 
@@ -114,9 +114,9 @@ Energy alone (131 frames): moving share 10 percent, middle band 20.8 percent, pi
 | life: never static #cg-card-3 | 0 still windows of 0.5 s windows | 0 | yes |
 | life: pixels never still | < 15 frames frames | 0 | yes |
 
-Strips: v02/extra/s30_grid34.png r=0.971; v04/extra/s30_gridsettle_f444.png r=0.985
+Strips: v02/extra/s30_grid34.png r=0.967; v04/extra/s30_gridsettle_f444.png r=0.984
 
-Energy alone (131 frames): moving share 7.7 percent, middle band 10 percent, pixels changing 0.27 percent, longest still 3.9 s, mean change 0.145
+Energy alone (131 frames): moving share 6.9 percent, middle band 10 percent, pixels changing 0.26 percent, longest still 3.93 s, mean change 0.144
 
 ## card: pass
 
@@ -200,10 +200,10 @@ Energy alone (131 frames): moving share 0 percent, middle band 1.5 percent, pixe
 |---|---|---|---|
 | fade: opacity frames | 4 frames | 4 | yes |
 | life: never static #cu-arrow | 0 still windows of 0.5 s windows | 0 | yes |
-| life: pixels never still | < 15 frames frames | 49 | yes |
+| life: pixels never still | < 15 frames frames | 54 | yes |
 | | | WARN: the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold) | |
 
-Energy alone (131 frames): moving share 0 percent, middle band 0 percent, pixels changing 0.07 percent, longest still 4.33 s, mean change 0.036
+Energy alone (131 frames): moving share 0 percent, middle band 0 percent, pixels changing 0.07 percent, longest still 4.33 s, mean change 0.034
 
 ## dark-chip: pass
 
@@ -404,9 +404,9 @@ Energy alone (131 frames): moving share 0 percent, middle band 1.5 percent, pixe
 | life: pixels never still | < 15 frames frames | 0 | yes |
 | life: inertia after the landing #ms | 2.0 to 4.0 s s (hold speed 9.3 px/s) | 2.93 | yes |
 
-Strips: v07/extra/s30_011.4_window_rise.png r=0.959; v01/extra/s30_hook.png r=0.95
+Strips: v07/extra/s30_011.4_window_rise.png r=0.96; v01/extra/s30_hook.png r=0.95
 
-Energy alone (131 frames): moving share 41.5 percent, middle band 70 percent, pixels changing 1.66 percent, longest still 0.47 s, mean change 0.6
+Energy alone (131 frames): moving share 37.7 percent, middle band 72.3 percent, pixels changing 1.66 percent, longest still 0.47 s, mean change 0.597
 
 ## paper-canvas: pass
 
@@ -476,9 +476,9 @@ Energy alone (131 frames): moving share 0.8 percent, middle band 16.2 percent, p
 | life: pixels never still | < 15 frames frames | 0 | yes |
 | life: inertia after the landing #sz | 2.0 to 4.0 s s (hold speed 9.37 px/s) | 2.93 | yes |
 
-Strips: v07/extra/s30_011.4_window_rise.png r=0.983; v01/extra/s30_hook.png r=0.957
+Strips: v07/extra/s30_011.4_window_rise.png r=0.983; v01/extra/s30_hook.png r=0.958
 
-Energy alone (131 frames): moving share 35.4 percent, middle band 52.3 percent, pixels changing 2.92 percent, longest still 1.37 s, mean change 1.25
+Energy alone (131 frames): moving share 35.4 percent, middle band 53.1 percent, pixels changing 2.93 percent, longest still 1.37 s, mean change 1.262
 
 ## speech-bubble: pass
 
@@ -548,7 +548,7 @@ Energy alone (131 frames): moving share 0 percent, middle band 0 percent, pixels
 
 Strips: v07/extra/s30_011.4_window_rise.png r=0.974
 
-Energy alone (131 frames): moving share 6.9 percent, middle band 12.3 percent, pixels changing 0.38 percent, longest still 3.83 s, mean change 0.241
+Energy alone (131 frames): moving share 7.7 percent, middle band 12.3 percent, pixels changing 0.41 percent, longest still 3.83 s, mean change 0.239
 
 ## swatch-row: pass
 
@@ -560,9 +560,9 @@ Energy alone (131 frames): moving share 6.9 percent, middle band 12.3 percent, p
 | life: pixels never still | < 15 frames frames | 0 | yes |
 | life: inertia after the landing #sr-wrap | 2.0 to 4.0 s s (hold speed 9.17 px/s) | 2.87 | yes |
 
-Strips: v04/extra/s30_bars_f1426.png r=0.995; v06/extra/s30_048.0_bars.png r=0.968
+Strips: v04/extra/s30_bars_f1426.png r=0.995; v06/extra/s30_048.0_bars.png r=0.964
 
-Energy alone (131 frames): moving share 10.8 percent, middle band 23.1 percent, pixels changing 0.47 percent, longest still 1.6 s, mean change 0.306
+Energy alone (131 frames): moving share 11.5 percent, middle band 23.1 percent, pixels changing 0.48 percent, longest still 1.6 s, mean change 0.308
 
 ## table-card: pass
 
@@ -632,9 +632,9 @@ Energy alone (131 frames): moving share 6.2 percent, middle band 14.6 percent, p
 | life: pixels never still | < 15 frames frames | 0 | yes |
 | life: inertia after the landing #ts | 2.0 to 4.0 s s (hold speed 9.69 px/s) | 2.93 | yes |
 
-Strips: v06/extra/s30_001.0_card.png r=0.893
+Strips: v06/extra/s30_001.0_card.png r=0.908
 
-Energy alone (131 frames): moving share 3.8 percent, middle band 21.5 percent, pixels changing 0.38 percent, longest still 3.93 s, mean change 0.164
+Energy alone (131 frames): moving share 3.8 percent, middle band 22.3 percent, pixels changing 0.38 percent, longest still 3.93 s, mean change 0.166
 
 ## video-card: pass
 
@@ -650,7 +650,7 @@ Energy alone (131 frames): moving share 3.8 percent, middle band 21.5 percent, p
 
 Strips: v07/extra/s30_011.4_window_rise.png r=0.943; v01/extra/s30_hook.png r=0.937; v03/extra/s30_hook_000.0.png r=0.959
 
-Energy alone (131 frames): moving share 70.8 percent, middle band 73.1 percent, pixels changing 3.51 percent, longest still 0.03 s, mean change 1.277
+Energy alone (131 frames): moving share 70.8 percent, middle band 73.1 percent, pixels changing 3.5 percent, longest still 0.03 s, mean change 1.278
 
 ## window-card: pass
 

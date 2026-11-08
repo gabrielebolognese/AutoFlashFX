@@ -1,0 +1,130 @@
+
+== 1. the nine new components: catalog, behavior in the browser, frame-match, lint and check ==
+PASS  components: catalog-screenshot-zoom
+PASS  components: props-screenshot-zoom
+PASS  components: catalog-video-card
+PASS  components: props-video-card
+PASS  components: catalog-card-fan
+PASS  components: props-card-fan
+PASS  components: catalog-card-grid
+PASS  components: props-card-grid
+PASS  components: catalog-timeline-scrubber
+PASS  components: props-timeline-scrubber
+PASS  components: catalog-cursor
+PASS  components: props-cursor
+PASS  components: catalog-mock-site-card
+PASS  components: props-mock-site-card
+PASS  components: catalog-swatch-row
+PASS  components: props-swatch-row
+PASS  components: catalog-swatch-card
+PASS  components: props-swatch-card
+PASS  components: zoom-camera-travels
+PASS  components: zoom-highlight-draws
+PASS  components: zoom-never-empty
+PASS  components: video-plays
+PASS  components: video-muted-never-played
+PASS  components: video-loops
+PASS  components: video-holds-last-frame
+PASS  components: video-falls-back-to-still
+PASS  components: fan-opens
+PASS  components: fan-glides-on
+PASS  components: grid-wave
+PASS  components: scrubber-runs-linearly
+PASS  components: cursor-arrives
+PASS  components: cursor-presses-and-rings
+PASS  components: mock-site-builds
+PASS  components: mock-site-scrolls
+PASS  components: swatches-fill-on-their-words
+PASS  components: swatch-card-fills-and-types
+PASS  catalog.json matches the component files (catalog ok: 38 components, items 1 to 24 covered, the DM card present)
+PASS  frame-match: the nine pass (frame-match: 9 pass, 0 fail -> C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib\gallery\frame-match.md)
+PASS  frame-match: screenshot-zoom passes (its main animation, the life checks, the strips)
+PASS  frame-match: video-card passes (its main animation, the life checks, the strips)
+PASS  frame-match: card-fan passes (its main animation, the life checks, the strips)
+PASS  frame-match: card-grid passes (its main animation, the life checks, the strips)
+PASS  frame-match: timeline-scrubber passes (its main animation, the life checks, the strips)
+PASS  frame-match: cursor passes (its main animation, the life checks, the strips)
+PASS  frame-match: mock-site-card passes (its main animation, the life checks, the strips)
+PASS  frame-match: swatch-row passes (its main animation, the life checks, the strips)
+PASS  frame-match: swatch-card passes (its main animation, the life checks, the strips)
+FAIL  library: report-has-all-components (9)
+PASS  no composition keeps a tween or an onUpdate of its own (the new ones too: pc-motion.js's move helpers)
+PASS  npx hyperframes lint: no errors on motion-lib/
+PASS  npx hyperframes check --json passes on motion-lib/
+PASS  the gallery page builds
+FAIL  the gallery shows screenshot-zoom (no match for 'gallery/stills/screenshot-zoom.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of screenshot-zoom
+FAIL  the gallery shows video-card (no match for 'gallery/stills/video-card.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of video-card
+FAIL  the gallery shows card-fan (no match for 'gallery/stills/card-fan.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of card-fan
+FAIL  the gallery shows card-grid (no match for 'gallery/stills/card-grid.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of card-grid
+FAIL  the gallery shows timeline-scrubber (no match for 'gallery/stills/timeline-scrubber.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of timeline-scrubber
+FAIL  the gallery shows cursor (no match for 'gallery/stills/cursor.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of cursor
+FAIL  the gallery shows mock-site-card (no match for 'gallery/stills/mock-site-card.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of mock-site-card
+FAIL  the gallery shows swatch-row (no match for 'gallery/stills/swatch-row.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of swatch-row
+FAIL  the gallery shows swatch-card (no match for 'gallery/stills/swatch-card.png' in /c/Users/there/OneDrive/Desktop/instagramReels/motion-lib/gallery/index.html)
+PASS  still of swatch-card
+
+== 2. S1's page recordings: a scroll video next to the screenshot ==
+FAIL  recordings: : the driver printed no result line (no-record-flag ok assets-json-lists-the-recording ok assets-json-no-recording-for-the-short-page ok )
+FAIL  the research prompt tells the model about the recordings (no match for 'scroll recording' in pipeline/stages/01-research/prompt.md)
+PASS  assets.json's schema has the recording fields
+PASS  the research contract describes the recordings
+
+== 3. the plan rules of E9: the golden plan passes, one planted plan per rule fails, the levels, the repairs, the prompts ==
+PASS  rules: golden-passes
+PASS  rules: golden-flags-energy
+PASS  rules: rule-hero_motion-fails
+PASS  rules: rule-hero_motion-isolated
+PASS  rules: rule-hero_fill-fails
+PASS  rules: rule-hero_fill-isolated
+PASS  rules: rule-layers-fails
+PASS  rules: rule-layers-isolated
+PASS  rules: rule-camera-fails
+PASS  rules: rule-camera-isolated
+PASS  rules: rule-hook_frame0-fails
+PASS  rules: rule-hook_frame0-isolated
+PASS  rules: rule-empty_paper-fails
+PASS  rules: rule-empty_paper-isolated
+PASS  rules: rule-list_entry-fails
+PASS  rules: rule-list_entry-isolated
+PASS  rules: rule-transition_variety-fails
+PASS  rules: rule-transition_variety-isolated
+PASS  rules: level-warn-reports-only
+PASS  rules: level-off-silent
+FAIL  plans: : the driver printed no result line (real-motion-warns-when-no-recording-plays ok footprint-mock-site ok text-items-new-components ok )
+
+== 4. the golden reel: rebuilt from the new plan, every energy target met, every scene at 80 percent ==
+   (golden.mp4 is newer than the plan and the library: not rendered again; M16_RERENDER=1 forces it)
+PASS  golden.mp4 exists
+    the reel: moving share 82.1% (ok, at least 41%), middle band 92.0% (ok, at least 46%), pixels changing 4.12% (ok, at least 3.3%), still stretches 0.0% (ok, at most 15%), longest still 0.77 s (ok, at most 2.0 s)
+    s1 hook        moving 100.0, middle 100.0, pixels 3.5, still 0.0, longest 0.0
+    s2 stake       moving 95.8, middle 96.8, pixels 4.32, still 0.0, longest 0.1
+    s3 comparison  moving 60.8, middle 75.5, pixels 6.82, still 0.0, longest 0.67
+    s4 mechanism   moving 95.5, middle 100.0, pixels 4.3, still 0.0, longest 0.03
+    s5 comparison  moving 52.7, middle 96.4, pixels 2.83, still 0.0, longest 0.77
+    s6 number      moving 94.0, middle 100.0, pixels 3.52, still 0.0, longest 0.07
+    s7 mechanism   moving 96.8, middle 99.2, pixels 4.19, still 0.0, longest 0.03
+    s8 proof       moving 87.5, middle 91.7, pixels 3.52, still 0.0, longest 0.13
+    s9 step        moving 99.3, middle 99.3, pixels 5.88, still 0.0, longest 0.03
+    s10 payoff      moving 47.8, middle 96.7, pixels 3.06, still 0.0, longest 0.37
+    s11 ask         moving 69.6, middle 60.7, pixels 1.89, still 0.0, longest 0.73
+FAIL  golden: every-scene-at-80-percent-of-every-target ([('s11', 'pixels_changing_pct', 1.89, 2.64)])
+FAIL  golden: golden-uses-the-new-components (['cursor', 'mock-site-card', 'screenshot-zoom', 'swatch-row', 'video-card'])
+PASS  the README lists the new golden's components
+
+== 5. S12: the energy check, the liveness checks, the energy score, the early stop ==
+FAIL  review: energy-still-video-fails-everywhere (['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'])
+FAIL  review: liveness-golden-clean ([('contrast', 'text "Same" (mock-site-card s1-mock-site-card-2, scene s1, 1.73s) has a contrast of 1.20:1 against its background (4.5:1 needed)'), ('contrast', 'text "look" (mock-site-card s1-mock-site-card-2, scene s1, 1.73s) has a contrast of 1.17:1 against its background (4.5:1 needed)'), ('overlap', '"identical." (s1-headline-1) and "look" (s1-mock-site-card-2) overlap at 1.96s (emphasis identical)'), ('overlap', '"client-site.com" (s2-mock-site-card-1) and "look" (s2-mock-site-card-1) overlap at 6.13s (emphasis instantly)'), ('off_canvas', 'the image assets/research/03-skill-md.png (s3-screenshot-zoom-1) is off the canvas at 9.02s'), ('off_canvas', 'the image assets/research/02-plugin-page.png (s8-screenshot-zoom-1) is off the canvas at 27.59s')])
+FAIL  review: liveness-static-element-caught ([('contrast', 'text "Same" (mock-site-card s1-mock-site-card-2, scene s1, 1.73s) has a contrast of 1.20:1 against its background (4.5:1'), ('contrast', 'text "look" (mock-site-card s1-mock-site-card-2, scene s1, 1.73s) has a contrast of 1.17:1 against its background (4.5:1'), ('overlap', '"identical." (s1-headline-1) and "look" (s1-mock-site-card-2) overlap at 1.96s (emphasis identical)'), ('overlap', '"client-site.com" (s2-mock-site-card-1) and "look" (s2-mock-site-card-1) overlap at 6.13s (emphasis instantly)')])
+
+== 7. no em dash in the files M16 wrote ==
+PASS  no em dash in the M16 components, helpers and sources
+PASS  no em dash in the M16 prompts, schemas, contracts and tests
+pipeline/tests/test-m16.sh: line 315: summary: command not found
