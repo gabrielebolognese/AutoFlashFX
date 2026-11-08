@@ -39,8 +39,8 @@ after it starts (and the hook's breath).
 
 Score each of these 1 to 5 (4 passes, 5 is what the best reels of the references do; be honest, a 3 sends the reel
 back for a fix):
-- stop: does frame 1 (the first still of the hook filmstrip) stop the scroll: something is on screen at once and the
-  headline builds fast
+- stop: does the hook stop the scroll: something moves on screen by frame 4 (the first frames of the hook filmstrip: the style's
+  enters start at zero opacity and settle over 5 frames, so frame 1 alone is not the test) and the headline builds fast
 - hierarchy: hierarchy and legibility: one hero per scene, the captions readable, nothing crowded
 - look: does it match the look: would these stills sit on the same account as the reference stills (warm paper,
   rounded warm-white cards with soft shadows, bare ink captions one word at a time with orange emphasis boxes, or big kinetic
@@ -57,6 +57,10 @@ back for a fix):
   there is depth (layers at different distances, a camera move every few scenes), the edges of the frame are alive (cards and shapes
   half outside it), and no scene sits still. The code measured the energy already (the check line above gives the numbers): judge
   what the numbers cannot, whether the motion has a purpose and variety, and tag a scene that feels static [animation]
+
+Scene changes follow the style (style.md Open question 3, exit then enter): the leaving elements exit over 4 to 10 frames and the next
+scene's elements enter at once, so two to five near-empty frames (up to a sixth of a second) between two scenes are the style, not a
+defect: report an empty stretch only when it is longer than 8 frames (0.27 s) or when the next scene's hero arrives late.
 
 Branding: the CTA always carries the FlashFX DM notification card and the FlashFX lockup; elsewhere FlashFX shows
 only when the reel's solution is FlashFX. Say whether this feels natural (a creator's account that happens to be

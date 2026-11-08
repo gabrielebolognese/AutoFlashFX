@@ -42,7 +42,9 @@
       var slots = items.map(function (it, i) {
         var s = PC.el("div", "sr-slot", row); s.id = "sr-slot-" + i;
         var f = PC.el("div", "sr-fill", s); f.id = "sr-fill-" + i; f.style.background = it.color;
-        if (it.label) PC.el("div", "sr-label", s, String(it.label));
+        if (it.label) { var lb = PC.el("div", "sr-label", s, String(it.label)); var rgb = /^#?([0-9a-f]{6})$/i.exec(String(it.color)); var lum = 0;
+          if (rgb) { var n = parseInt(rgb[1], 16); lum = (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; }
+          lb.style.color = lum > 0.62 ? "#1C110F" : "#FFFFFF"; lb.style.textShadow = "none"; }
         return { slot: s, fill: f };
       });
       var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });

@@ -1,0 +1,1331 @@
+{
+ "pass": "animations",
+ "plan_version": 1,
+ "style": "paper-cards",
+ "idea_id": "c26c94b17281",
+ "source": "09a-animations",
+ "fps": 30,
+ "duration_ms": 41330,
+ "voice": "08-voiceover/vo.wav",
+ "solution": {
+  "type": "external",
+  "name": "Claude Code frontend-design plugin (Anthropic)",
+  "url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
+  "logo": null
+ },
+ "tracker": {
+  "enabled": false
+ },
+ "branding": {
+  "cta_scene": "s11",
+  "dm_avatar": "brand/mark/avatar-dark.png",
+  "lockup": "brand/lockup/lockup-gradient-on-light.png",
+  "brand_slot": null,
+  "flashfx_allowed_outside_cta": false
+ },
+ "scenes": [
+  {
+   "id": "s1",
+   "beat": "b1",
+   "beat_type": "hook",
+   "start_ms": 0,
+   "end_ms": 3270,
+   "set_piece": true,
+   "hook_set_piece": true,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "generic",
+     "ms": 1010,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s1-headline-1",
+     "component": "headline",
+     "start_ms": 0,
+     "end_ms": 3270,
+     "props": {
+      "kicker": "IT'S THE DEFAULTS",
+      "kicker_mark": "",
+      "lines_json": "[\"Claude Code sites\", \"look *generic.*\", \"Not your fault.\"]",
+      "kicker_at": 0.05,
+      "x": 90,
+      "w": 900,
+      "align": "center",
+      "hold": "lively",
+      "words_json": [
+       {
+        "w": "Claude",
+        "t": 0.05
+       },
+       {
+        "w": "Code",
+        "t": 0.33
+       },
+       {
+        "w": "sites",
+        "t": 0.67
+       },
+       {
+        "w": "look",
+        "t": 0.79
+       },
+       {
+        "w": "generic.",
+        "t": 1.01
+       },
+       {
+        "w": "Not",
+        "t": 1.55
+       },
+       {
+        "w": "your",
+        "t": 1.69
+       },
+       {
+        "w": "fault.",
+        "t": 1.85
+       }
+      ]
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 267,
+     "assets": []
+    },
+    {
+     "id": "s1-card-fan-2",
+     "component": "card-fan",
+     "start_ms": 0,
+     "end_ms": 3270,
+     "props": {
+      "x": 150,
+      "y": 760,
+      "w": 780,
+      "card_w": 300,
+      "card_h": 400,
+      "items_json": "[{\"label\": \"Acme\", \"icon\": \"doc\"}, {\"label\": \"Nova\", \"icon\": \"doc\"}, {\"label\": \"Zen\", \"icon\": \"doc\"}, {\"label\": \"Flux\", \"icon\": \"doc\"}, {\"label\": \"Orbit\", \"icon\": \"doc\"}]",
+      "angle": 8,
+      "highlight": -1,
+      "stagger_frames": 3,
+      "fan_frames": 16,
+      "enter_at": 0,
+      "fan_at": 0.75,
+      "honesty": "none",
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 267,
+     "assets": []
+    },
+    {
+     "id": "s1-pop-3",
+     "component": "pop",
+     "start_ms": 1550,
+     "end_ms": 3270,
+     "props": {
+      "kind": "badge",
+      "icon": "star",
+      "size": 120,
+      "x": 80,
+      "y": 700,
+      "overshoot": 0.14,
+      "frames": 8,
+      "enter_at": 0,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:Not",
+     "land_ms": 1817,
+     "assets": []
+    },
+    {
+     "id": "s1-hero-3d-4",
+     "component": "hero-3d",
+     "start_ms": 2210,
+     "end_ms": 3270,
+     "props": {
+      "x": 330,
+      "y": 720,
+      "w": 420,
+      "h": 420,
+      "object": "card",
+      "spin": 40,
+      "tilt": 18,
+      "enter_at": 0,
+      "enter_frames": 12,
+      "label": "",
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "set-piece",
+     "honesty_label": null,
+     "at": "breath",
+     "land_ms": 2610,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "beat": "b2",
+   "beat_type": "stake",
+   "start_ms": 3270,
+   "end_ms": 6840,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "mock",
+   "emphasis_hits": [
+    {
+     "word": "everyone's",
+     "ms": 6050,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s2-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 3270,
+     "end_ms": 6840,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 740,
+      "title": "yourbrand.com",
+      "headline": "Your brand, live",
+      "cta": "Get started",
+      "tone": "warm",
+      "cta_at": 0.3,
+      "scroll_px_s": 140,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "mock",
+      "hold": "calm"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "mock",
+     "at": "scene",
+     "land_ms": 3537,
+     "assets": []
+    },
+    {
+     "id": "s2-mascot-2",
+     "component": "mascot",
+     "start_ms": 3630,
+     "end_ms": 6840,
+     "props": {
+      "x": 880,
+      "y": 390,
+      "prop": "grid",
+      "move": "rise",
+      "enter_at": 0,
+      "frames": 4,
+      "scale": 1,
+      "flip": false,
+      "hold": "calm"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "ms:400",
+     "land_ms": 3897,
+     "assets": []
+    },
+    {
+     "id": "s2-light-chip-3",
+     "component": "light-chip",
+     "start_ms": 3810,
+     "end_ms": 6840,
+     "props": {
+      "x": 120,
+      "y": 1190,
+      "text": "your brand site",
+      "enter_at": 0,
+      "fade_frames": 4,
+      "drift": 10,
+      "hold": "calm"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:brand",
+     "land_ms": 3943,
+     "assets": []
+    },
+    {
+     "id": "s2-dark-chip-4",
+     "component": "dark-chip",
+     "start_ms": 6050,
+     "end_ms": 6840,
+     "props": {
+      "x": 400,
+      "y": 1090,
+      "text": "looks like every AI site",
+      "accent_word": "every AI site",
+      "icon": "dot",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "calm"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:everyone's.",
+     "land_ms": 6150,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "beat": "b3",
+   "beat_type": "comparison",
+   "start_ms": 6840,
+   "end_ms": 12070,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "terracotta",
+     "ms": 7900,
+     "effect": "accent-box"
+    },
+    {
+     "word": "rounded",
+     "ms": 9620,
+     "effect": "accent-box"
+    },
+    {
+     "word": "caps",
+     "ms": 10760,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s3-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 6840,
+     "end_ms": 12070,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 660,
+      "image": "research/02-skill.png",
+      "image_ratio": 3.8583,
+      "zoom_to": 0.8,
+      "highlight": true,
+      "travel_frames": 18,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "sourced",
+      "hold": "normal",
+      "focus_json": "[{\"x\": 0.35, \"y\": 0.526, \"w\": 0.62, \"h\": 0.024, \"at\": 0}, {\"x\": 0.36, \"y\": 0.534, \"w\": 0.34, \"h\": 0.012, \"at\": 1.06}, {\"x\": 0.5, \"y\": 0.565, \"w\": 0.32, \"h\": 0.012, \"at\": 2.78}, {\"x\": 0.63, \"y\": 0.58, \"w\": 0.33, \"h\": 0.012, \"at\": 3.92}, {\"x\": 0.36, \"y\": 0.585, \"w\": 0.34, \"h\": 0.012, \"at\": 4.66}]"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 7107,
+     "assets": [
+      "research/02-skill.png"
+     ]
+    },
+    {
+     "id": "s3-swatch-row-2",
+     "component": "swatch-row",
+     "start_ms": 6840,
+     "end_ms": 12070,
+     "props": {
+      "x": 90,
+      "y": 1070,
+      "w": 900,
+      "h": 110,
+      "gap": 16,
+      "fill_frames": 10,
+      "enter_at": 0,
+      "colors_json": "[{\"color\": \"#F4F1EA\", \"at\": 0.2}, {\"color\": \"#D97757\", \"at\": 1.06}]",
+      "honesty": "none",
+      "hold": "normal"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 7107,
+     "assets": []
+    },
+    {
+     "id": "s3-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 9620,
+     "end_ms": 12070,
+     "props": {
+      "x": 120,
+      "y": 1195,
+      "text": "identical rounded cards",
+      "accent_word": "rounded",
+      "icon": "none",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:rounded",
+     "land_ms": 9720,
+     "assets": []
+    },
+    {
+     "id": "s3-dark-chip-4",
+     "component": "dark-chip",
+     "start_ms": 10760,
+     "end_ms": 12070,
+     "props": {
+      "x": 560,
+      "y": 1195,
+      "text": "ALL-CAPS labels",
+      "accent_word": "ALL-CAPS",
+      "icon": "none",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:caps",
+     "land_ms": 10860,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "beat": "b4",
+   "beat_type": "mechanism",
+   "start_ms": 12070,
+   "end_ms": 16030,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "slop",
+     "ms": 13210,
+     "effect": "accent-box"
+    },
+    {
+     "word": "safest",
+     "ms": 14850,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s4-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 12070,
+     "end_ms": 16030,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 700,
+      "image": "research/04-blog.png",
+      "image_ratio": 1.7778,
+      "zoom_to": 0.8,
+      "highlight": true,
+      "travel_frames": 18,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "sourced",
+      "hold": "normal",
+      "focus_json": "[{\"x\": 0.27, \"y\": 0.22, \"w\": 0.45, \"h\": 0.07, \"at\": 0}, {\"x\": 0.27, \"y\": 0.68, \"w\": 0.45, \"h\": 0.045, \"at\": 1.14}, {\"x\": 0.27, \"y\": 0.58, \"w\": 0.45, \"h\": 0.04, \"at\": 2.78}]"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 12337,
+     "assets": [
+      "research/04-blog.png"
+     ]
+    },
+    {
+     "id": "s4-mascot-2",
+     "component": "mascot",
+     "start_ms": 12470,
+     "end_ms": 16030,
+     "props": {
+      "x": 880,
+      "y": 350,
+      "prop": "film",
+      "move": "rise",
+      "enter_at": 0,
+      "frames": 4,
+      "scale": 1,
+      "flip": false,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "ms:400",
+     "land_ms": 12737,
+     "assets": []
+    },
+    {
+     "id": "s4-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 13210,
+     "end_ms": 16030,
+     "props": {
+      "x": 120,
+      "y": 1110,
+      "text": "AI slop",
+      "accent_word": "slop",
+      "icon": "dot",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:slop:",
+     "land_ms": 13310,
+     "assets": []
+    },
+    {
+     "id": "s4-handwritten-callout-4",
+     "component": "handwritten-callout",
+     "start_ms": 14850,
+     "end_ms": 16030,
+     "props": {
+      "x": 520,
+      "y": 1100,
+      "text": "safest|choices",
+      "arrow": "up-left",
+      "arrow_len": 130,
+      "text_frames": 6,
+      "draw_frames": 8,
+      "enter_at": 0,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:safest",
+     "land_ms": 15117,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s5",
+   "beat": "b5",
+   "beat_type": "tool",
+   "start_ms": 16030,
+   "end_ms": 19440,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "front-end",
+     "ms": 17270,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s5-window-card-1",
+     "component": "window-card",
+     "start_ms": 16030,
+     "end_ms": 19440,
+     "props": {
+      "x": 90,
+      "y": 400,
+      "w": 900,
+      "h": 740,
+      "title": "github.com/anthropics",
+      "kind": "light",
+      "image": "research/01-repo.png",
+      "image_fit": "cover-top",
+      "enter": "fly-in",
+      "enter_at": 0,
+      "mascot": "star",
+      "scroll_px_s": 120,
+      "honesty": "sourced",
+      "hold": "normal"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 16497,
+     "assets": [
+      "research/01-repo.png"
+     ]
+    },
+    {
+     "id": "s5-logo-tile-2",
+     "component": "logo-tile",
+     "start_ms": 17270,
+     "end_ms": 19440,
+     "props": {
+      "x": 60,
+      "y": 1080,
+      "size": 150,
+      "shape": "tile",
+      "image": "",
+      "image_pad": 30,
+      "overshoot": 0.13,
+      "frames": 14,
+      "enter_at": 0,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "brand-slot",
+     "honesty_label": null,
+     "at": "word:front-end",
+     "land_ms": 17737,
+     "assets": []
+    },
+    {
+     "id": "s5-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 18510,
+     "end_ms": 19440,
+     "props": {
+      "x": 240,
+      "y": 1170,
+      "text": "the official plugin",
+      "accent_word": "official",
+      "icon": "none",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:official",
+     "land_ms": 18610,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s6",
+   "beat": "b6",
+   "beat_type": "mechanism",
+   "start_ms": 19440,
+   "end_ms": 23810,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "four",
+     "ms": 21000,
+     "effect": "accent-box"
+    },
+    {
+     "word": "six",
+     "ms": 21380,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s6-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 19440,
+     "end_ms": 23810,
+     "props": {
+      "x": 90,
+      "y": 400,
+      "w": 900,
+      "h": 500,
+      "image": "research/02-skill.png",
+      "image_ratio": 3.8583,
+      "zoom_to": 0.8,
+      "highlight": true,
+      "travel_frames": 18,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "sourced",
+      "hold": "normal",
+      "focus_json": "[{\"x\": 0.34, \"y\": 0.511, \"w\": 0.56, \"h\": 0.014, \"at\": 0}, {\"x\": 0.36, \"y\": 0.672, \"w\": 0.33, \"h\": 0.012, \"at\": 1.24}, {\"x\": 0.35, \"y\": 0.694, \"w\": 0.6, \"h\": 0.02, \"at\": 2.9}]"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 19707,
+     "assets": [
+      "research/02-skill.png"
+     ]
+    },
+    {
+     "id": "s6-mascot-2",
+     "component": "mascot",
+     "start_ms": 20000,
+     "end_ms": 23810,
+     "props": {
+      "x": 880,
+      "y": 370,
+      "prop": "clapper",
+      "move": "rise",
+      "enter_at": 0,
+      "frames": 4,
+      "scale": 1,
+      "flip": false,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "ms:400",
+     "land_ms": 20267,
+     "assets": []
+    },
+    {
+     "id": "s6-swatch-row-3",
+     "component": "swatch-row",
+     "start_ms": 19440,
+     "end_ms": 23810,
+     "props": {
+      "x": 90,
+      "y": 940,
+      "w": 900,
+      "h": 160,
+      "gap": 16,
+      "fill_frames": 10,
+      "enter_at": 0,
+      "colors_json": "[{\"color\": \"#101828\", \"at\": 1.56}, {\"color\": \"#F4C430\", \"at\": 1.84}, {\"color\": \"#D7263D\", \"at\": 1.94}, {\"color\": \"#F7F3EA\", \"at\": 2.14}, {\"color\": \"#1F6F6B\", \"at\": 2.34}]",
+      "honesty": "none",
+      "hold": "normal"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 19707,
+     "assets": []
+    },
+    {
+     "id": "s6-dark-chip-4",
+     "component": "dark-chip",
+     "start_ms": 22340,
+     "end_ms": 23810,
+     "props": {
+      "x": 120,
+      "y": 1140,
+      "text": "cuts generic choices",
+      "accent_word": "generic",
+      "icon": "none",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:cuts",
+     "land_ms": 22440,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s7",
+   "beat": "b7",
+   "beat_type": "step",
+   "start_ms": 23810,
+   "end_ms": 27450,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "one",
+     "ms": 25690,
+     "effect": "accent-box"
+    },
+    {
+     "word": "command",
+     "ms": 25950,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s7-terminal-card-1",
+     "component": "terminal-card",
+     "start_ms": 23810,
+     "end_ms": 27450,
+     "props": {
+      "x": 90,
+      "y": 400,
+      "w": 900,
+      "h": 420,
+      "title": "Claude Code",
+      "lines_json": "[{\"text\": \"/plugin install frontend-design@claude-plugins-official\", \"color\": \"accent\"}, {\"text\": \"scope: user or project\", \"color\": \"muted\"}]",
+      "mode": "type",
+      "chars_per_frame": 2,
+      "line_gap_frames": 10,
+      "start_delay_frames": 43,
+      "prompt": "",
+      "enter_at": 0,
+      "honesty": "none",
+      "hold": "normal"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 24077,
+     "assets": []
+    },
+    {
+     "id": "s7-screenshot-zoom-2",
+     "component": "screenshot-zoom",
+     "start_ms": 23810,
+     "end_ms": 27450,
+     "props": {
+      "x": 90,
+      "y": 860,
+      "w": 900,
+      "h": 300,
+      "image": "research/05-install.png",
+      "image_ratio": 1.7778,
+      "zoom_to": 0.8,
+      "highlight": true,
+      "travel_frames": 18,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "sourced",
+      "hold": "normal",
+      "focus_json": "[{\"x\": 0.33, \"y\": 0.37, \"w\": 0.4, \"h\": 0.03, \"at\": 0}, {\"x\": 0.39, \"y\": 0.675, \"w\": 0.48, \"h\": 0.03, \"at\": 1.7}, {\"x\": 0.39, \"y\": 0.645, \"w\": 0.4, \"h\": 0.025, \"at\": 2.94}]"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 24077,
+     "assets": [
+      "research/05-install.png"
+     ]
+    },
+    {
+     "id": "s7-cursor-3",
+     "component": "cursor",
+     "start_ms": 26750,
+     "end_ms": 27450,
+     "props": {
+      "points_json": "[{\"x\": 760, \"y\": 1100, \"at\": 0}, {\"x\": 280, \"y\": 548, \"at\": 0.3, \"click\": true}]",
+      "size": 84,
+      "travel_frames": 12,
+      "enter_at": 0,
+      "hold": "normal"
+     },
+     "z": 4,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:pick",
+     "land_ms": 27017,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s8",
+   "beat": "b8",
+   "beat_type": "proof",
+   "start_ms": 27450,
+   "end_ms": 30760,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "mock",
+   "emphasis_hits": [
+    {
+     "word": "don't",
+     "ms": 28210,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s8-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 27450,
+     "end_ms": 30760,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 740,
+      "title": "yourbrand.com",
+      "headline": "Bold by design",
+      "cta": "See it",
+      "tone": "ink",
+      "cta_at": 0.5,
+      "scroll_px_s": 150,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "mock",
+      "hold": "normal"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "mock",
+     "at": "scene",
+     "land_ms": 27717,
+     "assets": []
+    },
+    {
+     "id": "s8-mascot-2",
+     "component": "mascot",
+     "start_ms": 27890,
+     "end_ms": 30760,
+     "props": {
+      "x": 880,
+      "y": 390,
+      "prop": "check",
+      "move": "rise",
+      "enter_at": 0,
+      "frames": 4,
+      "scale": 1,
+      "flip": false,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "ms:400",
+     "land_ms": 28157,
+     "assets": []
+    },
+    {
+     "id": "s8-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 28210,
+     "end_ms": 30760,
+     "props": {
+      "x": 120,
+      "y": 1190,
+      "text": "you don't call it",
+      "accent_word": "don't",
+      "icon": "dot",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:don't",
+     "land_ms": 28310,
+     "assets": []
+    },
+    {
+     "id": "s8-check-badge-4",
+     "component": "check-badge",
+     "start_ms": 29190,
+     "end_ms": 30760,
+     "props": {
+      "mode": "badge",
+      "x": 870,
+      "y": 1060,
+      "size": 110,
+      "overshoot": 0.16,
+      "pop_frames": 12,
+      "enter_at": 0,
+      "hold": "normal"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:uses",
+     "land_ms": 29590,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s9",
+   "beat": "b9",
+   "beat_type": "number",
+   "start_ms": 30760,
+   "end_ms": 34410,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "sourced",
+   "emphasis_hits": [
+    {
+     "word": "verified",
+     "ms": 31140,
+     "effect": "accent-box"
+    },
+    {
+     "word": "million",
+     "ms": 32560,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s9-screenshot-zoom-1",
+     "component": "screenshot-zoom",
+     "start_ms": 30760,
+     "end_ms": 34410,
+     "props": {
+      "x": 90,
+      "y": 380,
+      "w": 900,
+      "h": 680,
+      "image": "research/03-plugin-page.png",
+      "image_ratio": 1.7778,
+      "zoom_to": 0.8,
+      "highlight": true,
+      "travel_frames": 18,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "sourced",
+      "hold": "lively",
+      "focus_json": "[{\"x\": 0.27, \"y\": 0.168, \"w\": 0.42, \"h\": 0.045, \"at\": 0}, {\"x\": 0.5, \"y\": 0.17, \"w\": 0.2, \"h\": 0.035, \"at\": 0.38}, {\"x\": 0.8, \"y\": 0.2, \"w\": 0.18, \"h\": 0.04, \"at\": 1.8}, {\"x\": 0.03, \"y\": 0, \"w\": 0.94, \"h\": 0.26, \"at\": 3.04}]"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "sourced",
+     "at": "scene",
+     "land_ms": 31027,
+     "assets": [
+      "research/03-plugin-page.png"
+     ]
+    },
+    {
+     "id": "s9-pop-2",
+     "component": "pop",
+     "start_ms": 31140,
+     "end_ms": 34410,
+     "props": {
+      "kind": "badge",
+      "icon": "check",
+      "size": 130,
+      "x": 850,
+      "y": 330,
+      "overshoot": 0.14,
+      "frames": 8,
+      "enter_at": 0,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:verified",
+     "land_ms": 31407,
+     "assets": []
+    },
+    {
+     "id": "s9-stat-number-3",
+     "component": "stat-number",
+     "start_ms": 32560,
+     "end_ms": 34410,
+     "props": {
+      "x": 90,
+      "y": 1090,
+      "value": 1134112,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": "",
+      "unit": "",
+      "container": "chip",
+      "icon": "none",
+      "sub_label": "installs",
+      "enter_at": 0,
+      "count_frames": 27.5,
+      "count_delay_frames": 0,
+      "honesty": "sourced",
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": "sourced",
+     "at": "word:million",
+     "land_ms": 32827,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s10",
+   "beat": "b10",
+   "beat_type": "payoff",
+   "start_ms": 34410,
+   "end_ms": 38230,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": "mock",
+   "emphasis_hits": [
+    {
+     "word": "defaults",
+     "ms": 35910,
+     "effect": "accent-box"
+    },
+    {
+     "word": "steered",
+     "ms": 37410,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s10-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 34410,
+     "end_ms": 38230,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 740,
+      "title": "yourbrand.com",
+      "headline": "Your brand, live",
+      "cta": "Get started",
+      "tone": "warm",
+      "cta_at": 0.3,
+      "scroll_px_s": 140,
+      "enter": "rise",
+      "enter_at": 0,
+      "honesty": "mock",
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "hero",
+     "honesty_label": "mock",
+     "at": "scene",
+     "land_ms": 34677,
+     "assets": []
+    },
+    {
+     "id": "s10-light-chip-2",
+     "component": "light-chip",
+     "start_ms": 34610,
+     "end_ms": 38230,
+     "props": {
+      "x": 120,
+      "y": 1190,
+      "text": "never your taste",
+      "enter_at": 0,
+      "fade_frames": 4,
+      "drift": 10,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:never",
+     "land_ms": 34743,
+     "assets": []
+    },
+    {
+     "id": "s10-dark-chip-3",
+     "component": "dark-chip",
+     "start_ms": 35730,
+     "end_ms": 38230,
+     "props": {
+      "x": 460,
+      "y": 1196,
+      "text": "just defaults",
+      "accent_word": "defaults",
+      "icon": "none",
+      "enter_at": 0,
+      "pop_frames": 3,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "label",
+     "honesty_label": null,
+     "at": "word:just",
+     "land_ms": 35830,
+     "assets": []
+    },
+    {
+     "id": "s10-mock-site-card-4",
+     "component": "mock-site-card",
+     "start_ms": 36790,
+     "end_ms": 38230,
+     "props": {
+      "x": 90,
+      "y": 420,
+      "w": 900,
+      "h": 740,
+      "title": "yourbrand.com",
+      "headline": "Bold by design",
+      "cta": "See it",
+      "tone": "ink",
+      "cta_at": 0.4,
+      "scroll_px_s": 140,
+      "enter": "fly-in",
+      "enter_at": 0,
+      "honesty": "mock",
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "support",
+     "honesty_label": "mock",
+     "at": "word:now",
+     "land_ms": 37057,
+     "assets": []
+    },
+    {
+     "id": "s10-check-badge-5",
+     "component": "check-badge",
+     "start_ms": 37730,
+     "end_ms": 38230,
+     "props": {
+      "mode": "badge",
+      "x": 880,
+      "y": 360,
+      "size": 120,
+      "overshoot": 0.16,
+      "pop_frames": 12,
+      "enter_at": 0,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "support",
+     "honesty_label": null,
+     "at": "word:away.",
+     "land_ms": 38130,
+     "assets": []
+    }
+   ]
+  },
+  {
+   "id": "s11",
+   "beat": "b11",
+   "beat_type": "ask",
+   "start_ms": 38230,
+   "end_ms": 41330,
+   "set_piece": false,
+   "hook_set_piece": false,
+   "honesty_label": null,
+   "emphasis_hits": [
+    {
+     "word": "LINK",
+     "ms": 38470,
+     "effect": "accent-box"
+    }
+   ],
+   "components": [
+    {
+     "id": "s11-end-card-1",
+     "component": "end-card",
+     "start_ms": 38230,
+     "end_ms": 41330,
+     "props": {
+      "verb": "Comment",
+      "keyword": "LINK",
+      "line1": "and I send you the link",
+      "line2": "ditch the generic look",
+      "lockup": "brand/lockup/lockup-gradient-on-light.png",
+      "lockup_w": 300,
+      "lockup_y": 1146,
+      "enter_at": 0,
+      "fade_frames": 4,
+      "stagger_frames": 3,
+      "type_frames": 2,
+      "wobble": true,
+      "confetti_count": 130,
+      "confetti_at": 1,
+      "confetti_seconds": 2,
+      "hold": "lively"
+     },
+     "z": 2,
+     "role": "cta",
+     "honesty_label": null,
+     "at": "scene",
+     "land_ms": 38363,
+     "assets": [
+      "brand/lockup/lockup-gradient-on-light.png"
+     ]
+    },
+    {
+     "id": "s11-dm-card-2",
+     "component": "dm-card",
+     "start_ms": 38470,
+     "end_ms": 41330,
+     "props": {
+      "x": 110,
+      "y": 1266,
+      "w": 740,
+      "avatar": "brand/mark/avatar-dark.png",
+      "avatar_size": 120,
+      "sender": "FlashFX",
+      "message": "Comment LINK and I send it",
+      "time_label": "",
+      "app_label": "Instagram",
+      "enter": "drop",
+      "enter_at": 0,
+      "hold": "lively"
+     },
+     "z": 3,
+     "role": "notification",
+     "honesty_label": null,
+     "at": "word:LINK",
+     "land_ms": 38737,
+     "assets": [
+      "brand/mark/avatar-dark.png"
+     ]
+    }
+   ]
+  }
+ ],
+ "hook2": {
+  "kicker": "3 TYPE MISTAKES",
+  "lines": [
+   "3 mistakes that make",
+   "your site look",
+   "*AI-made.*"
+  ],
+  "set_piece": true
+ },
+ "wishlist": [
+  {
+   "beat": "b3",
+   "name": "mock-site-zoom",
+   "does": "A camera that pans and zooms over the parts of a mock-site-card (the background, the button, the rounded cards, the eyebrow label), each focus landing on a spoken word, so the tells can be shown on the mock site itself instead of a research page."
+  },
+  {
+   "beat": "b10",
+   "name": "mock-site-flip",
+   "does": "One mock-site-card that flips from one tone to another on a word (cream to ink), keeping the address, so the before and after is one card turning instead of a second card flying in over the first."
+  },
+  {
+   "beat": "b2",
+   "name": "mock-site-card prefilled",
+   "does": "An option on mock-site-card to land with the headline, button and feature cards already built, so the site reads at once instead of building for half a second after it lands."
+  }
+ ],
+ "notes": "The run has no page recordings (only the five screenshots), so every page is a screenshot-zoom with focus points landing on the words: s3 pans the SKILL.md tells list, s4 the blog's title then its \"generic aesthetic\" and \"safe design choices\" paragraphs, s6 the SKILL.md process (plan, the 4 to 6 hex colors bullet, the revise-the-generic paragraph) over the filling swatch row, s7 the install docs command block under the terminal, s9 the plugin page's verified badge then the install count; the hook opens on the deck at full opacity, fans on \"look generic\" and the 3D card lands center over it in the breath; the mock yourbrand.com site threads s2 (cream), s8 (ink) and s10 (cream, then the ink card flies in on \"now\", with chips for \"never your taste\" and \"just defaults\" since strike-through is not in the payoff or mechanism beat maps); s7 types the real install command from \"type\", the scope line lands on \"pick\" and the only cursor in the reel clicks it; LINK types into the pill about 0.1 s after the word with the lockup in by 0.9 s; the honesty tag stays on mock UI as the rules require and off the graphics (fan, swatches, chips, terminal)."
+}

@@ -28,7 +28,7 @@ RULES = ["schema", "components", "times", "first_change", "breath", "max_gap", "
          "set_pieces", "zones", "hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "real_motion",
          "captions", "caption_modes", "cards", "text_budget", "text_size", "assets", "honesty", "branding", "transitions", "transition_variety", "hook2"]
 SCENE_RULES = {"schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
-               "set_pieces", "zones", "assets", "branding", "hook2", "hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "real_motion"}
+               "set_pieces", "zones", "assets", "branding", "hook2", "text_size", "hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "real_motion"}
 CAPTION_RULES = {"captions", "caption_modes", "cards", "text_budget", "text_size", "honesty", "zones"}
 TRANSITION_RULES = {"transitions", "transition_variety"}
 # E9 (M16): the rules that enforce the Motion and energy rules E8, one failing fixture plan each (pipeline/tests/test-m16.sh)
@@ -844,8 +844,9 @@ def composition(ctx: Context) -> dict:
 
 def energy_level(ctx: Context) -> str:
     """config visual.energy_rules: error (the default: the rules fail the plan), warn (they report only), off (the test sandboxes of
-    the milestones before M16 run their frozen low-energy plans with it off: pipeline/tests/lib.sh SANDBOX_ENERGY)."""
-    return str(ctx.v("energy_rules", "error")).lower()
+    the milestones before M16 run their frozen low-energy plans with it off: pipeline/tests/lib.sh SANDBOX_ENERGY; the environment
+    variable REELS_ENERGY_RULES overrides the config for a direct call, test-m10 sets it to off)."""
+    return str(os.environ.get("REELS_ENERGY_RULES") or ctx.v("energy_rules", "error")).lower()
 
 
 def energy_report(ctx: Context, rep: Report, rule: str, msg: str) -> None:
@@ -962,6 +963,8 @@ def camera_scene(scene: dict, ctx: Context) -> bool:
         if c["component"] in kinds:
             if c["component"] == "screenshot-zoom" and not common._lines(c.get("props", {}).get("focus_json")):
                 continue
+            if c["component"] == "camera-move" and not c.get("props", {}).get("image"):
+                continue   # without a screenshot it shrinks an empty placeholder (its "the scene" label hides under the cards: a layout error)
             return True
     return False
 

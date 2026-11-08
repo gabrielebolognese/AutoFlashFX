@@ -244,11 +244,11 @@
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 13.1,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.19,
+    "mean_change": 0.189,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -436,8 +436,8 @@
     "result": "pass",
     "checks_ok": 9,
     "checks": 9,
-    "best_strip": "v03/extra/s30_count_044.9.png",
-    "r": 0.931,
+    "best_strip": "v04/extra/s30_count_f925.png",
+    "r": 0.939,
     "run": "2026-11-08"
    },
    "energy": {
@@ -446,7 +446,7 @@
     "pixels_changing_pct": 0.32,
     "still_share_pct": 74.6,
     "longest_still_s": 3.23,
-    "mean_change": 0.204,
+    "mean_change": 0.203,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -615,16 +615,16 @@
     "checks_ok": 11,
     "checks": 11,
     "best_strip": "v08/extra/s30_038.9_end.png",
-    "r": 0.97,
+    "r": 0.974,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.66,
+    "pixels_changing_pct": 0.64,
     "still_share_pct": 69.2,
     "longest_still_s": 3.0,
-    "mean_change": 0.252,
+    "mean_change": 0.249,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -760,7 +760,7 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v08/extra/s30_000.8_mascot_title.png",
-    "r": 0.98,
+    "r": 0.981,
     "run": "2026-11-08"
    },
    "energy": {
@@ -769,7 +769,7 @@
     "pixels_changing_pct": 0.11,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.035,
+    "mean_change": 0.036,
     "longest_still_run": 20,
     "static_windows": 6,
     "frames": 130,
@@ -902,18 +902,18 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v07/extra/s30_004.4_caption_tag.png",
-    "r": 0.776,
+    "r": 0.955,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 2.3,
-    "pixels_changing_pct": 0.06,
+    "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
-    "longest_still_run": 6,
-    "static_windows": 0,
+    "mean_change": 0.022,
+    "longest_still_run": 51,
+    "static_windows": 66,
     "frames": 130,
     "run": "2026-11-08"
    }
@@ -1025,7 +1025,7 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v03/extra/s30_label_042.4.png",
-    "r": 0.962,
+    "r": 0.963,
     "run": "2026-11-08"
    },
    "energy": {
@@ -1120,7 +1120,7 @@
     "checks_ok": 5,
     "checks": 5,
     "best_strip": "v06/extra/s30_031.0_highlight.png",
-    "r": 0.957,
+    "r": 0.955,
     "run": "2026-11-08"
    },
    "energy": {
@@ -1271,13 +1271,13 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v03/extra/s30_cta_058.0.png",
-    "r": 0.989,
+    "r": 0.992,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.01,
+    "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.009,
@@ -1433,7 +1433,7 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v04/extra/s30_check_f1200.png",
-    "r": 0.981,
+    "r": 0.98,
     "run": "2026-11-08"
    },
    "energy": {
@@ -1643,10 +1643,10 @@
    "energy": {
     "moving_share_pct": 96.2,
     "middle_moving_share_pct": 96.9,
-    "pixels_changing_pct": 2.75,
+    "pixels_changing_pct": 2.74,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.833,
+    "mean_change": 0.827,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -1825,10 +1825,10 @@
    "energy": {
     "moving_share_pct": 10.0,
     "middle_moving_share_pct": 11.5,
-    "pixels_changing_pct": 0.77,
+    "pixels_changing_pct": 0.76,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.352,
+    "mean_change": 0.354,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2021,12 +2021,12 @@
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 13.1,
+    "moving_share_pct": 12.3,
     "middle_moving_share_pct": 16.2,
-    "pixels_changing_pct": 0.55,
+    "pixels_changing_pct": 0.56,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
-    "mean_change": 0.246,
+    "mean_change": 0.249,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2176,16 +2176,16 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v04/extra/s30_gridsettle_f444.png",
-    "r": 0.979,
+    "r": 0.966,
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 5.4,
-    "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.22,
-    "still_share_pct": 91.5,
-    "longest_still_s": 3.97,
-    "mean_change": 0.155,
+    "moving_share_pct": 6.2,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.24,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.158,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2331,7 +2331,7 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v08/extra/s30_003.8_logo_chain.png",
-    "r": 0.902,
+    "r": 0.888,
     "run": "2026-11-08"
    },
    "energy": {
@@ -2340,7 +2340,7 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.033,
+    "mean_change": 0.032,
     "longest_still_run": 67,
     "static_windows": 52,
     "frames": 130,
@@ -2504,7 +2504,7 @@
     "checks_ok": 5,
     "checks": 5,
     "best_strip": "v06/extra/s30_062.3_xstamp.png",
-    "r": 0.981,
+    "r": 0.98,
     "run": "2026-11-08"
    },
    "energy": {
@@ -2698,10 +2698,10 @@
    "energy": {
     "moving_share_pct": 9.2,
     "middle_moving_share_pct": 9.2,
-    "pixels_changing_pct": 1.13,
+    "pixels_changing_pct": 1.11,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.474,
+    "mean_change": 0.473,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -2868,16 +2868,16 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v06/extra/s30_070.9_typing_tail.png",
-    "r": 0.957,
+    "r": 0.96,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
-    "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.34,
+    "middle_moving_share_pct": 10.8,
+    "pixels_changing_pct": 0.28,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.144,
+    "mean_change": 0.133,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3024,7 +3024,7 @@
     "checks_ok": 13,
     "checks": 13,
     "best_strip": "v01/extra/s30_card33.png",
-    "r": 0.826,
+    "r": 0.827,
     "run": "2026-11-08"
    },
    "energy": {
@@ -3033,7 +3033,7 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.11,
+    "mean_change": 0.108,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3175,17 +3175,17 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v02/extra/s30_zoom27.png",
-    "r": 0.956,
+    "r": 0.94,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 6.9,
     "middle_moving_share_pct": 6.9,
-    "pixels_changing_pct": 1.32,
+    "pixels_changing_pct": 1.31,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
     "mean_change": 0.761,
-    "longest_still_run": 5,
+    "longest_still_run": 1,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-08"
@@ -3319,8 +3319,8 @@
     "result": "pass",
     "checks_ok": 6,
     "checks": 6,
-    "best_strip": "v02/extra/s30_hook.png",
-    "r": 0.977,
+    "best_strip": "v01/extra/s30_hook.png",
+    "r": 0.99,
     "run": "2026-11-08"
    },
    "energy": {
@@ -3329,9 +3329,9 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
-    "longest_still_run": 11,
-    "static_windows": 0,
+    "mean_change": 0.044,
+    "longest_still_run": 17,
+    "static_windows": 3,
     "frames": 130,
     "run": "2026-11-08"
    }
@@ -3487,7 +3487,7 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.1,
     "longest_still_s": 3.17,
-    "mean_change": 0.341,
+    "mean_change": 0.338,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -3628,9 +3628,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.016,
-    "longest_still_run": 88,
-    "static_windows": 73,
+    "mean_change": 0.018,
+    "longest_still_run": 43,
+    "static_windows": 56,
     "frames": 130,
     "run": "2026-11-08"
    }
@@ -3795,8 +3795,8 @@
     "pixels_changing_pct": 0.29,
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
-    "mean_change": 0.126,
-    "longest_still_run": 7,
+    "mean_change": 0.125,
+    "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-08"
@@ -3948,16 +3948,16 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v04/extra/s30_scene_f184.png",
-    "r": 0.976,
+    "r": 0.979,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 14.6,
-    "pixels_changing_pct": 0.56,
+    "middle_moving_share_pct": 12.3,
+    "pixels_changing_pct": 0.51,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.228,
+    "mean_change": 0.22,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4074,7 +4074,7 @@
      "id": "items_json",
      "type": "string",
      "default": "[{\"label\":\"Hook\"},{\"label\":\"Script\"},{\"label\":\"Voice\"},{\"label\":\"Edit\"},{\"label\":\"Post\"}]",
-     "label": "Cards as JSON, 3 to 6: [{\"label\":\"Plan\",\"image\":\"assets/...\"}] (a label of 3 words at most; no image = a play glyph)",
+     "label": "Cards as JSON, 3 to 6: [{\"label\":\"Plan\",\"image\":\"assets/...\"}] (a label of 3 words at most; no image = an icon: doc, bolt, check, star, play, heart, cursor, code, chat or clock; add \"icon\":\"doc\" to a card)",
      "image": true
     },
     {
@@ -4159,8 +4159,13 @@
     "hook",
     "stake",
     "number",
+    "tool",
+    "step",
     "comparison",
+    "proof",
     "mechanism",
+    "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -4183,16 +4188,16 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v04/extra/s30_deckgrid_f420.png",
-    "r": 0.98,
+    "r": 0.979,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 10.0,
-    "middle_moving_share_pct": 21.5,
-    "pixels_changing_pct": 0.5,
+    "middle_moving_share_pct": 20.8,
+    "pixels_changing_pct": 0.52,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.203,
+    "mean_change": 0.206,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4334,9 +4339,13 @@
     "hook",
     "stake",
     "number",
+    "tool",
+    "step",
     "comparison",
+    "proof",
     "mechanism",
     "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -4359,16 +4368,16 @@
     "checks_ok": 8,
     "checks": 8,
     "best_strip": "v04/extra/s30_gridsettle_f444.png",
-    "r": 0.984,
+    "r": 0.985,
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 6.9,
+    "moving_share_pct": 7.7,
     "middle_moving_share_pct": 10.0,
-    "pixels_changing_pct": 0.26,
-    "still_share_pct": 90.8,
-    "longest_still_s": 3.93,
-    "mean_change": 0.144,
+    "pixels_changing_pct": 0.27,
+    "still_share_pct": 90.0,
+    "longest_still_s": 3.9,
+    "mean_change": 0.145,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4481,9 +4490,9 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.034,
-    "longest_still_run": 54,
-    "static_windows": 39,
+    "mean_change": 0.036,
+    "longest_still_run": 49,
+    "static_windows": 35,
     "frames": 130,
     "run": "2026-11-08"
    }
@@ -4792,11 +4801,11 @@
    },
    "energy": {
     "moving_share_pct": 3.8,
-    "middle_moving_share_pct": 16.2,
+    "middle_moving_share_pct": 14.6,
     "pixels_changing_pct": 0.4,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.189,
+    "mean_change": 0.187,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -4996,8 +5005,8 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
-    "longest_still_run": 6,
+    "mean_change": 0.045,
+    "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-08"
@@ -5142,11 +5151,14 @@
    "beat_types": [
     "hook",
     "stake",
+    "number",
     "tool",
     "step",
     "comparison",
+    "proof",
     "mechanism",
     "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -5174,16 +5186,16 @@
     "checks_ok": 7,
     "checks": 7,
     "best_strip": "v07/extra/s30_011.4_window_rise.png",
-    "r": 0.96,
+    "r": 0.959,
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 37.7,
-    "middle_moving_share_pct": 72.3,
+    "moving_share_pct": 41.5,
+    "middle_moving_share_pct": 70.0,
     "pixels_changing_pct": 1.66,
     "still_share_pct": 0.0,
     "longest_still_s": 0.47,
-    "mean_change": 0.597,
+    "mean_change": 0.6,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -5264,7 +5276,7 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.022,
-    "longest_still_run": 3,
+    "longest_still_run": 4,
     "static_windows": 0,
     "frames": 130,
     "run": "2026-11-08"
@@ -5406,11 +5418,14 @@
    "beat_types": [
     "hook",
     "stake",
+    "number",
     "tool",
     "step",
     "comparison",
     "proof",
     "mechanism",
+    "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -5467,11 +5482,11 @@
    },
    "energy": {
     "moving_share_pct": 35.4,
-    "middle_moving_share_pct": 53.1,
-    "pixels_changing_pct": 2.93,
+    "middle_moving_share_pct": 52.3,
+    "pixels_changing_pct": 2.92,
     "still_share_pct": 56.9,
     "longest_still_s": 1.37,
-    "mean_change": 1.262,
+    "mean_change": 1.25,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -5604,8 +5619,16 @@
     }
    ],
    "beat_types": [
+    "hook",
+    "stake",
+    "number",
+    "tool",
+    "step",
     "comparison",
+    "proof",
+    "mechanism",
     "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -5643,12 +5666,12 @@
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 7.7,
+    "moving_share_pct": 6.9,
     "middle_moving_share_pct": 12.3,
-    "pixels_changing_pct": 0.41,
+    "pixels_changing_pct": 0.38,
     "still_share_pct": 88.5,
     "longest_still_s": 3.83,
-    "mean_change": 0.239,
+    "mean_change": 0.241,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -5758,10 +5781,16 @@
     }
    ],
    "beat_types": [
+    "hook",
+    "stake",
     "number",
+    "tool",
+    "step",
     "comparison",
+    "proof",
     "mechanism",
     "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -5788,12 +5817,12 @@
     "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 11.5,
+    "moving_share_pct": 10.8,
     "middle_moving_share_pct": 23.1,
-    "pixels_changing_pct": 0.48,
+    "pixels_changing_pct": 0.47,
     "still_share_pct": 60.8,
     "longest_still_s": 1.6,
-    "mean_change": 0.308,
+    "mean_change": 0.306,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -5921,9 +5950,16 @@
     }
    ],
    "beat_types": [
+    "hook",
+    "stake",
     "number",
+    "tool",
     "step",
+    "comparison",
+    "proof",
     "mechanism",
+    "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -5951,16 +5987,16 @@
     "checks_ok": 8,
     "checks": 8,
     "best_strip": "v06/extra/s30_001.0_card.png",
-    "r": 0.908,
+    "r": 0.893,
     "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 3.8,
-    "middle_moving_share_pct": 22.3,
+    "middle_moving_share_pct": 21.5,
     "pixels_changing_pct": 0.38,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.166,
+    "mean_change": 0.164,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
@@ -6125,6 +6161,8 @@
     "comparison",
     "proof",
     "mechanism",
+    "before-after",
+    "pain-payoff",
     "payoff"
    ],
    "sound_events": [
@@ -6162,10 +6200,10 @@
    "energy": {
     "moving_share_pct": 70.8,
     "middle_moving_share_pct": 73.1,
-    "pixels_changing_pct": 3.5,
+    "pixels_changing_pct": 3.51,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 1.278,
+    "mean_change": 1.277,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,

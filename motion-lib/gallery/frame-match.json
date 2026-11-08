@@ -1,5 +1,5 @@
 {
- "run": "2026-11-08T02:22:21",
+ "run": "2026-11-08T06:39:22",
  "results": [
   {
    "id": "camera-move",
@@ -31,7 +31,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 5,
+     "measured": 1,
      "ok": true,
      "unit": "frames"
     }
@@ -39,7 +39,7 @@
    "correlation": {
     "best": {
      "strip": "v02/extra/s30_zoom27.png",
-     "r": 0.956,
+     "r": 0.94,
      "ref_onset": 6,
      "cur_onset": 37,
      "frames": 11
@@ -47,16 +47,16 @@
     "strips": [
      {
       "strip": "v02/extra/s30_zoom27.png",
-      "r": 0.956,
+      "r": 0.94,
       "ref_onset": 6,
       "cur_onset": 37,
       "frames": 11
      },
      {
       "strip": "v05/extra/s30_windowshrink_f520.png",
-      "r": 0.899,
+      "r": 0.911,
       "ref_onset": 8,
-      "cur_onset": 38,
+      "cur_onset": 37,
       "frames": 11
      }
     ]
@@ -81,11 +81,11 @@
    "energy": {
     "moving_share_pct": 6.9,
     "middle_moving_share_pct": 6.9,
-    "pixels_changing_pct": 1.32,
+    "pixels_changing_pct": 1.31,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
     "mean_change": 0.761,
-    "longest_still_run": 5,
+    "longest_still_run": 1,
     "static_windows": 0,
     "frames": 130
    }
@@ -304,7 +304,7 @@
    "correlation": {
     "best": {
      "strip": "v06/extra/s30_031.0_highlight.png",
-     "r": 0.957,
+     "r": 0.955,
      "ref_onset": 5,
      "cur_onset": 25,
      "frames": 7
@@ -312,21 +312,21 @@
     "strips": [
      {
       "strip": "v03/extra/s30_capswap_008.0.png",
-      "r": 0.953,
+      "r": 0.95,
       "ref_onset": 16,
       "cur_onset": 65,
       "frames": 7
      },
      {
       "strip": "v01/extra/s30_sc18.png",
-      "r": 0.941,
+      "r": 0.939,
       "ref_onset": 2,
       "cur_onset": 87,
       "frames": 7
      },
      {
       "strip": "v06/extra/s30_031.0_highlight.png",
-      "r": 0.957,
+      "r": 0.955,
       "ref_onset": 5,
       "cur_onset": 25,
       "frames": 7
@@ -592,7 +592,7 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_deckgrid_f420.png",
-     "r": 0.98,
+     "r": 0.979,
      "ref_onset": 3,
      "cur_onset": 34,
      "frames": 8
@@ -600,14 +600,14 @@
     "strips": [
      {
       "strip": "v04/extra/s30_deckgrid_f420.png",
-      "r": 0.98,
+      "r": 0.979,
       "ref_onset": 3,
       "cur_onset": 34,
       "frames": 8
      },
      {
       "strip": "v02/extra/s30_grid34.png",
-      "r": 0.967,
+      "r": 0.963,
       "ref_onset": 5,
       "cur_onset": 7,
       "frames": 8
@@ -656,11 +656,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 10.0,
-    "middle_moving_share_pct": 21.5,
-    "pixels_changing_pct": 0.5,
+    "middle_moving_share_pct": 20.8,
+    "pixels_changing_pct": 0.52,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.203,
+    "mean_change": 0.206,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -734,24 +734,24 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_gridsettle_f444.png",
-     "r": 0.984,
-     "ref_onset": 2,
-     "cur_onset": 7,
+     "r": 0.985,
+     "ref_onset": 1,
+     "cur_onset": 9,
      "frames": 9
     },
     "strips": [
      {
       "strip": "v02/extra/s30_grid34.png",
-      "r": 0.967,
+      "r": 0.971,
       "ref_onset": 3,
       "cur_onset": 1,
       "frames": 9
      },
      {
       "strip": "v04/extra/s30_gridsettle_f444.png",
-      "r": 0.984,
-      "ref_onset": 2,
-      "cur_onset": 7,
+      "r": 0.985,
+      "ref_onset": 1,
+      "cur_onset": 9,
       "frames": 9
      }
     ]
@@ -810,12 +810,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 6.9,
+    "moving_share_pct": 7.7,
     "middle_moving_share_pct": 10.0,
-    "pixels_changing_pct": 0.26,
-    "still_share_pct": 90.8,
-    "longest_still_s": 3.93,
-    "mean_change": 0.144,
+    "pixels_changing_pct": 0.27,
+    "still_share_pct": 90.0,
+    "longest_still_s": 3.9,
+    "mean_change": 0.145,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -916,14 +916,14 @@
      },
      {
       "strip": "v06/extra/s30_001.0_card.png",
-      "r": 0.88,
+      "r": 0.887,
       "ref_onset": 4,
-      "cur_onset": 4,
+      "cur_onset": 21,
       "frames": 11
      },
      {
       "strip": "v07/extra/s30_000.0_hook.png",
-      "r": 0.925,
+      "r": 0.924,
       "ref_onset": 4,
       "cur_onset": 3,
       "frames": 11
@@ -952,11 +952,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 13.1,
+    "middle_moving_share_pct": 12.3,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.19,
+    "mean_change": 0.189,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -1080,7 +1080,7 @@
      },
      {
       "strip": "v06/extra/s30_048.0_bars.png",
-      "r": 0.893,
+      "r": 0.891,
       "ref_onset": 11,
       "cur_onset": 13,
       "frames": 11
@@ -1147,12 +1147,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 13.1,
+    "moving_share_pct": 12.3,
     "middle_moving_share_pct": 16.2,
-    "pixels_changing_pct": 0.55,
+    "pixels_changing_pct": 0.56,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
-    "mean_change": 0.246,
+    "mean_change": 0.249,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -1238,7 +1238,7 @@
    "correlation": {
     "best": {
      "strip": "v06/extra/s30_070.9_typing_tail.png",
-     "r": 0.957,
+     "r": 0.96,
      "ref_onset": 4,
      "cur_onset": 9,
      "frames": 11
@@ -1246,14 +1246,14 @@
     "strips": [
      {
       "strip": "v07/extra/s30_004.4_caption_tag.png",
-      "r": 0.924,
+      "r": 0.927,
       "ref_onset": 5,
       "cur_onset": 81,
       "frames": 11
      },
      {
       "strip": "v06/extra/s30_070.9_typing_tail.png",
-      "r": 0.957,
+      "r": 0.96,
       "ref_onset": 4,
       "cur_onset": 9,
       "frames": 11
@@ -1294,11 +1294,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 0.0,
-    "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.34,
+    "middle_moving_share_pct": 10.8,
+    "pixels_changing_pct": 0.28,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.144,
+    "mean_change": 0.133,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -1357,7 +1357,7 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_check_f1200.png",
-     "r": 0.981,
+     "r": 0.98,
      "ref_onset": 3,
      "cur_onset": 2,
      "frames": 15
@@ -1365,28 +1365,28 @@
     "strips": [
      {
       "strip": "v07/extra/s30_035.6_checks.png",
-      "r": 0.862,
+      "r": 0.869,
       "ref_onset": 1,
       "cur_onset": 12,
       "frames": 15
      },
      {
       "strip": "v06/extra/s30_065.6_ticks.png",
-      "r": 0.893,
+      "r": 0.891,
       "ref_onset": 13,
       "cur_onset": 2,
       "frames": 15
      },
      {
       "strip": "v04/extra/s30_check_f1200.png",
-      "r": 0.981,
+      "r": 0.98,
       "ref_onset": 3,
       "cur_onset": 2,
       "frames": 15
      },
      {
       "strip": "v03/extra/s30_cta_058.0.png",
-      "r": 0.928,
+      "r": 0.929,
       "ref_onset": 1,
       "cur_onset": 2,
       "frames": 15
@@ -1443,7 +1443,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 54,
+     "measured": 49,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -1495,9 +1495,9 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.034,
-    "longest_still_run": 54,
-    "static_windows": 39,
+    "mean_change": 0.036,
+    "longest_still_run": 49,
+    "static_windows": 35,
     "frames": 130
    }
   },
@@ -1538,9 +1538,10 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 6,
+     "measured": 51,
      "ok": true,
-     "unit": "frames"
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
     },
     {
      "check": "life: inertia after the landing #chip",
@@ -1553,24 +1554,24 @@
    "correlation": {
     "best": {
      "strip": "v07/extra/s30_004.4_caption_tag.png",
-     "r": 0.776,
-     "ref_onset": 6,
-     "cur_onset": 10,
+     "r": 0.955,
+     "ref_onset": 5,
+     "cur_onset": 8,
      "frames": 6
     },
     "strips": [
      {
       "strip": "v01/extra/s30_sc05.png",
-      "r": 0.617,
+      "r": 0.778,
       "ref_onset": 3,
-      "cur_onset": 7,
+      "cur_onset": 8,
       "frames": 6
      },
      {
       "strip": "v07/extra/s30_004.4_caption_tag.png",
-      "r": 0.776,
-      "ref_onset": 6,
-      "cur_onset": 10,
+      "r": 0.955,
+      "ref_onset": 5,
+      "cur_onset": 8,
       "frames": 6
      }
     ]
@@ -1593,12 +1594,12 @@
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 2.3,
-    "pixels_changing_pct": 0.06,
+    "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
-    "longest_still_run": 6,
-    "static_windows": 0,
+    "mean_change": 0.022,
+    "longest_still_run": 51,
+    "static_windows": 66,
     "frames": 130
    }
   },
@@ -1676,7 +1677,7 @@
      },
      {
       "strip": "v06/extra/s30_001.0_card.png",
-      "r": 0.9,
+      "r": 0.896,
       "ref_onset": 4,
       "cur_onset": 18,
       "frames": 11
@@ -1806,7 +1807,7 @@
    "correlation": {
     "best": {
      "strip": "v08/extra/s30_038.9_end.png",
-     "r": 0.97,
+     "r": 0.974,
      "ref_onset": 2,
      "cur_onset": 41,
      "frames": 9
@@ -1814,28 +1815,28 @@
     "strips": [
      {
       "strip": "v02/extra/s30_cta43.png",
-      "r": 0.903,
+      "r": 0.902,
       "ref_onset": 2,
-      "cur_onset": 42,
+      "cur_onset": 1,
       "frames": 9
      },
      {
       "strip": "v07/extra/s30_041.0_end.png",
       "r": 0.942,
       "ref_onset": 4,
-      "cur_onset": 29,
+      "cur_onset": 28,
       "frames": 9
      },
      {
       "strip": "v08/extra/s30_038.9_end.png",
-      "r": 0.97,
+      "r": 0.974,
       "ref_onset": 2,
       "cur_onset": 41,
       "frames": 9
      },
      {
       "strip": "v09/extra/s30_049.7_end.png",
-      "r": 0.969,
+      "r": 0.968,
       "ref_onset": 3,
       "cur_onset": 40,
       "frames": 9
@@ -1922,10 +1923,10 @@
    "energy": {
     "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.66,
+    "pixels_changing_pct": 0.64,
     "still_share_pct": 69.2,
     "longest_still_s": 3.0,
-    "mean_change": 0.252,
+    "mean_change": 0.249,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -2071,7 +2072,7 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.1,
     "longest_still_s": 3.17,
-    "mean_change": 0.341,
+    "mean_change": 0.338,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -2144,7 +2145,7 @@
     "strips": [
      {
       "strip": "v08/extra/s30_000.0_hook.png",
-      "r": 0.973,
+      "r": 0.972,
       "ref_onset": 8,
       "cur_onset": 2,
       "frames": 17
@@ -2189,10 +2190,10 @@
    "energy": {
     "moving_share_pct": 9.2,
     "middle_moving_share_pct": 9.2,
-    "pixels_changing_pct": 1.13,
+    "pixels_changing_pct": 1.11,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.474,
+    "mean_change": 0.473,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -2228,7 +2229,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 88,
+     "measured": 43,
      "ok": true,
      "unit": "frames",
      "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
@@ -2272,9 +2273,9 @@
     "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.016,
-    "longest_still_run": 88,
-    "static_windows": 73,
+    "mean_change": 0.018,
+    "longest_still_run": 43,
+    "static_windows": 56,
     "frames": 130
    }
   },
@@ -2325,38 +2326,39 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 11,
+     "measured": 17,
      "ok": true,
-     "unit": "frames"
+     "unit": "frames",
+     "warning": "the rendered frames show a still stretch (the DOM keeps moving; a subpixel hold)"
     }
    ],
    "correlation": {
     "best": {
-     "strip": "v02/extra/s30_hook.png",
-     "r": 0.977,
-     "ref_onset": 4,
-     "cur_onset": 32,
+     "strip": "v01/extra/s30_hook.png",
+     "r": 0.99,
+     "ref_onset": 5,
+     "cur_onset": 46,
      "frames": 6
     },
     "strips": [
      {
       "strip": "v02/extra/s30_hook.png",
-      "r": 0.977,
+      "r": 0.979,
       "ref_onset": 4,
       "cur_onset": 32,
       "frames": 6
      },
      {
       "strip": "v01/extra/s30_hook.png",
-      "r": 0.973,
+      "r": 0.99,
       "ref_onset": 5,
-      "cur_onset": 7,
+      "cur_onset": 46,
       "frames": 6
      },
      {
       "strip": "v03/extra/s30_hook_000.0.png",
-      "r": 0.976,
-      "ref_onset": 5,
+      "r": 0.956,
+      "ref_onset": 4,
       "cur_onset": 58,
       "frames": 6
      }
@@ -2482,9 +2484,9 @@
     "pixels_changing_pct": 0.08,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
-    "longest_still_run": 11,
-    "static_windows": 0,
+    "mean_change": 0.044,
+    "longest_still_run": 17,
+    "static_windows": 3,
     "frames": 130
    }
   },
@@ -2563,11 +2565,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 3.8,
-    "middle_moving_share_pct": 16.2,
+    "middle_moving_share_pct": 14.6,
     "pixels_changing_pct": 0.4,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.189,
+    "mean_change": 0.187,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -2604,7 +2606,7 @@
     {
      "check": "life: pixels never still (a canvas draws itself)",
      "expected": "< 15 frames",
-     "measured": 6,
+     "measured": 8,
      "ok": true,
      "unit": "frames"
     }
@@ -2641,8 +2643,8 @@
     "pixels_changing_pct": 0.09,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.043,
-    "longest_still_run": 6,
+    "mean_change": 0.045,
+    "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130
    }
@@ -2686,17 +2688,17 @@
    "correlation": {
     "best": {
      "strip": "v03/extra/s30_label_042.4.png",
-     "r": 0.962,
+     "r": 0.963,
      "ref_onset": 2,
-     "cur_onset": 9,
+     "cur_onset": 10,
      "frames": 7
     },
     "strips": [
      {
       "strip": "v03/extra/s30_label_042.4.png",
-      "r": 0.962,
+      "r": 0.963,
       "ref_onset": 2,
-      "cur_onset": 9,
+      "cur_onset": 10,
       "frames": 7
      }
     ]
@@ -2804,7 +2806,7 @@
    "correlation": {
     "best": {
      "strip": "v08/extra/s30_003.8_logo_chain.png",
-     "r": 0.902,
+     "r": 0.888,
      "ref_onset": 9,
      "cur_onset": 38,
      "frames": 17
@@ -2812,14 +2814,14 @@
     "strips": [
      {
       "strip": "v08/extra/s30_003.8_logo_chain.png",
-      "r": 0.902,
+      "r": 0.888,
       "ref_onset": 9,
       "cur_onset": 38,
       "frames": 17
      },
      {
       "strip": "v02/extra/s30_hook.png",
-      "r": 0.884,
+      "r": 0.883,
       "ref_onset": 3,
       "cur_onset": 0,
       "frames": 17
@@ -2852,7 +2854,7 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.033,
+    "mean_change": 0.032,
     "longest_still_run": 67,
     "static_windows": 52,
     "frames": 130
@@ -2897,7 +2899,7 @@
    "correlation": {
     "best": {
      "strip": "v08/extra/s30_000.8_mascot_title.png",
-     "r": 0.98,
+     "r": 0.981,
      "ref_onset": 17,
      "cur_onset": 1,
      "frames": 7
@@ -2905,14 +2907,14 @@
     "strips": [
      {
       "strip": "v02/extra/s30_hook.png",
-      "r": 0.967,
+      "r": 0.959,
       "ref_onset": 4,
       "cur_onset": 9,
       "frames": 7
      },
      {
       "strip": "v08/extra/s30_000.8_mascot_title.png",
-      "r": 0.98,
+      "r": 0.981,
       "ref_onset": 17,
       "cur_onset": 1,
       "frames": 7
@@ -2935,7 +2937,7 @@
     "pixels_changing_pct": 0.11,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.035,
+    "mean_change": 0.036,
     "longest_still_run": 20,
     "static_windows": 6,
     "frames": 130
@@ -3000,7 +3002,7 @@
    "correlation": {
     "best": {
      "strip": "v07/extra/s30_011.4_window_rise.png",
-     "r": 0.96,
+     "r": 0.959,
      "ref_onset": 22,
      "cur_onset": 7,
      "frames": 11
@@ -3008,7 +3010,7 @@
     "strips": [
      {
       "strip": "v07/extra/s30_011.4_window_rise.png",
-      "r": 0.96,
+      "r": 0.959,
       "ref_onset": 22,
       "cur_onset": 7,
       "frames": 11
@@ -3082,12 +3084,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 37.7,
-    "middle_moving_share_pct": 72.3,
+    "moving_share_pct": 41.5,
+    "middle_moving_share_pct": 70.0,
     "pixels_changing_pct": 1.66,
     "still_share_pct": 0.0,
     "longest_still_s": 0.47,
-    "mean_change": 0.597,
+    "mean_change": 0.6,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3165,7 +3167,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 3,
+     "measured": 4,
      "ok": true,
      "unit": "frames"
     }
@@ -3193,7 +3195,7 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.022,
-    "longest_still_run": 3,
+    "longest_still_run": 4,
     "static_windows": 0,
     "frames": 130
    }
@@ -3251,7 +3253,7 @@
    "correlation": {
     "best": {
      "strip": "v03/extra/s30_cta_058.0.png",
-     "r": 0.989,
+     "r": 0.992,
      "ref_onset": 2,
      "cur_onset": 20,
      "frames": 17
@@ -3259,21 +3261,21 @@
     "strips": [
      {
       "strip": "v08/extra/s30_003.8_logo_chain.png",
-      "r": 0.968,
+      "r": 0.965,
       "ref_onset": 9,
-      "cur_onset": 18,
+      "cur_onset": 17,
       "frames": 17
      },
      {
       "strip": "v03/extra/s30_cta_058.0.png",
-      "r": 0.989,
+      "r": 0.992,
       "ref_onset": 2,
       "cur_onset": 20,
       "frames": 17
      },
      {
       "strip": "v09/extra/s30_002.3_stickers.png",
-      "r": 0.656,
+      "r": 0.65,
       "ref_onset": 2,
       "cur_onset": 8,
       "frames": 17
@@ -3298,7 +3300,7 @@
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.01,
+    "pixels_changing_pct": 0.02,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.009,
@@ -3408,17 +3410,17 @@
    "correlation": {
     "best": {
      "strip": "v01/extra/s30_card33.png",
-     "r": 0.826,
-     "ref_onset": 5,
-     "cur_onset": 5,
+     "r": 0.827,
+     "ref_onset": 7,
+     "cur_onset": 17,
      "frames": 11
     },
     "strips": [
      {
       "strip": "v01/extra/s30_card33.png",
-      "r": 0.826,
-      "ref_onset": 5,
-      "cur_onset": 5,
+      "r": 0.827,
+      "ref_onset": 7,
+      "cur_onset": 17,
       "frames": 11
      }
     ]
@@ -3470,7 +3472,7 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.11,
+    "mean_change": 0.108,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3557,7 +3559,7 @@
      },
      {
       "strip": "v01/extra/s30_hook.png",
-      "r": 0.958,
+      "r": 0.957,
       "ref_onset": 5,
       "cur_onset": 33,
       "frames": 11
@@ -3603,11 +3605,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 35.4,
-    "middle_moving_share_pct": 53.1,
-    "pixels_changing_pct": 2.93,
+    "middle_moving_share_pct": 52.3,
+    "pixels_changing_pct": 2.92,
     "still_share_pct": 56.9,
     "longest_still_s": 1.37,
-    "mean_change": 1.262,
+    "mean_change": 1.25,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3678,7 +3680,7 @@
     {
      "check": "life: pixels never still",
      "expected": "< 15 frames",
-     "measured": 7,
+     "measured": 8,
      "ok": true,
      "unit": "frames"
     }
@@ -3694,7 +3696,7 @@
     "strips": [
      {
       "strip": "v07/extra/s30_041.0_end.png",
-      "r": 0.927,
+      "r": 0.926,
       "ref_onset": 3,
       "cur_onset": 9,
       "frames": 10
@@ -3739,8 +3741,8 @@
     "pixels_changing_pct": 0.29,
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
-    "mean_change": 0.126,
-    "longest_still_run": 7,
+    "mean_change": 0.125,
+    "longest_still_run": 8,
     "static_windows": 0,
     "frames": 130
    }
@@ -3817,10 +3819,10 @@
    ],
    "correlation": {
     "best": {
-     "strip": "v03/extra/s30_count_044.9.png",
-     "r": 0.931,
-     "ref_onset": 5,
-     "cur_onset": 44,
+     "strip": "v04/extra/s30_count_f925.png",
+     "r": 0.939,
+     "ref_onset": 2,
+     "cur_onset": 41,
      "frames": 11
     },
     "strips": [
@@ -3840,9 +3842,9 @@
      },
      {
       "strip": "v04/extra/s30_count_f925.png",
-      "r": 0.93,
+      "r": 0.939,
       "ref_onset": 2,
-      "cur_onset": 32,
+      "cur_onset": 41,
       "frames": 11
      }
     ]
@@ -3878,7 +3880,7 @@
     "pixels_changing_pct": 0.32,
     "still_share_pct": 74.6,
     "longest_still_s": 3.23,
-    "mean_change": 0.204,
+    "mean_change": 0.203,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -3930,7 +3932,7 @@
    "correlation": {
     "best": {
      "strip": "v06/extra/s30_062.3_xstamp.png",
-     "r": 0.981,
+     "r": 0.98,
      "ref_onset": 3,
      "cur_onset": 1,
      "frames": 7
@@ -3945,7 +3947,7 @@
      },
      {
       "strip": "v06/extra/s30_062.3_xstamp.png",
-      "r": 0.981,
+      "r": 0.98,
       "ref_onset": 3,
       "cur_onset": 1,
       "frames": 7
@@ -4110,12 +4112,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 7.7,
+    "moving_share_pct": 6.9,
     "middle_moving_share_pct": 12.3,
-    "pixels_changing_pct": 0.41,
+    "pixels_changing_pct": 0.38,
     "still_share_pct": 88.5,
     "longest_still_s": 3.83,
-    "mean_change": 0.239,
+    "mean_change": 0.241,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -4181,9 +4183,9 @@
      },
      {
       "strip": "v06/extra/s30_048.0_bars.png",
-      "r": 0.964,
-      "ref_onset": 11,
-      "cur_onset": 6,
+      "r": 0.968,
+      "ref_onset": 10,
+      "cur_onset": 5,
       "frames": 13
      }
     ]
@@ -4228,12 +4230,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 11.5,
+    "moving_share_pct": 10.8,
     "middle_moving_share_pct": 23.1,
-    "pixels_changing_pct": 0.48,
+    "pixels_changing_pct": 0.47,
     "still_share_pct": 60.8,
     "longest_still_s": 1.6,
-    "mean_change": 0.308,
+    "mean_change": 0.306,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -4321,17 +4323,17 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_scene_f184.png",
-     "r": 0.976,
+     "r": 0.979,
      "ref_onset": 3,
-     "cur_onset": 11,
+     "cur_onset": 10,
      "frames": 10
     },
     "strips": [
      {
       "strip": "v04/extra/s30_scene_f184.png",
-      "r": 0.976,
+      "r": 0.979,
       "ref_onset": 3,
-      "cur_onset": 11,
+      "cur_onset": 10,
       "frames": 10
      }
     ]
@@ -4368,11 +4370,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 14.6,
-    "pixels_changing_pct": 0.56,
+    "middle_moving_share_pct": 12.3,
+    "pixels_changing_pct": 0.51,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.228,
+    "mean_change": 0.22,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -4459,7 +4461,7 @@
     "strips": [
      {
       "strip": "v04/extra/s30_rewrite_f982.png",
-      "r": 0.858,
+      "r": 0.85,
       "ref_onset": 10,
       "cur_onset": 18,
       "frames": 11
@@ -4512,10 +4514,10 @@
    "energy": {
     "moving_share_pct": 10.0,
     "middle_moving_share_pct": 11.5,
-    "pixels_changing_pct": 0.77,
+    "pixels_changing_pct": 0.76,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.352,
+    "mean_change": 0.354,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -4599,31 +4601,31 @@
    "correlation": {
     "best": {
      "strip": "v04/extra/s30_gridsettle_f444.png",
-     "r": 0.979,
-     "ref_onset": 2,
-     "cur_onset": 23,
+     "r": 0.966,
+     "ref_onset": 1,
+     "cur_onset": 17,
      "frames": 7
     },
     "strips": [
      {
       "strip": "v02/extra/s30_grid34.png",
-      "r": 0.906,
-      "ref_onset": 3,
-      "cur_onset": 5,
+      "r": 0.917,
+      "ref_onset": 5,
+      "cur_onset": 13,
       "frames": 7
      },
      {
       "strip": "v04/extra/s30_deckgrid_f420.png",
-      "r": 0.964,
+      "r": 0.959,
       "ref_onset": 3,
       "cur_onset": 13,
       "frames": 7
      },
      {
       "strip": "v04/extra/s30_gridsettle_f444.png",
-      "r": 0.979,
-      "ref_onset": 2,
-      "cur_onset": 23,
+      "r": 0.966,
+      "ref_onset": 1,
+      "cur_onset": 17,
       "frames": 7
      }
     ]
@@ -4705,12 +4707,12 @@
    ],
    "frames_measured": 131,
    "energy": {
-    "moving_share_pct": 5.4,
-    "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.22,
-    "still_share_pct": 91.5,
-    "longest_still_s": 3.97,
-    "mean_change": 0.155,
+    "moving_share_pct": 6.2,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.24,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.158,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -4782,7 +4784,7 @@
    "correlation": {
     "best": {
      "strip": "v06/extra/s30_001.0_card.png",
-     "r": 0.908,
+     "r": 0.893,
      "ref_onset": 4,
      "cur_onset": 21,
      "frames": 11
@@ -4790,7 +4792,7 @@
     "strips": [
      {
       "strip": "v06/extra/s30_001.0_card.png",
-      "r": 0.908,
+      "r": 0.893,
       "ref_onset": 4,
       "cur_onset": 21,
       "frames": 11
@@ -4952,11 +4954,11 @@
    "frames_measured": 131,
    "energy": {
     "moving_share_pct": 3.8,
-    "middle_moving_share_pct": 22.3,
+    "middle_moving_share_pct": 21.5,
     "pixels_changing_pct": 0.38,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.166,
+    "mean_change": 0.164,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -5073,10 +5075,10 @@
    "energy": {
     "moving_share_pct": 70.8,
     "middle_moving_share_pct": 73.1,
-    "pixels_changing_pct": 3.5,
+    "pixels_changing_pct": 3.51,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 1.278,
+    "mean_change": 1.277,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130
@@ -5177,7 +5179,7 @@
      },
      {
       "strip": "v03/extra/s30_hook_000.0.png",
-      "r": 0.934,
+      "r": 0.933,
       "ref_onset": 5,
       "cur_onset": 8,
       "frames": 11
@@ -5214,10 +5216,10 @@
    "energy": {
     "moving_share_pct": 96.2,
     "middle_moving_share_pct": 96.9,
-    "pixels_changing_pct": 2.75,
+    "pixels_changing_pct": 2.74,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.833,
+    "mean_change": 0.827,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130

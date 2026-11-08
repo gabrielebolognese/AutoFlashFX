@@ -75,12 +75,22 @@ object described at the end.
   - Every scene layers at least 2 elements for most of its length (the hero plus a supporting chip, badge, pop, number or a
     cursor on it): a fan, a grid or a swatch row counts as two on its own.
   - A camera move in at least 1 of every 3 scenes: a screenshot-zoom with focus points (a pan and zoom over a real page,
-    the best one), a camera-move (a push-in or a pull-back), or the turning 3D object.
+    the best one), a camera-move (a push-in or a pull-back), or the turning 3D object (a camera-move only counts with an `image`, a research screenshot: without one it shrinks an empty placeholder).
   - Real motion inside the content wherever it exists (the biggest energy lever): when the research assets list page
     recordings, show a page with a video-card (video: research/<file>.mp4; kind window with a title, or frame) instead of a
     still window-card; pan over a screenshot with screenshot-zoom (focus_json: where the camera goes, fractions of the page and the
     second, 0 at the component's start; land each focus on the word that names it); type, count, fill (swatch-row, chart bars),
     run a playhead (timeline-scrubber) or click (cursor).
+  - What carries a scene (the catalog lists each component's energy alone): content that moves inside the card: video-card (a recording
+    plays: 71 percent of its frames move), window-card (its screenshot scrolls: 96), mock-site-card (a page that builds and scrolls: 40),
+    screenshot-zoom (a camera over a page: 35). A card, a card-fan, a card-grid, a swatch-row, a terminal, a chart or a stat alone moves
+    only 4 to 15 percent of its frames: they are second layers beside a moving hero, never the hero of a scene (a scene whose hero
+    moves under 33 percent of its frames is sent back by the energy check). Use a moving hero in every scene but at most two, and vary
+    which: a video-card for a page, a mock-site-card for "your site", a window-card for a site or a readme, a screenshot-zoom for a
+    detail of a page; no two scenes in a row look alike. A card-fan's cards carry a short label and an icon (`icon`: doc, bolt,
+    check, star, play, heart, cursor, code, chat, clock), never a play glyph unless they are videos.
+  - The pixel mascot is part of the account's look: give 3 to 5 cards across the reel the `mascot` prop (card, window-card), not the
+    hook or the end card.
   - Lists and groups enter as a stack, a fan or a grid with staggers (card-fan, card-grid, thumb-grid, swatch-row), never as one
     card after another in the same spot (three cards of one kind in one place in one scene is an error).
   - The hook moves from frame 0: its headline and a hero are on from the scene's start (enter_at 0), frame 0 is never empty paper.
@@ -98,6 +108,10 @@ object described at the end.
   carries honesty "mock". Never invent a value, a quote or a screenshot.
 - Texts you write here (titles, chip texts, kicker, items) are first drafts for the text pass: short, 6 words or
   fewer, quoting the script's display line or card. The script's card text is the beat's natural title.
+- Text sizes (E4): never set `font_px` under 67 (a terminal-card or strike-through `font_px` of 60 fails the plan: the text pass
+  cannot change it); leave it out and the component's own size stands. The hook's headline (kicker plus lines) already uses about
+  65 of the 100 characters: the hook's other elements carry almost no text (a mock-site-card with title "", a headline of two
+  words and a cta of one, no chip).
 - Graphics first, text last (Motion and energy rules E3 and E4): at most 100 characters of card, chip and code text on
   screen at any moment, and no graphic text under the caption size, so a card that needs small text needs fewer
   words. The captions run word by word under any text; where the voice says something that matters (the timeline

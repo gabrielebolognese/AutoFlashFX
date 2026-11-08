@@ -28,6 +28,7 @@
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$REPO_DIR"
+export REELS_ENERGY_RULES=off   # M16: this test validates the frozen low-energy plans of M10 (the energy rules of E9 are off for them)
 SECTIONS="${M10_SECTIONS:-1 2 3 4}"
 want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 STATE_PY="$REPO_DIR/pipeline/lib/state.py"

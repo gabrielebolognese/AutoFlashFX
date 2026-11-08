@@ -1,0 +1,515 @@
+{
+ "written_by": "12-review",
+ "round": 2,
+ "pass": false,
+ "verdict": "fix",
+ "mechanical": {
+  "pass": false,
+  "issues": 3,
+  "texts": 358,
+  "emphasis": 23,
+  "emphasis_checked": 23
+ },
+ "style": {
+  "pass": true,
+  "issues": 0,
+  "cadence": {
+   "gap_median_s": {
+    "value": 0.9,
+    "allowed": [
+     0.26,
+     1.56
+    ],
+    "ok": true
+   },
+   "gap_max_s": {
+    "value": 3.87,
+    "allowed": [
+     0.0,
+     8.48
+    ],
+    "ok": true
+   },
+   "per_10s": {
+    "value": 6.8,
+    "reference": [
+     5.5,
+     7.1
+    ],
+    "ok": true,
+    "note": "informational"
+   }
+  },
+  "palette_share_pct": 98.26,
+  "accent_max_pct": 3.97,
+  "loudness": {
+   "lufs": -14.54,
+   "true_peak_dbtp": -1.55,
+   "target": [
+    -14.0,
+    -1.5
+   ],
+   "ok": true
+  }
+ },
+ "audio": {
+  "pass": true,
+  "issues": 0,
+  "wer_pct": 0.0,
+  "sfx_pass": true
+ },
+ "edit_review": {
+  "scores": {
+   "stop": 3,
+   "hierarchy": 3,
+   "look": 4,
+   "variety": 3,
+   "sync": 3,
+   "sound": 4,
+   "generic": 3,
+   "requirements": 4,
+   "energy": 3
+  },
+  "scored": {
+   "stop": "frame 1 stops the scroll",
+   "hierarchy": "hierarchy and legibility",
+   "look": "matches the look (would sit on the same account)",
+   "variety": "motion variety",
+   "sync": "sync with the voice",
+   "sound": "sound fit",
+   "generic": "nothing looks generic",
+   "requirements": "the requirements are visible (the problem, the share line, the keyword)",
+   "energy": "every scene keeps moving, with inertia, depth and edges (Motion and energy rules E1 to E8)"
+  },
+  "issues": [
+   {
+    "tag": "transition",
+    "text": "Almost every scene change passes through an empty paper frame (3.2 s, 12.0 s, 16.0 s, 19.4 s, 27.4 s, 30.7 s, 34.4 s, 38.2 s): the outgoing scene is gone before the incoming one lands, so overlap the fall, fade-blur and push moves so the next hero is already on screen on the boundary frame.",
+    "source": "model",
+    "stage": "09c-transitions",
+    "severity": "major"
+   },
+   {
+    "tag": "animation",
+    "text": "Frame 1 (0.0 s) shows only a faint ghost card and no words; have the first headline word and a solid card fan on screen at frame 0 so the hook stops the scroll.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s1",
+    "severity": "major"
+   },
+   {
+    "tag": "text",
+    "text": "The headline reads 'Sites look generic.' while the voice says 'Claude Code sites look generic', so the topic never shows on screen; add 'Claude Code' to the first line of the headline.",
+    "source": "model",
+    "stage": "09b-text",
+    "scene": "s1",
+    "severity": "major"
+   },
+   {
+    "tag": "animation",
+    "text": "From 0.8 to 2.1 s the four-card fan just sits there under the headline; give the cards a slow fan-out or tilt drift, or deal one card forward on 'Not your fault', so the hook keeps moving.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s1",
+    "severity": "minor"
+   },
+   {
+    "tag": "animation",
+    "text": "On 'Cream background, terracotta accent. Identical rounded cards' (6.8 to 12.1 s) the screen shows a gray GitHub README page that shows none of the three tells; zoom into the s2 yourbrand.com mock instead and point out the cream background, the terracotta button, the rounded cards and an ALL-CAPS eyebrow one by one on the words.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s3",
+    "severity": "major"
+   },
+   {
+    "tag": "animation",
+    "text": "The card fan and the 'AI slop' header sit small in the top third and the 'safest choices' light chip is tiny (about 15 px of text at 15.5 s), so the middle of the frame is empty; scale the fan up into the center and make 'AI slop' the dominant card.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s4",
+    "severity": "major"
+   },
+   {
+    "tag": "text",
+    "text": "At 16.1 to 16.2 s the caption 'Here's' is drawn over the incoming GitHub window card; hold the caption until the push has landed or keep the window above the caption zone.",
+    "source": "model",
+    "stage": "09b-text",
+    "scene": "s5",
+    "severity": "minor"
+   },
+   {
+    "tag": "animation",
+    "text": "On 'plans four to six colors' (19.5 to 20.5 s) the swatch row is five empty white tiles; fill the swatches one by one on 'four to six colors' so the row is complete before 'cuts generic choices'.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s6",
+    "severity": "minor"
+   },
+   {
+    "tag": "text",
+    "text": "The install command in the terminal ('/plugin install frontend-design@claude-plugins-official', 26.8 to 27.3 s) is hidden under the ILLUSTRATIVE badge and runs off the card edge; wrap it inside the card, move the badge below the text and set the command larger, since it is the one thing viewers must copy.",
+    "source": "model",
+    "stage": "09b-text",
+    "scene": "s7",
+    "severity": "major"
+   },
+   {
+    "tag": "animation",
+    "text": "The terminal sits empty and dark from 23.9 to 24.4 s before typing starts, and at 27.3 s it falls into the 'scope.' caption; start the typing on 'Open' and keep the falling terminal clear of the caption.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s7",
+    "severity": "minor"
+   },
+   {
+    "tag": "animation",
+    "text": "The proof grid (Landing page, Dashboard, Settings panel, And more) is plain icon tiles with a check badge stuck between them; make one tile show a distinctive site preview being built so the 'Claude uses it on its own' proof is visible and not stock-looking.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s8",
+    "severity": "minor"
+   },
+   {
+    "tag": "text",
+    "text": "The stat chip reads '1,134,112 insta' because the check badge covers 'installs' (33.8 to 34.3 s), and at 34.3 s the caption 'page.' overlaps 'Frontend Design'; widen the chip so the full word shows and keep the caption off the card.",
+    "source": "model",
+    "stage": "09b-text",
+    "scene": "s9",
+    "severity": "minor"
+   },
+   {
+    "tag": "animation",
+    "text": "On 'Claude's steered away' (37.9 s) the checked swatch is a rust orange very close to the terracotta just called slop; tick a non-terracotta swatch and strike out or drop the terracotta one so the payoff reads clearly.",
+    "source": "model",
+    "stage": "09a-animations",
+    "scene": "s10",
+    "severity": "major"
+   },
+   {
+    "tag": "text",
+    "text": "The line under the LINK pill ('and I'll send you the plugin. Ditch the generic look') is almost invisible at 38.8 s; set it in ink at caption weight, and have 'LINK' fully readable by 38.8 s instead of typing in one letter at a time.",
+    "source": "model",
+    "stage": "09b-text",
+    "scene": "s11",
+    "severity": "minor"
+   },
+   {
+    "tag": "sfx",
+    "text": "The cash-register ka-ching at 38.74 s on the DM card reads as money and sales; use a soft message ping so the CTA feels like a DM and not a purchase.",
+    "source": "model",
+    "stage": "11-sfx",
+    "scene": "s11",
+    "severity": "minor"
+   },
+   {
+    "tag": "sfx",
+    "text": "The 1,134,112 stat-number count lands with no sound while the s8 to s9 whoosh sits on an empty frame; put a light tick or pop on the count landing around 33.5 s.",
+    "source": "model",
+    "stage": "11-sfx",
+    "scene": "s9",
+    "severity": "minor"
+   }
+  ],
+  "branding_natural": true,
+  "summary": "The palette, cards, dotted paper and mascot fit next to the references, and the s2 mock site and the s7 terminal typing are good beats. On the other side, nearly every transition passes through an empty paper frame, frame 1 of the hook is blank, and several scenes don't show what the voice names: the s3 tells are covered by a GitHub page, the s7 install command is clipped, and the s10 checked swatch is terracotta. Fix the overlapping transitions and the hook's frame 0 (with 'Claude Code' in the headline) first, then rebuild s3 around the mock site and make the s7 command readable.",
+  "answered": true
+ },
+ "issues": [
+  {
+   "tag": "animation",
+   "text": "scene s1 (hook, 0.0 to 3.3 s) lacks energy: moving share 20.6% (at least 32.8%), middle band 36.1% (at least 36.8%), pixels changing 2.3% (at least 2.64%), still stretches 72.2% (at most 18.75%); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s1",
+   "ms": 0,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "scene s4 (mechanism, 12.1 to 16.0 s) lacks energy: moving share 26.1% (at least 32.8%), middle band 23.5% (at least 36.8%), pixels changing 1.7% (at least 2.64%); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s4",
+   "ms": 12070,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "scene s6 (mechanism, 19.4 to 23.8 s) lacks energy: still stretches 24.4% (at most 18.75%); no stretch of a second or more may stand still: a scene change or a new element should land inside it",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s6",
+   "ms": 19440,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "scene s7 (step, 23.8 to 27.4 s) lacks energy: middle band 33.6% (at least 36.8%), still stretches 33.6% (at most 18.75%); the middle of the screen must move: put the moving content (a recording, a zoom over a page, a stack) in the hero zone",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s7",
+   "ms": 23810,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "scene s8 (proof, 27.4 to 30.8 s) lacks energy: moving share 21.2% (at least 32.8%), middle band 26.3% (at least 36.8%), pixels changing 1.11% (at least 2.64%), still stretches 63.6% (at most 18.75%); more of the frames must carry real motion (a recording or a clip playing in a card, a camera move, a fan or a grid building, a count or typing)",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s8",
+   "ms": 27450,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "scene s10 (payoff, 34.4 to 38.2 s) lacks energy: pixels changing 1.74% (at least 2.64%); more of the picture must change from frame to frame: a bigger moving card, a second moving layer, content that plays inside the card",
+   "source": "energy",
+   "stage": "09a-animations",
+   "kind": "energy",
+   "scene": "s10",
+   "ms": 34410,
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "\"Purple gradients\" (s4-card-fan-1) and \"Minimal motion\" (s4-card-fan-1) overlap at 13.36s (emphasis slop:)",
+   "source": "mechanical",
+   "stage": "09a-animations",
+   "kind": "overlap",
+   "scene": "s4",
+   "instance": "s4-card-fan-1",
+   "ms": 13360
+  },
+  {
+   "tag": "animation",
+   "text": "\"White backgrounds\" (s4-card-fan-1) and \"Minimal motion\" (s4-card-fan-1) overlap at 13.75s (s4-card-2 landed)",
+   "source": "mechanical",
+   "stage": "09a-animations",
+   "kind": "overlap",
+   "scene": "s4",
+   "instance": "s4-card-fan-1",
+   "ms": 13750
+  },
+  {
+   "tag": "text",
+   "text": "caption group word \"Anthropic\" (caption-group captions-groups, scene captions, 31.56s) is outside the group caption zone (x 60..298, y 225..312; the zone is x 60..1020, y 230..1176)",
+   "source": "mechanical",
+   "stage": "09b-text",
+   "kind": "zone",
+   "scene": "captions",
+   "instance": "captions-groups",
+   "ms": 31560
+  },
+  {
+   "tag": "transition",
+   "text": "Almost every scene change passes through an empty paper frame (3.2 s, 12.0 s, 16.0 s, 19.4 s, 27.4 s, 30.7 s, 34.4 s, 38.2 s): the outgoing scene is gone before the incoming one lands, so overlap the fall, fade-blur and push moves so the next hero is already on screen on the boundary frame.",
+   "source": "model",
+   "stage": "09c-transitions",
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "Frame 1 (0.0 s) shows only a faint ghost card and no words; have the first headline word and a solid card fan on screen at frame 0 so the hook stops the scroll.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s1",
+   "severity": "major"
+  },
+  {
+   "tag": "text",
+   "text": "The headline reads 'Sites look generic.' while the voice says 'Claude Code sites look generic', so the topic never shows on screen; add 'Claude Code' to the first line of the headline.",
+   "source": "model",
+   "stage": "09b-text",
+   "scene": "s1",
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "From 0.8 to 2.1 s the four-card fan just sits there under the headline; give the cards a slow fan-out or tilt drift, or deal one card forward on 'Not your fault', so the hook keeps moving.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s1",
+   "severity": "minor"
+  },
+  {
+   "tag": "animation",
+   "text": "On 'Cream background, terracotta accent. Identical rounded cards' (6.8 to 12.1 s) the screen shows a gray GitHub README page that shows none of the three tells; zoom into the s2 yourbrand.com mock instead and point out the cream background, the terracotta button, the rounded cards and an ALL-CAPS eyebrow one by one on the words.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s3",
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "The card fan and the 'AI slop' header sit small in the top third and the 'safest choices' light chip is tiny (about 15 px of text at 15.5 s), so the middle of the frame is empty; scale the fan up into the center and make 'AI slop' the dominant card.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s4",
+   "severity": "major"
+  },
+  {
+   "tag": "text",
+   "text": "At 16.1 to 16.2 s the caption 'Here's' is drawn over the incoming GitHub window card; hold the caption until the push has landed or keep the window above the caption zone.",
+   "source": "model",
+   "stage": "09b-text",
+   "scene": "s5",
+   "severity": "minor"
+  },
+  {
+   "tag": "animation",
+   "text": "On 'plans four to six colors' (19.5 to 20.5 s) the swatch row is five empty white tiles; fill the swatches one by one on 'four to six colors' so the row is complete before 'cuts generic choices'.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s6",
+   "severity": "minor"
+  },
+  {
+   "tag": "text",
+   "text": "The install command in the terminal ('/plugin install frontend-design@claude-plugins-official', 26.8 to 27.3 s) is hidden under the ILLUSTRATIVE badge and runs off the card edge; wrap it inside the card, move the badge below the text and set the command larger, since it is the one thing viewers must copy.",
+   "source": "model",
+   "stage": "09b-text",
+   "scene": "s7",
+   "severity": "major"
+  },
+  {
+   "tag": "animation",
+   "text": "The terminal sits empty and dark from 23.9 to 24.4 s before typing starts, and at 27.3 s it falls into the 'scope.' caption; start the typing on 'Open' and keep the falling terminal clear of the caption.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s7",
+   "severity": "minor"
+  },
+  {
+   "tag": "animation",
+   "text": "The proof grid (Landing page, Dashboard, Settings panel, And more) is plain icon tiles with a check badge stuck between them; make one tile show a distinctive site preview being built so the 'Claude uses it on its own' proof is visible and not stock-looking.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s8",
+   "severity": "minor"
+  },
+  {
+   "tag": "text",
+   "text": "The stat chip reads '1,134,112 insta' because the check badge covers 'installs' (33.8 to 34.3 s), and at 34.3 s the caption 'page.' overlaps 'Frontend Design'; widen the chip so the full word shows and keep the caption off the card.",
+   "source": "model",
+   "stage": "09b-text",
+   "scene": "s9",
+   "severity": "minor"
+  },
+  {
+   "tag": "animation",
+   "text": "On 'Claude's steered away' (37.9 s) the checked swatch is a rust orange very close to the terracotta just called slop; tick a non-terracotta swatch and strike out or drop the terracotta one so the payoff reads clearly.",
+   "source": "model",
+   "stage": "09a-animations",
+   "scene": "s10",
+   "severity": "major"
+  },
+  {
+   "tag": "text",
+   "text": "The line under the LINK pill ('and I'll send you the plugin. Ditch the generic look') is almost invisible at 38.8 s; set it in ink at caption weight, and have 'LINK' fully readable by 38.8 s instead of typing in one letter at a time.",
+   "source": "model",
+   "stage": "09b-text",
+   "scene": "s11",
+   "severity": "minor"
+  },
+  {
+   "tag": "sfx",
+   "text": "The cash-register ka-ching at 38.74 s on the DM card reads as money and sales; use a soft message ping so the CTA feels like a DM and not a purchase.",
+   "source": "model",
+   "stage": "11-sfx",
+   "scene": "s11",
+   "severity": "minor"
+  },
+  {
+   "tag": "sfx",
+   "text": "The 1,134,112 stat-number count lands with no sound while the s8 to s9 whoosh sits on an empty frame; put a light tick or pop on the count landing around 33.5 s.",
+   "source": "model",
+   "stage": "11-sfx",
+   "scene": "s9",
+   "severity": "minor"
+  }
+ ],
+ "routing": {
+  "owners": [
+   "09a-animations",
+   "09b-text",
+   "09c-transitions",
+   "11-sfx"
+  ],
+  "reopen": [
+   "09a-animations",
+   "09b-text",
+   "09c-transitions",
+   "10-build",
+   "11-sfx",
+   "12-review"
+  ],
+  "activity": "fixing [animation] issues (round 3, opus)",
+  "next_model": [
+   "opus",
+   "opus"
+  ],
+  "flags_only": []
+ },
+ "cap": {
+  "reached": false,
+  "rounds_total": 5,
+  "opus": 3,
+  "fable": 2
+ },
+ "early_stop": {
+  "stop": false,
+  "same_scores": false,
+  "same_issues": false,
+  "issues": 23
+ },
+ "flags": [],
+ "summary": {
+  "round": 2,
+  "pass": false,
+  "verdict": "fix",
+  "scores": {
+   "stop": 3,
+   "hierarchy": 3,
+   "look": 4,
+   "variety": 3,
+   "sync": 3,
+   "sound": 4,
+   "generic": 3,
+   "requirements": 4,
+   "energy": 3
+  },
+  "low_scores": [
+   "stop",
+   "hierarchy",
+   "variety",
+   "sync",
+   "generic",
+   "energy"
+  ],
+  "checks_pass": false
+ },
+ "energy": {
+  "pass": false,
+  "issues": 6,
+  "failing_scenes": [
+   "s1",
+   "s4",
+   "s6",
+   "s7",
+   "s8",
+   "s10"
+  ],
+  "whole": {
+   "moving_share_pct": 52.8,
+   "middle_moving_share_pct": 53.8,
+   "pixels_changing_pct": 3.48,
+   "still_share_pct": 16.4,
+   "longest_still_s": 2.1
+  }
+ }
+}

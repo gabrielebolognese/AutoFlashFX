@@ -1,0 +1,167 @@
+[04:22] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[04:22] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.9KnG7rsbGV/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+[04:22] READY  preflight ok: 8 tools, 2 python packages, 8 files, 155 GB free
+[04:22] START  reels autopilot v0.1.0 (634b225) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+[04:22] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.9KnG7rsbGV | mode: once (stops when the queue is empty)
+[04:22] QUEUE  1. Claude Code's frontend-design skill: it makes websites built...
+[04:22] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-08_0422_claude-codes-frontend-design-skill
+[04:27] INFO   S1: 15 claims (15 verified), 8 numbers, 5 screenshots; core claim verified
+[04:27] STEP   researching facts done (4m47s) -> expanding idea
+[04:27] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | expanding idea | minute 5 | stage 9s | issues: 0 fixed, 0 open
+[04:28] WARN   S2: the expansion missed a rule (the problem must be a single sentence (it has more than one)), asking again (try 2/3)
+[04:28] INFO   S2: expansion 1428 chars, solution external (Claude Code frontend-design plugin (Anth...), keyword LINK (existing), evidence facts.md#9, #2, #3, #4, #12
+[04:28] STEP   expanding idea done (1m06s) -> checking idea (gate)
+[04:29] GATE   passed (P3 S3 C3 F ok H ok)
+[04:29] STEP   checking idea (gate) done (40s) -> picking hooks
+[04:31] INFO   S5: 2 new hook shapes written to library/hooks.suggested.txt
+[04:31] INFO   S5: 13 hooks from how-to-system, mistake-warning, myth-contrarian, story-confession, tools-listicle, transformation (9 from hooks.txt, 4 vendor shapes), spoken cap 8 words at 186 wpm
+[04:32] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | picking hooks | minute 10 | stage 3m20s | issues: 0 fixed, 0 open
+[04:33] WARN   S5: the brief missed the length (the brief is about 3331 tokens (2562 words); it must be between 2000 and 3000 tokens, so cut about 294 words), asking again (try 2/3)
+[04:34] INFO   S5: brief.md 2730 tokens (2100 words), video type default; session A done
+[04:34] STEP   picking hooks done (4m58s) -> judging hooks
+[04:34] INFO   S6: 5 of 13 hooks passed hookscore (min 50); judging 5 (survivors)
+[04:35] INFO   S6: hook 1 h03 "Claude Code sites look generic. Not your fault." (mistake-warning), hook 2 h02 "3 mistakes that make your site look AI-made."; 5/13 passed the filter, 3 judge calls
+[04:36] STEP   judging hooks done (1m46s) -> writing script
+[04:36] INFO   S7: hook 1 h03 "Claude Code sites look generic. Not your fault."; default reel of 25 to 40 s (tweaks.md) at 186 wpm: 77 to 124 words after the cut; tones warning and insider (brief); solution external
+[04:37] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | writing script (draft 1/2, round 1/3) | minute 15 | stage 1m30s | issues: 0 fixed, 0 open
+[04:39] INFO   S7: draft a (warning) written: 11 beats, 120 words before the cut
+[04:40] INFO   S7: draft a cut from 120 to 105 words (12.5%, attempt 1)
+[04:40] WARN   S7: draft a (warning) round 1: 35.2 s, 105 words, detect 65.0: 1 hard and 1 soft failures (first: the stake does not name the share identity (if you're building your personal brand website with AI): use at le...)
+[04:42] INFO   S7: draft b (insider) written: 11 beats, 118 words before the cut
+[04:42] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | cutting script | minute 20 | stage 6m30s | issues: 0 fixed, 0 open
+[04:42] INFO   S7: draft b cut from 118 to 105 words (11.0%, attempt 1)
+[04:43] WARN   S7: draft b (insider) round 1: 34.5 s, 105 words, detect 84.4: 1 hard and 0 soft failure (first: the stake does not name the share identity (if you're building your personal brand website with AI): use at le...)
+[04:43] INFO   S7: the judge picked draft a (warning): Draft 2 sounds like plain speech. "Cream background, terracotta accent. Identical rounded cards." is a look a Claude use...
+[04:45] INFO   S7: draft a (warning) round 2: 39.4 s, 118 words, detect 90.1, 12 claims checked: every check passes
+[04:45] INFO   S7: script.json: draft a (warning), 11 beats, 39.35 s (118 words at 186 wpm), cut 12.5%, detect 90.1, 2 rounds; session D done
+[04:45] STEP   writing script done (9m25s) -> generating voiceover
+[04:45] WARN   S8: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+[04:45] INFO   S8: kokoro af_bella (the defaults, no engine.txt), speed 1: 11 beats plus hook 2, 122 spoken words at 186 wpm; pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1 s breath after the hook; 1 pronunciation from pronunciations.txt
+[04:47] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | aligning words | minute 25 | stage 2m04s | issues: 0 fixed, 0 open
+[04:47] WARN   S8: first pass: 3 of 12 lines misheard: b5 WER 8.3%: anthropic -> anthropid; b6 WER 16.7%: defaults -> to faults; hook2 WER 11.1%: made -> main
+[04:47] WARN   S8: line b5 still misheard (WER 8.3%: anthropic -> anthropid) after the pronunciation step, rewriting it through S7
+[04:49] INFO   S8: line b5 rewritten by S7 in simpler words: "Here's the fix. It's called front-end design. The official plugin."
+[04:49] WARN   S8: line b6 still misheard (WER 16.7%: defaults -> to faults) after the pronunciation step, rewriting it through S7
+[04:49] INFO   S8: line b6 rewritten by S7 in simpler words: "Before coding, Claude plans four to six colors, then cuts generic choices."
+[04:50] INFO   S8: line b5 ok after the rewrite (WER 0.0%)
+[04:50] INFO   S8: line b6 ok after the rewrite (WER 0.0%)
+[04:50] FLAG   needs review: voice: hook 2 is misheard by faster-whisper (WER 11.1%: made -> main) after no respelling rule; listen to vo_hook2.wav
+[04:50] INFO   S8: generated 12 lines in 114 s (0.85x real time for 68.6 s of raw voice, model load 28 s), aligned in 77 s; pace 181 wpm after tightening (185 on speech alone)
+[04:50] INFO   S8: vo.wav 41.3 s at -14.54 LUFS, true peak -1.54 dBTP (8 passes); words.json 121 words, 11 beats; vo_hook2.wav 2.5 s
+[04:50] STEP   generating voiceover done (5m17s) -> planning animations
+[04:50] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director
+[04:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 30 | stage 1m46s | issues: 0 fixed, 0 open
+[04:55] WARN   S9: the animations plan has 3 problems (beat_map: s6-strike-through-3: strike-through is not allowed for a mechanism beat (tokens.json beat_map: card, card-fan,...); asking the director once more
+[04:56] INFO   S9: animations planned: 11 scenes, 35 component instances, 20 distinct (camera-move, card, card-grid, check-badge, cursor, dark-chip, dm-card, end-card, fly-in, handwritten-callout, headline, hero-3d, light-chip, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, thumb-grid); brand slot neutral, hook set piece true, after one retry
+[04:56] FLAG   needs review: the visual director wanted a component the library lacks: stamp: A rubber stamp slams a short label (AI SLOP) onto the card under it, with a small shake and ink texture
+[04:56] STEP   planning animations done (5m59s) -> planning text
+[04:57] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director
+[04:57] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning text | minute 35 | stage 43s | issues: 0 fixed, 0 open
+[04:58] INFO   S9: text planned: 48 caption chunks, 4 card texts changed, 14 labels
+[04:58] STEP   planning text done (1m26s) -> planning transitions
+[04:58] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director
+[04:59] INFO   S9: transitions planned: 10 transitions (1 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+[04:59] STEP   planning transitions done (1m19s) -> building visuals
+[04:59] INFO   S10: project built from the plan: 37 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/03-plugin-page.png, research/04-blog.png; builder role builder (1 3D objects)
+[05:01] WARN   S10: hyperframes check found 1 error (layout: text_occluded: Text is hidden beneath an opaque element.)
+[05:01] INFO   S10: the check found errors; asking the builder model to repair the project (round 1/2)
+[05:02] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 40 | stage 2m52s | issues: 0 fixed, 0 open
+[05:07] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 45 | stage 7m52s | issues: 0 fixed, 0 open
+[05:07] WARN   S10: hyperframes check found 1 error (layout: text_occluded: Text is hidden beneath an opaque element.)
+[05:07] INFO   S10: the check found errors; asking the builder model to repair the project (round 2/2)
+[05:12] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 50 | stage 12m53s | issues: 0 fixed, 0 open
+[05:17] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 55 | stage 17m53s | issues: 0 fixed, 0 open
+[05:18] INFO   S10: hyperframes check ok (11 warnings)
+[05:18] INFO   S10: events.json: 216 events (10 scene changes); 105 of 105 element events verified on screen
+[05:21] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 164.8 s
+[05:22] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 42.2 s
+[05:22] STEP   building visuals done (22m31s) -> adding sound effects
+[05:22] INFO   S11: 15 sounds placed (mandatory 6, transition 8, hero 1), 25 candidates dropped by the rules; seed 1033259613; hook 2: 1 sounds
+[05:22] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+[05:22] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | verifying sound sync and loudness | minute 60 | stage 19s | issues: 0 fixed, 0 open
+[05:22] STEP   adding sound effects done (25s) -> reviewing: mechanical checks
+[05:22] INFO   S12: review round 1/5 of the draft
+[05:27] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: style check | minute 65 | stage 4m52s | issues: 0 fixed, 0 open
+[05:28] INFO   S12: code checks: energy 6 issues (moving 54.3%), mechanical 20 issues, style 2 issues, audio ok (voice WER 0.0%)
+[05:30] WARN   S12: review round 1 failed (42 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 4, sound 4, generic 3, requirements 4, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+[05:30] STEP   reviewing: mechanical checks done (7m40s) -> planning animations
+[05:30] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[05:32] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 70 | stage 2m10s | issues: 0 fixed, 1 open
+[05:37] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 75 | stage 7m10s | issues: 0 fixed, 1 open
+[05:37] WARN   S9: the animations plan has 3 problems (beat_map: s6-strike-through-3: strike-through is not allowed for a mechanism beat (tokens.json beat_map: card, card-fan,...); asking the director once more
+[05:39] INFO   S9: animations planned: 11 scenes, 33 component instances, 18 distinct (card, card-fan, card-grid, check-badge, cursor, dark-chip, dm-card, end-card, headline, hero-3d, light-chip, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+[05:39] FLAG   needs review: the visual director wanted a component the library lacks: after-site-card: A mock website with a set palette, display or serif headline font and an asymmetric layout (no accent pill, no identical
+[05:39] FLAG   needs review: the visual director wanted a component the library lacks: swatch-swap: A swatch in a swatch-row that gets crossed out and drops out of the row on a spoken word, so 'cuts generic choices' happ
+[05:39] STEP   planning animations done (9m18s) -> planning text
+[05:40] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[05:41] WARN   S9: the text plan has 1 problems (cards: s1-headline-1: the headline has 4 lines; 2 to 3 (style.md Hook)); asking the director once more
+[05:42] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning text | minute 80 | stage 2m48s | issues: 0 fixed, 1 open
+[05:42] INFO   S9: text planned: 45 caption chunks, 5 card texts changed, 7 labels, after one retry
+[05:42] STEP   planning text done (3m07s) -> planning transitions
+[05:43] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[05:44] INFO   S9: transitions planned: 10 transitions (3 cut, 3 fade-blur, 3 fall, 1 push); the merged plan passes the validator
+[05:44] STEP   planning transitions done (1m39s) -> building visuals
+[05:44] INFO   S10: project built from the plan: 36 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/02-skill.png, research/03-plugin-page.png; builder role builder (1 3D objects)
+[05:45] WARN   S10: hyperframes check found 2 errors (layout: content_overlap: Two text blocks overlap and may render unreadable.)
+[05:45] INFO   S10: the check found errors; asking the builder model to repair the project (round 1/2)
+[05:47] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 85 | stage 2m52s | issues: 0 fixed, 1 open
+[05:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 90 | stage 7m52s | issues: 0 fixed, 1 open
+[05:54] INFO   S10: hyperframes check ok (6 warnings)
+[05:54] INFO   S10: events.json: 193 events (10 scene changes); 95 of 95 element events verified on screen
+[05:56] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 119.3 s
+[05:57] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 36.2 s
+[05:57] STEP   building visuals done (12m29s) -> adding sound effects
+[05:57] INFO   S11: 15 sounds placed (mandatory 7, transition 7, hero 1), 32 candidates dropped by the rules; seed 1033259614; hook 2: 1 sounds
+[05:57] INFO   S11: verified in 2 passes: every sound within 5.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+[05:57] STEP   adding sound effects done (20s) -> reviewing: mechanical checks
+[05:57] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: mechanical checks | minute 95 | stage 1s | issues: 0 fixed, 1 open
+[05:57] INFO   S12: review round 2/5 of the draft
+[06:01] INFO   S12: code checks: energy 6 issues (moving 52.8%), mechanical 3 issues, style ok, audio ok (voice WER 0.0%)
+[06:02] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: edit review (round 2/5) | minute 100 | stage 5m01s | issues: 0 fixed, 1 open
+[06:03] WARN   S12: review round 2 failed (25 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 4, generic 3, requirements 4, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+[06:03] STEP   reviewing: mechanical checks done (5m39s) -> planning animations
+[06:03] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[06:07] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 105 | stage 4m20s | issues: 0 fixed, 1 open
+[06:10] WARN   S9: the animations plan has 2 problems (layers: scene s2 (stake): 2 or more elements are on screen together for only 22 percent of the scene; at least 60 percen...); asking the director once more
+[06:11] INFO   S9: animations planned: 11 scenes, 39 component instances, 20 distinct (card, card-fan, card-grid, check-badge, cursor, dark-chip, dm-card, end-card, handwritten-callout, headline, hero-3d, light-chip, logo-tile, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+[06:11] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-focus: A mock-site-card whose camera pushes in on named parts (background, button, feature cards, eyebrow) with an accent highl
+[06:11] FLAG   needs review: the visual director wanted a component the library lacks: swatch-drop: A swatch row where one swatch (the terracotta default) is struck out and falls away on a word while a new swatch takes i
+[06:11] FLAG   needs review: the visual director wanted a component the library lacks: fan-deal: A card-fan prop that deals one card forward (scale up, to the front) on a spoken word
+[06:11] STEP   planning animations done (8m32s) -> planning text
+[06:12] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[06:12] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning text | minute 110 | stage 46s | issues: 0 fixed, 1 open
+[06:13] WARN   S9: the text plan has 1 problems (text_budget: 104 characters of non-caption text are on screen between 0 and 3270 ms (s1-headline-1 kicker 17, s1-headlin...); asking the director once more
+[06:13] INFO   S9: text planned: 49 caption chunks, 9 card texts changed, 12 labels, after one retry
+[06:13] STEP   planning text done (2m05s) -> planning transitions
+[06:14] INFO   S9: planning transitions for c26c94b17281 (solution external): asking the visual director with the edit review's notes
+[06:15] INFO   S9: transitions planned: 10 transitions (1 cut, 3 fade-blur, 3 fall, 3 push); the merged plan passes the validator
+[06:15] STEP   planning transitions done (1m20s) -> building visuals
+[06:15] INFO   S10: project built from the plan: 41 hosts, 11 scenes, assets brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.png, research/03-plugin-page.png, research/04-blog.png; builder role builder_escalation (1 3D objects)
+[06:16] INFO   S10: hyperframes check ok (11 warnings)
+[06:16] INFO   S10: events.json: 244 events (10 scene changes); 110 of 110 element events verified on screen
+[06:17] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | rendering draft | minute 115 | stage 2m19s | issues: 0 fixed, 1 open
+[06:19] INFO   S10: draft.mp4 540x960 30.0 fps, 41.33 s (plan 41.33 s), silent, rendered in 140.1 s
+[06:20] INFO   S10: hook2.mp4 2.97 s (2950 ms planned), rendered in 58.2 s
+[06:20] STEP   building visuals done (5m05s) -> adding sound effects
+[06:21] INFO   S11: 15 sounds placed (mandatory 8, transition 6, hero 1), 35 candidates dropped by the rules; seed 1033259615; hook 2: 1 sounds
+[06:21] INFO   S11: verified in 2 passes: every sound within 10.0 ms of its event; closest to the voice 7.31 dB under the cap; mix -14.53 LUFS, -1.54 dBTP
+[06:21] STEP   adding sound effects done (41s) -> reviewing: mechanical checks
+[06:21] INFO   S12: review round 3/5 of the draft
+[06:22] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: mechanical checks | minute 120 | stage 1m22s | issues: 0 fixed, 1 open
+[06:27] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: style check | minute 125 | stage 6m22s | issues: 0 fixed, 1 open
+[06:28] INFO   S12: code checks: energy 6 issues (moving 52.6%), mechanical 15 issues, style ok, audio ok (voice WER 0.0%)
+[06:31] WARN   S12: review round 3 failed (37 issues; scores stop 3, hierarchy 3, look 4, variety 3, sync 3, sound 3, generic 3, requirements 3, energy 3): back to 09a-animations 09b-text 09c-transitions 11-sfx, then every step after it runs again
+[06:31] STEP   reviewing: mechanical checks done (9m49s) -> planning animations
+[06:31] INFO   S9: planning animations for c26c94b17281 (solution external): asking the visual director (fable, review round 3) with the edit review's notes
+[06:32] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 130 | stage 1m30s | issues: 0 fixed, 1 open
+[06:37] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 135 | stage 6m30s | issues: 0 fixed, 1 open
+[06:42] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 140 | stage 11m30s | issues: 0 fixed, 1 open
+[06:47] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 145 | stage 16m30s | issues: 0 fixed, 1 open
+[06:49] WARN   S9: the animations plan has 6 problems (beat_map: s6-strike-through-4: strike-through is not allowed for a mechanism beat (tokens.json beat_map: card, card-fan,...); asking the director once more
+[06:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 150 | stage 21m30s | issues: 0 fixed, 1 open
+[06:53] INFO   S9: animations planned: 11 scenes, 40 component instances, 19 distinct (card-fan, check-badge, cursor, dark-chip, dm-card, end-card, handwritten-callout, headline, hero-3d, light-chip, logo-tile, mascot, mock-site-card, pop, screenshot-zoom, stat-number, swatch-row, terminal-card, window-card); brand slot neutral, hook set piece true, after one retry
+[06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-zoom: A camera that pans and zooms over the parts of a mock-site-card (the background, the button, the rounded cards, the eyeb
+[06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-flip: One mock-site-card that flips from one tone to another on a word (cream to ink), keeping the address, so the before and 
+[06:53] FLAG   needs review: the visual director wanted a component the library lacks: mock-site-card prefilled: An option on mock-site-card to land with the headline, button and feature cards already built, so the site reads at once
+[06:53] STEP   planning animations done (22m17s) -> planning text
+[06:53] INFO   S9: planning text for c26c94b17281 (solution external): asking the visual director (fable, review round 3) with the edit review's notes

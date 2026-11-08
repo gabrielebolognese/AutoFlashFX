@@ -9,7 +9,7 @@
       "type": "object",
       "required": ["stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements", "energy"],
       "properties": {
-        "stop": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does frame 1 stop the scroll"},
+        "stop": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does the hook stop the scroll: something moves by frame 4 and the headline builds fast"},
         "hierarchy": {"type": "integer", "minimum": 1, "maximum": 5, "description": "hierarchy and legibility"},
         "look": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does it match the look: would it sit on the same account as the reference stills"},
         "variety": {"type": "integer", "minimum": 1, "maximum": 5, "description": "motion variety"},

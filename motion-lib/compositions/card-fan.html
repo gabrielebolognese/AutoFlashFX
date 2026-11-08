@@ -4,7 +4,7 @@
   {"id":"w","type":"number","label":"Width of the fan (px)","default":780},
   {"id":"card_w","type":"number","label":"One card width (px)","default":360},
   {"id":"card_h","type":"number","label":"One card height (px)","default":500},
-  {"id":"items_json","type":"string","label":"Cards as JSON, 3 to 6: [{\"label\":\"Plan\",\"image\":\"assets/...\"}] (a label of 3 words at most; no image = a play glyph)","default":"[{\"label\":\"Hook\"},{\"label\":\"Script\"},{\"label\":\"Voice\"},{\"label\":\"Edit\"},{\"label\":\"Post\"}]"},
+  {"id":"items_json","type":"string","label":"Cards as JSON, 3 to 6: [{\"label\":\"Plan\",\"image\":\"assets/...\"}] (a label of 3 words at most; no image = an icon: doc, bolt, check, star, play, heart, cursor, code, chat or clock; add \"icon\":\"doc\" to a card)","default":"[{\"label\":\"Hook\"},{\"label\":\"Script\"},{\"label\":\"Voice\"},{\"label\":\"Edit\"},{\"label\":\"Post\"}]"},
   {"id":"angle","type":"number","label":"Degrees between two cards once fanned","default":9},
   {"id":"highlight","type":"number","label":"Index of the card in accent (-1 = none)","default":-1},
   {"id":"stagger_frames","type":"number","label":"Frames between two cards leaving the deck","default":3},
@@ -49,7 +49,14 @@
       var n = Math.max(1, items.length), mid = (n - 1) / 2;
       var cw = v.card_w, ch = v.card_h;
       var spread = n > 1 ? Math.min((v.w - cw) / (n - 1), cw * 0.62) : 0;
-      var play = '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>';
+      var ICONS = {
+        bolt: '<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
+        star: '<path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z"/>', play: '<path d="M7 4l12 8-12 8z"/>',
+        heart: '<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/>', cursor: '<path d="M5 3l14 7-6 2-2 6z"/>',
+        doc: '<path d="M6 2h8l5 5v15H6z"/><path d="M9 12h7M9 16h7" fill="none" stroke="#FFFAF7" stroke-width="1.6"/>', code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+        chat: '<path d="M4 4h16v12H9l-5 4z"/>', clock: '<circle cx="12" cy="12" r="9" fill="none" stroke-width="2.6"/><path d="M12 7v5l3.5 2" fill="none" stroke-width="2.6" stroke-linecap="round"/>'
+      };
+      function iconSvg(name, hi) { var ink = hi ? "#FFFFFF" : "#DC6532"; return '<svg viewBox="0 0 24 24" fill="' + ink + '" stroke="' + ink + '">' + (ICONS[name] || ICONS.doc) + '</svg>'; }
       var cards = items.map(function (it, i) {
         var c = PC.el("div", "cf-card pc-card" + (i === v.highlight ? " hi" : ""), deck); c.id = "cf-card-" + i;
         c.style.width = cw + "px"; c.style.height = ch + "px";
@@ -58,7 +65,7 @@
         // bottom would land on the next card's label)
         if (it.label) PC.el("div", "cf-label", c, String(it.label));
         var art = PC.el("div", "cf-art", c);
-        if (it.image) { var im = document.createElement("img"); im.src = it.image; im.alt = ""; art.appendChild(im); } else art.innerHTML = play;
+        if (it.image) { var im = document.createElement("img"); im.src = it.image; im.alt = ""; art.appendChild(im); } else art.innerHTML = iconSvg(it.icon, i === v.highlight);
         return c;
       });
       var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });

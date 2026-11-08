@@ -71,6 +71,10 @@ def catalog_md(cat: dict, include_demo: bool = True) -> str:
             continue
         lines.append(f"### {c['id']} (item {c.get('item') or 'extra'}, kind {c.get('kind')}): {c.get('name')}")
         lines.append(f"- does: {c.get('does', '')}")
+        en = c.get("energy") or {}
+        if en.get("moving_share_pct") is not None:
+            lines.append(f"- energy alone (measured over 4 s, Motion and energy rules E0): {en['moving_share_pct']} percent of its frames move, {en.get('pixels_changing_pct')} percent of the pixels change per frame"
+                         + (" (enough to carry a scene)" if en["moving_share_pct"] >= 33 else " (support only: pair it with a hero that moves)"))
         lines.append(f"- beats: {', '.join(c.get('beat_types', []))}")
         props = []
         for p in c.get("props", []):
@@ -770,6 +774,9 @@ def finalize_captions(chunks: list[dict], inp: common.Inputs, plan_a: dict, base
             for lay in lays:
                 lo, hi = lay["span"]
                 part = run[lo:hi + 1]
+                if len(part) < 2:   # the split left one word beside the graphics: a group is 2 to 6 words (E3), this one speaks in word mode
+                    out.append({"scene": d["entry"].get("scene", ""), "start_ms": int(part[0]["start_ms"]), "end_ms": int(part[-1]["end_ms"]), "words": part, "mode": "word", "importance": d["importance"]})
+                    continue
                 lay_clean = {k: v for k, v in lay.items() if k not in ("ok", "span")}
                 out.append({"scene": d["entry"].get("scene", ""), "start_ms": int(part[0]["start_ms"]), "end_ms": int(part[-1]["end_ms"]), "words": part, "mode": "group",
                             "importance": d["importance"], "anchor": lay["anchor"], "layout": lay_clean, "motion": lay["motion"]})

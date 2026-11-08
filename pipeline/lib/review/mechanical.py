@@ -88,7 +88,8 @@ async (args) => {
         if (!v) continue;
         const parts = v.split(",");
         const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
-        if (isFinite(a) && isFinite(b) && t >= a - 1e-4 && t < b - 1e-4) {
+        // an element past the start of its exit is leaving or gone (a push leaves two empty frames before the scene ends): never judged again
+        if (isFinite(a) && isFinite(b) && t >= a - 1e-4 && (t < b - 1e-4 || name === "data-pcm-exit")) {
           if (name === "data-pcm-exit") return "exit";
           main = true;
         }

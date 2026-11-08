@@ -27,6 +27,7 @@
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$REPO_DIR"
+export REELS_ENERGY_RULES=off   # M16: the plans of M15's fixtures (a legacy plan) are low-energy; the energy rules of E9 are off for them
 SECTIONS="${M15_SECTIONS:-1 2 3 4 5 6}"
 want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 VALIDATE="$REPO_DIR/pipeline/bin/validate-json"
@@ -202,15 +203,15 @@ say("golden-warns-baked-sizes", any(w["rule"] == "text_size" for w in res["warni
 
 # 1. 120 characters of card text on screen
 p = copy.deepcopy(golden)
-comp(p, "s3-window-card-1")["props"]["lines_json"] = ["a" * 40 + " one", "b" * 40 + " two", "c" * 40 + " three"]
+comp(p, "s9-terminal-card-1")["props"]["lines_json"] = ["a" * 40 + " one", "b" * 40 + " two", "c" * 40 + " three"]
 r, n = rules(p); say("fault-120-chars", "text_budget" in n and any("120" in e["message"] or "characters" in e["message"] for e in r["errors"] if e["rule"] == "text_budget"), r["errors"][:3])
 # a card that holds exactly the budget passes
 p = copy.deepcopy(golden)
-comp(p, "s3-window-card-1")["props"]["title"] = "x" * 20
+comp(p, "s9-terminal-card-1")["props"]["title"] = "x" * 11   # the golden holds the budget exactly (100 characters): the same length passes
 r, n = rules(p); say("budget-edge-passes", "text_budget" not in n, r["errors"][:2])
 # 2. a 40 px label (the plan's own font size on a strike-through without a chip)
 p = copy.deepcopy(golden)
-comp(p, "s5-strike-through-2")["props"].update({"chip": False, "font_px": 40})
+comp(p, "s5-strike-through-3")["props"].update({"chip": False, "font_px": 40})
 r, n = rules(p); say("fault-40px-label", "text_size" in n and any("40" in e["message"] for e in r["errors"] if e["rule"] == "text_size"), r["errors"][:3])
 # 3. a group caption over a text card: a chip with text in the group's beat
 p = copy.deepcopy(golden)
