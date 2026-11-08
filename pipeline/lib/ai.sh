@@ -7,7 +7,9 @@
 #           [--tools LIST] [--allowedTools RULES] [--disallowedTools RULES] [--add-dir DIR...] [--max-turns N]
 #     with the prompt on stdin (no command-line size limit, no clash with the variadic flags). The raw output goes
 #     to <stage_dir>/calls/NNN.json (stderr to NNN.err, the command and timing to NNN.meta, a structured output to
-#     NNN.out.json). Model names and efforts come from config.json only.
+#     NNN.out.json). Model names and efforts come from config.json only, through ai_model_for: an idea marked
+#     [important] uses a role's models.<role>.important when it has one, and no other call ever runs a fable model
+#     (models.limit_fallback, opus, stands in: DECISIONS.md 324).
 #     Options:
 #       --schema FILE      --json-schema with the file's content; the structured output is validated against the
 #                          file with jsonschema; an invalid one gets one retry in the same session with the errors,
@@ -216,6 +218,13 @@ print(json.dumps({"type": "result", "subtype": "success", "is_error": True, "dur
   return 1
 }
 
+# ai_model_for ROLE [RUN_DIR] -> "model effort" of that role on that run (pipeline/lib/model_choice.py, DECISIONS.md
+# 324): config models.<role>; on an idea marked important, models.<role>.important wins when the role has one; on any
+# other run, or with no run, a fable model never runs (models.limit_fallback, opus, stands in with the role's effort).
+# Exit 1 when the role has no model. ai_model_name ROLE [RUN_DIR] prints the model alone (for the terminal lines).
+ai_model_for() { "$REELS_PY" "$REELS_PIPELINE/lib/model_choice.py" resolve "$1" --config "$REELS_CONFIG" ${2:+--run-dir "$2"}; }
+ai_model_name() { local m; m="$(ai_model_for "$@" 2>/dev/null)" || return 1; printf '%s\n' "${m%% *}"; }
+
 ai() {
   local role="$1" stage_dir="$2" prompt_file="$3"
   shift 3
@@ -244,10 +253,10 @@ ai() {
   done
   AI_CALL=""; AI_RESULT=""; AI_SESSION=""; AI_OUT=""; AI_CLASS=""; AI_ERROR=""; AI_DETAIL=""; AI_FATAL=0
   if [ ! -f "$prompt_file" ]; then AI_ERROR="ai: prompt file $prompt_file is missing"; AI_CLASS=error; echo "$AI_ERROR" >&2; return 1; fi
-  local model effort run_dir calls
-  model="$(cfg "models.$role.model")" || { AI_ERROR="ai: no model for role '$role' in config.json"; AI_CLASS=error; echo "$AI_ERROR" >&2; return 1; }
-  effort="$(cfg "models.$role.effort" medium)"
+  local model effort run_dir calls resolved
   run_dir="$(dirname "$stage_dir")"
+  resolved="$(ai_model_for "$role" "$run_dir" 2>/dev/null)" || { AI_ERROR="ai: no model for role '$role' in config.json"; AI_CLASS=error; echo "$AI_ERROR" >&2; return 1; }
+  read -r model effort <<<"$resolved"
   calls="$stage_dir/calls"
   mkdir -p "$calls"
   [ -n "$timeout_s" ] || timeout_s="$(cfg timeouts.model_call_seconds 3600)"

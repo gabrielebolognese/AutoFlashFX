@@ -3,27 +3,31 @@
   "style": "paper-cards",
   "models": {
     "research": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "high"
     },
     "gate": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "medium"
     },
     "judge": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "medium"
     },
     "script": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "high"
     },
     "visual_director": {
       "model": "opus",
       "effort": "high"
     },
+    "visual_director_fix": {
+      "model": "sonnet",
+      "effort": "high"
+    },
     "builder": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "high"
     },
     "qa": {
@@ -31,7 +35,7 @@
       "effort": "medium"
     },
     "reviewer": {
-      "model": "opus",
+      "model": "sonnet",
       "effort": "high"
     },
     "cut": {
@@ -47,12 +51,20 @@
       "effort": "medium"
     },
     "builder_escalation": {
-      "model": "fable",
-      "effort": "xhigh"
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
     },
     "reviewer_escalation": {
-      "model": "fable",
-      "effort": "xhigh"
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
     },
     "indexer": {
       "model": "haiku",
@@ -63,8 +75,15 @@
       "effort": "low"
     },
     "visual_director_escalation": {
-      "model": "fable",
-      "effort": "xhigh"
+      "model": "opus",
+      "effort": "xhigh",
+      "important": {
+        "model": "fable",
+        "effort": "xhigh"
+      }
+    },
+    "limit_fallback": {
+      "model": "opus"
     }
   },
   "tts": {

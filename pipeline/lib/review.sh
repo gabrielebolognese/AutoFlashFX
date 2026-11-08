@@ -3,9 +3,10 @@
 #
 # A code error in a stage (a non-zero exit, an exception, an output still invalid after the stage's schema retry)
 # goes: error file -> reviewer -> fix file -> fixer -> verify -> commit -> restart the stage. Caps per stage per
-# idea: caps.error_review_cycles (3) cycles with the Opus reviewer; when the same error signature appears
-# errors.repeated_signature_skip (2) times in a row the remaining Opus cycles are skipped; then one escalation
-# cycle with the Fable reviewer (caps.escalation_cycles); then the idea is blocked. A reviewer verdict with
+# idea: caps.error_review_cycles (3) cycles with the reviewer (models.reviewer, sonnet); when the same error signature appears
+# errors.repeated_signature_skip (2) times in a row the remaining reviewer cycles are skipped; then one escalation
+# cycle with the escalation reviewer (caps.escalation_cycles; models.reviewer_escalation: opus, fable only on an idea
+# marked [important], DECISIONS.md 324; the kind is still called fable inside the code); then the idea is blocked. A reviewer verdict with
 # auto_apply no blocks the idea at once with what the user must do. The runner keeps the counters in state.json
 # under errors.<stage>: cycles, escalated, repeats, last_signature, failures, reviewed (the last failure got its
 # review), last_n, last_outcome, review (the error under review: active, rc, msg, cmd, activity), pending (the
@@ -276,8 +277,8 @@ review_cycle() {  # RUN_DIR STAGE LABEL N KIND CYCLE CAP RC "MSG" "CMD"
   reels_undash msg
   mkdir -p "$errors" "$fixes"
   review_error_file "$run_dir" "$stage" "$n" "$rc" "$msg" "$cmd"
-  if [ "$kind" = fable ]; then role=reviewer_escalation; else role=reviewer; fi
-  model_name="$(cfg "models.$role.model")"
+  if [ "$kind" = fable ]; then role=reviewer_escalation; else role=reviewer; fi   # kind fable: the escalation
+  model_name="$(ai_model_name "$role" "$run_dir")"
   if [ "$kind" = fable ]; then set_activity "error in $label: escalated review ($model_name)"
   else set_activity "error in $label: reviewing (cycle $cycle/$cap, $model_name)"; fi
   known="$(review_known_issues_file)"

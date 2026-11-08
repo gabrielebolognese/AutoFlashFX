@@ -116,6 +116,10 @@ channels/*/styles/sfx/, and the generated files of motion-lib/ and golden/ under
 - An idea is any text between { and }. It can span several lines. Text outside braces is ignored (I may leave
   notes there). No nested braces.
 - The runner always takes the first idea in the file. New ideas are appended at the end.
+- An idea can carry the label [important] (any case) at the start or the end of its braces: `{[important] ...}`,
+  for an idea I think could genuinely blow up. Only these ideas may use fable, and only in the escalations
+  (section 9); every other idea never runs fable. The label is not part of the idea: the stages, the id and
+  idea.txt leave it out, state.json keeps idea.important, the START line and add-idea.sh say it. (DECISIONS.md 323)
 - When an idea is exported, or dropped because no angle works, the runner deletes it from ideas.txt and writes a
   line to logs/history.txt. A blocked idea (4.2) is deleted too and copied to logs/blocked.txt with the reason,
   so I can re-add it.
@@ -373,10 +377,11 @@ On any failed call or script, classify in this order:
 4. **Restart.** The runner restarts the failed stage from its inputs. If the stage has a session, it resumes it with
    a short note saying what failed and what was fixed.
 5. **Caps and escalation:**
-   - Up to 3 review and fix cycles with the Opus reviewer, per stage per idea.
+   - Up to 3 review and fix cycles with the reviewer (Sonnet), per stage per idea.
    - If the same normalized error signature (the message with numbers, paths and timestamps stripped, hashed) appears
-     twice in a row, skip the remaining Opus cycles.
-   - Then 1 escalation cycle with the escalation reviewer (Fable), fresh context, given every previous E and F file.
+     twice in a row, skip the remaining reviewer cycles.
+   - Then 1 escalation cycle with the escalation reviewer (Opus; Fable on an idea marked [important]), fresh context, given
+     every previous E and F file.
    - If that fails too, or the reviewer says `auto_apply: no` for something only I can fix (missing key, disk full),
      the idea is blocked: removed from ideas.txt, copied to logs/blocked.txt with the reason, run folder kept. The
      runner moves to the next idea.
@@ -721,7 +726,7 @@ Earlier milestones are not reviewed against this section.
   config.json voice.wpm (S5 and S7 time the hooks and the script with it).
 - Outputs: vo.wav, vo_hook2.wav, words.json, words_hook2.json.
 
-### S9 Visual plan (fresh sessions, model: visual_director), in three passes
+### S9 Visual plan (fresh sessions, model: visual_director, Opus, for the first plan: the design; visual_director_fix, Sonnet, for a plan made again after a failed review round: the fine tuning; visual_director_escalation after 3 failed rounds: Opus, Fable on an idea marked [important]), in three passes
 
 Shared inputs: script.json and words.json; style.md and tweaks.md (tweaks win), tokens.json, vocabulary.md; the
 motion-lib catalog (each component's props, its sound events and a preview still); the golden reels (plan plus
@@ -766,7 +771,7 @@ A validator script checks the merged plan against tokens.json:
 
 An invalid pass gets one retry with the validator errors, then the review path.
 
-### S10 Build visuals and draft render (model: builder, Opus; builder_escalation, Fable, for 3D-heavy plans or after 2 failed review rounds)
+### S10 Build visuals and draft render (model: builder, Sonnet; builder_escalation for 3D-heavy plans or after 2 failed review rounds: Opus, Fable on an idea marked [important])
 - A HyperFrames composition made from motion-lib components:
   - captions per the style: chunks of 1 to 4 words, gray turning to ink as each word is spoken, accent on the
     emphasis word
@@ -873,8 +878,9 @@ An invalid pass gets one retry with the validator errors, then the review path.
   It also scores energy: does every scene keep moving, with inertia, depth and edges (E1 to E8). (M16)
 - **Fix routing:** each issue goes back to the step that owns it (S8, 9a, 9b, 9c or S11), then S10, S11 and S12 run
   again as needed.
-- **Loop caps:** at most 3 rounds with the Opus builder, then 2 rounds with the Fable builder. Still failing: export
-  anyway, with NEEDS REVIEW and the review notes in the captions file. Never stop.
+- **Loop caps:** at most 3 rounds with the main director (each visual pass planned first by Opus; after a failed round
+  Sonnet fine tunes that plan), then 2 escalated rounds (Opus; Fable on an idea marked [important]). Still failing: export
+  anyway, with NEEDS REVIEW and the review notes in the captions file. Never stop. (DECISIONS.md 325)
 - **Early stop** (Motion and energy rules E9): two rounds in a row with the same scores and the same issues (M16)
   end the loop, and the reel exports with NEEDS REVIEW. (M16)
 
@@ -1159,7 +1165,7 @@ logs/status.txt. Format: `[HH:MM] TAG  details`. TAG is a fixed 6-character word
 | S9 | planning animations, planning text, planning transitions, validating plan |
 | S10 | building visuals, rendering draft |
 | S11 | adding sound effects (14 sounds), verifying sound sync and loudness |
-| S12 | reviewing: mechanical checks, reviewing: style check, reviewing: edit review (round 1/5), fixing [text] issues (round 2, opus), fixing [animation] issues (round 4, fable) |
+| S12 | reviewing: mechanical checks, reviewing: style check, reviewing: edit review (round 1/5), fixing [text] issues (round 2, sonnet), fixing [animation] issues (round 4, opus) |
 | S13 | rendering final video, rendering hook 2 clip |
 | S14 | writing caption, exporting #7 |
 
@@ -1170,7 +1176,7 @@ waiting for usage limit (weekly) until Mon 00:02 (5h41m left)
 retrying after temporary error (overloaded), next try in 4m (try 2/3)
 error in S10: reviewing (cycle 1/3, opus)
 error in S10: applying fix F2 (sonnet)
-error in S10: escalated review (fable)
+error in S10: escalated review (opus)
 ```
 
 When there is no idea:
@@ -1192,7 +1198,7 @@ When there is no idea:
 [15:52] RETRY  temporary error (overloaded), retrying in 60s (try 1/3)
 [15:58] ERROR  S10 building visuals: <one-line error>
 [16:01] FIXED  S10: <cause> (commit 3f2a91c), restarting stage
-[16:20] ESCAL  S10 still failing after 3 reviews, escalating to fable
+[16:20] ESCAL  S10 still failing after 3 reviews, escalating to opus
 [16:40] DONE   exported #7 -> exports/7/ (31 min, 2 issues fixed)
 [16:40] DROP   idea "..." dropped: facts don't hold (<reason>). Removed from ideas.txt
 [16:40] BLOCK  idea "..." blocked at S10: <reason>. Moved to logs/blocked.txt
@@ -1332,10 +1338,15 @@ Would you have made it past the first minute?
 ## 9. config.json
 
 - **models**, one per role, with an effort level each (Claude Code model names and effort levels):
-  - research, gate, judge, script, visual_director, builder, qa, reviewer: opus
-  - cut, checks, fixer: sonnet
-  - builder_escalation, reviewer_escalation: fable
+  - research (S1, S2, S4 and the hooks of S5), gate, judge, script, visual_director_fix, builder, reviewer, cut,
+    checks, fixer: sonnet (the main model of the reels)
+  - visual_director (the first plan of each visual pass: the design and its taste), qa (the edit review): opus
+  - builder_escalation, reviewer_escalation, visual_director_escalation: opus at xhigh effort, with
+    `"important": {"model": "fable", "effort": "xhigh"}`: fable runs only for an idea marked [important] (2.1)
   - indexer, probe: haiku
+  - limit_fallback: opus (the stand-in when fable is at its own limit, and for any fable model on an idea without
+    the label: a fable model never runs for it, whatever the config says; DECISIONS.md 324)
+  - any role may carry an `"important"` override (model, effort) that applies only to the ideas marked important
 - **tts:** device cpu. Every voice setting (engine, interpreter, voice, lang, speed, the silence tightening values)
   comes from library/voice/engine.txt, never from config.json. No fallback engine, and no chatterbox, turbo or qwen
   settings.
@@ -2131,7 +2142,7 @@ a day).
     sound stage). Until M23, a placeholder mode renders each beat as a plain card with its narration.
 11. 11-sfx (generic): this channel's pack and map; this format's cue types (impact, whoosh, pop, boing, rumble, riser,
     sting, an ambience bed per setting); density, spacing and levels from this channel's config sfx.
-12. 12-review (generic): this format's rubric (below), the same loop as today (3 opus rounds, then 2 fable rounds, then
+12. 12-review (generic): this format's rubric (below), the same loop as today (3 main rounds, then 2 escalated rounds, then
     the export with NEEDS REVIEW).
 13. 13-render (generic), then timeline (generic).
 14. The youtube-shorts exporter (section 8), then s15-project (generic, M21).

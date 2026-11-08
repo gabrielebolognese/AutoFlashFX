@@ -417,8 +417,10 @@ assert_eq "$(printf '%s\n' "$caps" | sed -n 2p)" "Why your Claude Code cards all
 assert_true "captions (frozen run): the facts carry URL and date" grep -q -E '^- .*: https?://.* \(checked 2026-[0-9-]+\)$' <<<"$caps"
 
 # one model at its own limit ("You've reached your Fable limit. Switch to another model"): the escalated call carries on
-# with opus instead of failing as a code error (DECISIONS.md 275; a tiny stand-in for claude that refuses fable)
+# with opus instead of failing as a code error (DECISIONS.md 275; a tiny stand-in for claude that refuses fable). Only an
+# idea marked [important] escalates to fable at all (DECISIONS.md 324): the run's state.json says so.
 FL="$W/fable-limit"; mkdir -p "$FL/runs/r1/10-build" "$FL/logs"
+printf '{"idea": {"id": "r1", "text": "x", "important": true}}\n' > "$FL/runs/r1/state.json"
 cat > "$FL/claude" <<'EOF'
 #!/usr/bin/env bash
 m=""; while [ $# -gt 0 ]; do [ "$1" = --model ] && m="$2"; shift; done

@@ -7,6 +7,10 @@ warning is printed. The file is read as UTF-8 (a BOM is fine) with LF or CRLF en
 written back with CRLF. The id of an idea is the first 12 hex characters of the sha1 of its normalized text
 (NFC, whitespace collapsed, trimmed), so it survives edits to other lines.
 
+The label [important] (any case) at the start or the end of a block marks the idea important (DECISIONS.md 323):
+its escalations may use fable. The label is not part of the idea: the text and the id are computed without it, the
+file keeps it, and the JSON rows carry "important": true.
+
 Every write takes the lock directory <root>/.locks/ideas (mkdir is atomic; a lock older than --stale seconds is
 removed and logged) and replaces the file atomically (temp file in the same folder, then os.replace, retried a few
 times because OneDrive briefly holds handles).
@@ -38,6 +42,9 @@ import sys
 import time
 import unicodedata
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from model_choice import split_label  # noqa: E402
 
 ID_LENGTH = 12
 MIN_SIMILARITY = 0.9
@@ -119,9 +126,11 @@ def parse(text: str) -> tuple[list[dict], list[str]]:
             start = i
         elif ch == "}" and start is not None:
             raw = text[start + 1:i]
-            norm = normalize(raw)
+            clean, important = split_label(raw)
+            norm = normalize(clean)
             if norm:
-                blocks.append({"start": start, "end": i + 1, "raw": raw.strip(), "text": norm, "id": idea_id(raw)})
+                blocks.append({"start": start, "end": i + 1, "raw": raw.strip(), "text": norm, "id": idea_id(clean),
+                               "important": important})
             else:
                 warnings.append(f"empty braces at offset {start} ignored")
             start = None
@@ -272,7 +281,7 @@ def emit(args, payload, plain: str) -> None:
 
 
 def public(block: dict, n: int) -> dict:
-    return {"n": n, "id": block["id"], "text": block["text"], "raw": block["raw"]}
+    return {"n": n, "id": block["id"], "text": block["text"], "raw": block["raw"], "important": bool(block.get("important"))}
 
 
 def cmd_list(args) -> int:
@@ -303,6 +312,7 @@ def cmd_id(args) -> int:
     text = read_stdin().strip()
     if text.startswith("{") and text.endswith("}") and text.count("{") == 1 and text.count("}") == 1:
         text = text[1:-1]
+    text = split_label(text)[0]
     if not normalize(text):
         print("ideas.py id: give the idea text on stdin", file=sys.stderr)
         return 1
@@ -330,11 +340,14 @@ def cmd_append(args) -> int:
             text += "{" + t + "}\n"
         write_atomic(args.file, text, newline)
         total = len(parse(text)[0])
-    ids = [idea_id(t) for t in texts]
+    labels = [split_label(t) for t in texts]
+    ids = [idea_id(clean) for clean, _ in labels]
+    marked = sum(1 for _, important in labels if important)
     mark_new(args.root, ids, total, args.source)
     n = len(ids)
-    emit(args, {"added": ids, "queue": total},
-         f"added {n} idea{'s' if n != 1 else ''} to {os.path.basename(args.file)} (queue: {total})")
+    note = "" if not marked else (", marked important" if n == 1 else f", {marked} marked important")
+    emit(args, {"added": ids, "queue": total, "important": marked},
+         f"added {n} idea{'s' if n != 1 else ''} to {os.path.basename(args.file)} (queue: {total}){note}")
     return 0
 
 

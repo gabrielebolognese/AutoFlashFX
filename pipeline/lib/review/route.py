@@ -6,7 +6,9 @@ fail: every issue (the code's and the model's) is tagged; each tag names the ste
 step after it run again (the review included), so a visual fix rebuilds the project and re-mixes the sounds. A [voice]
 issue routes only when it names a word in quotes (the voice is deterministic: S8 can respell a named word, it cannot
 re-read an opinion); otherwise it becomes a NEEDS REVIEW note. Caps: config caps.review_rounds_opus (3) rounds with the
-opus director and builder, then caps.review_rounds_fable (2) with fable; a reel still failing after the last round
+main director (the fixes of rounds 2 and 3 are fine tuning, models.visual_director_fix: sonnet), then
+caps.review_rounds_fable (2) escalated rounds (models.visual_director_escalation: opus, fable only on an idea marked
+important, DECISIONS.md 324 and 325); a reel still failing after the last round
 goes on to the export with a NEEDS REVIEW flag that carries the review notes. A failing round whose issues route
 nowhere also goes on (flagged), never loops.
 
@@ -19,6 +21,7 @@ from __future__ import annotations
 import os
 import re
 
+import model_choice
 from review import common as rc
 from review.edit import SCORE_KEYS, SCORE_TEXT
 
@@ -26,11 +29,14 @@ QUOTED = re.compile(r"[\"“‘']([A-Za-z][A-Za-z0-9'.-]{1,30})[\"”’']")
 
 
 def model_for_round(ctx: rc.Ctx, round_n: int) -> tuple[str, str]:
-    """(label, model name) of the director that fixes before review round round_n."""
-    opus_rounds = int(ctx.c("caps.review_rounds_opus", 3))
-    if round_n <= opus_rounds:
-        return "opus", str(ctx.c("models.visual_director.model", "opus"))
-    return "fable", str(ctx.c("models.visual_director_escalation.model", ctx.c("models.builder_escalation.model", "fable")))
+    """(label, model name) of the director that fixes before review round round_n: the role visual.sh picks after
+    round_n - 1 failed rounds, on this run (its [important] label decides whether an escalation may be fable)."""
+    role = model_choice.director_role(ctx.config, max(0, round_n - 1))
+    try:
+        model, _ = model_choice.resolve(ctx.config, role, model_choice.is_important(ctx.run_dir))
+    except KeyError:
+        model = str(ctx.c("models.visual_director.model", "opus"))
+    return model_choice.short(model), model
 
 
 def normalize_issue(i: dict, source: str) -> dict | None:
@@ -110,7 +116,8 @@ def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, aud
             activity = f"fixing [{tags[0] if tags else 'animation'}] issues (round {round_n + 1}, {label})"
         elif owners and cap_reached:
             verdict = "cap"
-            flags.append(f"edit review: still failing after {round_n} rounds ({cap_opus} opus, {cap_fable} fable); exported as it is. Scores: " + ", ".join(f"{k} {scores[k]}" for k in SCORE_KEYS) +
+            esc = model_for_round(ctx, cap_opus + 1)[0]
+            flags.append(f"edit review: still failing after {round_n} rounds ({cap_opus} main, {cap_fable} escalated on {esc}); exported as it is. Scores: " + ", ".join(f"{k} {scores[k]}" for k in SCORE_KEYS) +
                          ". Open issues: " + " | ".join(f"[{i['tag']}] {i['text'][:120]}" for i in acting[:6]))
         else:
             verdict = "flag"

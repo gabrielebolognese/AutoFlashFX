@@ -63,6 +63,9 @@ import re
 import sys
 import time
 import unicodedata
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from model_choice import split_label  # noqa: E402
 from datetime import datetime
 
 VERSION = 1
@@ -307,6 +310,7 @@ def summary(state: dict, run_dir: str, now: int | None = None) -> dict:
         "idea_id": state["idea"]["id"],
         "idea_text": state["idea"]["text"],
         "idea_raw": state["idea"]["raw"],
+        "idea_important": bool(state["idea"].get("important")),
         "status": state["status"],
         "created": state["created"],
         "elapsed": elapsed_seconds(state, now),
@@ -363,6 +367,7 @@ def cmd_new(args) -> int:
     raw = raw.replace("\r\n", "\n").replace("\r", "\n").strip()
     if raw.startswith("{") and raw.endswith("}") and raw.count("{") == 1:
         raw = raw[1:-1].strip()
+    raw, important = split_label(raw)  # the [important] label is not part of the idea (DECISIONS.md 323)
     text = normalize(raw)
     if not text:
         print("state.py new: give the idea text on stdin", file=sys.stderr)
@@ -385,7 +390,7 @@ def cmd_new(args) -> int:
     state = {
         "version": VERSION,
         "run_id": run_id,
-        "idea": {"id": args.id, "text": text, "raw": raw, "source": args.source},
+        "idea": {"id": args.id, "text": text, "raw": raw, "source": args.source, "important": important},
         "status": "running",
         "created": now,
         "created_iso": iso(now),
