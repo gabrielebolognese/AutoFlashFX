@@ -134,7 +134,7 @@ def main(dest):
     w(dest, "runs/%s/state.json" % openrun, json.dumps({"status": "running", "stages": {"01-research": {"status": "done"}, "02-expansion": {"status": "pending"}}}) + "\n")
     w(dest, "runs/%s/01-research/research.json" % openrun,
       json.dumps({"backslash": back + "\\styles\\paper-cards"}) + "\n")
-    w(dest, "runs/%s/01-research/stage.log" % openrun, "wrote " + back.replace("\\", "\\\\") + "\\\\logs\\\\x\n")
+    w(dest, "runs/%s/01-research/stage.log" % openrun, "wrote " + back + "\\logs\\x\n")
     for n, rid in ((1, done), (2, openrun)):
         w(dest, "exports/%d/%d.mp4" % (n, n), b"mp4reel%d" % n, binary=True)
         w(dest, "exports/%d/%dhook2.mp4" % (n, n), b"mp4hook%d" % n, binary=True)

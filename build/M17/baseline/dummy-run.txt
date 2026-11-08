@@ -1,0 +1,51 @@
+[18:50] READY  preflight ok: 8 tools, 2 python packages, 9 files, 132 GB free
+[18:51] START  reels autopilot v0.1.0 (2ae7a5d) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: 106 files
+[18:51] INFO   root: C:/Users/there/AppData/Local/Temp/tmp.2IKPqjossx | mode: once (stops when the queue is empty) | dummy stages: all
+[18:51] QUEUE  1. Claude Code's frontend-design skill: it makes websites built...
+[18:51] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-08_1851_claude-codes-frontend-design-skill
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | researching facts | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | researching facts | minute 0 | stage 2s | issues: 0 fixed, 0 open
+[18:51] STEP   researching facts done (3s) -> expanding idea
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | expanding idea | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | expanding idea | minute 0 | stage 2s | issues: 0 fixed, 0 open
+[18:51] STEP   expanding idea done (4s) -> checking idea (gate)
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | checking idea (gate) | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] STEP   checking idea (gate) done (2s) -> picking hooks
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | picking hooks | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | picking hooks | minute 0 | stage 2s | issues: 0 fixed, 0 open
+[18:51] STEP   picking hooks done (5s) -> judging hooks
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | judging hooks | minute 0 | stage 1s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | judging hooks | minute 0 | stage 3s | issues: 0 fixed, 0 open
+[18:51] STEP   judging hooks done (6s) -> writing script
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | writing script | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | writing script | minute 0 | stage 2s | issues: 0 fixed, 0 open
+[18:51] STEP   writing script done (4s) -> generating voiceover
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | generating voiceover | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | generating voiceover (beat 3/3) | minute 0 | stage 2s | issues: 0 fixed, 0 open
+[18:51] STEP   generating voiceover done (4s) -> planning animations
+[18:51] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 0 | stage 0s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning animations | minute 0 | stage 4s | issues: 0 fixed, 0 open
+[18:52] STEP   planning animations done (7s) -> planning text
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning text | minute 1 | stage 0s | issues: 0 fixed, 0 open
+[18:52] STEP   planning text done (3s) -> planning transitions
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning transitions | minute 1 | stage 1s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | planning transitions | minute 1 | stage 3s | issues: 0 fixed, 0 open
+[18:52] STEP   planning transitions done (6s) -> building visuals
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 1 | stage 0s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | building visuals | minute 1 | stage 2s | issues: 0 fixed, 0 open
+[18:52] STEP   building visuals done (4s) -> adding sound effects
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | adding sound effects | minute 1 | stage 0s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | adding sound effects (2 sounds) | minute 1 | stage 3s | issues: 0 fixed, 0 open
+[18:52] STEP   adding sound effects done (7s) -> reviewing: mechanical checks
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: mechanical checks | minute 1 | stage 0s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | reviewing: edit review (round 1/5) | minute 1 | stage 2s | issues: 0 fixed, 0 open
+[18:52] STEP   reviewing: mechanical checks done (4s) -> rendering final video
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | rendering final video | minute 1 | stage 0s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | rendering final video | minute 1 | stage 4s | issues: 0 fixed, 0 open
+[18:52] STEP   rendering final video done (7s) -> writing caption
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | writing caption | minute 1 | stage 1s | issues: 0 fixed, 0 open
+[18:52] REEL   #idea 1/1 "Claude Code's frontend-design skill: it ..." | writing caption | minute 1 | stage 3s | issues: 0 fixed, 0 open
+[18:52] STEP   writing caption done (5s) -> exporting #1
+[18:53] DONE   exported #1 -> exports/1/ (2 min, 0 issues fixed)
+[18:53] IDLE   queue empty: this session 1 exported, 0 dropped, 0 blocked in 2m03s | today: 1 exported, 0 dropped
+exit code 0

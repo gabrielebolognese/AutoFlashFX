@@ -1,0 +1,19 @@
+test	sections	status	passed	failed	exit	seconds	log
+test-no-emdash	all	pass	1	0	0	24	build/M17/baseline/logs/test-no-emdash.log
+test-limits	all	pass	94	0	0	83	build/M17/baseline/logs/test-limits.log
+test-m1	all	pass	96	0	0	249	build/M17/baseline/logs/test-m1.log
+test-m2	all	fail	192	15	1	2053	build/M17/baseline/logs/test-m2.log
+test-m3	1 2 3 5 6 7 8 9 10	fail	372	2	1	4402	build/M17/baseline/logs/test-m3.log
+test-m4	1 2	pass	202	0	0	1235	build/M17/baseline/logs/test-m4.log
+test-m5	1 2	pass	196	0	0	801	build/M17/baseline/logs/test-m5.log
+test-m6	1 2	fail	146	1	1	1368	build/M17/baseline/logs/test-m6.log
+test-m7	1 2	fail	115	1	1	842	build/M17/baseline/logs/test-m7.log
+test-m8	1 2	pass	164	0	0	256	build/M17/baseline/logs/test-m8.log
+test-m9	all	pass	80	0	0	1788	build/M17/baseline/logs/test-m9.log
+test-m10	1 2	pass	134	0	0	1604	build/M17/baseline/logs/test-m10.log
+test-m11	1 2 3	pass	227	0	0	3049	build/M17/baseline/logs/test-m11.log
+test-m12	1 2 3 5	pass	180	0	0	1125	build/M17/baseline/logs/test-m12.log
+test-m13	1 2 4	pass	100	0	0	1744	build/M17/baseline/logs/test-m13.log
+test-m14	all	pass	74	0	0	1728	build/M17/baseline/logs/test-m14.log
+test-m15	all	pass	127	0	0	682	build/M17/baseline/logs/test-m15.log
+test-m16	1 2 3 4 5 7	pass	166	0	0	791	build/M17/baseline/logs/test-m16.log

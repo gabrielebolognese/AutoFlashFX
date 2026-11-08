@@ -234,7 +234,7 @@ def main():
     md.append("- Unreadable files: %d%s" % (len(inv.unreadable), "".join("\n  - " + x for x in inv.unreadable[:20])))
     md.append("")
     with open(os.path.join(out, "inventory.md"), "w", encoding="utf-8", newline="\n") as f:
-        f.write("\n".join(md).replace("—", ", ") + "\n")
+        f.write("\n".join(md).replace(chr(0x2014), ", ") + "\n")
     print("inventory: %d rows, %d files, %s -> %s" % (len(rows), total["files"], human(total["bytes"]), out))
     return 0
 

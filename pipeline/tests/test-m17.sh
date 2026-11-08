@@ -354,7 +354,7 @@ import sys, subprocess, os
 sys.path.insert(0, sys.argv[2])
 import manifestlib as ml
 base = sys.argv[1]
-listed = [l.split("\t")[0] for l in subprocess.run(["bash", sys.argv[3], "--list"], capture_output=True, text=True).stdout.splitlines() if l.strip()]
+listed = sys.argv[3].split()   # from `bash run-fake.sh --list`: a Windows Python's bare bash is the WSL launcher
 rows = ml.read_tsv(os.path.join(base, "results.tsv"))[1]
 got = {r["test"]: r for r in rows}
 missing = [t for t in listed if t not in got and t not in ("test-m17", "test-models")]
@@ -369,7 +369,8 @@ assert len([l for l in open(os.path.join(base, "fingerprint-run.txt"), encoding=
 print("ok")
 PY
 if [ -f "$B/baseline/results.tsv" ]; then
-  pycheck_file "build/M17/baseline records every fake-only test, preflight, doctor --quick and the dummy fingerprint" "$TM/p4.py" "$(mixed "$B/baseline")" "$(mixed "$PT")" "$(mixed "$PT/run-fake.sh")" "$(mixed "$REPO_DIR")"
+  pycheck_file "build/M17/baseline records every fake-only test, preflight, doctor --quick and the dummy fingerprint" "$TM/p4.py" "$(mixed "$B/baseline")" "$(mixed "$PT")" "$(bash "$PT/run-fake.sh" --list | cut -f1 | tr '
+' ' ')" "$(mixed "$REPO_DIR")"
 else
   fail "build/M17/baseline/results.tsv is missing: run bash pipeline/tests/run-fake.sh"
 fi

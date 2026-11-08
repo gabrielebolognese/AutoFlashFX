@@ -516,3 +516,18 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   plan_validate.py, events.py), M11 (mechanical.py, route.py, edit.py, the 12-review stage, test-m11's scores line), M12 (research.py,
   screenshot.py). DECISIONS.md 314 to 324. Report: build/M16/report.md. Also touched: pipeline/lib/ai.sh (a launcher missing for a moment
   is waited out: ai.missing_cli_retries) and project.py (the draft's downscale is tried twice).
+
+## M17 Control check
+- Status: done (2026-11-08). No behavior change: only build/M17/ and pipeline/tests/ (plus CLAUDE.md, DECISIONS.md 325 to 332, build/progress.md, build/HUMAN_TODO.md) changed.
+  `bash pipeline/tests/test-m17.sh` passes (4 sections: the manifest rules on a fixture folder, check-manifest's planted faults and `--after` on a migrated fixture,
+  refindex on the fixture and determinism, the recorded artifacts and the baseline machinery). Report for you: build/M17/report.md.
+- Test command: `bash pipeline/tests/test-m17.sh` (about 5 minutes; `M17_SECTIONS="1 2"` is the quick part); `python pipeline/tests/check-manifest.py` checks the manifest
+  against the inventory; make-manifest.py and refindex.py give identical files on every run.
+- Notes: the tools are pipeline/tests/{manifestlib,inventory,refindex,make-manifest,check-manifest,risk-scan,fakeresults,m17-fixture,m17-simulate,m17-summary}.py,
+  run-fake.sh, make-test-copy.sh, m17-baseline.sh. Outputs in build/M17/: inventory.md and .tsv, refindex.tsv and refindex-data.tsv, move-manifest.tsv (11 lines today: no
+  runs/, exports/ or .locks/ exist), config-keys.tsv, risks.md (1 BLOCKER: uncommitted frame-match files; 18 NOTEs), riskiest-moves.md, baseline/, report.md.
+  The baseline (`bash pipeline/tests/run-fake.sh`, in a throwaway copy, about 7 hours; `--compare build/M17/baseline` applies the rule, `--in-place` runs in the folder
+  itself): 18 test files; passing: no-emdash, limits, m1, m4, m5, m8 to m16; known failures: test-m2 (192 passed, 15 failed: the 300 s timeout of a two-idea dummy run), test-m3
+  (372, 2: limit date and epoch), test-m6 (146, 1: the filled voice.md), test-m7 (115, 1: engine.txt names turbo). preflight and doctor --quick pass in a temp copy of the state
+  files; the dummy fingerprint (REELS_DUMMY=all bash run.sh --once) is in baseline/fingerprint-*.txt. M18 and M19 call check-manifest.py (the gate of 14.13), regenerate the
+  manifest before moving, and keep the baseline rule. Earlier milestones touched: none. DECISIONS.md 325 to 332.

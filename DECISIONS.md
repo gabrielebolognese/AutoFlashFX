@@ -2548,3 +2548,55 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     two ideas in 300 s) while two real pipelines were running, see build/M16/report.md for its rerun. The tests of M10 and M15 switch the
     energy rules off for their frozen plans (REELS_ENERGY_RULES=off), the fake editors' answers of M11 gained the energy score, test-m15
     follows the new golden plan's component ids.
+325. **M17: the control check is nine small tools in pipeline/tests/ and nothing else.** manifestlib.py (the inventory, the engine rules, the old-path
+    forms, the TSV format), inventory.py, refindex.py, make-manifest.py, check-manifest.py, risk-scan.py, run-fake.sh with fakeresults.py and
+    make-test-copy.sh, m17-baseline.sh, m17-fixture.py and m17-simulate.py, m17-summary.py, and test-m17.sh as the acceptance test. Nothing the runner
+    uses changed: the git diff of the milestone lists only build/, pipeline/tests/ and the build's memory files. Python standard library only, `python`
+    (3.13), LF, no em dash (every text that comes from a source line goes through `sanitize`, which turns U+2014 into a comma).
+326. **M17: what the inventory counts and what it does not.** Every file of the folder is a row of inventory.tsv with its git state (tracked,
+    untracked, ignored), except three trees that are one summary row each (kind tree): `.git` (git's own files), `node_modules` (engine, 6,500 files,
+    reinstalled by setup-node) and `build/` (the build tooling's own folder, which changes with every batch). Python caches (`__pycache__`, `.pyc`)
+    are left out of every count: a test run makes and removes them. Everything else is walked, ignored data included (the sound pack's audio,
+    styles/*/refs and analysis, library/voice, the harness caches of motion-lib). The "engine" rule is a list of top-level names in manifestlib.py
+    (ENGINE_TOP): a top-level item that is neither engine, nor moved, nor a deliberate stay is placed by no rule, and check-manifest.py then fails
+    the coverage check. That is the BLOCKED case of the spec ("the manifest cannot place some file"): today nothing is unplaced.
+327. **M17: the manifest has two scopes and a checksum column.** The spec lists "old path, new path, git state, method, files, bytes, check, reason and
+    milestone"; the file adds `seq`, `scope` and `sha256`. `scope` is `top` for the line that covers its files (a file, a folder, a stay) and `inner`
+    for an action inside a folder that a top line moves (a file rename, a rewrite of text): coverage is counted over top lines only, so the files of
+    exports/1/ are covered once, by the line of the folder, although their names change too. `sha256` holds the checksum of a single file, so that
+    `check-manifest.py --after` can verify "the same checksum, or the same count and bytes" without a second source. A folder with a tracked part and
+    an ignored part is one `git-mv` line: git mv renames the whole directory on disk, so the untracked and ignored files travel with it; the
+    reason column says how many files were tracked, untracked and ignored. Rewrites are `inner` lines too: one per run folder that holds an old
+    path (the raw model outputs, calls/*.json, are never counted), one per captions file for M18 (the RUN path) and for M19 (the HOOKS names, the
+    RUN path, the EDITOR path), one for logs/history.txt ("exported N" becomes "exported flashfx-N").
+328. **M17: the real folder today has no runs/, no exports/ and no .locks/.** The manifest therefore has 11 lines (ideas.txt, library, styles,
+    motion-lib, golden, the five items of logs/, the voicetests stay) and no inner line. The rules for runs, exports, the history and the locks are
+    proved on a fixture folder (m17-fixture.py: two runs, one finished and one unfinished, two exports, a history with two exports, old paths in every
+    form) by test-m17, and an executor for the fixture (m17-simulate.py: git mv, renames, rewrites; not migrate-channels, which M18 builds) shows
+    that `check-manifest.py --after` passes on a migrated folder and fails on planted faults. M18 and M19 write the manifest again right before they
+    move, so whatever the runner makes in between is covered by the same rules.
+329. **M17: the old paths found in data (refindex-data.tsv) are not only in run files.** motion-lib/gallery/play/*.html (39 tracked files) carry a
+    `<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">`, motion-lib/webgl.json holds a harness frame path in
+    backslashes, and the ignored caches under motion-lib/.harness and .hyperframes and golden/*/project/.hyperframes hold the same absolute paths.
+    After the move these name a folder that no longer exists. They are tools' output (gallery.py, harness.py, webgl-test) that can be rebuilt; M18
+    lists each one it rewrites or regenerates in its report. The refindex counts them as data, not as code.
+330. **M17: the refindex leaves out the plan and the tools that name the layout on purpose.** build/, BUILD_SPEC.md, CHANNELS.md, PLAN.md, DECISIONS.md
+    (the plan and its records), pipeline/vendor/ (third party) and M17's own tools and test are not scanned. Everything else tracked is, with a
+    `rooted` flag: `fixtures/runs/` or `<id>/logs/` is something else than the root's folder and needs no change. An absolute form of the root
+    (C:/, /c/, backslashes) is its own certainty (`absolute`), because it breaks wherever it is read, not only where code builds a path. A
+    config key that moves is exact when written dotted (`voice.wpm`) and a candidate when it is a section access (`cfg["review"]`): the candidates
+    include dicts that are not the config, which M18 sorts out by reading the line.
+331. **M17: the baseline runs in a throwaway copy of the repo.** The earlier milestones' tests write into the folder they run in (the frame-match
+    reports of M9, M14 and M16 in motion-lib/gallery/, scratch under build/M<n>/), and M17 may not change motion-lib. run-fake.sh therefore makes
+    a copy with make-test-copy.sh (everything except .git, node_modules (a junction to the real one), build/ (only its tracked files) and the
+    caches; its own git repo with one commit, so the tests that need git work) and runs the tests there. `--in-place` runs them in the folder itself
+    (for a copy, or after M18); `--append` adds to an earlier result; `--compare DIR` applies the baseline rule. The list is the fake-only part of
+    CLAUDE.md (test-no-emdash, test-limits, m1, m2, m3 sections 1 2 3 5 to 10, m4 to m7 sections 1 2, m8, m9, m10 1 2, m11 1 2 3, m12 1 2 3 5, m13 1 2 4,
+    m14, m15, m16 1 2 3 4 5 7, m17). The baseline rule is per test file and per failing check: a test file that passed must pass, a failing check
+    that is not in the baseline's failures of that file is new; durations are recorded, never compared.
+332. **M17: preflight, doctor --quick and the dummy run run on a temp copy of the state files, with the repo's own code.** m17-baseline.sh copies
+    library, styles, motion-lib, golden, ideas.txt and config.json (without the reference videos, the analysis and the harness caches) into a temp
+    REELS_ROOT, then runs preflight, `doctor --quick` and `REELS_DUMMY=all bash run.sh --once` there, in fast mode (the tests' settings), and records
+    the output and the tree of the run folder and of the export it made, names only, the date and time of the run folder replaced by <ts>
+    (fingerprint-run.txt, fingerprint-exports.txt, fingerprint-state.txt). Dot files in the run tree (.done, .log-offset, .remove.err) belong to the
+    fingerprint: M18 and M19 compare their own dummy runs with these files and expect the same names, with the paths of M18 and the names of M19.

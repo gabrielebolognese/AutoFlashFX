@@ -23,8 +23,8 @@ refindex.tsv, one row per occurrence in a tracked text file:
             <id>/logs/): nothing to change
   change    the planned change: paths module call (chpath, paths.ch), channel path in docs, export name (M19), resolved config
             (config.sh, config.py), channel path in a test, fixture rewrite only where a test needs it, new .gitignore, none
-Left out of the scan: build/, BUILD_SPEC.md, CHANNELS.md, PLAN.md, DECISIONS.md (the plan and its records), pipeline/vendor/ (third
-party), and the binary and very large files.
+Left out of the scan: build/, BUILD_SPEC.md, CHANNELS.md, PLAN.md, DECISIONS.md (the plan and its records), M17's own tools and test in
+pipeline/tests/ (they name the old layout on purpose), pipeline/vendor/ (third party), and the binary and very large files.
 
 refindex-data.tsv: the old paths inside data files that git does not track or that are data, in every form (relative, mixed C:/,
 posix-drive /c/, backslash, json-backslash), counted per folder bucket, state, path name and form, with the first example.
@@ -42,6 +42,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import manifestlib as ml  # noqa: E402
 
 SKIP_FILES = {"BUILD_SPEC.md", "CHANNELS.md", "PLAN.md", "DECISIONS.md"}
+# M17's own tools and test: they exist to name the folder's layout (the old one, before M18), and their fixtures spell every form of an old path
+SKIP_FILES |= {"pipeline/tests/" + n for n in ("manifestlib.py", "inventory.py", "refindex.py", "make-manifest.py", "check-manifest.py", "risk-scan.py",
+                                                "m17-fixture.py", "m17-simulate.py", "m17-baseline.sh", "test-m17.sh", "run-fake.sh", "fakeresults.py",
+                                                "make-test-copy.sh")}
 SKIP_PREFIX = ("build/", "pipeline/vendor/", "node_modules/")
 MAX_BYTES = 8 * 1024 * 1024
 

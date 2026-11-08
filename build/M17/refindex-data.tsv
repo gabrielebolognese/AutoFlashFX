@@ -1,0 +1,26 @@
+bucket	git	name	form	files	occurrences	example
+golden	ignored	golden	json-backslash	1	2	golden/test-idea/project/.hyperframes/video-state.json:299: "report": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\golden\\test-idea\\project
+golden	tracked	golden	relative	1	1	golden/test-idea/energy.json:3: "video": "golden/test-idea/golden.mp4",
+golden	tracked	motion-lib	relative	2	2	golden/test-idea/project/compositions/hero-3d.html:25: (hardware ANGLE or SwiftShader, see motion-lib/webgl.json) the canvas is replaced by a fla
+golden	tracked	styles	relative	3	3	golden/test-idea/project/assets/paper-cards.css:1: /* paper-cards.css: the shared look of the motion library (styles/paper-cards/style.md ver
+library	ignored	library	relative	2	2	library/.hooks.index.json:3: "source": "library/hooks.txt",
+library	tracked	library	relative	4	41	library/brand/brand.json:3: "source": "FlashFX Brand ID 2026 (official brand guide, 48 pages); rules in library/brand/
+library	tracked	logs	relative	1	1	library/profile/account.md:36: repo or a method. S2 reads the solution types of the recent lines of logs/history.txt to k
+library	tracked	styles	relative	4	5	library/brand/BRAND.md:8: styles/paper-cards. Brand colors and fonts are documented here so logo placement and Flash
+logs	ignored	ideas.txt	relative	3	9	logs/build-sfx-map/calls/001-classify.meta:11: command: claude -p --model haiku --effort low --output-format json --permission-mode auto 
+logs	ignored	library	mixed	3	3	logs/voice-profile/measure.out:1: {"words": 216, "speech_seconds": 66.4, "gross_seconds": 66.4, "wpm": 195, "wpm_raw": 195, 
+logs	ignored	library	relative	5	25	logs/build-sfx-map/calls/001-classify.meta:11: command: claude -p --model haiku --effort low --output-format json --permission-mode auto 
+logs	ignored	logs	mixed	4	4	logs/build-sfx-map/calls/001-classify.meta:4: prompt: C:/Users/there/OneDrive/Desktop/instagramReels/logs/build-sfx-map/prompt-classify.
+logs	ignored	logs	relative	1	2	logs/runner.log:8: [18:25] STOP   systemic failure: preflight failed: Python 3.13.3 (tags/v3.13.3:6280bb5, Ap
+logs	ignored	styles	relative	3	12	logs/build-sfx-map/calls/001-classify.meta:11: command: claude -p --model haiku --effort low --output-format json --permission-mode auto 
+motion-lib	ignored	motion-lib	json-backslash	3	55	motion-lib/.hyperframes/artifacts/checks/c06e96b6-9360-4022-8126-6c12cb0756b2.json:17: "sourceFile": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\compositio
+motion-lib	ignored	motion-lib	mixed	91	91	motion-lib/.harness/camera-move-fm.html:5: <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+motion-lib	ignored	motion-lib	relative	6	6	motion-lib/.harness/hero-3d-fm.html:56: (hardware ANGLE or SwiftShader, see motion-lib/webgl.json) the canvas is replaced by a fla
+motion-lib	tracked	library	relative	1	1	motion-lib/catalog.json:13: "images": "image props take a path relative to the project (assets/brand/... from library/
+motion-lib	tracked	motion-lib	json-backslash	1	2	motion-lib/webgl.json:52: "frame": "C:\\Users\\there\\OneDrive\\Desktop\\instagramReels\\motion-lib\\.harness\\webgl
+motion-lib	tracked	motion-lib	mixed	39	39	motion-lib/gallery/play/camera-move.html:5: <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+motion-lib	tracked	motion-lib	relative	6	8	motion-lib/catalog.json:4820: "does": "A low-poly 3D icon turning slowly at the center of a scene (Motion and energy rul
+motion-lib	tracked	styles	relative	5	6	motion-lib/assets/paper-cards.css:1: /* paper-cards.css: the shared look of the motion library (styles/paper-cards/style.md ver
+styles	ignored	styles	relative	15	15	styles/paper-cards/analysis/v03/measurements.md:4: All commands run from `styles/paper-cards/`. `$T` = `C:/Users/there/AppData/Local/Temp/cla
+styles	tracked	library	relative	1	2	styles/paper-cards/tweaks.md:45: The style does not change. FlashFX branding appears only as the PNG files in library/brand
+styles	tracked	styles	relative	3	11	styles/sfx/SFX-MAP.md:1: # SFX map: styles/sfx

@@ -1,0 +1,117 @@
+
+== 1. parser fixtures ==
+PASS  multiline.txt: 2 ideas
+PASS  multiline.txt: a multi-line idea becomes one line
+PASS  multiline.txt: second idea exact
+PASS  crlf.txt fixture really has CRLF bytes and a BOM
+PASS  crlf.txt: 2 ideas
+PASS  crlf.txt: CRLF normalized, BOM ignored
+PASS  crlf.txt: second idea exact
+PASS  crlf.txt: no carriage return in the parsed text
+PASS  italian.txt: 2 ideas, the note outside braces ignored
+PASS  italian.txt: accents intact
+PASS  italian.txt: emoji and typographic quotes intact
+PASS  notes.txt: 1 idea among notes, a stray } and an unclosed {
+PASS  notes.txt: idea exact
+PASS  notes.txt: the unclosed brace is reported on stderr
+PASS  inline.txt: two blocks inside one note line
+PASS  inline.txt: first block exact
+PASS  inline.txt: second block exact
+PASS  restart.txt: a second { restarts the block and {} is ignored
+PASS  restart.txt: idea exact
+PASS  restart.txt: the restart is reported
+PASS  restart.txt: the empty braces are reported
+PASS  empty.txt: 0 ideas
+PASS  empty.txt: first exits 3
+PASS  a missing file counts as 0 ideas
+PASS  list without --plain is JSON with n, id, text and raw
+
+== 2. ids ==
+PASS  an id is 12 hex characters
+PASS  an id survives adding and removing other ideas
+PASS  the id is the same for the CRLF and LF versions of a text
+PASS  whitespace differences do not change the id
+PASS  ideas.py id accepts the text with or without braces
+
+== 3. remove ==
+ideas.py: warning: unclosed brace at offset 205 ignored: the file ends before its closing brace
+ideas.py: warning: unclosed brace at offset 205 ignored: a new block opens at offset 225
+PASS  three ideas before the removals
+PASS  exact id: removed
+PASS  exact id: plain confirmation line
+PASS  exact id: the block is gone
+PASS  notes outside braces survive a rewrite
+PASS  the trailing note survives a rewrite
+ideas.py: warning: unclosed brace at offset 205 ignored: a new block opens at offset 225
+PASS  edited idea: the closest match at similarity 0.9 or more is removed
+PASS  edited idea: the result reports the similarity
+PASS  edited idea: the edited block is gone
+PASS  edited idea: the fuzzy removal is logged
+ideas.py: warning: unclosed brace at offset 205 ignored: a new block opens at offset 225
+PASS  edited idea: count back to 2
+PASS  unrelated content: nothing removed, exit 3
+PASS  unrelated content: the file is untouched
+PASS  unrelated content: logged
+ideas.py: warning: unclosed brace at offset 205 ignored: a new block opens at offset 225
+PASS  unrelated content: count unchanged
+PASS  a CRLF file is written back with CRLF
+PASS  CRLF file: one idea left after the removal
+
+== 4. add-idea.sh ==
+PASS  add-idea.sh exits 0
+PASS  add-idea.sh: two blocks in one argument, one confirmation line
+PASS  add-idea.sh: text without braces becomes one idea
+PASS  add-idea.sh: reads stdin
+PASS  add-idea.sh: a multi-line idea is stored and parsed back
+PASS  add-idea.sh: accents written as UTF-8
+PASS  each addition is recorded in logs/.new-ideas for the NEW line
+PASS  add-idea.sh: blank input is refused
+PASS  add-idea.sh: empty braces are refused
+
+== 5. concurrency and locks ==
+PASS  a removal during 20 concurrent additions succeeds
+PASS  20 additions and 1 removal in parallel leave exactly 20 ideas
+PASS  every concurrently added idea is intact
+PASS  the removed idea is gone
+PASS  the lock directory is gone afterwards
+PASS  no process hit a traceback or a lock timeout
+PASS  no temp file left behind
+PASS  a stale lock (older than 60 s) does not block a writer
+PASS  the stale lock was broken within a few seconds (took 3s)
+PASS  the stale lock removal is logged
+PASS  the idea after the stale lock was added
+PASS  a writer waits while a fresh lock is held
+PASS  the writer proceeds once the lock is released
+PASS  the idea after the live lock was added
+
+== 6. validate-json ==
+PASS  a valid file passes
+PASS  an invalid file fails with exit 1
+PASS  the error line names the path and the problem
+PASS  an unreadable file exits 2
+
+== 7. run.sh banner and preflight ==
+PASS  bash run.sh --once exits 0
+PASS  preflight line
+PASS  banner: version, queue, style, voice engine, sfx map
+PASS  the summary line when the queue is empty
+PASS  NO_COLOR output has no escape codes
+PASS  logs/runner.log written
+PASS  logs/status.txt written
+PASS  status.txt holds the latest line
+PASS  runs/, exports/ and .locks/ are created at startup
+PASS  exports/ created
+PASS  .locks/ created
+PASS  an unknown option exits 1
+PASS  pipeline/bin/preflight exits 0 on this machine
+PASS  run.sh exits 3 when ffmpeg is hidden from PATH
+PASS  logs/STOPPED.md written
+PASS  STOPPED.md names the missing tool
+PASS  STOPPED.md gives the exact fix
+PASS  STOP line printed
+PASS  no banner after a failed preflight
+PASS  status.txt holds the STOP line
+PASS  the next successful start removes STOPPED.md
+PASS  the removal is announced
+
+test-m1.sh: 96 passed, 0 failed

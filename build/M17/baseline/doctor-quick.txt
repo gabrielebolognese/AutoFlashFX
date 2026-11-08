@@ -1,0 +1,30 @@
+reels doctor: C:/Users/there/AppData/Local/Temp/tmp.2IKPqjossx (2026-11-08 18:49)
+
+== versions
+OK    bash 5.2.37, git 2.49.0, python 3.13.3, node 22.16.0, ffmpeg 9.0.2, ffprobe 9.0.2, claude 2.1.319
+OK    node packages as pinned in package.json: gsap 3.15.0, hyperframes 0.8.226, three 0.159.0
+
+== disk
+OK    132 GB free under C:/Users/there/AppData/Local/Temp/tmp.2IKPqjossx (minimum 10 GB)
+OK    logs/ 2.0K (2 entries)
+
+== freshness
+OK    sfx map up to date: 106 audio files, 93 mapped, 13 excluded, built 2026-11-01 15:24
+OK    tokens.json is current (unchanged)
+OK    hooks index current (80 hooks, built 2026-11-01 09:22)
+
+== runner
+OK    no runner is running
+OK    status (0 min ago): [18:49] READY  preflight ok: 8 tools, 2 python packages, 9 files, 132 GB free
+OK    logs/runner.log 0 KB (0 rotated files kept; it rotates at 50 MB)
+
+== queue and logs
+OK    ideas.txt: 1 idea queued
+OK    history: no finished idea yet
+OK    no blocked ideas
+OK    no logs/STOPPED.md
+OK    limits.log: no usage limit met yet
+OK    known-issues.md: 6 fix lines
+
+doctor: 0 problems, 0 warnings
+exit code 0

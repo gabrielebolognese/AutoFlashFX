@@ -1,0 +1,251 @@
+
+== 1. units: hooks.py, index-hooks, judge.py, voiceprofile.py, session_call --seed-if-new (no model) ==
+PASS  parse: 6 hook lines (comments and empty lines skipped)
+PASS  parse: the quoted and the unquoted line share one id, the second is a duplicate
+PASS  parse: the lost blank is a broken blank, the normal lines are not
+PASS  parse: the em dash is noted and read as a comma in the text
+PASS  parse: blanks are counted and the quotes and spaces are stripped
+PASS  hook_id: quotes and case do not change the id (10 hex characters: 76048555a4)
+PASS  hook_id: a different text gives a different id
+PASS  hook_id: 10 hex characters
+PASS  index-plan: a missing index is not up to date
+PASS  index-plan: 5 unique hooks to classify
+PASS  index-write: 5 hooks indexed
+PASS  index-write: every hook classified
+PASS  index: every entry has id, family, fits_problem_solution and blanks
+PASS  lint: the duplicate line
+PASS  lint: the broken blank
+PASS  lint: the em dash line
+PASS  lint: the model's grammar note
+PASS  index-write: the stats file is created empty
+PASS  index-write: hooks.suggested.txt is created
+PASS  index-plan: unchanged after the write (no model call needed)
+PASS  index-plan: an added line means one hook to classify, the others keep their family
+PASS  index-write without an answer: the new hook is unclassified, the old ones kept
+PASS  index-plan: an unclassified hook means the next run calls the model again
+PASS  index-hooks: exits 0 (hooks index rebuilt: 80 hooks, 80 classified, 0 unclassified, 8 lint line(s) -> library/.h)
+PASS  index-hooks: one batched call to the indexer
+PASS  index-hooks: the call's role is indexer
+PASS  index-hooks: the indexer model from config
+PASS  index-hooks: no tools
+PASS  index-hooks: library/.hooks.index.json written
+PASS  index-hooks: library/hooks.lint.txt written
+PASS  index-hooks: library/.hooks.stats.json created
+PASS  index-hooks: one entry per unique hook line of hooks.txt (80)
+PASS  index-hooks: the prompt lists every hook with its id
+PASS  index-hooks: every hook classified from the answer
+PASS  index-hooks: a second run exits 0
+PASS  index-hooks: a second run with no change makes no model call
+PASS  index-hooks: the second run says it is up to date
+PASS  index-hooks: the call files live under logs/index-hooks/calls/
+PASS  vendor: 26 formulas v01 to v26, each with a family
+PASS  shortlist: 24 templates
+PASS  shortlist: at least 3 families, library and vendor templates both present
+PASS  shortlist: no broken-blank template is offered
+PASS  shortlist: the same seed gives the same shortlist
+PASS  templates-text: one line per template with the id, the family and the fit
+v03 d7f50b476d
+PASS  shortlist: the win rate weights the choice once there is data (winner in 1 of 12 shortlists, loser in 0)
+PASS  limits: 7 words at 150 wpm (8 words would be 3.2 s)
+PASS  limits: 8 words at 165 wpm
+PASS  limits: 6 words at 140 wpm
+PASS  limits: the cap never exceeds 8 words
+PASS  check: the fixture answer passes every rule (14 hooks)
+PASS  check: hooks.json validates against the stage schema
+PASS  check: the written hooks keep the rules of spec S5 (14 hooks, families how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation)
+PASS  check: ids are h01.. in order
+PASS  check: the template source is recorded
+PASS  check: a bad answer fails
+PASS  check: an 11-word spoken line is named with the cap
+PASS  check: a 7-word on-screen line is named
+PASS  check: a missing marker is named
+PASS  check: an unknown template_id is named
+PASS  check: an unknown family is named
+PASS  check: a repeated spoken line is named
+PASS  check: a marker that is neither a tool, a number nor a time is named
+PASS  check: too few valid hooks is named with the minimum
+PASS  check: nothing is written when the rules fail without --force
+PASS  check --force: the valid hooks are written (4 of 11, enough for the judge)
+PASS  check --force: 4 hooks in the file
+PASS  check --force: rule_errors recorded in the file
+PASS  check --keep: survivors plus the valid replacements pass (13 hooks)
+PASS  check --keep: hooks.json says regenerated
+PASS  check --keep: the survivors come first, unchanged
+PASS  brief: the fixture brief is inside the token range (2387 tokens, 1836 words)
+PASS  brief: the header comes first
+PASS  brief: the body follows
+PASS  tokens: the same measure on the written file
+PASS  brief: a short brief fails
+PASS  brief: the error says how many words to add
+PASS  brief: nothing written without --force
+PASS  brief --force: written anyway (the stage flags it)
+PASS  brief: the video type is reported
+PASS  stats-update: picked, won and scores accumulate per id
+PASS  stats-update: the judge scores are kept per id
+PASS  wpm: the measured pace of voice.md wins
+PASS  wpm: the default without a voice.md
+PASS  wpm: a placeholder pace falls back to the default
+PASS  score: every fixture hook passes hookscore (score 50 or more, no dealbreaker)
+PASS  score: scores.json holds a score and a verdict per hook
+PASS  score: the weak fixture keeps 3 of 12 (the regeneration case)
+PASS  feedback: survivors, failures and the filter's reasons for S5
+PASS  candidates: the survivors when at least 2 passed
+PASS  candidates: fewer than 2 survivors means the best available by score, the dealbreaker last
+PASS  rank-prompt: 14 labeled lines A to N
+PASS  rank-prompt: the two seeds give different shuffles
+PASS  rank-prompt: the same seed gives the same shuffle
+PASS  parse-ranking: a full ranking (extra labels ignored) is complete
+PASS  parse-ranking: 14 ids, each once
+PASS  parse-ranking: a partial ranking is flagged incomplete
+PASS  parse-ranking: the missing hooks are appended, duplicates and unknown labels dropped
+PASS  parse-ranking: the first id is label B's hook
+PASS  borda: n-1-position points per ranking, ties by the first ranking
+PASS  borda: the top 4 for the pairwise call
+PASS  pair-prompt: 4 hooks give 12 comparisons (every pair in both orders)
+PASS  pair-prompt: every pair appears once in each order
+PASS  pair-prompt: the comparisons are numbered in the prompt
+PASS  tally: the hook that won every comparison is the winner
+PASS  tally: the runner-up is the next by wins
+PASS  tally: 12 comparisons counted
+PASS  tally: an unknown comparison number or a winner outside the pair is ignored
+PASS  tally: a tie in wins is broken by Borda points
+PASS  compose: judge.json validates against the stage schema
+PASS  compose: winner and runner-up differ
+PASS  compose: reasons, two rankings, 12 pairwise results, 14 hookscores
+PASS  compose: the stats payload lists every template, the winner among them, with judge scores
+PASS  measure: the pace removes the long pause (wpm 164, raw 145, 52 words)
+PASS  measure: 3 verbatim excerpts
+PASS  compose: without a model answer the file is a draft from the template
+PASS  compose: the Pace line is filled with the measurement
+PASS  compose: the excerpts section
+PASS  compose: the placeholders
+PASS  compose: the template's headings are kept
+PASS  compose: the vendor's intro is replaced
+PASS  is-draft: a draft is a draft
+PASS  compose: with a model answer the draft comes from the memo
+PASS  compose: the model's text is kept
+PASS  compose: the measured pace replaces the model's Pace line
+PASS  is-draft: a filled file is not a draft
+PASS  account: the draft has the spec's sections
+PASS  set-wpm: voice.wpm rewritten
+PASS  set-wpm: only that one line changed
+PASS  build-voice-profile: exits 0 in the sandbox
+PASS  build-voice-profile: voice.md written
+PASS  build-voice-profile: account.md written
+PASS  build-voice-profile: both files are drafts with placeholders
+PASS  build-voice-profile: the next step for the user is printed
+    (no whisper interpreter on this PC: the pace was not measured, which the script reports)
+PASS  build-voice-profile: says why the pace was not measured
+PASS  build-voice-profile: existing files are kept without --force
+PASS  build-voice-profile: no model call without a memo
+PASS  seed-if-new: the call succeeds
+PASS  seed-if-new: the INFO line names the seed
+PASS  seed-if-new: one call (no failed resume first)
+PASS  seed-if-new: the prompt is the seeded one, header first
+PASS  seed-if-new: the seed carries facts.md
+PASS  seed-if-new: the task follows the seed
+PASS  seed-if-new: the new session id is stored
+PASS  seed-if-new: the next call resumes the stored session with the plain prompt
+PASS  seed-if-new: no INFO line on a resumed session
+
+== 2. S5 and S6 through the runner with the fake claude, from the frozen M4 outputs (then the regeneration path) ==
+    [14:25] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [14:25] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.Cs3Vd8fAOz/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [14:25] START  reels autopilot v0.1.0 (b6414e5) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [14:25] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-08_1424_claude-codes-frontend-design-skill (resumed at picking hooks, 3 stages done)
+    [14:26] INFO   session A has no stored id: starting a new one seeded with facts.md, expansion.md and the latest gate feedback
+    [14:26] INFO   S5: 14 hooks from how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation (0 from hooks.txt, 14 vendor shapes), spoken cap 8 words at 195 wpm
+    [14:26] INFO   S5: brief.md 2564 tokens (1972 words), video type default; session A done
+    [14:26] STEP   picking hooks done (1m35s) -> judging hooks
+    [14:27] INFO   S6: 14 of 14 hooks passed hookscore (min 50); judging 14 (survivors)
+    [14:27] INFO   S6: hook 1 h12 "Stop designing with Claude before installing frontend-design..." (mistake-warning), hook 2 h09 "1,134,112 installs: Claude's frontend-design skill."; 14/14 passed the filter, 3 judge calls
+    [14:27] STEP   judging hooks done (1m05s) -> writing script
+    [14:27] STEP   writing script done (4s) -> generating voiceover
+    [14:28] STEP   generating voiceover done (8s) -> planning animations
+    [14:28] STEP   planning animations done (5s) -> planning text
+    [14:28] STEP   planning text done (2s) -> planning transitions
+    [14:28] STEP   planning transitions done (4s) -> building visuals
+    [14:28] STEP   building visuals done (2s) -> adding sound effects
+    [14:28] STEP   adding sound effects done (3s) -> reviewing: mechanical checks
+    [14:28] STEP   reviewing: mechanical checks done (2s) -> rendering final video
+    [14:28] STEP   rendering final video done (4s) -> writing caption
+    [14:28] STEP   writing caption done (5s) -> exporting #1
+    [14:29] DONE   exported #1 -> exports/1/ (4 min, 0 issues fixed)
+PASS  the runner exits 0
+PASS  START: the run seeded from the frozen outputs resumes at S5
+PASS  S5: no session A stored, so the first call is seeded (the reseed path)
+PASS  S5 done
+PASS  S5: the INFO line counts the hooks
+PASS  S5: the INFO line measures the brief
+PASS  S6: the filter line
+PASS  S6: the verdict line
+PASS  S6 done
+PASS  the run continued to the (dummy) export
+PASS  no ERROR line
+PASS  no BLOCK line
+PASS  hooks.json validates
+PASS  hooks.json keeps the rules (14 hooks, families how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation)
+PASS  the template shortlist is kept
+PASS  brief.md written
+PASS  brief.md is within 2000 to 3000 tokens (2564)
+PASS  brief.md starts with the header
+PASS  brief.md header names the keyword
+PASS  judge.json validates
+PASS  judge.json: winner (h12) and runner-up (h09) differ
+PASS  judge.json: both are hooks of hooks.json
+PASS  judge.json: reasons, two complete rankings, 12 pairwise results, nothing filtered
+PASS  the two ranking calls used different shuffles
+PASS  stats: every template of hooks.json was picked once and the winner's template won once
+PASS  6 model calls: index, hooks, brief, two rankings, the pairwise comparison
+PASS  the roles in order
+PASS  the hooks call starts a new session (seeded)
+PASS  the brief call resumes the hooks call's session (session A)
+PASS  the three judge calls are fresh sessions
+PASS  the judge model from config
+PASS  no tools for the hooks and judge calls
+PASS  no em dash in the stage files
+PASS  ideas.txt: the idea is gone after the export
+    [14:30] WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults of BUILD_SPEC.md 2.5 are used (engine kokoro, voice af_bella, interpreter C:/Users/there/venvs/kokoro/Scripts/python.exe, speed 1.0, pauses of 0.3 s or more cut to 0.1 s below -40 dB, 1.0 s breath after the hook)
+    [14:30] WARN   preflight: styles/sfx/sfx-map.json is missing (C:/Users/there/AppData/Local/Temp/tmp.Cs3Vd8fAOz/styles/sfx/sfx-map.json) (fix: bash pipeline/bin/build-sfx-map (measures styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW))
+    [14:30] START  reels autopilot v0.1.0 (b6414e5) | queue: 1 idea | style: paper-cards | voice: kokoro af_bella | sfx map: not built
+    [14:30] START  idea 1/1 "Claude Code's frontend-design skill: it ..." -> runs/2026-11-08_1429_claude-codes-frontend-design-skill (resumed at picking hooks, 3 stages done)
+    [14:30] INFO   session A has no stored id: starting a new one seeded with facts.md, expansion.md and the latest gate feedback
+    [14:31] INFO   S5: 12 hooks from how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation (0 from hooks.txt, 12 vendor shapes), spoken cap 8 words at 195 wpm
+    [14:31] INFO   S5: brief.md 2564 tokens (1972 words), video type default; session A done
+    [14:31] STEP   picking hooks done (1m21s) -> judging hooks
+    [14:31] WARN   S6: only 3 of 12 hooks passed hookscore (min 50, no dealbreaker): asking S5 to regenerate once
+    [14:32] INFO   S5: regenerating hooks for the judge (3 passed the filter, 13 new ones asked)
+    [14:32] INFO   S5: hooks regenerated: 13 hooks from how-to-system, mistake-warning, myth-contrarian, tools-listicle, transformation (0 from hooks.txt, 13 vendor shapes)
+    [14:32] INFO   S6: 13 of 13 hooks passed hookscore (min 50); judging 13 (survivors)
+    [14:33] INFO   S6: hook 1 h04 "Stop pasting purple gradients. Anthropic lists them." (mistake-warning), hook 2 h09 "Stop designing with Claude before installing frontend-design..."; 13/13 passed the filter, 3 judge calls
+    [14:33] STEP   judging hooks done (1m43s) -> writing script
+    [14:33] STEP   writing script done (3s) -> generating voiceover
+    [14:33] STEP   generating voiceover done (6s) -> planning animations
+    [14:33] STEP   planning animations done (4s) -> planning text
+    [14:33] STEP   planning text done (5s) -> planning transitions
+    [14:33] STEP   planning transitions done (3s) -> building visuals
+    [14:33] STEP   building visuals done (7s) -> adding sound effects
+    [14:34] STEP   adding sound effects done (4s) -> reviewing: mechanical checks
+    [14:34] STEP   reviewing: mechanical checks done (5s) -> rendering final video
+    [14:34] STEP   rendering final video done (3s) -> writing caption
+    [14:34] STEP   writing caption done (7s) -> exporting #2
+    [14:34] DONE   exported #2 -> exports/2/ (4 min, 0 issues fixed)
+PASS  regeneration: the runner exits 0
+PASS  regeneration: the WARN line
+PASS  regeneration: S5 announces the regeneration
+PASS  regeneration: 3 survivors plus 10 replacements
+PASS  regeneration: the judge re-scored the new file
+PASS  regeneration: the run continued to the export
+PASS  regeneration: no ERROR line
+PASS  regeneration: the marker file (so a rerun never regenerates twice)
+PASS  regeneration: the previous hooks.json is kept
+PASS  regeneration: hooks.json says regenerated with 13 hooks
+PASS  regeneration: hooks.json still validates
+PASS  regeneration: judge.json records it
+PASS  regeneration: a winner and a runner-up
+PASS  regeneration: 6 calls (hooks, brief, the regeneration in session A, two rankings, pairwise; the index was up to date)
+PASS  regeneration: the third call is S5's regeneration (research model)
+PASS  regeneration: it resumes session A
+PASS  regeneration: the prompt carries the failures with the filter's reasons
+
+test-m5.sh: 196 passed, 0 failed

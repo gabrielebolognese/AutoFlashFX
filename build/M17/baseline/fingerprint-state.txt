@@ -1,0 +1,16 @@
+# the state root after the dummy run, apart from the data folders that moved in M18 (library, styles, motion-lib, golden)
+.locks/
+config.json
+exports/
+exports/1
+ideas.txt
+logs/
+logs/.activity
+logs/.last-good-sha
+logs/.state.err
+logs/.state.out
+logs/history.txt
+logs/runner.log
+logs/status.txt
+runs/
+runs/<ts>_claude-codes-frontend-design-skill

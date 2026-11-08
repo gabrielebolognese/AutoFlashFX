@@ -1,0 +1,208 @@
+
+== 1. units: prompt.py, the screenshot tool, research.py, expansion.py, gate.py, reopen.txt, the reseed ==
+PASS  prompt.py: a placeholder without a value is an error
+PASS  prompt.py: the error names the placeholder
+PASS  prompt.py: --set value rendered
+PASS  prompt.py: an inlined file is cleaned of em dashes
+PASS  prompt.py: CR characters are removed
+PASS  prompt.py: --allow-missing leaves the placeholder empty
+PASS  screenshot: a page is captured (exit 0)
+PASS  screenshot: the file is NN-name.png
+PASS  screenshot: the PNG exists
+PASS  screenshot: the sidecar exists
+PASS  screenshot: the sidecar has the page title
+PASS  screenshot: the sidecar has the HTTP status
+PASS  screenshot: the sidecar has the URL and the capture date
+PASS  screenshot: 1080 px wide
+PASS  screenshot: the same URL again is reused
+PASS  screenshot: reused is true and the first file is returned
+PASS  screenshot: no second file for the same URL
+PASS  screenshot: a bot wall is reported as blocked (exit 2)
+PASS  screenshot: blocked true in the result
+PASS  screenshot: nothing saved for a blocked page
+PASS  screenshot: a folder outside runs/ is refused
+PASS  screenshot: nothing written outside runs/
+PASS  screenshot: a non-http URL is refused
+PASS  research.py: the summary counts
+PASS  research.json validates against schema.json
+PASS  facts.md: every claim line has a URL and a checked date
+PASS  facts.md: seven numbered claims
+PASS  facts.md: primary verified claims first
+PASS  facts.md: the vendor source after the primary ones
+PASS  facts.md: unverified after verified
+PASS  facts.md: false claims last
+PASS  facts.md: the core claim status
+PASS  facts.md: numbers with source and date
+PASS  facts.md: the asset with the model's caption
+PASS  numbers.json: 12,345 parsed as a number
+PASS  assets.json: the captured file
+PASS  assets.json: the file exists
+PASS  research.py: no em dash in the files
+PASS  deliverables: an existing keyword with its link
+PASS  deliverables: a missing file means every deliverable is NEW
+PASS  expansion.py: the fixture passes every rule
+PASS  expansion.md is between 500 and 1500 characters (1237)
+PASS  expansion.json validates against schema.json
+PASS  expansion.md: the problem line
+PASS  expansion.md: an external solution takes the keyword LINK with its link (M12)
+PASS  expansion.md: the solution decision line (M12)
+PASS  solution.json: the type and the keyword (M12)
+PASS  expansion.md: evidence lines point to facts.md
+PASS  expansion.py: a bad answer is refused
+PASS  expansion.py: the problem must be first person
+PASS  expansion.py: the identity must name someone
+PASS  expansion.py: the keyword must be one word
+PASS  expansion.py: an unverified claim cannot be cited
+PASS  expansion.py: a pointer past the last claim is refused
+PASS  expansion.py: the length limit with the exact numbers
+PASS  expansion.py: expansion.md is not overwritten by a refused answer
+PASS  expansion.py: a keyword from deliverables.txt is existing, in capitals
+PASS  expansion.md: the existing deliverable carries the file's link
+PASS  gate: S1 with rounds left is an angle
+PASS  gate.json validates against schema.json
+PASS  gate: a copy per round
+PASS  gate: no round left is a drop with the scores
+PASS  gate: the model's F fail of kind core drops at once
+PASS  gate.json: F_kind core
+PASS  gate: an F fail of kind wording with the core verified is an angle round, not a drop
+PASS  gate.json: F_kind wording
+PASS  gate.json: failing lists F
+PASS  gate.json: decision angle
+PASS  gate.json with F_kind validates against schema.json
+PASS  gate: the wording fail keeps the model's angle hint (the statements to reword)
+PASS  gate: a wording fail with no round left drops with the scores
+PASS  gate: a false core claim drops at once whatever kind the model gave
+PASS  gate: an unverified core claim drops at once whatever kind the model gave
+PASS  gate: an F fail without a kind is read as core (the strict default) and drops
+PASS  gate: S1 plus a wording fail is one angle round naming both
+PASS  gate: a wording fail without an angle hint gets one built from the F evidence
+PASS  gate: a false core claim fails F whatever the model said
+PASS  gate: an unverified core claim fails F too
+PASS  gate: P, S, C at least 2 and F ok passes
+PASS  gate: a different-topic verdict drops with the suggestion
+PASS  suggested-ideas.txt: the comment line
+PASS  suggested-ideas.txt: the suggestion in braces, inner braces replaced
+PASS  suggested-ideas.txt: ideas.txt untouched
+PASS  gate.py angle-rounds counts the rounds that decided angle
+PASS  gate.py: no em dash in gate.json
+PASS  state.py: stage-done reports the reopened stage
+PASS  state.py: 04-angle went from skipped to pending
+PASS  state.py: 03-gate is done
+PASS  state.py: reopen.txt is consumed
+PASS  state.py: the angle stage reopens the gate (an unknown key is ignored)
+PASS  state.py: 03-gate is pending again
+PASS  state.py: the gate's .done marker is removed
+PASS  state.py: no stale reopen.txt left behind
+PASS  state.py: stage-start removes a reopen.txt left by an earlier attempt
+PASS  session_call: the first call stores session A
+PASS  session_call: a lost session is reseeded and the call succeeds
+PASS  session_call: the WARN line names the reseed
+PASS  session_call: the first attempt resumed the stored session
+PASS  session_call: the second attempt is a new session
+PASS  session_call: the new prompt keeps the Role and Stage header first
+PASS  session_call: the seed carries facts.md
+PASS  session_call: the seed carries expansion.md
+PASS  session_call: the seed carries the latest gate feedback
+PASS  session_call: the original task follows the seed
+PASS  session_call: the new session id replaces the lost one
+
+== 2. the angle loop with the fake claude: S4 runs, the round counter reaches 2, then the idea is dropped ==
+PASS  the runner exits 0 after the drop
+PASS  STEP after S1
+PASS  STEP after S2
+PASS  ANGLE line, round 1/2
+PASS  STEP: the gate hands over to the angle stage
+PASS  STEP: the angle stage hands back to the gate
+PASS  ANGLE line, round 2/2
+PASS  DROP line with the scores and the reason
+PASS  the event lines in order: two angle rounds, then the drop
+PASS  FLAG: a missing account.md is a NEEDS REVIEW flag, not an error
+PASS  the missing account.md is flagged once, although S1, S2 and S4 all noticed it
+PASS  no GATE passed line
+PASS  no ERROR line
+PASS  history: the drop with the scores
+PASS  ideas.txt: the idea is gone
+PASS  state.json: rounds.angle reached 2
+PASS  state.json: dropped
+PASS  state.json: 04-angle ran
+PASS  gate.json: round 3 (two angle rounds before it)
+PASS  gate.json: decision drop
+PASS  gate.json: angles_done 2
+PASS  gate-1.json kept
+PASS  gate-3.json kept
+PASS  angle-1.json kept
+PASS  angle-2.json kept
+PASS  angle.json: round 2
+PASS  angle.json: the previous scores
+PASS  expansion.json: rewritten by the second angle round
+PASS  the original expansion is kept as expansion-r0.md
+PASS  the first rewrite is kept as expansion-r1.md
+PASS  expansion.md: the angle's new share line
+PASS  facts.md: the angle's new claim appended once as #8 (the second round did not duplicate it)
+PASS  facts.md: the new claim says who added it
+PASS  research.json: 8 claims
+PASS  expansion.md: the new claim is cited
+PASS  INFO: the second angle round added nothing new
+PASS  INFO: the first angle round added the new claim (and names the solution, M12)
+PASS  angle-1.json: the em dashes the model wrote in "change" became commas before the file was written
+PASS  angle.json, angle-1.json, angle-2.json and the second round's prompt hold no em dash
+PASS  the fake answered the stages in order
+PASS  S2 resumes session A
+PASS  S4 resumes session A
+PASS  the second angle round resumes session A
+PASS  every gate round is a fresh session
+PASS  the gate uses the gate model from config
+PASS  the research uses the research model from config
+PASS  S1: the research tools
+PASS  S1 and S4: Bash is approved only for the read-only gh forms and the screenshot tool, never for every gh command
+PASS  S1 and S4: the gh forms that write are denied (auth, gist, clone, download, the writing verbs, gh api with a method or field flag)
+PASS  S3: the gate has no tools
+PASS  S2: the expansion has no tools
+PASS  S1: the protected files are denied
+PASS  S1: a JSON schema is passed
+PASS  every call is saved under calls/
+PASS  state.json: sessions.A holds the session id
+PASS  no em dash in the stage files
+PASS  pass on round 2: the runner exits 0
+PASS  pass on round 2: one ANGLE line
+PASS  pass on round 2: the GATE line names the angle round
+PASS  pass on round 2: the gate hands over to S5
+PASS  pass on round 2: the run continues to the export (dummy stages)
+PASS  pass on round 2: the event lines (the gate's own STEP, then the 12 dummy stages)
+PASS  pass on round 2: rounds.angle is 1
+PASS  pass on round 2: gate.json pass true
+PASS  pass on round 2: gate round 2
+PASS  pass on round 2: no second angle round
+PASS  false core claim: the runner exits 0
+PASS  false core claim: DROP at once with F fail, whatever the gate model scored
+PASS  false core claim: no angle round
+PASS  false core claim: 04-angle stayed skipped
+PASS  false core claim: gate.json F fail
+PASS  false core claim: the history line
+PASS  different topic: DROP with the reason
+PASS  different topic: the suggestion in logs/suggested-ideas.txt
+PASS  different topic: nothing added to ideas.txt
+PASS  different topic: no angle round
+PASS  wording repair: the runner exits 0
+PASS  wording repair: the ANGLE line names the F wording failure
+PASS  wording repair: a wording slip with the core verified does not drop the idea
+PASS  wording repair: the gate passes on round 2
+PASS  wording repair: the run continues to the export
+PASS  wording repair: the event lines (one angle round, the pass, the dummy stages)
+PASS  wording repair: gate-1.json decided angle
+PASS  wording repair: gate-1.json F fail of kind wording
+PASS  wording repair: gate-1.json failing lists F
+PASS  wording repair: gate.json (round 2) pass
+PASS  wording repair: angle-1.json records the F kind it repaired
+PASS  angle.json with previous_F_kind validates against schema.json
+PASS  wording repair: the angle prompt asks for the repair first
+PASS  wording repair: the angle prompt names the failing criterion
+PASS  wording repair: the angle prompt quotes the gate's F evidence (the statement to fix)
+PASS  wording repair: the angle prompt carries the gate's hint
+PASS  wording repair: the second gate round sees the first round's F kind
+PASS  wording repair: the expansion was rewritten by the angle round
+PASS  wording repair: the history line says exported (the second export of this section)
+PASS  wording repair: the idea left ideas.txt after the export, not after a drop
+PASS  wording repair: no em dash in the gate and angle files
+
+test-m4.sh: 202 passed, 0 failed
