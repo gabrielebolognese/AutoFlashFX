@@ -216,3 +216,19 @@ PASS  runner-status: says the runner is not running
 PASS  runner-status: shows the STOP status line
 PASS  runner-status: mentions STOPPED.md
 sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.VaFSHGNuuH
+PASS  an orphaned stage process is waited for instead of being started twice
+PASS  the stage is not started while the orphan lives
+PASS  the runner stops with exit 3
+PASS  the orphan's outputs are judged before the stage runs again
+PASS  WARN line: the stage start is retried once
+PASS  ERROR line: the stage start fails
+PASS  STOP line
+PASS  the stage never ran and the run did not end another way
+PASS  no stage.log: the stage was never started
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder
+PASS  the idea stays in ideas.txt
+PASS  the runner lock is released
+
+test-m2.sh: 192 passed, 15 failed
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.9ygFA003vJ
