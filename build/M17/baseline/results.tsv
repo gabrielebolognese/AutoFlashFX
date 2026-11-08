@@ -17,3 +17,4 @@ test-m13	1 2 4	pass	100	0	0	1744	build/M17/baseline/logs/test-m13.log
 test-m14	all	pass	74	0	0	1728	build/M17/baseline/logs/test-m14.log
 test-m15	all	pass	127	0	0	682	build/M17/baseline/logs/test-m15.log
 test-m16	1 2 3 4 5 7	pass	166	0	0	791	build/M17/baseline/logs/test-m16.log
+test-m17	1 2 3 4	pass	80	0	0	159	build/M17/baseline/logs/test-m17.log

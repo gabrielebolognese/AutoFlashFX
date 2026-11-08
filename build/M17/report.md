@@ -91,7 +91,7 @@ Paths built in code are the work: 195 occurrences, most in `pipeline/stages/05-h
 
 ## The baseline (build/M17/baseline/)
 
-`bash pipeline/tests/run-fake.sh` ran 18 test files in a throwaway copy of the repo (about 7 hours here: the machine has 2 GB of free memory and every test renders or
+`bash pipeline/tests/run-fake.sh` ran 18 test files (plus test-m17 at the end) in a throwaway copy of the repo (about 7 hours here: the machine has 2 GB of free memory and every test renders or
 runs the dummy pipeline; durations are recorded, never compared). Results (results.tsv, failures.tsv, logs/<test>.log):
 
 | test | sections | status | passed | failed |
@@ -114,6 +114,7 @@ runs the dummy pipeline; durations are recorded, never compared). Results (resul
 | test-m14 | all | pass | 74 | 0 |
 | test-m15 | all | pass | 127 | 0 |
 | test-m16 | 1 2 3 4 5 7 | pass | 166 | 0 |
+| test-m17 | 1 2 3 4 | pass | 80 | 0 |
 
 Known failures (recorded, not fixed, as the spec says):
 - test-m2 (15 checks): the two-idea dummy run takes more than the test's 300 s on this machine (exit 124), so the second export and the checks after it fail. The
@@ -121,7 +122,7 @@ Known failures (recorded, not fixed, as the spec says):
 - test-m3 (2 checks): `limit date` and `limit epoch` (the LIMIT line's target time and the fast-forward line), clock dependent.
 - test-m6 (1 check): `setup: the beat map comes from style.md and the excerpts from voice.md`: your filled voice.md (as in M15's report).
 - test-m7 (1 check): the S8 setup line: library/voice/engine.txt names the turbo engine, so the line says something else.
-- test-m17 itself is recorded last, by `run-fake.sh --append --only test-m17` (see below).
+- test-m17 itself is the last row of results.tsv (`run-fake.sh --append --only test-m17`, in the copy): pass, 80 checks.
 
 Also recorded: `preflight.txt` (ok: 8 tools, 2 python packages, 9 files), `doctor-quick.txt` (0 problems, 0 warnings), and the dummy fingerprint of
 `REELS_DUMMY=all bash run.sh --once` in a temp copy: `fingerprint-run.txt` (106 entries: the run folder's tree, `<ts>` for its date and time),
@@ -141,7 +142,7 @@ The baseline rule from here on: no test that passed in the baseline fails; `bash
 ## Known gaps
 
 - The real folder has no runs/ and exports/, so the run and export lines are proved on a fixture, not on real data.
-- `test-m17` is the only test that was not in the baseline when the baseline ran; its row is added after the commit.
+- `test-m17` joined the baseline after the commit that holds it (it needs its own artifacts to exist); the baseline of the other 18 test files ran before it was written.
 - The refindex classifies by file place and by line shape: a docstring with a path is a comment, a dict access called "review" is a candidate. M18 reads
   the candidates.
 - A background command of the build tool is stopped after 2 hours here, but the test chain it started kept running to the end (nothing was lost).

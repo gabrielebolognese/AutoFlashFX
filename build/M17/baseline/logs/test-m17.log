@@ -1,0 +1,90 @@
+
+== 1. the manifest rules on a fixture folder ==
+PASS  the fixture builds, with its inventory and manifest
+PASS  the fixture's lines: moves, stays, rewrites, renames, checksums, order
+PASS  config-keys.tsv: every key has a destination (channel, format, engine), the four review safety keys are engine
+PASS  the fixture manifest passes check-manifest
+
+== 2. check-manifest.py: the checks and planted faults ==
+PASS  planted fault 'missing-old' fails check-manifest
+PASS    ... it names the missing path
+PASS  planted fault 'collision' fails check-manifest
+PASS    ... it names the collision
+PASS  planted fault 'outside' fails check-manifest
+PASS    ... it says the new path is outside
+PASS  planted fault 'double' fails check-manifest
+PASS    ... it says the file is covered twice
+PASS  planted fault 'engine' fails check-manifest
+PASS    ... it says an engine file is covered
+PASS  planted fault 'bytes' fails check-manifest
+PASS    ... it names the numbers that differ
+PASS  planted fault 'dropped' fails check-manifest
+PASS    ... it says nothing places the golden files
+PASS  planted fault 'stay-moves' fails check-manifest
+PASS    ... a stay that moves is refused
+PASS  planted fault 'bad-method' fails check-manifest
+PASS    ... an unknown method is refused
+PASS  a file that appeared after the inventory is a drift warning, not an error
+PASS    ... the warning names it
+PASS  --strict makes the drift an error
+PASS  --live: a file that no line places and that is not engine fails the coverage check
+PASS    ... it names the file nothing places
+PASS  a changed file is a drift warning
+PASS    ... the warning names the folder and its numbers
+PASS  --after after M18 only fails: the M19 lines are not done
+PASS    ... it names the export folder
+PASS  --after passes after M18 and M19
+PASS  the simulated migration shows only renames in git status
+PASS  channels/flashfx/library/voice/reference.wav (ignored) is still ignored after the move
+PASS  the captions file names the new export and the new run path
+PASS  the history says exported flashfx-2
+PASS  the raw model output keeps its old path
+PASS  --after fails when a moved folder exists again at its old path
+PASS    ... it names the folder
+PASS  --after fails when a file went missing in a moved folder (the count differs)
+PASS  --after fails when a rewritten file keeps an old path
+PASS    ... it names the file
+
+== 3. refindex.py on the fixture, and determinism ==
+PASS  refindex.py runs on the fixture
+PASS  refindex rows: kinds, rooted, certainty, changes, exclusions, the old paths in every form
+PASS  refindex.tsv is identical on a second run (fixture)
+PASS  refindex-data.tsv is identical on a second run (fixture)
+PASS  make-manifest.py gives an identical manifest on a second run (fixture)
+PASS  ...and an identical config-keys.tsv
+PASS  no em dash in refindex output (a source line with one is cleaned)
+PASS  make-manifest.py: identical files on two runs (real folder)
+PASS  make-manifest.py: identical config-keys.tsv on two runs (real folder)
+PASS  refindex.py: identical refindex.tsv on two runs (real folder)
+PASS  refindex.py: identical refindex-data.tsv on two runs (real folder)
+PASS  the fresh manifest of the real folder passes check-manifest (against a fresh inventory)
+
+== 4. the recorded artifacts, the baseline machinery, the files M17 changed ==
+PASS  build/M17/inventory.md exists
+PASS  build/M17/inventory.tsv exists
+PASS  build/M17/refindex.tsv exists
+PASS  build/M17/refindex-data.tsv exists
+PASS  build/M17/move-manifest.tsv exists
+PASS  build/M17/config-keys.tsv exists
+PASS  build/M17/risks.md exists
+PASS  build/M17/riskiest-moves.md exists
+PASS  build/M17/report.md exists
+PASS  check-manifest.py passes on the recorded manifest and inventory
+PASS  inventory.tsv has the columns of the spec
+PASS  risks.md marks every item BLOCKER or NOTE
+PASS  build/M17/baseline records every fake-only test, preflight, doctor --quick and the dummy fingerprint
+PASS  fakeresults parse: a failing test is recorded with its numbers
+PASS  fakeresults parse: the failing check is recorded
+PASS  fakeresults parse: a passing test
+PASS  fakeresults parse: exit 124 is a timeout
+PASS  compare: a known failure that now passes is fine (and a longer duration is not compared)
+PASS    ... it says test-b is fixed
+PASS  compare: a test that passed in the baseline and fails now is a problem
+PASS    ... it names the test
+PASS    ... and the new failing check
+PASS    ... the known failure of test-b is not a problem
+PASS  run-fake.sh --list names every fake-only test file
+PASS  no MS_START_SHA in build/state.env (not a build run): the file list is not checked
+PASS  no em dash in any file
+
+test-m17.sh: 80 passed, 0 failed
