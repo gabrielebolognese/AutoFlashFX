@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # run.sh for 12-review (Review and fix loop, S12): BUILD_SPEC.md section 5, S12. One review round of the mixed draft:
+#   0. the energy check (review/energy_check.py, M16): the mixed draft's energy, the reel and every scene against tokens.json energy, no model;
+#      a failing scene becomes an [animation] issue with its numbers and goes back to 9a
 #   1. the mechanical checks (pipeline/lib/review/mechanical.py: the built composition opened host by host in the
 #      Playwright harness at every beat, emphasis and landing time; zones with the caption band exception, the right
 #      230 px of the lower half, the fonts and sizes, overlaps and off-canvas, contrast, each emphasis within 80 ms
@@ -72,6 +74,11 @@ review_step() {  # review_step <activity> <command...>: the Python's exit code; 
 last_error() { local msg; msg="$(head -n 1 "$ERR_FILE" 2>/dev/null)"; printf '%s' "${msg:-${1:-the review failed}}"; }
 
 say INFO "S12: review round $ROUND/$TOTAL of the draft"
+# 0. the energy check (Motion and energy rules E0 and E9): runs first, needs no model; its failing scenes go back to 9a with their numbers
+review_step "reviewing: energy check" "$REELS_PY" "$LIB/review" energy-check --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the energy check failed")"
+energy_pass="$(json_field "$STEP_OUT" pass false)"; energy_n="$(json_field "$STEP_OUT" issues 0)"; energy_move="$(json_field "$STEP_OUT" moving_share_pct "?")"; energy_skipped="$(json_field "$STEP_OUT" skipped false)"
+energy_part=""
+[ "$energy_skipped" = true ] || energy_part="energy $([ "$energy_pass" = true ] && echo "ok (moving ${energy_move}%)" || echo "$energy_n issues (moving ${energy_move}%)"), "
 # 1. mechanical
 review_step "reviewing: mechanical checks" "$REELS_PY" "$LIB/review" mechanical --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the mechanical checks failed")"
 mech_pass="$(json_field "$STEP_OUT" pass false)"; mech_n="$(json_field "$STEP_OUT" issues 0)"
@@ -81,7 +88,7 @@ style_pass="$(json_field "$STEP_OUT" pass false)"; style_n="$(json_field "$STEP_
 # 3. audio
 review_step "reviewing: audio check" "$REELS_PY" "$LIB/review" audio --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the audio check failed")"
 audio_pass="$(json_field "$STEP_OUT" pass false)"; audio_n="$(json_field "$STEP_OUT" issues 0)"; wer="$(json_field "$STEP_OUT" wer_pct "?")"
-say INFO "S12: code checks: mechanical $([ "$mech_pass" = true ] && echo ok || echo "$mech_n issues"), style $([ "$style_pass" = true ] && echo ok || echo "$style_n issues"), audio $([ "$audio_pass" = true ] && echo ok || echo "$audio_n issues") (voice WER ${wer}%)"
+say INFO "S12: code checks: ${energy_part}mechanical $([ "$mech_pass" = true ] && echo ok || echo "$mech_n issues"), style $([ "$style_pass" = true ] && echo ok || echo "$style_n issues"), audio $([ "$audio_pass" = true ] && echo ok || echo "$audio_n issues") (voice WER ${wer}%)"
 
 # 4. the edit review (a fresh qa session per round)
 ANSWER=""
@@ -119,10 +126,15 @@ for s in json.loads(sys.argv[1] or "[]"): print(s)' "$reopen")"
     say WARN "S12: review round $ROUND failed ($n_issues issues; scores $scores_text): back to $(printf '%s' "$owners" | tr -d '[]"' | tr ',' ' ' | sed 's/  */ /g'), then every step after it runs again"
     set_activity "$activity"; printf 'activity: %s\n' "$activity"
     ;;
-  cap|flag)
+  cap|flag|stop)
     state_set "$RUN_DIR" "rounds.review=$ROUND" >/dev/null 2>&1 || true
     [ "$ROUND" -eq 1 ] && state_py issue "$RUN_DIR" open +1 >/dev/null 2>&1
-    say WARN "S12: review round $ROUND failed and $([ "$verdict" = cap ] && echo "the $TOTAL rounds are used up" || echo "nothing upstream can act on its issues"): exporting with NEEDS REVIEW (scores $scores_text)"
+    case "$verdict" in
+      cap) why="the $TOTAL rounds are used up" ;;
+      stop) why="the same scores and issues came twice in a row (early stop)" ;;
+      *) why="nothing upstream can act on its issues" ;;
+    esac
+    say WARN "S12: review round $ROUND failed and $why: exporting with NEEDS REVIEW (scores $scores_text)"
     ;;
 esac
 while IFS= read -r f; do [ -n "$f" ] && flag_once "$f"; done < <("$REELS_PY" -c 'import json, sys

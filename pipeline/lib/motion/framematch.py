@@ -704,6 +704,8 @@ def update_catalog(results: list[dict], lib: str, moved: bool) -> None:
 
 def run(args) -> int:
     lib = common.motion_lib_dir()
+    from motion import demo_assets
+    demo_assets.ensure(lib)  # the clips of the video card are built from the demo screenshots (*.mp4 is not in git)
     toks = common.tokens()
     specs = expectations.build(toks)
     files = common.component_files(lib)
@@ -734,6 +736,16 @@ def run(args) -> int:
             for e2 in r["errors"]:
                 print(f"    page error: {e2[:200]}")
     moves = apply_moves(results, lib) if args.apply else []
+    if only:
+        # --only measures some components: the others keep the result of their last run (M16: the report stays whole)
+        prev_path = os.path.join(lib, "gallery", "frame-match.json")
+        try:
+            prev = {r["id"]: r for r in common.load_json(prev_path).get("results", [])}
+        except (OSError, ValueError):
+            prev = {}
+        got = {r["id"]: r for r in results}
+        order = [common.parse_component(p)["id"] for p in all_paths]
+        results = [got.get(i) or prev.get(i) for i in order if got.get(i) or prev.get(i)]
     write_report(results, lib, bool(args.apply))
     update_catalog(results, lib, bool(args.apply))
     for m in moves:

@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 480, "w": 900, "cols": 2, "gap": 24, "card_h": 230, "items_json": "[{\"label\":\"Fast\",\"icon\":\"bolt\"},{\"label\":\"Free\",\"icon\":\"check\"},{\"label\":\"Open source\",\"icon\":\"code\"},{\"label\":\"No login\",\"icon\":\"star\"}]", "highlight": -1, "origin": "top-left", "card_frames": 12, "wave_frames": 3, "enter_at": 0, "honesty": "none", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* card-grid (Motion and energy rules E8): ideas as a grid of icon cards that build in a wave from one corner (3 frames
+       per step along the diagonal, each card a combined zoom, parallax turn and rise), then keep moving: every card glides
+       on, the grid holds as one group in one direction (E1). Cards at alternating depths under the hold's turn (E6). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #cg { display: grid; }
+    .cg-card { box-sizing: border-box; padding: 26px 30px; display: flex; flex-direction: column; justify-content: space-between; }
+    .cg-card.hi { background: var(--c-accent); color: #FFFFFF; }
+    .cg-icon { width: 84px; height: 84px; border-radius: 50%; background: var(--c-accent); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .cg-card.hi .cg-icon { background: #FFFFFF; }
+    .cg-icon svg { width: 46px; height: 46px; }
+    .cg-label { font-weight: 800; font-size: 46px; line-height: 1.08; letter-spacing: -0.02em; }
+  </style>
+  <div id="root" data-composition-id="card-grid" data-width="1080" data-height="1920">
+    <div id="cg-wrap" class="pc-el"><div id="cg"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 480, w: 900, cols: 2, gap: 24, card_h: 230, items_json: [], highlight: -1, origin: "top-left", card_frames: 12, wave_frames: 3, enter_at: 0,
+        honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("cg-wrap"), grid = document.getElementById("cg");
+      PC.place(wrap, { x: v.x, y: v.y, w: v.w });
+      var items = (Array.isArray(v.items_json) ? v.items_json : []).slice(0, 8);
+      var cols = Math.max(1, Math.round(v.cols)), rows = Math.max(1, Math.ceil(items.length / cols));
+      var cw = (v.w - v.gap * (cols - 1)) / cols;
+      grid.style.gridTemplateColumns = "repeat(" + cols + ", " + cw + "px)";
+      grid.style.gap = v.gap + "px";
+      var ICONS = {
+        bolt: '<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
+        star: '<path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z"/>', play: '<path d="M7 4l12 8-12 8z"/>',
+        heart: '<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/>', cursor: '<path d="M5 3l14 7-6 2-2 6z"/>',
+        doc: '<path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5" fill="none" stroke-width="1.6"/>', code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+        chat: '<path d="M4 4h16v12H9l-5 4z"/>', clock: '<circle cx="12" cy="12" r="9" fill="none" stroke-width="2.6"/><path d="M12 7v5l3.5 2" fill="none" stroke-width="2.6" stroke-linecap="round"/>'
+      };
+      function icon(name, hi) {
+        var ink = hi ? "#DC6532" : "#FFFFFF";
+        return '<svg viewBox="0 0 24 24" fill="' + ink + '" stroke="' + ink + '">' + (ICONS[name] || ICONS.star) + '</svg>';
+      }
+      var cards = items.map(function (it, i) {
+        var hi = i === v.highlight;
+        var c = PC.el("div", "cg-card pc-card" + (hi ? " hi" : ""), grid); c.id = "cg-card-" + i; c.style.height = v.card_h + "px";
+        var ic = PC.el("div", "cg-icon", c); ic.innerHTML = icon(it.icon, hi);
+        PC.el("div", "cg-label", c, String(it.label || ""));
+        return c;
+      });
+      var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      PCM.depth(wrap, [grid]);
+      gsap.set(grid, { transformStyle: "preserve-3d" });
+      cards.forEach(function (c, i) { gsap.set(c, { z: (i % 2) * 16, force3D: true }); });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "none" }, hold: v.hold, inertia: quiet, exit: exit });
+      cards.forEach(function (c, i) {
+        var row = Math.floor(i / cols), col = i % cols;
+        var step = v.origin === "top-right" ? row + (cols - 1 - col) : v.origin === "center" ? Math.round(Math.abs(row - (rows - 1) / 2) + Math.abs(col - (cols - 1) / 2)) : row + col;
+        var at = v.enter_at + PC.f(v.wave_frames) * step;
+        PCM.life(tl, c, { at: at, main: { kind: "fade", frames: Math.max(4, Math.round(v.card_frames / 2)), rise: 44, ease: "power2.out", zoom: "in", rotate: 12, rotateSign: col % 2 ? -1 : 1, mainFrames: v.card_frames },
+          hold: { kind: "none" }, inertia: { move: 0, scale: 0.012, rotate: 1.5 }, until: group.until, events: { enter: "card" } });
+        PC.event("card", at, { el: c.id, row: row, col: col });
+      });
+      if (honesty) PCM.life(tl, honesty, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: v.enter_at + PC.f(1), events: { enter: "honesty" } });
+      window.__timelines["card-grid"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "card-grid", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

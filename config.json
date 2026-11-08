@@ -329,7 +329,10 @@
     "hook2_max_s": 3.5,
     "hook2_hold_ms": 800,
     "draft_quality": "draft",
-    "draft_crf": 20
+    "draft_crf": 20,
+    "energy_rules": "error",
+    "hero_motion_share": 0.7,
+    "layers_share": 0.6
   },
   "caps": {
     "angle_rounds": 2,
@@ -420,7 +423,12 @@
     "palette_min_share_pct": 90,
     "aac_peak_tolerance_db": 0.5,
     "wer_max_pct": 5,
-    "qa_tools": "Read Glob"
+    "qa_tools": "Read Glob",
+    "energy_check": true,
+    "energy_scene_share": 0.8,
+    "liveness": true,
+    "min_edge_elements": 4,
+    "early_stop": true
   },
   "runner": {
     "poll_seconds": 120,

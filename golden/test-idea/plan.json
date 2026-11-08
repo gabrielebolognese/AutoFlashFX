@@ -31,7 +31,7 @@
    "end_ms": 3460,
    "set_piece": true,
    "hook_set_piece": true,
-   "honesty_label": null,
+   "honesty_label": "mock",
    "emphasis_hits": [
     {
      "word": "identical",
@@ -57,6 +57,7 @@
       "x": 90,
       "w": 900,
       "align": "center",
+      "hold": "lively",
       "words_json": [
        {
         "w": "Why",
@@ -97,15 +98,39 @@
      "assets": []
     },
     {
-     "id": "s1-hero-3d-2",
+     "id": "s1-mock-site-card-2",
+     "component": "mock-site-card",
+     "start_ms": 0,
+     "end_ms": 3460,
+     "props": {
+      "x": 90,
+      "y": 700,
+      "w": 900,
+      "h": 470,
+      "title": "",
+      "headline": "Same look",
+      "cta": "Go",
+      "tone": "ink",
+      "cta_at": 0.5,
+      "scroll_px_s": 220,
+      "honesty": "mock",
+      "hold": "lively",
+      "enter": "rise"
+     },
+     "role": "support",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s1-hero-3d-3",
      "component": "hero-3d",
      "start_ms": 2400,
      "end_ms": 3460,
      "props": {
-      "x": 240,
-      "y": 820,
-      "w": 600,
-      "h": 600,
+      "x": 620,
+      "y": 620,
+      "w": 330,
+      "h": 330,
       "object": "card",
       "spin": 40,
       "tilt": 18,
@@ -127,7 +152,7 @@
    "end_ms": 6640,
    "set_piece": false,
    "hook_set_piece": false,
-   "honesty_label": null,
+   "honesty_label": "mock",
    "emphasis_hits": [
     {
      "word": "instantly",
@@ -137,31 +162,83 @@
    ],
    "components": [
     {
-     "id": "s2-card-1",
-     "component": "card",
+     "id": "s2-mock-site-card-1",
+     "component": "mock-site-card",
      "start_ms": 3460,
      "end_ms": 6640,
      "props": {
       "x": 90,
-      "y": 560,
+      "y": 420,
       "w": 900,
-      "title": "Clients spot it instantly",
-      "body": "You ship Claude Code client sites.",
-      "mascot": "star",
+      "h": 760,
+      "title": "client-site.com",
+      "headline": "Same look",
+      "cta": "Get started",
+      "tone": "warm",
+      "cta_at": 0.8,
+      "scroll_px_s": 60,
+      "honesty": "mock",
+      "hold": "lively",
       "enter": "rise"
      },
      "role": "hero",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s2-pop-2",
+     "component": "pop",
+     "start_ms": 3460,
+     "end_ms": 6640,
+     "props": {
+      "kind": "badge",
+      "icon": "star",
+      "size": 130,
+      "x": 830,
+      "y": 340
+     },
+     "role": "support",
      "honesty_label": null,
      "assets": []
     },
     {
-     "id": "s2-dark-chip-2",
+     "id": "s2-cursor-3",
+     "component": "cursor",
+     "start_ms": 3560,
+     "end_ms": 6640,
+     "props": {
+      "points_json": [
+       {
+        "x": 820,
+        "y": 1100,
+        "at": 0
+       },
+       {
+        "x": 250,
+        "y": 905,
+        "at": 1.6,
+        "click": true
+       },
+       {
+        "x": 700,
+        "y": 700,
+        "at": 2.6
+       }
+      ],
+      "hold": "lively"
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s2-dark-chip-4",
      "component": "dark-chip",
      "start_ms": 5980,
      "end_ms": 6640,
      "props": {
-      "x": 600,
-      "y": 742,
+      "x": 440,
+      "y": 1120,
       "text": "same look, every site",
       "accent_word": "every site",
       "icon": "dot"
@@ -190,20 +267,50 @@
    ],
    "components": [
     {
-     "id": "s3-window-card-1",
-     "component": "window-card",
+     "id": "s3-screenshot-zoom-1",
+     "component": "screenshot-zoom",
      "start_ms": 6640,
      "end_ms": 11390,
      "props": {
       "x": 90,
-      "y": 400,
+      "y": 380,
       "w": 900,
-      "h": 820,
-      "title": "SKILL.md",
+      "h": 780,
       "image": "research/03-skill-md.png",
       "honesty": "sourced",
-      "mascot": "film",
-      "enter": "rise"
+      "hold": "lively",
+      "enter": "rise",
+      "zoom_to": 0.85,
+      "focus_json": [
+       {
+        "x": 0.33,
+        "y": 0.3,
+        "w": 0.4,
+        "h": 0.04,
+        "at": 0.16
+       },
+       {
+        "x": 0.34,
+        "y": 0.215,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 1.47
+       },
+       {
+        "x": 0.33,
+        "y": 0.575,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 2.66
+       },
+       {
+        "x": 0.34,
+        "y": 0.66,
+        "w": 0.6,
+        "h": 0.1,
+        "at": 3.84
+       }
+      ]
      },
      "role": "hero",
      "honesty_label": "sourced",
@@ -212,13 +319,29 @@
      ]
     },
     {
-     "id": "s3-dark-chip-2",
+     "id": "s3-pop-2",
+     "component": "pop",
+     "start_ms": 6640,
+     "end_ms": 11390,
+     "props": {
+      "kind": "badge",
+      "icon": "bolt",
+      "size": 130,
+      "x": 830,
+      "y": 340
+     },
+     "role": "support",
+     "honesty_label": null,
+     "assets": []
+    },
+    {
+     "id": "s3-dark-chip-3",
      "component": "dark-chip",
      "start_ms": 10780,
      "end_ms": 11390,
      "props": {
-      "x": 560,
-      "y": 1180,
+      "x": 440,
+      "y": 1120,
       "text": "rgba(0,0,0,.1)",
       "accent_word": ".1",
       "icon": "file"
@@ -237,7 +360,7 @@
    "end_ms": 15130,
    "set_piece": false,
    "hook_set_piece": false,
-   "honesty_label": null,
+   "honesty_label": "sourced",
    "emphasis_hits": [
     {
      "word": "distributional convergence",
@@ -247,21 +370,27 @@
    ],
    "components": [
     {
-     "id": "s4-card-1",
-     "component": "card",
+     "id": "s4-video-card-1",
+     "component": "video-card",
      "start_ms": 11390,
      "end_ms": 15130,
      "props": {
       "x": 90,
-      "y": 520,
+      "y": 420,
       "w": 900,
-      "title": "Distributional convergence",
-      "body": "It's not your fault.",
+      "h": 760,
+      "video": "research/04-blog.mp4",
+      "title": "claude.com/blog",
+      "kind": "window",
+      "honesty": "sourced",
+      "hold": "lively",
       "enter": "rise"
      },
      "role": "hero",
-     "honesty_label": null,
-     "assets": []
+     "honesty_label": "sourced",
+     "assets": [
+      "research/04-blog.mp4"
+     ]
     },
     {
      "id": "s4-handwritten-callout-2",
@@ -270,7 +399,7 @@
      "end_ms": 15130,
      "props": {
       "x": 560,
-      "y": 840,
+      "y": 1030,
       "text": "Anthropic's|own words",
       "arrow": "up-left",
       "arrow_len": 140
@@ -289,38 +418,76 @@
    "end_ms": 18860,
    "set_piece": false,
    "hook_set_piece": false,
-   "honesty_label": null,
+   "honesty_label": "mock",
    "emphasis_hits": [],
    "components": [
     {
-     "id": "s5-light-chip-1",
-     "component": "light-chip",
-     "start_ms": 15290,
+     "id": "s5-mock-site-card-1",
+     "component": "mock-site-card",
+     "start_ms": 15130,
      "end_ms": 18860,
      "props": {
-      "x": 120,
-      "y": 560,
-      "text": "even Anthropic's palette"
+      "x": 90,
+      "y": 600,
+      "w": 900,
+      "h": 340,
+      "title": "",
+      "headline": "Terracotta",
+      "cta": "Go",
+      "tone": "warm",
+      "cta_at": 0.7,
+      "scroll_px_s": 140,
+      "honesty": "mock",
+      "hold": "lively",
+      "enter": "rise"
      },
-     "role": "label",
+     "role": "hero",
+     "honesty_label": "mock",
+     "assets": []
+    },
+    {
+     "id": "s5-swatch-row-2",
+     "component": "swatch-row",
+     "start_ms": 15130,
+     "end_ms": 18860,
+     "props": {
+      "x": 90,
+      "y": 965,
+      "w": 900,
+      "h": 120,
+      "gap": 20,
+      "honesty": "none",
+      "hold": "lively",
+      "colors_json": [
+       {
+        "color": "#D97757",
+        "at": 0.68
+       },
+       {
+        "color": "#FAF5EC",
+        "at": 1.36
+       }
+      ]
+     },
+     "role": "support",
      "honesty_label": null,
      "assets": []
     },
     {
-     "id": "s5-strike-through-2",
+     "id": "s5-strike-through-3",
      "component": "strike-through",
-     "start_ms": 15910,
+     "start_ms": 17230,
      "end_ms": 18860,
      "props": {
-      "x": 120,
-      "y": 680,
+      "x": 200,
+      "y": 1100,
       "text": "#D97757 on cream",
       "chip": true,
       "style": "line",
       "replacement": "AI look",
-      "strike_at": 1.32
+      "strike_at": 0.0
      },
-     "role": "hero",
+     "role": "support",
      "honesty_label": null,
      "assets": []
     }
@@ -338,7 +505,30 @@
    "emphasis_hits": [],
    "components": [
     {
-     "id": "s6-pop-1",
+     "id": "s6-video-card-1",
+     "component": "video-card",
+     "start_ms": 18860,
+     "end_ms": 22730,
+     "props": {
+      "x": 90,
+      "y": 860,
+      "w": 900,
+      "h": 300,
+      "video": "research/01-repo.mp4",
+      "kind": "frame",
+      "honesty": "none",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 1.2
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": [
+      "research/01-repo.mp4"
+     ]
+    },
+    {
+     "id": "s6-pop-2",
      "component": "pop",
      "start_ms": 18860,
      "end_ms": 22730,
@@ -349,7 +539,7 @@
       "x": 800,
       "y": 330
      },
-     "role": "hero",
+     "role": "support",
      "honesty_label": null,
      "assets": []
     }
@@ -363,7 +553,7 @@
    "end_ms": 26890,
    "set_piece": false,
    "hook_set_piece": false,
-   "honesty_label": null,
+   "honesty_label": "sourced",
    "emphasis_hits": [
     {
      "word": "then codes",
@@ -373,24 +563,65 @@
    ],
    "components": [
     {
-     "id": "s7-check-badge-1",
-     "component": "check-badge",
+     "id": "s7-video-card-1",
+     "component": "video-card",
      "start_ms": 22730,
      "end_ms": 26890,
      "props": {
-      "mode": "list",
-      "x": 160,
-      "y": 620,
-      "w": 760,
-      "items_json": [
-       "Plans 4 to 6 hex colors",
-       "Reviews the layout",
-       "Then codes"
-      ],
-      "tick_gap_frames": 6,
-      "ticks_at": 1.02
+      "x": 90,
+      "y": 540,
+      "w": 900,
+      "h": 400,
+      "video": "research/01-repo.mp4",
+      "kind": "frame",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 1.0
      },
      "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/01-repo.mp4"
+     ]
+    },
+    {
+     "id": "s7-swatch-row-2",
+     "component": "swatch-row",
+     "start_ms": 22730,
+     "end_ms": 26890,
+     "props": {
+      "x": 90,
+      "y": 970,
+      "w": 900,
+      "h": 170,
+      "gap": 14,
+      "honesty": "none",
+      "hold": "lively",
+      "colors_json": [
+       {
+        "color": "#DC6532",
+        "at": 1.16
+       },
+       {
+        "color": "#1C110F",
+        "at": 1.76
+       },
+       {
+        "color": "#F5EEE3",
+        "at": 1.54
+       },
+       {
+        "color": "#289C5C",
+        "at": 2.01
+       },
+       {
+        "color": "#C9623C",
+        "at": 2.04
+       }
+      ]
+     },
+     "role": "support",
      "honesty_label": null,
      "assets": []
     }
@@ -414,8 +645,8 @@
    ],
    "components": [
     {
-     "id": "s8-window-card-1",
-     "component": "window-card",
+     "id": "s8-screenshot-zoom-1",
+     "component": "screenshot-zoom",
      "start_ms": 26890,
      "end_ms": 30110,
      "props": {
@@ -423,10 +654,48 @@
       "y": 380,
       "w": 900,
       "h": 760,
-      "title": "claude.com/plugins",
       "image": "research/02-plugin-page.png",
       "honesty": "sourced",
-      "enter": "rise"
+      "hold": "lively",
+      "enter": "rise",
+      "zoom_to": 0.8,
+      "focus_json": [
+       {
+        "x": 0.27,
+        "y": 0.165,
+        "w": 0.5,
+        "h": 0.05,
+        "at": 0.0
+       },
+       {
+        "x": 0.27,
+        "y": 0.215,
+        "w": 0.5,
+        "h": 0.035,
+        "at": 0.28
+       },
+       {
+        "x": 0.76,
+        "y": 0.2,
+        "w": 0.22,
+        "h": 0.07,
+        "at": 1.02
+       },
+       {
+        "x": 0.76,
+        "y": 0.15,
+        "w": 0.22,
+        "h": 0.12,
+        "at": 1.14
+       },
+       {
+        "x": 0.27,
+        "y": 0.165,
+        "w": 0.5,
+        "h": 0.05,
+        "at": 2.6
+       }
+      ]
      },
      "role": "hero",
      "honesty_label": "sourced",
@@ -462,7 +731,7 @@
    "end_ms": 34740,
    "set_piece": false,
    "hook_set_piece": false,
-   "honesty_label": null,
+   "honesty_label": "sourced",
    "emphasis_hits": [
     {
      "word": "Pick a scope",
@@ -478,13 +747,14 @@
      "end_ms": 34740,
      "props": {
       "x": 90,
-      "y": 600,
+      "y": 380,
       "w": 900,
       "title": "Claude Code",
       "mode": "type",
       "chars_per_frame": 2,
       "start_delay_frames": 8,
       "prompt": "",
+      "hold": "lively",
       "lines_json": [
        {
         "text": "/plugin install frontend-design@claude-plugins-official",
@@ -496,9 +766,32 @@
        }
       ]
      },
-     "role": "hero",
+     "role": "support",
      "honesty_label": null,
      "assets": []
+    },
+    {
+     "id": "s9-video-card-2",
+     "component": "video-card",
+     "start_ms": 30110,
+     "end_ms": 34740,
+     "props": {
+      "x": 90,
+      "y": 700,
+      "w": 900,
+      "h": 470,
+      "video": "research/05-install-docs.mp4",
+      "kind": "frame",
+      "honesty": "sourced",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 0.8
+     },
+     "role": "hero",
+     "honesty_label": "sourced",
+     "assets": [
+      "research/05-install-docs.mp4"
+     ]
     }
    ]
   },
@@ -520,7 +813,30 @@
    ],
    "components": [
     {
-     "id": "s10-check-badge-1",
+     "id": "s10-video-card-1",
+     "component": "video-card",
+     "start_ms": 34740,
+     "end_ms": 37730,
+     "props": {
+      "x": 90,
+      "y": 840,
+      "w": 900,
+      "h": 340,
+      "video": "research/02-plugin-page.mp4",
+      "kind": "frame",
+      "honesty": "none",
+      "hold": "lively",
+      "enter": "rise",
+      "video_start": 0.6
+     },
+     "role": "hero",
+     "honesty_label": null,
+     "assets": [
+      "research/02-plugin-page.mp4"
+     ]
+    },
+    {
+     "id": "s10-check-badge-2",
      "component": "check-badge",
      "start_ms": 34740,
      "end_ms": 37730,
@@ -530,7 +846,7 @@
       "y": 330,
       "size": 160
      },
-     "role": "hero",
+     "role": "support",
      "honesty_label": null,
      "assets": []
     }
@@ -565,7 +881,11 @@
       "line2": "ditch the identical cards",
       "lockup": "brand/lockup/lockup-gradient-on-light.png",
       "lockup_w": 300,
-      "lockup_y": 1146
+      "lockup_y": 1146,
+      "confetti_count": 130,
+      "confetti_at": 1.1,
+      "confetti_seconds": 2.4,
+      "hold": "lively"
      },
      "role": "cta",
      "honesty_label": null,
@@ -1120,8 +1440,8 @@
    "anchor": 1,
    "layout": {
     "anchor": 1,
-    "anchor_px": 184.2,
-    "ratio": 2.749,
+    "anchor_px": 167.5,
+    "ratio": 2.5,
     "caption_px": 67.0,
     "lean": "left",
     "words": [
@@ -1131,11 +1451,11 @@
       "role": "secondary",
       "font": "serif-italic",
       "color": "accent-deep",
-      "px": 73.7,
+      "px": 67.0,
       "x": 60.0,
-      "y": 512.4,
-      "w": 110.2,
-      "h": 73.7
+      "y": 508.1,
+      "w": 98.8,
+      "h": 67.0
      },
      {
       "i": 1,
@@ -1143,11 +1463,11 @@
       "role": "anchor",
       "font": "grotesk",
       "color": "ink",
-      "px": 184.2,
+      "px": 167.5,
       "x": 60.0,
-      "y": 589.0,
-      "w": 844.5,
-      "h": 184.2
+      "y": 577.8,
+      "w": 766.3,
+      "h": 167.5
      },
      {
       "i": 2,
@@ -1155,11 +1475,11 @@
       "role": "secondary",
       "font": "handwritten",
       "color": "script",
-      "px": 77.4,
-      "x": 444.5,
-      "y": 780.6,
-      "w": 221.4,
-      "h": 77.4
+      "px": 70.3,
+      "x": 410.2,
+      "y": 752.0,
+      "w": 202.8,
+      "h": 70.3
      },
      {
       "i": 3,
@@ -1167,18 +1487,18 @@
       "role": "secondary",
       "font": "kicker",
       "color": "accent",
-      "px": 77.4,
-      "x": 685.2,
-      "y": 780.6,
-      "w": 219.3,
-      "h": 77.4
+      "px": 70.3,
+      "x": 630.6,
+      "y": 752.0,
+      "w": 195.6,
+      "h": 70.3
      }
     ],
     "box": {
      "x": 60.0,
-     "y": 512.4,
-     "w": 844.5,
-     "h": 345.6
+     "y": 508.1,
+     "w": 766.3,
+     "h": 314.2
     },
     "zone": {
      "x0": 60.0,
@@ -1193,28 +1513,28 @@
        0
       ],
       "x": 60.0,
-      "y": 512.4,
-      "w": 110.2,
-      "h": 73.7
+      "y": 508.1,
+      "w": 98.8,
+      "h": 67.0
      },
      {
       "words": [
        1
       ],
       "x": 60.0,
-      "y": 589.0,
-      "w": 844.5,
-      "h": 184.2
+      "y": 577.8,
+      "w": 766.3,
+      "h": 167.5
      },
      {
       "words": [
        2,
        3
       ],
-      "x": 444.5,
-      "y": 780.6,
-      "w": 460.1,
-      "h": 77.4
+      "x": 410.2,
+      "y": 752.0,
+      "w": 416.1,
+      "h": 70.3
      }
     ],
     "fonts": [
@@ -1228,7 +1548,7 @@
      "px": 30.0
     },
     "relaxed": false,
-    "avoid": 1
+    "avoid": 2
    },
    "motion": {
     "kind": "rise",
@@ -1350,7 +1670,7 @@
      "px": 30.0
     },
     "relaxed": false,
-    "avoid": 1
+    "avoid": 2
    },
    "motion": {
     "kind": "rise",
@@ -1493,7 +1813,7 @@
      "dir": 1
     },
     "relaxed": false,
-    "avoid": 1
+    "avoid": 2
    },
    "motion": {
     "kind": "turn",
@@ -1656,11 +1976,66 @@
      "emphasis": true
     }
    ],
-   "mode": "word",
+   "mode": "group",
    "importance": "key-claim",
+   "anchor": 0,
+   "layout": {
+    "anchor": 0,
+    "anchor_px": 117.2,
+    "ratio": 1.749,
+    "caption_px": 67.0,
+    "lean": "right",
+    "words": [
+     {
+      "i": 0,
+      "text": "Anthropic",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 117.2,
+      "x": 446.4,
+      "y": 230.0,
+      "w": 573.6,
+      "h": 117.2
+     }
+    ],
+    "box": {
+     "x": 446.4,
+     "y": 230.0,
+     "w": 573.6,
+     "h": 117.2
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0
+      ],
+      "x": 446.4,
+      "y": 230.0,
+      "w": 573.6,
+      "h": 117.2
+     }
+    ],
+    "fonts": [
+     "grotesk"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": true,
+    "avoid": 1
+   },
    "motion": {
     "kind": "rise",
-    "px": 12.0
+    "px": 30.0
    }
   },
   {
@@ -1675,11 +2050,66 @@
      "emphasis": true
     }
    ],
-   "mode": "word",
+   "mode": "group",
    "importance": "key-claim",
+   "anchor": 0,
+   "layout": {
+    "anchor": 0,
+    "anchor_px": 117.2,
+    "ratio": 1.749,
+    "caption_px": 67.0,
+    "lean": "left",
+    "words": [
+     {
+      "i": 0,
+      "text": "verified.",
+      "role": "anchor",
+      "font": "grotesk",
+      "color": "ink",
+      "px": 117.2,
+      "x": 60.0,
+      "y": 230.0,
+      "w": 472.7,
+      "h": 117.2
+     }
+    ],
+    "box": {
+     "x": 60.0,
+     "y": 230.0,
+     "w": 472.7,
+     "h": 117.2
+    },
+    "zone": {
+     "x0": 60.0,
+     "y0": 230.0,
+     "x1": 1020.0,
+     "y1": 1176.0
+    },
+    "stack": [],
+    "rows": [
+     {
+      "words": [
+       0
+      ],
+      "x": 60.0,
+      "y": 230.0,
+      "w": 472.7,
+      "h": 117.2
+     }
+    ],
+    "fonts": [
+     "grotesk"
+    ],
+    "motion": {
+     "kind": "rise",
+     "px": 30.0
+    },
+    "relaxed": true,
+    "avoid": 1
+   },
    "motion": {
     "kind": "rise",
-    "px": 8.0
+    "px": 30.0
    }
   },
   {
@@ -2056,15 +2486,17 @@
      "serif-italic"
     ],
     "motion": {
-     "kind": "rise",
-     "px": 30.0
+     "kind": "turn",
+     "deg": 4.5,
+     "dir": -1
     },
     "relaxed": false,
-    "avoid": 1
+    "avoid": 2
    },
    "motion": {
-    "kind": "rise",
-    "px": 30.0
+    "kind": "turn",
+    "deg": 4.5,
+    "dir": -1
    }
   },
   {
@@ -2224,7 +2656,7 @@
      "px": 30.0
     },
     "relaxed": false,
-    "avoid": 1
+    "avoid": 2
    },
    "motion": {
     "kind": "rise",
@@ -2266,56 +2698,26 @@
   },
   {
    "scene": "s2",
-   "component": "s2-card-1",
-   "text": "Clients spot it instantly",
+   "component": "s2-mock-site-card-1",
+   "text": "client-site.com",
    "zone": "hero"
   },
   {
    "scene": "s2",
-   "component": "s2-dark-chip-2",
+   "component": "s2-dark-chip-4",
    "text": "same look, every site",
    "zone": "label"
   },
   {
    "scene": "s3",
-   "component": "s3-window-card-1",
-   "text": "SKILL.md",
-   "zone": "hero"
-  },
-  {
-   "scene": "s3",
-   "component": "s3-dark-chip-2",
+   "component": "s3-dark-chip-3",
    "text": "rgba(0,0,0,.1)",
    "zone": "label"
   },
   {
    "scene": "s4",
-   "component": "s4-card-1",
-   "text": "Distributional convergence",
-   "zone": "hero"
-  },
-  {
-   "scene": "s5",
-   "component": "s5-light-chip-1",
-   "text": "even Anthropic's palette",
-   "zone": "label"
-  },
-  {
-   "scene": "s5",
-   "component": "s5-strike-through-2",
-   "text": "#D97757 on cream",
-   "zone": "hero"
-  },
-  {
-   "scene": "s8",
-   "component": "s8-window-card-1",
-   "text": "claude.com/plugins",
-   "zone": "hero"
-  },
-  {
-   "scene": "s9",
-   "component": "s9-terminal-card-1",
-   "text": "Claude Code",
+   "component": "s4-video-card-1",
+   "text": "claude.com/blog",
    "zone": "hero"
   },
   {
@@ -2327,17 +2729,47 @@
  ],
  "labels": [
   {
+   "scene": "s1",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s2",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
    "scene": "s3",
    "text": "real",
    "kind": "honesty"
   },
   {
+   "scene": "s4",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s5",
+   "text": "illustrative",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s7",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
    "scene": "s8",
    "text": "real",
    "kind": "honesty"
   },
   {
    "scene": "s8",
+   "text": "real",
+   "kind": "honesty"
+  },
+  {
+   "scene": "s9",
    "text": "real",
    "kind": "honesty"
   },
@@ -2363,44 +2795,44 @@
   {
    "from": "s3",
    "to": "s4",
-   "type": "fade-blur",
-   "duration_ms": 133
+   "type": "push",
+   "duration_ms": 267
   },
   {
    "from": "s4",
    "to": "s5",
-   "type": "push",
-   "duration_ms": 267
+   "type": "fade-blur",
+   "duration_ms": 133
   },
   {
    "from": "s5",
    "to": "s6",
-   "type": "fade-blur",
-   "duration_ms": 133
-  },
-  {
-   "from": "s6",
-   "to": "s7",
    "type": "fall",
    "duration_ms": 333
   },
   {
-   "from": "s7",
-   "to": "s8",
-   "type": "fade-blur",
-   "duration_ms": 133
+   "from": "s6",
+   "to": "s7",
+   "type": "cut",
+   "duration_ms": 0
   },
   {
-   "from": "s8",
-   "to": "s9",
+   "from": "s7",
+   "to": "s8",
    "type": "push",
    "duration_ms": 267
   },
   {
-   "from": "s9",
-   "to": "s10",
+   "from": "s8",
+   "to": "s9",
    "type": "fade-blur",
    "duration_ms": 133
+  },
+  {
+   "from": "s9",
+   "to": "s10",
+   "type": "push",
+   "duration_ms": 267
   },
   {
    "from": "s10",

@@ -2401,3 +2401,116 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     were shortened from "client site" to "site" in the four plan files, the 09a answer and the compiled project: with six labels
     the scene held 103 characters of text, over E4's 100, and the text loop of test-m11 (whose fake 9b answer cannot change them)
     stopped at the budget.
+
+314. **M16: what the milestone is, and the shape of the nine components.** M16 builds E8 and E9: nine new components, S1's page
+    recordings, the 9a, 9b and 9c prompts around the Motion and energy rules, the validator rules of E9, a new golden reel, and
+    S12's energy loop. The nine: `screenshot-zoom` (a real screenshot in a media frame; a camera travels to focus boxes given as
+    fractions of the page and a second, power3.inOut over 18 frames, an accent highlight box draws itself there, the page creeps
+    on between points), `video-card` (a recording or clip playing inside a window card or a bare media frame), `card-fan` (a deck
+    that fans out, 3 frames per card, then keeps fanning on a decelerating glide), `card-grid` (icon cards building in a wave from a
+    corner), `timeline-scrubber` (thumbnails and a playhead running at a constant speed, a time readout), `cursor` (a pointer along
+    a path that presses and rings on click points), `mock-site-card` (a website drawn in code that builds and scrolls on), `swatch-row`
+    (swatches filling on the spoken words) and `swatch-card` (one color as a paint chip, the hex typed in). All live on pc-motion.js:
+    the main element through PCM.life (the card enter with the zoom and the parallax turn, the inertia, the hold), a group (a fan, a
+    grid, a row) as one holding element with its parts entering one by one. test-m14 forbids a tween in a composition, so the moves the
+    new components need became semantic helpers of pc-motion.js: PCM.move (x, y, scale or rotation from one state to another, a curve
+    named from the closed list PCM.EASE), PCM.run (one property at a constant speed: a playhead, a scrolling page), PCM.appear
+    (opacity, a scale and a rise: a word, a feature card, a highlight box), PCM.vanish, PCM.pulse, PCM.press (a click and its ring),
+    PCM.glideProp (the inertia and hold curve on one property, a fan's rotation) and PCM.readout (a running time as a setter tween).
+    `cursor` has a `hold` prop too (how far the hand sways between points), so test-m14's "every element component declares hold"
+    needed no change. The window card of the spec's "video and window cards" is video-card's `kind: window` (a title bar and three
+    dots around the clip); window-card keeps showing a screenshot that scrolls (M14). frame-match passes all nine (the main
+    animation, the life checks, the strips); their expectations are in motion/expectations.py, their catalog entries in
+    motion/catalog.py META, their beats in pipeline/lib/tokens.py BEAT_TYPES (build-tokens only rebuilds when style.md or tweaks.md
+    changed: after a change of BEAT_TYPES or GRAMMAR run `bash pipeline/bin/build-tokens --force`).
+315. **M16: how a video plays in a render (video-card).** The clip is a `<video>` element the component makes itself (an element in
+    the markup is managed by HyperFrames' own media handling, and a script that sets its src is a lint warning), muted, never played:
+    on every `hf-seek` event it sets `currentTime` to a pure function of the root time (clip_start is the host's data-start, set by
+    the compiler like the 3D components') and hands the seek to the runtime as a promise through `e.detail.waitUntil`, so a frame is
+    never captured before the seek finished (the runtimes.md seek protocol). The test harnesses (motion/harness.py, review/mechanical.py)
+    now await the same promises. Two things made the first golden render take 15 minutes instead of 2: every mounted video card hears
+    every seek of the render, so a clip that is not on screen must not seek (it checks its own life window and its host's visibility),
+    and a seek costs a decode from the previous key frame, so the recordings are encoded with a key frame every 6 frames
+    (pipeline/lib/screenshot.py and motion/demo_assets.py: `-g 6`): a frame seeks in about 35 ms instead of 65. The golden render now
+    takes about 2 minutes with seven videos in the plan. Without the file, or when it cannot be decoded, the card shows its still
+    image, else a play glyph, and still lives.
+316. **M16: S1's recordings.** pipeline/lib/screenshot.py records, next to NN-name.png, NN-name.mp4: a new Playwright context with
+    video recording at 1080 wide (1350 high), the page loaded and its first second waited out, a requestAnimationFrame scroll with an
+    ease in and out over 6 s (5 to 8 with --record-seconds) through at most 2.2 screens, then ffmpeg trims the load and re-encodes
+    to H.264, 30 fps, no sound. A page with less than 300 px to scroll, or any failure of the recording, leaves `recording` null in the
+    sidecar with the reason in `recording_note` and never fails the screenshot (exit codes as before); --no-record skips it. It adds
+    about 20 seconds a page. collect_assets copies `recording` and `recording_seconds` into assets.json, facts.md lists them, the
+    research prompt tells the model what the tool now does, and the visual stages see them: Inputs.recording_files(), the assets
+    digest ("its scroll recording is research/NN-name.mp4"), the validator's asset list (video is an image prop: research/<file>.mp4
+    must exist, the compiler copies it into the project).
+317. **M16: the validator rules of E9.** Eight rules in visual/plan_validate.py, each reading the plan's footprints (common.footprint)
+    and times, with the numbers in tokens.json motion.grammar.composition (hero_width_share, min_layers_per_scene, empty_hero_max_s,
+    camera_every_scenes, transition_type_max, hook_moving_by_frame, and new here hero_band_y [640, 1280] (E0's middle third),
+    hero_min_area_px 120000, list_same_spot_max 2, camera_kinds, stack_kinds, layer_exempt): `hero_motion` (every scene keeps a
+    moving element of substance in the hero band: a content component with at least 120000 px2 of its footprint there for 70 percent
+    of the scene; every library component moves by E1, so the proxy for "a moving element" is that it is big enough to be the scene),
+    `hero_fill` (the widest stretch of the scene's content, the union of the footprints on screen together, spans 70 percent of 1080
+    px), `layers` (2 or more content components on screen together for 60 percent of the scene; a fan, grid, thumb grid or swatch
+    row counts as two), `camera` (floor(scenes / 3) scenes hold a camera-move, a screenshot-zoom with focus points or a 3D object),
+    `hook_frame0` (a content component of the hook starts within 4 frames, 133 ms), `empty_paper` (no stretch over 1 s of the reel
+    without a content component with 20000 px2 in the hero band), `list_entry` (more than 2 components of one kind at the same
+    spot, 40 px, starting one after another), `transition_variety` (no type more than 3 times; 9c's rule set), and a warning
+    `real_motion` (the research stage recorded pages and no video-card plays one). `visual.energy_rules` in config.json is error
+    (default), warn or off. Because 9a's answer is checked once with one retry, two of the rules are also repaired by the
+    pipeline itself when the director misses them, deterministically and with a note: plan9.hook_moves_from_frame0 (the hook's
+    hero that is not the breath's set piece starts at the scene's start) and plan9.vary_transitions (the later occurrences of an
+    over-used type become the least used allowed type that differs from its neighbours, a cut only while cuts stay a third or less).
+    The 9a prompt gained the energy rules (a list of what the validator checks and the levers: recordings and zooms first, stacks
+    and fans for lists, a hold level per scene), the 9c prompt the variety rule; 9b's prompt already put text last (M15).
+318. **M16: S12's energy loop.** (1) `review energy-check` (review/energy_check.py) runs first and needs no model: it measures the
+    mixed draft with the E0 meter, the reel against tokens.json energy.targets and every scene against 80 percent of them
+    (config review.energy_scene_share: a lower bound times 0.8, an upper bound divided by 0.8, the same bounds the golden reel is held
+    to); a failing scene becomes an [animation] issue with its numbers and the lever that moves that measure, routed to 09a like any
+    other, and a reel that fails as a whole with no failing scene gets one reel-level issue. The ask scene is left out of the
+    per-scene routing: its content (the end card, the DM card, the lockup) is fixed by tweaks.md Branding, so no scene fix could
+    move it, and it counts in the reel's numbers. (2) mechanical.py gained review/liveness.py: "no element static for more than 0.5 s"
+    (every top-level element of every component instance, measured twice half a second apart at several moments of its life after
+    the main animation, with frame-match's own thresholds, the calm hold's share) and "the edge layer is present" (at least 4 elements
+    of #paper-edges, at least 2 of them partly outside the frame, no text). Both are [animation] issues. (3) The edit review scores a
+    ninth criterion, `energy` (schema, prompt, SCORE_KEYS); an answer without it, a record from before M16, counts 5 on that one score.
+    (4) The early stop: route.decide compares the round with the one before it (review-r<n-1>.json): the same scores and the same
+    issues (compared by tag, scene or instance, and kind, because the model's words change every round) end the loop with the new
+    verdict `stop`, a NEEDS REVIEW flag naming the scores and the open issues, and no reopen. config review.energy_check,
+    review.liveness and review.early_stop switch the three off. The milestones before M16 ran frozen low-energy plans, drafts and
+    editors that fail the same way every round, so their test sandboxes turn the energy rules, the energy check, the liveness
+    checks and the early stop off (pipeline/tests/sandbox-config.py, called by lib.sh sandbox_init; SANDBOX_ENERGY=on keeps them on,
+    test-m16 does); test-m11 gained `, energy 5` in the scores line it asserts.
+319. **M16: the new golden reel and its numbers.** golden/test-idea is planned again by hand (goldenplan.py DESIGN): the hook is the
+    headline over a dark mock website that builds (three identical feature cards: the point of the reel) with the 3D card landing in
+    the breath on it; the stake is a mock website with a cursor that clicks its button; the skill file is a screenshot-zoom with four
+    focus points on the spoken words; the blog and the repo play as recordings in video cards; the terracotta on cream is a mock page
+    with two swatches that fill on the words and the strike-through; the four to six hex colors are a recording and a row of five
+    swatches; the proof is a screenshot-zoom with five focus points and the stat; the install is a terminal and a recording; the
+    number and payoff beats keep their caption groups over a text-free recording; the CTA keeps its branded layout and gets 130
+    pieces of confetti falling over it (end-card gained `confetti_count`, `confetti_at` and `confetti_seconds`, default none; the
+    first try, 70 small pieces, left a still stretch of 2.4 s). Transitions: 3 fade-blur, 3 fall, 3 push, 1 cut. The hero is a
+    video, a zoom or a mock page in nine of eleven scenes. Measured on the render (the E0 meter, targets 41, 46, 3.3, 15 percent
+    and 2 s): moving share 82.1, middle band 92.0, pixels changing 4.12, still stretches 0.0, longest still 0.77 s; every scene but the CTA is
+    above 80 percent of every target (the lowest: s10 moving 47.8 against a bound of 32.8, s1 pixels 3.5 against 2.64; the CTA
+    scene: moving 69.6, middle band 60.7, pixels changing 1.89 against 2.64, which is why S12 leaves it to the reel's numbers). The run
+    before it showed what the energy comes from: the three swatch scenes (a row of swatches alone moves 11 percent of its frames) and
+    a card grid (7 percent) cannot carry a scene, a recording (71 percent), a zoom over a page (35) or a mock page (42) can. Nobody
+    has judged the look by eye (HUMAN_TODO). The golden plan carries `hold: lively` on its hero components; its honesty labels:
+    "real" on the pages, "illustrative" on the mock sites, none on the two text-free recordings behind the caption groups (a label
+    would count as text and turn the group into word mode).
+320. **M16: what the earlier milestones had to give.** M9: harness.py and gallery.py (the seek helpers wait for the promises of
+    waitUntil), catalog.py META and expectations.py (nine entries; frame-match --only keeps the other components' last results in the
+    report), goldenplan.py, golden.py (clip_start for the video card, the demo clips), end-card.html (the confetti props), tokens.py
+    (beat map, composition numbers). M10: visual/common.py (footprints, text items, the image prop `video`, NO_BOX_COMPONENTS: a
+    screenshot-zoom and a scrubber have boxes a caption group must keep clear of, and are text free), plan9.py, plan_validate.py,
+    events.py, project.py. M11: review/mechanical.py (the async seek, the liveness hook), review/route.py, review/edit.py,
+    stages/12-review (run.sh, prompt, schema). M15: nothing but the golden plan's design (its groups on b6 and b10 stay). Tests:
+    tests/lib.sh and sandbox-config.py (the sandbox switch above), test-m11 (the scores line).
+321. **M16: three things the new components and the golden found in the old checks.** (1) S12's mechanical checks judged an element where
+    it sits, not where it shows: a page scrolling inside a mock window put its text over the window's title bar (an `overlap` and a
+    `contrast` issue), and a screenshot zoomed inside its frame was `off_canvas`. The harness script now cuts every text and image by its
+    overflow-hidden ancestors (`clipRect`): a text clipped away is skipped, a text clipped in part is judged by its visible part, an image
+    is judged by its visible rect (`vx`, `vy`, `vw`, `vh`). (2) card-fan's labels overlapped each other when the cards turned about the pivot
+    below the deck (their bottoms converge): the label is at the top of the card now, where the cards spread apart. (3) The catalog marks
+    `video` as an image prop like `image` (the director's digest says IMAGE, and the validator checks research/<file>.mp4 exists).
+322. **M16: the real run.** (filled in by the final run: see build/M16/report.md)

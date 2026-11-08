@@ -45,13 +45,16 @@ import re
 
 from motion import common as mcommon, harness
 from review import common as rc
+from review import liveness
 
 REVIEW_JS = r"""
-(args) => {
+async (args) => {
   const tl = window.__timelines[args.id];
-  const seekTo = (t) => {
+  const seekTo = async (t) => {
     if (tl) tl.seek(t, false);
-    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: () => {} } })); } catch (e) {}
+    const waits = [];
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: (p) => { waits.push(p); } } })); } catch (e) {}
+    if (waits.length) { try { await Promise.all(waits); } catch (e) {} }
   };
   const effOpacity = (el) => {
     let op = 1, node = el;
@@ -106,6 +109,20 @@ REVIEW_JS = r"""
     }
     return null;
   };
+  // M16: an element inside an overflow:hidden ancestor (a page scrolling in a window, a zoomed screenshot in its frame) is only seen
+  // where the ancestors let it show: its visible rect is its own rect cut by every clipping ancestor
+  const clipRect = (el, r) => {
+    let x0 = r.left, y0 = r.top, x1 = r.right, y1 = r.bottom, node = el.parentElement;
+    while (node && node.id !== "stage" && node !== document.body) {
+      const cs = getComputedStyle(node);
+      if (cs.overflowX !== "visible" || cs.overflowY !== "visible") {
+        const b = node.getBoundingClientRect();
+        x0 = Math.max(x0, b.left); y0 = Math.max(y0, b.top); x1 = Math.min(x1, b.right); y1 = Math.min(y1, b.bottom);
+      }
+      node = node.parentElement;
+    }
+    return { x: x0, y: y0, w: Math.max(0, x1 - x0), h: Math.max(0, y1 - y0) };
+  };
   const isTextLeaf = (el) => {
     let hasText = false;
     for (const n of el.childNodes) { if (n.nodeType === 3 && n.textContent.trim()) { hasText = true; break; } }
@@ -117,7 +134,7 @@ REVIEW_JS = r"""
   for (const el of allOnce) { el.setAttribute("data-rv-idx", String(idx++)); }
   const ancestorsOf = (el) => { const out = []; let node = el.parentElement; while (node && node.id !== "stage" && node !== document.body) { const v = node.getAttribute("data-rv-idx"); if (v !== null) out.push(parseInt(v, 10)); node = node.parentElement; } return out; };
   for (const t of args.times) {
-    seekTo(t);
+    await seekTo(t);
     const texts = [], images = [];
     const all = document.querySelectorAll("#stage *");
     for (const el of all) {
@@ -126,7 +143,8 @@ REVIEW_JS = r"""
       if (tag === "IMG") {
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
-        images.push({ id: el.id || "", cls: String(el.className || ""), src: el.getAttribute("src") || "", x: r.left, y: r.top, w: r.width, h: r.height,
+        const vr = clipRect(el, r);
+        images.push({ id: el.id || "", cls: String(el.className || ""), src: el.getAttribute("src") || "", x: r.left, y: r.top, w: r.width, h: r.height, vx: vr.x, vy: vr.y, vw: vr.w, vh: vr.h,
                       opacity: effOpacity(el), nw: el.naturalWidth, nh: el.naturalHeight, fit: cs.objectFit, bg: bgOf(el.parentElement), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10),
                       transient: transientAt(el, t) });
         continue;
@@ -138,6 +156,9 @@ REVIEW_JS = r"""
       const cs = getComputedStyle(el);
       let tb = r;
       try { const range = document.createRange(); range.selectNodeContents(el); const rr = range.getBoundingClientRect(); if (rr.width > 0 && rr.height > 0) tb = rr; } catch (e) {}
+      const vt = clipRect(el, tb);
+      if (vt.w < 1 || vt.h < 1) continue;   // clipped away by an ancestor: nothing of it is on screen
+      tb = { left: vt.x, top: vt.y, width: vt.w, height: vt.h };
       texts.push({ id: el.id || "", cls: String(el.className || ""), parent_cls: String((el.parentElement && el.parentElement.className) || ""), idx: parseInt(el.getAttribute("data-rv-idx") || "-1", 10), anc: ancestorsOf(el),
                    text: (el.textContent || "").trim().slice(0, 60), n: (el.textContent || "").trim().length, x: tb.left, y: tb.top, w: tb.width, h: tb.height, ex: r.left, ey: r.top, ew: r.width, eh: r.height,
                    opacity: effOpacity(el), font: cs.fontFamily, size: parseFloat(cs.fontSize), weight: cs.fontWeight, color: cs.color, scale: scaleOf(el),
@@ -335,6 +356,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     issues: list[dict] = []
     counts = {"hosts": 0, "texts": 0, "images": 0, "times": len(check_ms), "screenshots": 0, "transient": 0}
     gpu = "auto"
+    lv_issues: list[dict] = []
     with harness.Harness(lib=ctx.project, gpu=gpu) as h:
         for host in hosts:
             if host.get("no_timeline") or host["component"] == "paper-canvas":
@@ -348,7 +370,7 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 continue
             comp = mcommon.parse_component(comp_file)
             props = dict(host["props"])
-            if host["component"] in ("hero-3d", "icon-3d"):
+            if host["component"] in mcommon.CLIP_START_COMPONENTS:
                 props["clip_start"] = 0
             h.open(comp, props)
             counts["hosts"] += 1
@@ -419,6 +441,13 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                         os.remove(png)
                     except OSError:
                         pass
+        # E1 and E5 (M16): no element static for more than 0.5 s, and the edge layer present
+        if ctx.c("review.liveness", True):
+            lv_static = liveness.static_check(ctx, hosts, h)
+            lv_edge = liveness.edge_check(ctx, hosts, h)
+            lv_issues = lv_static["issues"] + lv_edge["issues"]
+            counts["static_checked"] = lv_static["checked"]
+            counts["edge_elements"] = lv_edge["edges"]
     try:
         os.rmdir(shots_dir)
     except OSError:
@@ -445,6 +474,9 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             return
         seen_issue.add(key)
         issues.append(iss)
+
+    for iss in lv_issues:
+        add(iss)
 
     tag_place = lambda tx: "text" if tx.get("captions") else "animation"  # noqa: E731
     n_checked_texts = 0
@@ -548,6 +580,10 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
                 counts["transient"] += 1
                 continue
             x0, y0, x1, y1 = im["x"], im["y"], im["x"] + im["w"], im["y"] + im["h"]
+            if im.get("vw") is not None:   # the part an overflow-hidden ancestor lets show (a zoomed screenshot in its frame)
+                x0, y0, x1, y1 = im["vx"], im["vy"], im["vx"] + im["vw"], im["vy"] + im["vh"]
+            if im.get("vw") is not None and (im["vw"] < 1 or im["vh"] < 1):
+                continue
             if x0 < -tol or y0 < -tol or x1 > rc.CANVAS_W + tol or y1 > rc.CANVAS_H + tol:
                 add(rc.issue("animation", "off_canvas", f"the image {im['src']} ({im['instance']}) is off the canvas at {rc.fmt_ms(T)}", im["scene"], im["instance"], T))
             if im["src"].startswith("assets/brand/") and x1 > rail_x + tol and y1 > rail_from_y:

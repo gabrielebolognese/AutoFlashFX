@@ -8,7 +8,7 @@
     "written_by": {"type": "string"},
     "round": {"type": "integer", "minimum": 1},
     "pass": {"type": "boolean"},
-    "verdict": {"type": "string", "enum": ["pass", "fix", "cap", "flag"], "description": "pass: on to the render; fix: the owners reopened; cap: the rounds are used up, exported with NEEDS REVIEW; flag: nothing upstream can act, exported with NEEDS REVIEW"},
+    "verdict": {"type": "string", "enum": ["pass", "fix", "cap", "flag", "stop"], "description": "pass: on to the render; fix: the owners reopened; cap: the rounds are used up, exported with NEEDS REVIEW; flag: nothing upstream can act, exported with NEEDS REVIEW; stop (M16): two rounds in a row with the same scores and the same issues, exported with NEEDS REVIEW"},
     "mechanical": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}}},
     "style": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}}},
     "audio": {"type": "object", "required": ["pass"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}, "wer_pct": {"type": ["number", "null"]}}},
@@ -16,7 +16,7 @@
       "type": "object",
       "required": ["scores", "issues"],
       "properties": {
-        "scores": {"type": "object", "properties": {"stop": {"type": "integer"}, "hierarchy": {"type": "integer"}, "look": {"type": "integer"}, "variety": {"type": "integer"}, "sync": {"type": "integer"}, "sound": {"type": "integer"}, "generic": {"type": "integer"}, "requirements": {"type": "integer"}}},
+        "scores": {"type": "object", "properties": {"stop": {"type": "integer"}, "hierarchy": {"type": "integer"}, "look": {"type": "integer"}, "variety": {"type": "integer"}, "sync": {"type": "integer"}, "sound": {"type": "integer"}, "generic": {"type": "integer"}, "requirements": {"type": "integer"}, "energy": {"type": "integer"}}},
         "issues": {"type": "array", "items": {"type": "object", "required": ["tag", "text"], "properties": {"tag": {"type": "string", "enum": ["voice", "animation", "text", "transition", "sfx"]}, "text": {"type": "string"}}}},
         "branding_natural": {"type": "boolean"},
         "summary": {"type": "string"},
@@ -27,6 +27,8 @@
     "routing": {"type": "object", "properties": {"owners": {"type": "array", "items": {"type": "string"}}, "reopen": {"type": "array", "items": {"type": "string"}}, "activity": {"type": "string"}, "next_model": {"type": "array"}}},
     "cap": {"type": "object", "properties": {"reached": {"type": "boolean"}, "rounds_total": {"type": "integer"}}},
     "flags": {"type": "array", "items": {"type": "string"}},
+    "early_stop": {"type": "object", "properties": {"stop": {"type": "boolean"}, "same_scores": {"type": "boolean"}, "same_issues": {"type": "boolean"}}},
+    "energy": {"type": ["object", "null"], "properties": {"pass": {"type": "boolean"}, "issues": {"type": "integer"}, "failing_scenes": {"type": "array", "items": {"type": "string"}}, "whole": {"type": "object"}}},
     "summary": {"type": "object"}
   }
 }

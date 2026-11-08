@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://instagramreels.local/stages/12-review/model.json",
-  "title": "The edit review's answer (S12, qa model): eight scores 1 to 5, whether the branding feels natural, every issue with its tag, a summary",
+  "title": "The edit review's answer (S12, qa model): nine scores 1 to 5, whether the branding feels natural, every issue with its tag, a summary",
   "type": "object",
   "required": ["scores", "branding_natural", "issues", "summary"],
   "properties": {
     "scores": {
       "type": "object",
-      "required": ["stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements"],
+      "required": ["stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements", "energy"],
       "properties": {
         "stop": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does frame 1 stop the scroll"},
         "hierarchy": {"type": "integer", "minimum": 1, "maximum": 5, "description": "hierarchy and legibility"},
@@ -16,7 +16,8 @@
         "sync": {"type": "integer", "minimum": 1, "maximum": 5, "description": "sync with the voice"},
         "sound": {"type": "integer", "minimum": 1, "maximum": 5, "description": "sound fit: does each sound fit its moment, nothing cluttering the voice"},
         "generic": {"type": "integer", "minimum": 1, "maximum": 5, "description": "nothing looks generic"},
-        "requirements": {"type": "integer", "minimum": 1, "maximum": 5, "description": "the requirements are visible: the problem, the share line, the keyword"}
+        "requirements": {"type": "integer", "minimum": 1, "maximum": 5, "description": "the requirements are visible: the problem, the share line, the keyword"},
+        "energy": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does every scene keep moving, with inertia, depth and edges: content that plays inside its card, a hero that fills the middle, layers behind it, no stretch that stands still"}
       }
     },
     "branding_natural": {"type": "boolean", "description": "the FlashFX branding (the DM card, the lockup, the brand slot) feels like a natural part of the reel, not like an ad"},

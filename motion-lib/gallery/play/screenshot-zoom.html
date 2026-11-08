@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 420, "w": 900, "h": 900, "image": "assets/demo/plugin-page.png", "image_ratio": 1.7778, "focus_json": [{"x": 0.08, "y": 0.34, "w": 0.7, "h": 0.07, "at": 0.8}, {"x": 0.12, "y": 0.52, "w": 0.6, "h": 0.1, "at": 2.4}], "zoom_to": 0.8, "highlight": true, "travel_frames": 18, "enter": "rise", "enter_at": 0, "honesty": "sourced", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* screenshot-zoom (Motion and energy rules E8, "real motion inside the content"): a real screenshot in a media frame
+       that the camera pans and zooms over: it travels to each focus box (power3.inOut, 18 frames) and a highlight box
+       draws itself around it; between two focus points the camera creeps on (a steady scale growth), so the content never
+       stands still (E1). The frame itself lives like every element: the card enter with the zoom and the parallax rotation,
+       the inertia, the hold. The stage inside is (frame width) x (frame width x the image's ratio); the boxes are in percent
+       of it, so they stay on the page's content whatever the zoom. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #sz { overflow: hidden; box-sizing: border-box; }
+    #sz-view { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: calc(var(--card-radius) - var(--media-frame)); background: var(--c-surface-chrome); }
+    #sz-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+    #sz-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .sz-box { position: absolute; box-sizing: border-box; border: 5px solid var(--c-accent); border-radius: 14px; opacity: 0; background: rgba(220, 101, 50, 0.10); transform-origin: 50% 50%; }
+  </style>
+  <div id="root" data-composition-id="screenshot-zoom" data-width="1080" data-height="1920">
+    <div id="sz" class="pc-media-frame pc-el"><div id="sz-view"><div id="sz-stage"><img id="sz-img" alt=""></div></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 420, w: 900, h: 900, image: "", image_ratio: 1.7778, focus_json: [], zoom_to: 0.8, highlight: true, travel_frames: 18, enter: "rise",
+        enter_at: 0, honesty: "sourced", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var frame = document.getElementById("sz"), view = document.getElementById("sz-view"), stage = document.getElementById("sz-stage"), img = document.getElementById("sz-img");
+      PC.place(frame, v);
+      if (v.image) img.src = v.image;
+      var pad = 22;  // --media-frame
+      var VW = v.w - 2 * pad, VH = v.h - 2 * pad;
+      var SW = VW, SH = Math.max(VH, VW * Math.max(0.2, v.image_ratio));
+      stage.style.width = SW + "px"; stage.style.height = SH + "px";
+      PC.honesty(frame, v.honesty, { top: 16, right: 16 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, frame, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      var end = life.until;
+      // the camera: a focus box (fractions of the page) fills zoom_to of the frame width, clamped so the page always covers the frame
+      var focus = (Array.isArray(v.focus_json) ? v.focus_json : []).filter(function (f) { return f && typeof f.at === "number"; }).sort(function (a, b) { return a.at - b.at; });
+      function camera(f) {
+        var s = Math.min(3.4, Math.max(1, v.zoom_to / Math.max(0.05, f.w)));
+        s = Math.min(s, (VH * 0.85) / Math.max(1, f.h * SH));
+        s = Math.max(1, s);
+        var tx = VW / 2 - s * (f.x + f.w / 2) * SW, ty = VH / 2 - s * (f.y + f.h / 2) * SH;
+        tx = Math.min(0, Math.max(VW - s * SW, tx)); ty = Math.min(0, Math.max(VH - s * SH, ty));
+        return { s: s, x: tx, y: ty };
+      }
+      gsap.set(stage, { scale: 1, x: 0, y: 0, force3D: true });
+      var cur = { s: 1, x: 0, y: 0 };
+      var t = life.land;
+      // a creep between two focus points: the page grows about the frame's center by 0.35 percent per second (at most 2
+      // percent), so the content never stands still and never shows empty paper at an edge
+      function creep(from, at, until) {
+        var T = until - at;
+        if (!(T > PC.f(1))) return from;
+        var k = 1 + Math.min(0.02, 0.0035 * T);
+        var to = { s: from.s * k, x: VW / 2 - k * (VW / 2 - from.x), y: VH / 2 - k * (VH / 2 - from.y) };
+        PCM.move(tl, stage, { scale: from.s, x: from.x, y: from.y }, { scale: to.s, x: to.x, y: to.y }, at, T, "linear");
+        return to;
+      }
+      var firstAt = focus.length ? Math.max(focus[0].at, t + PC.f(2)) : end;
+      cur = creep(cur, t, firstAt);
+      var free = firstAt;
+      focus.forEach(function (f, i) {
+        var at = Math.max(f.at, free);
+        var target = camera(f);
+        var tf = PC.f(v.travel_frames);
+        PCM.move(tl, stage, { scale: cur.s, x: cur.x, y: cur.y }, { scale: target.s, x: target.x, y: target.y }, at, tf, "inout");
+        PC.event("focus", at, { el: "sz-stage", index: i });
+        if (v.highlight) {
+          var b = PC.el("div", "sz-box", stage); b.id = "sz-box-" + i;
+          b.style.left = (f.x * 100) + "%"; b.style.top = (f.y * 100) + "%"; b.style.width = (f.w * 100) + "%"; b.style.height = (f.h * 100) + "%";
+          b.style.borderWidth = (5 / target.s) + "px"; b.style.borderRadius = (14 / target.s) + "px";
+          var bAt = at + tf * 0.7;
+          PCM.appear(tl, b, bAt, { frames: 6, from: 1.08, ease: "out2" });
+          PC.event("highlight", bAt, { el: b.id });
+          var nextAt = i + 1 < focus.length ? Math.max(focus[i + 1].at, at + tf) : end;
+          PCM.vanish(tl, b, Math.max(bAt + PC.f(8), nextAt - PC.f(2)), 5);
+        }
+        var settled = at + tf;
+        var nextT = i + 1 < focus.length ? Math.max(focus[i + 1].at, settled) : end;
+        cur = { s: target.s, x: target.x, y: target.y };
+        cur = creep(cur, settled, nextT);
+        free = Math.max(nextT, settled);
+      });
+      window.__timelines["screenshot-zoom"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "screenshot-zoom", duration = 4;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

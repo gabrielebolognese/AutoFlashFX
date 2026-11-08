@@ -1,0 +1,91 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"y","type":"number","label":"Top (px)","default":480},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"cols","type":"number","label":"Columns","default":2},
+  {"id":"gap","type":"number","label":"Gap (px)","default":24},
+  {"id":"card_h","type":"number","label":"One card height (px)","default":230},
+  {"id":"items_json","type":"string","label":"Cards as JSON, 2 to 8: [{\"label\":\"Fast\",\"icon\":\"bolt\"}] (a label of 3 words at most; icons: bolt, check, star, play, heart, cursor, doc, code, chat, clock)","default":"[{\"label\":\"Fast\",\"icon\":\"bolt\"},{\"label\":\"Free\",\"icon\":\"check\"},{\"label\":\"Open source\",\"icon\":\"code\"},{\"label\":\"No login\",\"icon\":\"star\"}]"},
+  {"id":"highlight","type":"number","label":"Index of the card in accent (-1 = none)","default":-1},
+  {"id":"origin","type":"enum","label":"The wave of the stagger starts at","default":"top-left","options":[{"value":"top-left","label":"top-left"},{"value":"top-right","label":"top-right"},{"value":"center","label":"center"}]},
+  {"id":"card_frames","type":"number","label":"Frames of one card main animation","default":12},
+  {"id":"wave_frames","type":"number","label":"Frames between two cards along the wave","default":3},
+  {"id":"enter_at","type":"number","label":"Build starts (s)","default":0},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the grid drifts and turns as one group)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* card-grid (Motion and energy rules E8): ideas as a grid of icon cards that build in a wave from one corner (3 frames
+       per step along the diagonal, each card a combined zoom, parallax turn and rise), then keep moving: every card glides
+       on, the grid holds as one group in one direction (E1). Cards at alternating depths under the hold's turn (E6). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #cg { display: grid; }
+    .cg-card { box-sizing: border-box; padding: 26px 30px; display: flex; flex-direction: column; justify-content: space-between; }
+    .cg-card.hi { background: var(--c-accent); color: #FFFFFF; }
+    .cg-icon { width: 84px; height: 84px; border-radius: 50%; background: var(--c-accent); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .cg-card.hi .cg-icon { background: #FFFFFF; }
+    .cg-icon svg { width: 46px; height: 46px; }
+    .cg-label { font-weight: 800; font-size: 46px; line-height: 1.08; letter-spacing: -0.02em; }
+  </style>
+  <div id="root" data-composition-id="card-grid" data-width="1080" data-height="1920">
+    <div id="cg-wrap" class="pc-el"><div id="cg"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 480, w: 900, cols: 2, gap: 24, card_h: 230, items_json: [], highlight: -1, origin: "top-left", card_frames: 12, wave_frames: 3, enter_at: 0,
+        honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("cg-wrap"), grid = document.getElementById("cg");
+      PC.place(wrap, { x: v.x, y: v.y, w: v.w });
+      var items = (Array.isArray(v.items_json) ? v.items_json : []).slice(0, 8);
+      var cols = Math.max(1, Math.round(v.cols)), rows = Math.max(1, Math.ceil(items.length / cols));
+      var cw = (v.w - v.gap * (cols - 1)) / cols;
+      grid.style.gridTemplateColumns = "repeat(" + cols + ", " + cw + "px)";
+      grid.style.gap = v.gap + "px";
+      var ICONS = {
+        bolt: '<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
+        star: '<path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z"/>', play: '<path d="M7 4l12 8-12 8z"/>',
+        heart: '<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/>', cursor: '<path d="M5 3l14 7-6 2-2 6z"/>',
+        doc: '<path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5" fill="none" stroke-width="1.6"/>', code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+        chat: '<path d="M4 4h16v12H9l-5 4z"/>', clock: '<circle cx="12" cy="12" r="9" fill="none" stroke-width="2.6"/><path d="M12 7v5l3.5 2" fill="none" stroke-width="2.6" stroke-linecap="round"/>'
+      };
+      function icon(name, hi) {
+        var ink = hi ? "#DC6532" : "#FFFFFF";
+        return '<svg viewBox="0 0 24 24" fill="' + ink + '" stroke="' + ink + '">' + (ICONS[name] || ICONS.star) + '</svg>';
+      }
+      var cards = items.map(function (it, i) {
+        var hi = i === v.highlight;
+        var c = PC.el("div", "cg-card pc-card" + (hi ? " hi" : ""), grid); c.id = "cg-card-" + i; c.style.height = v.card_h + "px";
+        var ic = PC.el("div", "cg-icon", c); ic.innerHTML = icon(it.icon, hi);
+        PC.el("div", "cg-label", c, String(it.label || ""));
+        return c;
+      });
+      var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      PCM.depth(wrap, [grid]);
+      gsap.set(grid, { transformStyle: "preserve-3d" });
+      cards.forEach(function (c, i) { gsap.set(c, { z: (i % 2) * 16, force3D: true }); });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "none" }, hold: v.hold, inertia: quiet, exit: exit });
+      cards.forEach(function (c, i) {
+        var row = Math.floor(i / cols), col = i % cols;
+        var step = v.origin === "top-right" ? row + (cols - 1 - col) : v.origin === "center" ? Math.round(Math.abs(row - (rows - 1) / 2) + Math.abs(col - (cols - 1) / 2)) : row + col;
+        var at = v.enter_at + PC.f(v.wave_frames) * step;
+        PCM.life(tl, c, { at: at, main: { kind: "fade", frames: Math.max(4, Math.round(v.card_frames / 2)), rise: 44, ease: "power2.out", zoom: "in", rotate: 12, rotateSign: col % 2 ? -1 : 1, mainFrames: v.card_frames },
+          hold: { kind: "none" }, inertia: { move: 0, scale: 0.012, rotate: 1.5 }, until: group.until, events: { enter: "card" } });
+        PC.event("card", at, { el: c.id, row: row, col: col });
+      });
+      if (honesty) PCM.life(tl, honesty, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: v.enter_at + PC.f(1), events: { enter: "honesty" } });
+      window.__timelines["card-grid"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

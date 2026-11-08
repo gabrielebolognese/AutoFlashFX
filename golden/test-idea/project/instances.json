@@ -27,6 +27,7 @@
     "x": 90,
     "w": 900,
     "align": "center",
+    "hold": "lively",
     "words_json": [
      {
       "w": "Why",
@@ -66,7 +67,48 @@
    }
   },
   {
-   "instance": "s1-hero-3d-2",
+   "instance": "s1-mock-site-card-2",
+   "component": "mock-site-card",
+   "scene": "s1",
+   "start_ms": 0,
+   "end_ms": 3460,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "cta",
+     "frame": "cta_at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 700,
+    "w": 900,
+    "h": 470,
+    "title": "",
+    "headline": "Same look",
+    "cta": "Go",
+    "tone": "ink",
+    "cta_at": 0.5,
+    "scroll_px_s": 220,
+    "honesty": "mock",
+    "hold": "lively",
+    "enter": "rise",
+    "exit": "fade-blur",
+    "exit_at": 3.327
+   }
+  },
+  {
+   "instance": "s1-hero-3d-3",
    "component": "hero-3d",
    "scene": "s1",
    "start_ms": 2400,
@@ -85,10 +127,10 @@
     }
    ],
    "props": {
-    "x": 240,
-    "y": 820,
-    "w": 600,
-    "h": 600,
+    "x": 620,
+    "y": 620,
+    "w": 330,
+    "h": 330,
     "object": "card",
     "spin": 40,
     "tilt": 18,
@@ -101,8 +143,8 @@
    }
   },
   {
-   "instance": "s2-card-1",
-   "component": "card",
+   "instance": "s2-mock-site-card-1",
+   "component": "mock-site-card",
    "scene": "s2",
    "start_ms": 3460,
    "end_ms": 6640,
@@ -110,8 +152,7 @@
     {
      "event": "enter",
      "frame": 0,
-     "cue": "hero_enter",
-     "note": "only when the card is the scene's hero"
+     "cue": "hero_enter"
     },
     {
      "event": "land",
@@ -119,32 +160,106 @@
      "cue": null
     },
     {
-     "event": "mascot",
-     "frame": 12,
-     "cue": null,
-     "note": "when the mascot prop is set"
-    },
-    {
-     "event": "exit",
-     "frame": "exit_at x 30",
-     "cue": "transition",
-     "note": "when exit is set"
+     "event": "cta",
+     "frame": "cta_at x 30",
+     "cue": "ui_click"
     }
    ],
    "props": {
     "x": 90,
-    "y": 560,
+    "y": 420,
     "w": 900,
-    "title": "Clients spot it instantly",
-    "body": "You ship Claude Code client sites.",
-    "mascot": "star",
+    "h": 760,
+    "title": "client-site.com",
+    "headline": "Same look",
+    "cta": "Get started",
+    "tone": "warm",
+    "cta_at": 0.8,
+    "scroll_px_s": 60,
+    "honesty": "mock",
+    "hold": "lively",
     "enter": "rise",
     "exit": "fall",
     "exit_at": 2.847
    }
   },
   {
-   "instance": "s2-dark-chip-2",
+   "instance": "s2-pop-2",
+   "component": "pop",
+   "scene": "s2",
+   "start_ms": 3460,
+   "end_ms": 6640,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    },
+    {
+     "event": "pop_peak",
+     "frame": "round(frames x 0.55)",
+     "cue": null
+    }
+   ],
+   "props": {
+    "kind": "badge",
+    "icon": "star",
+    "size": 130,
+    "x": 830,
+    "y": 340,
+    "exit": "fall",
+    "exit_at": 2.847
+   }
+  },
+  {
+   "instance": "s2-cursor-3",
+   "component": "cursor",
+   "scene": "s2",
+   "start_ms": 3560,
+   "end_ms": 6640,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "move",
+     "frame": "point.at x 30 - move",
+     "cue": null
+    },
+    {
+     "event": "click",
+     "frame": "point.at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "points_json": [
+     {
+      "x": 820,
+      "y": 1100,
+      "at": 0
+     },
+     {
+      "x": 250,
+      "y": 905,
+      "at": 1.6,
+      "click": true
+     },
+     {
+      "x": 700,
+      "y": 700,
+      "at": 2.6
+     }
+    ],
+    "hold": "lively",
+    "exit": "fall",
+    "exit_at": 2.747
+   }
+  },
+  {
+   "instance": "s2-dark-chip-4",
    "component": "dark-chip",
    "scene": "s2",
    "start_ms": 5980,
@@ -157,8 +272,8 @@
     }
    ],
    "props": {
-    "x": 600,
-    "y": 742,
+    "x": 440,
+    "y": 1120,
     "text": "same look, every site",
     "accent_word": "every site",
     "icon": "dot",
@@ -167,8 +282,8 @@
    }
   },
   {
-   "instance": "s3-window-card-1",
-   "component": "window-card",
+   "instance": "s3-screenshot-zoom-1",
+   "component": "screenshot-zoom",
    "scene": "s3",
    "start_ms": 6640,
    "end_ms": 11390,
@@ -180,31 +295,94 @@
     },
     {
      "event": "land",
-     "frame": "8 (rise) or 16 (fly-in)",
+     "frame": 8,
      "cue": null
     },
     {
-     "event": "mascot",
-     "frame": "land + 4",
+     "event": "focus",
+     "frame": "focus.at x 30",
      "cue": null
+    },
+    {
+     "event": "highlight",
+     "frame": "focus.at x 30 + 13",
+     "cue": "ui_click"
     }
    ],
    "props": {
     "x": 90,
-    "y": 400,
+    "y": 380,
     "w": 900,
-    "h": 820,
-    "title": "SKILL.md",
+    "h": 780,
     "image": "assets/research/03-skill-md.png",
     "honesty": "sourced",
-    "mascot": "film",
+    "hold": "lively",
     "enter": "rise",
-    "exit": "fade-blur",
-    "exit_at": 4.617
+    "zoom_to": 0.85,
+    "focus_json": [
+     {
+      "x": 0.33,
+      "y": 0.3,
+      "w": 0.4,
+      "h": 0.04,
+      "at": 0.16
+     },
+     {
+      "x": 0.34,
+      "y": 0.215,
+      "w": 0.6,
+      "h": 0.1,
+      "at": 1.47
+     },
+     {
+      "x": 0.33,
+      "y": 0.575,
+      "w": 0.6,
+      "h": 0.1,
+      "at": 2.66
+     },
+     {
+      "x": 0.34,
+      "y": 0.66,
+      "w": 0.6,
+      "h": 0.1,
+      "at": 3.84
+     }
+    ],
+    "exit": "push",
+    "exit_at": 4.483
    }
   },
   {
-   "instance": "s3-dark-chip-2",
+   "instance": "s3-pop-2",
+   "component": "pop",
+   "scene": "s3",
+   "start_ms": 6640,
+   "end_ms": 11390,
+   "sound_events": [
+    {
+     "event": "pop",
+     "frame": 0,
+     "cue": "ui_click"
+    },
+    {
+     "event": "pop_peak",
+     "frame": "round(frames x 0.55)",
+     "cue": null
+    }
+   ],
+   "props": {
+    "kind": "badge",
+    "icon": "bolt",
+    "size": 130,
+    "x": 830,
+    "y": 340,
+    "exit": "push",
+    "exit_at": 4.483
+   }
+  },
+  {
+   "instance": "s3-dark-chip-3",
    "component": "dark-chip",
    "scene": "s3",
    "start_ms": 10780,
@@ -217,18 +395,18 @@
     }
    ],
    "props": {
-    "x": 560,
-    "y": 1180,
+    "x": 440,
+    "y": 1120,
     "text": "rgba(0,0,0,.1)",
     "accent_word": ".1",
     "icon": "file",
-    "exit": "fade-blur",
-    "exit_at": 0.477
+    "exit": "push",
+    "exit_at": 0.343
    }
   },
   {
-   "instance": "s4-card-1",
-   "component": "card",
+   "instance": "s4-video-card-1",
+   "component": "video-card",
    "scene": "s4",
    "start_ms": 11390,
    "end_ms": 15130,
@@ -236,8 +414,7 @@
     {
      "event": "enter",
      "frame": 0,
-     "cue": "hero_enter",
-     "note": "only when the card is the scene's hero"
+     "cue": "hero_enter"
     },
     {
      "event": "land",
@@ -245,27 +422,25 @@
      "cue": null
     },
     {
-     "event": "mascot",
-     "frame": 12,
-     "cue": null,
-     "note": "when the mascot prop is set"
-    },
-    {
-     "event": "exit",
-     "frame": "exit_at x 30",
-     "cue": "transition",
-     "note": "when exit is set"
+     "event": "play",
+     "frame": 8,
+     "cue": null
     }
    ],
    "props": {
     "x": 90,
-    "y": 520,
+    "y": 420,
     "w": 900,
-    "title": "Distributional convergence",
-    "body": "It's not your fault.",
+    "h": 760,
+    "video": "assets/research/04-blog.mp4",
+    "title": "claude.com/blog",
+    "kind": "window",
+    "honesty": "sourced",
+    "hold": "lively",
     "enter": "rise",
-    "exit": "push",
-    "exit_at": 3.473
+    "exit": "fade-blur",
+    "exit_at": 3.607,
+    "clip_start": 11.39
    }
   },
   {
@@ -289,40 +464,100 @@
    ],
    "props": {
     "x": 560,
-    "y": 840,
+    "y": 1030,
     "text": "Anthropic's|own words",
     "arrow": "up-left",
     "arrow_len": 140,
-    "exit": "push",
-    "exit_at": 1.993
+    "exit": "fade-blur",
+    "exit_at": 2.127
    }
   },
   {
-   "instance": "s5-light-chip-1",
-   "component": "light-chip",
+   "instance": "s5-mock-site-card-1",
+   "component": "mock-site-card",
    "scene": "s5",
-   "start_ms": 15290,
+   "start_ms": 15130,
    "end_ms": 18860,
    "sound_events": [
     {
      "event": "enter",
      "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "cta",
+     "frame": "cta_at x 30",
      "cue": "ui_click"
     }
    ],
    "props": {
-    "x": 120,
-    "y": 560,
-    "text": "even Anthropic's palette",
-    "exit": "fade-blur",
-    "exit_at": 3.437
+    "x": 90,
+    "y": 600,
+    "w": 900,
+    "h": 340,
+    "title": "",
+    "headline": "Terracotta",
+    "cta": "Go",
+    "tone": "warm",
+    "cta_at": 0.7,
+    "scroll_px_s": 140,
+    "honesty": "mock",
+    "hold": "lively",
+    "enter": "rise",
+    "exit": "fall",
+    "exit_at": 3.397
    }
   },
   {
-   "instance": "s5-strike-through-2",
+   "instance": "s5-swatch-row-2",
+   "component": "swatch-row",
+   "scene": "s5",
+   "start_ms": 15130,
+   "end_ms": 18860,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "fill",
+     "frame": "swatch.at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 965,
+    "w": 900,
+    "h": 120,
+    "gap": 20,
+    "honesty": "none",
+    "hold": "lively",
+    "colors_json": [
+     {
+      "color": "#D97757",
+      "at": 0.68
+     },
+     {
+      "color": "#FAF5EC",
+      "at": 1.36
+     }
+    ],
+    "exit": "fall",
+    "exit_at": 3.397
+   }
+  },
+  {
+   "instance": "s5-strike-through-3",
    "component": "strike-through",
    "scene": "s5",
-   "start_ms": 15910,
+   "start_ms": 17230,
    "end_ms": 18860,
    "sound_events": [
     {
@@ -343,19 +578,56 @@
     }
    ],
    "props": {
-    "x": 120,
-    "y": 680,
+    "x": 200,
+    "y": 1100,
     "text": "#D97757 on cream",
     "chip": true,
     "style": "line",
     "replacement": "AI look",
-    "strike_at": 1.32,
-    "exit": "fade-blur",
-    "exit_at": 2.817
+    "strike_at": 0.0,
+    "exit": "fall",
+    "exit_at": 1.297
    }
   },
   {
-   "instance": "s6-pop-1",
+   "instance": "s6-video-card-1",
+   "component": "video-card",
+   "scene": "s6",
+   "start_ms": 18860,
+   "end_ms": 22730,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": 8,
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 860,
+    "w": 900,
+    "h": 300,
+    "video": "assets/research/01-repo.mp4",
+    "kind": "frame",
+    "honesty": "none",
+    "hold": "lively",
+    "enter": "rise",
+    "video_start": 1.2,
+    "clip_start": 18.86
+   }
+  },
+  {
+   "instance": "s6-pop-2",
    "component": "pop",
    "scene": "s6",
    "start_ms": 18860,
@@ -377,44 +649,103 @@
     "icon": "star",
     "size": 150,
     "x": 800,
-    "y": 330,
-    "exit": "fall",
-    "exit_at": 3.537
+    "y": 330
    }
   },
   {
-   "instance": "s7-check-badge-1",
-   "component": "check-badge",
+   "instance": "s7-video-card-1",
+   "component": "video-card",
    "scene": "s7",
    "start_ms": 22730,
    "end_ms": 26890,
    "sound_events": [
     {
-     "event": "check",
+     "event": "enter",
      "frame": 0,
-     "cue": "success",
-     "note": "list mode: one per tick, ticks_at then 4 frames apart"
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": 8,
+     "cue": null
     }
    ],
    "props": {
-    "mode": "list",
-    "x": 160,
-    "y": 620,
-    "w": 760,
-    "items_json": [
-     "Plans 4 to 6 hex colors",
-     "Reviews the layout",
-     "Then codes"
-    ],
-    "tick_gap_frames": 6,
-    "ticks_at": 1.02,
-    "exit": "fade-blur",
-    "exit_at": 4.027
+    "x": 90,
+    "y": 540,
+    "w": 900,
+    "h": 400,
+    "video": "assets/research/01-repo.mp4",
+    "kind": "frame",
+    "honesty": "sourced",
+    "hold": "lively",
+    "enter": "rise",
+    "video_start": 1.0,
+    "exit": "push",
+    "exit_at": 3.893,
+    "clip_start": 22.73
    }
   },
   {
-   "instance": "s8-window-card-1",
-   "component": "window-card",
+   "instance": "s7-swatch-row-2",
+   "component": "swatch-row",
+   "scene": "s7",
+   "start_ms": 22730,
+   "end_ms": 26890,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "fill",
+     "frame": "swatch.at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 970,
+    "w": 900,
+    "h": 170,
+    "gap": 14,
+    "honesty": "none",
+    "hold": "lively",
+    "colors_json": [
+     {
+      "color": "#DC6532",
+      "at": 1.16
+     },
+     {
+      "color": "#1C110F",
+      "at": 1.76
+     },
+     {
+      "color": "#F5EEE3",
+      "at": 1.54
+     },
+     {
+      "color": "#289C5C",
+      "at": 2.01
+     },
+     {
+      "color": "#C9623C",
+      "at": 2.04
+     }
+    ],
+    "exit": "push",
+    "exit_at": 3.893
+   }
+  },
+  {
+   "instance": "s8-screenshot-zoom-1",
+   "component": "screenshot-zoom",
    "scene": "s8",
    "start_ms": 26890,
    "end_ms": 30110,
@@ -426,13 +757,18 @@
     },
     {
      "event": "land",
-     "frame": "8 (rise) or 16 (fly-in)",
+     "frame": 8,
      "cue": null
     },
     {
-     "event": "mascot",
-     "frame": "land + 4",
+     "event": "focus",
+     "frame": "focus.at x 30",
      "cue": null
+    },
+    {
+     "event": "highlight",
+     "frame": "focus.at x 30 + 13",
+     "cue": "ui_click"
     }
    ],
    "props": {
@@ -440,12 +776,50 @@
     "y": 380,
     "w": 900,
     "h": 760,
-    "title": "claude.com/plugins",
     "image": "assets/research/02-plugin-page.png",
     "honesty": "sourced",
+    "hold": "lively",
     "enter": "rise",
-    "exit": "push",
-    "exit_at": 2.953
+    "zoom_to": 0.8,
+    "focus_json": [
+     {
+      "x": 0.27,
+      "y": 0.165,
+      "w": 0.5,
+      "h": 0.05,
+      "at": 0.0
+     },
+     {
+      "x": 0.27,
+      "y": 0.215,
+      "w": 0.5,
+      "h": 0.035,
+      "at": 0.28
+     },
+     {
+      "x": 0.76,
+      "y": 0.2,
+      "w": 0.22,
+      "h": 0.07,
+      "at": 1.02
+     },
+     {
+      "x": 0.76,
+      "y": 0.15,
+      "w": 0.22,
+      "h": 0.12,
+      "at": 1.14
+     },
+     {
+      "x": 0.27,
+      "y": 0.165,
+      "w": 0.5,
+      "h": 0.05,
+      "at": 2.6
+     }
+    ],
+    "exit": "fade-blur",
+    "exit_at": 3.087
    }
   },
   {
@@ -485,8 +859,8 @@
     "icon": "download",
     "container": "pill",
     "honesty": "sourced",
-    "exit": "push",
-    "exit_at": 1.933
+    "exit": "fade-blur",
+    "exit_at": 2.067
    }
   },
   {
@@ -515,13 +889,14 @@
    ],
    "props": {
     "x": 90,
-    "y": 600,
+    "y": 380,
     "w": 900,
     "title": "Claude Code",
     "mode": "type",
     "chars_per_frame": 2,
     "start_delay_frames": 8,
     "prompt": "",
+    "hold": "lively",
     "lines_json": [
      {
       "text": "/plugin install frontend-design@claude-plugins-official",
@@ -532,12 +907,90 @@
       "color": "muted"
      }
     ],
-    "exit": "fade-blur",
-    "exit_at": 4.497
+    "exit": "push",
+    "exit_at": 4.363
    }
   },
   {
-   "instance": "s10-check-badge-1",
+   "instance": "s9-video-card-2",
+   "component": "video-card",
+   "scene": "s9",
+   "start_ms": 30110,
+   "end_ms": 34740,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": 8,
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 700,
+    "w": 900,
+    "h": 470,
+    "video": "assets/research/05-install-docs.mp4",
+    "kind": "frame",
+    "honesty": "sourced",
+    "hold": "lively",
+    "enter": "rise",
+    "video_start": 0.8,
+    "exit": "push",
+    "exit_at": 4.363,
+    "clip_start": 30.11
+   }
+  },
+  {
+   "instance": "s10-video-card-1",
+   "component": "video-card",
+   "scene": "s10",
+   "start_ms": 34740,
+   "end_ms": 37730,
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": 8,
+     "cue": null
+    }
+   ],
+   "props": {
+    "x": 90,
+    "y": 840,
+    "w": 900,
+    "h": 340,
+    "video": "assets/research/02-plugin-page.mp4",
+    "kind": "frame",
+    "honesty": "none",
+    "hold": "lively",
+    "enter": "rise",
+    "video_start": 0.6,
+    "exit": "fall",
+    "exit_at": 2.657,
+    "clip_start": 34.74
+   }
+  },
+  {
+   "instance": "s10-check-badge-2",
    "component": "check-badge",
    "scene": "s10",
    "start_ms": 34740,
@@ -600,7 +1053,11 @@
     "line2": "ditch the identical cards",
     "lockup": "assets/brand/lockup/lockup-gradient-on-light.png",
     "lockup_w": 300,
-    "lockup_y": 1146
+    "lockup_y": 1146,
+    "confetti_count": 130,
+    "confetti_at": 1.1,
+    "confetti_seconds": 2.4,
+    "hold": "lively"
    }
   },
   {
@@ -637,7 +1094,11 @@
  "assets": [
   "brand/lockup/lockup-gradient-on-light.png",
   "brand/mark/avatar-dark.png",
+  "research/01-repo.mp4",
+  "research/02-plugin-page.mp4",
   "research/02-plugin-page.png",
-  "research/03-skill-md.png"
+  "research/03-skill-md.png",
+  "research/04-blog.mp4",
+  "research/05-install-docs.mp4"
  ]
 }

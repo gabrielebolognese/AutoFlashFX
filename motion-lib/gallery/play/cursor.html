@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"points_json": "[{\"x\":720,\"y\":1180,\"at\":0},{\"x\":420,\"y\":900,\"at\":1.0,\"click\":true},{\"x\":660,\"y\":1020,\"at\":2.2,\"click\":true}]", "size": 84, "travel_frames": 12, "enter_at": 0.1, "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* cursor (Motion and energy rules E8, "a cursor that moves and clicks"): a pointer that travels a path of points (each move
+       power2.inOut, as a hand: it leaves slowly, does the middle fast, arrives slowly) and clicks on arrival: it presses (scale
+       0.86 over 3 frames, back over 5) and a ripple ring grows from the tip and fades. Between points it sways a few px (a hand
+       is never still), so it moves on every frame. It sits above the content (z 4). No text. */
+    #root { position: absolute; inset: 0; color: var(--c-ink); }
+    #cu { left: 0; top: 0; width: 0; height: 0; }
+    #cu-arrow { position: absolute; left: 0; top: 0; transform-origin: 8% 6%; filter: drop-shadow(0 6px 6px rgba(28, 17, 15, 0.28)); }
+    #cu-arrow svg { display: block; }
+    .cu-ripple { position: absolute; left: 0; top: 0; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 6px solid var(--c-accent); opacity: 0; box-sizing: border-box; }
+  </style>
+  <div id="root" data-composition-id="cursor" data-width="1080" data-height="1920">
+    <div id="cu" class="pc-el"><div id="cu-arrow"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ points_json: [], size: 84, travel_frames: 12, enter_at: 0, hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var root = document.getElementById("root"), cu = document.getElementById("cu"), arrow = document.getElementById("cu-arrow");
+      var s = v.size;
+      arrow.innerHTML = '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24"><path d="M3 2l16 9-7 2.2L9 20z" fill="#1C110F" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+      var pts = (Array.isArray(v.points_json) ? v.points_json : []).filter(function (p) { return p && typeof p.x === "number" && typeof p.y === "number"; });
+      if (!pts.length) pts = [{ x: 540, y: 960, at: 0 }];
+      pts.sort(function (a, b) { return (a.at || 0) - (b.at || 0); });
+      var tl = gsap.timeline({ paused: true });
+      var first = pts[0];
+      gsap.set(cu, { x: first.x, y: first.y, opacity: 0, force3D: true });
+      var t0 = v.enter_at + Math.max(0, first.at || 0);
+      PCM.appear(tl, cu, t0, { frames: 4, from: 0.8, ease: "out2" });
+      PC.event("enter", t0, { el: "cu" });
+      var last = t0 + PC.f(4);
+      var ends = [];
+      for (var i = 1; i < pts.length; i++) {
+        var p = pts[i], prev = pts[i - 1];
+        var arrive = Math.max(v.enter_at + p.at, last + PC.f(v.travel_frames));
+        var dur = Math.max(PC.f(v.travel_frames), arrive - Math.max(last, v.enter_at + prev.at + (prev.click ? PC.f(9) : PC.f(2))));
+        var start = arrive - dur;
+        PCM.move(tl, cu, { x: prev.x, y: prev.y }, { x: p.x, y: p.y }, start, dur, "inout2");
+        PC.event("move", start, { el: "cu", end: arrive });
+        ends.push({ p: p, at: arrive });
+        last = arrive;
+      }
+      // the clicks: the first point may click too
+      var clicks = [];
+      if (first.click) clicks.push({ p: first, at: t0 + PC.f(6) });
+      ends.forEach(function (e) { if (e.p.click) clicks.push(e); });
+      clicks.forEach(function (c, i) {
+        PCM.prepare(arrow);
+        var r = PC.el("div", "cu-ripple", root); r.id = "cu-ripple-" + i;
+        gsap.set(r, { x: c.p.x + s * 0.08, y: c.p.y + s * 0.06, opacity: 0 });
+        PCM.press(tl, arrow, c.at, { to: 0.86, ring: r });
+        PC.event("click", c.at, { el: "cu", x: c.p.x, y: c.p.y });
+      });
+      // a hand is never still: a few px of sway on the arrow itself while the cursor lives
+      var end = v.exit_at >= 0 ? v.exit_at : Math.max(last + 3, v.enter_at + PCM.numbers().horizon * 0.2);
+      var gain = v.hold === "calm" ? 0.7 : v.hold === "lively" ? 1.7 : 1;
+      PCM.sway(tl, arrow, "x", 0, 3 * gain, 2.6, 0.1, end - t0, t0);
+      PCM.sway(tl, arrow, "y", 0, 2.5 * gain, 3.1, 0.4, end - t0, t0);
+      PCM.exit(tl, cu, v.exit_at, v.exit, { el: "cu", from: { x: pts[pts.length - 1].x, y: pts[pts.length - 1].y } });
+      window.__timelines["cursor"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "cursor", duration = 4;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

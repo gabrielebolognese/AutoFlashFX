@@ -109,6 +109,33 @@ META = {
     "table-card": dict(item=24, name="Table card", kind="card", z=2, demo={}, demo_duration=3, measure="#tb",
                        does="A comparison: a surface card with a logo row (image files) and a small pill, label and value rows with hairline dividers, values right-aligned, good values in success. Enters over 7 frames with a 28 px rise; rows follow 3 frames apart.",
                        events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "row", "frame": "4 + 3 x i", "cue": None}]),
+    "screenshot-zoom": dict(item=None, name="Screenshot pan and zoom with a highlight box", kind="card", z=2, demo={"image": "assets/demo/plugin-page.png", "focus_json": [{"x": 0.08, "y": 0.34, "w": 0.7, "h": 0.07, "at": 0.8}, {"x": 0.12, "y": 0.52, "w": 0.6, "h": 0.1, "at": 2.4}], "honesty": "sourced"}, demo_duration=4, measure="#sz",
+                            does="A real screenshot in a media frame that the camera pans and zooms over: it travels to each focus box (fractions of the page, 18 frames, power3.inOut) and an accent highlight box draws itself around it; between two points the page creeps on, so it never stands still. Motion and energy rules E8: the content itself moves.",
+                            events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "land", "frame": 8, "cue": None}, {"event": "focus", "frame": "focus.at x 30", "cue": None}, {"event": "highlight", "frame": "focus.at x 30 + 13", "cue": "ui_click"}]),
+    "video-card": dict(item=None, name="Video card (a recording playing inside a card)", kind="card", z=2, demo={"video": "assets/demo/plugin-scroll.mp4", "title": "claude.com/plugins", "honesty": "sourced"}, demo_duration=4, measure="#vc",
+                       does="A page recording of the research stage (a 5 to 8 s scroll video, 1080 wide) or a clip playing inside a window card or a bare media frame, drawn from the hf-seek time (muted, seeked, never played); loops, or holds its last frame. Motion and energy rules E8. Needs clip_start = its data-start like the 3D components.",
+                       events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "land", "frame": 8, "cue": None}, {"event": "play", "frame": 8, "cue": None}]),
+    "card-fan": dict(item=None, name="Card fan or deck", kind="card", z=2, demo={}, demo_duration=3, measure="#cf-wrap",
+                     does="A deck that fans out: 3 to 6 cards (a label of 3 words and an image or a glyph) start stacked, leave the deck 3 frames apart (16 frames each, power3.out) turning about the pivot to their place in the arc, then keep fanning on a decelerating glide; the fan holds as one group. Lists enter as fans, not one card after another (E8).",
+                     events=[{"event": "fan", "frame": "fan_at x 30", "cue": "hero_enter"}, {"event": "card", "frame": "fan_at x 30 + 3 x i", "cue": None}]),
+    "card-grid": dict(item=None, name="Card grid", kind="card", z=2, demo={}, demo_duration=3, measure="#cg-wrap",
+                      does="Ideas as a grid of icon cards (2 to 8: an icon from a small set and a label of 3 words) that build in a wave from one corner, 3 frames per step along the diagonal, each card a combined zoom, parallax turn and rise, then keep gliding; the grid holds as one group. Lists enter as grids with staggers (E8).",
+                      events=[{"event": "enter", "frame": "3 x (row + col)", "cue": None}, {"event": "card", "frame": "3 x (row + col)", "cue": None}]),
+    "timeline-scrubber": dict(item=None, name="Timeline scrubber", kind="card", z=2, demo={}, demo_duration=4, measure="#ts",
+                              does="An editing timeline in a card: a row of thumbnail frames and an accent playhead that runs across them at a constant speed (a loop of `seconds`), each frame lifting as it passes, a time readout counting with it. A playhead that runs (E8).",
+                              events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "land", "frame": 8, "cue": None}, {"event": "play", "frame": "land + start_after x 30", "cue": None}]),
+    "cursor": dict(item=None, name="Cursor that moves and clicks", kind="support", z=4, demo={"enter_at": 0.1}, demo_duration=4, measure="#cu",
+                   does="A pointer travelling a path of points (each move power2.inOut) that presses and rings on arrival at a click point, swaying a few px between so it moves on every frame; sits above the content. A cursor that moves and clicks (E8).",
+                   events=[{"event": "enter", "frame": 0, "cue": None}, {"event": "move", "frame": "point.at x 30 - move", "cue": None}, {"event": "click", "frame": "point.at x 30", "cue": "ui_click"}]),
+    "mock-site-card": dict(item=None, name="Mock website card", kind="card", z=2, demo={}, demo_duration=4, measure="#ms",
+                           does="A website drawn in code in a window card (an address, a hero headline of 4 words, a button of 2 words, bars, 3 feature cards and an image block) on a page that scrolls on slowly; the headline words rise in, the button pops, the cards rise in turn. A mock UI: honesty mock by default.",
+                           events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "land", "frame": 8, "cue": None}, {"event": "cta", "frame": "cta_at x 30", "cue": "ui_click"}]),
+    "swatch-row": dict(item=None, name="Color swatch row", kind="support", z=2, demo={}, demo_duration=4, measure="#sr-wrap",
+                       does="A row of 2 to 8 color swatches that fill in on the spoken words (each rises from the bottom over 10 frames with a lift of its slot), then breathe and drift as one group; an optional label per swatch. Bars that fill (E8).",
+                       events=[{"event": "enter", "frame": 0, "cue": None}, {"event": "fill", "frame": "swatch.at x 30", "cue": "ui_click"}]),
+    "swatch-card": dict(item=None, name="Color swatch card", kind="card", z=2, demo={}, demo_duration=3, measure="#sc",
+                        does="One color as a paint chip card: the swatch fills from the bottom over 10 frames, the name rises under it and the hex code types in (2 frames per character).",
+                        events=[{"event": "enter", "frame": 0, "cue": "hero_enter"}, {"event": "land", "frame": 8, "cue": None}, {"event": "fill", "frame": "fill_at x 30", "cue": None}, {"event": "typing", "frame": "type_at x 30", "duration_frames": "chars x 2", "cue": "typing"}]),
     "icon-3d": dict(item=None, name="3D icon (Three.js, CSS-extruded fallback)", kind="3d", z=2, fallback="css", demo={"enter_at": 0.2, "icon": "bolt"}, demo_duration=4, measure="#i3-stage",
                     does="A low-poly 3D icon turning slowly at the center of a scene (Motion and energy rules E6): a Three.js extrusion of an SVG path (bolt, star, play, check, cursor, heart) or a primitive (a rounded slab, a torus, a low-poly sphere) in a palette color, drawn from the hf-seek time on the WebGL backend of motion-lib/webgl.json, with a CSS-extruded fallback (the SVG in 8 to 16 depth layers under a turning stage) when WebGL is missing or mode is css. Needs the clip_start prop (its data-start). Never a logo. The style allows 3D objects in the hook and the end card (tweaks.md 3D).",
                     events=[{"event": "enter", "frame": "enter_at x 30", "cue": "hook_hit", "note": "when it is the hook's set piece"}, {"event": "land", "frame": "enter_at x 30 + 12", "cue": None}]),
@@ -145,7 +172,7 @@ def build(lib: str, tokens: dict, previous: dict | None) -> dict:
                 p = {"id": d["id"], "type": d.get("type", "string"), "default": d.get("default"), "label": d.get("label", "")}
                 if d.get("options"):
                     p["options"] = [o.get("value") for o in d["options"]]
-                if d["id"] in ("image", "avatar", "lockup", "kicker_mark", "second_image") or (d["id"].endswith("_json") and "image" in d.get("label", "")):
+                if d["id"] in ("image", "avatar", "lockup", "kicker_mark", "second_image", "video") or (d["id"].endswith("_json") and "image" in d.get("label", "")):
                     p["image"] = True
                 props.append(p)
             entry = {

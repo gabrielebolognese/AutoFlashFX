@@ -1,6 +1,6 @@
 {
  "style": "paper-cards",
- "generated": "2026-11-07",
+ "generated": "2026-11-08",
  "fps": 30,
  "canvas": {
   "width": 1080,
@@ -240,19 +240,19 @@
     "checks": 10,
     "best_strip": "v03/extra/s30_hook_000.0.png",
     "r": 0.938,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 12.3,
+    "middle_moving_share_pct": 13.1,
     "pixels_changing_pct": 0.49,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.188,
+    "mean_change": 0.19,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -437,8 +437,8 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v03/extra/s30_count_044.9.png",
-    "r": 0.934,
-    "run": "2026-11-07"
+    "r": 0.931,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 14.6,
@@ -450,7 +450,7 @@
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -545,6 +545,24 @@
      "label": "The card wobbles slightly (v02)"
     },
     {
+     "id": "confetti_count",
+     "type": "number",
+     "default": 0,
+     "label": "Confetti pieces falling over the card (0 = none; M16: the CTA keeps moving)"
+    },
+    {
+     "id": "confetti_at",
+     "type": "number",
+     "default": 1.2,
+     "label": "Confetti starts at (s, local)"
+    },
+    {
+     "id": "confetti_seconds",
+     "type": "number",
+     "default": 2.4,
+     "label": "Seconds over which the pieces start falling"
+    },
+    {
      "id": "hold",
      "type": "enum",
      "default": "calm",
@@ -597,20 +615,20 @@
     "checks_ok": 11,
     "checks": 11,
     "best_strip": "v08/extra/s30_038.9_end.png",
-    "r": 0.974,
-    "run": "2026-11-07"
+    "r": 0.97,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 12.3,
     "middle_moving_share_pct": 13.8,
-    "pixels_changing_pct": 0.65,
+    "pixels_changing_pct": 0.66,
     "still_share_pct": 69.2,
     "longest_still_s": 3.0,
-    "mean_change": 0.25,
+    "mean_change": 0.252,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -742,8 +760,8 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v08/extra/s30_000.8_mascot_title.png",
-    "r": 0.981,
-    "run": "2026-11-07"
+    "r": 0.98,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -751,11 +769,11 @@
     "pixels_changing_pct": 0.11,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.036,
+    "mean_change": 0.035,
     "longest_still_run": 20,
     "static_windows": 6,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -884,20 +902,20 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v07/extra/s30_004.4_caption_tag.png",
-    "r": 0.955,
-    "run": "2026-11-07"
+    "r": 0.776,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 2.3,
-    "pixels_changing_pct": 0.02,
+    "pixels_changing_pct": 0.06,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.021,
-    "longest_still_run": 113,
-    "static_windows": 98,
+    "longest_still_run": 6,
+    "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1007,8 +1025,8 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v03/extra/s30_label_042.4.png",
-    "r": 0.963,
-    "run": "2026-11-07"
+    "r": 0.962,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -1020,7 +1038,7 @@
     "longest_still_run": 106,
     "static_windows": 91,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1038,7 +1056,7 @@
     {
      "id": "words_json",
      "type": "string",
-     "default": "[{\"w\":\"You\",\"t\":0.2,\"end\":0.5,\"rise\":8},{\"w\":\"ship\",\"t\":0.5,\"end\":0.8,\"rise\":13},{\"w\":\"Claude\",\"t\":0.8,\"end\":1.25,\"em\":true,\"rise\":9},{\"w\":\"Code\",\"t\":1.25,\"end\":1.7,\"em\":true,\"turn\":3},{\"w\":\"client\",\"t\":1.7,\"end\":2.1,\"rise\":10},{\"w\":\"sites.\",\"t\":2.1,\"end\":2.6,\"rise\":15},{\"w\":\"Clients\",\"t\":2.9,\"end\":3.3,\"rise\":11},{\"w\":\"spot\",\"t\":3.3,\"end\":3.6,\"turn\":3},{\"w\":\"it\",\"t\":3.6,\"end\":3.8,\"rise\":12},{\"w\":\"instantly.\",\"t\":3.8,\"end\":4.3,\"rise\":8}]",
+     "default": "[{\"w\":\"You\",\"t\":0.2,\"end\":0.467,\"rise\":8},{\"w\":\"ship\",\"t\":0.5,\"end\":0.767,\"rise\":13},{\"w\":\"Claude\",\"t\":0.8,\"end\":1.217,\"em\":true,\"rise\":9},{\"w\":\"Code\",\"t\":1.25,\"end\":1.667,\"em\":true,\"turn\":3},{\"w\":\"client\",\"t\":1.7,\"end\":2.067,\"rise\":10},{\"w\":\"sites.\",\"t\":2.1,\"end\":2.6,\"rise\":15},{\"w\":\"Clients\",\"t\":2.9,\"end\":3.267,\"rise\":11},{\"w\":\"spot\",\"t\":3.3,\"end\":3.567,\"turn\":3},{\"w\":\"it\",\"t\":3.6,\"end\":3.767,\"rise\":12},{\"w\":\"instantly.\",\"t\":3.8,\"end\":4.3,\"rise\":8}]",
      "label": "Caption words as JSON: [{\"w\":\"Claude\",\"t\":s,\"end\":s,\"em\":false,\"rise\":px,\"turn\":deg}, ...] (times local to this clip; one word on screen at a time; rise 8 to 16 px or turn 2 to 4 degrees over each word life)"
     },
     {
@@ -1102,8 +1120,8 @@
     "checks_ok": 5,
     "checks": 5,
     "best_strip": "v06/extra/s30_031.0_highlight.png",
-    "r": 0.955,
-    "run": "2026-11-07"
+    "r": 0.957,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.8,
@@ -1115,7 +1133,7 @@
     "longest_still_run": 9,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1253,20 +1271,20 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v03/extra/s30_cta_058.0.png",
-    "r": 0.992,
-    "run": "2026-11-07"
+    "r": 0.989,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
     "middle_moving_share_pct": 0.0,
-    "pixels_changing_pct": 0.02,
+    "pixels_changing_pct": 0.01,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.009,
     "longest_still_run": 117,
     "static_windows": 102,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1415,8 +1433,8 @@
     "checks_ok": 6,
     "checks": 6,
     "best_strip": "v04/extra/s30_check_f1200.png",
-    "r": 0.98,
-    "run": "2026-11-07"
+    "r": 0.981,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -1428,7 +1446,7 @@
     "longest_still_run": 118,
     "static_windows": 103,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1620,19 +1638,19 @@
     "checks": 9,
     "best_strip": "v07/extra/s30_011.4_window_rise.png",
     "r": 0.965,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 96.2,
     "middle_moving_share_pct": 96.9,
-    "pixels_changing_pct": 2.74,
+    "pixels_changing_pct": 2.75,
     "still_share_pct": 0.0,
     "longest_still_s": 0.03,
-    "mean_change": 0.825,
+    "mean_change": 0.833,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1802,19 +1820,19 @@
     "checks": 9,
     "best_strip": "v06/extra/s30_070.9_typing_tail.png",
     "r": 0.981,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 10.0,
     "middle_moving_share_pct": 11.5,
-    "pixels_changing_pct": 0.76,
+    "pixels_changing_pct": 0.77,
     "still_share_pct": 70.0,
     "longest_still_s": 3.03,
-    "mean_change": 0.355,
+    "mean_change": 0.352,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -1999,20 +2017,20 @@
     "checks_ok": 13,
     "checks": 13,
     "best_strip": "v04/extra/s30_bars_f1426.png",
-    "r": 0.986,
-    "run": "2026-11-07"
+    "r": 0.985,
+    "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 12.3,
+    "moving_share_pct": 13.1,
     "middle_moving_share_pct": 16.2,
-    "pixels_changing_pct": 0.56,
+    "pixels_changing_pct": 0.55,
     "still_share_pct": 85.4,
     "longest_still_s": 3.7,
     "mean_change": 0.246,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -2158,20 +2176,20 @@
     "checks_ok": 9,
     "checks": 9,
     "best_strip": "v04/extra/s30_gridsettle_f444.png",
-    "r": 0.966,
-    "run": "2026-11-07"
+    "r": 0.979,
+    "run": "2026-11-08"
    },
    "energy": {
-    "moving_share_pct": 6.2,
-    "middle_moving_share_pct": 14.6,
-    "pixels_changing_pct": 0.24,
-    "still_share_pct": 90.8,
-    "longest_still_s": 3.93,
-    "mean_change": 0.159,
+    "moving_share_pct": 5.4,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.22,
+    "still_share_pct": 91.5,
+    "longest_still_s": 3.97,
+    "mean_change": 0.155,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -2313,8 +2331,8 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v08/extra/s30_003.8_logo_chain.png",
-    "r": 0.888,
-    "run": "2026-11-07"
+    "r": 0.902,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -2322,11 +2340,11 @@
     "pixels_changing_pct": 0.07,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.032,
+    "mean_change": 0.033,
     "longest_still_run": 67,
     "static_windows": 52,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -2486,8 +2504,8 @@
     "checks_ok": 5,
     "checks": 5,
     "best_strip": "v06/extra/s30_062.3_xstamp.png",
-    "r": 0.98,
-    "run": "2026-11-07"
+    "r": 0.981,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -2496,10 +2514,10 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.012,
-    "longest_still_run": 56,
-    "static_windows": 49,
+    "longest_still_run": 80,
+    "static_windows": 65,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -2674,20 +2692,20 @@
     "checks_ok": 7,
     "checks": 7,
     "best_strip": "v01/extra/s30_hook.png",
-    "r": 0.982,
-    "run": "2026-11-07"
+    "r": 0.983,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 9.2,
     "middle_moving_share_pct": 9.2,
-    "pixels_changing_pct": 1.11,
+    "pixels_changing_pct": 1.13,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
     "mean_change": 0.474,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -2850,20 +2868,20 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v06/extra/s30_070.9_typing_tail.png",
-    "r": 0.958,
-    "run": "2026-11-07"
+    "r": 0.957,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
-    "middle_moving_share_pct": 10.8,
-    "pixels_changing_pct": 0.28,
+    "middle_moving_share_pct": 13.8,
+    "pixels_changing_pct": 0.34,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.133,
+    "mean_change": 0.144,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3006,8 +3024,8 @@
     "checks_ok": 13,
     "checks": 13,
     "best_strip": "v01/extra/s30_card33.png",
-    "r": 0.827,
-    "run": "2026-11-07"
+    "r": 0.826,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.8,
@@ -3015,11 +3033,11 @@
     "pixels_changing_pct": 0.26,
     "still_share_pct": 87.7,
     "longest_still_s": 3.8,
-    "mean_change": 0.108,
+    "mean_change": 0.11,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3157,20 +3175,20 @@
     "checks_ok": 4,
     "checks": 4,
     "best_strip": "v02/extra/s30_zoom27.png",
-    "r": 0.94,
-    "run": "2026-11-07"
+    "r": 0.956,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 6.9,
     "middle_moving_share_pct": 6.9,
-    "pixels_changing_pct": 1.31,
+    "pixels_changing_pct": 1.32,
     "still_share_pct": 79.2,
     "longest_still_s": 3.43,
-    "mean_change": 0.76,
-    "longest_still_run": 1,
+    "mean_change": 0.761,
+    "longest_still_run": 5,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3301,9 +3319,9 @@
     "result": "pass",
     "checks_ok": 6,
     "checks": 6,
-    "best_strip": "v01/extra/s30_hook.png",
-    "r": 0.99,
-    "run": "2026-11-07"
+    "best_strip": "v02/extra/s30_hook.png",
+    "r": 0.977,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -3312,10 +3330,10 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.043,
-    "longest_still_run": 17,
-    "static_windows": 3,
+    "longest_still_run": 11,
+    "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3461,7 +3479,7 @@
     "checks": 10,
     "best_strip": "v07/extra/s30_034.7_exit_counter.png",
     "r": 0.965,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 8.5,
@@ -3469,11 +3487,11 @@
     "pixels_changing_pct": 1.07,
     "still_share_pct": 73.1,
     "longest_still_s": 3.17,
-    "mean_change": 0.338,
+    "mean_change": 0.341,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3602,7 +3620,7 @@
     "checks": 5,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -3611,10 +3629,10 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.016,
-    "longest_still_run": 87,
-    "static_windows": 72,
+    "longest_still_run": 88,
+    "static_windows": 73,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3769,7 +3787,7 @@
     "checks": 9,
     "best_strip": "v08/extra/s30_038.9_end.png",
     "r": 0.987,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 3.8,
@@ -3778,10 +3796,10 @@
     "still_share_pct": 89.2,
     "longest_still_s": 3.87,
     "mean_change": 0.126,
-    "longest_still_run": 8,
+    "longest_still_run": 7,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3930,20 +3948,20 @@
     "checks_ok": 10,
     "checks": 10,
     "best_strip": "v04/extra/s30_scene_f184.png",
-    "r": 0.979,
-    "run": "2026-11-07"
+    "r": 0.976,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 7.7,
-    "middle_moving_share_pct": 12.3,
-    "pixels_changing_pct": 0.51,
+    "middle_moving_share_pct": 14.6,
+    "pixels_changing_pct": 0.56,
     "still_share_pct": 90.0,
     "longest_still_s": 3.9,
-    "mean_change": 0.221,
+    "mean_change": 0.228,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -3961,7 +3979,7 @@
     {
      "id": "groups_json",
      "type": "string",
-     "default": "[{\"start\":0.2,\"end\":4.4,\"box\":{\"x\":60,\"y\":518.4,\"w\":559,\"h\":201},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":0.2,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518.4,\"bw\":323.4,\"bh\":201},{\"w\":\"quick\",\"t\":0.55,\"font\":\"serif-italic\",\"color\":\"accent-deep\",\"px\":100.5,\"x\":407.5,\"y\":518.4,\"bw\":211.1,\"bh\":100.5},{\"w\":\"brown\",\"t\":0.9,\"font\":\"handwritten\",\"color\":\"script\",\"px\":100.5,\"x\":407.5,\"y\":618.9,\"bw\":221.4,\"bh\":100.5},{\"w\":\"fox\",\"t\":1.25,\"font\":\"kicker\",\"color\":\"accent\",\"px\":84.4,\"x\":485.8,\"y\":727.5,\"bw\":143.1,\"bh\":84.4}]}]",
+     "default": "[{\"start\":0.2,\"end\":4.0,\"box\":{\"x\":60,\"y\":518.4,\"w\":559,\"h\":201},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":0.2,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518.4,\"bw\":323.4,\"bh\":201},{\"w\":\"quick\",\"t\":0.55,\"font\":\"serif-italic\",\"color\":\"accent-deep\",\"px\":100.5,\"x\":407.5,\"y\":518.4,\"bw\":211.1,\"bh\":100.5},{\"w\":\"brown\",\"t\":0.9,\"font\":\"handwritten\",\"color\":\"script\",\"px\":100.5,\"x\":407.5,\"y\":618.9,\"bw\":221.4,\"bh\":100.5},{\"w\":\"fox\",\"t\":1.25,\"font\":\"kicker\",\"color\":\"accent\",\"px\":84.4,\"x\":485.8,\"y\":727.5,\"bw\":143.1,\"bh\":84.4}]}]",
      "label": "Caption groups as JSON: [{\"start\":s,\"end\":s,\"box\":{\"x\":px,\"y\":px,\"w\":px,\"h\":px},\"motion\":{\"kind\":\"rise\",\"px\":30},\"words\":[{\"w\":\"the\",\"t\":s,\"font\":\"grotesk\",\"color\":\"ink\",\"px\":201,\"x\":60,\"y\":518,\"bw\":323,\"bh\":201,\"em\":false}, ...]}, ...] (times local to this clip, the words laid out by pipeline/lib/visual/kinetic.py in canvas px)"
     },
     {
@@ -3995,7 +4013,7 @@
     "checks": 7,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 3.1,
@@ -4007,7 +4025,467 @@
     "longest_still_run": 10,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "card-fan",
+   "item": null,
+   "name": "Card fan or deck",
+   "kind": "card",
+   "does": "A deck that fans out: 3 to 6 cards (a label of 3 words and an image or a glyph) start stacked, leave the deck 3 frames apart (16 frames each, power3.out) turning about the pivot to their place in the arc, then keep fanning on a decelerating glide; the fan holds as one group. Lists enter as fans, not one card after another (E8).",
+   "file": "compositions/card-fan.html",
+   "status": "approved",
+   "still": "gallery/stills/card-fan.png",
+   "z": 2,
+   "measure": "#cf-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 150,
+     "label": "Left of the fan (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 520,
+     "label": "Top of the fan (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 780,
+     "label": "Width of the fan (px)"
+    },
+    {
+     "id": "card_w",
+     "type": "number",
+     "default": 360,
+     "label": "One card width (px)"
+    },
+    {
+     "id": "card_h",
+     "type": "number",
+     "default": 500,
+     "label": "One card height (px)"
+    },
+    {
+     "id": "items_json",
+     "type": "string",
+     "default": "[{\"label\":\"Hook\"},{\"label\":\"Script\"},{\"label\":\"Voice\"},{\"label\":\"Edit\"},{\"label\":\"Post\"}]",
+     "label": "Cards as JSON, 3 to 6: [{\"label\":\"Plan\",\"image\":\"assets/...\"}] (a label of 3 words at most; no image = a play glyph)",
+     "image": true
+    },
+    {
+     "id": "angle",
+     "type": "number",
+     "default": 9,
+     "label": "Degrees between two cards once fanned"
+    },
+    {
+     "id": "highlight",
+     "type": "number",
+     "default": -1,
+     "label": "Index of the card in accent (-1 = none)"
+    },
+    {
+     "id": "stagger_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames between two cards leaving the deck"
+    },
+    {
+     "id": "fan_frames",
+     "type": "number",
+     "default": 16,
+     "label": "Frames each card takes to fan out"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "The deck appears at (s)"
+    },
+    {
+     "id": "fan_at",
+     "type": "number",
+     "default": 0.25,
+     "label": "The deck starts to fan at (s, local)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the fan drifts and turns as one group)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "number",
+    "comparison",
+    "mechanism",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "fan",
+     "frame": "fan_at x 30",
+     "cue": "hero_enter"
+    },
+    {
+     "event": "card",
+     "frame": "fan_at x 30 + 3 x i",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 6,
+    "checks": 6,
+    "best_strip": "v04/extra/s30_deckgrid_f420.png",
+    "r": 0.98,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 10.0,
+    "middle_moving_share_pct": 21.5,
+    "pixels_changing_pct": 0.5,
+    "still_share_pct": 79.2,
+    "longest_still_s": 3.43,
+    "mean_change": 0.203,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "card-grid",
+   "item": null,
+   "name": "Card grid",
+   "kind": "card",
+   "does": "Ideas as a grid of icon cards (2 to 8: an icon from a small set and a label of 3 words) that build in a wave from one corner, 3 frames per step along the diagonal, each card a combined zoom, parallax turn and rise, then keep gliding; the grid holds as one group. Lists enter as grids with staggers (E8).",
+   "file": "compositions/card-grid.html",
+   "status": "approved",
+   "still": "gallery/stills/card-grid.png",
+   "z": 2,
+   "measure": "#cg-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 480,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "cols",
+     "type": "number",
+     "default": 2,
+     "label": "Columns"
+    },
+    {
+     "id": "gap",
+     "type": "number",
+     "default": 24,
+     "label": "Gap (px)"
+    },
+    {
+     "id": "card_h",
+     "type": "number",
+     "default": 230,
+     "label": "One card height (px)"
+    },
+    {
+     "id": "items_json",
+     "type": "string",
+     "default": "[{\"label\":\"Fast\",\"icon\":\"bolt\"},{\"label\":\"Free\",\"icon\":\"check\"},{\"label\":\"Open source\",\"icon\":\"code\"},{\"label\":\"No login\",\"icon\":\"star\"}]",
+     "label": "Cards as JSON, 2 to 8: [{\"label\":\"Fast\",\"icon\":\"bolt\"}] (a label of 3 words at most; icons: bolt, check, star, play, heart, cursor, doc, code, chat, clock)"
+    },
+    {
+     "id": "highlight",
+     "type": "number",
+     "default": -1,
+     "label": "Index of the card in accent (-1 = none)"
+    },
+    {
+     "id": "origin",
+     "type": "enum",
+     "default": "top-left",
+     "label": "The wave of the stagger starts at",
+     "options": [
+      "top-left",
+      "top-right",
+      "center"
+     ]
+    },
+    {
+     "id": "card_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Frames of one card main animation"
+    },
+    {
+     "id": "wave_frames",
+     "type": "number",
+     "default": 3,
+     "label": "Frames between two cards along the wave"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Build starts (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the grid drifts and turns as one group)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "number",
+    "comparison",
+    "mechanism",
+    "before-after",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": "3 x (row + col)",
+     "cue": null
+    },
+    {
+     "event": "card",
+     "frame": "3 x (row + col)",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 8,
+    "checks": 8,
+    "best_strip": "v04/extra/s30_gridsettle_f444.png",
+    "r": 0.984,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 6.9,
+    "middle_moving_share_pct": 10.0,
+    "pixels_changing_pct": 0.26,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.144,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "cursor",
+   "item": null,
+   "name": "Cursor that moves and clicks",
+   "kind": "support",
+   "does": "A pointer travelling a path of points (each move power2.inOut) that presses and rings on arrival at a click point, swaying a few px between so it moves on every frame; sits above the content. A cursor that moves and clicks (E8).",
+   "file": "compositions/cursor.html",
+   "status": "approved",
+   "still": "gallery/stills/cursor.png",
+   "z": 4,
+   "measure": "#cu",
+   "props": [
+    {
+     "id": "points_json",
+     "type": "string",
+     "default": "[{\"x\":720,\"y\":1180,\"at\":0},{\"x\":420,\"y\":900,\"at\":1.0,\"click\":true},{\"x\":660,\"y\":1020,\"at\":2.2,\"click\":true}]",
+     "label": "The path as JSON: [{\"x\":300,\"y\":900,\"at\":0.4,\"click\":false}, ...] (x, y are px of the frame, at is the second the cursor arrives, click makes it press and ripple on arrival)"
+    },
+    {
+     "id": "size",
+     "type": "number",
+     "default": 84,
+     "label": "Cursor size (px)"
+    },
+    {
+     "id": "travel_frames",
+     "type": "number",
+     "default": 12,
+     "label": "Minimum frames of one move"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Appears at (s)"
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (how much the hand sways between points)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "any"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "move",
+     "frame": "point.at x 30 - move",
+     "cue": null
+    },
+    {
+     "event": "click",
+     "frame": "point.at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {
+    "enter_at": 0.1
+   },
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 3,
+    "checks": 3,
+    "best_strip": null,
+    "r": null,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 0.0,
+    "middle_moving_share_pct": 0.0,
+    "pixels_changing_pct": 0.07,
+    "still_share_pct": 100.0,
+    "longest_still_s": 4.33,
+    "mean_change": 0.034,
+    "longest_still_run": 54,
+    "static_windows": 39,
+    "frames": 130,
+    "run": "2026-11-08"
    }
   },
   {
@@ -4152,20 +4630,20 @@
     "checks_ok": 7,
     "checks": 7,
     "best_strip": "v03/extra/s30_hook_000.0.png",
-    "r": 0.914,
-    "run": "2026-11-07"
+    "r": 0.915,
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 5.4,
     "middle_moving_share_pct": 12.3,
-    "pixels_changing_pct": 0.34,
+    "pixels_changing_pct": 0.35,
     "still_share_pct": 91.5,
     "longest_still_s": 3.97,
-    "mean_change": 0.143,
+    "mean_change": 0.144,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -4310,19 +4788,19 @@
     "checks": 5,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 3.8,
-    "middle_moving_share_pct": 14.6,
+    "middle_moving_share_pct": 16.2,
     "pixels_changing_pct": 0.4,
     "still_share_pct": 90.8,
     "longest_still_s": 3.93,
-    "mean_change": 0.186,
+    "mean_change": 0.189,
     "longest_still_run": 0,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    }
   },
   {
@@ -4510,7 +4988,7 @@
     "checks": 4,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -4519,10 +4997,197 @@
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
     "mean_change": 0.043,
-    "longest_still_run": 11,
+    "longest_still_run": 6,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "mock-site-card",
+   "item": null,
+   "name": "Mock website card",
+   "kind": "card",
+   "does": "A website drawn in code in a window card (an address, a hero headline of 4 words, a button of 2 words, bars, 3 feature cards and an image block) on a page that scrolls on slowly; the headline words rise in, the button pops, the cards rise in turn. A mock UI: honesty mock by default.",
+   "file": "compositions/mock-site-card.html",
+   "status": "approved",
+   "still": "gallery/stills/mock-site-card.png",
+   "z": 2,
+   "measure": "#ms",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 420,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 820,
+     "label": "Height (px)"
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "yoursite.com",
+     "label": "The address in the title bar"
+    },
+    {
+     "id": "headline",
+     "type": "string",
+     "default": "Your idea, live",
+     "label": "The hero headline of the mock page (4 words at most)"
+    },
+    {
+     "id": "cta",
+     "type": "string",
+     "default": "Get started",
+     "label": "The button text (2 words at most)"
+    },
+    {
+     "id": "tone",
+     "type": "enum",
+     "default": "warm",
+     "label": "Page tone",
+     "options": [
+      "warm",
+      "ink",
+      "paper"
+     ]
+    },
+    {
+     "id": "cta_at",
+     "type": "number",
+     "default": 0.9,
+     "label": "The button pops at (s, local)"
+    },
+    {
+     "id": "scroll_px_s",
+     "type": "number",
+     "default": 34,
+     "label": "The mock page scrolls at this speed (px per second; 0 = still)"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "tool",
+    "step",
+    "comparison",
+    "mechanism",
+    "before-after",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "cta",
+     "frame": "cta_at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 7,
+    "checks": 7,
+    "best_strip": "v07/extra/s30_011.4_window_rise.png",
+    "r": 0.96,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 37.7,
+    "middle_moving_share_pct": 72.3,
+    "pixels_changing_pct": 1.66,
+    "still_share_pct": 0.0,
+    "longest_still_s": 0.47,
+    "mean_change": 0.597,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
    }
   },
   {
@@ -4590,7 +5255,7 @@
     "checks": 10,
     "best_strip": null,
     "r": null,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
    },
    "energy": {
     "moving_share_pct": 0.0,
@@ -4598,11 +5263,913 @@
     "pixels_changing_pct": 0.01,
     "still_share_pct": 100.0,
     "longest_still_s": 4.33,
-    "mean_change": 0.021,
-    "longest_still_run": 4,
+    "mean_change": 0.022,
+    "longest_still_run": 3,
     "static_windows": 0,
     "frames": 130,
-    "run": "2026-11-07"
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "screenshot-zoom",
+   "item": null,
+   "name": "Screenshot pan and zoom with a highlight box",
+   "kind": "card",
+   "does": "A real screenshot in a media frame that the camera pans and zooms over: it travels to each focus box (fractions of the page, 18 frames, power3.inOut) and an accent highlight box draws itself around it; between two points the page creeps on, so it never stands still. Motion and energy rules E8: the content itself moves.",
+   "file": "compositions/screenshot-zoom.html",
+   "status": "approved",
+   "still": "gallery/stills/screenshot-zoom.png",
+   "z": 2,
+   "measure": "#sz",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 420,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 900,
+     "label": "Height (px)"
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "The screenshot (a research asset under assets/...)",
+     "image": true
+    },
+    {
+     "id": "image_ratio",
+     "type": "number",
+     "default": 1.7778,
+     "label": "Image height over width (the compiler sets it from the file)"
+    },
+    {
+     "id": "focus_json",
+     "type": "string",
+     "default": "[]",
+     "label": "Where the camera goes, as JSON: [{\"x\":0.1,\"y\":0.2,\"w\":0.5,\"h\":0.1,\"at\":0.8}] (x, y, w, h are fractions of the image, at is seconds from the start)",
+     "image": true
+    },
+    {
+     "id": "zoom_to",
+     "type": "number",
+     "default": 0.8,
+     "label": "A focus box fills this share of the frame width"
+    },
+    {
+     "id": "highlight",
+     "type": "boolean",
+     "default": true,
+     "label": "Draw the highlight box around each focus"
+    },
+    {
+     "id": "travel_frames",
+     "type": "number",
+     "default": 18,
+     "label": "Frames the camera takes between two focus points"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "sourced",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "tool",
+    "step",
+    "comparison",
+    "proof",
+    "mechanism",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "focus",
+     "frame": "focus.at x 30",
+     "cue": null
+    },
+    {
+     "event": "highlight",
+     "frame": "focus.at x 30 + 13",
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {
+    "image": "assets/demo/plugin-page.png",
+    "focus_json": [
+     {
+      "x": 0.08,
+      "y": 0.34,
+      "w": 0.7,
+      "h": 0.07,
+      "at": 0.8
+     },
+     {
+      "x": 0.12,
+      "y": 0.52,
+      "w": 0.6,
+      "h": 0.1,
+      "at": 2.4
+     }
+    ],
+    "honesty": "sourced"
+   },
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 8,
+    "checks": 8,
+    "best_strip": "v07/extra/s30_011.4_window_rise.png",
+    "r": 0.983,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 35.4,
+    "middle_moving_share_pct": 53.1,
+    "pixels_changing_pct": 2.93,
+    "still_share_pct": 56.9,
+    "longest_still_s": 1.37,
+    "mean_change": 1.262,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "swatch-card",
+   "item": null,
+   "name": "Color swatch card",
+   "kind": "card",
+   "does": "One color as a paint chip card: the swatch fills from the bottom over 10 frames, the name rises under it and the hex code types in (2 frames per character).",
+   "file": "compositions/swatch-card.html",
+   "status": "approved",
+   "still": "gallery/stills/swatch-card.png",
+   "z": 2,
+   "measure": "#sc",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 240,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 560,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 600,
+     "label": "Width (px)"
+    },
+    {
+     "id": "color",
+     "type": "string",
+     "default": "#DC6532",
+     "label": "The color (a hex value)"
+    },
+    {
+     "id": "name",
+     "type": "string",
+     "default": "Burnt orange",
+     "label": "The color name under the swatch (3 words at most)"
+    },
+    {
+     "id": "hex",
+     "type": "string",
+     "default": "",
+     "label": "The hex code typed under the name (empty = the color value)"
+    },
+    {
+     "id": "swatch_h",
+     "type": "number",
+     "default": 520,
+     "label": "Swatch height (px)"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "pop",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "fill_at",
+     "type": "number",
+     "default": 0.25,
+     "label": "The color fills in at (s, local)"
+    },
+    {
+     "id": "type_at",
+     "type": "number",
+     "default": 0.7,
+     "label": "The hex code starts typing at (s, local)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "comparison",
+    "before-after",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "fill",
+     "frame": "fill_at x 30",
+     "cue": null
+    },
+    {
+     "event": "typing",
+     "frame": "type_at x 30",
+     "duration_frames": "chars x 2",
+     "cue": "typing"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 3,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 10,
+    "checks": 10,
+    "best_strip": "v07/extra/s30_011.4_window_rise.png",
+    "r": 0.974,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 7.7,
+    "middle_moving_share_pct": 12.3,
+    "pixels_changing_pct": 0.41,
+    "still_share_pct": 88.5,
+    "longest_still_s": 3.83,
+    "mean_change": 0.239,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "swatch-row",
+   "item": null,
+   "name": "Color swatch row",
+   "kind": "support",
+   "does": "A row of 2 to 8 color swatches that fill in on the spoken words (each rises from the bottom over 10 frames with a lift of its slot), then breathe and drift as one group; an optional label per swatch. Bars that fill (E8).",
+   "file": "compositions/swatch-row.html",
+   "status": "approved",
+   "still": "gallery/stills/swatch-row.png",
+   "z": 2,
+   "measure": "#sr-wrap",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 620,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 420,
+     "label": "Swatch height (px)"
+    },
+    {
+     "id": "colors_json",
+     "type": "string",
+     "default": "[{\"color\":\"#DC6532\",\"at\":0.3},{\"color\":\"#1C110F\",\"at\":0.9},{\"color\":\"#F5EEE3\",\"at\":1.5},{\"color\":\"#289C5C\",\"at\":2.1}]",
+     "label": "The swatches as JSON: [{\"color\":\"#DC6532\",\"at\":0.4,\"label\":\"\"}] (color a hex value; at the second it fills in, the spoken word of that color; label optional, a hex code or a name)"
+    },
+    {
+     "id": "gap",
+     "type": "number",
+     "default": 16,
+     "label": "Gap (px)"
+    },
+    {
+     "id": "fill_frames",
+     "type": "number",
+     "default": 10,
+     "label": "Frames one swatch takes to fill"
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "The row appears at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "none",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the row drifts and turns as one group)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "number",
+    "comparison",
+    "mechanism",
+    "before-after",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": null
+    },
+    {
+     "event": "fill",
+     "frame": "swatch.at x 30",
+     "cue": "ui_click"
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 5,
+    "checks": 5,
+    "best_strip": "v04/extra/s30_bars_f1426.png",
+    "r": 0.995,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 11.5,
+    "middle_moving_share_pct": 23.1,
+    "pixels_changing_pct": 0.48,
+    "still_share_pct": 60.8,
+    "longest_still_s": 1.6,
+    "mean_change": 0.308,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "timeline-scrubber",
+   "item": null,
+   "name": "Timeline scrubber",
+   "kind": "card",
+   "does": "An editing timeline in a card: a row of thumbnail frames and an accent playhead that runs across them at a constant speed (a loop of `seconds`), each frame lifting as it passes, a time readout counting with it. A playhead that runs (E8).",
+   "file": "compositions/timeline-scrubber.html",
+   "status": "approved",
+   "still": "gallery/stills/timeline-scrubber.png",
+   "z": 2,
+   "measure": "#ts",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 60,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 760,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 960,
+     "label": "Width (px)"
+    },
+    {
+     "id": "thumbs_json",
+     "type": "string",
+     "default": "[{},{},{},{},{},{},{},{}]",
+     "label": "Thumbnails as JSON: [{\"image\":\"assets/...\"}] (no image = a placeholder frame; 6 to 10 read best)",
+     "image": true
+    },
+    {
+     "id": "thumb_h",
+     "type": "number",
+     "default": 150,
+     "label": "Thumbnail height (px)"
+    },
+    {
+     "id": "seconds",
+     "type": "number",
+     "default": 4,
+     "label": "How long the playhead takes from the left end to the right end (s)"
+    },
+    {
+     "id": "start_after",
+     "type": "number",
+     "default": 0.3,
+     "label": "The playhead starts running this long after the card lands (s)"
+    },
+    {
+     "id": "show_time",
+     "type": "boolean",
+     "default": true,
+     "label": "Show the running time readout (digits only)"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "mock",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "number",
+    "step",
+    "mechanism",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": "land + start_after x 30",
+     "cue": null
+    }
+   ],
+   "demo": {},
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 8,
+    "checks": 8,
+    "best_strip": "v06/extra/s30_001.0_card.png",
+    "r": 0.908,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 3.8,
+    "middle_moving_share_pct": 22.3,
+    "pixels_changing_pct": 0.38,
+    "still_share_pct": 90.8,
+    "longest_still_s": 3.93,
+    "mean_change": 0.166,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
+   }
+  },
+  {
+   "id": "video-card",
+   "item": null,
+   "name": "Video card (a recording playing inside a card)",
+   "kind": "card",
+   "does": "A page recording of the research stage (a 5 to 8 s scroll video, 1080 wide) or a clip playing inside a window card or a bare media frame, drawn from the hf-seek time (muted, seeked, never played); loops, or holds its last frame. Motion and energy rules E8. Needs clip_start = its data-start like the 3D components.",
+   "file": "compositions/video-card.html",
+   "status": "approved",
+   "still": "gallery/stills/video-card.png",
+   "z": 2,
+   "measure": "#vc",
+   "props": [
+    {
+     "id": "x",
+     "type": "number",
+     "default": 90,
+     "label": "Left (px)"
+    },
+    {
+     "id": "y",
+     "type": "number",
+     "default": 420,
+     "label": "Top (px)"
+    },
+    {
+     "id": "w",
+     "type": "number",
+     "default": 900,
+     "label": "Width (px)"
+    },
+    {
+     "id": "h",
+     "type": "number",
+     "default": 760,
+     "label": "Height (px)"
+    },
+    {
+     "id": "video",
+     "type": "string",
+     "default": "",
+     "label": "The clip (a page recording of the research stage, research/NN-name.mp4, or a demo clip under assets/...)",
+     "image": true
+    },
+    {
+     "id": "image",
+     "type": "string",
+     "default": "",
+     "label": "A still shown when the clip is missing (a research screenshot under assets/...)",
+     "image": true
+    },
+    {
+     "id": "title",
+     "type": "string",
+     "default": "",
+     "label": "Title bar text for the window kind (a site or app name)"
+    },
+    {
+     "id": "kind",
+     "type": "enum",
+     "default": "window",
+     "label": "A window with a title bar, or the bare media frame",
+     "options": [
+      "window",
+      "frame"
+     ]
+    },
+    {
+     "id": "video_start",
+     "type": "number",
+     "default": 0,
+     "label": "Where in the clip it starts playing (s)"
+    },
+    {
+     "id": "speed",
+     "type": "number",
+     "default": 1,
+     "label": "Playback speed"
+    },
+    {
+     "id": "loop",
+     "type": "boolean",
+     "default": true,
+     "label": "Loop the clip when it ends (else it holds its last frame)"
+    },
+    {
+     "id": "clip_start",
+     "type": "number",
+     "default": 0,
+     "label": "The data-start of this clip in the root (s): hf-seek times are root times"
+    },
+    {
+     "id": "enter",
+     "type": "enum",
+     "default": "rise",
+     "label": "Entrance",
+     "options": [
+      "rise",
+      "fly-in",
+      "none"
+     ]
+    },
+    {
+     "id": "enter_at",
+     "type": "number",
+     "default": 0,
+     "label": "Enter at (s)"
+    },
+    {
+     "id": "honesty",
+     "type": "enum",
+     "default": "sourced",
+     "label": "Honesty label",
+     "options": [
+      "none",
+      "mock",
+      "sourced"
+     ]
+    },
+    {
+     "id": "hold",
+     "type": "enum",
+     "default": "normal",
+     "label": "Hold level (the steady motion after the entrance)",
+     "options": [
+      "calm",
+      "normal",
+      "lively"
+     ]
+    },
+    {
+     "id": "exit",
+     "type": "enum",
+     "default": "none",
+     "label": "Exit",
+     "options": [
+      "none",
+      "fade-blur",
+      "fall",
+      "push",
+      "cut"
+     ]
+    },
+    {
+     "id": "exit_at",
+     "type": "number",
+     "default": -1,
+     "label": "Exit at (s, -1 = never)"
+    }
+   ],
+   "beat_types": [
+    "hook",
+    "stake",
+    "number",
+    "tool",
+    "step",
+    "comparison",
+    "proof",
+    "mechanism",
+    "payoff"
+   ],
+   "sound_events": [
+    {
+     "event": "enter",
+     "frame": 0,
+     "cue": "hero_enter"
+    },
+    {
+     "event": "land",
+     "frame": 8,
+     "cue": null
+    },
+    {
+     "event": "play",
+     "frame": 8,
+     "cue": null
+    }
+   ],
+   "demo": {
+    "video": "assets/demo/plugin-scroll.mp4",
+    "title": "claude.com/plugins",
+    "honesty": "sourced"
+   },
+   "demo_duration": 4,
+   "fallback": null,
+   "frame_match": {
+    "result": "pass",
+    "checks_ok": 7,
+    "checks": 7,
+    "best_strip": "v03/extra/s30_hook_000.0.png",
+    "r": 0.959,
+    "run": "2026-11-08"
+   },
+   "energy": {
+    "moving_share_pct": 70.8,
+    "middle_moving_share_pct": 73.1,
+    "pixels_changing_pct": 3.5,
+    "still_share_pct": 0.0,
+    "longest_still_s": 0.03,
+    "mean_change": 1.278,
+    "longest_still_run": 0,
+    "static_windows": 0,
+    "frames": 130,
+    "run": "2026-11-08"
    }
   }
  ]

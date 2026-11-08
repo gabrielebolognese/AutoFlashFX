@@ -25,11 +25,14 @@ from visual import common, kinetic
 SCHEMA = os.path.join(common.REPO, "pipeline", "stages", "09-plan", "schema.json")
 PASS_SCHEMAS = {"animations": "09a-animations", "text": "09b-text", "transitions": "09c-transitions"}  # a pass file validates against its own schema
 RULES = ["schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
-         "set_pieces", "zones", "captions", "caption_modes", "cards", "text_budget", "text_size", "assets", "honesty", "branding", "transitions", "hook2"]
+         "set_pieces", "zones", "hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "real_motion",
+         "captions", "caption_modes", "cards", "text_budget", "text_size", "assets", "honesty", "branding", "transitions", "transition_variety", "hook2"]
 SCENE_RULES = {"schema", "components", "times", "first_change", "breath", "max_gap", "distinct", "repeat", "beat_map", "three_d",
-               "set_pieces", "zones", "assets", "branding", "hook2"}
+               "set_pieces", "zones", "assets", "branding", "hook2", "hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "real_motion"}
 CAPTION_RULES = {"captions", "caption_modes", "cards", "text_budget", "text_size", "honesty", "zones"}
-TRANSITION_RULES = {"transitions"}
+TRANSITION_RULES = {"transitions", "transition_variety"}
+# E9 (M16): the rules that enforce the Motion and energy rules E8, one failing fixture plan each (pipeline/tests/test-m16.sh)
+ENERGY_RULES = ("hero_motion", "hero_fill", "layers", "camera", "hook_frame0", "empty_paper", "list_entry", "transition_variety")
 TIMING_PROPS = ("strike_at", "ticks_at", "fill_at", "type_at", "at")
 
 
@@ -52,7 +55,7 @@ class Context:
     @classmethod
     def from_run(cls, run_dir: str, config: dict | None = None, **kw) -> "Context":
         inp = common.Inputs(run_dir, config)
-        return cls(config=inp.config, words=inp.words, script=inp.script, assets=inp.asset_files() if (inp.assets_json or os.path.isdir(inp.assets_dir)) else None,
+        return cls(config=inp.config, words=inp.words, script=inp.script, assets=({**inp.asset_files(), **inp.recording_files()}) if (inp.assets_json or os.path.isdir(inp.assets_dir)) else None,
                    numbers=inp.numbers, **kw)
 
     def v(self, key: str, default=None):
@@ -114,6 +117,19 @@ def change_times(plan: dict, ctx: Context) -> list[int]:
                 if k in p:
                     try:
                         out.add(start + int(float(p[k]) * 1000))
+                    except (TypeError, ValueError):
+                        pass
+            for key in ("focus_json", "points_json", "colors_json"):
+                for item in common._lines(p.get(key)):
+                    if isinstance(item, dict) and "at" in item:
+                        try:
+                            out.add(start + int(float(item["at"]) * 1000))
+                        except (TypeError, ValueError):
+                            pass
+            for key in ("cta_at", "fan_at"):
+                if key in p:
+                    try:
+                        out.add(start + int(float(p[key]) * 1000))
                     except (TypeError, ValueError):
                         pass
             if cid == "headline":
@@ -240,7 +256,7 @@ def rule_components(plan: dict, ctx: Context, rep: Report) -> None:
                 rep.err("components", f"{iid}: {c['component']} is a candidate, not an approved component")
             declared = {p["id"] for p in comp.get("props", [])}
             for k, v in c.get("props", {}).items():
-                if k not in declared and not (c["component"] in ("hero-3d", "icon-3d") and k == "clip_start"):
+                if k not in declared and not (c["component"] in common.CLIP_START and k == "clip_start"):
                     rep.err("components", f"{iid}: prop {k} is not a declared variable of {c['component']} (declared: {', '.join(sorted(declared))})")
                     continue
                 decl = next((p for p in comp.get("props", []) if p["id"] == k), None)
@@ -551,6 +567,10 @@ def rule_assets(plan: dict, ctx: Context, rep: Report) -> None:
                 for d in common._lines(p.get("values_json")):
                     if isinstance(d, dict) and "value" in d and str(int(float(d["value"]))) not in nums:
                         rep.err("assets", f"{c['id']}: chart value {d['value']} is not in the script or numbers.json but the chart says sourced")
+            if cid == "mock-site-card" and p.get("honesty", "mock") == "none":
+                rep.err("assets", f"{c['id']}: a mock website is a mock UI; it needs honesty mock")
+            if cid in ("screenshot-zoom", "video-card") and p.get("honesty", "sourced") == "none" and (p.get("image") or p.get("video")):
+                rep.warn("assets", f"{c['id']}: shows a real page ({p.get('image') or p.get('video')}) without honesty sourced")
             if cid in ("thumb-grid", "chat-card") and p.get("honesty", "mock") == "none":
                 rep.err("assets", f"{c['id']}: {cid} shows mock UI; it needs honesty mock (or sourced with real assets)")
             if cid == "window-card" and common._lines(p.get("lines_json")) and not p.get("image") and p.get("honesty", "none") == "none":
@@ -816,12 +836,251 @@ def rule_text_size(plan: dict, ctx: Context, rep: Report) -> None:
                  + f" (E4 wants {min_px:g} px or more: the library's sizes are the style's own, resizing them is open)")
 
 
+# ------------------------------------------------------------------------------------------------ E8 and E9 (M16)
+
+def composition(ctx: Context) -> dict:
+    return ((ctx.toks.get("motion") or {}).get("grammar") or {}).get("composition") or {}
+
+
+def energy_level(ctx: Context) -> str:
+    """config visual.energy_rules: error (the default: the rules fail the plan), warn (they report only), off (the test sandboxes of
+    the milestones before M16 run their frozen low-energy plans with it off: pipeline/tests/lib.sh SANDBOX_ENERGY)."""
+    return str(ctx.v("energy_rules", "error")).lower()
+
+
+def energy_report(ctx: Context, rep: Report, rule: str, msg: str) -> None:
+    lvl = energy_level(ctx)
+    if lvl == "off":
+        return
+    (rep.warn if lvl == "warn" else rep.err)(rule, msg)
+
+
+def content_components(scene: dict, ctx: Context) -> list[dict]:
+    """The components of a scene that are content (not the canvas, the captions, the camera and exit moves, the cursor, the mascot)."""
+    exempt = set(composition(ctx).get("layer_exempt") or ["paper-canvas", "caption-word", "caption-group", "camera-move", "exit-move", "cursor", "mascot"])
+    return [c for c in scene.get("components", []) if c["component"] not in exempt and c["component"] != "caption-line"]
+
+
+def band_overlap_area(fp: dict, y0: float, y1: float) -> float:
+    return max(0.0, fp["w"]) * max(0.0, min(y1, fp["y"] + fp["h"]) - max(y0, fp["y"]))
+
+
+def union_ms(intervals: list[tuple[float, float]]) -> float:
+    total, end = 0.0, None
+    for a, b in sorted(intervals):
+        if b <= a:
+            continue
+        if end is None or a > end:
+            total += b - a
+            end = b
+        elif b > end:
+            total += b - end
+            end = b
+    return total
+
+
+def hero_band(ctx: Context) -> tuple[float, float]:
+    band = composition(ctx).get("hero_band_y") or [640, 1280]
+    return float(band[0]), float(band[1])
+
+
+def rule_hero_motion(plan: dict, ctx: Context, rep: Report) -> None:
+    """E9: every scene keeps a moving element in the hero zone. Every library component lives on pc-motion.js (E1: nothing is
+    ever static), so the plan-level proxy is substance: a component with at least hero_min_area_px of its footprint inside the
+    hero band (the middle third, where E0 measures the middle-band energy) for at least 70 percent of the scene."""
+    g = composition(ctx)
+    y0, y1 = hero_band(ctx)
+    min_area = float(g.get("hero_min_area_px", 120000))
+    share = float(ctx.v("hero_motion_share", 0.7))
+    for s in plan.get("scenes", []):
+        a, b = int(s["start_ms"]), int(s["end_ms"])
+        if b <= a:
+            continue
+        spans = []
+        for c in content_components(s, ctx):
+            fp = common.footprint(c["component"], c.get("props", {}), ctx.toks)
+            if fp and band_overlap_area(fp, y0, y1) >= min_area:
+                spans.append((max(a, int(c["start_ms"])), min(b, int(c["end_ms"]))))
+        got = union_ms(spans) / (b - a)
+        if got + 1e-9 < share:
+            energy_report(ctx, rep, "hero_motion", f"scene {s['id']} ({s.get('beat_type')}): a moving element of substance sits in the hero zone (y {y0:g} to {y1:g}) for only {got * 100:.0f} percent of the scene; "
+                          f"at least {share * 100:.0f} percent is wanted (E9): make the hero card, recording or stack fill the middle of the screen from the scene's start to its end")
+
+
+def rule_hero_fill(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: the hero content fills 70 to 85 percent of the frame width: the widest stretch of the scene's content, as the union of
+    the footprints on screen together, spans at least the lower share of 1080 px."""
+    lo, hi = (composition(ctx).get("hero_width_share") or [0.7, 0.85])[:2]
+    W = 1080.0
+    for s in plan.get("scenes", []):
+        comps = [c for c in content_components(s, ctx) if c["component"] != "logo-tile"]
+        if not comps:
+            energy_report(ctx, rep, "hero_fill", f"scene {s['id']} has no content component at all (the hero content fills {lo * 100:.0f} to {hi * 100:.0f} percent of the frame width, E8)")
+            continue
+        times = sorted({int(c["start_ms"]) + 1 for c in comps} | {int(s["start_ms"]) + 1})
+        best = 0.0
+        for t in times:
+            live = [c for c in comps if int(c["start_ms"]) <= t < int(c["end_ms"])]
+            boxes = [common.footprint(c["component"], c.get("props", {}), ctx.toks) for c in live]
+            boxes = [fp for fp in boxes if fp and fp["w"] > 0]
+            if boxes:
+                best = max(best, max(fp["x"] + fp["w"] for fp in boxes) - min(fp["x"] for fp in boxes))
+        if best + 1 < lo * W:
+            energy_report(ctx, rep, "hero_fill", f"scene {s['id']} ({s.get('beat_type')}): the hero content spans {best:.0f} px ({best / W * 100:.0f} percent of the width); E8 wants {lo * 100:.0f} to {hi * 100:.0f} percent "
+                          f"({lo * W:.0f} to {hi * W:.0f} px): widen the hero (w {hi * W:.0f} for a card, or a stack, fan or grid that spans the width)")
+
+
+def layer_weight(cid: str, ctx: Context) -> int:
+    return 2 if cid in set(composition(ctx).get("stack_kinds") or ["card-fan", "card-grid", "thumb-grid", "swatch-row"]) else 1
+
+
+def rule_layers(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: every scene layers at least 2 elements (the hero plus a supporting chip, badge, stack or number): at least 2 content
+    components on screen together for most of the scene (a stack, fan or grid counts as 2)."""
+    need = int(composition(ctx).get("min_layers_per_scene", 2))
+    share = float(ctx.v("layers_share", 0.6))
+    for s in plan.get("scenes", []):
+        a, b = int(s["start_ms"]), int(s["end_ms"])
+        if b <= a:
+            continue
+        comps = content_components(s, ctx)
+        cuts = sorted({a, b} | {min(b, max(a, int(c["start_ms"]))) for c in comps} | {min(b, max(a, int(c["end_ms"]))) for c in comps})
+        ok_ms = 0.0
+        for t0, t1 in zip(cuts, cuts[1:]):
+            mid = (t0 + t1) / 2
+            n = sum(layer_weight(c["component"], ctx) for c in comps if int(c["start_ms"]) <= mid < int(c["end_ms"]))
+            if n >= need:
+                ok_ms += t1 - t0
+        if ok_ms / (b - a) + 1e-9 < share:
+            energy_report(ctx, rep, "layers", f"scene {s['id']} ({s.get('beat_type')}): {need} or more elements are on screen together for only {ok_ms / (b - a) * 100:.0f} percent of the scene; "
+                          f"at least {share * 100:.0f} percent is wanted (E8: the hero plus a supporting chip, badge, stack or number, a fan or a grid counts as two)")
+
+
+def camera_scene(scene: dict, ctx: Context) -> bool:
+    kinds = set(composition(ctx).get("camera_kinds") or ["camera-move", "screenshot-zoom", "hero-3d", "icon-3d"])
+    for c in scene.get("components", []):
+        if c["component"] in kinds:
+            if c["component"] == "screenshot-zoom" and not common._lines(c.get("props", {}).get("focus_json")):
+                continue
+            return True
+    return False
+
+
+def rule_camera(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: a camera move (a push-in, a pull-back, a pan, a slow orbit of the 2.5D scene) in at least 1 of every 3 scenes."""
+    every = max(1, int(composition(ctx).get("camera_every_scenes", 3)))
+    scenes = plan.get("scenes", [])
+    if len(scenes) < every:
+        return
+    cams = [s["id"] for s in scenes if camera_scene(s, ctx)]
+    want = len(scenes) // every
+    if len(cams) < want:
+        energy_report(ctx, rep, "camera", f"{len(cams)} of {len(scenes)} scenes have a camera move ({', '.join(cams) or 'none'}); E8 wants at least 1 of every {every}, so {want}: add camera-move (a push-in or pull-back), "
+                      f"screenshot-zoom with focus points (a pan and zoom over a page) or a turning 3D object to scenes that have none")
+
+
+def rule_hook_frame0(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: the hook moves from frame 0: its hero element is moving by frame 4, never empty paper waiting for it."""
+    n = float(composition(ctx).get("hook_moving_by_frame", 4))
+    limit = int(round(n * 1000.0 / common.FPS))
+    hook = next((s for s in plan.get("scenes", []) if s.get("beat_type") == "hook"), None)
+    if not hook:
+        return
+    t0 = int(hook["start_ms"])
+    comps = content_components(hook, ctx)
+    early = [c for c in comps if int(c["start_ms"]) - t0 <= limit and common._num(c.get("props", {}), "enter_at", 0) * 1000.0 <= limit]
+    if t0 > limit:
+        energy_report(ctx, rep, "hook_frame0", f"the hook scene starts at {t0} ms; the reel moves from frame 0 (E8)")
+    elif not early:
+        first = min((int(c["start_ms"]) for c in comps), default=None)
+        energy_report(ctx, rep, "hook_frame0", f"the hook has no element that starts moving by frame {n:g} ({limit} ms): its first component starts at {first} ms; the hero element enters at the scene's start (start_ms {t0}, enter_at 0)")
+
+
+def rule_empty_paper(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: empty paper in the hero zone lasts at most 1 s: no stretch of the reel longer than empty_hero_max_s has no content
+    component with at least 20000 px2 of its footprint in the hero band."""
+    limit = float(composition(ctx).get("empty_hero_max_s", 1)) * 1000.0
+    y0, y1 = hero_band(ctx)
+    dur = int(plan.get("duration_ms", 0))
+    if dur <= 0:
+        return
+    spans = []
+    for s in plan.get("scenes", []):
+        for c in content_components(s, ctx):
+            fp = common.footprint(c["component"], c.get("props", {}), ctx.toks)
+            if fp and band_overlap_area(fp, y0, y1) >= 20000:
+                spans.append((max(0, int(c["start_ms"])), min(dur, int(c["end_ms"]))))
+    spans.sort()
+    cursor = 0
+    worst = (0, 0, 0)
+    for a, b in spans + [(dur, dur)]:
+        if a - cursor > worst[0]:
+            worst = (a - cursor, cursor, a)
+        cursor = max(cursor, b)
+    if worst[0] > limit + 1:
+        energy_report(ctx, rep, "empty_paper", f"the hero zone is empty paper from {worst[1]} to {worst[2]} ms ({worst[0] / 1000:.1f} s); at most {limit / 1000:g} s (E8): start the next hero earlier or keep the last one on screen")
+
+
+def rule_list_entry(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: lists and groups enter as stacks, fans or grids with staggers, not one card after another in the same spot: more than
+    list_same_spot_max components of one kind that start one after another at about the same position are an error."""
+    g = composition(ctx)
+    most = int(g.get("list_same_spot_max", 2))
+    tol = float(g.get("list_same_spot_px", 40))
+    for s in plan.get("scenes", []):
+        groups: list[list[dict]] = []
+        for c in content_components(s, ctx):
+            p = c.get("props", {})
+            if c["component"] in ("headline", "end-card", "dm-card", "logo-tile", "pop", "check-badge", "hero-3d", "icon-3d"):
+                continue
+            x, y = common._num(p, "x", 90), common._num(p, "y", 560)
+            for grp in groups:
+                f = grp[0]
+                if f["component"] == c["component"] and abs(common._num(f["props"], "x", 90) - x) <= tol and abs(common._num(f["props"], "y", 560) - y) <= tol:
+                    grp.append({"component": c["component"], "props": p, "id": c["id"], "start_ms": int(c["start_ms"])})
+                    break
+            else:
+                groups.append([{"component": c["component"], "props": p, "id": c["id"], "start_ms": int(c["start_ms"])}])
+        for grp in groups:
+            starts = sorted({m["start_ms"] // 200 for m in grp})
+            if len(grp) > most and len(starts) > most:
+                energy_report(ctx, rep, "list_entry", f"scene {s['id']}: {len(grp)} {grp[0]['component']} components ({', '.join(m['id'] for m in grp[:5])}) enter one after another in the same spot; a list enters as a stack, a fan "
+                              f"or a grid with staggers (card-fan, card-grid, thumb-grid, swatch-row), not one card after another (E8)")
+
+
+def rule_real_motion(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: real motion inside the content wherever it exists: a warning when the research stage recorded pages and the plan plays none
+    of them (no video-card with a research video) and shows no screenshot-zoom."""
+    if not ctx.assets:
+        return
+    recs = [k for k in ctx.assets if str(k).lower().endswith(".mp4")]
+    if not recs:
+        return
+    comps = [c for s in plan.get("scenes", []) for c in s.get("components", [])]
+    played = any(c["component"] == "video-card" and str(c.get("props", {}).get("video", "")).startswith(common.RESEARCH_PREFIX) for c in comps)
+    if not played:
+        rep.warn("real_motion", f"the research stage recorded {len(recs)} page(s) ({', '.join(sorted(recs)[:3])}) but no video-card plays one: real motion inside the content (a recording playing in a card) beats a still screenshot (E8)")
+
+
+def rule_transition_variety(plan: dict, ctx: Context, rep: Report) -> None:
+    """E8: scene changes vary: no transition type more than transition_type_max times in a reel."""
+    most = int(composition(ctx).get("transition_type_max", 3))
+    counts: dict = {}
+    for t in plan.get("transitions", []):
+        counts[t.get("type")] = counts.get(t.get("type"), 0) + 1
+    for typ, n in sorted(counts.items(), key=lambda kv: -kv[1]):
+        if n > most:
+            energy_report(ctx, rep, "transition_variety", f"the transition {typ} is used {n} times; E8 allows a type at most {most} times in a reel: vary the scene changes ({', '.join(sorted(counts))} so far)")
+
+
 RULE_FUNCS = {
     "schema": rule_schema, "components": rule_components, "times": rule_times, "first_change": rule_first_change, "breath": rule_breath,
     "max_gap": rule_max_gap, "distinct": rule_distinct, "repeat": rule_repeat, "beat_map": rule_beat_map, "three_d": rule_three_d,
     "set_pieces": rule_set_pieces, "zones": rule_zones, "captions": rule_captions, "caption_modes": rule_caption_modes, "cards": rule_cards,
     "text_budget": rule_text_budget, "text_size": rule_text_size, "assets": rule_assets,
     "honesty": rule_honesty, "branding": rule_branding, "transitions": rule_transitions, "hook2": rule_hook2,
+    "hero_motion": rule_hero_motion, "hero_fill": rule_hero_fill, "layers": rule_layers, "camera": rule_camera, "hook_frame0": rule_hook_frame0,
+    "empty_paper": rule_empty_paper, "list_entry": rule_list_entry, "real_motion": rule_real_motion, "transition_variety": rule_transition_variety,
 }
 
 
@@ -867,6 +1126,13 @@ def run(args) -> int:
                 name = os.path.basename(str(a.get("file", "")))
                 if os.path.isfile(os.path.join(folder, "assets", name)) or args.assets_exist:
                     assets[name] = a
+                rec = os.path.basename(str(a.get("recording") or ""))
+                if rec and (os.path.isfile(os.path.join(folder, "assets", rec)) or args.assets_exist):
+                    assets[rec] = a
+            adir = os.path.join(folder, "assets")
+            for f in (os.listdir(adir) if os.path.isdir(adir) else []):
+                if f.lower().endswith(".mp4") and f not in assets:
+                    assets[f] = {"file": "assets/" + f, "name": os.path.splitext(f)[0]}
         ctx = Context(words=common.load_json(args.words) if args.words else None, script=common.load_json(args.script) if args.script else None,
                       assets=assets, numbers=common.load_json(args.numbers) if args.numbers else None)
     parts = set(p.strip() for p in args.parts.split(",") if p.strip()) if args.parts else None

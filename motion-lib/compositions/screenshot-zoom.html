@@ -1,0 +1,111 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":90},
+  {"id":"y","type":"number","label":"Top (px)","default":420},
+  {"id":"w","type":"number","label":"Width (px)","default":900},
+  {"id":"h","type":"number","label":"Height (px)","default":900},
+  {"id":"image","type":"string","label":"The screenshot (a research asset under assets/...)","default":""},
+  {"id":"image_ratio","type":"number","label":"Image height over width (the compiler sets it from the file)","default":1.7778},
+  {"id":"focus_json","type":"string","label":"Where the camera goes, as JSON: [{\"x\":0.1,\"y\":0.2,\"w\":0.5,\"h\":0.1,\"at\":0.8}] (x, y, w, h are fractions of the image, at is seconds from the start)","default":"[]"},
+  {"id":"zoom_to","type":"number","label":"A focus box fills this share of the frame width","default":0.8},
+  {"id":"highlight","type":"boolean","label":"Draw the highlight box around each focus","default":true},
+  {"id":"travel_frames","type":"number","label":"Frames the camera takes between two focus points","default":18},
+  {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"fly-in","label":"fly-in from below"},{"value":"none","label":"none"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"sourced","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* screenshot-zoom (Motion and energy rules E8, "real motion inside the content"): a real screenshot in a media frame
+       that the camera pans and zooms over: it travels to each focus box (power3.inOut, 18 frames) and a highlight box
+       draws itself around it; between two focus points the camera creeps on (a steady scale growth), so the content never
+       stands still (E1). The frame itself lives like every element: the card enter with the zoom and the parallax rotation,
+       the inertia, the hold. The stage inside is (frame width) x (frame width x the image's ratio); the boxes are in percent
+       of it, so they stay on the page's content whatever the zoom. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #sz { overflow: hidden; box-sizing: border-box; }
+    #sz-view { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: calc(var(--card-radius) - var(--media-frame)); background: var(--c-surface-chrome); }
+    #sz-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+    #sz-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .sz-box { position: absolute; box-sizing: border-box; border: 5px solid var(--c-accent); border-radius: 14px; opacity: 0; background: rgba(220, 101, 50, 0.10); transform-origin: 50% 50%; }
+  </style>
+  <div id="root" data-composition-id="screenshot-zoom" data-width="1080" data-height="1920">
+    <div id="sz" class="pc-media-frame pc-el"><div id="sz-view"><div id="sz-stage"><img id="sz-img" alt=""></div></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 420, w: 900, h: 900, image: "", image_ratio: 1.7778, focus_json: [], zoom_to: 0.8, highlight: true, travel_frames: 18, enter: "rise",
+        enter_at: 0, honesty: "sourced", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var frame = document.getElementById("sz"), view = document.getElementById("sz-view"), stage = document.getElementById("sz-stage"), img = document.getElementById("sz-img");
+      PC.place(frame, v);
+      if (v.image) img.src = v.image;
+      var pad = 22;  // --media-frame
+      var VW = v.w - 2 * pad, VH = v.h - 2 * pad;
+      var SW = VW, SH = Math.max(VH, VW * Math.max(0.2, v.image_ratio));
+      stage.style.width = SW + "px"; stage.style.height = SH + "px";
+      PC.honesty(frame, v.honesty, { top: 16, right: 16 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, frame, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      var end = life.until;
+      // the camera: a focus box (fractions of the page) fills zoom_to of the frame width, clamped so the page always covers the frame
+      var focus = (Array.isArray(v.focus_json) ? v.focus_json : []).filter(function (f) { return f && typeof f.at === "number"; }).sort(function (a, b) { return a.at - b.at; });
+      function camera(f) {
+        var s = Math.min(3.4, Math.max(1, v.zoom_to / Math.max(0.05, f.w)));
+        s = Math.min(s, (VH * 0.85) / Math.max(1, f.h * SH));
+        s = Math.max(1, s);
+        var tx = VW / 2 - s * (f.x + f.w / 2) * SW, ty = VH / 2 - s * (f.y + f.h / 2) * SH;
+        tx = Math.min(0, Math.max(VW - s * SW, tx)); ty = Math.min(0, Math.max(VH - s * SH, ty));
+        return { s: s, x: tx, y: ty };
+      }
+      gsap.set(stage, { scale: 1, x: 0, y: 0, force3D: true });
+      var cur = { s: 1, x: 0, y: 0 };
+      var t = life.land;
+      // a creep between two focus points: the page grows about the frame's center by 0.35 percent per second (at most 2
+      // percent), so the content never stands still and never shows empty paper at an edge
+      function creep(from, at, until) {
+        var T = until - at;
+        if (!(T > PC.f(1))) return from;
+        var k = 1 + Math.min(0.02, 0.0035 * T);
+        var to = { s: from.s * k, x: VW / 2 - k * (VW / 2 - from.x), y: VH / 2 - k * (VH / 2 - from.y) };
+        PCM.move(tl, stage, { scale: from.s, x: from.x, y: from.y }, { scale: to.s, x: to.x, y: to.y }, at, T, "linear");
+        return to;
+      }
+      var firstAt = focus.length ? Math.max(focus[0].at, t + PC.f(2)) : end;
+      cur = creep(cur, t, firstAt);
+      var free = firstAt;
+      focus.forEach(function (f, i) {
+        var at = Math.max(f.at, free);
+        var target = camera(f);
+        var tf = PC.f(v.travel_frames);
+        PCM.move(tl, stage, { scale: cur.s, x: cur.x, y: cur.y }, { scale: target.s, x: target.x, y: target.y }, at, tf, "inout");
+        PC.event("focus", at, { el: "sz-stage", index: i });
+        if (v.highlight) {
+          var b = PC.el("div", "sz-box", stage); b.id = "sz-box-" + i;
+          b.style.left = (f.x * 100) + "%"; b.style.top = (f.y * 100) + "%"; b.style.width = (f.w * 100) + "%"; b.style.height = (f.h * 100) + "%";
+          b.style.borderWidth = (5 / target.s) + "px"; b.style.borderRadius = (14 / target.s) + "px";
+          var bAt = at + tf * 0.7;
+          PCM.appear(tl, b, bAt, { frames: 6, from: 1.08, ease: "out2" });
+          PC.event("highlight", bAt, { el: b.id });
+          var nextAt = i + 1 < focus.length ? Math.max(focus[i + 1].at, at + tf) : end;
+          PCM.vanish(tl, b, Math.max(bAt + PC.f(8), nextAt - PC.f(2)), 5);
+        }
+        var settled = at + tf;
+        var nextT = i + 1 < focus.length ? Math.max(focus[i + 1].at, settled) : end;
+        cur = { s: target.s, x: target.x, y: target.y };
+        cur = creep(cur, settled, nextT);
+        free = Math.max(nextT, settled);
+      });
+      window.__timelines["screenshot-zoom"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

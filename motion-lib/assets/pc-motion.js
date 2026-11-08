@@ -394,6 +394,80 @@
     return at + seconds;
   };
 
+  // ---------------------------------------------------------------- the moves of the M16 components (E8)
+  // The closed list of curves a component may name; every tween of these helpers is not relative (no "+=": the result does not
+  // depend on the order the frames are rendered in) and never renders immediately (the from values apply at the move's start).
+  PCM.EASE = { inout: "power3.inOut", inout2: "power2.inOut", out: "power3.out", out2: "power2.out", expo: "expo.out", back: "back.out(1.7)", linear: "none" };
+  function easeOf(name, dflt) { return PCM.EASE[name] || name || dflt; }
+  // PCM.move: x, y, scale, rotation (or any other numeric property) from one state to another over seconds: a camera over a
+  // page, a cursor between two points, a card leaving a deck. ease: a name of PCM.EASE (default inout).
+  PCM.move = function (tl, el, from, to, at, seconds, ease) {
+    var t = {};
+    Object.keys(to || {}).forEach(function (k) { t[k] = to[k]; });
+    t.duration = seconds; t.ease = easeOf(ease, PCM.EASE.inout); t.immediateRender = false;
+    tl.fromTo(el, from || {}, t, at);
+    return at + seconds;
+  };
+  // PCM.run: one property at a constant speed (a playhead, a page scrolling inside a mock window)
+  PCM.run = function (tl, el, prop, from, to, at, seconds) {
+    var f = {}, t = {};
+    f[prop] = from; t[prop] = to; t.duration = seconds; t.ease = "none"; t.immediateRender = false;
+    tl.fromTo(el, f, t, at);
+    return at + seconds;
+  };
+  // PCM.appear: a small part arriving (a highlight box, a word, a feature card, a label): opacity over frames, a scale from
+  // o.from and a rise of o.rise px (power3.out)
+  PCM.appear = function (tl, el, at, o) {
+    o = o || {};
+    var fr = o.frames === undefined ? 7 : o.frames;
+    // the from state applies at once (the part is hidden until its time); an appear is the first tween of its part
+    var from = { opacity: 0 }, to = { opacity: 1, duration: F(Math.max(2, Math.min(fr, o.opacityFrames === undefined ? fr : o.opacityFrames))), ease: "power1.out" };
+    tl.fromTo(el, from, to, at);
+    var f2 = {}, t2 = { duration: F(fr), ease: easeOf(o.ease, PCM.EASE.out) };
+    var any = false;
+    if (o.from !== undefined && o.from !== 1) { f2.scale = o.from; t2.scale = 1; any = true; }
+    if (o.rise) { f2.y = o.rise; t2.y = 0; any = true; }
+    if (any) tl.fromTo(el, f2, t2, at);
+    return at + F(fr);
+  };
+  PCM.vanish = function (tl, el, at, frames) {
+    tl.to(el, { opacity: 0, duration: F(frames === undefined ? 5 : frames), ease: "none" }, at);
+    return at + F(frames === undefined ? 5 : frames);
+  };
+  // PCM.pulse: a part lifts (scale 1 to 1 + amp over up frames) and settles (down frames), and may rise by `lift` px meanwhile
+  PCM.pulse = function (tl, el, at, o) {
+    o = o || {};
+    var up = o.up === undefined ? 5 : o.up, down = o.down === undefined ? 8 : o.down, amp = o.amp === undefined ? 0.05 : o.amp, lift = o.lift || 0;
+    tl.fromTo(el, { scale: 1, y: 0 }, { scale: 1 + amp, y: -lift, duration: F(up), ease: "power2.out", immediateRender: false }, at);
+    tl.to(el, { scale: 1, y: 0, duration: F(down), ease: "power2.inOut" }, at + F(up));
+    return at + F(up + down);
+  };
+  // PCM.press: a click, the element presses (scale to `to` over 3 frames) and comes back (5 frames), and a ring (o.ring) grows from
+  // the tip and fades over 14 frames
+  PCM.press = function (tl, el, at, o) {
+    o = o || {};
+    tl.fromTo(el, { scale: 1 }, { scale: o.to === undefined ? 0.86 : o.to, duration: F(3), ease: "power2.out", immediateRender: false }, at);
+    tl.to(el, { scale: 1, duration: F(5), ease: "power2.inOut" }, at + F(3));
+    if (o.ring) tl.fromTo(o.ring, { opacity: 0.9, scale: 0.3 }, { opacity: 0, scale: 1.5, duration: F(14), ease: "power2.out", immediateRender: false }, at);
+    return at + F(8);
+  };
+  // PCM.glideProp: the inertia and the hold of one property of a part (a fan's rotation, E1): from `from` it travels A + v T on
+  // PCM.glide's curve (a decelerating cubic of A, then the constant speed v), in direction sign
+  PCM.glideProp = function (tl, el, prop, from, sign, A, v, T, at) {
+    if (!(T > 0)) return at;
+    var D = PCM.numbers().inertiaS;
+    var f = {}, t = {};
+    f[prop] = from; t[prop] = from + sign * (A + v * T); t.duration = T; t.ease = PCM.glide(A, v, D, T); t.immediateRender = false;
+    tl.fromTo(el, f, t, at);
+    return at + T;
+  };
+  // PCM.readout: a running time "m:ss" that follows a playhead (a setter tween, so it renders under suppressed events)
+  PCM.readout = function (tl, el, at, seconds) {
+    var state = PCM.driven(0, function (x) { var n = Math.floor(x); el.textContent = Math.floor(n / 60) + ":" + (n % 60 < 10 ? "0" : "") + (n % 60); });
+    tl.fromTo(state, { v: 0 }, { v: seconds, duration: seconds, ease: "none", immediateRender: false }, at);
+    return at + seconds;
+  };
+
   // ---------------------------------------------------------------- values rendered by a setter (count-ups, typing)
   // GSAP tweens the accessor property; its setter renders. No callback, so it works under suppressed events.
   PCM.driven = function (initial, render) {
@@ -605,11 +679,11 @@
   PCM.confetti = function (tl, layer, at, o) {
     o = o || {};
     var rnd = PC.prng(o.seed || 7), colors = o.colors || ["#DC6532", "#289C5C", "#FFFAF7", "#C9623C", "#D67354"];
-    var count = o.count === undefined ? 18 : o.count, x0 = o.x || 300, y0 = o.y || 880;
+    var count = o.count === undefined ? 18 : o.count, x0 = o.x || 300, y0 = o.y || 880;  // o.width, o.height: the area the pieces start in; o.spread: seconds over which they start
     for (var i = 0; i < count; i++) {
       var p = PC.el("div", "sb-piece", layer); p.id = (o.idPrefix || "sb-p") + i;
       p.style.background = colors[i % colors.length];
-      var px = x0 - 120 + rnd() * 520, py = y0 - 160 + rnd() * 120, delay = rnd() * 0.25, fall = 260 + rnd() * 240, rot = rnd() * 720 - 360;
+      var px = x0 - 120 + rnd() * (o.width || 520), py = y0 - 160 + rnd() * (o.height || 120), delay = rnd() * (o.spread === undefined ? 0.25 : o.spread), fall = 260 + rnd() * 240, rot = rnd() * 720 - 360;
       p.style.left = px + "px"; p.style.top = py + "px";
       var t = at + delay;
       tl.fromTo(p, { opacity: 0, y: 0, rotation: 0 }, { opacity: 1, duration: F(3), ease: "none" }, t);

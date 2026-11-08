@@ -124,8 +124,17 @@ def assets_md(inp: common.Inputs) -> str:
     if not files:
         return "(no research assets: no real screenshot can be shown; use cards, chips, numbers and typed text, never a mock screenshot of a real page)\n"
     lines = [f"01-research/assets/ ({len(files)} screenshots captured by the research stage at 1080 px wide; write them as research/<file>; a component showing one takes honesty sourced):", ""]
+    recs = inp.recording_files()
+    by_shot = {os.path.splitext(r)[0]: r for r in recs}
     for name, a in files.items():
-        lines.append(f"- research/{name}: {a.get('what', '')} (url {a.get('url', '')}; file {common.mixed(os.path.join(inp.assets_dir, name))})")
+        rec = by_shot.get(os.path.splitext(name)[0])
+        lines.append(f"- research/{name}: {a.get('what', '')} (url {a.get('url', '')}; file {common.mixed(os.path.join(inp.assets_dir, name))})"
+                     + (f"; its scroll recording is research/{rec}" if rec else ""))
+    if recs:
+        lines += ["", f"Page recordings ({len(recs)}): a 5 to 8 s scroll video of the page (1080 wide, no sound), written as research/<file>.mp4 in the video prop of a video-card, which plays it inside a window or a media frame "
+                      "(Motion and energy rules E8: the content itself keeps moving; prefer it to the still screenshot wherever a page is shown for more than 2 s; honesty sourced):"]
+        for name, a in recs.items():
+            lines.append(f"- research/{name}: the recording of {a.get('title') or a.get('name') or name} (url {a.get('url', '')})")
     return "\n".join(lines) + "\n"
 
 
@@ -348,6 +357,50 @@ def resolve_at(at: str, scene_start: int, scene_end: int, beat: str, tl: common.
     return scene_start
 
 
+def hook_moves_from_frame0(comps: list[dict], scene_start: int, toks: dict) -> str:
+    """E8: the hook's hero element is moving by frame 4. When no content component of the hook starts within that, the first hero that is
+    not the breath's set piece starts at the scene's start (its enter_at 0): a deterministic repair, so the model's late hero never empties frame 0."""
+    g = (((toks.get("motion") or {}).get("grammar") or {}).get("composition") or {})
+    limit = int(round(float(g.get("hook_moving_by_frame", 4)) * 1000.0 / common.FPS))
+    layers = set(g.get("layer_exempt") or ["paper-canvas", "caption-word", "caption-group", "camera-move", "exit-move", "cursor", "mascot"])
+    content = [c for c in comps if c["component"] not in layers]
+    if not content or any(int(c["start_ms"]) - scene_start <= limit and common._num(c.get("props", {}), "enter_at", 0) * 1000.0 <= limit for c in content):
+        return ""
+    pick = next((c for c in content if c.get("role") == "hero"), None) or next((c for c in content if c.get("role") != "set-piece"), content[0])
+    old = int(pick["start_ms"])
+    pick["start_ms"] = int(scene_start)
+    pick.get("props", {}).pop("enter_at", None)
+    pick["land_ms"] = int(scene_start) + common.frames_ms(common.enter_frames(pick["component"], pick.get("props", {})))
+    pick["at"] = "scene"
+    return f"{pick['id']}: the hook moves from frame 0 (E8): moved from {old} ms to the scene's start"
+
+
+def vary_transitions(out: list[dict], allowed: list[str], durations: dict, most: int, notes: list[str]) -> None:
+    """E8: no transition type more than `most` times: the later occurrences of an over-used type become the least used allowed type that differs
+    from both neighbours (a cut only while cuts stay at a third or less of the changes and never two in a row)."""
+    def counts() -> dict:
+        c = {t: 0 for t in allowed}
+        for t in out:
+            c[t["type"]] = c.get(t["type"], 0) + 1
+        return c
+    for typ in list(allowed):
+        guard = 0
+        while counts().get(typ, 0) > most and guard < 40:
+            guard += 1
+            idx = max(i for i, t in enumerate(out) if t["type"] == typ)
+            cnt = counts()
+            prev = out[idx - 1]["type"] if idx > 0 else None
+            nxt = out[idx + 1]["type"] if idx + 1 < len(out) else None
+            cuts = cnt.get("cut", 0)
+            options = [t for t in allowed if t != typ and cnt.get(t, 0) < most and (t != "cut" or (cuts + 1) * 3 <= len(out) and prev != "cut" and nxt != "cut")]
+            if not options:
+                break
+            options.sort(key=lambda t: (t in (prev, nxt), cnt.get(t, 0), t == "cut"))
+            new = options[0]
+            notes.append(f"transition {out[idx]['from']} to {out[idx]['to']}: {typ} is used more than {most} times, changed to {new} (E8: scene changes vary)")
+            out[idx]["type"], out[idx]["duration_ms"] = new, int(durations.get(new, 0))
+
+
 def compose_animations(answer: dict, inp: common.Inputs, toks: dict, cat: dict, brand: dict) -> tuple[dict, list[str], list[str]]:
     errors: list[str] = []
     notes: list[str] = []
@@ -396,7 +449,7 @@ def compose_animations(answer: dict, inp: common.Inputs, toks: dict, cat: dict, 
                 if not props.get("words_json"):
                     props["words_json"] = [{"w": w["word"], "t": round(max(0.0, (int(w["start_ms"]) - start) / 1000), 3)} for w in tl.beat_words(beat)]
                 props.setdefault("kicker_at", 0.05)
-            if cid in ("hero-3d", "icon-3d"):
+            if cid in common.CLIP_START:
                 props.pop("clip_start", None)  # the compiler sets it from the clip's start
             role = c.get("role") if c.get("role") in ROLES else ("hero" if k == 1 else "support")
             honesty = props.get("honesty") if props.get("honesty") in ("mock", "sourced") else None
@@ -417,6 +470,10 @@ def compose_animations(answer: dict, inp: common.Inputs, toks: dict, cat: dict, 
         if btype == "hook" and tl.breath:
             b0, b1 = int(tl.breath["start_ms"]), int(tl.breath["end_ms"])
             hook_sp = any(b0 <= c["start_ms"] <= b1 - 100 or b0 <= c["land_ms"] <= b1 for c in comps)
+        if btype == "hook" and comps:
+            moved = hook_moves_from_frame0(comps, st, toks)
+            if moved:
+                notes.append(moved)
         scenes.append({"id": sid, "beat": beat, "beat_type": btype, "start_ms": int(st), "end_ms": int(en),
                        "set_piece": bool(sc.get("set_piece", False)) or hook_sp, "hook_set_piece": hook_sp, "honesty_label": scene_h, "emphasis_hits": hits, "components": comps})
     hook2 = None
@@ -772,6 +829,8 @@ def compose_transitions(answer: dict, plan_a: dict, plan_b: dict | None, toks: d
     for key in given:
         if key not in pairs:
             notes.append(f"transition {key[0]} to {key[1]} does not join consecutive scenes: dropped")
+    most = int((((toks.get("motion") or {}).get("grammar") or {}).get("composition") or {}).get("transition_type_max", 3))
+    vary_transitions(out, allowed, durations, most, notes)
     plan_c = {"pass": "transitions", "transitions": out, "notes": common.undash(str(answer.get("notes", "")))[:1000]}
     return plan_c, errors, notes
 

@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 420, "w": 900, "h": 760, "video": "assets/demo/plugin-scroll.mp4", "image": "", "title": "claude.com/plugins", "kind": "window", "video_start": 0, "speed": 1, "loop": true, "clip_start": 0, "enter": "rise", "enter_at": 0, "honesty": "sourced", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* video-card (Motion and energy rules E8, "real motion inside the content"): a recording or a clip playing inside a card,
+       as in the references' window cards where video plays. The card enters and lives like every element (the card enter
+       with the zoom and the parallax rotation, the inertia, the hold: pc-motion.js). The clip is drawn from the hf-seek
+       time (the seek protocol of HyperFrames' runtimes: the video's currentTime is set to a pure function of the time and
+       the frame waits for the seek to finish through waitUntil), muted, never played: every render shows the same frame.
+       Without the clip the still image or a play glyph stands in, and the card still lives. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #vc { overflow: hidden; display: flex; flex-direction: column; }
+    #vc.frame { padding: var(--media-frame); box-sizing: border-box; background: var(--c-media-frame); }
+    #vc-chrome { flex: 0 0 auto; }
+    #vc.frame #vc-chrome { display: none; }
+    #vc-body { flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; background: #1C1511; }
+    #vc.frame #vc-body { border-radius: calc(var(--card-radius) - var(--media-frame)); }
+    #vc-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    #vc-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; display: none; }
+    #vc-play { position: absolute; left: 50%; top: 50%; width: 140px; height: 140px; margin: -70px 0 0 -70px; border-radius: 50%; background: rgba(28, 17, 15, 0.62); display: none; align-items: center; justify-content: center; }
+    #vc-play svg { width: 56px; height: 56px; margin-left: 8px; }
+  </style>
+  <div id="root" data-composition-id="video-card" data-width="1080" data-height="1920">
+    <div id="vc" class="pc-card pc-el">
+      <div id="vc-chrome" class="pc-chrome"><span class="pc-dot a"></span><span class="pc-dot b"></span><span class="pc-dot c"></span><span id="vc-title" class="pc-chrome-title"></span></div>
+      <div id="vc-body"><img id="vc-still" alt=""><div id="vc-play"><svg viewBox="0 0 24 24" fill="#FFFFFF"><path d="M7 4l12 8-12 8z"/></svg></div></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 420, w: 900, h: 760, video: "", image: "", title: "", kind: "window", video_start: 0, speed: 1, loop: true, clip_start: 0, enter: "rise",
+        enter_at: 0, honesty: "sourced", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("vc"), still = document.getElementById("vc-still"), play = document.getElementById("vc-play");
+      // the clip is a video element made here and driven by the seek protocol below: HyperFrames' own media management (it plays and
+      // times the <video> elements it finds in a composition's markup) must not touch it
+      var vid = document.createElement("video");
+      vid.id = "vc-video"; vid.muted = true; vid.setAttribute("playsinline", ""); vid.preload = "auto";
+      play.parentNode.insertBefore(vid, play);
+      PC.place(card, v);
+      if (v.kind === "frame") card.classList.add("frame"); else document.getElementById("vc-title").textContent = v.title;
+      if (v.image) { still.src = v.image; still.style.display = "block"; }
+      var hasVideo = !!v.video;
+      if (hasVideo) {
+        vid.src = v.video;
+        vid.addEventListener("error", function () { vid.style.display = "none"; play.style.display = "flex"; window.__pcVideoError = true; });
+      } else { vid.style.display = "none"; if (!v.image) play.style.display = "flex"; }
+      PC.honesty(card, v.honesty, { top: v.kind === "frame" ? 16 : 88, right: 24 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      PC.event("play", life.land, { el: "vc-video" });
+      // the clip is a function of the root time: local = root time - the clip's start; it plays from enter_at on
+      var seq = 0;
+      function target(rootTime) {
+        var local = rootTime - v.clip_start;
+        var tt = v.video_start + Math.max(0, local - v.enter_at) * v.speed;
+        var d = vid.duration;
+        if (isFinite(d) && d > 0.2) {
+          if (v.loop) tt = tt % d; else tt = Math.min(tt, d - 0.05);
+        }
+        return Math.max(0, tt);
+      }
+      // a clip that is not on screen is not seeked: every mounted video card hears every seek of the render, and a seek costs a decode
+      function onScreen(rootTime) {
+        var local = rootTime - v.clip_start;
+        if (local < v.enter_at - 0.2) return false;
+        if (v.exit_at >= 0 && local > v.exit_at + 0.6) return false;
+        var cs = getComputedStyle(card);
+        return cs.visibility !== "hidden" && cs.display !== "none" && card.getClientRects().length > 0;
+      }
+      function seekVideo(rootTime) {
+        if (!hasVideo || window.__pcVideoError || !onScreen(rootTime)) return null;
+        var tt = target(rootTime);
+        if (Math.abs(vid.currentTime - tt) < 0.001) return null;
+        return new Promise(function (resolve) {
+          var done = false;
+          function fin() { if (done) return; done = true; vid.removeEventListener("seeked", fin); resolve(true); }
+          vid.addEventListener("seeked", fin);
+          setTimeout(fin, 1500);   // never hang a render on a clip that cannot seek
+          try { vid.currentTime = tt; } catch (e) { fin(); }
+        });
+      }
+      window.addEventListener("hf-seek", function (e) {
+        var t = e && e.detail && typeof e.detail.time === "number" ? e.detail.time : 0;
+        var p = seekVideo(t);
+        if (p && e.detail && typeof e.detail.waitUntil === "function") e.detail.waitUntil(p);
+      });
+      window.__pcRenderAt = function (t) { return seekVideo(t); };
+      if (hasVideo) vid.addEventListener("loadedmetadata", function () { seekVideo(v.clip_start); });
+      window.__timelines["video-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "video-card", duration = 4;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

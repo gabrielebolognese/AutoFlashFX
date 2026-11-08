@@ -36,7 +36,11 @@ pipeline/lib/research.py writes the files below from it, so their format never d
 - assets/ plus assets.json: screenshots of the real pages taken by the model with pipeline/bin/screenshot
   (Playwright, headless Chromium, 1080 px wide; NN-name.png with a NN-name.json sidecar holding url, final_url,
   title, status, captured). assets.json lists the screenshots whose file exists (at most research.max_assets),
-  each with its URL, capture date and the model's one-line caption.
+  each with its URL, capture date and the model's one-line caption. From M16 the tool also records a 5 to 8 s scroll
+  video of every page that scrolls, next to its screenshot (NN-name.mp4: H.264, 1080 px wide, 30 fps, no sound; the sidecar's
+  recording and recording_seconds; a page that does not scroll, or a failed recording, leaves it out and is never an
+  error); assets.json entries carry recording ("assets/NN-name.mp4") and recording_seconds when the file exists. The video
+  and window cards play the recordings (BUILD_SPEC.md Motion and energy rules E8).
 - prompt-research.md: the rendered prompt; calls/: every model call's files (ai.sh).
 - stage.log: everything the stage printed (its `say` lines also reach the terminal through fd 3).
 - result.json with a `reason` when the stage exits 10 (drop) or 20 (block); this stage never does either: a false

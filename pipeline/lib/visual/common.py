@@ -19,20 +19,21 @@ from motion import common as mcommon  # noqa: E402
 
 REPO = mcommon.REPO
 FPS = 30
+CLIP_START = mcommon.CLIP_START_COMPONENTS
 BRAND_PREFIX = "brand/"
 RESEARCH_PREFIX = "research/"
 BRAND_SLOT_TOKEN = "@brand-slot"
 
 # which props carry on-screen text, by role: a title-like prop is a card text (6 words or fewer), a body-like prop
 # may run longer, a code prop is typed verbatim (commands, file names) and is never counted in words
-TITLE_PROPS = {"title", "text", "kicker", "keyword", "verb", "unit", "label", "sub_label", "replacement", "sender", "pill"}
+TITLE_PROPS = {"title", "text", "kicker", "keyword", "verb", "unit", "label", "sub_label", "replacement", "sender", "pill", "headline", "cta", "name", "hex"}
 BODY_PROPS = {"body", "message", "reply", "placeholder", "line1", "line2", "prompt", "app_label", "time_label"}
-CODE_PROPS = {"lines_json", "items_json", "rows_json", "values_json", "logos_json", "words_json", "chunks_json", "mascots_json"}
-IMAGE_PROPS = {"image", "second_image", "avatar", "lockup", "kicker_mark"}
+CODE_PROPS = {"lines_json", "items_json", "rows_json", "values_json", "logos_json", "words_json", "chunks_json", "mascots_json", "focus_json", "points_json", "colors_json", "thumbs_json"}
+IMAGE_PROPS = {"image", "second_image", "avatar", "lockup", "kicker_mark", "video"}
 # the surface under each logo spot (BUILD_SPEC.md S9: light for paper and surface cards, dark for ink)
 LOGO_SURFACES = {("headline", "kicker_mark"): "light", ("logo-tile", "image"): "light", ("logo-tile", "second_image"): "light",
                  ("end-card", "lockup"): "light", ("dm-card", "avatar"): "light", ("table-card", "logos_json"): "light",
-                 ("card", "image"): "light", ("fly-in", "image"): "light", ("camera-move", "image"): "light",
+                 ("card", "image"): "light", ("fly-in", "image"): "light", ("camera-move", "image"): "light", ("card-fan", "items_json"): "light",
                  ("thumb-grid", "items_json"): "light"}
 
 
@@ -191,6 +192,19 @@ class Inputs:
                     out[f] = {"file": "assets/" + f, "name": os.path.splitext(f)[0], "what": ""}
         return out
 
+    def recording_files(self) -> dict:
+        """{file name: asset entry} of the page recordings (M16, S1: NN-name.mp4 next to the screenshot NN-name.png) that exist on disk."""
+        out = {}
+        for a in self.assets_json or []:
+            rec = os.path.basename(str(a.get("recording") or ""))
+            if rec and os.path.isfile(os.path.join(self.assets_dir, rec)):
+                out[rec] = a
+        if os.path.isdir(self.assets_dir):
+            for f in os.listdir(self.assets_dir):
+                if f.lower().endswith(".mp4") and f not in out:
+                    out[f] = {"file": "assets/" + f, "name": os.path.splitext(f)[0], "what": ""}
+        return out
+
     def solution_info(self) -> dict:
         """{type, name, url, logo}: solution.json when it exists (M12 writes it), else none (counts as not FlashFX)."""
         s = self.solution or {}
@@ -341,7 +355,7 @@ def footprint(component: str, props: dict, toks: dict) -> dict | None:
     p = props
     x = _num(p, "x", 90); y = _num(p, "y", 560); w = _num(p, "w", 900); h = _num(p, "h", 0)
     tb: list[dict] = []
-    if component in ("paper-canvas", "caption-line", "caption-word", "caption-group", "camera-move", "exit-move"):
+    if component in ("paper-canvas", "caption-line", "caption-word", "caption-group", "camera-move", "exit-move", "cursor"):
         return None
     if component in ("card", "fly-in"):
         body_w = max(100, w - 104)
@@ -387,6 +401,35 @@ def footprint(component: str, props: dict, toks: dict) -> dict | None:
         cw = (w - gap * (cols - 1)) / cols
         hh = rows * cw * ratio + gap * (rows - 1)
         return {"x": x, "y": y, "w": w, "h": hh, "text_boxes": []}
+    if component in ("screenshot-zoom", "video-card", "mock-site-card"):
+        hh = h if h > 0 else {"screenshot-zoom": 900, "video-card": 760, "mock-site-card": 820}[component]
+        if component != "screenshot-zoom" and p.get("title"):
+            tb.append({"x": x + 110, "y": y + 14, "w": min(w - 160, text_width(str(p["title"]), 30, toks, "kicker")), "h": 40, "prop": "title"})
+        if component == "mock-site-card":
+            if p.get("headline"):
+                tb.append({"x": x + 44, "y": y + 72 + 84 + 40, "w": min(w - 88, text_width(str(p["headline"]), 84, toks, "grotesk")), "h": 90, "prop": "headline"})
+            if p.get("cta"):
+                tb.append({"x": x + 44, "y": y + 72 + 84 + 40 + 90 + 26 + 50 + 34, "w": min(w - 88, text_width(str(p["cta"]), 38, toks, "grotesk") + 88), "h": 82, "prop": "cta"})
+        return {"x": x, "y": y, "w": w, "h": hh, "text_boxes": tb}
+    if component in ("card-fan", "card-grid"):
+        items = _lines(p.get("items_json"))[:8 if component == "card-grid" else 6]
+        if component == "card-fan":
+            x = _num(p, "x", 150); y = _num(p, "y", 520); w = _num(p, "w", 780)
+            return {"x": x, "y": y, "w": w, "h": _num(p, "card_h", 500) + 90, "text_boxes": []}
+        x = _num(p, "x", 90); y = _num(p, "y", 480)
+        cols = max(1, int(_num(p, "cols", 2)))
+        rows = max(1, (max(1, len(items)) + cols - 1) // cols)
+        ch = _num(p, "card_h", 230)
+        return {"x": x, "y": y, "w": w, "h": rows * ch + (rows - 1) * _num(p, "gap", 24), "text_boxes": []}
+    if component == "timeline-scrubber":
+        return {"x": _num(p, "x", 60), "y": _num(p, "y", 760), "w": _num(p, "w", 960), "h": 122 + _num(p, "thumb_h", 150), "text_boxes": []}
+    if component == "swatch-row":
+        return {"x": x, "y": _num(p, "y", 620), "w": w, "h": _num(p, "h", 420), "text_boxes": []}
+    if component == "swatch-card":
+        x = _num(p, "x", 240); y = _num(p, "y", 560); w = _num(p, "w", 600)
+        sh = _num(p, "swatch_h", 520)
+        tb.append({"x": x + 26, "y": y + 26 + sh + 26, "w": min(w - 52, text_width(str(p.get("name", "")), 56, toks, "grotesk")), "h": 62, "prop": "name"})
+        return {"x": x, "y": y, "w": w, "h": sh + 26 + 26 + 62 + 8 + 52 + 34, "text_boxes": tb}
     if component == "table-card":
         rows = _lines(p.get("rows_json"))
         hh = 150 + 74 * max(1, len(rows)) + (70 if p.get("title") else 0)
@@ -520,12 +563,15 @@ BAKED_TEXT_PX = {
     ("stat-number", "unit"): 44, ("stat-number", "sub_label"): 28, ("strike-through", "text"): 30, ("strike-through", "replacement"): 30,
     ("handwritten-callout", "text"): 58, ("speech-bubble", "text"): 44, ("speech-bubble", "keyword"): 56,
     ("dm-card", "message"): 32, ("dm-card", "sender"): 36, ("thumb-grid", "items_json"): 26,
+    ("video-card", "title"): 30, ("mock-site-card", "title"): 30, ("mock-site-card", "headline"): 84, ("mock-site-card", "cta"): 38,
+    ("card-fan", "items_json"): 44, ("card-grid", "items_json"): 46, ("swatch-card", "name"): 56, ("swatch-card", "hex"): 40, ("swatch-row", "colors_json"): 30,
     ("hero-3d", "label"): 34, ("icon-3d", "label"): 34, ("pop", "text"): 48,
     ("headline", "lines_json"): 102, ("headline", "kicker"): 21, ("end-card", "verb"): 97, ("end-card", "keyword"): 98,
     ("end-card", "line1"): 58, ("end-card", "line2"): 58,
 }
 HONESTY_TEXT = {"mock": "illustrative", "sourced": "real"}
-NO_TEXT_COMPONENTS = ("paper-canvas", "caption-line", "caption-word", "caption-group", "camera-move", "exit-move", "mascot", "logo-tile")
+NO_BOX_COMPONENTS = ("paper-canvas", "caption-line", "caption-word", "caption-group", "camera-move", "exit-move", "mascot", "cursor")
+NO_TEXT_COMPONENTS = ("paper-canvas", "caption-line", "caption-word", "caption-group", "camera-move", "exit-move", "mascot", "logo-tile", "cursor", "screenshot-zoom", "timeline-scrubber")
 
 
 def _strs(v) -> list[str]:
@@ -565,14 +611,14 @@ def text_items(component: str, props: dict, toks: dict | None = None) -> list[di
             if component == "strike-through" and k in ("text", "replacement") and not props.get("chip", True) and props.get("font_px"):
                 px, explicit = _num(props, "font_px", 48), True
             add(k, v, px, explicit)
-    for k in ("lines_json", "items_json", "rows_json", "values_json"):
+    for k in ("lines_json", "items_json", "rows_json", "values_json", "colors_json"):
         if k not in props:
             continue
         if component == "headline" and k == "lines_json":
             texts = [str(ln) for ln in _lines(props.get(k))]
         elif component == "table-card" and k == "rows_json":
             texts = [str(val) for r in _lines(props.get(k)) if isinstance(r, dict) for val in r.values() if isinstance(val, str)]
-        elif component in ("chart-card", "thumb-grid") and k in ("values_json", "items_json"):
+        elif component in ("chart-card", "thumb-grid", "card-fan", "card-grid", "swatch-row") and k in ("values_json", "items_json", "colors_json"):
             texts = [str(d.get("label")) for d in _lines(props.get(k)) if isinstance(d, dict) and d.get("label")]
         else:
             texts = _strs(props.get(k))
@@ -630,7 +676,7 @@ def visible_boxes(plan: dict, start_ms: int, end_ms: int, toks: dict) -> list[di
         if int(s["start_ms"]) >= end_ms or int(s["end_ms"]) <= start_ms:
             continue
         for c in s.get("components", []):
-            if c["component"] in NO_TEXT_COMPONENTS and c["component"] != "logo-tile":
+            if c["component"] in NO_BOX_COMPONENTS:
                 continue
             if int(c["start_ms"]) >= end_ms or int(c["end_ms"]) <= start_ms:
                 continue

@@ -23,6 +23,8 @@ merged plan and validates the whole.
 ## Invariants (plan_validate.py, every rule)
 - one transition per consecutive scene pair, only allowed types, the style's duration per type, at most a third
   hard cuts
+- no transition type more than 3 times in the reel (E8, rule transition_variety; the pipeline changes the later occurrences of an
+  over-used type itself, plan9.vary_transitions, and notes it)
 - the merged plan passes every rule of BUILD_SPEC.md S9 (the scene, caption and branding rules of 9a and 9b again)
 
 ## Exit codes

@@ -40,7 +40,14 @@ composes and pipeline/lib/visual/plan_validate.py checks.
   tokens.json beat_map components; 3D only in the hook and the end card, at most 2 objects; 1 to 2 set pieces
 - zones: side margins, the hero zone's top, nothing under the safe bottom but the CTA's DM card, no text in the
   right 230 px of the lower half
-- real assets only for real claims: research/<file> exists; a stat-number's value is in the script or numbers.json;
+- the Motion and energy rules E8 (M16; config visual.energy_rules error | warn | off; the numbers in tokens.json
+  motion.grammar.composition): hero_motion (a content component of at least 120000 px2 inside the hero band y 640 to 1280 for 70
+  percent of every scene), hero_fill (the scene's content spans 70 percent of the width), layers (2 or more elements together for
+  60 percent of the scene, a fan, grid or swatch row counts as two), camera (a camera-move, a screenshot-zoom with focus points or a
+  3D object in at least floor(scenes / 3) scenes), hook_frame0 (a hook element starts within 4 frames: the pipeline moves a late hero
+  to the scene's start itself), empty_paper (no stretch over 1 s without content in the hero band), list_entry (no more than 2
+  cards of one kind one after another in one spot), and the warning real_motion (recordings exist and no video-card plays one)
+- real assets only for real claims: research/<file> exists (a recording is research/<file>.mp4 in the video prop of a video-card); a stat-number's value is in the script or numbers.json;
   mock UI carries honesty mock
 - branding (tweaks.md): the CTA always has the dm-card with brand/mark/avatar-dark.png and the end-card with a
   lockup from brand.json (300 px or more); no brand/ asset outside the CTA unless the solution is FlashFX; every

@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 150, "y": 520, "w": 780, "card_w": 360, "card_h": 500, "items_json": "[{\"label\":\"Hook\"},{\"label\":\"Script\"},{\"label\":\"Voice\"},{\"label\":\"Edit\"},{\"label\":\"Post\"}]", "angle": 9, "highlight": -1, "stagger_frames": 3, "fan_frames": 16, "enter_at": 0, "fan_at": 0.25, "honesty": "mock", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* card-fan (Motion and energy rules E8, "lists and groups enter as stacks, fans or grids with staggers"): a deck that
+       fans out. The cards start stacked at the pivot (the bottom center of the deck), then leave it one after another
+       (3 frames apart, 16 frames each, power3.out): each turns about the pivot to its place in the arc and rises. They keep
+       fanning on (a decelerating glide that never stops), and the whole fan holds as one group (E1). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #cf-deck { position: absolute; inset: 0; }
+    .cf-card { position: absolute; box-sizing: border-box; padding: 30px 30px 26px; display: flex; flex-direction: column; justify-content: flex-start; transform-origin: 50% 118%; }
+    .cf-card.hi { background: var(--c-accent); color: #FFFFFF; }
+    .cf-art { flex: 1 1 auto; border-radius: 22px; overflow: hidden; position: relative; background: linear-gradient(160deg, #F6EBE2, #EBD9CB); display: flex; align-items: center; justify-content: center; }
+    .cf-card.hi .cf-art { background: rgba(255, 255, 255, 0.22); }
+    .cf-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .cf-art svg { width: 38%; height: 38%; opacity: 0.6; }
+    .cf-label { margin-bottom: 18px; font-weight: 800; font-size: 44px; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  </style>
+  <div id="root" data-composition-id="card-fan" data-width="1080" data-height="1920">
+    <div id="cf-wrap" class="pc-el"><div id="cf-deck"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 150, y: 520, w: 780, card_w: 360, card_h: 500, items_json: [], angle: 9, highlight: -1, stagger_frames: 3, fan_frames: 16, enter_at: 0, fan_at: 0.25,
+        honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var wrap = document.getElementById("cf-wrap"), deck = document.getElementById("cf-deck");
+      PC.place(wrap, { x: v.x, y: v.y, w: v.w, h: v.card_h + 90 });
+      var items = (Array.isArray(v.items_json) ? v.items_json : []).slice(0, 6);
+      var n = Math.max(1, items.length), mid = (n - 1) / 2;
+      var cw = v.card_w, ch = v.card_h;
+      var spread = n > 1 ? Math.min((v.w - cw) / (n - 1), cw * 0.62) : 0;
+      var play = '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>';
+      var cards = items.map(function (it, i) {
+        var c = PC.el("div", "cf-card pc-card" + (i === v.highlight ? " hi" : ""), deck); c.id = "cf-card-" + i;
+        c.style.width = cw + "px"; c.style.height = ch + "px";
+        c.style.left = ((v.w - cw) / 2) + "px"; c.style.top = "0px";
+        // the label is at the top: the cards turn about a pivot below the deck, so their tops are the part that spreads apart (a label at the
+        // bottom would land on the next card's label)
+        if (it.label) PC.el("div", "cf-label", c, String(it.label));
+        var art = PC.el("div", "cf-art", c);
+        if (it.image) { var im = document.createElement("img"); im.src = it.image; im.alt = ""; art.appendChild(im); } else art.innerHTML = play;
+        return c;
+      });
+      var honesty = PC.honesty(wrap, v.honesty, { top: -50, right: 0 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var quiet = { move: 0, scale: 0, rotate: 0 };
+      // the fan holds as one group
+      var group = PCM.life(tl, wrap, { at: v.enter_at, main: { kind: "none" }, hold: v.hold, inertia: quiet, exit: exit });
+      cards.forEach(function (c, i) {
+        var at = v.enter_at + v.fan_at + PC.f(v.stagger_frames) * i;
+        var off = i - mid;
+        var rot = off * v.angle, dx = off * spread, dy = Math.abs(off) * Math.abs(off) * 14;
+        PCM.prepare(c);
+        // the card shows from the start, stacked on the deck (a small turn each so the stack reads as a stack)
+        var stackRot = (i % 2 ? 1 : -1) * 1.5, stackY = -2 * i;
+        gsap.set(c, { rotation: stackRot, y: stackY, x: 0, zIndex: i + 1 });
+        PCM.appear(tl, c, v.enter_at + PC.f(i), { frames: 5, from: 0.9, ease: "out2" });
+        var fan = PC.f(v.fan_frames);
+        PCM.move(tl, c, { rotation: stackRot, x: 0, y: stackY }, { rotation: rot, x: dx, y: dy }, at, fan, "out");
+        PC.event("card", at, { el: c.id, index: i });
+        // the glide on: the fan opens a little more, slower and slower, for as long as the group lives
+        var until = Math.max(group.until, at + fan + PC.f(2)), T = until - (at + fan);
+        var sgn = rot >= 0 ? 1 : -1;
+        var A = 2.2 * (Math.abs(off) + 0.6) / (mid + 0.6), vr = 0.25;
+        PCM.glideProp(tl, c, "rotation", rot, sgn, A, vr, T, at + fan);
+        // a card is a small 2.5D part under the group's turn: its own depth
+        gsap.set(c, { z: i * 6, force3D: true });
+      });
+      gsap.set(deck, { transformStyle: "preserve-3d" });
+      if (honesty) PCM.life(tl, honesty, { at: v.enter_at, main: { kind: "fade", frames: 4, rise: 0, zoom: false, rotate: false }, hold: { kind: "none" }, inertia: quiet, until: v.enter_at + PC.f(1), events: { enter: "honesty" } });
+      window.__timelines["card-fan"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "card-fan", duration = 3;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

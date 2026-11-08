@@ -1,0 +1,61 @@
+<html data-composition-variables='[
+  {"id":"x","type":"number","label":"Left (px)","default":240},
+  {"id":"y","type":"number","label":"Top (px)","default":560},
+  {"id":"w","type":"number","label":"Width (px)","default":600},
+  {"id":"color","type":"string","label":"The color (a hex value)","default":"#DC6532"},
+  {"id":"name","type":"string","label":"The color name under the swatch (3 words at most)","default":"Burnt orange"},
+  {"id":"hex","type":"string","label":"The hex code typed under the name (empty = the color value)","default":""},
+  {"id":"swatch_h","type":"number","label":"Swatch height (px)","default":520},
+  {"id":"enter","type":"enum","label":"Entrance","default":"rise","options":[{"value":"rise","label":"rise"},{"value":"pop","label":"pop"},{"value":"none","label":"none"}]},
+  {"id":"enter_at","type":"number","label":"Enter at (s)","default":0},
+  {"id":"fill_at","type":"number","label":"The color fills in at (s, local)","default":0.25},
+  {"id":"type_at","type":"number","label":"The hex code starts typing at (s, local)","default":0.7},
+  {"id":"honesty","type":"enum","label":"Honesty label","default":"none","options":[{"value":"none","label":"none"},{"value":"mock","label":"mock"},{"value":"sourced","label":"sourced"}]},
+  {"id":"hold","type":"enum","label":"Hold level (the steady motion after the entrance)","default":"normal","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]},
+  {"id":"exit","type":"enum","label":"Exit","default":"none","options":[{"value":"none","label":"none"},{"value":"fade-blur","label":"fade-blur"},{"value":"fall","label":"fall"},{"value":"push","label":"push"},{"value":"cut","label":"cut"}]},
+  {"id":"exit_at","type":"number","label":"Exit at (s, -1 = never)","default":-1}
+]'>
+<template>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* swatch-card (Motion and energy rules E8): one color as a card, like a paint chip: the swatch fills from the bottom
+       (10 frames, power3.out), the name rises under it and the hex code types in (2 frames per character: a setter tween).
+       The card lives like every element: the card enter with the zoom and parallax turn, the inertia, the hold; the swatch
+       and the texts sit at their own depths (E6). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #sc { box-sizing: border-box; padding: 26px 26px 34px; }
+    #sc-sw { position: relative; border-radius: 22px; overflow: hidden; background: var(--c-surface-chrome); box-shadow: inset 0 0 0 2px var(--c-card-edge); }
+    #sc-fill { position: absolute; inset: 0; transform-origin: 50% 100%; }
+    #sc-name { margin-top: 26px; font-weight: 800; font-size: 56px; line-height: 1.1; letter-spacing: -0.02em; }
+    #sc-hex { margin-top: 8px; font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 40px; color: var(--c-ink); opacity: 0.72; min-height: 52px; }
+  </style>
+  <div id="root" data-composition-id="swatch-card" data-width="1080" data-height="1920">
+    <div id="sc" class="pc-card pc-el"><div id="sc-sw"><div id="sc-fill"></div></div><div id="sc-name"></div><div id="sc-hex"></div></div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 240, y: 560, w: 600, color: "#DC6532", name: "Burnt orange", hex: "", swatch_h: 520, enter: "rise", enter_at: 0, fill_at: 0.25, type_at: 0.7,
+        honesty: "none", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("sc"), sw = document.getElementById("sc-sw"), fill = document.getElementById("sc-fill"), nm = document.getElementById("sc-name"), hx = document.getElementById("sc-hex");
+      PC.place(card, { x: v.x, y: v.y, w: v.w });
+      sw.style.height = v.swatch_h + "px"; fill.style.background = v.color; nm.textContent = v.name;
+      var code = v.hex || v.color;
+      PC.honesty(card, v.honesty, { top: -50, right: 0 });
+      PCM.depth(card, [sw, nm, hx]);
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "pop" ? { kind: "pop", overshoot: 0.03, frames: 8, rotate: 10 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      var fillAt = Math.max(life.land - PC.f(4), v.enter_at + v.fill_at);
+      PCM.grow(tl, fill, fillAt, { axis: "y", frames: 10, event: "fill" });
+      PCM.appear(tl, nm, fillAt + PC.f(6), { frames: 7, rise: 26 });
+      PCM.typeInto(tl, hx, code, Math.max(fillAt + PC.f(10), v.enter_at + v.type_at), { framesPerChar: 2 });
+      window.__timelines["swatch-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
+</html>

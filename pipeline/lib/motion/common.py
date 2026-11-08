@@ -15,6 +15,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 FPS = 30
+CLIP_START_COMPONENTS = ("hero-3d", "icon-3d", "video-card")  # drawn from the hf-seek time: the compiler sets clip_start to the host's data-start (M16: video-card)
 
 
 def setup_streams() -> None:

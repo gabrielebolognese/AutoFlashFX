@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 60, "y": 760, "w": 960, "thumbs_json": "[{},{},{},{},{},{},{},{}]", "thumb_h": 150, "seconds": 4, "start_after": 0.3, "show_time": true, "enter": "rise", "enter_at": 0, "honesty": "mock", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* timeline-scrubber (Motion and energy rules E8, "a playhead that runs"): an editing timeline in a card: a row of
+       thumbnail frames and an accent playhead that runs across them (linear, as a real playhead), the frame under it
+       lifting as it passes; a time readout counts with it (a setter tween: HyperFrames seeks with events suppressed). The
+       card lives like every element (pc-motion.js). Placeholders are paper tiles with a play glyph; the readout is digits. */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #ts { box-sizing: border-box; padding: 34px 34px 40px; }
+    #ts-ruler { position: relative; height: 34px; margin-bottom: 14px; }
+    .ts-tick { position: absolute; top: 18px; width: 3px; height: 16px; background: var(--c-dot); border-radius: 2px; }
+    .ts-tick.big { top: 6px; height: 28px; }
+    #ts-time { position: absolute; right: 0; top: -6px; font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 34px; color: var(--c-ink); }
+    #ts-strip { position: relative; display: flex; gap: 10px; }
+    .ts-thumb { flex: 1 1 0; position: relative; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #F6EBE2, #EBD9CB); box-shadow: 0 0 0 2px var(--c-card-edge); }
+    .ts-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .ts-thumb svg { position: absolute; left: 50%; top: 50%; width: 36%; height: 36%; transform: translate(-50%, -50%); opacity: 0.5; }
+    #ts-head { position: absolute; top: -20px; bottom: -14px; width: 6px; margin-left: -3px; background: var(--c-accent); border-radius: 3px; box-shadow: 0 0 0 3px rgba(255, 250, 247, 0.9); }
+    #ts-head::before { content: ""; position: absolute; left: -11px; top: -2px; width: 28px; height: 28px; background: var(--c-accent); border-radius: 8px 8px 14px 14px; }
+  </style>
+  <div id="root" data-composition-id="timeline-scrubber" data-width="1080" data-height="1920">
+    <div id="ts" class="pc-card pc-el">
+      <div id="ts-ruler"><span id="ts-time">0:00</span></div>
+      <div id="ts-strip"><div id="ts-head"></div></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 60, y: 760, w: 960, thumbs_json: [], thumb_h: 150, seconds: 4, start_after: 0.3, show_time: true, enter: "rise", enter_at: 0, honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("ts"), strip = document.getElementById("ts-strip"), head = document.getElementById("ts-head"), ruler = document.getElementById("ts-ruler"), time = document.getElementById("ts-time");
+      PC.place(card, { x: v.x, y: v.y, w: v.w });
+      var thumbs = Array.isArray(v.thumbs_json) && v.thumbs_json.length ? v.thumbs_json.slice(0, 12) : [{}, {}, {}, {}, {}, {}, {}, {}];
+      var play = '<svg viewBox="0 0 24 24" fill="#DC6532"><path d="M7 4l12 8-12 8z"/></svg>';
+      var els = thumbs.map(function (t, i) {
+        var d = PC.el("div", "ts-thumb", strip); d.id = "ts-thumb-" + i; d.style.height = v.thumb_h + "px";
+        if (t && t.image) { var im = document.createElement("img"); im.src = t.image; im.alt = ""; d.appendChild(im); } else d.innerHTML = play;
+        return d;
+      });
+      for (var k = 0; k <= 20; k++) { var tk = PC.el("span", "ts-tick" + (k % 5 === 0 ? " big" : ""), ruler); tk.style.left = (k / 20 * 100) + "%"; }
+      if (!v.show_time) time.style.display = "none";
+      PC.honesty(card, v.honesty, { top: -50, right: 0 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      // the playhead runs from the left end to the right end of the strip, linear; it keeps its place at the end (a short rest
+      // then back to the start, so a long scene keeps playing: a loop of `seconds`)
+      var stripW = v.w - 68, at = life.land + v.start_after, end = life.until;
+      gsap.set(head, { x: 0 });
+      var loops = Math.max(1, Math.ceil((end - at) / v.seconds));
+      for (var L = 0; L < loops; L++) {
+        var t0 = at + L * v.seconds;
+        PCM.run(tl, head, "x", 0, stripW, t0, v.seconds);
+        PC.event("play", t0, { el: "ts-head", end: t0 + v.seconds });
+        PCM.readout(tl, time, t0, v.seconds);
+      }
+      // each thumbnail lifts a little as the playhead passes it and settles after (one tween pair per frame)
+      var tw = stripW / els.length;
+      els.forEach(function (d, i) {
+        var pass = at + (i + 0.5) / els.length * v.seconds;
+        PCM.pulse(tl, d, Math.max(at, pass - PC.f(3)), { up: 5, down: 12, amp: 0.04, lift: 10 });
+      });
+      window.__timelines["timeline-scrubber"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "timeline-scrubber", duration = 4;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
+<script src="assets/vendor/gsap.min.js"></script>
+<script>window.__timelines = {}; window.__hfVars = {"x": 90, "y": 420, "w": 900, "h": 820, "title": "yoursite.com", "headline": "Your idea, live", "cta": "Get started", "tone": "warm", "cta_at": 0.9, "scroll_px_s": 34, "enter": "rise", "enter_at": 0, "honesty": "mock", "hold": "normal", "exit": "none", "exit_at": -1};
+window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
+window.__pcEvents = [];
+</script>
+</head>
+<body>
+<div id="stage">
+
+  
+  <style>
+    /* paper-canvas: the background of every reel (style.md Canvas): paper, a warm glow top left, a warm glow lower
+       right (open question 8: v02), darker bottom corners, a dot grid. From M14 it carries life (Motion and energy
+       rules E5 and E7): the edge filler layer (soft cards, chips, thumbnails, shapes and stars 30 to 70 percent outside
+       the left and right borders, behind the content, quieter than it, at most 20 px per second, no text) and the
+       ambient layer (stars, dots and small clouds in the palette, a slow drift and twinkle), both seeded per reel and
+       kept out of every text zone (tokens.json motion.grammar.text_zones). Mounted for the whole reel at z 0. */
+    #paper-root { position: absolute; inset: 0; overflow: hidden; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #paper-base { position: absolute; inset: 0; background: var(--c-paper); }
+    #paper-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 820px 980px at 0px 0px, var(--c-glow-warm) 0%, rgba(236, 210, 190, 0.6) 42%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 760px 900px at 1080px 1560px, var(--c-glow-lower) 0%, rgba(240, 217, 199, 0.5) 45%, rgba(245, 238, 227, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 0px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%),
+        radial-gradient(ellipse 420px 300px at 1080px 1920px, var(--c-corner) 0%, rgba(228, 215, 201, 0) 100%);
+    }
+    #paper-dots {
+      position: absolute; inset: 0; opacity: 0.85;
+      background-image: radial-gradient(circle, var(--c-dot) calc(var(--dot-size) / 2), rgba(0, 0, 0, 0) calc(var(--dot-size) / 2 + 0.6px));
+      background-size: var(--dot-spacing) var(--dot-spacing);
+      background-position: calc(var(--dot-spacing) / 2) calc(var(--dot-spacing) / 2);
+    }
+  </style>
+  <div id="paper-root" data-composition-id="paper-canvas" data-width="1080" data-height="1920">
+    <div id="paper-base"></div>
+    <div id="paper-glow"></div>
+    <div id="paper-dots"></div>
+  </div>
+  
+  
+  
+<link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/paper-cards.css">
+  <style>
+    /* mock-site-card (Motion and energy rules E8): a website drawn in code inside a window card, for "your site", "the landing
+       page" and "what it looks like": a nav bar, a hero headline that wipes in, a button that pops, three feature cards that
+       rise in turn and an image block, on a page that scrolls on slowly. The only words are the address, the headline and
+       the button (the rest are gray bars). A mock UI always carries the honesty label (default mock). Real pages are
+       screenshots and recordings (window-card, video-card, screenshot-zoom). */
+    #root { position: absolute; inset: 0; font-family: "Inter Tight", sans-serif; color: var(--c-ink); }
+    #ms { overflow: hidden; display: flex; flex-direction: column; }
+    #ms-body { flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; background: var(--ms-bg, #FFFAF7); }
+    #ms-page { position: absolute; left: 0; top: 0; width: 100%; padding: 0 44px 80px; box-sizing: border-box; }
+    #ms-nav { display: flex; align-items: center; gap: 22px; height: 84px; }
+    .ms-logo { width: 44px; height: 44px; border-radius: 12px; background: var(--c-accent); }
+    .ms-link { height: 14px; width: 84px; border-radius: 7px; background: var(--ms-bar, #E5D7CC); }
+    .ms-gap { flex: 1 1 auto; }
+    .ms-pill { height: 40px; width: 110px; border-radius: 20px; background: var(--ms-ink, #1C110F); }
+    #ms-hero { padding: 40px 0 34px; }
+    #ms-headline { font-weight: 800; font-size: 84px; line-height: 1.02; letter-spacing: -0.03em; color: var(--ms-ink, #1C110F); overflow: hidden; }
+    #ms-sub { margin-top: 26px; display: flex; flex-direction: column; gap: 14px; }
+    .ms-bar { height: 18px; border-radius: 9px; background: var(--ms-bar, #E5D7CC); transform-origin: 0 50%; }
+    #ms-cta { display: inline-flex; margin-top: 34px; height: 82px; padding: 0 44px; align-items: center; border-radius: 41px; background: var(--c-accent); color: #FFFFFF; font-weight: 800; font-size: 38px; }
+    #ms-feats { display: flex; gap: 22px; margin-top: 44px; }
+    .ms-feat { flex: 1 1 0; height: 220px; border-radius: 22px; background: var(--ms-card, #F6EBE2); padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; }
+    .ms-dot { width: 52px; height: 52px; border-radius: 50%; background: var(--c-accent); opacity: 0.85; }
+    #ms-shot { margin-top: 36px; height: 340px; border-radius: 26px; background: linear-gradient(150deg, var(--ms-card, #F6EBE2), var(--ms-bar, #E5D7CC)); position: relative; overflow: hidden; }
+    #ms-shot::after { content: ""; position: absolute; left: 12%; top: 18%; width: 40%; height: 54%; border-radius: 22px; background: rgba(255, 250, 247, 0.85); box-shadow: 0 18px 26px -8px rgba(133, 112, 92, 0.3); }
+  </style>
+  <div id="root" data-composition-id="mock-site-card" data-width="1080" data-height="1920">
+    <div id="ms" class="pc-card pc-el">
+      <div id="ms-chrome" class="pc-chrome"><span class="pc-dot a"></span><span class="pc-dot b"></span><span class="pc-dot c"></span><span id="ms-title" class="pc-chrome-title"></span></div>
+      <div id="ms-body"><div id="ms-page">
+        <div id="ms-nav"><div class="ms-logo"></div><div class="ms-link"></div><div class="ms-link"></div><div class="ms-link"></div><div class="ms-gap"></div><div class="ms-pill"></div></div>
+        <div id="ms-hero"><div id="ms-headline"></div><div id="ms-sub"><div class="ms-bar" style="width:86%"></div><div class="ms-bar" style="width:64%"></div></div><div id="ms-cta"></div></div>
+        <div id="ms-feats"><div class="ms-feat"><div class="ms-dot"></div><div class="ms-bar" style="width:90%"></div><div class="ms-bar" style="width:60%"></div></div><div class="ms-feat"><div class="ms-dot"></div><div class="ms-bar" style="width:80%"></div><div class="ms-bar" style="width:70%"></div></div><div class="ms-feat"><div class="ms-dot"></div><div class="ms-bar" style="width:92%"></div><div class="ms-bar" style="width:50%"></div></div></div>
+        <div id="ms-shot"></div>
+      </div></div>
+    </div>
+  </div>
+  <script src="assets/paper-cards.js"></script>
+  <script src="assets/pc-motion.js"></script>
+  <script>
+    (function () {
+      var v = PC.vars({ x: 90, y: 420, w: 900, h: 820, title: "yoursite.com", headline: "Your idea, live", cta: "Get started", tone: "warm", cta_at: 0.9, scroll_px_s: 34, enter: "rise", enter_at: 0,
+        honesty: "mock", hold: "normal", exit: "none", exit_at: -1 }, window.__hyperframes.getVariables());
+      var card = document.getElementById("ms"), body = document.getElementById("ms-body"), page = document.getElementById("ms-page");
+      PC.place(card, v);
+      document.getElementById("ms-title").textContent = v.title;
+      var head = document.getElementById("ms-headline"), cta = document.getElementById("ms-cta");
+      head.textContent = v.headline; cta.textContent = v.cta;
+      if (v.tone === "ink") { body.style.setProperty("--ms-bg", "#1C1511"); body.style.setProperty("--ms-ink", "#FFFAF7"); body.style.setProperty("--ms-bar", "#4A3A32"); body.style.setProperty("--ms-card", "#2A1D18"); }
+      else if (v.tone === "paper") { body.style.setProperty("--ms-bg", "#F5EEE3"); }
+      PC.honesty(card, v.honesty, { top: 88, right: 24 });
+      var tl = gsap.timeline({ paused: true });
+      var exit = { type: v.exit, at: v.exit_at };
+      var main = v.enter === "fly-in" ? { kind: "fly-in", dy: 870, tilt: 2.4, frames: 16 } : v.enter === "none" ? { kind: "none" } : { kind: "rise", rise: 38 };
+      var life = PCM.life(tl, card, { at: v.enter_at, main: main, hold: v.hold, exit: exit });
+      var t = life.land;
+      // the page builds: the headline's words rise in, the sub bars wipe, the button pops, the feature cards rise in turn
+      var words = PC.splitWords(head, v.headline, "pc-word");
+      words.forEach(function (w, i) { PCM.appear(tl, w, t + PC.f(2 + 3 * i), { frames: 7, rise: 36 }); });
+      PC.event("headline", t + PC.f(2), { el: "ms-headline" });
+      Array.prototype.forEach.call(document.querySelectorAll("#ms-sub .ms-bar"), function (b, i) { PCM.grow(tl, b, t + PC.f(10 + 3 * i), { axis: "x", frames: 8, event: "bar" }); });
+      var ctaAt = Math.max(t + PC.f(8), v.enter_at + v.cta_at);
+      PCM.appear(tl, cta, ctaAt, { frames: 6, from: 0.5, ease: "back" });
+      PC.event("cta", ctaAt, { el: "ms-cta" });
+      Array.prototype.forEach.call(document.querySelectorAll(".ms-feat"), function (f, i) {
+        PCM.appear(tl, f, t + PC.f(12 + 4 * i), { frames: 8, rise: 44, ease: "expo" });
+        PC.event("feature", t + PC.f(12 + 4 * i), { el: "ms-feat-" + i });
+      });
+      PCM.appear(tl, document.getElementById("ms-shot"), t + PC.f(26), { frames: 8, rise: 40, ease: "expo" });
+      // the whole page scrolls on slowly, so the card is alive on every frame
+      var slack = Math.max(0, page.offsetHeight - body.offsetHeight);
+      var speed = v.scroll_px_s, seconds = Math.max(0.5, life.until - t);
+      if (speed > 0 && slack > 4) {
+        var dist = Math.min(slack, speed * seconds);
+        PCM.run(tl, page, "y", 0, -dist, t, dist / speed);
+        PC.event("scroll", t, { el: "ms-page", end: t + dist / speed, px: dist });
+      }
+      window.__timelines["mock-site-card"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</div>
+
+<script>
+(function () {
+  var id = "mock-site-card", duration = 4;
+  var tl = window.__timelines[id];
+  var start = performance.now();
+  function tick() {
+    var t = ((performance.now() - start) / 1000) % duration;
+    if (tl) tl.seek(t, false);
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: function () {} } })); } catch (e) {}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

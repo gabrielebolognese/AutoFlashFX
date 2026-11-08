@@ -12,6 +12,9 @@
   {"id":"stagger_frames","type":"number","label":"Frames between elements","default":6},
   {"id":"type_frames","type":"number","label":"Frames per typed letter","default":2},
   {"id":"wobble","type":"boolean","label":"The card wobbles slightly (v02)","default":true},
+  {"id":"confetti_count","type":"number","label":"Confetti pieces falling over the card (0 = none; M16: the CTA keeps moving)","default":0},
+  {"id":"confetti_at","type":"number","label":"Confetti starts at (s, local)","default":1.2},
+  {"id":"confetti_seconds","type":"number","label":"Seconds over which the pieces start falling","default":2.4},
   {"id":"hold","type":"enum","label":"Hold level (the steady motion while the card holds)","default":"calm","options":[{"value":"calm","label":"calm"},{"value":"normal","label":"normal"},{"value":"lively","label":"lively"}]}
 ]'>
 <template>
@@ -33,8 +36,10 @@
     #ec-row .pc-mascot { position: absolute; top: 20px; }
     #ec-lockup { left: 0; width: 1080px; display: flex; justify-content: center; }
     #ec-lockup img { display: block; object-fit: contain; }
+    #ec-confetti .sb-piece { position: absolute; width: 30px; height: 46px; border-radius: 5px; }
   </style>
   <div id="root" data-composition-id="end-card" data-width="1080" data-height="1920">
+    <div id="ec-confetti" class="pc-el" data-layout-ignore style="left:0;top:0;width:1080px;height:1920px;pointer-events:none"></div>
     <div id="ec-card" class="pc-card pc-el">
       <div id="ec-verb"></div>
       <div id="ec-pill" class="pc-keyword-pill"><span id="ec-keyword"></span></div>
@@ -48,7 +53,7 @@
   <script>
     (function () {
       var v = PC.vars({ verb: "Comment", keyword: "TELLS", line1: "", line2: "", mascots_json: ["clapper", "star", "film", "play", "grid"], lockup: "",
-        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true, hold: "calm" }, window.__hyperframes.getVariables());
+        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true, confetti_count: 0, confetti_at: 1.2, confetti_seconds: 2.4, hold: "calm" }, window.__hyperframes.getVariables());
       var card = document.getElementById("ec-card"), verb = document.getElementById("ec-verb"), pill = document.getElementById("ec-pill");
       var kw = document.getElementById("ec-keyword"), linesEl = document.getElementById("ec-lines"), row = document.getElementById("ec-row");
       var lockupWrap = document.getElementById("ec-lockup");
@@ -102,6 +107,10 @@
       if (lockupImg) {
         var lAt = Math.max(t, typeEnd + PC.f(2));
         PCM.life(tl, lockupWrap, { at: lAt, main: { kind: "fade", frames: v.fade_frames, rise: 18, ease: "power2.out", zoom: false, rotate: false }, hold: { level: v.hold, kind: "drift" }, events: { enter: "lockup" } });
+      }
+      if (v.confetti_count > 0) {
+        // pieces start over confetti_seconds across the whole width, from above the card, and fall past it (seeded: the same on every render)
+        PCM.confetti(tl, document.getElementById("ec-confetti"), v.enter_at + v.confetti_at, { count: v.confetti_count, seed: 11, x: 40, y: 560, width: 900, height: 160, spread: v.confetti_seconds, idPrefix: "ec-p", colors: ["#DC6532", "#289C5C", "#1C110F", "#C9623C", "#D67354"] });
       }
       window.__timelines["end-card"] = tl;
       tl.seek(0);

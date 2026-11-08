@@ -156,7 +156,10 @@ GRAMMAR = {
                  "note": "E3 (M15): word mode one word at a time on its spoken time, group mode as the graphic; the group caption zone is the hero zone (kinetic.py places every word)"},
     "text_budget": {"max_chars_on_screen": 100, "note": "E4 (M15): non-caption text on screen at any moment; the minimum text size is the caption font size"},
     "composition": {"hero_width_share": [0.7, 0.85], "min_layers_per_scene": 2, "empty_hero_max_s": 1, "camera_every_scenes": 3, "transition_type_max": 3,
-                    "hook_moving_by_frame": 4, "note": "E8, built in M16"},
+                    "hook_moving_by_frame": 4, "hero_band_y": [640, 1280], "hero_min_area_px": 120000, "list_same_spot_max": 2, "list_same_spot_px": 40,
+                    "camera_kinds": ["camera-move", "screenshot-zoom", "hero-3d", "icon-3d"], "stack_kinds": ["card-fan", "card-grid", "thumb-grid", "swatch-row"],
+                    "layer_exempt": ["paper-canvas", "caption-word", "caption-group", "camera-move", "exit-move", "cursor", "mascot"],
+                    "note": "E8 (M16): the hero band is the middle third of the screen (E0's band); a camera scene holds a camera move, a screenshot with focus points or a turning 3D object"},
 }
 
 # The energy targets of E0 when the style has no calibration file (BUILD_SPEC.md, paper-cards)
@@ -281,19 +284,19 @@ def beat_table(style: str) -> list[dict]:
 # works, data, options) and the script by function; recorded in DECISIONS.md M9. "any" lists what every beat may
 # use (the canvas, the captions, the mascot and the moves).
 BEAT_TYPES = {
-    "hook": ["headline", "window-card", "logo-tile", "hero-3d", "icon-3d", "card", "fly-in", "stat-number"],
-    "stake": ["card", "dark-chip", "light-chip", "window-card", "strike-through", "handwritten-callout", "thumb-grid"],
-    "number": ["stat-number", "chart-card", "progress-bar", "dark-chip", "card", "light-chip"],
-    "tool": ["window-card", "logo-tile", "card", "light-chip", "dark-chip", "thumb-grid", "camera-move"],
-    "step": ["terminal-card", "chat-card", "check-badge", "light-chip", "window-card", "card", "progress-bar", "dark-chip"],
-    "comparison": ["table-card", "strike-through", "thumb-grid", "card", "chart-card", "dark-chip", "light-chip", "window-card"],
-    "proof": ["stat-number", "window-card", "chart-card", "check-badge", "dark-chip", "card", "table-card"],
-    "mechanism": ["card", "light-chip", "dark-chip", "chart-card", "terminal-card", "check-badge", "handwritten-callout", "thumb-grid", "window-card"],
-    "before-after": ["strike-through", "table-card", "thumb-grid", "card", "chart-card", "light-chip", "window-card"],
+    "hook": ["headline", "window-card", "logo-tile", "hero-3d", "icon-3d", "card", "fly-in", "stat-number", "video-card", "card-fan", "card-grid", "mock-site-card", "screenshot-zoom"],
+    "stake": ["card", "dark-chip", "light-chip", "window-card", "strike-through", "handwritten-callout", "thumb-grid", "card-fan", "card-grid", "mock-site-card", "video-card", "screenshot-zoom"],
+    "number": ["stat-number", "chart-card", "progress-bar", "dark-chip", "card", "light-chip", "video-card", "card-grid", "swatch-row", "timeline-scrubber", "card-fan"],
+    "tool": ["window-card", "logo-tile", "card", "light-chip", "dark-chip", "thumb-grid", "camera-move", "screenshot-zoom", "video-card", "mock-site-card"],
+    "step": ["terminal-card", "chat-card", "check-badge", "light-chip", "window-card", "card", "progress-bar", "dark-chip", "screenshot-zoom", "video-card", "timeline-scrubber", "mock-site-card"],
+    "comparison": ["table-card", "strike-through", "thumb-grid", "card", "chart-card", "dark-chip", "light-chip", "window-card", "card-grid", "card-fan", "swatch-row", "mock-site-card", "screenshot-zoom", "video-card", "swatch-card"],
+    "proof": ["stat-number", "window-card", "chart-card", "check-badge", "dark-chip", "card", "table-card", "screenshot-zoom", "video-card"],
+    "mechanism": ["card", "light-chip", "dark-chip", "chart-card", "terminal-card", "check-badge", "handwritten-callout", "thumb-grid", "window-card", "card-grid", "card-fan", "timeline-scrubber", "screenshot-zoom", "video-card", "mock-site-card", "swatch-row"],
+    "before-after": ["strike-through", "table-card", "thumb-grid", "card", "chart-card", "light-chip", "window-card", "card-grid", "swatch-row", "swatch-card", "mock-site-card"],
     "pain-payoff": ["card", "check-badge", "strike-through", "dark-chip", "light-chip", "window-card"],
-    "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip"],
+    "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip", "card-grid", "swatch-card", "mock-site-card", "video-card", "screenshot-zoom", "card-fan", "timeline-scrubber", "swatch-row"],
     "ask": ["end-card", "dm-card", "speech-bubble", "icon-3d"],
-    "any": ["paper-canvas", "caption-word", "caption-group", "mascot", "pop", "exit-move", "fly-in", "camera-move"],
+    "any": ["paper-canvas", "caption-word", "caption-group", "mascot", "pop", "exit-move", "fly-in", "camera-move", "cursor"],
 }
 
 

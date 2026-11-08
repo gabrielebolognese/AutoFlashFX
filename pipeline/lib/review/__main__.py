@@ -1,6 +1,8 @@
 """The review stage's tools (S12, BUILD_SPEC.md S12, M11). Run as `python pipeline/lib/review <command> [options]`:
 
   mechanical   the mechanical checks of the built composition (review/mechanical.py) -> 12-review/mechanical.json
+  energy-check the energy check of S12 (review/energy_check.py, Motion and energy rules E0 and E9): the mixed draft as a whole and scene
+               by scene against tokens.json energy; a failing scene becomes an [animation] issue for 9a -> 12-review/energy.json
   style        the style conformance check on the mixed draft (review/style_check.py) -> 12-review/style.json
   audio        the audio checks: S11's verification and the voice's intelligibility (review/audio_check.py) -> audio.json
   filmstrips   the 10 fps filmstrips of the hook and the transitions (review/filmstrip.py) -> 12-review/filmstrips/
@@ -25,13 +27,14 @@ import traceback
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from review import common as rc  # noqa: E402
+from review import energy  # noqa: E402
 
 
 def main(argv: list[str]) -> int:
     rc.mcommon.setup_streams()
     ap = argparse.ArgumentParser(prog="python pipeline/lib/review", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("mechanical", "style", "audio", "filmstrips", "prompt"):
+    for name in ("mechanical", "energy-check", "style", "audio", "filmstrips", "prompt"):
         p = sub.add_parser(name)
         p.add_argument("--run-dir", required=True)
         p.add_argument("--stage-dir", default="")
@@ -117,7 +120,6 @@ def remember(ctx: rc.Ctx, what: str, key: str, rep: dict) -> None:
 
 def run(a) -> int:
     if a.cmd == "energy":
-        from review import energy
         return energy.run_cli(a)
     if a.cmd == "strip":
         from review import filmstrip
@@ -146,6 +148,19 @@ def run(a) -> int:
         for i in rep["issues"][:12]:
             rc.log(f"  [{i['tag']}] {i['kind']}: {i['text'][:160]}")
         print(json.dumps({"ok": True, "pass": rep["pass"], "issues": len(rep["issues"])}))
+        return 0
+    if a.cmd == "energy-check":
+        from review import energy_check
+        rep = energy_check.run(ctx, os.path.join(ctx.stage_dir, "energy.json"))
+        w = rep["whole"]
+        if rep.get("skipped"):
+            rc.log(f"energy: skipped ({rep['skipped']})")
+            print(json.dumps({"ok": True, "pass": True, "issues": 0, "failing_scenes": [], "moving_share_pct": None, "skipped": True}))
+            return 0
+        rc.log(f"energy: {'pass' if rep['pass'] else str(len(rep['issues'])) + ' issues'}; the reel: " + energy.summary_line(w, rep["check"]) + f"; scenes failing: {', '.join(rep['failing_scenes']) or 'none'}")
+        for i in rep["issues"][:12]:
+            rc.log(f"  [{i['tag']}] {i['kind']}: {i['text'][:200]}")
+        print(json.dumps({"ok": True, "pass": rep["pass"], "issues": len(rep["issues"]), "failing_scenes": rep["failing_scenes"], "moving_share_pct": w.get("moving_share_pct"), "skipped": bool(rep.get("skipped"))}))
         return 0
     if a.cmd == "style":
         from review import style_check
@@ -188,9 +203,10 @@ def run(a) -> int:
         mech = rc.load_json(os.path.join(ctx.stage_dir, "mechanical.json"), None)
         style = rc.load_json(os.path.join(ctx.stage_dir, "style.json"), None)
         audio = rc.load_json(os.path.join(ctx.stage_dir, "audio.json"), None)
+        energy_rep = rc.load_json(os.path.join(ctx.stage_dir, "energy.json"), None)
         out_dir = os.path.join(ctx.stage_dir, "digest")
         os.makedirs(out_dir, exist_ok=True)
-        d = edit.digests(ctx, strips, mech, style, audio, a.round)
+        d = edit.digests(ctx, strips, mech, style, audio, a.round, energy_rep)
         for name, text in d.items():
             rc.write_text(os.path.join(out_dir, name + ".md"), rc.undash(text))
         print(json.dumps({"ok": True, "files": sorted(d), "dir": out_dir, "stills": edit.reference_stills(ctx)}))
@@ -200,8 +216,9 @@ def run(a) -> int:
         mech = rc.load_json(os.path.join(ctx.stage_dir, "mechanical.json"), None)
         style = rc.load_json(os.path.join(ctx.stage_dir, "style.json"), None)
         audio = rc.load_json(os.path.join(ctx.stage_dir, "audio.json"), None)
+        energy_rep = rc.load_json(os.path.join(ctx.stage_dir, "energy.json"), None)
         answer = rc.load_json(rc.mixed(a.answer), None) if a.answer else None
-        rev = route.decide(ctx, a.round, mech, style, audio, answer)
+        rev = route.decide(ctx, a.round, mech, style, audio, answer, energy_rep)
         rc.write_json(os.path.join(ctx.stage_dir, "review.json"), rev)
         rc.write_json(os.path.join(ctx.stage_dir, f"review-r{a.round}.json"), rev)
         if answer is not None:
@@ -216,7 +233,8 @@ def run(a) -> int:
         rc.write_text(os.path.join(ctx.stage_dir, "notes.md"), "\n".join(notes) + "\n")
         print(json.dumps({"ok": True, "pass": rev["pass"], "verdict": rev["verdict"], "scores": rev["edit_review"]["scores"], "low_scores": rev["summary"]["low_scores"],
                           "issues": len(rev["issues"]), "owners": rev["routing"]["owners"], "reopen": rev["routing"]["reopen"], "activity": rev["routing"]["activity"],
-                          "next_model": rev["routing"]["next_model"], "flags": rev["flags"], "cap_reached": rev["cap"]["reached"], "rounds_total": rev["cap"]["rounds_total"]}))
+                          "next_model": rev["routing"]["next_model"], "flags": rev["flags"], "cap_reached": rev["cap"]["reached"], "rounds_total": rev["cap"]["rounds_total"],
+                          "early_stop": rev["early_stop"]["stop"]}))
         return 0
     return 2
 

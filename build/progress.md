@@ -484,3 +484,33 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   M6 (script_checks.py, S7 schemas and prompts), M9 (tokens.py, catalog.py, expectations.py, golden.py, goldenplan.py, captions.py,
   test-m9), M10 (plan9.py, plan_validate.py, common.py, the frozen run's plans and project), M11 (mechanical.py, review/common.py,
   test-m11). Report: build/M15/report.md.
+
+## M16 Director, components and the energy loop
+- Status: done (2026-11-08). test-m16 sections 1 to 5 and 7: 166 passed, 0 failed (build/M16/final-tests/test-m16-a3.log); section 6, the test
+  idea from scratch with the real models, see build/M16/report.md. The test has seven sections: 1 the nine new components (catalog,
+  behavior in the browser harness, frame-match, no tween outside pc-motion.js, `npx hyperframes lint` and `check` on motion-lib/, the gallery),
+  2 S1's recordings (a local web server with a long page and a short one: NN-name.mp4 next to the png, H.264, 1080 wide, 5 to 8 s, no
+  sound, the page scrolls; none for a page that does not scroll; `--no-record`; assets.json), 3 the plan rules of E9 (the golden plan
+  passes, one planted plan per new rule fails its own rule, the levels warn and off, the director's repairs, the prompts, the digests,
+  the footprints and text of the new components), 4 the golden reel (every energy target met, every scene but the CTA at 80 percent of
+  each, written to golden/test-idea/energy.json), 5 S12 (the energy check on the golden, on a copy with one scene frozen and on a still
+  video, routing to 09a; the liveness checks clean on the golden and catching a planted static component and a canvas without edges; the
+  energy score; the early stop through route.decide and the CLI), 6 the real run, 7 the em dash scan. No model call in 1 to 5 and 7.
+- Test command: `M16_SECTIONS="1 2 3 4 5 7" bash pipeline/tests/test-m16.sh` (about 35 minutes; the golden render is reused when golden.mp4
+  is newer than the plan and the library, `M16_RERENDER=1` forces it, about 3 minutes); `M16_SECTIONS=6 bash pipeline/tests/test-m16.sh`
+  is the whole pipeline on the test idea with the real models and engine (2 to 4 hours); `bash pipeline/tests/run-all.sh` includes it.
+- Notes: the components are motion-lib/compositions/{screenshot-zoom,video-card,card-fan,card-grid,timeline-scrubber,cursor,mock-site-card,
+  swatch-row,swatch-card}.html on the new PCM.move, run, appear, vanish, pulse, press, glideProp and readout of pc-motion.js; video-card is
+  drawn from the hf-seek time through `waitUntil` (clip_start like the 3D components; a clip that is not on screen does not seek; the
+  recordings have a key frame every 6 frames: the golden renders in about 3 minutes with seven videos); S1's recordings are
+  pipeline/lib/screenshot.py (`--no-record`, `recording` and `recording_seconds` in the sidecar and assets.json); the rules are in
+  visual/plan_validate.py with their numbers in tokens.json motion.grammar.composition (config visual.energy_rules error | warn | off);
+  S12 is review/energy_check.py (the energy check, the ask scene left out of the per-scene routing), review/liveness.py (no element static
+  for 0.5 s, the edge layer present), the clip-aware rects in mechanical.py, the ninth score `energy`, the early stop (verdict `stop`);
+  config review.energy_check, liveness, early_stop. The golden reel (goldenplan.py DESIGN): the energy comes from recordings, zooms and
+  mock pages (a row of swatches or a card grid cannot carry a scene alone); the CTA gets end-card's optional confetti. The test sandboxes of
+  the milestones before M16 turn the energy rules, the energy check, the liveness checks and the early stop off (tests/sandbox-config.py,
+  lib.sh; SANDBOX_ENERGY=on keeps them on). Earlier milestones touched: M9 (harness.py, gallery.py, catalog.py, expectations.py,
+  frame-match --only keeps the report whole, goldenplan.py, golden.py, end-card.html, tokens.py), M10 (visual/common.py, plan9.py,
+  plan_validate.py, events.py), M11 (mechanical.py, route.py, edit.py, the 12-review stage, test-m11's scores line), M12 (research.py,
+  screenshot.py). DECISIONS.md 314 to 322. Report: build/M16/report.md.

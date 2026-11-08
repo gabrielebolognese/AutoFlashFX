@@ -38,6 +38,8 @@ def demo_props(c: dict, spec: dict | None) -> dict:
 
 def run_stills(args) -> int:
     lib = common.motion_lib_dir()
+    from motion import demo_assets
+    demo_assets.ensure(lib)
     cat = common.load_catalog(lib)
     specs = expectations.build(common.tokens())
     only = set(args.only.split(",")) if getattr(args, "only", "") else None
@@ -225,6 +227,8 @@ def write_showreel(lib: str, cat: dict, comps: list[dict], specs: dict) -> str:
 
 def run_gallery(args) -> int:
     lib = common.motion_lib_dir()
+    from motion import demo_assets
+    demo_assets.ensure(lib)
     cat = common.load_catalog(lib)
     specs = expectations.build(common.tokens())
     comps = components(lib, cat)

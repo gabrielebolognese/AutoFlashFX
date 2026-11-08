@@ -65,15 +65,17 @@ def build_page(component: dict, props: dict | None, lib: str | None = None, with
 
 
 MEASURE_JS = """
-(args) => {
+async (args) => {
   const tl = window.__timelines[args.id];
   const rows = [];
-  const seekTo = (t) => {
+  const seekTo = async (t) => {
     if (tl) tl.seek(t, false);
-    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: () => {} } })); } catch (e) {}
+    const waits = [];
+    try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: t, waitUntil: (p) => { waits.push(p); } } })); } catch (e) {}
+    if (waits.length) { try { await Promise.all(waits); } catch (e) {} }
   };
   for (const t of args.times) {
-    seekTo(t);
+    await seekTo(t);
     const row = { t: t };
     for (const sel of args.selectors) {
       const el = document.querySelector(sel);
@@ -113,10 +115,12 @@ MEASURE_JS = """
 """
 
 SEEK_JS = """
-(args) => {
+async (args) => {
   const tl = window.__timelines[args.id];
   if (tl) tl.seek(args.t, false);
-  try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: args.t, waitUntil: () => {} } })); } catch (e) {}
+  const waits = [];
+  try { window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: args.t, waitUntil: (p) => { waits.push(p); } } })); } catch (e) {}
+  if (waits.length) { try { await Promise.all(waits); } catch (e) {} }
   return true;
 }
 """

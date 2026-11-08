@@ -16,6 +16,7 @@ nowhere also goes on (flagged), never loops.
 """
 from __future__ import annotations
 
+import os
 import re
 
 from review import common as rc
@@ -52,14 +53,15 @@ def routable(issue: dict) -> bool:
     return bool(QUOTED.search(issue["text"]))
 
 
-def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, audio: dict | None, answer: dict | None) -> dict:
+def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, audio: dict | None, answer: dict | None, energy: dict | None = None) -> dict:
     cap_opus, cap_fable = int(ctx.c("caps.review_rounds_opus", 3)), int(ctx.c("caps.review_rounds_fable", 2))
     cap_total = cap_opus + cap_fable
     # no editor's answer (REELS_REVIEW_SKIP_EDIT, tests): the code checks alone decide and the scores count as 5
-    scores = {k: int((answer or {}).get("scores", {}).get(k, 5 if answer is None else 0) or 0) for k in SCORE_KEYS}
+    # an answer without the energy score (a record from before M16) counts as a pass on that one criterion; every other missing score is a 0
+    scores = {k: int((answer or {}).get("scores", {}).get(k, 5 if (answer is None or k == "energy") else 0) or 0) for k in SCORE_KEYS}
     branding_natural = bool((answer or {}).get("branding_natural", True))
     issues: list[dict] = []
-    for rep, src in ((mech, "mechanical"), (style, "style"), (audio, "audio")):
+    for rep, src in ((energy, "energy"), (mech, "mechanical"), (style, "style"), (audio, "audio")):
         for i in (rep or {}).get("issues", []):
             n = normalize_issue(i, src)
             if n:
@@ -72,7 +74,7 @@ def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, aud
     if answer is not None and not branding_natural:
         model_issues.append({"tag": "animation", "text": "the FlashFX branding feels like an ad, not a natural part of the reel (the edit review): " + rc.undash(str((answer or {}).get("branding_note", "") or (answer or {}).get("summary", "")))[:200],
                              "source": "model", "stage": "09a-animations", "kind": "branding_feel"})
-    checks_pass = bool((mech or {}).get("pass")) and bool((style or {}).get("pass")) and bool((audio or {}).get("pass"))
+    checks_pass = bool((mech or {}).get("pass")) and bool((style or {}).get("pass")) and bool((audio or {}).get("pass")) and (energy is None or bool(energy.get("pass")))
     low = [k for k in SCORE_KEYS if scores[k] < 4]
     scores_pass = not low
     passed = checks_pass and scores_pass
@@ -91,8 +93,14 @@ def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, aud
     next_model = ["", ""]
     flags: list[str] = []
     cap_reached = round_n >= cap_total
+    # E9, the early stop: two review rounds in a row with the same scores and the same issues end the loop (the reel exports with NEEDS REVIEW)
+    early = early_stop(ctx, round_n, scores, acting)
     if not passed:
-        if owners and not cap_reached:
+        if owners and not cap_reached and early["stop"]:
+            verdict = "stop"
+            flags.append(f"edit review: round {round_n} ended with the same scores and the same issues as round {round_n - 1}; the loop stops (early stop, Motion and energy rules E9) and the reel exports as it is. Scores: "
+                         + ", ".join(f"{k} {scores[k]}" for k in SCORE_KEYS) + ". Open issues: " + " | ".join(f"[{i['tag']}] {i['text'][:120]}" for i in acting[:6]))
+        elif owners and not cap_reached:
             verdict = "fix"
             first = owners[0]
             reopen = rc.STAGE_ORDER[rc.STAGE_ORDER.index(first):]
@@ -117,7 +125,32 @@ def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, aud
             "audio": {"pass": bool((audio or {}).get("pass")), "issues": len((audio or {}).get("issues", [])), "wer_pct": (audio or {}).get("intelligible", {}).get("wer_pct"), "sfx_pass": (audio or {}).get("sfx", {}).get("pass")},
             "edit_review": {"scores": scores, "scored": {k: SCORE_TEXT[k] for k in SCORE_KEYS}, "issues": model_issues, "branding_natural": branding_natural, "summary": rc.undash(str((answer or {}).get("summary", "")))[:600], "answered": answer is not None},
             "issues": issues, "routing": {"owners": owners, "reopen": reopen, "activity": activity, "next_model": next_model, "flags_only": [i["text"][:160] for i in flags_only]},
-            "cap": {"reached": cap_reached, "rounds_total": cap_total, "opus": cap_opus, "fable": cap_fable}, "flags": flags, "summary": summary}
+            "cap": {"reached": cap_reached, "rounds_total": cap_total, "opus": cap_opus, "fable": cap_fable}, "early_stop": early, "flags": flags, "summary": summary,
+            "energy": None if energy is None else {"pass": bool(energy.get("pass")), "issues": len(energy.get("issues", [])), "failing_scenes": energy.get("failing_scenes", []),
+                                                   "whole": {k: (energy.get("whole") or {}).get(k) for k in ("moving_share_pct", "middle_moving_share_pct", "pixels_changing_pct", "still_share_pct", "longest_still_s")}}}
+
+
+def issue_key(i: dict) -> tuple:
+    """What makes an issue the same issue in the next round: its tag, where it sits (scene, else instance) and what kind of check or note it is
+    (the model's words change every round, so they do not count)."""
+    return (i.get("tag", ""), i.get("scene") or i.get("instance") or "", i.get("kind") or i.get("source") or "")
+
+
+def early_stop(ctx: rc.Ctx, round_n: int, scores: dict, acting: list[dict]) -> dict:
+    """E9: this round and the one before it have the same scores and the same issues."""
+    out = {"stop": False, "same_scores": False, "same_issues": False}
+    if round_n < 2 or not ctx.c("review.early_stop", True):
+        return out
+    prev = rc.load_json(os.path.join(ctx.stage_dir, f"review-r{round_n - 1}.json"), None)
+    if not prev:
+        return out
+    prev_scores = (prev.get("edit_review") or {}).get("scores") or {}
+    same_scores = all(int(prev_scores.get(k, 0) or 0) == int(scores.get(k, 0) or 0) for k in SCORE_KEYS)
+    prev_issues = {issue_key(i) for i in prev.get("issues", []) if not i.get("note_only")}
+    now_issues = {issue_key(i) for i in acting}
+    out.update({"same_scores": same_scores, "same_issues": prev_issues == now_issues, "issues": len(now_issues)})
+    out["stop"] = bool(same_scores and prev_issues == now_issues and now_issues)
+    return out
 
 
 def feedback_record(review: dict) -> dict:

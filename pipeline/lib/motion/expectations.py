@@ -247,4 +247,63 @@ def build(tokens: dict) -> dict:
         strips=[], still_at=1.5,
         life={"selector": "#i3-shadow", "at": 0.2, "pixels": True, "no_inertia": True, "skip": ["#i3-stage"]})
 
+    # ---- M16 (Motion and energy rules E8): the components with real motion inside the content
+    E["screenshot-zoom"] = dict(
+        props={"image": "assets/demo/plugin-page.png", "focus_json": [{"x": 0.08, "y": 0.34, "w": 0.7, "h": 0.07, "at": 0.8}, {"x": 0.12, "y": 0.52, "w": 0.6, "h": 0.1, "at": 2.4}], "honesty": "sourced"},
+        frames=40, selectors=["#sz", "#sz-stage", "#sz-box-0"],
+        checks=[{"kind": "enter", "selector": "#sz", "at": 0, "opacity_frames": enter["opacity_frames"], "position_frames": enter["position_frames"], "rise": enter["rise_px"]}],
+        strips=["v07/extra/s30_011.4_window_rise.png", "v01/extra/s30_hook.png"], still_at=1.6,
+        life={"selector": "#sz", "at": 0, "skip": ["#sz-box-0"]})
+
+    E["video-card"] = dict(
+        props={"video": "assets/demo/plugin-scroll.mp4", "title": "claude.com/plugins", "honesty": "sourced"}, frames=24, selectors=["#vc"],
+        checks=[{"kind": "enter", "selector": "#vc", "at": 0, "opacity_frames": enter["opacity_frames"], "position_frames": enter["position_frames"], "rise": enter["rise_px"]}],
+        strips=["v07/extra/s30_011.4_window_rise.png", "v01/extra/s30_hook.png", "v03/extra/s30_hook_000.0.png"], still_at=1.4,
+        life={"selector": "#vc", "at": 0})
+
+    E["card-fan"] = dict(
+        props={}, frames=40, selectors=["#cf-wrap", "#cf-card-0", "#cf-card-2", "#cf-card-4"],
+        checks=[{"kind": "fade", "selector": "#cf-card-0", "at": 0, "frames": 5}],
+        strips=["v04/extra/s30_deckgrid_f420.png", "v02/extra/s30_grid34.png"], still_at=1.0,
+        life={"selector": "#cf-wrap", "at": 0, "no_inertia": True})
+
+    E["card-grid"] = dict(
+        props={}, frames=30, selectors=["#cg-wrap", "#cg-card-0", "#cg-card-1", "#cg-card-2", "#cg-card-3"],
+        checks=[{"kind": "fade", "selector": "#cg-card-0", "at": 0, "frames": 6},
+                {"kind": "stagger", "selectors": ["#cg-card-0", "#cg-card-1"], "gap_frames": 3}],
+        strips=["v02/extra/s30_grid34.png", "v04/extra/s30_gridsettle_f444.png"], still_at=1.0,
+        life={"selector": "#cg-wrap", "at": 0, "no_inertia": True})
+
+    E["timeline-scrubber"] = dict(
+        props={}, frames=24, selectors=["#ts", "#ts-head", "#ts-thumb-0"],
+        checks=[{"kind": "enter", "selector": "#ts", "at": 0, "opacity_frames": enter["opacity_frames"], "position_frames": enter["position_frames"], "rise": enter["rise_px"]}],
+        strips=["v06/extra/s30_001.0_card.png"], still_at=2.0,
+        life={"selector": "#ts", "at": 0, "skip": ["#ts-thumb-0"]})
+
+    E["cursor"] = dict(
+        props={"enter_at": 0.1}, frames=60, selectors=["#cu", "#cu-arrow"],
+        checks=[{"kind": "fade", "selector": "#cu", "at": 0.1, "frames": 4}],
+        strips=[], still_at=1.4,
+        life={"selector": "#cu-arrow", "at": 0.1, "no_inertia": True, "skip": ["#cu"]})
+
+    E["mock-site-card"] = dict(
+        props={}, frames=40, selectors=["#ms", "#ms-cta"],
+        checks=[{"kind": "enter", "selector": "#ms", "at": 0, "opacity_frames": enter["opacity_frames"], "position_frames": enter["position_frames"], "rise": enter["rise_px"]}],
+        strips=["v07/extra/s30_011.4_window_rise.png", "v01/extra/s30_hook.png"], still_at=1.8,
+        life={"selector": "#ms", "at": 0, "skip": ["#ms-cta"]})
+
+    E["swatch-row"] = dict(
+        props={"colors_json": [{"color": "#DC6532", "at": 0.8}, {"color": "#1C110F", "at": 1.4}, {"color": "#F5EEE3", "at": 2.0}, {"color": "#289C5C", "at": 2.6}]}, frames=50,
+        selectors=["#sr-wrap", "#sr-slot-0", "#sr-fill-0", "#sr-fill-1"],
+        checks=[{"kind": "grow", "selector": "#sr-fill-0", "at": 0.8, "frames": 10, "axis": "h"}],
+        strips=["v04/extra/s30_bars_f1426.png", "v06/extra/s30_048.0_bars.png"], still_at=2.0,
+        life={"selector": "#sr-wrap", "at": 0, "skip": ["#sr-fill-0", "#sr-fill-1"]})
+
+    E["swatch-card"] = dict(
+        props={}, frames=40, selectors=["#sc", "#sc-fill", "#sc-hex"],
+        checks=[{"kind": "enter", "selector": "#sc", "at": 0, "opacity_frames": enter["opacity_frames"], "position_frames": enter["position_frames"], "rise": enter["rise_px"]},
+                {"kind": "typing", "selector": "#sc-hex", "at": 0.7, "frames_per_char": 2, "chars": 7}],
+        strips=["v07/extra/s30_011.4_window_rise.png"], still_at=1.4,
+        life={"selector": "#sc", "at": 0})
+
     return E

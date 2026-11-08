@@ -53,7 +53,11 @@ as of today, {{TODAY}}. Not virality: the account's owner validated the idea bef
   - `bash pipeline/bin/screenshot <url> <short-name>` for a screenshot (1080 px wide, saved under
     {{ASSETS_DIR}}). It prints one JSON line: ok true with the file name, or ok false with the reason. When a site
     blocks automated access (ok false, blocked true) nothing is saved and you do not try another way around it.
-    Use short names such as repo, docs, install, release. Add `--full-page` for a long docs page.
+    Use short names such as repo, docs, install, release. Add `--full-page` for a long docs page. The command also
+    records a 5 to 8 second scroll video of the page next to the screenshot (a longer page makes a better one;
+    it adds about 20 seconds); the reel's video cards play these, so prefer pages with real content that scrolls
+    (the repository, the docs, the product page) over a bare login or landing screen. Add `--no-record` only for
+    a page that must not be filmed.
 - Read may open a screenshot (a PNG path printed by the command) to check that it shows the page and not an error.
 - Never write, edit, move or delete files yourself, never clone repositories, never install anything, never run any
   other command.

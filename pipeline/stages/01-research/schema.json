@@ -81,7 +81,9 @@
           "checked": {"type": "string"},
           "width": {},
           "height": {},
-          "what": {"type": "string"}
+          "what": {"type": "string"},
+          "recording": {"type": "string"},
+          "recording_seconds": {}
         }
       }
     },

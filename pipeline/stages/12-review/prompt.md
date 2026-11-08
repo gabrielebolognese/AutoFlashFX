@@ -52,6 +52,11 @@ back for a fix):
   a ding only on a checkmark, nothing cluttering the voice, no sound on a moment that does not move
 - generic: nothing looks generic (stock-looking cards, placeholder text, an empty frame)
 - requirements: the problem, the share line and the comment keyword are visible on screen
+- energy: does every scene keep moving (Motion and energy rules E1 to E8): the hero fills the middle of the screen, content moves
+  inside the cards (a recording playing, a page panned and zoomed, a playhead, a count, typing), elements keep drifting after they land,
+  there is depth (layers at different distances, a camera move every few scenes), the edges of the frame are alive (cards and shapes
+  half outside it), and no scene sits still. The code measured the energy already (the check line above gives the numbers): judge
+  what the numbers cannot, whether the motion has a purpose and variety, and tag a scene that feels static [animation]
 
 Branding: the CTA always carries the FlashFX DM notification card and the FlashFX lockup; elsewhere FlashFX shows
 only when the reel's solution is FlashFX. Say whether this feels natural (a creator's account that happens to be
@@ -66,7 +71,7 @@ verified unless you see it on the stills. No em dash anywhere in your answer.
 ## Your answer
 
 Only this JSON object:
-{"scores": {"stop": 4, "hierarchy": 4, "look": 4, "variety": 4, "sync": 4, "sound": 4, "generic": 4, "requirements": 4},
+{"scores": {"stop": 4, "hierarchy": 4, "look": 4, "variety": 4, "sync": 4, "sound": 4, "generic": 4, "requirements": 4, "energy": 4},
  "branding_natural": true, "branding_note": "",
  "issues": [{"tag": "text", "text": "...", "scene": "s3", "severity": "minor"}],
  "summary": "..."}

@@ -70,6 +70,12 @@ sandbox_init() {
   SANDBOX_M="$(mixed "$SANDBOX")"
   mkdir -p "$SANDBOX/library/profile" "$SANDBOX/logs"
   cp "$REPO_DIR/config.json" "$SANDBOX/config.json"
+  # M16 (Motion and energy rules E8, E9): the milestones before it run their frozen low-energy plans and drafts and their editors that fail
+  # the same way every round: the energy rules, the energy check, the liveness checks and the early stop are off in their sandboxes
+  # (SANDBOX_ENERGY=on turns them on, as test-m16 does)
+  if [ "${SANDBOX_ENERGY:-off}" != on ]; then
+    python "$REPO_DIR/pipeline/tests/sandbox-config.py" "$SANDBOX_M/config.json"
+  fi
   # SANDBOX_WPM pins config voice.wpm in the sandbox (M5 and M6: their frozen fixtures and asserted numbers were
   # made at the user's 195 wpm; since M7 the repo's voice.wpm is the reel voice's measured pace)
   if [ -n "${SANDBOX_WPM:-}" ]; then python "$REPO_DIR/pipeline/lib/voiceprofile.py" set-wpm --config "$SANDBOX_M/config.json" --wpm "$SANDBOX_WPM" >/dev/null; fi

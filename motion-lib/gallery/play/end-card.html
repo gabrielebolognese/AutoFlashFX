@@ -5,7 +5,7 @@
 <base href="file:///C:/Users/there/OneDrive/Desktop/instagramReels/motion-lib/">
 <style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F5EEE3; } #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }</style>
 <script src="assets/vendor/gsap.min.js"></script>
-<script>window.__timelines = {}; window.__hfVars = {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "of the AI tells to ditch", "mascots_json": "[\"clapper\",\"star\",\"film\",\"play\",\"grid\"]", "lockup": "assets/brand/lockup/lockup-gradient-on-light.png", "lockup_w": 360, "lockup_y": 1230, "enter_at": 0, "fade_frames": 6, "stagger_frames": 6, "type_frames": 2, "wobble": true, "hold": "calm"};
+<script>window.__timelines = {}; window.__hfVars = {"verb": "Comment", "keyword": "TELLS", "line1": "and I send you the checklist", "line2": "of the AI tells to ditch", "mascots_json": "[\"clapper\",\"star\",\"film\",\"play\",\"grid\"]", "lockup": "assets/brand/lockup/lockup-gradient-on-light.png", "lockup_w": 360, "lockup_y": 1230, "enter_at": 0, "fade_frames": 6, "stagger_frames": 6, "type_frames": 2, "wobble": true, "confetti_count": 0, "confetti_at": 1.2, "confetti_seconds": 2.4, "hold": "calm"};
 window.__hyperframes = { getVariables: function () { return Object.assign({}, window.__hfVars); } };
 window.__pcEvents = [];
 </script>
@@ -64,8 +64,10 @@ window.__pcEvents = [];
     #ec-row .pc-mascot { position: absolute; top: 20px; }
     #ec-lockup { left: 0; width: 1080px; display: flex; justify-content: center; }
     #ec-lockup img { display: block; object-fit: contain; }
+    #ec-confetti .sb-piece { position: absolute; width: 30px; height: 46px; border-radius: 5px; }
   </style>
   <div id="root" data-composition-id="end-card" data-width="1080" data-height="1920">
+    <div id="ec-confetti" class="pc-el" data-layout-ignore style="left:0;top:0;width:1080px;height:1920px;pointer-events:none"></div>
     <div id="ec-card" class="pc-card pc-el">
       <div id="ec-verb"></div>
       <div id="ec-pill" class="pc-keyword-pill"><span id="ec-keyword"></span></div>
@@ -79,7 +81,7 @@ window.__pcEvents = [];
   <script>
     (function () {
       var v = PC.vars({ verb: "Comment", keyword: "TELLS", line1: "", line2: "", mascots_json: ["clapper", "star", "film", "play", "grid"], lockup: "",
-        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true, hold: "calm" }, window.__hyperframes.getVariables());
+        lockup_w: 360, lockup_y: 1230, enter_at: 0, fade_frames: 6, stagger_frames: 6, type_frames: 2, wobble: true, confetti_count: 0, confetti_at: 1.2, confetti_seconds: 2.4, hold: "calm" }, window.__hyperframes.getVariables());
       var card = document.getElementById("ec-card"), verb = document.getElementById("ec-verb"), pill = document.getElementById("ec-pill");
       var kw = document.getElementById("ec-keyword"), linesEl = document.getElementById("ec-lines"), row = document.getElementById("ec-row");
       var lockupWrap = document.getElementById("ec-lockup");
@@ -133,6 +135,10 @@ window.__pcEvents = [];
       if (lockupImg) {
         var lAt = Math.max(t, typeEnd + PC.f(2));
         PCM.life(tl, lockupWrap, { at: lAt, main: { kind: "fade", frames: v.fade_frames, rise: 18, ease: "power2.out", zoom: false, rotate: false }, hold: { level: v.hold, kind: "drift" }, events: { enter: "lockup" } });
+      }
+      if (v.confetti_count > 0) {
+        // pieces start over confetti_seconds across the whole width, from above the card, and fall past it (seeded: the same on every render)
+        PCM.confetti(tl, document.getElementById("ec-confetti"), v.enter_at + v.confetti_at, { count: v.confetti_count, seed: 11, x: 40, y: 560, width: 900, height: 160, spread: v.confetti_seconds, idPrefix: "ec-p", colors: ["#DC6532", "#289C5C", "#1C110F", "#C9623C", "#D67354"] });
       }
       window.__timelines["end-card"] = tl;
       tl.seek(0);

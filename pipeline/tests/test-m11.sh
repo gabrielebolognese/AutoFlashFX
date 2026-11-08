@@ -449,7 +449,7 @@ if want 2; then
   assert_grep "${ts_regex}STEP   adding sound effects done \([0-9hms]+\) -> reviewing: mechanical checks$" "$OUT" "pass: S11 done, the runner moves to S12"
   assert_grep "${ts_regex}INFO   S12: review round 1/5 of the draft$" "$OUT" "pass: S12 announces round 1 of 5"
   assert_grep "${ts_regex}INFO   S12: code checks: mechanical ok, style ok, audio ok \(voice WER [0-9.]+%\)$" "$OUT" "pass: the three code checks pass"
-  assert_grep "${ts_regex}INFO   S12: review round 1 passed \(scores stop 4, hierarchy 4, look 4, variety 4, sync 5, sound 4, generic 4, requirements 4\)$" "$OUT" "pass: the round passes with the editor's scores"
+  assert_grep "${ts_regex}INFO   S12: review round 1 passed \(scores stop 4, hierarchy 4, look 4, variety 4, sync 5, sound 4, generic 4, requirements 4, energy 5\)$" "$OUT" "pass: the round passes with the editor's scores"
   assert_grep "${ts_regex}STEP   reviewing: mechanical checks done \([0-9hms]+\) -> rendering final video$" "$OUT" "pass: S12 done, the runner moves to S13"
   assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "pass: the run continued to the (dummy) export"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "pass: no ERROR or BLOCK line"

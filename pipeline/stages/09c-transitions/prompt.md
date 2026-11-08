@@ -31,8 +31,11 @@ Answer with only the JSON object described at the end.
   the bottom over 10 frames, tilting; a turn in the story, a heavier beat), push (6 frames out to the left plus 2
   empty frames; a step forward, a before and after), cut (a hard cut; rare in this look, at most a third of the
   changes, never two in a row). The durations are the style's; the pipeline sets them.
-- Vary them: not the same non-default type twice in a row; a slow move (fall) into a calm beat (the stake, a pain,
-  the payoff), a push where the beat turns, fade-blur between beats that continue a thought.
+- Vary them (Motion and energy rules E8): no transition type more than 3 times in the reel (the validator fails the plan, and
+  the pipeline would change the extra ones itself, so choose them yourself); not the same non-default type twice in a row; a
+  slow move (fall) into a calm beat (the stake, a pain, the payoff), a push where the beat turns, fade-blur between beats that
+  continue a thought. With about 10 changes a good mix is 3 fade-blur, 3 fall, 3 push and 1 cut. A scene change is also energy:
+  the leaving elements carry on moving until their exit, the next scene's elements enter on the first frame.
 - The sound pass gives slow transitions a slow whoosh (400 ms or more, or into a calm beat) and quick ones a fast one.
 - Never an em dash in the why lines.
 

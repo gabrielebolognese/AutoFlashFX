@@ -5,9 +5,9 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M15 Kinetic captions and text discipline: done (2026-11-07). Next: M16 Director, components and the energy loop
-  (BUILD_SPEC.md section 5, Motion and energy rules E8, E9), then M17 Control check and M18 to M24: the channels plan (BUILD_SPEC.md section 14, explained in CHANNELS.md; the
-  editable project is M21). The build is driven by `bash build-runner.sh` (`--until M16` stops after M16; a
+- M16 Director, components and the energy loop: done (2026-11-08). Next: M17 Control check and M18 to M24: the channels plan
+  (BUILD_SPEC.md section 14, explained in CHANNELS.md; the editable project is M21). The build is driven by `bash build-runner.sh`
+  (`--until M17` stops after M17; a
   build/PAUSE file stops it between milestones); its log is build/build.log and its per-milestone reports are in
   build/M<n>/.
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
@@ -114,7 +114,26 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   validator's rules `caption_modes`, `text_budget` (100 characters of non-caption text on screen) and `text_size` (a size the
   plan chooses under the caption size is an error, a size the library bakes in a warning: DECISIONS.md 308), S12's
   mechanical rules `caption_mode`, `caption_static`, `text_budget` and the baked-size warnings, the golden plan with groups on
-  its number and payoff beats, pipeline/tests/m15-mkrun.py and m15-frames.py (DECISIONS.md 306 to 312). Run every
+  its number and payoff beats, pipeline/tests/m15-mkrun.py and m15-frames.py (DECISIONS.md 306 to 312), M16: nine components on
+  pc-motion.js with real motion inside the content (motion-lib/compositions/screenshot-zoom.html: a camera over a real page with focus
+  points and a highlight box; video-card.html: a recording or clip playing in a window or a bare frame, drawn from the hf-seek time through
+  `waitUntil` with clip_start like the 3D components; card-fan.html, card-grid.html, timeline-scrubber.html, cursor.html, mock-site-card.html,
+  swatch-row.html, swatch-card.html), the moves they share as PCM.move, run, appear, vanish, pulse, press, glideProp and readout in
+  pc-motion.js (test-m14 bans a tween in a composition), pipeline/lib/motion/demo_assets.py (the demo clips of the library and the
+  recordings of the frozen test run's screenshots, built when missing: *.mp4 is not in git), S1's page recordings (pipeline/lib/screenshot.py
+  records a 5 to 8 s scroll video next to every screenshot that scrolls: NN-name.mp4, H.264, 1080 wide, key frame every 6 frames;
+  assets.json: recording, recording_seconds; `--no-record` skips it; research/<file>.mp4 in a video prop), the validator rules of E9
+  in visual/plan_validate.py (hero_motion, hero_fill, layers, camera, hook_frame0, empty_paper, list_entry, transition_variety, and the
+  warning real_motion; config visual.energy_rules error | warn | off; tokens.json motion.grammar.composition holds the numbers), the
+  director's repairs in visual/plan9.py (hook_moves_from_frame0, vary_transitions), the 9a and 9c prompts around the Motion and energy
+  rules, the new golden reel (golden/test-idea: its energy in energy.json meets every target of tokens.json), S12's energy loop
+  (pipeline/lib/review/energy_check.py: the energy check first, a failing scene routed to 9a with its numbers, the ask scene left out
+  of the per-scene routing; review/liveness.py: no element static for 0.5 s and the edge layer present, in the mechanical checks; the
+  ninth edit-review score `energy`; the early stop in route.py: the same scores and issues twice in a row give the verdict `stop` and a
+  NEEDS REVIEW flag; config review.energy_check, liveness, early_stop, energy_scene_share, min_edge_elements), end-card's optional
+  confetti, pipeline/tests/test-m16.sh with m16-lib.py, m16-recording.py, m16-plans.py, m16-review.py and sandbox-config.py (the test
+  sandboxes of the milestones before M16 turn the energy rules, the energy check, the liveness checks and the early stop off:
+  SANDBOX_ENERGY=on keeps them on; DECISIONS.md 314 to 320). Run every
   test with `bash pipeline/tests/run-all.sh` (about 2.5 hours plus test-m12 section 4, the whole pipeline on the test
   idea with the real models, 1 to 3 hours, and test-m13 section 3, three ideas with the real models, several hours;
   test-m3 section 4, test-m4
@@ -123,7 +142,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   about 25 minutes, test-m11 about 40 minutes; `M7_SECTIONS="1 2" bash pipeline/tests/test-m7.sh`,
   `M10_SECTIONS="1 2" bash pipeline/tests/test-m10.sh`, `M11_SECTIONS="1 2 3" bash pipeline/tests/test-m11.sh` and
   `M12_SECTIONS="1 2 3 5" bash pipeline/tests/test-m12.sh` and `M13_SECTIONS="1 2 4" bash pipeline/tests/test-m13.sh`
-  (about 20 minutes) are the fake-only tests; `bash pipeline/tests/test-m14.sh` makes no model call, about 30 minutes:
+  (about 20 minutes) are the fake-only tests; `M16_SECTIONS="1 2 3 4 5 7" bash pipeline/tests/test-m16.sh` makes no model call, about 40 minutes
+  (its section 6 is the test idea with the real models, 2 to 4 hours); `bash pipeline/tests/test-m14.sh` makes no model call, about 30 minutes:
   frame-match on every component and the golden render; `bash pipeline/tests/test-m15.sh` makes no model call, about 15 minutes:
   the layout engine, the plan rules with planted faults, the golden captions frame by frame, S12's checks on planted copies; the tests never assert on the user's profile: test-m12 and
   test-m13 use drafts of their own, pipeline/tests/fixtures/profile/, DECISIONS.md 305).

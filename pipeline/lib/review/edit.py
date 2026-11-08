@@ -21,10 +21,11 @@ import os
 
 from review import common as rc
 
-SCORE_KEYS = ("stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements")
+SCORE_KEYS = ("stop", "hierarchy", "look", "variety", "sync", "sound", "generic", "requirements", "energy")
 SCORE_TEXT = {"stop": "frame 1 stops the scroll", "hierarchy": "hierarchy and legibility", "look": "matches the look (would sit on the same account)",
               "variety": "motion variety", "sync": "sync with the voice", "sound": "sound fit", "generic": "nothing looks generic",
-              "requirements": "the requirements are visible (the problem, the share line, the keyword)"}
+              "requirements": "the requirements are visible (the problem, the share line, the keyword)",
+              "energy": "every scene keeps moving, with inertia, depth and edges (Motion and energy rules E1 to E8)"}
 
 
 def reference_stills(ctx: rc.Ctx, n: int = 3) -> list[str]:
@@ -92,7 +93,7 @@ def images_md(ctx: rc.Ctx, strips: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def checks_md(mech: dict | None, style: dict | None, audio: dict | None) -> str:
+def checks_md(mech: dict | None, style: dict | None, audio: dict | None, energy: dict | None = None) -> str:
     def part(name: str, rep: dict | None) -> str:
         if not rep:
             return f"- {name}: not run"
@@ -101,6 +102,10 @@ def checks_md(mech: dict | None, style: dict | None, audio: dict | None) -> str:
         return f"- {name}: {len(rep.get('issues', []))} issue(s): " + "; ".join(rc.undash(i.get("text", ""))[:140] for i in rep.get("issues", [])[:6])
     lines = ["The code checked these already (do not repeat them, build on them):", part("mechanical checks (zones, right rail, fonts, overlaps, contrast, emphasis timing, branding)", mech),
              part("style conformance (cadence, palette, accent share, loudness)", style), part("audio (the sound verification, the voice's intelligibility in the mix)", audio)]
+    if energy:
+        w = energy.get("whole") or {}
+        lines.append(("- energy meter (the reel and every scene against the style's targets): " + ("passed" if energy.get("pass") else f"{len(energy.get('issues', []))} issue(s): " + "; ".join(rc.undash(i.get("text", ""))[:160] for i in energy.get("issues", [])[:4]))
+                      + f". The reel: moving share {w.get('moving_share_pct')}%, middle band {w.get('middle_moving_share_pct')}%, pixels changing {w.get('pixels_changing_pct')}%, still stretches {w.get('still_share_pct')}%, longest still {w.get('longest_still_s')} s."))
     if mech and mech.get("branding"):
         b = mech["branding"]
         lk, av = b.get("lockup") or {}, b.get("avatar") or {}
@@ -123,8 +128,8 @@ def history_md(ctx: rc.Ctx, round_n: int) -> str:
     return "Earlier rounds of this reel (the draft was rebuilt after each; check whether the issues are gone):\n" + "\n".join(rows) + "\n"
 
 
-def digests(ctx: rc.Ctx, strips: dict, mech: dict | None, style: dict | None, audio: dict | None, round_n: int) -> dict:
-    return {"scenes": scenes_md(ctx), "requirements": requirements_md(ctx), "images": images_md(ctx, strips), "checks": checks_md(mech, style, audio), "history": history_md(ctx, round_n)}
+def digests(ctx: rc.Ctx, strips: dict, mech: dict | None, style: dict | None, audio: dict | None, round_n: int, energy: dict | None = None) -> dict:
+    return {"scenes": scenes_md(ctx), "requirements": requirements_md(ctx), "images": images_md(ctx, strips), "checks": checks_md(mech, style, audio, energy), "history": history_md(ctx, round_n)}
 
 
 def score_table(scores: dict) -> str:

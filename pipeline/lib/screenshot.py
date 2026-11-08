@@ -2,7 +2,7 @@
 """screenshot.py: capture a real web page as a research asset (BUILD_SPEC.md section 5, S1).
 
   python pipeline/lib/screenshot.py URL NAME [--out-dir DIR] [--width 1080] [--height 1920] [--full-page]
-                                    [--timeout 45] [--again]
+                                    [--timeout 45] [--again] [--no-record] [--record-seconds 6]
   The stages and the research model call it through the wrapper: bash pipeline/bin/screenshot URL NAME
 
 Writes DIR/NN-<name>.png (1080 px wide by default, the first screen only; --full-page for the whole page, capped
@@ -15,6 +15,12 @@ folder returns the first capture (--again forces a new one).
 It never gets around a site that blocks automated access (BUILD_SPEC.md S1): a 401, 403, 429 or 503 answer, or a
 page that is a bot check (Cloudflare's "Just a moment", "Verify you are human", "Access denied", a captcha), is
 reported as blocked and nothing is saved. Plain headless Chromium: no user agent spoofing, no stealth plugins.
+
+M16 (Motion and energy rules E8): next to the screenshot it records a scroll video of the page, DIR/NN-<name>.mp4 (H.264,
+1080 px wide, 30 fps, no sound, 5 to 8 seconds, 6 by default): a smooth scroll from the top through the page, for the video
+card and the window card to play. The sidecar gains recording (the file name) and recording_seconds. A page that does not
+scroll (less than 300 px of room) or a recording that fails leaves recording null: the screenshot stands and the failure is
+never an error. --no-record skips it.
 
 Prints one JSON line: {"ok": true, "file": "...", "url": ..., "final_url": ..., "title": ..., "status": ...,
 "reused": bool} or {"ok": false, "error": "...", "blocked": bool}.
@@ -163,6 +169,73 @@ def capture(url: str, png: str, width: int, height: int, full_page: bool, timeou
             browser.close()
 
 
+def ffmpeg_exe() -> str | None:
+    import shutil
+    return shutil.which("ffmpeg")
+
+
+def record_scroll(url: str, mp4: str, width: int, height: int, seconds: float, timeout_s: float) -> dict:
+    """Record the page scrolling from the top (a smooth requestAnimationFrame scroll of `seconds`, easing in and out) and
+    encode it to mp4. Returns {"ok": bool, "seconds": float, "reason": str}; never raises."""
+    import shutil
+    import subprocess
+    ffmpeg = ffmpeg_exe()
+    if not ffmpeg:
+        return {"ok": False, "reason": "ffmpeg is not on PATH"}
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        return {"ok": False, "reason": "playwright is not installed"}
+    tmp = tempfile.mkdtemp(prefix="rec-", dir=os.path.dirname(mp4))
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            try:
+                made = time.time()
+                context = browser.new_context(viewport={"width": width, "height": height}, device_scale_factor=1,
+                                              record_video_dir=tmp, record_video_size={"width": width, "height": height})
+                page = context.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=int(timeout_s * 1000))
+                try:
+                    page.wait_for_load_state("networkidle", timeout=min(12000, int(timeout_s * 1000)))
+                except Exception:  # noqa: BLE001
+                    pass
+                page.wait_for_timeout(600)
+                room = 0
+                try:
+                    room = int(page.evaluate("Math.max(0, document.documentElement.scrollHeight - window.innerHeight)") or 0)
+                except Exception:  # noqa: BLE001
+                    room = 0
+                if room < 300:
+                    context.close()
+                    return {"ok": False, "reason": f"the page does not scroll ({room} px of room)"}
+                dist = min(room, int(height * 2.2))
+                start_offset = max(0.0, time.time() - made - 0.15)
+                page.evaluate(
+                    "([dist, ms]) => new Promise(res => { const t0 = performance.now(); const ease = p => p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;"
+                    " const step = now => { const p = Math.min(1, (now - t0) / ms); window.scrollTo(0, dist * ease(p)); if (p < 1) requestAnimationFrame(step); else res(true); };"
+                    " requestAnimationFrame(step); })", [dist, int(seconds * 1000)])
+                page.wait_for_timeout(250)
+                video = page.video
+                context.close()  # flushes the video file
+                webm = video.path() if video else ""
+            finally:
+                browser.close()
+        if not webm or not os.path.isfile(webm):
+            return {"ok": False, "reason": "Playwright wrote no video"}
+        cmd = [ffmpeg, "-v", "error", "-y", "-ss", f"{start_offset:.2f}", "-i", webm, "-t", f"{seconds + 0.2:.2f}",
+               "-vf", f"scale={width}:-2:flags=lanczos,fps=30", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "24",
+               "-g", "6", "-keyint_min", "6", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]  # a key frame every 6 frames: the video card seeks it frame by frame
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, encoding="utf-8", errors="replace")
+        if proc.returncode != 0 or not os.path.isfile(mp4):
+            return {"ok": False, "reason": "ffmpeg: " + (proc.stderr or "")[-200:].strip()}
+        return {"ok": True, "seconds": round(seconds + 0.2, 2)}
+    except Exception as exc:  # noqa: BLE001  (a recording is a bonus: whatever goes wrong, the screenshot stands)
+        return {"ok": False, "reason": (str(exc).splitlines() or [exc.__class__.__name__])[0][:200]}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main(argv=None) -> int:
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -178,6 +251,8 @@ def main(argv=None) -> int:
     parser.add_argument("--full-page", action="store_true")
     parser.add_argument("--timeout", type=float, default=45.0)
     parser.add_argument("--again", action="store_true")
+    parser.add_argument("--no-record", action="store_true", help="skip the scroll recording next to the screenshot")
+    parser.add_argument("--record-seconds", type=float, default=6.0, help="the recording's scroll, 5 to 8 seconds (default 6)")
     args = parser.parse_args(argv)
 
     url = args.url.strip()
@@ -197,7 +272,7 @@ def main(argv=None) -> int:
     if not args.again:
         prior = existing_capture(out_dir, url)
         if prior:
-            emit({"ok": True, "reused": True, "file": prior["file"], "path": os.path.join(out_dir, prior["file"]).replace("\\", "/"),
+            emit({"ok": True, "reused": True, "file": prior["file"], "path": os.path.join(out_dir, prior["file"]).replace("\\", "/"), "recording": prior.get("recording"),
                   "url": prior.get("url"), "final_url": prior.get("final_url"), "title": prior.get("title"),
                   "status": prior.get("status")})
             return 0
@@ -230,16 +305,26 @@ def main(argv=None) -> int:
         emit({"ok": False, "blocked": True, "status": result.get("status"), "title": result.get("title"),
               "error": f"the site blocks automated access (status {result.get('status')}, title {result.get('title')!r}); nothing saved, do not try to get around it"})
         return 2
+    recording, rec_seconds, rec_note = None, None, ""
+    if not args.no_record:
+        rec_s = max(5.0, min(8.0, args.record_seconds))
+        mp4 = os.path.join(out_dir, base + ".mp4")
+        rec = record_scroll(url, mp4, args.width, min(args.height, 1350), rec_s, args.timeout)
+        if rec.get("ok"):
+            recording, rec_seconds = base + ".mp4", rec["seconds"]
+        else:
+            rec_note = rec.get("reason", "")
     now = time.localtime()
     side = {"ok": True, "file": base + ".png", "name": name, "url": url, "final_url": result["final_url"],
             "title": result["title"], "status": result["status"], "width": result["width"], "height": result["height"],
             "full_page": bool(args.full_page), "captured": time.strftime("%Y-%m-%d %H:%M", now),
-            "checked": time.strftime("%Y-%m-%d", now), "seconds": round(time.time() - started, 1)}
+            "checked": time.strftime("%Y-%m-%d", now), "seconds": round(time.time() - started, 1),
+            "recording": recording, "recording_seconds": rec_seconds, "recording_note": rec_note}
     with open(side_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(side, f, ensure_ascii=False, indent=1)
     emit({"ok": True, "reused": False, "file": side["file"], "path": png.replace("\\", "/"), "url": url,
           "final_url": side["final_url"], "title": side["title"], "status": side["status"], "width": side["width"],
-          "height": side["height"]})
+          "height": side["height"], "recording": recording, "recording_note": rec_note})
     return 0
 
 

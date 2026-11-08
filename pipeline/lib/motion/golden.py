@@ -218,7 +218,7 @@ def build_project(plan: dict, out_dir: str, voice: str | None, brand_dir: str, a
             props = resolve_props(dict(comp["props"]), project, brand_dir, brand_index, assets_dir, used)
             start = comp["start_ms"] / 1000
             dur = (comp["end_ms"] - comp["start_ms"]) / 1000
-            if comp["component"] in ("hero-3d", "icon-3d"):
+            if comp["component"] in common.CLIP_START_COMPONENTS:
                 props["clip_start"] = round(start, 3)
             z = comp.get("z", c.get("z", 2))
             hosts.append(f'      <div id="{comp["id"]}" class="clip" data-composition-id="{comp["id"]}" data-composition-src="{c["file"]}" data-start="{start:.3f}" data-duration="{dur:.3f}" '
@@ -382,6 +382,10 @@ def write_readme(out_dir: str, plan: dict, info: dict, probe_info: dict, check_i
 
 def run(args) -> int:
     lib = common.motion_lib_dir()
+    from motion import demo_assets
+    demo_assets.ensure(lib)
+    if getattr(args, "assets", ""):
+        demo_assets.ensure_recordings(args.assets)  # the frozen run's screenshots get a scroll recording next to them (*.mp4 is not in git)
     cat = common.load_catalog(lib)
     plan = common.load_json(args.plan)
     errs = validate_plan(plan)

@@ -111,6 +111,14 @@ def sort_key(order: int, claim: dict):
     return (STATUSES.index(claim["status"]), TIERS.index(claim["tier"]), order)
 
 
+def _recording_fields(folder: str, side: dict) -> dict:
+    """M16 (E8): the scroll recording next to the screenshot, when its mp4 exists: {recording: "assets/NN-name.mp4", recording_seconds}."""
+    rec = text(side.get("recording"))
+    if rec and os.path.isfile(os.path.join(folder, rec)):
+        return {"recording": f"assets/{rec}", "recording_seconds": side.get("recording_seconds")}
+    return {}
+
+
 def collect_assets(run_dir: str, declared: list, max_assets: int) -> list[dict]:
     """The screenshots whose PNG exists, from the sidecars pipeline/bin/screenshot wrote, with the model's captions."""
     folder = os.path.join(run_dir, STAGE, "assets")
@@ -140,7 +148,8 @@ def collect_assets(run_dir: str, declared: list, max_assets: int) -> list[dict]:
         assets.append({"file": f"assets/{side['file']}", "name": name, "url": text(side.get("url")),
                        "final_url": text(side.get("final_url")), "title": text(side.get("title")),
                        "captured": text(side.get("captured")), "checked": text(side.get("checked")),
-                       "width": side.get("width"), "height": side.get("height"), "what": what})
+                       "width": side.get("width"), "height": side.get("height"), "what": what}
+                      | _recording_fields(folder, side))
     return assets[:max_assets] if max_assets > 0 else assets
 
 
@@ -207,7 +216,8 @@ def render_facts(r: dict) -> str:
     lines += ["", "## Assets (screenshots in 01-research/assets/)"]
     if r["assets"]:
         for a in r["assets"]:
-            lines.append(f"- {os.path.basename(a['file'])}: {a['what']} ({a['url']}, captured {a['captured']})")
+            rec = f"; scroll recording {os.path.basename(a['recording'])}, {a.get('recording_seconds')} s" if a.get("recording") else ""
+            lines.append(f"- {os.path.basename(a['file'])}: {a['what']} ({a['url']}, captured {a['captured']}{rec})")
     else:
         lines.append("(no screenshots)")
     lines += ["", "## Research summary", text(r.get("summary"), one_line=False) or "(none)", ""]
