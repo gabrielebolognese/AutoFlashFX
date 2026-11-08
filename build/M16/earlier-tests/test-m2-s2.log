@@ -124,3 +124,11 @@ PASS  nothing moved into exports/ yet
 PASS  state.json records the intended number
 PASS  state.json has no export number yet
 PASS  the exports lock is left behind
+PASS  restart after the crash exits 0
+PASS  the leftover exports lock is cleared at startup
+PASS  the restart resumes at the export
+PASS  the export completes as #1
+PASS  exactly one export after the crash
+PASS  the staging folder is gone
+PASS  one history line
+PASS  the idea is removed once
