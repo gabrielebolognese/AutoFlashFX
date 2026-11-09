@@ -214,7 +214,7 @@ write_engine_file "$SANDBOX/channels/flashfx/library/voice/engine.txt" "$SYS_PY"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-bad.out" 2>&1; rc=$?
 assert_rc 3 $rc "preflight: an engine.txt whose interpreter cannot import kokoro is a systemic stop (exit 3)"
 assert_grep "cannot import kokoro" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: STOPPED.md names the import failure"
-assert_grep "write library/voice/engine.txt as in BUILD_SPEC.md 2.5" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: STOPPED.md gives the exact fix"
+assert_grep "write channels/flashfx/library/voice/engine.txt as in BUILD_SPEC.md 2.5" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: STOPPED.md gives the exact fix"
 printf 'engine = kokoro\npython = C:/nowhere/python.exe\n' > "$SANDBOX/channels/flashfx/library/voice/engine.txt"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-missing.out" 2>&1; rc=$?
 assert_rc 3 $rc "preflight: an interpreter that does not exist is a systemic stop"
