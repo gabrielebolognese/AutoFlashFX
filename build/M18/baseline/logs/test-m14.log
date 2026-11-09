@@ -1,0 +1,141 @@
+
+== 1. the energy meter, the calibration, the tokens ==
+PASS  channels/flashfx/styles/paper-cards/analysis/energy.json exists (the calibration)
+PASS  the meter measures the nine reference videos again
+videos 9 compared 45 worst 0.0
+within-1 ok
+medians ok
+nine ok
+PASS  every reference number is reproduced within 1 point
+PASS  the look medians are reproduced within 1 point
+PASS  energy.json holds the nine references
+build/M13/rerun/1.mp4 is not on this PC: the M13 reel check is skipped
+PASS  the repo's tokens.json is current
+PASS  tokens.json validates against the schema
+PASS  tokens.json verifies against the sources
+PASS  the targets come from the calibration
+derived ok
+same-as-energy-json ok
+grammar ok
+zones ok
+PASS  energy.targets follow the 70 percent rule on the look medians
+PASS  energy.json's targets agree with tokens.json
+PASS  motion.grammar carries the spec's values (inertia 2 to 4 s, holds 2 to 8 px/s, perspective 1400, edges 20 px/s)
+PASS  motion.grammar.text_zones has the caption band, the hook header and the end card
+PASS  tokens.css exposes the perspective
+PASS  tokens.css exposes the hold speeds
+PASS  tokens.css exposes the text zones
+PASS  tokens.css exposes the safe edges for the hold's room
+PASS  a sandbox build with an Energy line in tweaks.md
+PASS  the Energy line overrides the moving share target
+PASS  the Energy line overrides the longest still target
+PASS  without a calibration file the targets start from the spec's numbers
+PASS  the sandbox tokens validate
+PASS  the sandbox tokens verify against the sources
+
+== 2. the library on pc-motion.js: frame-match, the life checks, the energy of each component ==
+video-card: pass (7/7 checks, strip r=0.959, moving 70.8%, longest still 0.03 s)
+window-card: pass (9/9 checks, strip r=0.965, moving 96.2%, longest still 0.03 s)
+frame-match: 38 pass, 0 fail -> C:/Users/there/AppData/Local/Temp/tmp.CYjym6wbMS/repo/channels/flashfx/motion-lib\gallery\frame-match.md
+PASS  frame-match passes every component (the style's numbers, the strips, the life checks)
+covered ok
+pass ok
+never-static ok
+life-checked 38 of 38
+inertia ok measured on 26 components
+energy ok
+four-seconds ok
+main-animations ok
+icon-3d ok
+PASS  every component in compositions/ was measured
+PASS  every component passes
+PASS  every main animation still frame-matches its reference numbers
+PASS  no visible element stands still for 0.5 s in any component rendered alone for 4 s
+PASS  the inertia after the landing lasts 2 to 4 s on every main element
+PASS  every component has its energy measured alone
+PASS  every component was measured for at least 4 s
+PASS  icon-3d passes frame-match
+PASS  the catalog agrees with the component files
+icon3d ok
+hold-prop ok
+canvas-props ok
+energy-in-catalog ok
+count 38
+PASS  catalog.json lists icon-3d approved, kind 3d with a css fallback, allowed in the hook
+PASS  every element component declares the hold prop
+PASS  the canvas declares seed, duration, layers, edges and ambient
+PASS  catalog.json carries every component's energy measures
+PASS  no composition keeps a tween or an onUpdate of its own (pc-motion.js holds the phases and the curves)
+PASS  every component loads pc-motion.js (38)
+PASS  pc-motion.js defines PCM.life
+PASS  pc-motion.js defines PCM.glide
+PASS  pc-motion.js defines PCM.canvas
+PASS  pc-motion.js defines PCM.idle
+PASS  pc-motion.js defines PCM.depth
+PASS  pc-motion.js defines PCM.exit
+PASS  pc-motion.js defines PCM.countUp
+PASS  pc-motion.js defines PCM.typeInto
+PASS  npx hyperframes lint: no errors on channels/flashfx/motion-lib/
+PASS  the gallery page builds
+PASS  the gallery shows each component's energy measures
+PASS  the showreel's canvas host is driven by the runtime (no data-no-timeline)
+PASS  npx hyperframes check --json passes on channels/flashfx/motion-lib/
+
+== 3. icon-3d with WebGL and with its fallback; the edge and ambient layers out of every text zone ==
+webgl-attr 1 drawn 0.1602
+webgl ok
+css-attr 0 layers 12 drawn 0.0785 longest unchanged run 0
+fallback ok
+review-rows {0.1: [('FlashFX', 0.851, 'main'), ('Comment T', 0.851, 'main')], 0.5: [('FlashFX', 0.999, 'main'), ('Instagram', 0.999, 'main'), ('now', 0.999, 'main'), ('Comment T', 0.999, 'main')], 1: [('FlashFX', 1.015, ''), ('Instagram', 1.015, ''), ('now', 1.015, ''), ('Comment T', 1.015, '')], 2: [('FlashFX', 1.039, ''), ('Instagram', 1.039, ''), ('now', 1.039, ''), ('Comment T', 1.039, '')], 2.6: [('FlashFX', 1.045, 'exit'), ('Instagram', 1.045, 'exit'), ('now', 1.045, 'exit'), ('Comment T', 1.045, 'exit')]}
+review-arriving ok
+review-settled ok
+review-leaving ok
+room-rows [1419.4, 1421.4, 1422.1] [12.0, 46.9]
+room-hold ok
+room-free ok
+counts [(7, 6, 16), (1234, 6, 16), (98765, 6, 16)]
+layers-present ok
+zones-clear ok
+no-text ok
+edges-outside ok
+speeds ok
+PASS  icon-3d renders with WebGL (data-webgl 1, the canvas draws)
+PASS  icon-3d renders with its CSS-extruded fallback (8 to 16 layers, drawn, turning)
+PASS  the canvas builds its edge and ambient layers for three seeds
+PASS  the edge and ambient layers stay out of every text zone over 40 s
+PASS  the layers hold no text
+PASS  every edge element sits 30 to 70 percent outside the frame (a few px of sway allowed)
+PASS  the edge layer moves at most 20 px per second, the ambient layer slower
+PASS  the review sees the DM card's texts arriving for the combined animation (data-pcm-main), the scale read in 3D (0.85 at the first frame)
+PASS  once landed the texts are judged, their scale at least 1 (the inertia grows): the 28 px labels read 28 px or more
+PASS  the review sees the texts leaving during the exit (data-pcm-exit)
+PASS  the hold fits the room: the DM card at the CTA's y keeps its message above the safe bottom for 8 s
+PASS  the same card with room below drifts on (20 px or more between 1 and 8 s)
+
+== 4. the golden reel rendered again with the new library (same plan) ==
+project written: C:/Users/there/AppData/Local/Temp/tmp.CYjym6wbMS/repo/channels/flashfx/golden/test-idea\project (30 hosts, assets: brand/lockup/lockup-gradient-on-light.png, brand/mark/avatar-dark.png, research/01-repo.mp4, research/02-plugin-page.mp4, research/02-plugin-page.png, research/03-skill-md.png, research/04-blog.mp4, research/05-install-docs.mp4)
+hyperframes check: ok
+render: 237.9 s, 1080x1920 30.0 fps, 41.47 s (voice 41.46 s), audio aac: ok
+contact sheet: C:/Users/there/AppData/Local/Temp/tmp.CYjym6wbMS/repo/channels/flashfx/golden/test-idea\contact-sheet.png
+PASS  render-golden builds, checks, renders and probes clean with the new library
+PASS  the plan did not change (the same plan, the new library)
+PASS  npx hyperframes check passed on the golden project
+unknown channel 'flashfx'. Channels:
+before {'moving_share_pct': 13.0, 'middle_moving_share_pct': 12.0, 'pixels_changing_pct': 1.0, 'still_share_pct': 49.5, 'longest_still_s': 2.8}
+after {'moving_share_pct': 81.8, 'middle_moving_share_pct': 92.2, 'pixels_changing_pct': 4.11, 'still_share_pct': 0.0, 'longest_still_s': 0.77}
+still-measures {'still_share_pct': True, 'longest_still_s': True}
+every-measure ok
+doubled ok
+PASS  the re-rendered golden measures higher than before on every movement measure (moving share, middle band, pixels changing)
+PASS  its moving share at least doubled
+PASS  channels/flashfx/golden/test-idea/energy.json written
+PASS  the contact sheet exists
+host ok
+pcm ok
+PASS  the golden project's canvas host is seeded, runs the reel's length and has a timeline
+PASS  the golden project carries pc-motion.js
+
+== 5. no em dash in the files M14 wrote ==
+PASS  no em dash in the M14 files
+
+test-m14.sh: 74 passed, 0 failed

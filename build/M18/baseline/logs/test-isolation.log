@@ -1,0 +1,25 @@
+
+== part 1. the static check and the path module ==
+PASS  isolation_scan.py: no literal path to channel data outside the paths module (isolation_scan: 0 violation(s), 32 allowlist entries)
+PASS  every allowlist entry has a reason and is used
+PASS  a planted literal path fails the scan
+PASS  the scan names the shell file and the Python file
+PASS  an allowlist entry lets exactly its line through
+PASS  an allowlist entry without a reason is refused
+PASS  paths.sh and paths.py give the same answers with a channel
+PASS  paths.sh and paths.py give the same answers without a channel
+PASS  paths.sh puts the channel's files inside channels/alpha
+PASS  chpath: a path of the channel's own folder resolves
+PASS  bash: a path inside channels/beta is refused for channel alpha (exit 3, an ERROR line)
+PASS  bash: chpath refuses a relative path that leaves the channel folder
+PASS  bash: another channel's export folder is refused
+PASS  bash: the channel's own export folder is allowed
+PASS  python: paths.ch resolves inside the channel
+PASS  python: a path inside channels/beta is refused for alpha (exit 3, an ERROR line)
+PASS  python: a relative path that leaves the channel folder is refused
+PASS  python: another channel's export folder is refused
+PASS  python: with two channels and none chosen the module exits 2 and lists them
+PASS  python: the list names the second channel too
+PASS  REELS_PATH_TRACE logs every path the module resolves (bash and Python)
+
+test-isolation.sh: 21 passed, 0 failed
