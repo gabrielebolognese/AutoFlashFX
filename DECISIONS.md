@@ -2625,3 +2625,38 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     important). model_choice.py director-role decides it for visual.sh, and route.py's labels follow it: "fixing [text] issues
     (round 2, sonnet)", "(round 4, opus)" or "(round 4, fable)", and the cap flag "(3 main, 2 escalated on opus)". Tests:
     pipeline/tests/test-models.sh (no model call, about 1 minute); test-m11 and test-m12 follow the new labels.
+336. **2026-11-09, Gabriele's answers at the M18 pause.** (1) library/hooks.txt: the four em dashes became a period or a
+    comma (lines 43, 64, 73, 80) and lines 53 and 54 got their `__` blank back; index-hooks rebuilt it with no lint line.
+    (2) The 12 sounds of SFX-MAP.md's waiting list are approved as pins in styles/sfx/overrides.txt, each in the model's
+    best-fitting cue type and spread so no pool is taken over by generic UI tones (ui_click 3, success 3, notification 2,
+    transition_slow 2, stamp 1, hero_enter 1). The cash register stays in the success and notification pools (M11's ban
+    was only a suggestion); the short typing and negative pools stay as they are. (3) The components' baked text sizes
+    win over E4's minimum (HUMAN_TODO M15): the warnings stay warnings, visual and review `text_size_baked` stay "warn".
+    (4) OneDrive does not sync this folder (his OneDrive is full and out of sync), so the M0 line about excluding it and
+    the advice to pause OneDrive during M18 and M19 do not apply.
+337. **One 3D icon in every scene.** Gabriele: "yes i want one 3d icon per scene, not just in the hook". tweaks.md's 3D
+    decision line now reads "one 3D icon (icon-3d) in every scene, at most 1 per scene; other 3D objects (hero-3d) in the
+    hook and end card only; at most 2 objects on screen". tokens.py three_d_limits reads it into tokens.json
+    limits.three_d (icon_scenes "all", icon_per_scene 1, icon_every_scene true, max_objects 2; the older wording still
+    parses); BEAT_TYPES lists icon-3d for every beat type, so the catalog and the director's digest offer it everywhere.
+    plan_validate.py rule_three_d: hero-3d outside the hook and the end card is still an error (the make-bad fixture
+    keeps failing), a second icon in a scene or a third 3D object is an error, and a scene other than the ask with no 3D
+    object is a warning (config visual.three_d_every_scene: warn by default, error or off), so a scene where no icon fits
+    never blocks a reel. The 9a prompt asks for one icon per scene, chosen for what the scene says, placed where it covers
+    no text and no caption group. The golden plan has no icon in its body scenes yet (it validates, with 9 warnings): the
+    director copies its layouts, so the prompt line carries the rule until the golden gets icons.
+338. **The script must be understood on one listen.** Gabriele watched the reels: the graphics are very good, the script
+    "sounds like gibberish, i can't understand the point, after the hook it says things that i genuinely do not
+    understand". The test idea's script showed why: strings of fragments ("One accented headline word. All caps labels.
+    Fake one, two, three."), terms nobody explains ("distributional convergence"), names dropped to look concrete, no
+    link between the beats. Three causes: the write prompt forced an A B rhythm (one sentence of 12 or 13 words, then
+    sentences of 3 or 4) and banned every sentence of 5 to 11 words, to please detect.py's burstiness statistic; the
+    rewrite rounds pushed the same way (rhythm_advice); the cut pass kept every fact and cut the connecting words. Now:
+    the write prompt opens with "Above everything: the viewer understands it on one listen" (the point in one plain
+    sentence, one thread with audible links, full sentences, plain words or an explanation, the 2 to 4 facts the point
+    needs), the rhythm line asks for natural sentences of 6 to 12 words with a few short ones, the cut keeps the links
+    and never makes fragments, the rewrite keeps clarity above every check, and the judge's first question is whether a
+    stranger gets the point on one listen. script_checks.py leaves detect.py's BURSTINESS out of the gate (config
+    script.detect_skip, default ["BURSTINESS"]): it is still measured and reported, the gate uses the other four checks
+    with detect.py's own formula (checks.detect.gate_overall, skipped). The fixtures and their asserted numbers are
+    unchanged (the logged detect score is still detect.py's overall).

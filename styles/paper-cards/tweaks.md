@@ -13,7 +13,8 @@ Drafted from the look reference. Edit freely: every line in this file overrides 
 - **Right side:** cards may span the full width (60px margins) like the reference, but no text in the
   right 230px of the lower half, where Instagram's like, comment and share buttons sit.
 - **Length:** list and explainer videos may run 45 to 75s like the reference. Everything else stays 25 to 40s.
-- **3D:** hook and end card only, at most 2 objects on screen.
+- **3D:** one 3D icon (icon-3d) in every scene, at most 1 per scene; other 3D objects (hero-3d) in the hook and
+  end card only; at most 2 objects on screen.
 - **Accent:** under 5% of any frame.
 
 The lines below come from version 2 of style.md (look refs v01 and v02, motion refs v03 to v09).

@@ -15,3 +15,18 @@
 # Examples (remove the leading # to activate):
 # ban: Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3
 # pin: hook_hit: Vine Boom.mp3
+
+# 2026-11-09: the 12 files of the "Waiting for your approval" list, approved by Gabriele (each in the model's best-fitting
+# cue type, spread so no pool is taken over by generic UI tones).
+pin: notification: Beep roser.wav
+pin: transition_slow: PlageFlip3.mp3
+pin: transition_slow: Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3
+pin: success: Ui Sound/SFX- Ui02.mp3
+pin: notification: Ui Sound/SFX- Ui03.mp3
+pin: success: Ui Sound/SFX- Ui06.mp3
+pin: ui_click: Ui Sound/SFX- Ui07.mp3
+pin: ui_click: Ui Sound/SFX- Ui08.mp3
+pin: success: Ui Sound/SFX- Ui09.mp3
+pin: ui_click: Ui Sound/SFX- Ui10.mp3
+pin: stamp: finger-snap-reverb-423222.mp3
+pin: hero_enter: pop-91931.mp3

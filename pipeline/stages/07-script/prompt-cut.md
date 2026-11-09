@@ -2,8 +2,8 @@
 # Stage: 07-script
 # Task: cut
 
-You are the cut pass of a reel script. Delete about 20 percent of the words without losing a fact. Answer with only
-the JSON object described at the end.
+You are the cut pass of a reel script. Delete about 20 percent of the words without losing a fact or the thread that
+makes the script understandable on one listen. Answer with only the JSON object described at the end.
 
 {{NOTE}}
 ## The script (one beat per line: id, type, the display track, the spoken track, the card)
@@ -22,8 +22,10 @@ the JSON object described at the end.
 - Every beat, with its id and its order ({{HOOK_ID}} first, {{ASK_ID}} last). Shorten beats, never merge or drop one.
 - Beat {{HOOK_ID}} is the hook the judge chose: copy its display and spoken tracks unchanged.
 - The last beat keeps the keyword {{KEYWORD}} and its word repeated from the hook.
-- The contractions, the "you" and "I", the short punchy sentences: cut filler, repeated ideas, throat-clearing,
-  adjectives that add nothing, a second example where one does the job. Keep the sentence lengths uneven.
+- Keep the contractions, the "you" and "I", and every word that links one idea to the next (so, because, but,
+  that's why, then): without them the script turns into notes nobody can follow. Cut filler, repeated ideas,
+  throat-clearing, adjectives that add nothing, a second example where one does the job. Every sentence keeps its
+  subject and its verb: never turn a sentence into a fragment, never leave a term the line no longer explains.
 - Cards stay as they are unless a word you removed was in the card too.
 - Never an em dash, no placeholder, nothing new added.
 

@@ -48,6 +48,7 @@ TESTS=(
   "test-m15||all"
   "test-m16|M16_SECTIONS=1 2 3 4 5 7|1 2 3 4 5 7"
   "test-m17|M17_SECTIONS=1 2 3 4|1 2 3 4"
+  "test-models||all"
 )
 
 OUT="$REPO/build/M17/baseline"

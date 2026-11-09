@@ -520,6 +520,7 @@ def cmd_setup(args) -> int:
         "abstract_run": int(script_cfg.get("abstract_run", 3)), "length_tolerance_pct": float(script_cfg.get("length_tolerance_pct", 15)),
         "card_max_words": int(script_cfg.get("card_max_words", 6)), "min_body_beats": int(script_cfg.get("min_body_beats", 2)),
         "detect_min_overall": float(script_cfg.get("detect_min_overall", 70)), "detect_min_check": float(script_cfg.get("detect_min_check", 55)),
+        "detect_skip": list(script_cfg.get("detect_skip", ["BURSTINESS"])),
         "cut_pct": float(script_cfg.get("cut_pct", 20)), "cut_range_pct": script_cfg.get("cut_range_pct", [10, 30]),
         "cut_tries": int(script_cfg.get("cut_tries", 2)), "rounds": int(args.rounds),
         "tones": tones, "tone_source": tone_source, "tone_guide": {t: TONE_GUIDE[t] for t in tones},
@@ -1174,18 +1175,27 @@ def run_checks(draft: dict, plan: dict, vendor: Vendor) -> dict:
         results, overall, verdict, dres = {}, 0.0, "ERROR", {"error": str(exc)}
     min_overall = float(plan.get("detect_min_overall", 70))
     min_check = float(plan.get("detect_min_check", 55))
-    low = [n for n, v in dres.items() if isinstance(v, dict) and "score" in v and v["score"] < min_check]
-    detect_ok = overall >= min_overall and not low and verdict != "ERROR"
+    # config script.detect_skip (default BURSTINESS, 2026-11-09): measured and reported, left out of the gate. The
+    # sentence-length statistic pushed the drafts into strings of fragments nobody could follow on one listen.
+    skip = set(plan.get("detect_skip", ["BURSTINESS"]))
+    gated = {n: v for n, v in dres.items() if n not in skip and isinstance(v, dict) and "score" in v}
+    gate_overall = overall
+    if skip and gated:
+        sc = [v["score"] for v in gated.values()]
+        gate_overall = sum(sc) / len(sc) * 0.6 + min(sc) * 0.4
+    low = [n for n, v in gated.items() if v["score"] < min_check]
+    detect_ok = gate_overall >= min_overall and not low and verdict != "ERROR"
     if not detect_ok:
         parts = [f"{n} {dres[n]['score']:.0f} ({dres[n]['detail']}): {detect_hints(n, dres[n]['detail'])}" for n in low] or \
-                [f"{n} {v['score']:.0f} ({v['detail']})" for n, v in sorted(dres.items(), key=lambda kv: kv[1].get('score', 100) if isinstance(kv[1], dict) else 100)[:2] if isinstance(v, dict)]
-        weak = low or [n for n, v in sorted(dres.items(), key=lambda kv: kv[1].get('score', 100) if isinstance(kv[1], dict) else 100)[:1]]
+                [f"{n} {v['score']:.0f} ({v['detail']})" for n, v in sorted(gated.items(), key=lambda kv: kv[1].get('score', 100))[:2]]
+        weak = low or [n for n, v in sorted(gated.items(), key=lambda kv: kv[1].get('score', 100))[:1]]
         if "BURSTINESS" in weak:
             advice = rhythm_advice(beats)
             if advice:
                 parts.append(advice)
         failures.append(failure("detect", f"detect.py scores {overall:.0f} (needs {min_overall:.0f} overall and {min_check:.0f} on every check): " + "; ".join(parts), hard=False))
-    checks["detect"] = {"overall": round(overall, 1), "verdict": verdict, "ok": detect_ok, "checks": dres, "min_overall": min_overall, "min_check": min_check}
+    checks["detect"] = {"overall": round(overall, 1), "verdict": verdict, "ok": detect_ok, "checks": dres, "min_overall": min_overall, "min_check": min_check,
+                        "skipped": sorted(skip), "gate_overall": round(gate_overall, 1)}
 
     hard = [f for f in failures if f["severity"] == "hard"]
     soft = [f for f in failures if f["severity"] == "soft"]

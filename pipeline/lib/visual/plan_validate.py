@@ -402,17 +402,36 @@ def rule_beat_map(plan: dict, ctx: Context, rep: Report) -> None:
 
 
 def rule_three_d(plan: dict, ctx: Context, rep: Report) -> None:
+    """tweaks.md 3D (tokens.json limits.three_d): 3D objects other than icon-3d only in `scenes` (hook, end); icon-3d in
+    `icon_scenes` ("all" since 2026-11-09), at most `icon_per_scene` per scene; at most `max_objects` 3D objects per
+    scene. With `icon_every_scene`, a scene other than the ask with no 3D object is a warning (config
+    visual.three_d_every_scene: warn, the default; error makes it an error; off skips it), so a scene where no icon
+    fits never blocks a reel."""
     lim = (ctx.toks.get("limits") or {}).get("three_d") or {}
-    scenes_ok = set()
-    for name in lim.get("scenes", ["hook", "end"]):
-        scenes_ok.add({"end": "ask", "cta": "ask"}.get(name, name))
+    alias = {"end": "ask", "cta": "ask"}
+    scenes_ok = {alias.get(n, n) for n in lim.get("scenes", ["hook", "end"])}
+    icon_scenes = lim.get("icon_scenes", ["hook", "end"])
+    icon_ok = None if icon_scenes == "all" else {alias.get(n, n) for n in icon_scenes}
+    icon_per_scene = int(lim.get("icon_per_scene", 1))
     max_objects = int(lim.get("max_objects", 2))
+    every = bool(lim.get("icon_every_scene", False))
+    every_mode = str(ctx.v("three_d_every_scene", "warn"))
     for s in plan.get("scenes", []):
         objs = [c for c in s.get("components", []) if ctx.by_id.get(c["component"], {}).get("kind") == "3d"]
-        if objs and s.get("beat_type") not in scenes_ok:
-            rep.err("three_d", f"scene {s['id']} ({s.get('beat_type')}) uses 3D ({objs[0]['id']}); the style allows 3D only in {', '.join(sorted(scenes_ok))} scenes (tweaks.md 3D)")
+        icons = [c for c in objs if c["component"] == "icon-3d"]
+        others = [c for c in objs if c["component"] != "icon-3d"]
+        bt = s.get("beat_type")
+        if others and bt not in scenes_ok:
+            rep.err("three_d", f"scene {s['id']} ({bt}) uses 3D ({others[0]['id']}); the style allows 3D objects other than icon-3d only in {', '.join(sorted(scenes_ok))} scenes (tweaks.md 3D)")
+        if icons and icon_ok is not None and bt not in icon_ok:
+            rep.err("three_d", f"scene {s['id']} ({bt}) uses a 3D icon ({icons[0]['id']}); the style allows icon-3d only in {', '.join(sorted(icon_ok))} scenes (tweaks.md 3D)")
+        if len(icons) > icon_per_scene:
+            rep.err("three_d", f"scene {s['id']} has {len(icons)} 3D icons; at most {icon_per_scene} per scene (tweaks.md 3D)")
         if len(objs) > max_objects:
             rep.err("three_d", f"scene {s['id']} has {len(objs)} 3D objects; at most {max_objects} on screen (tokens.json limits.three_d)")
+        if every and not objs and bt != "ask" and every_mode != "off":
+            msg = f"scene {s['id']} ({bt}) has no 3D icon; the style wants one icon-3d in every scene (tweaks.md 3D)"
+            (rep.err if every_mode == "error" else rep.warn)("three_d", msg)
 
 
 def rule_set_pieces(plan: dict, ctx: Context, rep: Report) -> None:

@@ -1,6 +1,6 @@
 {
  "style": "paper-cards",
- "generated": "2026-11-08",
+ "generated": "2026-11-09",
  "fps": 30,
  "canvas": {
   "width": 1080,
@@ -4970,6 +4970,16 @@
    ],
    "beat_types": [
     "hook",
+    "stake",
+    "number",
+    "tool",
+    "step",
+    "comparison",
+    "proof",
+    "mechanism",
+    "before-after",
+    "pain-payoff",
+    "payoff",
     "ask"
    ],
    "sound_events": [

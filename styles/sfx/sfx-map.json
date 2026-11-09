@@ -1,10 +1,10 @@
 {
  "version": 1,
  "measure_version": 2,
- "built": "2026-11-01 15:24",
+ "built": "2026-11-09 05:59",
  "source": "styles/sfx",
  "folder_sha1": "f4aa304b8e178812e26ae857fb280ae76d561d7a",
- "overrides_sha1": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+ "overrides_sha1": "bf837898280bd33298786e09c43127e010792177",
  "settings_sha1": "4cb9a3ec417e80f54bef27ac468301289438b79d",
  "model": "haiku",
  "settings": {
@@ -102,9 +102,9 @@
   "files": 106,
   "mapped": 93,
   "excluded": 13,
-  "waiting": 12,
+  "waiting": 0,
   "unclassified": 0,
-  "pooled": 49,
+  "pooled": 55,
   "by_rules": 79,
   "by_model": 27,
   "model_calls_this_build": 0,
@@ -127,13 +127,13 @@
    "attention": 8,
    "hero_enter": 8,
    "ui_click": 8,
-   "stamp": 4,
+   "stamp": 5,
    "number": 8,
-   "success": 3,
+   "success": 7,
    "typing": 2,
    "negative": 2,
    "hook_hit": 8,
-   "notification": 4
+   "notification": 7
   }
  },
  "short_pools": [
@@ -142,6 +142,44 @@
  ],
  "pools": {
   "transition_slow": [
+   {
+    "id": "c22056ec8f",
+    "path": "PlageFlip3.mp3",
+    "cache": ".cache/c22056ec8f-plageflip3.wav",
+    "gain_db": 10.09,
+    "duration_s": 2.612,
+    "onset_s": 0.635,
+    "peak_s": 1.298,
+    "end_s": 2.555,
+    "effective_s": 1.92,
+    "attack_s": 0.663,
+    "pad_start_s": 0.6,
+    "pad_end_s": 0.102,
+    "whoosh_speed": null,
+    "fit": 0.55,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.55
+   },
+   {
+    "id": "6e06b8488e",
+    "path": "Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3",
+    "cache": ".cache/6e06b8488e-magic-spell-sound-effect-by-ashish-editz.wav",
+    "gain_db": -11.37,
+    "duration_s": 3.528,
+    "onset_s": 1.215,
+    "peak_s": 1.728,
+    "end_s": 2.38,
+    "effective_s": 1.165,
+    "attack_s": 0.512,
+    "pad_start_s": 1.03,
+    "pad_end_s": 0.868,
+    "whoosh_speed": null,
+    "fit": 0.5,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
    {
     "id": "fc3f6b7f14",
     "path": "Free Woosh/ESE - FIGHT PACK - WHOOSH - SlowMo 03.wav",
@@ -250,44 +288,6 @@
     "attack_s": 0.812,
     "pad_start_s": 0.125,
     "pad_end_s": 0.291,
-    "whoosh_speed": "slow",
-    "fit": 1.0,
-    "pinned": false,
-    "source": "rules",
-    "confidence": 1.0
-   },
-   {
-    "id": "8666e00b60",
-    "path": "Swoosh/SFX- Swoosh09.mp3",
-    "cache": ".cache/8666e00b60-sfx-swoosh09.wav",
-    "gain_db": -6.97,
-    "duration_s": 2.568,
-    "onset_s": 0.13,
-    "peak_s": 0.713,
-    "end_s": 2.425,
-    "effective_s": 2.295,
-    "attack_s": 0.583,
-    "pad_start_s": 0.055,
-    "pad_end_s": 0.108,
-    "whoosh_speed": "slow",
-    "fit": 1.0,
-    "pinned": false,
-    "source": "rules",
-    "confidence": 1.0
-   },
-   {
-    "id": "b1913879d0",
-    "path": "Swoosh/SFX- Swoosh10.mp3",
-    "cache": ".cache/b1913879d0-sfx-swoosh10.wav",
-    "gain_db": -9.42,
-    "duration_s": 2.456,
-    "onset_s": 0.3,
-    "peak_s": 0.637,
-    "end_s": 1.425,
-    "effective_s": 1.125,
-    "attack_s": 0.337,
-    "pad_start_s": 0.195,
-    "pad_end_s": 0.901,
     "whoosh_speed": "slow",
     "fit": 1.0,
     "pinned": false,
@@ -605,6 +605,25 @@
   ],
   "hero_enter": [
    {
+    "id": "91943d7344",
+    "path": "pop-91931.mp3",
+    "cache": ".cache/91943d7344-pop-91931.wav",
+    "gain_db": -11.12,
+    "duration_s": 3.144,
+    "onset_s": 0.105,
+    "peak_s": 2.083,
+    "end_s": 2.86,
+    "effective_s": 2.755,
+    "attack_s": 1.978,
+    "pad_start_s": 0.045,
+    "pad_end_s": 0.009,
+    "whoosh_speed": null,
+    "fit": 0.0,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
+   {
     "id": "dd7cf7dc4f",
     "path": "Pop/Pop sound effect.mp3",
     "cache": ".cache/dd7cf7dc4f-pop-sound-effect.wav",
@@ -736,28 +755,66 @@
     "pinned": false,
     "source": "rules",
     "confidence": 1.0
-   },
-   {
-    "id": "ef59217855",
-    "path": "Pop/pop.mp3",
-    "cache": ".cache/ef59217855-pop.wav",
-    "gain_db": -4.13,
-    "duration_s": 2.989,
-    "onset_s": 1.67,
-    "peak_s": 1.708,
-    "end_s": 1.855,
-    "effective_s": 0.185,
-    "attack_s": 0.038,
-    "pad_start_s": 1.665,
-    "pad_end_s": 1.104,
-    "whoosh_speed": null,
-    "fit": 0.8,
-    "pinned": false,
-    "source": "rules",
-    "confidence": 1.0
    }
   ],
   "ui_click": [
+   {
+    "id": "bc52b5b766",
+    "path": "Ui Sound/SFX- Ui07.mp3",
+    "cache": ".cache/bc52b5b766-sfx-ui07.wav",
+    "gain_db": -5.75,
+    "duration_s": 0.512,
+    "onset_s": 0.0,
+    "peak_s": 0.233,
+    "end_s": 0.355,
+    "effective_s": 0.355,
+    "attack_s": 0.233,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.142,
+    "whoosh_speed": null,
+    "fit": 0.25,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
+   {
+    "id": "0ae1b53267",
+    "path": "Ui Sound/SFX- Ui08.mp3",
+    "cache": ".cache/0ae1b53267-sfx-ui08.wav",
+    "gain_db": -5.77,
+    "duration_s": 0.299,
+    "onset_s": 0.0,
+    "peak_s": 0.083,
+    "end_s": 0.195,
+    "effective_s": 0.195,
+    "attack_s": 0.083,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.084,
+    "whoosh_speed": null,
+    "fit": 0.275,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.55
+   },
+   {
+    "id": "888c673282",
+    "path": "Ui Sound/SFX- Ui10.mp3",
+    "cache": ".cache/888c673282-sfx-ui10.wav",
+    "gain_db": -5.15,
+    "duration_s": 0.619,
+    "onset_s": 0.0,
+    "peak_s": 0.068,
+    "end_s": 0.49,
+    "effective_s": 0.49,
+    "attack_s": 0.068,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.124,
+    "whoosh_speed": null,
+    "fit": 0.31,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
    {
     "id": "a885c1679c",
     "path": "Click/Click - Sound Effect (HD).mp3",
@@ -852,66 +909,28 @@
     "pinned": false,
     "source": "model",
     "confidence": 0.8
-   },
-   {
-    "id": "4090577416",
-    "path": "Ui Sound/SFX- Ui04.mp3",
-    "cache": ".cache/4090577416-sfx-ui04.wav",
-    "gain_db": -4.65,
-    "duration_s": 0.256,
-    "onset_s": 0.0,
-    "peak_s": 0.003,
-    "end_s": 0.13,
-    "effective_s": 0.13,
-    "attack_s": 0.003,
-    "pad_start_s": 0.0,
-    "pad_end_s": 0.136,
-    "whoosh_speed": null,
-    "fit": 0.6,
-    "pinned": false,
-    "source": "model",
-    "confidence": 0.6
-   },
-   {
-    "id": "76b3424fd4",
-    "path": "Ui Sound/SFX- Ui05.mp3",
-    "cache": ".cache/76b3424fd4-sfx-ui05.wav",
-    "gain_db": -5.18,
-    "duration_s": 0.427,
-    "onset_s": 0.005,
-    "peak_s": 0.018,
-    "end_s": 0.3,
-    "effective_s": 0.295,
-    "attack_s": 0.013,
-    "pad_start_s": 0.0,
-    "pad_end_s": 0.147,
-    "whoosh_speed": null,
-    "fit": 0.6,
-    "pinned": false,
-    "source": "model",
-    "confidence": 0.6
-   },
-   {
-    "id": "70233a1c92",
-    "path": "Click/Click (2).wav",
-    "cache": ".cache/70233a1c92-click-2.wav",
-    "gain_db": -9.03,
-    "duration_s": 0.465,
-    "onset_s": 0.11,
-    "peak_s": 0.207,
-    "end_s": 0.235,
-    "effective_s": 0.125,
-    "attack_s": 0.097,
-    "pad_start_s": 0.1,
-    "pad_end_s": 0.22,
-    "whoosh_speed": null,
-    "fit": 0.5,
-    "pinned": false,
-    "source": "rules",
-    "confidence": 1.0
    }
   ],
   "stamp": [
+   {
+    "id": "0a90767f0b",
+    "path": "finger-snap-reverb-423222.mp3",
+    "cache": ".cache/0a90767f0b-finger-snap-reverb-423222.wav",
+    "gain_db": -12.3,
+    "duration_s": 8.04,
+    "onset_s": 0.165,
+    "peak_s": 0.177,
+    "end_s": 0.285,
+    "effective_s": 0.12,
+    "attack_s": 0.012,
+    "pad_start_s": 0.16,
+    "pad_end_s": 7.6,
+    "whoosh_speed": null,
+    "fit": 0.392,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
    {
     "id": "c208d39196",
     "path": "Transition Sound Effects/Whip 2 Sound Effect ( By Ashish Editz )_01.mp3",
@@ -1145,6 +1164,63 @@
   ],
   "success": [
    {
+    "id": "87eb52887e",
+    "path": "Ui Sound/SFX- Ui02.mp3",
+    "cache": ".cache/87eb52887e-sfx-ui02.wav",
+    "gain_db": -5.0,
+    "duration_s": 0.683,
+    "onset_s": 0.005,
+    "peak_s": 0.033,
+    "end_s": 0.445,
+    "effective_s": 0.44,
+    "attack_s": 0.028,
+    "pad_start_s": 0.005,
+    "pad_end_s": 0.238,
+    "whoosh_speed": null,
+    "fit": 0.44,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.55
+   },
+   {
+    "id": "d90bdf9815",
+    "path": "Ui Sound/SFX- Ui06.mp3",
+    "cache": ".cache/d90bdf9815-sfx-ui06.wav",
+    "gain_db": -6.14,
+    "duration_s": 1.27,
+    "onset_s": 0.01,
+    "peak_s": 0.018,
+    "end_s": 0.625,
+    "effective_s": 0.615,
+    "attack_s": 0.008,
+    "pad_start_s": 0.01,
+    "pad_end_s": 0.645,
+    "whoosh_speed": null,
+    "fit": 0.5,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
+   {
+    "id": "ad797b035a",
+    "path": "Ui Sound/SFX- Ui09.mp3",
+    "cache": ".cache/ad797b035a-sfx-ui09.wav",
+    "gain_db": -4.86,
+    "duration_s": 0.768,
+    "onset_s": 0.0,
+    "peak_s": 0.177,
+    "end_s": 0.45,
+    "effective_s": 0.45,
+    "attack_s": 0.177,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.318,
+    "whoosh_speed": null,
+    "fit": 0.36,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.45
+   },
+   {
     "id": "a042eb92fc",
     "path": "Ding sound effect.mp3",
     "cache": ".cache/a042eb92fc-ding-sound-effect.wav",
@@ -1200,6 +1276,25 @@
     "pinned": false,
     "source": "rules",
     "confidence": 1.0
+   },
+   {
+    "id": "888c673282",
+    "path": "Ui Sound/SFX- Ui10.mp3",
+    "cache": ".cache/888c673282-sfx-ui10.wav",
+    "gain_db": -5.15,
+    "duration_s": 0.619,
+    "onset_s": 0.0,
+    "peak_s": 0.068,
+    "end_s": 0.49,
+    "effective_s": 0.49,
+    "attack_s": 0.068,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.124,
+    "whoosh_speed": null,
+    "fit": 0.4,
+    "pinned": false,
+    "source": "model",
+    "confidence": 0.5
    }
   ],
   "typing": [
@@ -1438,6 +1533,44 @@
   ],
   "notification": [
    {
+    "id": "98e6c52735",
+    "path": "Beep roser.wav",
+    "cache": ".cache/98e6c52735-beep-roser.wav",
+    "gain_db": -7.14,
+    "duration_s": 0.886,
+    "onset_s": 0.31,
+    "peak_s": 0.743,
+    "end_s": 0.75,
+    "effective_s": 0.44,
+    "attack_s": 0.433,
+    "pad_start_s": 0.21,
+    "pad_end_s": 0.136,
+    "whoosh_speed": null,
+    "fit": 0.45,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.45
+   },
+   {
+    "id": "20209360ee",
+    "path": "Ui Sound/SFX- Ui03.mp3",
+    "cache": ".cache/20209360ee-sfx-ui03.wav",
+    "gain_db": -0.2,
+    "duration_s": 1.333,
+    "onset_s": 0.0,
+    "peak_s": 0.028,
+    "end_s": 0.635,
+    "effective_s": 0.635,
+    "attack_s": 0.028,
+    "pad_start_s": 0.0,
+    "pad_end_s": 0.698,
+    "whoosh_speed": null,
+    "fit": 0.5,
+    "pinned": true,
+    "source": "model",
+    "confidence": 0.5
+   },
+   {
     "id": "baedc561a1",
     "path": "discord-notification.mp3",
     "cache": ".cache/baedc561a1-discord-notification.wav",
@@ -1512,128 +1645,29 @@
     "pinned": false,
     "source": "model",
     "confidence": 0.6
+   },
+   {
+    "id": "d90bdf9815",
+    "path": "Ui Sound/SFX- Ui06.mp3",
+    "cache": ".cache/d90bdf9815-sfx-ui06.wav",
+    "gain_db": -6.14,
+    "duration_s": 1.27,
+    "onset_s": 0.01,
+    "peak_s": 0.018,
+    "end_s": 0.625,
+    "effective_s": 0.615,
+    "attack_s": 0.008,
+    "pad_start_s": 0.01,
+    "pad_end_s": 0.645,
+    "whoosh_speed": null,
+    "fit": 0.4,
+    "pinned": false,
+    "source": "model",
+    "confidence": 0.5
    }
   ]
  },
- "waiting": [
-  {
-   "id": "98e6c52735",
-   "path": "Beep roser.wav",
-   "cue_types": [
-    "notification",
-    "hero_enter"
-   ],
-   "confidence": 0.45,
-   "note": "Bright beep, but the slow 0.43 s attack is unlike a click; guessing."
-  },
-  {
-   "id": "c22056ec8f",
-   "path": "PlageFlip3.mp3",
-   "cue_types": [
-    "transition_slow"
-   ],
-   "confidence": 0.55,
-   "note": "Page flip with 0.66 s swell over 2.6 s; plausible slow transition."
-  },
-  {
-   "id": "6e06b8488e",
-   "path": "Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3",
-   "cue_types": [
-    "transition_slow"
-   ],
-   "confidence": 0.5,
-   "note": "Magic spell name, 0.5 s attack, 3.5 s long; loosely a slow swoosh."
-  },
-  {
-   "id": "87eb52887e",
-   "path": "Ui Sound/SFX- Ui02.mp3",
-   "cue_types": [
-    "ui_click",
-    "success"
-   ],
-   "confidence": 0.55,
-   "note": "Short bright UI tone with 0.41 s tail; click or small ding."
-  },
-  {
-   "id": "20209360ee",
-   "path": "Ui Sound/SFX- Ui03.mp3",
-   "cue_types": [
-    "notification",
-    "ui_click"
-   ],
-   "confidence": 0.5,
-   "note": "Generic UI name; 1.3 s bright tone suggests message sound."
-  },
-  {
-   "id": "d90bdf9815",
-   "path": "Ui Sound/SFX- Ui06.mp3",
-   "cue_types": [
-    "success",
-    "notification"
-   ],
-   "confidence": 0.5,
-   "note": "1.3 s bright tone with tail; ding or message sound, generic name."
-  },
-  {
-   "id": "bc52b5b766",
-   "path": "Ui Sound/SFX- Ui07.mp3",
-   "cue_types": [
-    "ui_click",
-    "hero_enter"
-   ],
-   "confidence": 0.5,
-   "note": "Generic UI name; 0.23 s attack makes it a soft pop at best."
-  },
-  {
-   "id": "0ae1b53267",
-   "path": "Ui Sound/SFX- Ui08.mp3",
-   "cue_types": [
-    "ui_click"
-   ],
-   "confidence": 0.55,
-   "note": "Short bright click with near-zero attack; generic name."
-  },
-  {
-   "id": "ad797b035a",
-   "path": "Ui Sound/SFX- Ui09.mp3",
-   "cue_types": [
-    "ui_click",
-    "success"
-   ],
-   "confidence": 0.45,
-   "note": "Generic UI name; 0.77 s bright tone with slight swell."
-  },
-  {
-   "id": "888c673282",
-   "path": "Ui Sound/SFX- Ui10.mp3",
-   "cue_types": [
-    "ui_click",
-    "success"
-   ],
-   "confidence": 0.5,
-   "note": "Generic UI name; 0.6 s bright tone, short tail."
-  },
-  {
-   "id": "0a90767f0b",
-   "path": "finger-snap-reverb-423222.mp3",
-   "cue_types": [
-    "ui_click",
-    "stamp"
-   ],
-   "confidence": 0.5,
-   "note": "Snap with 0.12 s effective sound; long reverb tail is mostly silence."
-  },
-  {
-   "id": "91943d7344",
-   "path": "pop-91931.mp3",
-   "cue_types": [
-    "hero_enter",
-    "transition_slow"
-   ],
-   "confidence": 0.5,
-   "note": "Named pop, but 2 s attack and 3 s length fit a slow swell better."
-  }
- ],
+ "waiting": [],
  "unclassified": [],
  "excluded": [
   {
@@ -1706,13 +1740,86 @@
   "file": "overrides.txt",
   "created": false,
   "bans": [],
-  "pins": [],
+  "pins": [
+   {
+    "line": 21,
+    "cue": "notification",
+    "path": "Beep roser.wav",
+    "matched": true
+   },
+   {
+    "line": 22,
+    "cue": "transition_slow",
+    "path": "PlageFlip3.mp3",
+    "matched": true
+   },
+   {
+    "line": 23,
+    "cue": "transition_slow",
+    "path": "Transition Sound Effects/Magic Spell Sound Effect ( By Ashish Editz )_01.mp3",
+    "matched": true
+   },
+   {
+    "line": 24,
+    "cue": "success",
+    "path": "Ui Sound/SFX- Ui02.mp3",
+    "matched": true
+   },
+   {
+    "line": 25,
+    "cue": "notification",
+    "path": "Ui Sound/SFX- Ui03.mp3",
+    "matched": true
+   },
+   {
+    "line": 26,
+    "cue": "success",
+    "path": "Ui Sound/SFX- Ui06.mp3",
+    "matched": true
+   },
+   {
+    "line": 27,
+    "cue": "ui_click",
+    "path": "Ui Sound/SFX- Ui07.mp3",
+    "matched": true
+   },
+   {
+    "line": 28,
+    "cue": "ui_click",
+    "path": "Ui Sound/SFX- Ui08.mp3",
+    "matched": true
+   },
+   {
+    "line": 29,
+    "cue": "success",
+    "path": "Ui Sound/SFX- Ui09.mp3",
+    "matched": true
+   },
+   {
+    "line": 30,
+    "cue": "ui_click",
+    "path": "Ui Sound/SFX- Ui10.mp3",
+    "matched": true
+   },
+   {
+    "line": 31,
+    "cue": "stamp",
+    "path": "finger-snap-reverb-423222.mp3",
+    "matched": true
+   },
+   {
+    "line": 32,
+    "cue": "hero_enter",
+    "path": "pop-91931.mp3",
+    "matched": true
+   }
+  ],
   "unknown": []
  },
  "previews": {
   "transition_slow": {
    "sounds": 8,
-   "duration_s": 24.49
+   "duration_s": 24.27
   },
   "transition_fast": {
    "sounds": 8,
@@ -1724,23 +1831,23 @@
   },
   "hero_enter": {
    "sounds": 8,
-   "duration_s": 9.27
+   "duration_s": 12.13
   },
   "ui_click": {
    "sounds": 8,
-   "duration_s": 8.91
+   "duration_s": 9.43
   },
   "stamp": {
-   "sounds": 4,
-   "duration_s": 6.14
+   "sounds": 5,
+   "duration_s": 7.46
   },
   "number": {
    "sounds": 8,
    "duration_s": 9.08
   },
   "success": {
-   "sounds": 3,
-   "duration_s": 5.26
+   "sounds": 7,
+   "duration_s": 11.36
   },
   "typing": {
    "sounds": 2,
@@ -1755,8 +1862,8 @@
    "duration_s": 19.55
   },
   "notification": {
-   "sounds": 4,
-   "duration_s": 6.8
+   "sounds": 7,
+   "duration_s": 11.69
   }
  },
  "files": [
@@ -1832,12 +1939,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "notification"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "notification"
+   ]
   },
   {
    "id": "70233a1c92",
@@ -1902,9 +2013,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "ui_click"
-   ]
+   "pooled": []
   },
   {
    "id": "a885c1679c",
@@ -3084,14 +3193,18 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "transition_slow"
+   ],
    "notes": [
     "quiet master, gain +10 dB"
    ],
-   "pooled": []
+   "pooled": [
+    "transition_slow"
+   ]
   },
   {
    "id": "d8e7c050ac",
@@ -3692,9 +3805,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "hero_enter"
-   ]
+   "pooled": []
   },
   {
    "id": "1a43c19980",
@@ -4466,9 +4577,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "transition_slow"
-   ]
+   "pooled": []
   },
   {
    "id": "b1913879d0",
@@ -4529,9 +4638,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "transition_slow"
-   ]
+   "pooled": []
   },
   {
    "id": "e070bee07f",
@@ -5971,12 +6078,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "transition_slow"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "transition_slow"
+   ]
   },
   {
    "id": "4558a2a55b",
@@ -7060,12 +7171,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "success"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "success"
+   ]
   },
   {
    "id": "20209360ee",
@@ -7139,12 +7254,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "notification"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "notification"
+   ]
   },
   {
    "id": "4090577416",
@@ -7218,9 +7337,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "ui_click"
-   ]
+   "pooled": []
   },
   {
    "id": "76b3424fd4",
@@ -7294,9 +7411,7 @@
    "banned": false,
    "pinned": [],
    "notes": [],
-   "pooled": [
-    "ui_click"
-   ]
+   "pooled": []
   },
   {
    "id": "d90bdf9815",
@@ -7370,12 +7485,17 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "success"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "notification",
+    "success"
+   ]
   },
   {
    "id": "bc52b5b766",
@@ -7449,12 +7569,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "ui_click"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "ui_click"
+   ]
   },
   {
    "id": "0ae1b53267",
@@ -7523,12 +7647,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "ui_click"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "ui_click"
+   ]
   },
   {
    "id": "ad797b035a",
@@ -7602,12 +7730,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "success"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "success"
+   ]
   },
   {
    "id": "888c673282",
@@ -7681,12 +7813,17 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "ui_click"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "success",
+    "ui_click"
+   ]
   },
   {
    "id": "16b69cf8d6",
@@ -8464,15 +8601,19 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "stamp"
+   ],
    "notes": [
     "1 short full-scale run",
     "true peak +0.4 dBTP in the original"
    ],
-   "pooled": []
+   "pooled": [
+    "stamp"
+   ]
   },
   {
    "id": "b39ff02106",
@@ -8815,12 +8956,16 @@
    "unclear": false,
    "hint": null,
    "excluded": null,
-   "waiting": true,
+   "waiting": false,
    "unclassified": false,
    "banned": false,
-   "pinned": [],
+   "pinned": [
+    "hero_enter"
+   ],
    "notes": [],
-   "pooled": []
+   "pooled": [
+    "hero_enter"
+   ]
   },
   {
    "id": "cd86907d9f",

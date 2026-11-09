@@ -115,6 +115,25 @@ def tweaks_state(tweaks: str) -> dict:
     return in_force
 
 
+def three_d_limits(tweaks: str, in_force: dict) -> dict:
+    """tokens.json limits.three_d from the 3D decision line of tweaks.md. `scenes`: where a 3D object other than the
+    icon (hero-3d) may stand; `icon_scenes`: where icon-3d may stand ("all" or a list); `icon_per_scene`: at most
+    that many icons in one scene; `icon_every_scene`: every scene but the ask should carry one (Gabriele, 2026-11-09:
+    "one 3d icon per scene, not just in the hook"); `max_objects`: 3D objects on screen at once. The older line
+    ("hook and end card only, at most N objects on screen") still reads as before."""
+    line = grab("limits.three_d", r"^- \*\*3D:\*\*(.*?)(?=^- |^\s*$)", tweaks, 1, re.M | re.S)
+    line = " ".join(line.split())
+    max_objects = grab_num("limits.three_d.max_objects", r"at most (\d+) objects on screen", line)
+    every = re.search(r"icon[^.;]*in every scene", line) is not None
+    per = re.search(r"at most (\d+) per scene", line)
+    return {"scenes": ["hook", "end"],
+            "icon_scenes": "all" if every else ["hook", "end"],
+            "icon_per_scene": int(per.group(1)) if per else 1,
+            "icon_every_scene": every,
+            "max_objects": max_objects,
+            "flat_cards_in_perspective_everywhere": in_force["three_d_cards"]}
+
+
 def proposed_block(tweaks: str, title: str) -> str:
     """The text of one PROPOSED (or accepted) bullet, up to the next bullet. Length and 3D also have an earlier
     decision bullet with the same title, so the bullet that holds a "Proposal:" wins (else the last one)."""
@@ -285,16 +304,16 @@ def beat_table(style: str) -> list[dict]:
 # use (the canvas, the captions, the mascot and the moves).
 BEAT_TYPES = {
     "hook": ["headline", "window-card", "logo-tile", "hero-3d", "icon-3d", "card", "fly-in", "stat-number", "video-card", "card-fan", "card-grid", "mock-site-card", "screenshot-zoom", "timeline-scrubber", "swatch-row", "swatch-card"],
-    "stake": ["card", "dark-chip", "light-chip", "window-card", "strike-through", "handwritten-callout", "thumb-grid", "card-fan", "card-grid", "mock-site-card", "video-card", "screenshot-zoom", "timeline-scrubber", "swatch-row", "swatch-card"],
-    "number": ["stat-number", "chart-card", "progress-bar", "dark-chip", "card", "light-chip", "video-card", "card-grid", "swatch-row", "timeline-scrubber", "card-fan", "screenshot-zoom", "mock-site-card", "swatch-card"],
-    "tool": ["window-card", "logo-tile", "card", "light-chip", "dark-chip", "thumb-grid", "camera-move", "screenshot-zoom", "video-card", "mock-site-card", "card-fan", "card-grid", "timeline-scrubber", "swatch-row", "swatch-card"],
-    "step": ["terminal-card", "chat-card", "check-badge", "light-chip", "window-card", "card", "progress-bar", "dark-chip", "screenshot-zoom", "video-card", "timeline-scrubber", "mock-site-card", "card-fan", "card-grid", "swatch-row", "swatch-card"],
-    "comparison": ["table-card", "strike-through", "thumb-grid", "card", "chart-card", "dark-chip", "light-chip", "window-card", "card-grid", "card-fan", "swatch-row", "mock-site-card", "screenshot-zoom", "video-card", "swatch-card", "timeline-scrubber"],
-    "proof": ["stat-number", "window-card", "chart-card", "check-badge", "dark-chip", "card", "table-card", "screenshot-zoom", "video-card", "card-fan", "card-grid", "timeline-scrubber", "mock-site-card", "swatch-row", "swatch-card"],
-    "mechanism": ["card", "light-chip", "dark-chip", "chart-card", "terminal-card", "check-badge", "handwritten-callout", "thumb-grid", "window-card", "card-grid", "card-fan", "timeline-scrubber", "screenshot-zoom", "video-card", "mock-site-card", "swatch-row", "swatch-card"],
-    "before-after": ["strike-through", "table-card", "thumb-grid", "card", "chart-card", "light-chip", "window-card", "card-grid", "swatch-row", "swatch-card", "mock-site-card", "screenshot-zoom", "video-card", "card-fan", "timeline-scrubber"],
-    "pain-payoff": ["card", "check-badge", "strike-through", "dark-chip", "light-chip", "window-card", "screenshot-zoom", "video-card", "card-fan", "card-grid", "timeline-scrubber", "mock-site-card", "swatch-row", "swatch-card"],
-    "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip", "card-grid", "swatch-card", "mock-site-card", "video-card", "screenshot-zoom", "card-fan", "timeline-scrubber", "swatch-row"],
+    "stake": ["card", "dark-chip", "light-chip", "window-card", "strike-through", "handwritten-callout", "thumb-grid", "card-fan", "card-grid", "mock-site-card", "video-card", "screenshot-zoom", "timeline-scrubber", "swatch-row", "swatch-card", "icon-3d"],
+    "number": ["stat-number", "chart-card", "progress-bar", "dark-chip", "card", "light-chip", "video-card", "card-grid", "swatch-row", "timeline-scrubber", "card-fan", "screenshot-zoom", "mock-site-card", "swatch-card", "icon-3d"],
+    "tool": ["window-card", "logo-tile", "card", "light-chip", "dark-chip", "thumb-grid", "camera-move", "screenshot-zoom", "video-card", "mock-site-card", "card-fan", "card-grid", "timeline-scrubber", "swatch-row", "swatch-card", "icon-3d"],
+    "step": ["terminal-card", "chat-card", "check-badge", "light-chip", "window-card", "card", "progress-bar", "dark-chip", "screenshot-zoom", "video-card", "timeline-scrubber", "mock-site-card", "card-fan", "card-grid", "swatch-row", "swatch-card", "icon-3d"],
+    "comparison": ["table-card", "strike-through", "thumb-grid", "card", "chart-card", "dark-chip", "light-chip", "window-card", "card-grid", "card-fan", "swatch-row", "mock-site-card", "screenshot-zoom", "video-card", "swatch-card", "timeline-scrubber", "icon-3d"],
+    "proof": ["stat-number", "window-card", "chart-card", "check-badge", "dark-chip", "card", "table-card", "screenshot-zoom", "video-card", "card-fan", "card-grid", "timeline-scrubber", "mock-site-card", "swatch-row", "swatch-card", "icon-3d"],
+    "mechanism": ["card", "light-chip", "dark-chip", "chart-card", "terminal-card", "check-badge", "handwritten-callout", "thumb-grid", "window-card", "card-grid", "card-fan", "timeline-scrubber", "screenshot-zoom", "video-card", "mock-site-card", "swatch-row", "swatch-card", "icon-3d"],
+    "before-after": ["strike-through", "table-card", "thumb-grid", "card", "chart-card", "light-chip", "window-card", "card-grid", "swatch-row", "swatch-card", "mock-site-card", "screenshot-zoom", "video-card", "card-fan", "timeline-scrubber", "icon-3d"],
+    "pain-payoff": ["card", "check-badge", "strike-through", "dark-chip", "light-chip", "window-card", "screenshot-zoom", "video-card", "card-fan", "card-grid", "timeline-scrubber", "mock-site-card", "swatch-row", "swatch-card", "icon-3d"],
+    "payoff": ["card", "check-badge", "window-card", "light-chip", "stat-number", "progress-bar", "dark-chip", "card-grid", "swatch-card", "mock-site-card", "video-card", "screenshot-zoom", "card-fan", "timeline-scrubber", "swatch-row", "icon-3d"],
     "ask": ["end-card", "dm-card", "speech-bubble", "icon-3d"],
     "any": ["paper-canvas", "caption-word", "caption-group", "mascot", "pop", "exit-move", "fly-in", "camera-move", "cursor"],
 }
@@ -545,9 +564,7 @@ def build_tokens(style_raw: str, tweaks_raw: str, fonts_dir: str | None, energy_
         "accent_share_median_pct": grab_nums("limits.accent_share_median_pct", r"covers a median (\d+(?:\.\d+)?) to (\d+(?:\.\d+)?)% of a frame", style, (1, 2)),
         "accent_card_area_max_px": (grab_num("limits.accent_card_area_max_px", r"to ([\d,]+) px of area", proposed_block(tweaks, "Accent-filled cards").replace(",", "")) if in_force["accent_cards"] else None),
         "length_s": {"default": length_default, "list": length_list},
-        "three_d": {"scenes": ["hook", "end"],
-                    "max_objects": grab_num("limits.three_d.max_objects", r"\*\*3D:\*\* hook and end card only, at most (\d+) objects on screen", tweaks),
-                    "flat_cards_in_perspective_everywhere": in_force["three_d_cards"]},
+        "three_d": three_d_limits(tweaks, in_force),
         "caption": {"words_per_chunk": grab_nums("limits.caption.words_per_chunk", r"(\d+) to (\d+) words per chunk", style, (1, 2)),
                     "emphasis_per_chunk": grab_nums("limits.caption.emphasis_per_chunk", r"Emphasis: (\d+) to (\d+) key words per chunk", style, (1, 2))},
     }

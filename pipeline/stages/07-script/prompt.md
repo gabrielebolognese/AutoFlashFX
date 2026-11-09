@@ -6,7 +6,7 @@ Write draft {{DRAFT_LABEL}} of the reel's script in the **{{TONE}}** tone ({{TON
 facts, the winning hook, how the creator sounds and the style's beat map. Answer with only the JSON object described
 at the end. A cut pass removes about 20 percent of the words after you, scripted checks then verify the length, the
 timing, the structure, the human feel, the placeholders and every claim against facts.md, and a judge compares your
-draft with a second one written in another tone.
+draft with a second one written in another tone. The judge's first question is whether a stranger gets the point.
 
 {{EXTRA}}
 ## The idea
@@ -49,7 +49,24 @@ Verbatim excerpts of the creator's real speech (match this register):
 {{SOLUTION_RULES}}
 
 {{NOTE}}
-## Structure (in this order; one idea per beat)
+## Above everything: the viewer understands it on one listen
+
+The viewer is scrolling, has never heard of the tool or its terms, hears every line once at full speed and cannot
+pause. If they cannot say the point back after one listen, the reel failed, however many facts it holds.
+- Before writing, put the point in one plain sentence a 12-year-old would get (for example: "Claude Code makes every
+  site look the same; this free skill fixes it; here is how to turn it on"). Every beat serves that sentence. A fact
+  that does not serve it stays out, even a good one.
+- Tell it as one thread: the problem, why it hits the viewer, the fix, what changes, how to get it. Each beat follows
+  from the one before and the listener hears the link (so, because, but, that's why, here's the fix, then). A body
+  beat may carry on the previous beat's idea (the why after the what): one thread, not one new fact per beat.
+- Full sentences with a subject and a verb. No telegraph style and no strings of fragments: "All caps labels. Fake
+  one, two, three." is a list of notes, not speech. One short punchline is fine where it lands a point.
+- Plain words. A term the viewer would have to look up (distributional convergence, a design token, a hex code read
+  out) is either explained in the same beat in everyday words or left out. A name only when the viewer needs it.
+- Use the 2 to 4 facts the point needs, explained, rather than squeezing them all in. A fact left out costs
+  nothing; a line nobody understands costs the reel.
+
+## Structure (in this order; one idea per beat, all of them one thread)
 
 1. **hook** (beat 1, type hook): display is hook 1's spoken line, word for word; card is its on-screen line. Write
    only the spoken track yourself (numbers in words, pronunciations applied).
@@ -86,21 +103,16 @@ Verbatim excerpts of the creator's real speech (match this register):
 - So write **{{WRITE_LO}} to {{WRITE_HI}} words** across the display track now: the cut pass trims it.
 - No beat over {{BEAT_MAX_WORDS}} words on either track (4 seconds): a number written out or a command spelled out
   costs its spoken words, so keep such beats short. The hook stays under 3 seconds (it already does).
-- Never 3 beats in a row without something concrete: a number, a name or an exact value.
+- Never 3 beats in a row without something concrete: a number, a name or an exact value the viewer understands.
 
 ## How to write it
 
 - Plain spoken English, one thought per sentence, as the excerpts sound. Contractions (don't, it's, you're), talk to
   "you", say "I" where the creator would.
-- Rhythm, and this is checked by a sentence-length statistic (the variation across sentences must be high): beats
-  come in two shapes and alternate, A B A B. Shape A is one sentence of 12 or 13 words ("With it on, Claude plans
-  4 to 6 colours, reviews them, and only then codes."). Shape B is two or three sentences of 3 or 4 words each
-  ("Rounded cards again. Same grey shadow. Every single time."). The hook is the only sentence of 5 to 11 words
-  in the script: that middle length is the machine rhythm and fails the check, so split such a sentence in two
-  or stretch it to 12.
-- Something concrete in every beat where the facts allow it: a number, an exact value, or a capitalized name that
-  is not the beat's first word (the checker counts digits and mid-sentence capitalized names; a bare command line
-  counts as abstract, so say "Claude" or a number near it).
+- Rhythm: the way people talk. Mostly full sentences of 6 to 12 words, now and then a short one of 2 to 4 words for
+  punch. Clarity wins over rhythm every time: never break a sentence into fragments to vary the length.
+- Concrete beats vague: a real example the viewer can picture, a number that matters, the tool's name. Never add a
+  name or a number only to sound concrete, and never one the viewer cannot place.
 - Every factual statement comes from a verified claim in facts.md, in the claim's own strength: no guarantee where
   the source says guidance, no invented number, client, result, hours saved or personal story. The viewer's pain,
   the creator's opinion and the ask are not claims and need no source.

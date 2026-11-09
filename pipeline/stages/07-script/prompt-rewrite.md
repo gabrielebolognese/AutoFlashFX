@@ -22,8 +22,9 @@ beat, not only the changed ones).
 - The final script must run {{FINAL_LO}} to {{FINAL_HI}} words in total (no cut pass follows this rewrite), no beat
   over {{BEAT_MAX_WORDS}} words, every factual statement from facts.md in the claim's own strength, numbers written
   out in the spoken track, never an em dash, no placeholder.
-- The rhythm rule still holds: beats alternate between one sentence of 12 or 13 words and two or three sentences
-  of 3 or 4 words; apart from the hook, no sentence of 5 to 11 words.
+- Above everything, a viewer who has never heard of the tool must get the point on one listen: full sentences with
+  a subject and a verb, plain words, every beat following from the one before (so, because, but, then). Fixing a
+  check never turns sentences into fragments and never adds a term the viewer cannot place.
 - The solution rules still hold: FlashFX is named only when it is the reel's solution, never pitched, and nothing
   says or implies this reel was made in FlashFX.
 

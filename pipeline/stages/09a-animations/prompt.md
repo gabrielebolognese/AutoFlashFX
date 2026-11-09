@@ -63,10 +63,15 @@ object described at the end.
   "flagged"} draws the strike when "flagged" is spoken; {"ticks_at": "plans"} starts the checklist ticks there.
 - The hook (beat 1): the headline component with the hook's display line split in 2 to 3 lines (lines_json, the
   serif phrase between asterisks, the kicker in ALL CAPS, kicker_mark "@brand-slot"), plus the set piece that lands
-  in the breath: hero-3d (the only 3D, allowed in the hook and the end card, at most 2 objects) or a fly-in. Frame 0
+  in the breath: hero-3d (allowed only in the hook and the end card) or a fly-in. Frame 0
   must not be empty paper: the headline is on from the start.
 - The ask (the last beat): the end-card (verb, keyword, two handwritten lines, lockup_w 300 or more) and the dm-card
   landing on the keyword's word (sender FlashFX, one message line). The pipeline sets the FlashFX lockup and avatar.
+- One 3D icon in every scene (the style's 3D line): each scene carries one icon-3d, a low-poly icon turning slowly
+  (props `icon`: bolt, star, play, check, cursor, heart, card, ring or orb; `color`; a default box of 500 x 500, smaller is fine), chosen for what the scene says (check on a
+  payoff, bolt on a speed claim, cursor on a click step). At most 1 icon per scene and at most 2 3D objects on
+  screen; hero-3d stays in the hook and the end card. Place the icon where it covers no text and no caption group
+  (a chip-sized icon beside the hero card, or the hero itself in a scene with little text). The ask may skip it.
 - Motion and energy (E1 to E8; the validator fails a plan that breaks one of these, naming the scene):
   - Every scene keeps a moving element of substance in the hero zone (y 640 to 1280) from its first word to its last: a
     component at least 120000 px2 big (900 wide and 140 high is the least) inside that band for 70 percent of the scene.
