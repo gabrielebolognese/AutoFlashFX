@@ -85,36 +85,3 @@ channels/*/golden/*/project/.hyperframes/
 channels/*/golden/*/project/renders/
 channels/*/golden/*/.sheet/
 channels/*/motion-lib/.hyperframes/
-
-# LEGACY-ROOT-RULES-BEGIN: the rules of the layout before M18 (BUILD_SPEC.md 14.3). They keep the data that is still at the root
-# ignored until migrate-channels has moved it; the commit after the move deletes this block.
-motion-lib/.harness/
-motion-lib/renders/
-golden/*/project/renders/
-library/voice/*
-!library/voice/README.txt
-library/.hooks.index.json
-library/hooks.lint.txt
-styles/*/refs/
-styles/*/analysis/
-styles/sfx/**/*.wav
-styles/sfx/**/*.mp3
-styles/sfx/**/*.MP3
-styles/sfx/**/*.aif
-styles/sfx/**/*.aiff
-styles/sfx/**/*.ogg
-styles/sfx/**/*.flac
-styles/sfx/**/*.m4a
-styles/sfx/.cache/
-styles/sfx/previews/
-golden/*/golden.mp4
-golden/*/render.json
-golden/*/probe.json
-golden/*/check.json
-golden/*/project/assets/fonts/
-golden/*/project/assets/vendor/
-golden/*/project/assets/vo.wav
-golden/*/project/.hyperframes/
-golden/*/.sheet/
-motion-lib/.hyperframes/
-# LEGACY-ROOT-RULES-END
