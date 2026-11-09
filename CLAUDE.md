@@ -5,16 +5,17 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
-- M17 Control check: done (2026-11-08). Next: M18 Channels, then M19 to M24: the channels plan (BUILD_SPEC.md section 14, explained in
-  CHANNELS.md; the editable project is M21). The build is driven by `bash build-runner.sh` (a build/PAUSE file stops it between milestones: it holds
-  M18 now, so the build waits for you; read build/M17/report.md first); its log is build/build.log and its per-milestone reports are in build/M<n>/.
+- M17 Control check: done (2026-11-08). Next: M18 Channels, then M19 to M27: the channels plan (BUILD_SPEC.md section 14, explained in
+  CHANNELS.md; the editable project is M21; M22 learning from feedback for every channel, 14.14; M23 to M27 the second channel
+  `scenarios`, 14.10, from the user's documents in build/channel2/). The build is driven by `bash build-runner.sh` (a build/PAUSE
+  file stops it between milestones; every milestone to M27 is specified, so no pause is needed); its log is build/build.log and its per-milestone reports are in build/M<n>/.
   M16 (Director, components and the energy loop) is done too (2026-11-08).
 - M17 added only tools and records, nothing the runner uses: pipeline/tests/manifestlib.py, inventory.py, refindex.py, make-manifest.py,
   check-manifest.py, risk-scan.py, run-fake.sh (every fake-only test in a throwaway copy, `--compare DIR` is the baseline rule), fakeresults.py,
   make-test-copy.sh, m17-baseline.sh, m17-fixture.py, m17-simulate.py, m17-summary.py and test-m17.sh (`bash pipeline/tests/test-m17.sh`, about 5
   minutes), and under build/M17/: inventory.md and .tsv, refindex.tsv, refindex-data.tsv, move-manifest.tsv (the moves of M18 and M19),
   config-keys.tsv, risks.md, riskiest-moves.md, baseline/ (results.tsv, failures.tsv, logs, preflight, doctor, the dummy fingerprint) and report.md.
-  Baseline rule for M18 to M24: no test that passed in build/M17/baseline fails (known failures: test-m2, test-m3, test-m6, test-m7).
+  Baseline rule for M18 to M27: no test that passed in build/M17/baseline fails (known failures: test-m2, test-m3, test-m6, test-m7).
 - What exists: config.json, ideas.txt, the queue library (pipeline/lib/ideas.py and ideas.sh), add-idea.sh, the
   preflight (with the `voice` check: engine.txt's interpreter imports kokoro, one interpreter imports
   faster_whisper), the runner loop (run.sh with pipeline/lib/runner.sh, state.py, status.sh, export.py,

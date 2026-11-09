@@ -2660,3 +2660,55 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     script.detect_skip, default ["BURSTINESS"]): it is still measured and reported, the gate uses the other four checks
     with detect.py's own formula (checks.detect.gate_overall, skipped). The fixtures and their asserted numbers are
     unchanged (the logged detect score is still detect.py's overall).
+339. **The second channel is the user's documents, and its spec is written before M18.** The user confirmed on
+    2026-11-08 that his two documents are the only valid second channel: build/channel2/scenarios.md (the master
+    document) and build/channel2/inkhead-style.md (the style bible inkhead), verbatim copies of
+    Desktop/channel2-sources/docs/ (the originals stay there, never edited). They replace the old 14.10 (Life of Gabry,
+    lifeofgabry, scenario-story, third person, one voice, single 45 to 75 s videos, hooks.txt templates, a style derived
+    from references) and the old M22 to M24 entirely. On 2026-11-09 he asked for the spec now, so the build runs M18 to
+    the end without a pause: BUILD_SPEC.md 14.10 (the engine requirements only; the documents are the authority for
+    every creative decision, and inkhead-style.md section 19 says which lines change between them), 14.14 (learning,
+    from build/channel2/learning.md), section 8 (the youtube-shorts file: TITLE instead of CAPTION, STORY and UPLOAD STEPS
+    for serial formats, the serial fields of input.json), section 12 and PLAN.md M22 to M27, build-runner.sh's list.
+    Working id `scenarios` (scenarios.md 1), format `serial-story` (gated, serialized), display name Gabryverse as the
+    working name (scenarios.md 10 recommends it). channels/*/stories/ is machine state, ignored by git, so the runner
+    never commits.
+340. **The milestone layout after M21.** M22 Learning (every channel), then the second channel in five milestones:
+    M23 the channel, the stories and the gates (the story machine proven with placeholder production); M24 the script and
+    the two voices; M25 characters and text (inkhead part 1); M26 worlds, shots and the golden part (inkhead part 2); M27
+    sound, review and end to end. Learning comes first so the second channel learns from its first story, and not before
+    M18 so nothing is built on paths M18 moves or disturbs the fingerprints of M18 to M20 (build/channel2/learning.md 11).
+    Each milestone fits one run of 3 to 8 hours; the look is split in two because it is the biggest piece. Every
+    acceptance test's default sections use only the fake claude and fixtures (they join run-fake.sh); the real section
+    runs with `MNN_SECTIONS=real`. learning.md's batch said "20 planted feedback messages" but listed 27 (10, 5, 10, 1,
+    1): the spec says 27.
+341. **The defaults for the second channel's open items** (scenarios.md 9, inkhead-style.md 20), each a one-line change
+    in a chat, none stopping the build: name Gabryverse, handle empty, id scenarios; death and violence off screen; other
+    characters read by the narrator; script approval on (gates.script_approval, the user's item 4 still unanswered, so
+    the recommended on/off setting that starts on); the gates in a Claude Code chat (decided 2026-11-08); Gabry's look
+    the original quiff design of inkhead 5 with gabry-orange #F2913D; voices narrator af_heart (7.8 argues for a female
+    narrator against a male Gabry) and Gabry am_puck (the first candidate), speed 1.0, until the audition pick; Gabry =
+    GAH-bree; the style round done; the sound pack from sources.sfx, no music bed, an ambience bed 18 to 20 LU under the
+    voice; #shorts required plus 3 topical with one universe tag; all 18 seeds in ideas.txt, alternating the universes;
+    the references at C:/Users/there/OneDrive/Desktop/channel2-sources/refs; no spoken call to action; loudness -14
+    LUFS (the platform default; the references measure -17.1); caption_max 100 (the 150 answer of 2026-11-07 belonged to
+    Life of Gabry; scenarios.md fixes the title at 100); learning suggestions every 10 decisions, at most 2 shown.
+342. **Unattended rules for the second channel's milestones.** No milestone waits for the user: the gates run in auto
+    mode (channel.json gates.auto or REELS_GATES_AUTO=1: the recommended option, recorded `by: auto`) in the tests and
+    the real sections, always in a temp REELS_ROOT holding a copy of channels/scenarios/, so the real channel's ideas,
+    stories, history and exports stay untouched and its first story starts with the user's own G1; M27 leaves gates.auto
+    false. The references are read from channel.json sources.refs (the Desktop folder) and copied by checksum into the
+    channel's ignored refs/; when missing, the bible's measured values are used and the comparisons skipped with a NOTE.
+    When Desktop/channel2-sources/sfx/ is still empty at M27, a one-time build step copies FlashFX's pack into
+    channels/scenarios/styles/sfx/standin/ (no runner of this channel reads FlashFX's folder) with a generated room tone
+    as the bed, every export says so in NEEDS REVIEW, and the first start that finds the user's pack swaps it in. The
+    voice audition (8 files in build/voice-audition/scenarios/) waits for the user's pick while the defaults run. The two
+    real parts of M27 go to build/M27/samples/.
+343. **The second channel's engine shape in short.** The serial-story format's unit is the story: story stages once per
+    story (story-seed, story-research, story-board with G1), part stages once per part, each part one run folder
+    (part-approach with G2, part-script and G3, part-lookahead, the two-voice 08-voiceover, story-shots, story-build,
+    11-sfx, 12-review, 13-render, timeline, the exporter, s15-project, part-bible). Gates are files in the story folder
+    written only by pipeline/bin/gate; the runner holds with no timeout (a HOLD line, polling every 15 s, no heavy lock
+    held); "you decide" takes the recommended option. The format's code names no character: the protagonist's name and
+    the speaker tags come from channel.json, the voices from engine.txt's `voice_<speaker>` keys (a single `voice` key,
+    FlashFX, works as before). The model roles reuse the existing config models keys, so DECISIONS.md 333 to 335 hold.

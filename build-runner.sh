@@ -50,7 +50,7 @@ CLAUDE_BIN="${CLAUDE_BIN:-claude}"
 read -r -a PERM_FLAGS <<< "${PERM_FLAGS:---permission-mode auto --permission-prompts none}"
 SLEEP_SCALE="${SLEEP_SCALE:-1}"                 # tests only: 0.001 makes every wait near instant
 
-MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24)
+MS_IDS=(M0 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24 M25 M26 M27)
 MS_TITLES=("Plan" "Skeleton" "Runner core and terminal output" "Error system"
            "Research, expansion, gate, angle" "Profile and hooks" "Script" "Voiceover"
            "Sound effects memory map" "Motion library" "Visual stages"
@@ -58,7 +58,9 @@ MS_TITLES=("Plan" "Skeleton" "Runner core and terminal output" "Error system"
            "Motion grammar and energy meter" "Kinetic captions and text discipline"
            "Director, components and the energy loop"
            "Control check" "Channels" "Exports and channels side by side" "Formats and the timeline"
-           "Editable project export" "Life of Gabry: the story" "Life of Gabry: the look" "Life of Gabry: end to end")
+           "Editable project export" "Learning (every channel)" "Scenarios: the channel, the stories and the gates"
+           "Scenarios: the script and the two voices" "Scenarios: characters and text"
+           "Scenarios: worlds, shots and the golden part" "Scenarios: sound, review and end to end")
 
 BUILD_DIR="build"; STATE="$BUILD_DIR/state.env"; STATUS_FILE="$BUILD_DIR/.status"
 LOG="$BUILD_DIR/build.log"; STATUS_TXT="$BUILD_DIR/status.txt"; TODO="$BUILD_DIR/HUMAN_TODO.md"
@@ -1006,13 +1008,13 @@ load_state
 if [ -n "$UNTIL" ]; then
   uidx=-1
   for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$UNTIL" ] && uidx=$i; done
-  [ "$uidx" -lt 0 ] && { echo "unknown milestone: $UNTIL (use M0 to M24)"; exit 2; }
+  [ "$uidx" -lt 0 ] && { echo "unknown milestone: $UNTIL (use ${MS_IDS[0]} to ${MS_IDS[${#MS_IDS[@]}-1]})"; exit 2; }
 fi
 
 if [ -n "$FROM" ]; then
   idx=-1
   for i in "${!MS_IDS[@]}"; do [ "${MS_IDS[$i]}" = "$FROM" ] && idx=$i; done
-  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use M0 to M24)"; exit 2; }
+  [ "$idx" -lt 0 ] && { echo "unknown milestone: $FROM (use ${MS_IDS[0]} to ${MS_IDS[${#MS_IDS[@]}-1]})"; exit 2; }
   MS_INDEX=$idx; STOPPED=0; start_milestone
   say START "restarting from $FROM ${MS_TITLES[$MS_INDEX]}, as you asked"
 elif [ ! -f "$STATE" ]; then
@@ -1038,7 +1040,7 @@ fi
 [ "$TOTAL_START" = "0" ] && TOTAL_START=$(now_epoch)
 
 check_claude
-say START "build runner: ${#MS_IDS[@]} batches (M0 to M24), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
+say START "build runner: ${#MS_IDS[@]} batches (${MS_IDS[0]} to ${MS_IDS[${#MS_IDS[@]}-1]}), now at ${MS_IDS[$MS_INDEX]} ${MS_TITLES[$MS_INDEX]} ($PHASE). Status every $(fmt_dur "$STATUS_EVERY"), live feed: $([ "$STREAM" = "1" ] && echo "$ACTIVITY" || echo off)."
 if [ "$BUILD_MODEL" = "fable" ] || [ "$FIX_MODEL" = "fable" ]; then
   say START "coding: builds $BUILD_MODEL ($BUILD_EFFORT), fixes $FIX_MODEL ($FIX_EFFORT), $LIMIT_MODEL ($LIMIT_EFFORT) while fable is at its limit. Reviews: $REVIEW_MODEL ($REVIEW_EFFORT), lenient, at most $MAX_REVIEWS per milestone, then it moves on. Log: $LOG"
   [ "$FALLBACK" = "1" ] && say START "fable batches run with --fallback-model $LIMIT_MODEL: when fable runs out mid-batch, Claude Code carries on with $LIMIT_MODEL in the same session"

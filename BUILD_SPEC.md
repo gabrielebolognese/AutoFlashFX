@@ -79,8 +79,9 @@ instagramReels/
       logs/                  runner.log  status.txt  history.txt  blocked.txt  suggested-ideas.txt  sfx-usage.json
                              editor-gaps.md (M21)
       .locks/                the runner lock and the ideas lock
-    lifeofgabry/             Life of Gabry: youtube-shorts, scenario-story (14.10); the same layout, with
-                             library/character/ (Gabry) and styles/gabry-2d/
+    scenarios/               the second channel (working id): youtube-shorts, serial-story (14.10); the same
+                             layout, with library/character/ (Gabry), library/docs/, styles/inkhead/, stories/
+                             (one folder per story) and gates/
   pipeline/
     lib/                     bash and Python libraries; paths.sh and paths.py are the only code that knows this
                              layout (14.5); heavy.sh (14.6); timeline/ (14.8)
@@ -427,7 +428,7 @@ middle of the screen moves 15% of the time against 58 to 74%; 1.2% of the pixels
 cards fan out and tilt, and nothing stops between events. These rules make energy a requirement that the pipeline
 builds (M14, M15), plans (M16), measures and fixes (M16). They hold for FlashFX's format (problem-solution-reel) and
 its styles; the style supplies the values (fonts, sizes, colors, speeds) through tokens.json. They do not apply to
-other formats: Life of Gabry (14.10) follows only its own style bible, and nothing of this section transfers to it.
+other formats: the second channel (14.10) follows only its own style bible, and nothing of this section transfers to it.
 M14 builds E0, E1, E2, E5, E6 and E7 in the motion library; M15
 builds E3 and E4; M16 builds E8 and E9 in the director, the new components, the golden reel and the review loop.
 Earlier milestones are not reviewed against this section.
@@ -1264,17 +1265,25 @@ Project: exports/<id>-N/project (open <editor.url>?open=exports/<id>-N/project, 
 Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M21)
 ```
 
-Captions file, youtube-shorts (Life of Gabry):
+Captions file, youtube-shorts (the second channel, 14.10; STORY and UPLOAD STEPS appear only for a serial format):
 
 ```
-CAPTION
-<the caption: one line, at most export.caption_max characters (150), no hashtags, no links>
+STORY
+<Story title>, Part <N>
+
+TITLE
+<the title: one line, at most export.caption_max characters (150 by default, 100 for the second channel), no hashtags, no links>
 
 DESCRIPTION
 <what this video is about, written for this video only, at most export.description_max characters (1000) in total>
 
 PINNED COMMENT
-<one line that invites replies; only when export.pinned_comment is true>
+<a question that invites replies; for a serial part also one line saying the next part is coming (not on the final
+part); only when export.pinned_comment is true>
+
+UPLOAD STEPS
+- set the related video to "<Story title>, Part <N-1>" (from Part 2 on)
+- add this part to the playlist "<Story title>"
 
 HOOKS
 <id>-N.mp4 uses: "<hook 1>"
@@ -1295,44 +1304,51 @@ Layers: <native> native, <baked> baked (see project/FALLBACKS.md) (M21)
 
 youtube-shorts text rules, checked in code by the exporter (a failing check gets one rewrite with the failures listed;
 a second failure exports with NEEDS REVIEW):
-- CAPTION: one line, at most caption_max characters (150 by default), no hashtags, no links; it is the hook as a
-  title, written for a viewer who has not seen the video.
+- STORY (serial formats): the first section, so the parts are uploaded in order.
+- TITLE: one line, at most caption_max characters (150 by default; channel.json export may lower it), no hashtags, no
+  links; it is the hook as a title, written for a viewer who has not seen the video. For a serial part it reads
+  `<hook phrase> | <Story title>, Part <N>`: a new hook phrase every part that never spoils the cliffhanger, and never
+  "of M" (the part count can change after earlier parts are out).
 - The exporter reads runs/<run>/export/input.json (schema pipeline/platforms/youtube-shorts/input.schema.json): the
-  premise summary, hook 1, the script lines, the beats (a short label and the narration of each), the facts with
-  their sources, the channel's brand and export settings, and the channel's earlier descriptions (from
-  descriptions.jsonl). The format writes it through the adapter named in format.json `export_input`; the M19 test
-  fixtures follow the same schema.
+  summary, hook 1, the script lines, the beats (a short label and the narration of each), the facts with their sources,
+  the channel's brand and export settings, the channel's earlier descriptions (from descriptions.jsonl) and, for a
+  serial part, the story title, the part number, whether it is the final part, the universe and the earlier parts'
+  titles. The format writes it through the adapter named in format.json `export_input`; the M19 test fixtures follow
+  the same schema.
 - DESCRIPTION: at most description_max characters (1000), counting every character, line break and hashtag.
-  - It says what this video is about: the first line is a one-sentence summary of this scenario, never the caption
-    repeated.
+  - It says what this video is about: the first line is a one-sentence summary, never the title repeated; for a serial
+    part it never spoils the part's ending, and from Part 2 on one line says that Part 1 is on the channel.
   - It is not one chunky paragraph: short lines; no paragraph (consecutive lines that are not list items) longer than
     200 characters.
   - It contains at least one list of 3 to 6 items, one per line, each starting with "- " (a hyphen and a space; for
-    example the moments of a timeline premise, the rules of the new world, what Gabry tries). humanize.py turns other
-    bullet signs into "- ", so the check runs after it; detect.py's uniform-bullets warning is ignored for this list.
+    example the story, the part, the universe and the place). humanize.py turns other bullet signs into "- ", so the
+    check runs after it; detect.py's uniform-bullets warning is ignored for this list.
   - It ends with exactly 4 hashtags (export.hashtags), all on the last line, separated by spaces, each relevant to
-    this video; export.required_hashtags (default none) count among the 4.
+    this video; export.required_hashtags count among the 4 (the second channel: #shorts, plus one universe tag,
+    #survivalstory or #businessstory, that its format's exporter prompt asks for).
   - It is different every video: its first line matches no earlier description of this channel, and against each of
     the channel's last 30 descriptions the overlap is at most 30 percent. Overlap = the word trigrams (lowercase,
     punctuation removed, the hashtag line left out) this description shares with the earlier one, divided by this
     description's trigrams. Every exported description is stored in the channel's logs/descriptions.jsonl.
   - No links, no promotion; it goes through humanize.py and the slop list like every other text.
-- PINNED COMMENT: one line, at most 200 characters, a question or a choice that invites replies, no links.
+- PINNED COMMENT: at most 200 characters, a question or a choice that invites replies, no links; for a serial part a
+  second line says the next part is coming, except on the final part.
+- UPLOAD STEPS (serial formats): the hand steps the export cannot do, because it cannot know published URLs.
 
-Shape of a description:
+Shape of a description (a serial part):
 
 ```
-What if the dinosaur asteroid hit Earth today, with Gabry watching from his balcony?
+You have 212 dollars, a borrowed car and an idea everyone at the diner laughed at.
 
-Second by second:
-- 0 s: a second sun appears over the city
-- 1 s: the shockwave flattens everything for miles
-- 10 s: burning rock starts to rain down
-- 1 hour: the sky turns black
+This part:
+- Story: The Website Kid
+- Part: 1
+- Universe: Entrepreneur
+- Where: Columbus, Ohio, March 1994
 
-Would you have made it past the first minute?
+Would you have named a price on the spot?
 
-#whatif #dinosaurs #asteroid #animation
+#shorts #businessstory #1990s #storytime
 ```
 
 ## 9. config.json
@@ -1398,10 +1414,14 @@ Keep it short and current:
 - the channels (from M18): their ids, names, platforms and formats, how to start each (`bash run.sh --channel <id>`),
   where each one's files are (channels/<id>/), and that exports/ is shared with `<id>-N` names
 - the braces rule with channels: add with `bash pipeline/bin/add-idea.sh --channel <id> "{...}"`. The channel comes
-  from my words around the braces ("for life of gabry", "lifeofgabry:", "flashfx idea"). When I name none and more
+  from my words around the braces ("for scenarios", "scenarios:", "story seed", "flashfx idea"). When I name none and more
   than one channel is enabled, ask me which one in one short question before adding
 - how to add a channel (`bash pipeline/bin/new-channel ...`) and that one channel's session never edits another
   channel's files
+- the learning rule (from M22): feedback I give on any result goes through pipeline/knowledge/adjustments-procedure.md
+  (14.14)
+- the gates rule (from M23): "anything waiting?", showing a proposal and deciding a gate follow
+  pipeline/knowledge/gates-procedure.md (14.10)
 
 ## 12. Milestones (one build batch each) and acceptance tests
 
@@ -1596,7 +1616,7 @@ Keep it short and current:
       others); its result per test (pass or fail, duration, log); the output of preflight and doctor --quick; and the
       dummy fingerprint: `REELS_DUMMY=all bash run.sh --once` in the temp copy, with the tree of the run folder and of
       the export it produced (names, not contents; the timestamp in run folder names replaced by <ts>).
-    - The baseline rule, used by M18 to M24: no test that passed in the baseline fails (a known failure that now passes
+    - The baseline rule, used by M18 to M27: no test that passed in the baseline fails (a known failure that now passes
       is fine). Durations are recorded, not compared: the video runner may share the CPU.
     - build/M17/risks.md: everything that can break a move, each marked BLOCKER or NOTE: a video runner alive, an
       unfinished run, uncommitted changes, open or locked files, OneDrive sync, old paths inside data, paths longer
@@ -1651,7 +1671,7 @@ Keep it short and current:
     REVIEW, descriptions.jsonl); pipeline/schemas/platform.schema.json; heavy.sh around every heavy step; the shared
     limit file; the daily quota; the editor lock (used from M21); logs/engine.log; runner-status and doctor for all
     channels; pipeline/bin/new-channel with the template of problem-solution-reel; test-isolation.sh part 2 (two
-    problem-solution-reel fixture channels until scenario-story exists).
+    problem-solution-reel fixture channels until serial-story exists, M23).
   - Tests:
     - two dummy exports of a fixture channel give exports/<id>-1/ and exports/<id>-2/ with the right file names; the
       first export of a second channel is <id2>-1 in the same exports/; after deleting exports/<id>-2/ the next
@@ -1659,7 +1679,8 @@ Keep it short and current:
     - the export migration on the rehearsal fixture, the undo, again; then on the real folder with verification: every
       old exports/N/ is exports/flashfx-N/ with renamed files and updated HOOKS, RUN and EDITOR lines, and history
       lines are updated
-    - the youtube-shorts exporter on 6 fixture input.json files (section 8's schema, two per premise kind of 14.10):
+    - the youtube-shorts exporter on 6 fixture input.json files (section 8's schema: 3 single videos and 3 serial
+      parts, a Part 1, a middle part and a final part):
       every check passes; a planted 1100-character description, a line of 5 hashtags, a 400-character paragraph, a
       description without a list and a copy of an earlier description each fail their check and get rewritten; no
       caption is ever longer than caption_max
@@ -1729,76 +1750,176 @@ Keep it short and current:
     - the footage-dummy channel's project passes validation, with its clips as native video clips and a native
       caption track
     - S15 takes at most 15 minutes for a 60-second reel on this laptop (the time goes in build/progress.md)
-- **M22 Life of Gabry: the story.** 14.10 up to the voice, with placeholder visuals, and the youtube-shorts export for
-  real. Starts with the gate of 14.13.
-  - Builds: channels/lifeofgabry/ through new-channel: channel.json (youtube-shorts, scenario-story, en, lengths 45 to
-    75, daily_quota 0, the export settings, enabled false until M24; the tests use --allow-disabled),
-    library/profile/account.md and voice.md for the narration (drafted from 14.10, [FILL IN] where my taste decides,
-    plus HUMAN_TODO), library/hooks.txt (a seed of 40 story hook templates in this channel's voice, marked as a draft
-    for me to curate), library/character/gabry.md, library/voice/engine.txt (am_puck, one voice for the narrator and
-    Gabry's rare lines) and pronunciations.txt, ideas.txt with 3 test premises (one per kind); the reference videos and
-    the sound pack copied from channel.json sources.refs and sources.sfx when they are set (copied, never moved,
-    checked by checksum); pipeline/formats/scenario-story/ (format.json, prompts, rubric, template, the export_input adapter) with
-    the stages story-premise, story-facts, story-expansion, story-gate, story-hooks (with S6's judge), story-beats,
-    story-script, then 08-voiceover, story-build in placeholder mode, 13-render, timeline, the youtube-shorts exporter
-    and s15-project (11-sfx and 12-review join in M24); the new voice's measured pace in this channel's config
-    voice.wpm; test-isolation.sh part 2 with a scenario-story fixture as channel B, plus the real-names check of 14.5.
-  - The tests run in a temp REELS_ROOT holding a copy of channels/lifeofgabry/: the real exports/ and this channel's
-    real history get nothing from M22, so its first real video is lifeofgabry-1 (M24).
+- **M22 Learning (every channel).** 14.14 (the full design: build/channel2/learning.md). It comes before the second
+  channel so that channel learns from its first story, and after M21 because it needs the channel paths, protect.py and
+  the per-channel locks (M18), format.json (M20) and the capability upgrade pattern its rework reuses (M21). Starts
+  with the gate of 14.13.
+  - Builds: pipeline/lib/adjust/ (parse, lint, candidates, add, replace, remove, undo, merge with the base document
+    edits, snapshot, stats, suggest, init) and pipeline/bin/adjust (one subcommand each, --channel required, JSON for
+    the chat session, readable lines for me); `adjust propose` with pipeline/stages/_prompts/adjust-propose.md and its
+    schema (config models.adjust: sonnet, medium); pipeline/knowledge/adjustments-procedure.md and the CLAUDE.md rule
+    next to the braces rule; the "anything waiting?" listing (`adjust waiting`, which M23 extends with the gates);
+    adjustments.md and adjust-map.json for channels/flashfx/ and in the problem-solution-reel template; the rules block
+    in every prompt-building stage (one shared helper, the scope filter, the precedence line), adjustments-used.json in
+    every stage folder, the format.json key `adjustments`; the review's rules check, the `[rule A-NNNN]` tag and its
+    routing, rule_conflicts, adjustments-stats.json; the rework step between ideas (logs/rework.json, its status line,
+    the before and after stills); the suggestions; protect.py over adjustments.md and every mapped base document;
+    preflight, doctor and runner-status lines (lint warnings, pending merges, blocked rules, rework results waiting,
+    the rules per section, the Inbox count).
+  - Tests (a fixture channel with base documents holding known lines, a small library and a golden; the fake claude;
+    one separate section with the real model):
+    - 27 planted feedback messages (10 against base documents, 5 between rules, 10 harmless, 1 vague, 1 against a hard
+      limit): each classified as planted; every planted contradiction found and none of the harmless ones flagged; the
+      vague one refused with a question; the hard-limit one gets the nearest allowed rule (fake, then the real section)
+    - `adjust candidates` returns the conflicting base document line of every planted contradiction, the same output
+      twice
+    - the white-face merge on the fixture rewrites exactly the shown lines, rebuilds tokens, deletes the rule, makes one
+      commit and queues a rework; `adjust undo` restores every file byte for byte
+    - a pending-merge rule reaches the stage prompt above the base document with the precedence line, and
+      `adjust waiting` lists it first
+    - rules between rules: with the same scope only the newer reaches the prompt; a narrower scope wins only inside it;
+      a duplicate adds a source instead of a rule
+    - a Hooks rule reaches the hooks stage's prompt and not the script's; a rule scoped to one tag reaches only runs
+      with that tag; a rule saved while a stage runs applies from the next stage; adjustments-used.json lists the ids
+    - the fake editor reports a planted violation as `[rule A-NNNN]`, routed to the owning stage; 3 failures out of 5
+      produce the rewrite proposal
+    - rework with dummy sessions: success gives one commit and the stills; a forced failure reverts the components and
+      the base document edit together and marks the rule blocked, and the review then does not fail a video on it
+    - a fake model edit of adjustments.md and of a base document is refused and the file restored; a malformed hand
+      line still reaches its stage and lint warns; a missing file runs without rules with a preflight WARN; the Inbox
+      keeps the words when the model call fails; two channels' rules never appear in each other's prompts
+      (test-isolation.sh)
+    - growth: a 5th rule marks its section for merge and the next proposal lists the rules with their before and after
+      lines; an approved merge rewrites the base documents and deletes the rules in one commit; a 9th rule is refused
+      with the three choices, and the Inbox choice keeps the words inactive
+    - run-fake.sh meets the baseline rule; flashfx's dummy fingerprint (M19's, plus M20's timeline/) only gains
+      adjustments-used.json files
+- **M23 Scenarios: the channel, the stories and the gates.** 14.10's format, story folder, gates, script approval
+  plumbing, ideas and profile files; the story stages; production in placeholder and dummy mode. Starts with the gate of
+  14.13.
+  - Builds: pipeline/formats/serial-story/ (format.json with story_stages, part_stages and the gates; the prompts; the
+    template with adjustments.md and adjust-map.json; the export_input adapter with the story fields); the runner's
+    story unit (story.json, one story at a time, a run per part, the history lines, the heartbeat naming the story and
+    the part); channels/scenarios/ through new-channel, with the profile files of 14.10 written from build/channel2/
+    (inkhead-style.md section 19 applied), library/docs/ with both documents, the 18 seeds, the references copied from
+    sources.refs, channel.json enabled false (the tests use --allow-disabled); `channels/*/stories/` in .gitignore; the
+    stages story-seed, story-research (web research with sources, like S1), story-board, part-approach,
+    part-lookahead, part-bible, and part-script, 08-voiceover, story-shots and story-build in placeholder or dummy mode
+    until M24 to M26; pipeline/bin/gate (list, show, decide, revise), the HOLD and RESUME lines, the hold with no
+    timeout, auto mode, logs/gate-decisions.jsonl, pipeline/knowledge/gates-procedure.md and its CLAUDE.md rule, the
+    open gates in `adjust waiting`; the story fence in the path module; test-isolation.sh part 2 with a serial-story
+    fixture as channel B, the story canary and the real-names check of 14.5.
+  - The tests run in a temp REELS_ROOT holding a copy of channels/scenarios/: the real channel gets no story, no export
+    and no history line from the build.
   - Tests:
-    - the 3 test premises (real models) each give the premise, the beats (a beat every 2 to 3 seconds), a script of 45
-      to 75 seconds at the measured pace, words.json, a placeholder render and an export folder <id>-N with a captions
-      file that passes every youtube-shorts check, and a project that passes validation
-    - the gate drops one fixture premise per reason: not visual, respect, a false fact (timeline), a duplicate of an
-      exported premise
-    - every number in the timeline premise's script traces to a fact with a source
-    - the scripts are narrated in the third person; every line carries its speaker, and Gabry's own lines are at most
-      8 words and at most about 10% of a script (a script with none passes)
-    - the same premise exported twice gets two descriptions that pass the difference rule
-    - test-isolation.sh passes, real-names check included; FlashFX's run-fake.sh meets the baseline rule
-- **M23 Life of Gabry: the look.** 14.10's Gabry and Look. Starts with the gate of 14.13.
-  - If channels/lifeofgabry/styles/gabry-2d/refs/ has no reference videos when M23 starts (and channel.json
-    sources.refs names no folder that has them), end BLOCKED with the HUMAN_TODO line saying where to put them: the
-    style bible comes only from my references, never from a default.
-  - Builds: the style bible channels/lifeofgabry/styles/gabry-2d/ from the references (analyze_refs.py, build-tokens),
-    with nothing taken from FlashFX's style, motion library or section 5's Motion and energy rules; Gabry's rig and
-    the gabry component (model sheet, parts, expressions, mouth shapes, poses, cycles, idle motion, the costumes
-    caveman, astronaut, suit and pajamas); the 2D library in
-    channels/lifeofgabry/motion-lib/ (the counts of 14.10) with catalog.json, gallery stills, players and frame-match
-    notes, every component with S15's editor annotations; story-shots and the full story-build (the placeholder mode
-    stays for tests); jump captions (at most 3 words on screen, a long word alone, hard cuts); lip sync on Gabry's own
-    lines only; the shot plan validator (only catalog items, the safe zones, a new
-    visual event at least every 3 seconds, Gabry on screen in at least half of the frames); this channel's golden
-    video.
+    - G0 with an empty ideas.txt gives 5 seeds with hook, universe and variables; G1 gives 3 storyboards, one
+      recommended, each with every part's cliffhanger type and the ending
+    - `gate decide --pick B` writes plan.md with the sealed ending and the first bible.md; `--you-decide` takes the
+      recommended option; `--custom` text reaches the next stage's prompt verbatim; `gate revise` keeps the old version
+      as .v1 and the gate still holds
+    - the hold: no decision for 48 simulated hours (fast clock) keeps holding with one HOLD line, the heartbeat shows the
+      wait, no heavy lock is held; a restart resumes the hold; a dummy runner of another fixture channel exports
+      meanwhile
+    - a 3-part story in auto mode with dummy production: 3 exports in order, part-lookahead's G2 ready before each part
+      renders, bible.md updated after each part, the story closed; the next seed starts a new story whose path trace
+      never touches the closed story's folder
+    - a G2 decision that changes the part count shows the updated outline in the same gate before anything is written
+    - a part's youtube-shorts export: STORY first, the title shape within 100 characters, the Part 1 line from Part 2
+      on, 4 hashtags with #shorts and a universe tag, the next-part line of the pinned comment except on the final part,
+      the upload steps
+    - test-isolation.sh (both parts) passes with the serial-story fixture; run-fake.sh meets the baseline rule
+    - real section (real models, auto gates): two seeds, one per universe, through research and G1: research.md with
+      sources, 3 storyboards each, plan.md with a sealed ending, saved in build/M23/real/
+- **M24 Scenarios: the script and the two voices.** 14.10's part-script, script approval and Voice. Starts with the gate
+  of 14.13.
+  - Builds: part-script with every check of 14.10 and the fix rounds; G3 (gates.script_approval, on); the two-voice
+    08-voiceover (per-speaker voices from engine.txt, the speaker of every word in words.json, the story's
+    pronunciations, the spoken-form normalization, the word error rate per line for both voices); engine.txt with the
+    default voices; the audition of scenarios.md 7.8 in build/voice-audition/scenarios/ (8 files); the pace of both
+    voices measured into the channel's config voice.wps, and the word window following it.
   - Tests:
-    - the model sheet renders, and frame-match of every pose and expression against it holds (exact token colors, head
-      to body ratio within 3 percent)
-    - the walk and run cycles loop without a jump (first and last frames within the frame-match threshold)
-    - on a fixture words.json with one Gabry line, the mouth shapes change within 2 frames of that line's word starts
-      and the mouth rests during the narration
-    - the captions of a fixture script never show more than 3 words, show a long word alone and change by hard cuts
-    - every library item renders in the gallery with no console error, and the backgrounds and effects pass
-      frame-match against the references
-    - the golden video: a test premise end to end to a 1080x1920 render, with Gabry in at least half of the frames, a
-      new visual event at least every 3 seconds (events.json) and all text inside the safe zones
-    - a shot plan with an unknown item reopens story-shots instead of crashing story-build
-- **M24 Life of Gabry: end to end.** The sound, the review, three real videos. Starts with the gate of 14.13.
-  - Builds: this channel's sound map (build-sfx-map on channels/lifeofgabry/styles/sfx/, this format's cue types);
-    the scenario-story rubric in 12-review; the full stage list of 14.10; channel.json enabled true at the end.
-  - If channels/lifeofgabry/styles/sfx/ has no audio files when M24 starts, end BLOCKED with the HUMAN_TODO line (the
-    pack is the one thing M24 cannot make).
+    - planted script fixtures each fail exactly their check: a banned phrase, the narration naming Gabry, an "I" in the
+      narration, a 14-word GABRY line, an average sentence of 13 words, a 25-word sentence, no short beat for 15 s, a
+      spoken "follow for part 2", a 10-second recap, a last line that is not the cliffhanger, an amount of money the
+      ledger does not hold; a clean fixture passes
+    - G3: approve continues; change sends my notes back and shows a new version; approval off skips it; a script still
+      failing after 3 rounds stops at G3 even with approval off; auto mode continues with NEEDS REVIEW
+    - the voiceover of a fixture two-speaker script: every word in words.json carries its speaker, NARRATOR lines use
+      voice_narrator and GABRY lines voice_gabry (the worker calls are recorded), a bible.md pronunciation applies in its
+      story and not in another, numbers are spoken and the subtitles' words match
+    - FlashFX's voiceover on the frozen test idea is unchanged (words.json identical apart from the speaker field);
+      run-fake.sh meets the baseline rule
+    - real section: the 8 audition files exist and are voiced; Part 1 of a real storyboard (M23's real plan, or a
+      fixture plan) gives a script that passes every check and a voiceover with a word error rate under 5 percent for
+      both voices; the measured pace is in the channel config; build/M24/report.md shows the script, the check results
+      and the pace
+- **M25 Scenarios: characters and text (inkhead).** 14.10's Look: the tokens, the figures, Gabry, the text system and
+  the cards. Starts with the gate of 14.13.
+  - Builds: this format's token reader and tokens.json for styles/inkhead/; the vendored fonts; in
+    channels/scenarios/motion-lib/: the ink figure rig, Gabry (outfits, ages, expressions), side characters, crowds, the
+    unexplained; the text system of inkhead-style.md 10 (headline, karaoke subtitles, dialogue colors, speech bubble,
+    title card, the HUD card bound to bible.md, stamps, strikes, pills, floating badge, labels); the opening and end
+    cards of 14; catalog.json, gallery, frame-match, S15's editor annotations; story-build's karaoke subtitles from
+    words.json.
   - Tests:
-    - in the real folder, the 3 test premises of channels/lifeofgabry/ideas.txt back to back, unattended
-      (`bash run.sh --channel lifeofgabry --once`): exports/lifeofgabry-1 to lifeofgabry-3, each with a project that
-      passes validation. At the same time a dummy runner of a fixture channel runs in a temp REELS_ROOT whose
-      REELS_GLOBAL_LOCKS points at this folder's .locks/: no overlap of heavy steps, no cross-channel path in either
-      path trace. The real flashfx channel, its ideas and its history are not touched
-    - every captions file passes the youtube-shorts checks, and the 3 descriptions pass the difference rule
-    - the real-names check of 14.5 on every prompt recorded during the 3 runs (shared stages included)
-    - the review rejects a planted off-model frame, a 4-second span with no visual event and a missing loop, each sent
-      back to its owner stage
-    - build/M24/report.md lists, per video: the length, the review rounds and scores, the time per stage, and what
-      NEEDS REVIEW said
+    - tokens.json holds every token of 3.1 with its hex; build-tokens on paper-cards still gives FlashFX's tokens.json
+      unchanged
+    - the figure's parts at the H ratios of 4.1 within 3 percent; the 8 expressions render; the walk loops without a
+      jump; blinks every 3 to 5 s; the heights per age
+    - Gabry: the quiff silhouette and gabry-orange garments in every outfit and age variant of 5; no other component
+      covers more than 2 percent of its frame within 20 degrees of that hue
+    - karaoke on a fixture words.json: chunks of 1 to 4 words never cross a sentence end, the gold word changes within 2
+      frames of each word's start, GABRY lines are orange with the spoken word white, numbers appear as spoken words
+    - the HUD card shows the fixture ledger's values and animates a change with the right flash color; title cards,
+      stamps, pills and end cards render at the bible's sizes; no overlay text under 22 px; all text inside the layout
+      map and the safe zones
+    - every component renders in the gallery with no console error and passes frame-match; the palette rules of 3.2
+      hold on the scene stills; with the references copied, their measured palette matches the bible's within 10
+      percent (a NOTE when they are missing)
+    - run-fake.sh meets the baseline rule
+- **M26 Scenarios: worlds, shots and the golden part.** 14.10's Look: sets, light, camera, the UI library, effects,
+  transitions, story-shots and story-build. Starts with the gate of 14.13.
+  - Builds: the sets of inkhead-style.md 6.2 and 6.3 with the era overlays and the data space of 6.4; light and depth
+    (7); the camera moves (8); the UI library (11); the effects (12); the transitions (13); story-shots (the shot list on
+    the words' times) with its validator; story-build in full mode (the placeholder mode stays for the tests); the
+    golden part in channels/scenarios/golden/ (plan and render).
+  - Tests:
+    - every set, UI component, effect and transition renders in the gallery with no console error and passes
+      frame-match; every set stays inside the render budget of 15
+    - the validator passes a fixture shot list, and planted faults each fail their rule: a 5-second unchanged span, 3
+      holds of 6 seconds, Gabry missing for 18 seconds, a single close-up, cards at 20 percent, 4 text blocks, an orange
+      prop, 2 flashes, a HUD value off the ledger, a cut off a word boundary; an unknown catalog item reopens story-shots
+      instead of crashing story-build
+    - the golden part renders at 1080x1920, 90 to 120 s, passes the validator and the palette rules on sampled frames,
+      and events.json shows a new visual beat every 2 to 4 s; its contact sheet sits next to two reference contact
+      sheets in build/M26/
+    - real section: story-shots with the real models on M24's Part 1 (or a fixture part) gives a plan that passes the
+      validator within its retries, built and rendered as a draft
+    - run-fake.sh meets the baseline rule
+- **M27 Scenarios: sound, review and end to end.** 14.10's Sound, Review rubric and Export; the channel enabled. Starts
+  with the gate of 14.13.
+  - Builds: the channel's sound pack (the sync from sources.sfx; when it is empty, the stand-in copy of FlashFX's pack
+    and the generated room tone, with the NEEDS REVIEW line); this format's cue types in build-sfx-map; the ambience bed
+    in 11-sfx; the serial-story rubric in 12-review (mechanical, audio, edit review scores); the full part stage list of
+    14.10; channel.json enabled true and gates.auto false at the end; the HUMAN_TODO lines for what only I can do.
+  - Tests:
+    - with an empty sources.sfx the stand-in is copied once with STANDIN.txt and every export says so; files added to
+      sources.sfx are synced at the next start and standin/ is gone; the channel runner's path trace never touches
+      channels/flashfx/
+    - the mix of a fixture part: the bed is never silent, 18 to 20 LU under the voice in the pauses; the effects sit on
+      their events; the loudness is within 1 LU of the target
+    - the review rejects a planted dark-dominance failure, a 5-second unchanged span, an off-model Gabry frame, a
+      karaoke highlight 4 frames late, a HUD value off the ledger and a spoken call to action, each routed to its owner
+      stage
+    - real section, in a temp REELS_ROOT holding a copy of channels/scenarios/ (REELS_GATES_AUTO=1): one story from the
+      first seed, Part 1 and Part 2 back to back, unattended (`bash run.sh --channel scenarios --once`), each an export
+      whose project passes validation and whose captions file passes the youtube-shorts checks; meanwhile a dummy runner
+      of a fixture channel shares this folder's .locks/ with no overlap of heavy steps; the real-names check of 14.5 on
+      every recorded prompt. The two parts, their captions files and review notes are copied to build/M27/samples/ for
+      me. The real channel's ideas, stories, history and exports are untouched, so its first real story starts with my
+      own G1
+    - build/M27/report.md lists per part the length, the review rounds and scores, the time per stage and what NEEDS
+      REVIEW said; run-fake.sh meets the baseline rule
 
 ## 13. Not in version 1
 
@@ -1806,7 +1927,7 @@ Posting (I post manually from exports/); music; series; processing two ideas of 
 footage formats (Logs of Gabry, the Gabriele Bolognese vlog) and the interactive story format, beyond the design hooks
 of 14.11; FlashFX-v2 (.ffx) projects as a target (the Shorts Editor project of S15 is in). (M21)
 
-## 14. Channels, formats and platforms (M17 to M24)
+## 14. Channels, formats and platforms (M17 to M27)
 
 From M18 on, this folder runs several channels on one engine. Sections 1 to 13 describe the engine and the FlashFX
 channel. Where they name library/, styles/, motion-lib/, golden/, ideas.txt, runs/ or logs/, read the same path inside
@@ -1828,9 +1949,9 @@ design; this section is the spec.
 - **Channel:** one account: identity, audience, voice, look, hooks, sounds, ideas, runs, logs, history.
   channels/<id>/. A channel has exactly one format and one platform.
 - **Channel id:** lowercase letters and digits only, starting with a letter, 2 to 24 characters
-  (`^[a-z][a-z0-9]{1,23}$`), so `<id>-N` always splits at its last hyphen. In use: flashfx, lifeofgabry. Reserved:
+  (`^[a-z][a-z0-9]{1,23}$`), so `<id>-N` always splits at its last hyphen. In use: flashfx, scenarios. Reserved:
   logsofgabry, gabrielebolognese; the interactive story channel gets its id when it is planned.
-- **Format ids:** problem-solution-reel, scenario-story; reserved: footage-short, vlog-long, interactive-story.
+- **Format ids:** problem-solution-reel, serial-story; reserved: footage-short, vlog-long, interactive-story.
   **Platform ids:** instagram-reels, youtube-shorts; reserved: youtube-long.
 
 ### 14.2 The channels
@@ -1838,7 +1959,7 @@ design; this section is the spec.
 | id | name | platform | format | family | built in |
 |---|---|---|---|---|---|
 | flashfx | FlashFX | instagram-reels | problem-solution-reel | generated | M0 to M16, moved in M18 |
-| lifeofgabry | Life of Gabry | youtube-shorts | scenario-story | generated | M22 to M24 (14.10) |
+| scenarios | Gabryverse (working name) | youtube-shorts | serial-story | generated | M23 to M27 (14.10) |
 | logsofgabry | Logs of Gabry | instagram-reels | footage-short | footage | later (14.11) |
 | (to name) | interactive stories | youtube-shorts | interactive-story | to plan | later (14.11) |
 | gabrielebolognese | Gabriele Bolognese | youtube-long | vlog-long | footage | later (14.11) |
@@ -1850,11 +1971,13 @@ channels/<id>/
   channel.json      identity, platform, format, quota, config overrides (14.4)
   ideas.txt         this channel's idea queue, same format as 2.1
   library/          curated by me: hooks.txt, profile/, voice/, plus what the format needs
-                    (brand/ for FlashFX, character/ for Life of Gabry)
+                    (brand/ for FlashFX; character/ and docs/ for the second channel)
   styles/           <style>/ (style.md, tweaks.md, vocabulary.md, tokens.json, refs/, analysis/) and
                     sfx/ (this channel's sound pack and its map, 2.6)
   motion-lib/       this channel's approved components, candidates/, gallery/
   golden/           this channel's golden videos
+  stories/          serial formats only: one folder per story (14.10; machine state, ignored by git)
+  gates/            serial formats only: the gate before a story exists (G0)
   runs/             one working folder per idea (machine only)
   logs/             runner.log status.txt history.txt blocked.txt suggested-ideas.txt sfx-usage.json STOPPED.md
                     descriptions.jsonl (youtube-shorts) editor-gaps.md (M21)
@@ -1888,8 +2011,9 @@ Schema pipeline/schemas/channel.schema.json, validated at every start of run.sh,
 - `brand`: display_name, handle, and anything the format's prompts may name. Never another channel's name.
 - `export`: platform settings this channel overrides (section 8), for youtube-shorts: caption_max, description_max,
   hashtags, required_hashtags, pinned_comment.
-- `sources` (optional): folders M22 copies curated material from on first setup: `refs` (reference videos) and
-  `sfx` (a sound pack), written in Windows form (C:/Users/..., like config.json, because Windows Python reads them).
+- `sources` (optional): folders curated material is copied from: `refs` (reference videos, copied when the channel
+  is created and at any later start that finds new files) and `sfx` (a sound pack, synced by the sound stage at
+  every start), written in Windows form (C:/Users/..., like config.json, because Windows Python reads them).
   Copied, never moved, checked by checksum.
 - `config`: a partial config.json for this channel.
 
@@ -1956,8 +2080,8 @@ FlashFX after M18 (shape; the values are the ones config.json has today):
   screenshots). Pass: no canary of B in anything recorded for A, and the reverse. With REELS_PATH_TRACE=1 the path
   module logs every path it resolves; during A's dummy run every logged path is inside the engine, channels/A/ or
   exports/A-*/.
-- Once two real channels exist (M22, M24), the real-names check joins part 2: each real channel's id, brand name and
-  style id (flashfx, FlashFX, paper-cards; lifeofgabry, Life of Gabry, gabry-2d) are canaries in every recorded prompt
+- Once two real channels exist (M23 to M27), the real-names check joins part 2: each real channel's id, brand name
+  and style id (flashfx, FlashFX, paper-cards; scenarios, Gabryverse, inkhead) are canaries in every recorded prompt
   of the other channel, shared stages included, plus lines picked from each channel's curated files.
 
 ### 14.6 Running channels side by side
@@ -1969,7 +2093,7 @@ FlashFX after M18 (shape; the values are the ones config.json has today):
 - Heavy steps take turns: text to speech, transcription, every HyperFrames render, ffmpeg encodes longer than 10
   seconds, analyze_refs, frame-match and S15's capture run inside `heavy` (pipeline/lib/heavy.sh), which holds the
   global lock .locks/heavy.lock (the same lock mechanism as M1, with stale lock detection by pid). A runner that waits
-  prints one WAIT line ("WAIT heavy: lifeofgabry S13 render holds it since 14:02"), and its heartbeat shows the wait.
+  prints one WAIT line ("WAIT heavy: scenarios S13 render holds it since 14:02"), and its heartbeat shows the wait.
 - Usage limits are account-wide: when a runner hits a limit (section 4) it writes the reset time to .locks/limit.json;
   every runner reads that file before each model call and waits for the same time instead of calling. logs/limits.log
   at the root keeps every wait with its channel id.
@@ -2001,7 +2125,8 @@ FlashFX after M18 (shape; the values are the ones config.json has today):
   problem-solution-reel runs look exactly as before, plus timeline/.
 - problem-solution-reel = today's S1 to S13 in today's order, then timeline (M20), then S14, then s15-project (M21),
   which runs on the assembled export before the move to exports/ (S15).
-- scenario-story: 14.10.
+- serial-story: 14.10 (its unit is the story: story stages once per story, part stages once per part, and gates
+  that hold for my decision).
 - A test-only footage format, footage-dummy (pipeline/tests/formats/footage-dummy/), proves that the footage family
   runs through the same runner: ingest (dummy), cut (dummy: writes timeline.json from fixture clips), render from the
   timeline (real, ffmpeg), export, project.
@@ -2027,7 +2152,7 @@ FlashFX after M18 (shape; the values are the ones config.json has today):
     channel's style
   - audio: the voice (file, gain), every sound effect (file, start, trim, fades, gain, cue type), footage audio (clip,
     in and out, gain, fades); music is reserved
-  - markers: scene and beat starts with labels, the hook end, the loop point (scenario-story), the keyword moment
+  - markers: scene and beat starts with labels, the hook end, the recap end, the cliffhanger line and the end card (serial-story), the keyword moment
     (problem-solution-reel)
   - provenance: the stage that produced each item
 - The timeline is a record, not a new decision: nothing in it may contradict the plans, words.json, cues.json or the
@@ -2045,157 +2170,272 @@ S15 (section 5) is built in M21 as written, with these changes:
   composition layers use S15's capture and its fallback levels (native, sprite, overlay, plate) as written.
 - The project goes to exports/<id>-N/project/. The EDITOR section of the captions file names that path, and the editor
   link is `<editor.url>?open=exports/<id>-N/project`.
-- Editor annotations go on every component of every channel's motion library (channels/<id>/motion-lib/); Life of
-  Gabry's library (M23) is built with them from the start.
+- Editor annotations go on every component of every channel's motion library (channels/<id>/motion-lib/); the
+  second channel's library (M25, M26) is built with them from the start.
 - logs/editor-gaps.md is per channel; S15 also rewrites the root roll-up logs/editor-gaps-all.md (the gaps of all
   channels, for the editor's backlog; no channel reads it).
 - The editor block, the stable copy, port 5310 and the capability upgrade stay engine-level (config.json, root logs/).
 
-### 14.10 Life of Gabry (lifeofgabry): scenario-story on youtube-shorts
+### 14.10 The second channel (scenarios): serial-story on youtube-shorts
 
-**Identity**
-- Fake scenario stories for pure entertainment, all lived by one 2D cartoon character, Gabry: "What if the dinosaur
-  asteroid hit Earth today, minute by minute", "What if you were the only man in a women's world", "What if you could
-  hear everyone's thoughts for a day".
-- youtube-shorts, 9:16, 1080x1920, 30 fps, 45 to 75 seconds (config lengths), English.
-- Audience: a broad audience, mostly 16 to 34, who watch what-if and animated story Shorts with the sound on and swipe
-  fast: the premise must land in the first 2 seconds.
-- Tone: curious, playful, a little dramatic. The jokes come from the situation, never from putting a group of people
-  down. No promotion, no products, no links, no real people or brands, nothing from any other channel.
-- Visuals: 2D animation written as code (SVG and HyperFrames with GSAP), never AI video or AI images, never motion
-  graphics cards. Its own voice, its own sound pack, its own look.
+**Authority.** Two documents I wrote decide everything creative about this channel: build/channel2/scenarios.md (the
+channel master document: the stories, Gabry, the two universes, the gated workflow and the text of every profile file)
+and build/channel2/inkhead-style.md (the style bible `inkhead`, built from my 6 reference videos). They replace the old
+Life of Gabry plan entirely (confirmed 2026-11-08): nothing of it survives. This section lists only what the engine must
+do. Where it and the documents disagree on anything creative, the documents win; where the two documents disagree,
+inkhead-style.md section 19 says which line changes, and it is applied when the profile files are written. Section 5's
+Motion and energy rules and everything of FlashFX's look do not apply here. The learning of 14.14 covers this channel
+from its first story.
 
-**Gabry**
-- The one character of every video, always on model. His bible: channels/lifeofgabry/library/character/gabry.md:
-  personality (curious, optimistic, reacts big, a bit clumsy, brave at the end), what he never does (mean jokes,
-  swearing), how the narration refers to him, recurring gags (used sparingly).
-- His rig, built as code in M23 in channels/lifeofgabry/library/character/gabry/ (curated by me once M23 is approved):
-  - a model sheet (front, three quarter, side) with fixed proportions (head to body ratio, eye size, line weight) and
-    fixed colors from tokens.json
-  - parts as separate SVG groups: head, hair, brows, eyes (open, half, closed, looking left, right, up, down), mouth,
-    torso, upper and lower arms, hands (open, fist, point, thumbs up, holding), legs, feet
-  - 8 expressions: neutral, happy, excited, surprised, scared, sad, angry, thinking
-  - 8 mouth shapes: rest, A/I, E, O, U, M/B/P, F/V, L/TH (lip sync is used only when Gabry speaks, see Narration)
-  - poses: stand, walk cycle (8 drawings), run cycle (6), sit, point, shrug, jump, fall, panic, think, wave, look at
-    camera
-  - costume layers per scenario (caveman, astronaut, suit, pajamas, more as scenarios need them); the face, colors and
-    proportions never change
-  - one HyperFrames component `gabry` with props: pose, expression, facing, costume, position, scale, mouth track
-    (from words.json), and idle motion (a blink every 3 to 5 seconds, breathing)
-- His look (open question 3): an original cartoon design, not a likeness of me, so Logs of Gabry (the real me) and
-  Life of Gabry stay separate worlds. "Gabry" is only a name; it could as well be John. What matters is that he is
-  recognizable at a glance and the same in every video: a distinctive silhouette, hair and outfit, and colors that
-  never change (the model sheet fixes them).
+**Identity** (scenarios.md 1 to 4)
+- Working id `scenarios` (14.1). Display name: Gabryverse as the working name in channel.json (`name` and
+  `brand.display_name`; scenarios.md 10 recommends it), the handle empty until I choose. A new display name is one line
+  in channel.json; a new id is a migration a chat session does on my word, never part of this build.
+- youtube-shorts, 1080x1920, 30 fps (the references run at 24; the platform sets the rate), English (American),
+  timezone Europe/Rome, daily_quota 1 (2 only for a morning and an evening slot, never more).
+- Narrated, 2D animated, second-person stories that read like chapters of a novel. The viewer is "you", and "you" is
+  always Gabry. A story runs 3 to 8 parts of 90 to 120 seconds, one story at a time, its parts on consecutive slots;
+  every part but the last ends on a concrete cliffhanger. Two universes: Isolation and Entrepreneur. Nothing carries
+  over between stories.
+- Hard limits (account.md Topics out, scenarios.md 4): generic fictional UIs only, crime as drama and consequence and
+  never as a method, no blood, wounds or bodies on screen, no real living people, brands or logos. Visuals drawn as code
+  (HyperFrames: HTML, SVG, GSAP), never AI images or video.
 
-**Narration** (open question 1): one narrator voice tells the story in the third person ("Gabry wakes up and the sky
-is orange"), about 90% of every video. Occasionally, and not in every video, Gabry says a short line himself (about
-10% of the lines at most, many videos with none, each line at most 8 words), in the same Kokoro voice as the narrator;
-story-script marks who says each line (narrator or gabry). Otherwise he reacts with expressions, gestures and short
-speech bubbles (at most 4 words). Lip sync is used only for his own lines.
+**The format serial-story** (pipeline/formats/serial-story/, family generated, platform youtube-shorts). New engine
+work: for this format the runner's unit is the story, not the single idea.
+- format.json declares `story_stages` (once per story), `part_stages` (once per part; every part is one run folder
+  under runs/) and the gates.
+- Story stages: story-seed (Stage 0), story-research (Stage 1), story-board (Stage 2, gate G1).
+- Part stages, in order: part-approach (Stage 3, gate G2), part-script (Stage 4, then gate G3 when script approval is
+  on), part-lookahead (the next part's G2 proposals, written right after the script is approved so my decision can come
+  while this part renders; skipped on the final part), 08-voiceover (generic, two voices), story-shots, story-build,
+  11-sfx (generic), 12-review (generic, this format's rubric), 13-render, timeline, the youtube-shorts exporter,
+  s15-project, part-bible (Stage 7).
+- The format's model calls use the existing config models keys (research for story-research; script for the
+  proposals and the script; checks for the script checks; visual_director and visual_director_fix for story-shots; qa
+  for the edit review), so DECISIONS.md 333 to 335 hold here too; a seed labelled [important] escalates like an idea.
 
-**Voice**: Kokoro, this channel's own channels/lifeofgabry/library/voice/engine.txt: default voice am_puck, speed
-1.1, one voice for the narrator and for Gabry's rare lines; M22 measures its pace into this channel's config
-voice.wpm. Its own pronunciations.txt. Never the voice of another channel.
+**The story folder**: channels/scenarios/stories/<story-slug>/ (scenarios.md 6)
+- seed.txt (the seed as taken from ideas.txt or from G0); story.json (the stage, the open gate, the part count, each
+  part's run folder and export, closed or not); research.md (facts with sources, the only source of facts in a
+  script); plan.md (the chosen storyboard, Gabry's variables, the part count and the sealed ending: no Part 1 before
+  plan.md holds it); bible.md (timeline, locations and distances, characters and motivations, the money ledger or the
+  survival inventory, threat rules, open threads, planned revelations, consequences in motion, pronunciations of new
+  names); gates/ (every proposal, revision and decision, numbered in order); parts/NN/ (the part's record: script.txt in
+  the speaker-tagged format, words.json, review.md, export.txt with its <id>-N, run.txt with its run folder; renders
+  stay in runs/).
+- A story is closed after its final part (story.json closed). The next story reads nothing from a closed story: while a
+  story runs, the path module refuses every other story's folder, as it refuses another channel's, and the canary test
+  of 14.5 gets a story-level variant.
+- The seed leaves ideas.txt when its story is created (into seed.txt). history.txt gets one line per story start, per
+  part export (`<date> | <story slug> part <N> | <universe> | exported scenarios-K`) and per story close.
+- channels/*/stories/ is machine state like runs/: ignored by git (M23 adds the line), never edited by the fixer.
 
-**Ideas**: channels/lifeofgabry/ideas.txt, braces format of 2.1: one premise per idea, optional notes. Three premise
-kinds (story-premise decides): timeline (a real event or process told minute by minute or day by day; needs facts),
-world rule (the world changes one rule, social or physical), personal power (Gabry gets an ability or a constraint for
-a day).
+**Gates** (scenarios.md 6; decided 2026-11-08: they happen in a Claude Code chat in this folder)
+- G0, only when ideas.txt is empty or I ask for ideas: 5 seeds, each with its hook line, universe and Gabry's
+  variables. G1: 3 storyboards (title, universe, the exact hook line, Gabry's variables, the part count with one line on
+  why, one line per part with its cliffhanger type, the ending, the research facts that make it credible). G2, once per
+  part: 2 or 3 approaches (the exact opening line, with the recap hook from Part 2 on; 3 to 6 scene beats; the
+  cliffhanger type and its exact last line, or the resolution in the final part; how it moves toward the ending). When
+  my steering changes the ending or the part count, the updated outline of the remaining parts is shown in the same
+  gate before anything is written. G3: script approval (below). Every proposal marks one option recommended.
+- Files: a proposal is gates/NN-G<k>[-pNN].proposal.md (for me) and .proposal.json (for the code); a revision keeps the
+  earlier version as .v1, .v2. The decision is gates/NN-G<k>[-pNN].decision.json: the gate, the option picked or none,
+  you_decide, the free text of a mix or an edit, my words verbatim, by (chat or auto), the time. G0 lives in
+  channels/scenarios/gates/, since no story exists yet.
+- Only `pipeline/bin/gate` writes a decision (atomic, validated against the proposal): `gate list` (every open gate of
+  every channel), `gate show <gate>`, `gate decide <gate> --pick B | --you-decide | --custom "..." [--notes "..."]`,
+  `gate revise <gate> --notes "..."` (one model call writes the next version of the proposal from my words; the gate
+  keeps holding). Every subcommand takes `--channel`.
+- The chat side: pipeline/knowledge/gates-procedure.md (how to show a proposal, discuss it, revise it, decide, and pass
+  every remark that reaches beyond this gate to the learning of 14.14) and a CLAUDE.md rule pointing at it: when I say
+  "anything waiting?", "show the storyboards", "go with B", "B, but start with the knock" or "you decide", the session
+  follows it. "You decide" takes the recommended option.
+- The runner holds with no timeout. One event line: `[14:02] HOLD   scenarios: G1 for "the-last-weather-station" waits
+  for your decision (3 storyboards, B recommended). In Claude Code: "show the storyboards"`; then the heartbeat's
+  activity is `holding at G1 since 14:02`. It looks for the decision file every 15 s; Ctrl+C and a restart resume the
+  hold; no heavy lock is held while holding; other channels' runners run normally. When the decision arrives:
+  `[14:40] RESUME G1 decided (B, by chat), continuing: writing the plan`.
+- Auto mode, only for tests and the build's real sections: channel.json `gates.auto` true, or REELS_GATES_AUTO=1, takes
+  the recommended option at once and records `by: auto`. The real channel keeps gates.auto false (M27 checks it).
+- Every decision is appended to the channel's logs/gate-decisions.jsonl (the options, the recommended one, the pick, my
+  words), which the choice-pattern suggestions of 14.14 read.
 
-**Stages** (stage folders in pipeline/stages/; generic stages marked)
-1. story-premise: the premise card: the question as a hook line, the kind, the setting, Gabry's starting situation,
-   the rule or event, the payoff idea, the loop idea (the last line leads back into the first frame).
-2. story-facts: timeline premises only, or any premise that states real numbers: light research with sources, like
-   S1 but smaller (at most 8 facts, each with a source). Every number in the script must come from here. Other kinds
-   skip it (done with `skipped: true`).
-3. story-expansion: the stakes, Gabry's goal, the escalation ladder (5 to 8 steps, each bigger than the last), one
-   twist, the payoff, the loop; 600 to 1500 characters.
-4. story-gate: scores 1 to 5 for: premise clear in one line, escalation, visual potential (can be drawn with the
-   library plus a few new props), payoff, freshness against this channel's history; plus two pass or fail checks:
-   respect (no humor that puts a group down, no real people or brands, nothing gory or sexual) and facts (timeline
-   premises). Pass: every score at least 3 and both checks pass. A low score gets one rework round from
-   story-expansion; a second failure drops the idea with the scores in the history line; a respect or facts failure
-   drops it at once. A dropped idea may leave a sibling premise in suggested-ideas.txt.
-5. story-hooks: candidates from this channel's hooks.txt (its own library: question hooks, countdown hooks, "you wake
-   up and" hooks, stakes hooks), filled for the premise, each with a one-line first-frame idea; S6's judge machinery
-   picks two with this format's rubric (clear in 2 seconds, curiosity, matches its first frame).
-6. story-beats: the timed beat sheet, a beat every 2 to 3 seconds (18 to 30 beats): index, target time, the line and
-   who says it (the narrator, or rarely Gabry), action, Gabry's pose and expression, setting, props, camera (static,
-   push in, pan, shake, zoom punch),
-   on-screen text (for timeline premises a counter such as "T+00:01" or "DAY 3"), the sound idea. Beat 1 is the hook;
-   the last beat sets up the loop.
-7. story-script: the narration from the beats in this channel's voice (voice.md), in the third person, at its
-   measured pace; each line marked with its speaker (narrator or gabry). Checks: the length range, the words of each
-   beat fit its time, every number traced to story-facts, no line over 18 words, Gabry's own lines at most 8 words and
-   at most about 10% of the lines (none is fine), the loop line present, plain words, no promotion, humanize.py and
-   the slop list as in S7.
-8. 08-voiceover (generic): this channel's engine.txt and pronunciations; words.json as today.
-9. story-shots: the shot plan from the beats and words.json: per shot the background, every character and prop with
-   position, pose, expression and facing, effects, camera move, text overlays, caption chunks, transitions in and out,
-   all on the spoken words' times. Only items from this channel's motion-lib catalog; a missing item follows the
-   candidates rule of S10.
-10. story-build: compiles the shot plan into a HyperFrames composition with the gabry component, backgrounds, props,
-    effects, text, transitions and captions (jump captions: at most 3 words on screen at a time, a long word alone
-    (8 letters or more by default, set in the style bible), each chunk replaced by a hard cut on the next spoken words,
-    no fades, in this channel's caption style); lip sync from words.json on Gabry's own lines only (the lines
-    story-script marks as gabry); the 540x960 draft, the contact sheet and events.json (every visual event, for the
-    sound stage). Until M23, a placeholder mode renders each beat as a plain card with its narration.
-11. 11-sfx (generic): this channel's pack and map; this format's cue types (impact, whoosh, pop, boing, rumble, riser,
-    sting, an ambience bed per setting); density, spacing and levels from this channel's config sfx.
-12. 12-review (generic): this format's rubric (below), the same loop as today (3 main rounds, then 2 escalated rounds, then
-    the export with NEEDS REVIEW).
-13. 13-render (generic), then timeline (generic).
-14. The youtube-shorts exporter (section 8), then s15-project (generic, M21).
+**Script approval** (scenarios.md 9, item 4): channel.json `gates.script_approval`, true when the channel is created (I
+turn it off in a chat when I trust the scripts). After part-script passes its checks, G3 shows the script with the
+checklist results, the word count and the estimated length: approve, change (my notes go back to part-script, which
+shows the new version), or you decide (approve). With approval off the part goes straight to the voice. A script that
+still fails a hard check after the fix rounds always stops at G3 with the failures listed, approval on or off; in auto
+mode it continues with NEEDS REVIEW.
 
-**Review rubric**
-- The premise is clear by 2 seconds: the hook line is spoken or on screen, and the first frame shows the situation.
-- A new visual event at least every 3 seconds (from events.json: a cut, a camera move, a pose or expression change, a
-  prop or an effect).
-- Gabry on model in every frame he is in: sampled frames frame-matched against the model sheet (exact token colors,
-  head to body ratio within 3 percent).
-- Text readable inside the youtube-shorts safe zones, at the minimum sizes, with enough contrast.
-- Lip sync, only on Gabry's own lines: mouth shape changes within 2 frames of word starts; his mouth rests during the
-  narration.
-- Captions: jump captions only (at most 3 words on screen, a long word alone, hard cuts, no fades).
-- Audio: the voice transcribed from the mix with a word error rate under 5 percent, sounds under the voice by the
-  config margin, loudness -14 LUFS.
-- The loop: the last second leads into the first, in words and image (judged on the first and last filmstrips).
-- The story: escalation felt, payoff lands, nothing confusing; the respect check again on the final script and frames.
-- Length in range; every number traced to story-facts.
+**Ideas** (scenarios.md 7.6): channels/scenarios/ideas.txt, braces format of 2.1, one seed per block:
+`{Universe | hook | optional notes}`, Universe Isolation, Entrepreneur or Either. M23 writes the 18 starting seeds of
+7.6, alternating the universes and starting with my three (the content strategy alternates them for the first 6
+stories); never into FlashFX's ideas.txt. A seed is not a finished idea: the story gate expands it. More with
+`bash pipeline/bin/add-idea.sh --channel scenarios "{...}"`.
 
-**Look (M23)**
-- Style bible from my reference videos only: channels/lifeofgabry/styles/gabry-2d/ (style.md, tweaks.md,
-  vocabulary.md, tokens.json, refs/, analysis/), the same structure and tools as paper-cards (analyze_refs.py,
-  build-tokens): palette, outline weight, shading, shot length, cuts per 10 seconds, camera habits, text and caption
-  style, effects. The style is simpler than FlashFX's: nothing from FlashFX's motion graphics, its motion library or
-  the Motion and energy rules of section 5 transfers to this channel. When something in the look is wrong, I correct
-  the style bible itself (style.md, tweaks.md), and the library follows it.
-- References (open question 2): 5 to 10 videos in channels/lifeofgabry/styles/gabry-2d/refs/ (the folder M22
-  creates), which I add after M22, or copied by M22 or M23 from channel.json sources.refs when I name a folder
-  (copied, never moved, checked by checksum). Without references M23 builds no default bible: it stops before the
-  style bible with a HUMAN_TODO line saying where to put them, and the build continues when they are there.
-- The 2D library in channels/lifeofgabry/motion-lib/ (HyperFrames components, catalog.json, gallery, frame-match, as
-  M9), every component with S15's editor annotations:
-  - backgrounds: at least 12 settings (bedroom, kitchen, city street, office, school, park, beach, desert, prehistoric
-    jungle, space orbit, Earth from space, a TV news studio), each with 2 or 3 parallax layers and day and night
-    variants through tokens
-  - props: at least 30 (phone, clock, calendar, TV, car, asteroid, rocket, food, money, signs, ...)
-  - effects: impact flash, screen shake, dust puff, speed lines, explosion, smoke, sweat drop, question marks, hearts,
-    anger mark, sparkles, fire, rain, snow
-  - text: time counter, big title, label with arrow, speech bubble, thought bubble, caption chunk
-  - transitions: cut, iris wipe, whip pan, zoom through, match cut on Gabry, fade to black
-  - camera: push in, pull out, pan, tilt, shake, zoom punch, slow drift
-  - other characters: a crowd (simple figures in 3 variants and token colors) and 4 generic side characters built from
-    the rig parts with other hair and clothes; never real people
-- A golden video in channels/lifeofgabry/golden/: one test premise end to end (plan and render), the example the shot
-  director reads.
+**Hooks**: no hooks.txt and no template bank. Part 1's hook comes from the seed and G1, every later part's recap hook
+from G2 (storytelling.md, Hooks). The format's required files leave hooks.txt out; if shared code needs the file, it
+holds one comment line pointing to storytelling.md.
 
-**Sound pack**: channels/lifeofgabry/styles/sfx/, cartoon and cinematic sounds (impacts, whooshes, pops, boings,
-rumbles, risers, stings, ambiences), mapped by build-sfx-map like FlashFX's pack. M22 copies it from channel.json
-sources.sfx when I name a folder; otherwise I put the files there before M24.
+**Profile files**, written by M23 from the documents into channels/scenarios/ (curated by me afterwards):
+- channel.json: scenarios.md 7.1 with this section's defaults: export caption_max 100, description_max 1000, hashtags
+  4, required_hashtags ["#shorts"], pinned_comment true; sources.refs C:/Users/there/OneDrive/Desktop/channel2-sources/refs
+  and sources.sfx C:/Users/there/OneDrive/Desktop/channel2-sources/sfx; config: style inkhead, lengths [90, 120], voice
+  wps (measured), gates (script_approval true, auto false), story (protagonist "Gabry", the speaker tags NARRATOR and
+  GABRY, the universes Isolation and Entrepreneur).
+- library/profile/account.md (7.2), voice.md (7.3), storytelling.md (7.4), library/character/gabry.md (7.9 plus
+  inkhead-style.md 5), library/profile/pronunciations.txt (7.7: Gabry = GAH-bree), library/voice/engine.txt (7.8, with
+  the defaults of Voice below), styles/inkhead/style.md (inkhead-style.md verbatim) with an empty tweaks.md (the override
+  layer 14.14 writes style changes into) and tokens.json, and library/docs/ with both documents verbatim.
+- inkhead-style.md section 19 is applied while writing them: the pacing line (a new visual beat every 2 to 4 s, a cut
+  every 3 to 4 s on average); numbers in the subtitles as spoken words, digits in the headline, the HUD and the cards;
+  sentences averaging 9 words or fewer with at least 25% of 4 words or fewer (22 at most); the word window 220 to 295
+  words per part until Kokoro's pace is measured.
+- The protagonist's name and the speaker tags come from channel.json, so the format's code names no character.
 
-**Safe zones** (pipeline/platforms/youtube-shorts/platform.json, adjustable): keep text and Gabry's face out of the
-bottom 20 percent (title and channel row), the right 12 percent of the lower half (the buttons) and the top 6 percent.
+**Voice** (scenarios.md 7.3 and 7.8)
+- Two Kokoro American voices driven by the speaker tags of the script: NARRATOR (second person, present tense; also
+  reads every other character's dialogue, in quotes) and GABRY (only his own lines, first person, the same voice at
+  every age). engine.txt: engine kokoro, lang a, `voice_narrator`, `voice_gabry`, speed, the pause values. 08-voiceover
+  (generic) gains per-speaker voices (a channel with one `voice` key, FlashFX, works exactly as before) and writes each
+  word's speaker into words.json.
+- Defaults until I pick from the audition: narrator af_heart (scenarios.md 7.8 argues for a female narrator against a
+  male Gabry, so every change of speaker is audible), Gabry am_puck, speed 1.0; a pause of 0.6 s or more is cut to
+  0.4 s (the tension lives in the pauses). M24 renders the audition of 7.8 into build/voice-audition/scenarios/ (the 4
+  narrator and 4 Gabry candidates, the sentences of the document); I pick in a chat and the session rewrites engine.txt.
+  A changed engine.txt never stops the runner: the next part measures the pace again.
+- The pace of both voices is measured into this channel's config voice.wps (words per second) and the word window
+  follows (90 to 120 s at that pace). Until it is measured: 2.45 words per second (the references), 220 to 295 words.
+- Spoken form: numbers, money, times and dates are written out for the voice ("two hundred twelve dollars", "nine
+  sixteen p.m."); the subtitles show the spoken words (inkhead 10.4); the headline, the HUD and the cards show digits.
+- Pronunciations: the channel's pronunciations.txt, then the story's bible.md pronunciations for that story's parts only.
+- Every line's word error rate as in S8, for both voices; no fallback voice or engine.
+
+**part-script** (Stage 4) writes Part N in the speaker-tagged format (one sentence per line, `NARRATOR:` or `GABRY:`
+first, other characters inside NARRATOR lines in quotes) from plan.md, bible.md, the G2 decision and the profile files,
+inside the word window.
+- Code checks: the word window; the speaker tags; one sentence per line; the narration never names the protagonist
+  outside quoted dialogue and never says I, me or my outside quotes; average sentence 9 words or fewer, none over 22, at
+  least 25% of 4 words or fewer, a short beat at least every 10 s (estimated at the pace); every GABRY line 12 words or
+  fewer; voice.md's banned phrasings (the announced cliffhangers, the feeling labels and the motivational words never;
+  the atmosphere words and "suddenly" at most once per part; the summary phrasings flagged for the model to judge); no
+  spoken call to action; from Part 2 on, the recap lasts 3 to 7 s at the pace; the last spoken line is the cliffhanger
+  line of the G2 decision or its rewrite; no em dash; the voice track's numbers in spoken form.
+- Model checks (one call): the 13 lines of storytelling.md's part approval checklist, each pass or fail with the failing
+  line quoted; continuity with bible.md (money, objects, injuries, places, who knows what; code lists every amount in
+  the script and the model reconciles each with the ledger); exactly one cliffhanger type, or the resolution in the
+  final part; progress toward the sealed ending; the protagonist never "he" in the narration.
+- Up to 3 fix rounds (config), then G3 as above. DECISIONS.md 338 (understood on one listen) holds here too.
+
+**part-bible** (Stage 7) records what the part changed (events, objects used, money in and out, injuries, who knows
+what, threads opened or closed) into bible.md, then opens G2 for the next part (already prepared by part-lookahead) or
+closes the story after the final part; the next story starts at Stage 0 with the next seed.
+
+**The look** (inkhead-style.md; built in M25 and M26)
+- tokens.json from styles/inkhead/style.md through this format's token reader (in pipeline/formats/serial-story/;
+  build-tokens picks the reader by the style's shape, the paper-cards path unchanged): the palette and the universe
+  palettes (3), characters (4), Gabry (5), environments (6), light (7), camera (8), pacing (9), text (10), effects (12),
+  transitions (13), opening and end (14), the render budget (15). Fonts vendored from Google Fonts: Nunito 800 and 900,
+  Inter 600 and 700, IBM Plex Mono 500.
+- The references are copied from sources.refs into channels/scenarios/styles/inkhead/refs/ (ignored by git, copied by
+  checksum, never moved) when the channel is created and at any later start that finds new files. They calibrate and
+  test (palette, density and pacing against the measured values the bible already holds); they never derive a new
+  style. Missing references never stop anything: the bible's values are used and the comparisons skipped with a NOTE.
+- This channel's motion-lib (HyperFrames components on one shared ink figure rig; every component with S15's editor
+  annotations, catalog.json, gallery and frame-match), at least:
+  - the ink figure (construction of 4.1, the 8 expressions of 4.2, walk, idle breathing and blinks, reactions, holding
+    objects, the heights per age); Gabry (the quiff, gabry-orange garments, the age variants and the era and job
+    outfits of 5, his orange sleeve in his point-of-view shots; his mouth stroke opens and closes on his own spoken
+    words when his face is on screen, my choice); side characters from the garment, hair, hat, glasses and beard sets
+    of 4.4 (never orange); crowds (up to 12 animated figures, then a silhouette layer); the unexplained of 4.5
+  - the Isolation and Entrepreneur sets of 6.2 and 6.3, the era overlays and the data space of 6.4; light and depth (7);
+    the camera moves (8)
+  - the text system of 10: headline, karaoke subtitles, dialogue colors, speech bubble, title card, the HUD card bound
+    to bible.md, stamps, strikes, pills, floating badges, labels
+  - the in-world UI library of 11, the effects of 12, the transitions of 13, the opening and end cards of 14 (frame 0 is
+    already the scene with the headline; the PART N pill from Part 2; END OF PART N with the next part and FOLLOW; THE
+    END on the final part)
+- story-shots: the shot list on the spoken words' times (shot size, set and light, characters with pose, expression,
+  age and outfit, props and UI with their content, camera, headline, HUD rows, stamps, counters, effects, transitions,
+  the end card). Only catalog items; a missing one follows the candidates rule of S10. Its validator (code) enforces the
+  bible's sections 9 and 10: a new visual beat every 2 to 4 s; no unchanged frame longer than 4 s except up to 2 tension
+  holds of at most 6 s; cuts every 3 to 4 s on average (Entrepreneur 2.5 to 3.5, Isolation 4 to 5 on dread); the shot
+  mix (scenes 40 to 55%, inserts 20 to 35%, close-ups 10 to 20%, cards at most 12%); at least 2 close-ups of Gabry;
+  Gabry in at least 40% of the shots and at least once every 15 s; cuts on word boundaries and the key word triggering
+  its visual; at most 3 text blocks; the layout map of 10.2 inside the platform's safe zones; overlay text of 22 px or
+  more; orange only on Gabry; at most 1 flash, 2 special transitions, 1 letterbox sequence and 2 data shots per part;
+  the render budget of 15; HUD values equal to bible.md at that moment.
+- story-build compiles the shot list into the HyperFrames composition, with the karaoke subtitles from words.json
+  (chunks of 1 to 4 words breaking at sentence ends and commas, the spoken word gold, GABRY lines in gabry-orange with
+  the spoken word white, other characters in quotes, instant switches), the 540x960 draft, the contact sheet and
+  events.json. A placeholder mode (each line a plain card with its subtitle) serves the tests and the milestones before
+  the library exists.
+- A golden part in channels/scenarios/golden/ (plan and render of one part of a seed story): the example story-shots
+  reads.
+
+**Sound** (scenarios.md 7.11, inkhead-style.md 18; built in M27)
+- The pack: channels/scenarios/styles/sfx/, mapped by build-sfx-map with this format's cue types: ambience beds per set
+  (room tone, wind, hum, rain, sea, street, office, diner), radio static, knock, footsteps, creak, metal, breathing, low
+  stinger, notification ping, phone buzz, typing, mouse click, door, cash register, comic sting, counter tick, stamp,
+  page flip, whoosh, impact, flash hit, money rain.
+- The sound stage syncs sources.sfx into styles/sfx/ at every start (new files copied by checksum, never moved).
+- A continuous bed, never silent: the set's ambience sits 18 to 20 LU under the voice in the pauses; no music (my default
+  for the open music question); sound effects land on the visual events of events.json. Loudness -14 LUFS (the
+  platform's default; the references measure -17.1).
+- A stand-in while my pack is missing: when sources.sfx holds no audio and the channel has no pack of its own, M27 copies
+  FlashFX's pack once into channels/scenarios/styles/sfx/standin/ with STANDIN.txt (a build step, so no runner of this
+  channel ever reads FlashFX's folder), and a generated room tone (filtered noise) serves as the bed. Every export made
+  with it says so in NEEDS REVIEW. The first start that finds audio in sources.sfx copies it in and deletes standin/.
+  The build never ends BLOCKED for the pack.
+
+**Review rubric** (12-review; the same loop as today: 3 main rounds, 2 escalated rounds, then the export with NEEDS
+REVIEW)
+- Mechanical: the palette rules of 3.2 on sampled frames (dark dominance at least 65%, Isolation 75%, Entrepreneur 55%;
+  accents under 6%; brights under 8% except the one flash; gabry-orange's hue range at most 2% outside Gabry's figure);
+  pacing from events.json and frame differences (the limits of story-shots); karaoke sync (the gold word within 2 frames
+  of its words.json start, sampled); text inside the zones, at least 22 px, at most 3 blocks; the HUD equal to bible.md;
+  Gabry on model (sampled frames frame-matched against his component: token colors, head to body ratio within 3
+  percent); the length 90 to 120 s; the cliffhanger line last heard, no spoken call to action; the end card (1.5 s) or
+  THE END.
+- Audio: the voice transcribed from the mix with a word error rate under 5 percent for both voices, each line in its
+  speaker's voice, the bed never silent (no span over 0.5 s under -50 dBFS), the sounds under the voice by the config
+  margin, the loudness within 1 LU of the target.
+- Edit review scores: the first sentence creates curiosity and frame 0 shows the scene; understood on one listen;
+  important events as real-time scenes, not summaries; the cliffhanger lands as a concrete event; continuity with
+  bible.md; the look matches the style bible (filmstrips next to two reference contact sheets); nothing gory, no real
+  brand.
+
+**Export** (section 8, youtube-shorts, with the STORY and UPLOAD STEPS sections of a serial format): STORY
+`<Story title>, Part <N>` first, so the parts are uploaded in order; TITLE `<hook phrase> | <Story title>, Part <N>`
+(at most 100 characters, a new hook phrase every part, never "of M", never the cliffhanger); DESCRIPTION (scenarios.md
+7.12: different every part, no spoiler of its ending, at least one list, from Part 2 on a line saying Part 1 is on the
+channel, exactly 4 hashtags: #shorts plus 3 topical, one of them #survivalstory or #businessstory); PINNED COMMENT (a
+question tied to the cliffhanger plus a line saying the next part is coming; the final part only the question); UPLOAD
+STEPS (set the related video to the previous part, add the part to the story's playlist).
+
+**Open items and the defaults used until I decide in a chat** (scenarios.md 9, inkhead-style.md 20; none of them stops
+the build, each answer is a one-line change)
+1. Name and handle: Gabryverse as the working display name, handle empty, id scenarios.
+2. Intensity: death and violence off screen; no blood, wounds or bodies on screen.
+3. Other characters' dialogue: read by the narrator.
+4. Script approval: on (gates.script_approval true).
+5. Where the gates happen: a Claude Code chat in this folder (decided).
+6. Gabry's look: the original design of inkhead-style.md 5 (the quiff, gabry-orange #F2913D); my own hair silhouette
+   from photos would replace only the hair part later.
+7. Voices: narrator af_heart, Gabry am_puck, until I pick from the audition.
+8. Pronunciation: Gabry = GAH-bree.
+9. Style round: done (inkhead-style.md).
+10. Sound: my pack from sources.sfx when it has files, otherwise the stand-in; no music bed.
+11. Hashtags: #shorts required, plus 3 topical (one universe tag).
+12. Seeds: all 18 of 7.6 in ideas.txt; I remove the ones I do not want.
+13. The references' folder (inkhead 20.2): C:/Users/there/OneDrive/Desktop/channel2-sources/refs.
+14. The references' sound (inkhead 20.3): not known; the default of Sound above (an ambience bed, effects on events).
+15. A spoken call to action (inkhead 20.4): none; on screen only, so the cliffhanger is the last thing heard.
+
+**Safe zones** (pipeline/platforms/youtube-shorts/platform.json, adjustable): text and faces stay out of the bottom 20
+percent, the right 12 percent of the lower half and the top 6 percent; the bible's layout map (10.2) sits inside them,
+and they win where the two differ.
 
 ### 14.11 Later channels (requirements only, so the engine stays ready)
 
@@ -2274,9 +2514,105 @@ Rules for every move in this folder, tracked or not, so nothing I made is lost:
   small files, set up as a git repo with the same .gitignore and the same tracked files, plus one finished and one
   unfinished run copied from the test fixtures), then the undo, then again. Only after the rehearsal passes does it run
   on the real folder.
-- The gate: M19 to M24 each start by checking that the moves done so far still hold (check-manifest.py --after on the
+- The gate: M19 to M27 each start by checking that the moves done so far still hold (check-manifest.py --after on the
   executed manifests) and that `preflight --channel flashfx` passes. If not, the batch ends BLOCKED with the failures:
   the milestone before may have moved on without approval (build/open-issues.md).
 - Old exports (M19): exports/N/ becomes exports/flashfx-N/, with N.mp4, Ncaptions.txt and Nhook2.mp4 renamed to
   flashfx-N.mp4, flashfx-Ncaptions.txt and flashfx-Nhook2.mp4, project/ unchanged; inside the captions file the HOOKS
   names, the RUN path and the EDITOR path follow; history lines "exported N" become "exported flashfx-N".
+
+### 14.14 Learning from feedback (every channel; built in M22)
+
+I give feedback in Claude Code chats in this folder (on a hook, a storyboard, a script, the look, a sound, a caption).
+The pipeline keeps what should last, applies it from the next stage, and never loses my words. The full design is
+build/channel2/learning.md; this is the engine contract. The rule I set: an adjustment always wins over the base
+documents; a conflict is always said in chat first; with my approval the base document is rewritten and the adjustment
+deleted, so adjustments.md only holds what the base documents do not say.
+
+- **Files**, per channel: library/profile/adjustments.md (the learned rules; written only by `pipeline/bin/adjust`, run by
+  a chat session on my word), library/adjust-map.json (which sections each stage reads, which base document owns each
+  topic, what must be rebuilt when a base document changes), logs/adjustments.log (one line per event: added, replaced,
+  merged, removed, undone, suggested, rework), logs/adjustments-suggested.md (rules the pipeline proposes, never active
+  until I approve), logs/adjustments-stats.json (per rule: the runs that used it, the review checks passed and failed).
+  No file is shared between channels: a rule I want for both is saved once in each, and each copy is checked against its
+  own channel.
+- **Base documents** (named in the map): FlashFX: styles/paper-cards/style.md and tweaks.md (style changes go into
+  tweaks.md, the override layer build-tokens reads), library/profile/voice.md, account.md, pronunciations.txt,
+  deliverables.txt, library/hooks.txt. The second channel: styles/inkhead/style.md and tweaks.md, library/profile/
+  account.md, voice.md, storytelling.md, library/character/gabry.md, pronunciations.txt, channel.json's export settings.
+- **adjustments.md**: fixed sections General, Ideas and premises, Hooks, Story and structure, Script and dialogue, Voice
+  and pronunciation, Visuals and style, Sound, Captions and post text, Inbox. One rule per entry:
+  `- A-0012 | 2026-11-09 | scope: Isolation | <the instruction, at most 300 characters>`, then a `source:` line with my
+  words verbatim and where I said them, and optionally `[pending-merge: <file> <section>]` or `[blocked: <reason>]`. Ids
+  are never reused. A scope is `all`, a tag the runner knows (a solution type; a universe, part 1, middle part, final
+  part, recap) or free text the stage's model judges. The Inbox keeps feedback not processed yet, verbatim. At most 8
+  rules per section (the Inbox has no limit; pending and blocked rules count).
+- **Capture**: a CLAUDE.md rule sends every chat session to pipeline/knowledge/adjustments-procedure.md. `adjust propose`
+  (one model call, config models.adjust: sonnet, medium effort) classifies the feedback (one-off: applied to that item
+  only; story: saved in that story's bible.md; rule; base edit; hard limit), writes the rule with the narrowest scope my
+  words allow, and compares it with the candidate lines `adjust candidates` gathers deterministically (the mapped
+  sections of the base documents, lines sharing key terms, the rules of the same section and of overlapping scopes):
+  same, refines, narrows, contradicts or unrelated. The session acts and says it in one line: saved; a duplicate adds my
+  words to the existing rule; a refinement replaces both with one combined rule; a narrower rule is saved and the broader
+  one keeps applying outside its scope; a contradiction goes to the conflict path below. I can always say "just this
+  once", "make it a rule", "for both channels" or "undo".
+- **Precedence**, highest first, stated in one line above the rules block of every prompt: the hard limits (the
+  platform, channel isolation, the engine rules of this spec); my explicit words for the item (a gate decision, the
+  idea's own text); the story's plan.md and bible.md; the adjustments (a narrower scope beats a broader one, then the
+  newer beats the older); the base documents (tweaks.md beats style.md); the engine's defaults.
+- **Conflicts**
+  - A rule against a base document is said in chat at once: the conflicting lines quoted with file and section, the
+    full rewrite of every affected line of every base document (the ripple), the assets it touches, and three choices.
+    Approve: the base documents are rewritten with exactly the shown edits, build-tokens runs, the rule is deleted (the
+    base document now says it), one commit `adjust(<channel>): ...`, and a rework when assets need it. Not now: the rule
+    is saved as pending-merge, wins from the next stage, and is listed first in every chat. Drop: nothing is saved. Only
+    what no base document covers stays in adjustments.md; a scoped exception goes into the base document ("except in
+    Isolation stories: ...").
+  - A rule against a rule: with the same scope the newer wins at once and the chat asks to remove the older one;
+    overlapping scopes are not a conflict (the narrower wins inside its scope); two rules that cannot both be met get a
+    proposed combined rule.
+  - A rule against a hard limit: explained, with the nearest allowed rule; nothing is saved until I pick.
+  - A rule against a running story: it applies from the next part unless it breaks continuity; then the chat asks
+    whether it starts with the next story or changes this one (the bible updated in the same step).
+  - At run time every stage follows the precedence, and the review reports contradictory pairs (`rule_conflicts`),
+    shown at the top of the next chat with a proposed fix.
+  - Rework, when a merged style change needs component code: between ideas, like S15's capability upgrade (a builder
+    session on that channel's motion-lib and candidates only, frame-match, the gallery, the golden render, a reviewer
+    session, at most 2 fix rounds). Success: one commit, and the before and after stills wait for my approval. Failure:
+    the components and the base document edit are reverted together, and the rule goes back to adjustments.md as
+    blocked (a wish to the stages, never a review failure).
+- **Error correction**: `adjust undo` restores the files byte for byte (every change is its own commit); "what changed
+  this week" lists the rules added, replaced or merged with the videos made since; an ignored rule is traced through the
+  run's calls/ and adjustments-used.json and its cause fixed (a wrong scope, a section the stage does not read, a rule
+  too vague); a rule failed in 3 of the last 5 videos comes back with a proposed rewrite; a vague rule is refused with
+  one question that makes it concrete.
+- **Growth**: at 5 rules a section is marked for merge. The next chat, and every "anything waiting?", proposes moving
+  rules into the base documents to free slots, with the exact before and after lines (the oldest rules that have held in
+  the reviews first; near duplicates combined; rules unmatched for 60 days offered for removal; never a rule saved in the
+  same chat); approved, it runs like a conflict merge; "not now" asks again at the next chat, never in the middle of a
+  gate. At 8 the section is full: a 9th rule waits until I merge, replace one of the 8, or keep it in the Inbox
+  (inactive).
+- **Safety**: model calls cannot write adjustments.md or a base document (protect.py); writes are atomic under the
+  channel's adjust lock (a writer waits up to 30 s); every stage copies the rules it reads into its folder
+  (adjustments-used.json), so a change applies from the next stage and every run records exactly what it followed;
+  `adjust lint` (in preflight and doctor, a WARN, never a stop) and `adjust lint --deep` (one model call, before a merge
+  proposal or on request: rules made redundant or contradicted by a hand edit of a base document).
+- **When the machinery fails**: a failed model call waits and retries like every call; if the chat cannot wait, my words
+  go to the Inbox verbatim and the next chat processes them first. A proposed edit that no longer applies is made again
+  from the current file, never forced. A failed build-tokens reverts the merge and keeps the rule pending. A missing
+  adjustments.md runs without rules, with a preflight WARN (`adjust init` writes the template).
+- **Usage**: every prompt-building stage reads the sections its format.json entry lists (key `adjustments`), plus General,
+  filtered by scope against the run's tags. FlashFX: S1 to S4 Ideas and premises; S5 and S6 Hooks; S7 Script and
+  dialogue, Voice and pronunciation; S9a to S10 Visuals and style; S11 Sound; S14 Captions and post text; S12 every
+  section it can check. The second channel: G0 Ideas and premises; G1 and G2 Story and structure, Hooks; part-script
+  Script and dialogue, Voice and pronunciation; story-shots and story-build Visuals and style; 11-sfx Sound; the
+  exporter Captions and post text; 12-review every section it can check. The edit review reports a violation as a tagged
+  issue `[rule A-NNNN]`, routed back to the stage that owns the section; a rule with a mechanical form (a color, a count,
+  a word list) gets a mechanical check when the map names one; adjustments-stats.json counts every check.
+- **Suggestions**, never active until I approve, at most 2 shown at a time (at "anything waiting?" or the next gate):
+  choice patterns every 10 gate decisions (one cheap model call over logs/gate-decisions.jsonl), the same review issue
+  in 3 of the last 5 videos, the same kind of one-off asked 3 times. An approved suggestion goes through Capture like any
+  feedback.
+- **In chat**: "anything waiting?" lists, in this order, blocked rules and run-time conflicts, pending merges, rework
+  results to approve, full sections and sections marked for merge, open gates (14.10), suggestions, the Inbox. Every
+  change ends with one line saying exactly what was saved, replaced, merged or removed.

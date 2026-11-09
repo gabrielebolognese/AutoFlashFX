@@ -1,4 +1,4 @@
-# CHANNELS: one engine, many channels (milestones M17 to M24)
+# CHANNELS: one engine, many channels (milestones M17 to M27)
 
 This file explains how this folder grows from one channel (FlashFX) to several fully separate channels that share
 one engine, and it carries the exact text that goes into BUILD_SPEC.md.
@@ -12,7 +12,8 @@ one engine, and it carries the exact text that goes into BUILD_SPEC.md.
 
 Numbering: this plan was first written as milestones M14 to M21. The motion milestones M14 to M16 (BUILD_SPEC.md
 section 5, Motion and energy rules) came first, so the plan runs as M17 to M24: the control check is M17 and the
-editable project (the old M17, S15) is M21.
+editable project (the old M17, S15) is M21. On 2026-11-09 the second channel's plan was replaced (the note at the
+start of Part B): the learning system is M22 and the second channel is M23 to M27.
 
 Hard rule everywhere: never write an em dash.
 
@@ -23,9 +24,10 @@ Hard rule everywhere: never write an em dash.
 ### A.1 Why not duplicate the folder
 
 The plan is five channels: FlashFX (Instagram, faceless, problem and solution reels), Logs of Gabry (Instagram, my own
-recorded videos and voice, edited by the runner), Life of Gabry (YouTube Shorts, fake scenario stories with a 2D
-cartoon Gabry), an interactive story channel (YouTube Shorts, still to plan) and Gabriele Bolognese (YouTube long form,
-my life vlog, many clips, simple editing).
+recorded videos and voice, edited by the runner), the second channel (working id `scenarios`, working name
+Gabryverse: YouTube Shorts, second-person serialized stories told in parts, with a 2D ink-figure Gabry; it replaced the
+old Life of Gabry plan on 2026-11-09), an interactive story channel (YouTube Shorts, still to plan) and Gabriele
+Bolognese (YouTube long form, my life vlog, many clips, simple editing).
 
 Duplicating the folder per channel looks isolated but costs more every week: two copies of the runner, the limits
 handling, the review loop, the renderer and the editor exporter drift apart; every fix has to be made twice; and two
@@ -37,7 +39,7 @@ knowing about each other. So: one engine, many channels, with isolation enforced
 | Layer | What it is | Where | Examples |
 |---|---|---|---|
 | Engine | the machinery every channel uses | run.sh, pipeline/, tools/, config.json | the runner loop, ai(), limits, the error and fix loop, TTS and Whisper workers, HyperFrames rendering, ffmpeg, the review framework, the platform exporters, the editor project exporter |
-| Format | a recipe for one kind of video | pipeline/formats/<format>/ | problem-solution-reel (FlashFX): research, gate, hooks, script, voice, motion cards, sound, review. scenario-story (Life of Gabry): premise, beats, script, voice, 2D shots, sound, review |
+| Format | a recipe for one kind of video | pipeline/formats/<format>/ | problem-solution-reel (FlashFX): research, gate, hooks, script, voice, motion cards, sound, review. serial-story (the second channel): seed, research, storyboards and part gates decided in chat, script, two voices, 2D shots, sound, review |
 | Channel | one account's identity and memory | channels/<id>/ | voice, profile, audience, hooks, style, motion library, sound pack, ideas, runs, logs, history, quota |
 
 A platform (Instagram Reels, YouTube Shorts, later YouTube long form) is a small fourth piece: aspect, length limits,
@@ -59,7 +61,7 @@ The engine code obviously knows that several formats exist; the content never cr
 ### A.4 Two families of formats
 
 - Generated: the video is made from nothing (idea, research, script, voice, composition written as code, sound,
-  review, render). FlashFX and Life of Gabry.
+  review, render). FlashFX and the second channel.
 - Footage: the video is cut from my recordings (Logs of Gabry, the vlog). The model never watches video: code turns
   the footage into a compact text index (word timed transcript, shots, silences, loudness, small contact sheets) and
   the model writes cut decisions from that index. An hour of footage becomes a few hundred short lines, not millions
@@ -70,17 +72,23 @@ The engine code obviously knows that several formats exist; the content never cr
 
 Every format ends with the same file: timeline.json, the final video described as layers in time (visual layers,
 captions with word timings, voice, sounds, footage audio, markers). The editor project exporter reads only that file,
-so one exporter serves every channel: FlashFX reels and Life of Gabry shorts both open in the Shorts Editor, and so
+so one exporter serves every channel: FlashFX reels and the second channel's story parts both open in the Shorts Editor, and so
 will footage videos later. Footage formats also render from it with ffmpeg.
 
 ### A.6 What changes for me day to day
 
-- Start a channel: `bash run.sh --channel flashfx` or `bash run.sh --channel lifeofgabry` (one terminal each; heavy
+- Start a channel: `bash run.sh --channel flashfx` or `bash run.sh --channel scenarios` (one terminal each; heavy
   steps like voice, transcription and renders take turns automatically; a usage limit pauses every runner together).
-- Ideas: each channel has its own queue, channels/<id>/ideas.txt. In Claude Code I write `{...} for life of gabry`.
+- Ideas: each channel has its own queue, channels/<id>/ideas.txt. In Claude Code I write `{...} for scenarios`.
+- Gates: the second channel stops and waits for me at its storyboards (G1), each part's approach (G2) and, while
+  script approval is on, each script (G3). I decide in a Claude Code chat: "anything waiting?", then "go with B",
+  "B, but start with the knock" or "you decide". Nothing times out.
+- Learning (M22): what I tell a chat about any result is kept per channel in library/profile/adjustments.md; a
+  conflict with my documents is said in chat first, and with my yes the document itself is rewritten (14.14).
 - Exports: still in exports/ at the root, shared, now named by channel: exports/flashfx-12/flashfx-12.mp4,
-  flashfx-12captions.txt, flashfx-12hook2.mp4, project/. Life of Gabry: exports/lifeofgabry-3/lifeofgabry-3.mp4 and
-  lifeofgabry-3captions.txt (caption, description, pinned comment). N counts each channel's videos in build order.
+  flashfx-12captions.txt, flashfx-12hook2.mp4, project/. The second channel: exports/scenarios-3/scenarios-3.mp4 and
+  scenarios-3captions.txt (story and part, title, description, pinned comment, upload steps). N counts each channel's
+  videos in build order.
 - My curated files move into the channel: channels/flashfx/library/, channels/flashfx/styles/, and so on. Same
   structure as today, one level deeper.
 - A new channel of an existing format: `bash pipeline/bin/new-channel <id> --format <format> --platform <platform>`,
@@ -95,9 +103,12 @@ will footage videos later. Footage formats also render from it with ffmpeg.
 | M19 Exports and channels side by side | the `<id>-N` exports, old exports renamed, platform exporters (Instagram, YouTube Shorts), heavy lock, shared limits, quotas, the canary test | the shared export folder and the shared machine need rules before a second channel exists |
 | M20 Formats and the timeline | format.json drives the runner, timeline.json, a dummy footage format | the editor exporter is built once, on the timeline, for every channel |
 | M21 Editable project export | the old M17 (S15), rebuilt on the timeline | both styles must open in the Shorts Editor |
-| M22 Life of Gabry: the story | the channel, its story stages, its voice, the YouTube Shorts export with placeholder visuals | the story machine is proven before the art is built |
-| M23 Life of Gabry: the look | style bible, the Gabry rig, the 2D library, shots and build, golden reel | the look is the biggest piece and needs the stories to test against |
-| M24 Life of Gabry: end to end | sound pack, review rubric, three real videos next to a FlashFX runner | the proof that both channels run side by side without touching each other |
+| M22 Learning | adjustments.md per channel, conflicts said in chat and merged into my documents, error correction | the second channel should learn from its first story, and it needs the channel paths and formats first |
+| M23 Scenarios: the channel, the stories and the gates | the serial-story format, story folders, the gates in chat, the ideas and profile files from my documents | the story machine and the gates are proven before the art is built |
+| M24 Scenarios: the script and the two voices | the speaker-tagged script and its checks, the script gate, the narrator and Gabry voices, the audition | the words must work before anything is drawn |
+| M25 Scenarios: characters and text | the inkhead tokens, the ink figure rig, Gabry, karaoke subtitles, the HUD card, the cards | the look is the biggest piece, so it is split in two |
+| M26 Scenarios: worlds, shots and the golden part | sets, light, camera, the UI library, effects, transitions, the shot director, the golden part | it builds on the figures and the text system |
+| M27 Scenarios: sound, review and end to end | the sound pack (or a stand-in), the review rubric, two real parts next to a fixture runner | the proof that both channels run side by side without touching each other |
 
 ### A.8 How the moves are done without mistakes
 
@@ -120,6 +131,11 @@ I never move, rename or edit anything by hand. Claude does every move, with thes
 ---
 
 ## Part B. BUILD_SPEC.md text
+
+Note (2026-11-09): Parts B to D are the text as merged on 2026-11-07, kept as history. On 2026-11-09 section 14.10 and
+the milestones M22 to M24 were replaced: the second channel is now `scenarios`, decided by my documents in
+build/channel2/ (scenarios.md and inkhead-style.md), the learning system of 14.14 is M22, and the channel is built in
+M23 to M27. BUILD_SPEC.md is the source of truth.
 
 ### B.1 New section 14 (appended after section 13)
 
@@ -1092,6 +1108,9 @@ of 14.11; FlashFX-v2 (.ffx) projects as a target (the Shorts Editor project of S
 
 ## Part C. Open questions (defaults until I answer)
 
+History: these were the questions of the old Life of Gabry plan (2026-11-07). The second channel's open items and
+their defaults are in BUILD_SPEC.md 14.10.
+
 The merge session asks me these. An answer replaces the default in section 14.10 (or section 8 for question 4) and
 gets a line in DECISIONS.md.
 
@@ -1124,6 +1143,8 @@ gets a line in DECISIONS.md.
 ---
 
 ## Part D. build-runner.sh changes (only while the build runner is not running)
+
+Updated on 2026-11-09: MS_IDS runs to M27 with the titles of PLAN.md, and the range texts come from the array.
 
 - `MS_IDS` keeps M0 to M16 (M14 to M16 are the motion milestones); the old `M17` (Editable project export) is replaced
   by `M17 M18 M19 M20 M21 M22 M23 M24`.

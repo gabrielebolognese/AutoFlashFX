@@ -71,8 +71,28 @@ Each line: milestone, what to do, where.
 
 - M17: At this pause (build/M17/risks.md has the full list): (1) the branch `important-ideas` (your model change: Sonnet as the main model, fable only for `[important]` ideas) is not merged into main. If you want it before the channels move, merge it now on a clean tree (`git merge important-ideas`), renumber its DECISIONS.md entries 323 to 325 (M16 and M17 use 323 to 332) and run `bash pipeline/tests/test-models.sh`; then add `"test-models||all"` to the TESTS list of pipeline/tests/run-fake.sh. (2) motion-lib/gallery/frame-match.json and frame-match.md are modified by earlier milestones' test runs and are uncommitted: M18 must commit or restore them before its first move (M17 may not touch motion-lib). (3) The video runner is not running now: keep it stopped until M18's migration is verified.
 - 2026-11-09 (the M18 pause): `important-ideas` is merged (Sonnet as the main model, DECISIONS.md 333 to 335); the
-  script stage now writes for a viewer who hears it once (DECISIONS.md 338); one 3D icon per scene (337). Restart:
-  `echo M22 > build/PAUSE`, then `bash build-runner.sh` (it builds M18 to M21 and pauses before M22). At that pause
-  a Claude Code session rewrites BUILD_SPEC 14.10 and PLAN.md M22 onward from Desktop/channel2-sources/docs/
-  (scenarios.md, inkhead-style.md, learning.md) and adds the new milestones to build-runner.sh. The second channel
-  still needs its sound pack in Desktop/channel2-sources/sfx/ (its 6 reference videos are in refs/).
+  script stage now writes for a viewer who hears it once (DECISIONS.md 338); one 3D icon per scene (337). DONE
+  (2026-11-09): the spec and plan for M22 to M27 are written (BUILD_SPEC.md 14.10 and 14.14, PLAN.md, the documents
+  copied into build/channel2/) and build-runner.sh knows M22 to M27, so the build needs no pause before M22.
+  Restart: `rm -f build/PAUSE`, then `bash build-runner.sh`; it runs M18 to M27.
+- M23 to M27 (the second channel, `scenarios`): put your sound pack in C:\Users\there\OneDrive\Desktop\channel2-sources\sfx\
+  before M27 if you can (Isolation: room tones, wind, hum, rain, radio static, knocks, footsteps, creaks, metal,
+  breathing, low stingers; Entrepreneur: notification pings, phone buzz, typing, mouse clicks, doors, cash register,
+  street and office ambience, comic stings). Without it the channel uses a stand-in (a copy of FlashFX's sounds and a
+  generated room tone), every part says so in NEEDS REVIEW, and the first start that finds your files swaps them in.
+- M24: listen to the voice audition in build/voice-audition/scenarios/ (4 narrator voices, 4 Gabry voices) and tell a
+  Claude Code session the two you want (for example "narrator af_nicole, Gabry am_liam"). Until then the narrator is
+  af_heart and Gabry am_puck.
+- M23: the channel's working name is Gabryverse (id `scenarios`). Check the handle on YouTube and tell a Claude Code
+  session the name and handle you choose: the display name is one line in channels/scenarios/channel.json (a new id is
+  a migration a session does on your word).
+- M23: the 18 seeds of scenarios.md 7.6 are in channels/scenarios/ideas.txt (alternating the universes, your three
+  first). Delete the ones you do not want, or add more with braces and the words "for scenarios".
+- M27, how the gates work: the second channel stops and waits for you at G1 (3 storyboards per story), G2 (2 or 3
+  approaches per part) and G3 (the script, while script approval is on). In a Claude Code chat in this folder say
+  "anything waiting?", read the proposal, discuss it, then say "go with B", "B, but start with the knock" or "you
+  decide". Nothing times out; the runner prints a HOLD line while it waits. Start the channel with
+  `bash run.sh --channel scenarios` once M27 is approved. Script approval is on; say "turn off script approval" when
+  you trust the scripts.
+- M27: watch build/M27/samples/: two parts of one story made with automatic gate decisions, for the look and the
+  sound. They are not the channel's real first story, which starts with your own G1.
