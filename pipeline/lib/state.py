@@ -367,7 +367,7 @@ def cmd_new(args) -> int:
     raw = raw.replace("\r\n", "\n").replace("\r", "\n").strip()
     if raw.startswith("{") and raw.endswith("}") and raw.count("{") == 1:
         raw = raw[1:-1].strip()
-    raw, important = split_label(raw)  # the [important] label is not part of the idea (DECISIONS.md 323)
+    raw, important = split_label(raw)  # the [important] label is not part of the idea (DECISIONS.md 333)
     text = normalize(raw)
     if not text:
         print("state.py new: give the idea text on stdin", file=sys.stderr)

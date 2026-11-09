@@ -418,7 +418,7 @@ assert_true "captions (frozen run): the facts carry URL and date" grep -q -E '^-
 
 # one model at its own limit ("You've reached your Fable limit. Switch to another model"): the escalated call carries on
 # with opus instead of failing as a code error (DECISIONS.md 275; a tiny stand-in for claude that refuses fable). Only an
-# idea marked [important] escalates to fable at all (DECISIONS.md 324): the run's state.json says so.
+# idea marked [important] escalates to fable at all (DECISIONS.md 334): the run's state.json says so.
 FL="$W/fable-limit"; mkdir -p "$FL/runs/r1/10-build" "$FL/logs"
 printf '{"idea": {"id": "r1", "text": "x", "important": true}}\n' > "$FL/runs/r1/state.json"
 cat > "$FL/claude" <<'EOF'

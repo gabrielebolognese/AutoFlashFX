@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 """Which model a call uses: config models.<role>, the idea's [important] label and the visual director's rounds.
 
-The label (BUILD_SPEC.md 2.1, DECISIONS.md 323): an idea whose text starts or ends with [important] (any case) is
+The label (BUILD_SPEC.md 2.1, DECISIONS.md 333): an idea whose text starts or ends with [important] (any case) is
 marked important. The label is not part of the idea: it is stripped from the text the stages read and from the id,
 and the run's state.json keeps it as idea.important.
 
-The models (DECISIONS.md 324):
+The models (DECISIONS.md 334):
   - a role's model and effort are config models.<role>.model and .effort;
   - on an idea marked important, models.<role>.important (model, effort) replaces them when the role has one
     (the escalation roles do: that is where fable lives);
   - on every other run, and on a call outside any run, a fable model never runs: models.limit_fallback (opus)
     stands in, with the role's effort. Fable is for the ideas marked important only.
 
-The visual director (DECISIONS.md 325): the first plan of a pass is the design (models.visual_director, opus);
+The visual director (DECISIONS.md 335): the first plan of a pass is the design (models.visual_director, opus);
 a plan made again after a failed review round is fine tuning (models.visual_director_fix, sonnet); from
 caps.review_rounds_opus failed rounds on, the escalated director plans it (models.visual_director_escalation:
 opus, or fable on an idea marked important).

@@ -73,7 +73,7 @@ visual_pass_run() {
   local tools timeout_s try=1 res rc sid="" role=visual_director review_round
   tools="$(cfg visual.director_tools "Read Glob")"
   timeout_s="$(cfg timeouts.plan_seconds 1800)"
-  # who plans (DECISIONS.md 325): the first plan is the design (models.visual_director, opus); a plan made again after
+  # who plans (DECISIONS.md 335): the first plan is the design (models.visual_director, opus); a plan made again after
   # a failed review round is fine tuning (models.visual_director_fix, sonnet); after caps.review_rounds_opus failed
   # rounds the escalated director plans it (models.visual_director_escalation: opus, fable on an idea marked important)
   review_round="$(state_get "$RUN_DIR" rounds.review 0 2>/dev/null)"; case "$review_round" in ''|*[!0-9]*) review_round=0 ;; esac

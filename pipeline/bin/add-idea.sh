@@ -8,7 +8,7 @@
 #   bash pipeline/bin/add-idea.sh "{[important] an idea that could blow up}"   (its escalations may use fable)
 #
 # Prints one line: "added N idea(s) to ideas.txt (queue: M)", plus ", marked important" for a labelled idea
-# (DECISIONS.md 323: only those ever use fable). Each addition is also recorded in logs/.new-ideas,
+# (DECISIONS.md 333: only those ever use fable). Each addition is also recorded in logs/.new-ideas,
 # which the runner reads to print its NEW line.
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"

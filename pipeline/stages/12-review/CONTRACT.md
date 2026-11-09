@@ -52,7 +52,7 @@ with NEEDS REVIEW. The runner never stops here.
 - caps: review_rounds_opus (3) rounds with the main director and builder (the passes run again after a failed round
   are fine tuned by models.visual_director_fix, sonnet), then review_rounds_fable (2) escalated rounds (the
   visual passes switch to models.visual_director_escalation when rounds.review reaches review_rounds_opus: opus,
-  fable only on an idea marked [important], DECISIONS.md 324 and 325; S10's
+  fable only on an idea marked [important], DECISIONS.md 334 and 335; S10's
   builder switches at 2, DECISIONS.md 225); the round after the last cap exports with NEEDS REVIEW and the notes
 - every pixel-based threshold is applied at the composition's size in the harness (exact) and scaled to the draft's
   540x960 in the video checks

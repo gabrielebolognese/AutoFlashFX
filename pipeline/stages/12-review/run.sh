@@ -17,7 +17,7 @@
 #      issue goes back to the step that owns it ([voice] S8, [animation] 9a, [text] 9b, [transition] 9c, [sfx] S11)
 #      and every step after it runs again (this stage included), through reopen.txt; caps.review_rounds_opus rounds
 #      with the main director and builder (the fixes are Sonnet's fine tuning), then caps.review_rounds_fable escalated
-#      rounds (opus, fable only on an idea marked [important], DECISIONS.md 324 and 325); still failing: export anyway with
+#      rounds (opus, fable only on an idea marked [important], DECISIONS.md 334 and 335); still failing: export anyway with
 #      a NEEDS REVIEW flag carrying the notes. Never a stop.
 # Outputs in 12-review/: review.json (primary), review-r<n>.json, mechanical.json, style.json, audio.json, edit-r<n>.json,
 # filmstrips/, digest/, prompt-r<n>.md, feedback.json (for the re-run stages), notes.md, calls/.

@@ -8,7 +8,7 @@ issue routes only when it names a word in quotes (the voice is deterministic: S8
 re-read an opinion); otherwise it becomes a NEEDS REVIEW note. Caps: config caps.review_rounds_opus (3) rounds with the
 main director (the fixes of rounds 2 and 3 are fine tuning, models.visual_director_fix: sonnet), then
 caps.review_rounds_fable (2) escalated rounds (models.visual_director_escalation: opus, fable only on an idea marked
-important, DECISIONS.md 324 and 325); a reel still failing after the last round
+important, DECISIONS.md 334 and 335); a reel still failing after the last round
 goes on to the export with a NEEDS REVIEW flag that carries the review notes. A failing round whose issues route
 nowhere also goes on (flagged), never loops.
 

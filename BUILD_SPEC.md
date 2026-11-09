@@ -119,7 +119,7 @@ channels/*/styles/sfx/, and the generated files of motion-lib/ and golden/ under
 - An idea can carry the label [important] (any case) at the start or the end of its braces: `{[important] ...}`,
   for an idea I think could genuinely blow up. Only these ideas may use fable, and only in the escalations
   (section 9); every other idea never runs fable. The label is not part of the idea: the stages, the id and
-  idea.txt leave it out, state.json keeps idea.important, the START line and add-idea.sh say it. (DECISIONS.md 323)
+  idea.txt leave it out, state.json keeps idea.important, the START line and add-idea.sh say it. (DECISIONS.md 333)
 - When an idea is exported, or dropped because no angle works, the runner deletes it from ideas.txt and writes a
   line to logs/history.txt. A blocked idea (4.2) is deleted too and copied to logs/blocked.txt with the reason,
   so I can re-add it.
@@ -880,7 +880,7 @@ An invalid pass gets one retry with the validator errors, then the review path.
   again as needed.
 - **Loop caps:** at most 3 rounds with the main director (each visual pass planned first by Opus; after a failed round
   Sonnet fine tunes that plan), then 2 escalated rounds (Opus; Fable on an idea marked [important]). Still failing: export
-  anyway, with NEEDS REVIEW and the review notes in the captions file. Never stop. (DECISIONS.md 325)
+  anyway, with NEEDS REVIEW and the review notes in the captions file. Never stop. (DECISIONS.md 335)
 - **Early stop** (Motion and energy rules E9): two rounds in a row with the same scores and the same issues (M16)
   end the loop, and the reel exports with NEEDS REVIEW. (M16)
 
@@ -1345,7 +1345,7 @@ Would you have made it past the first minute?
     `"important": {"model": "fable", "effort": "xhigh"}`: fable runs only for an idea marked [important] (2.1)
   - indexer, probe: haiku
   - limit_fallback: opus (the stand-in when fable is at its own limit, and for any fable model on an idea without
-    the label: a fable model never runs for it, whatever the config says; DECISIONS.md 324)
+    the label: a fable model never runs for it, whatever the config says; DECISIONS.md 334)
   - any role may carry an `"important"` override (model, effort) that applies only to the ideas marked important
 - **tts:** device cpu. Every voice setting (engine, interpreter, voice, lang, speed, the silence tightening values)
   comes from library/voice/engine.txt, never from config.json. No fallback engine, and no chatterbox, turbo or qwen

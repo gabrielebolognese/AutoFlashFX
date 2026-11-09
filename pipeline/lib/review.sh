@@ -6,7 +6,7 @@
 # idea: caps.error_review_cycles (3) cycles with the reviewer (models.reviewer, sonnet); when the same error signature appears
 # errors.repeated_signature_skip (2) times in a row the remaining reviewer cycles are skipped; then one escalation
 # cycle with the escalation reviewer (caps.escalation_cycles; models.reviewer_escalation: opus, fable only on an idea
-# marked [important], DECISIONS.md 324; the kind is still called fable inside the code); then the idea is blocked. A reviewer verdict with
+# marked [important], DECISIONS.md 334; the kind is still called fable inside the code); then the idea is blocked. A reviewer verdict with
 # auto_apply no blocks the idea at once with what the user must do. The runner keeps the counters in state.json
 # under errors.<stage>: cycles, escalated, repeats, last_signature, failures, reviewed (the last failure got its
 # review), last_n, last_outcome, review (the error under review: active, rc, msg, cmd, activity), pending (the

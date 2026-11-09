@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# test-models.sh: the [important] label and the model choice (DECISIONS.md 323 to 325). No model call, about 1 minute.
+# test-models.sh: the [important] label and the model choice (DECISIONS.md 333 to 335). No model call, about 1 minute.
 #   1. the label in the queue: ideas.py reads [important] at the start or the end of a block, the text and the id leave it
 #      out, add-idea.sh says "marked important", the runner's remove still finds the block
 #   2. the label in the run: state.py new keeps idea.important and strips the label from the text and idea.txt

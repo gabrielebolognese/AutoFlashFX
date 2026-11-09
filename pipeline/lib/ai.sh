@@ -9,7 +9,7 @@
 #     to <stage_dir>/calls/NNN.json (stderr to NNN.err, the command and timing to NNN.meta, a structured output to
 #     NNN.out.json). Model names and efforts come from config.json only, through ai_model_for: an idea marked
 #     [important] uses a role's models.<role>.important when it has one, and no other call ever runs a fable model
-#     (models.limit_fallback, opus, stands in: DECISIONS.md 324).
+#     (models.limit_fallback, opus, stands in: DECISIONS.md 334).
 #     Options:
 #       --schema FILE      --json-schema with the file's content; the structured output is validated against the
 #                          file with jsonschema; an invalid one gets one retry in the same session with the errors,
@@ -219,7 +219,7 @@ print(json.dumps({"type": "result", "subtype": "success", "is_error": True, "dur
 }
 
 # ai_model_for ROLE [RUN_DIR] -> "model effort" of that role on that run (pipeline/lib/model_choice.py, DECISIONS.md
-# 324): config models.<role>; on an idea marked important, models.<role>.important wins when the role has one; on any
+# 334): config models.<role>; on an idea marked important, models.<role>.important wins when the role has one; on any
 # other run, or with no run, a fable model never runs (models.limit_fallback, opus, stands in with the role's effort).
 # Exit 1 when the role has no model. ai_model_name ROLE [RUN_DIR] prints the model alone (for the terminal lines).
 ai_model_for() { "$REELS_PY" "$REELS_PIPELINE/lib/model_choice.py" resolve "$1" --config "$REELS_CONFIG" ${2:+--run-dir "$2"}; }

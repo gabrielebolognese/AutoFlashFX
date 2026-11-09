@@ -7,7 +7,7 @@ warning is printed. The file is read as UTF-8 (a BOM is fine) with LF or CRLF en
 written back with CRLF. The id of an idea is the first 12 hex characters of the sha1 of its normalized text
 (NFC, whitespace collapsed, trimmed), so it survives edits to other lines.
 
-The label [important] (any case) at the start or the end of a block marks the idea important (DECISIONS.md 323):
+The label [important] (any case) at the start or the end of a block marks the idea important (DECISIONS.md 333):
 its escalations may use fable. The label is not part of the idea: the text and the id are computed without it, the
 file keeps it, and the JSON rows carry "important": true.
 

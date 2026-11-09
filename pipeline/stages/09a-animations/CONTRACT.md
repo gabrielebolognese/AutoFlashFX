@@ -58,7 +58,7 @@ composes and pipeline/lib/visual/plan_validate.py checks.
 0 done, 10 drop, 20 block, anything else a code error (BUILD_SPEC.md 4.2).
 
 ## Model and session
-Fresh visual_director session per pass (config models.visual_director, opus, for the first plan; models.visual_director_fix, sonnet, when the pass runs again after a failed review round; models.visual_director_escalation from caps.review_rounds_opus failed rounds on: opus, fable only on an idea marked [important]; DECISIONS.md 324 and 325), tools config visual.director_tools
+Fresh visual_director session per pass (config models.visual_director, opus, for the first plan; models.visual_director_fix, sonnet, when the pass runs again after a failed review round; models.visual_director_escalation from caps.review_rounds_opus failed rounds on: opus, fable only on an idea marked [important]; DECISIONS.md 334 and 335), tools config visual.director_tools
 (Read, Glob: it may look at the stills, the contact sheet and the screenshots), timeout timeouts.plan_seconds.
 
 ## dummy.sh

@@ -2514,14 +2514,14 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     below the deck (their bottoms converge): the label is at the top of the card now, where the cards spread apart. (3) The catalog marks
     `video` as an image prop like `image` (the director's digest says IMAGE, and the validator checks research/<file>.mp4 exists).
 322. **M16: the real run.** (filled in by the final run: see build/M16/report.md)
-323. **The [important] label on an idea.** An idea whose braces start or end with `[important]` (any case, for example
+333. **The [important] label on an idea.** An idea whose braces start or end with `[important]` (any case, for example
     `{[important] Claude Code skills that save an hour}`) is one the user thinks could genuinely blow up; only these ideas may
     use fable. The label is not part of the idea: pipeline/lib/model_choice.py split_label strips it, ideas.py computes the text
     and the id without it (so adding or removing the label never makes a new idea, and the runner's remove still finds the
     block), the file keeps it, state.py new stores idea.important and writes idea.txt without it, the stages never see it.
     add-idea.sh ends its line with ", marked important" and the runner's START line with "[important: escalations may use
     fable]". A word "important" inside the text is not the label. Asked by the user on 2026-11-08 to save usage credits.
-324. **Sonnet is the main model of the reels; fable only for the ideas marked important.** config.json models: research (S1, S2,
+334. **Sonnet is the main model of the reels; fable only for the ideas marked important.** config.json models: research (S1, S2,
     S4 and the hooks of S5), gate, judge, script, builder, reviewer (the code error reviewer), cut, checks and fixer are sonnet;
     visual_director (the first plan of each visual pass) and qa (the edit review) stay opus; builder_escalation,
     reviewer_escalation and visual_director_escalation are opus at xhigh effort with `"important": {"model": "fable",
@@ -2531,7 +2531,7 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     the model that really runs (ai_model_name). qa stays on opus because a weaker judge would pass weaker reels or loop more
     rounds; it is one line in config.json to change. The internal kind name `fable` (review.sh, route.py's caps
     review_rounds_fable, state.py ROUNDS) now means "escalated" and is kept so the counters and the tests keep their keys.
-325. **The visual director: Opus designs, Sonnet fine tunes.** The first plan of a visual pass (9a, 9b, 9c) is the design and
+335. **The visual director: Opus designs, Sonnet fine tunes.** The first plan of a visual pass (9a, 9b, 9c) is the design and
     keeps opus (models.visual_director): the creativity and the taste come from there. When the review sends a pass back
     (rounds.review 1 or 2) the plan is made again by models.visual_director_fix (sonnet, high effort) with the review's
     notes: fixing a plan Opus designed is far easier than designing it, for a little visual decay and many fewer tokens.

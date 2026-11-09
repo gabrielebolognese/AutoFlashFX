@@ -22,7 +22,7 @@
 #      prompt), then a planted [text] issue (the fake editor fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #      S11 and S12 run again, round 2 passes, the state and the log show it
 #   3. the cap: an editor that always fails with an [sfx] issue: 5 rounds (3 main, 2 escalated: opus on an idea without
-#      the [important] label, DECISIONS.md 324), then the export with the
+#      the [important] label, DECISIONS.md 334), then the export with the
 #      NEEDS REVIEW flag and the notes; the sound pass changes with the feedback each round
 #   4. the real editor and the real transcription on the frozen draft (1 model call)
 #   5. no em dash in the files M11 wrote
