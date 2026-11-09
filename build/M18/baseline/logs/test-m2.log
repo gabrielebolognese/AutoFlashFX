@@ -1,0 +1,115 @@
+
+== 1. state.py and export.py units ==
+PASS  the stage table has 16 stages
+PASS  first stage is 01-research
+PASS  last stage is 14-export with its activity
+PASS  04-angle starts skipped (the gate reopens it)
+PASS  slug: five ASCII words, apostrophes dropped
+PASS  new: the run folder name is <date>_<HHMM>_<slug>
+PASS  new: state.json written
+PASS  new: idea.txt written
+PASS  new: one subfolder per stage
+PASS  new: the idea text is normalized into state.json
+PASS  new: stages start pending
+PASS  new: the run is running
+PASS  next: the first pending stage with its activity
+PASS  unfinished: lists the running run
+PASS  stage-start: running
+PASS  stage-start: attempts 1
+PASS  stage-done: an output missing required fields fails with exit 5
+PASS  stage-done: the validation error names the field
+PASS  stage-done: no .done marker when invalid
+PASS  stage-done: status failed when invalid
+PASS  stage-done: the dummy output validates
+PASS  stage-done: .done written
+PASS  stage-done: reports the next stage and activity
+PASS  reopen: .done removed
+PASS  reopen: pending again
+PASS  pickup: counts sessions (a resume)
+PASS  flag: recorded
+PASS  unfinished: exit 3 once the run is finished
+PASS  lock: 20 concurrent flag calls against a touch loop keep all 20 flags
+PASS  lock: 10 concurrent issue calls count to 10
+PASS  lock: runs/<id>/state.lock sits next to state.json
+PASS  lock: a writer gives up with exit 2 after REELS_STATE_LOCK_WAIT seconds while another process holds the lock
+PASS  lock: the message names the lock file and the wait
+PASS  lock: with the default wait the writer goes through once the holder is done
+PASS  lock: it waited for the holder (4s)
+PASS  numbering: the first export is 1
+PASS  numbering: highest existing number plus 1, other folders ignored
+PASS  captions: the sections of spec section 8, in order
+PASS  captions: HOOKS lines carry the export number
+PASS  captions: the hook 2 clip line
+PASS  captions: NEEDS REVIEW lists the flag
+PASS  captions: the RUN section names the run folder
+PASS  captions: the NEW deliverable line
+
+== 2. two dummy ideas end to end, heartbeat and status lines ==
+FAIL  run.sh --once exits 0 when the queue empties (300s for 2 ideas) (expected exit 0, got 124)
+PASS  banner
+PASS  queue listing: 1.
+PASS  queue listing: 2.
+PASS  START line: position, text cut at 40, run folder
+PASS  STEP line: activity done (time) -> next activity
+PASS  STEP skips 04-angle when the gate passes
+PASS  STEP before the export (the activity exporting #N)
+FAIL  15 STEP lines per idea (16 stages, angle skipped) (expected '30', got '15')
+FAIL  DONE line for export 1 (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #1 -> exports/1/ \([0-9]+(s| min), 0 issues fixed\)$' in /tmp/tmp.rCtPninveg/run2.out)
+FAIL  NEXT line keeps counting the ideas of the session (no match for '^\[[0-9]{2}:[0-9]{2}\] NEXT   idea 2/2 "Idea B: uv replaces pip, venv and pyenv ..."$' in /tmp/tmp.rCtPninveg/run2.out)
+FAIL  START line for the second idea (no match for '^\[[0-9]{2}:[0-9]{2}\] START  idea 2/2 "Idea B' in /tmp/tmp.rCtPninveg/run2.out)
+FAIL  DONE line for export 2 (no match for '^\[[0-9]{2}:[0-9]{2}\] DONE   exported #2 -> exports/2/' in /tmp/tmp.rCtPninveg/run2.out)
+FAIL  summary line when the queue empties (no match for '^\[[0-9]{2}:[0-9]{2}\] IDLE   queue empty: this session 2 exported, 0 dropped, 0 blocked in [0-9ms]+ \| today: [0-9]+ exported, [0-9]+ dropped' in /tmp/tmp.rCtPninveg/run2.out)
+PASS  no resume in a clean run
+PASS  NO_COLOR output has no escape codes
+PASS  status.txt holds the latest line
+FAIL  runner.log has every terminal line (expected '51', got '52')
+PASS  runner.log has more than 40 lines
+PASS  exports/1/1.mp4
+PASS  exports/1/1captions.txt
+PASS  exports/1/1hook2.mp4
+FAIL  exports/2/2.mp4 (missing file /tmp/tmp.rCtPninveg/exports/2/2.mp4)
+FAIL  exports/2/2captions.txt (missing file /tmp/tmp.rCtPninveg/exports/2/2captions.txt)
+FAIL  exports/2/2hook2.mp4 (missing file /tmp/tmp.rCtPninveg/exports/2/2hook2.mp4)
+FAIL  exports/ holds exactly 1 and 2 (expected '1,2', got '1')
+PASS  captions: HOOKS line with the number
+PASS  captions: RUN section names the first run
+PASS  the staging folders were moved, not copied
+grep: /tmp/tmp.rCtPninveg/channels/flashfx/logs/history.txt: No such file or directory
+FAIL  two history lines (expected '2', got '')
+FAIL  history: date | idea | solution | exported 1 (no match for '^20[0-9-]+ [0-9:]+ \| Idea A: the gh CLI in 60 seconds, three flags that matter \| external \| exported 1$' in /tmp/tmp.rCtPninveg/channels/flashfx/logs/history.txt)
+FAIL  history: the second idea with its accents (no match for '^20[0-9-]+ [0-9:]+ \| Idea B: uv replaces pip, venv and pyenv in one tool, città \| external \| exported 2$' in /tmp/tmp.rCtPninveg/channels/flashfx/logs/history.txt)
+FAIL  ideas.txt is empty afterwards (expected '0', got '1')
+FAIL  two run folders (expected '2', got '1')
+FAIL  2026-11-09_0905_idea-a-the-gh-cli: state exported (expected 'exported', got 'running')
+PASS  state.json holds the export number
+PASS  04-angle stays skipped
+FAIL  logs/.activity is published by the runner (expected 'between ideas', got 'exporting #1')
+PASS  heartbeat: at least 10 REEL lines in 300s with REELS_STATUS_EVERY=2 (got 29)
+PASS  heartbeat: every REEL line has #idea i/n, the text cut at 40, activity, minute, stage, issues
+PASS  heartbeat: a first-idea line with the exact text cut, minute 0 and a seconds-only stage timer
+PASS  heartbeat: the activity field follows the stages
+FAIL  heartbeat: second idea position (no match for '^\[[0-9]{2}:[0-9]{2}\] REEL   #idea 2/2 "Idea B' in /tmp/tmp.rCtPninveg/run2.out)
+FAIL  heartbeat: on schedule, every 2 s scaled (gaps n=28 min=1.68 median=8.69 max=15.41) (expected exit 0, got 1)
+
+== 3. SIGKILL mid-stage, restart resumes the same stage ==
+PASS  the runner is dead after SIGKILL
+PASS  the stage child is dead too
+PASS  state.json: 05-hooks was running when killed
+PASS  no .done for the killed stage
+PASS  earlier stages have their .done markers
+PASS  the runner lock is left behind by the kill
+PASS  the restarted runner finishes the run and exits 0
+PASS  START line says where it resumes
+PASS  the interrupted attempt is announced
+PASS  the earlier stages are skipped
+PASS  the earlier stages are skipped (2)
+PASS  the killed stage runs again
+PASS  the resumed run exports #1
+PASS  no second run folder was created
+PASS  state.json: research ran once
+PASS  state.json: hooks ran twice
+PASS  state.json: two sessions
+PASS  exactly one export
+PASS  one history line
+
+== 4. crashes around the export: no duplicate, no gap ==

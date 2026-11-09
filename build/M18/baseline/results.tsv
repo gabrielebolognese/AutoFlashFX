@@ -1,2 +1,4 @@
 test	sections	status	passed	failed	exit	seconds	log
 test-no-emdash	all	pass	1	0	0	45	build/M18/baseline/logs/test-no-emdash.log
+test-limits	all	pass	94	0	0	192	build/M18/baseline/logs/test-limits.log
+test-m1	all	pass	96	0	0	472	build/M18/baseline/logs/test-m1.log

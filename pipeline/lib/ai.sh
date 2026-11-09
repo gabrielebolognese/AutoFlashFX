@@ -87,6 +87,7 @@ ai_next_number() {  # the next NNN in a calls folder
 
 ai_protected_rules() {  # the --disallowedTools rules for the protected files (config review.protected_paths)
   local paths p rules=()
+  local -; set -f   # the patterns hold a * (channels/*/library): never expand them against the working directory
   paths="$(cfg review.protected_paths | tr -d '[]"' | tr ',' ' ')"
   for p in $paths; do
     case "$p" in

@@ -300,7 +300,7 @@ assert_eq "$(python "$STATE_PY" get "$RD" stages.04-angle.status)" "running" "th
 assert_file "$RD/03-gate/.done" "the stages before it are done"
 ( cd "$SANDBOX" && env NO_COLOR=1 timeout 900 bash "$REPO_DIR/run.sh" --channel flashfx --once ) > "$T/resume.out" 2>&1; rc=$?
 assert_rc 0 "$rc" "the runner finishes the moved run"
-assert_grep "START  idea 1/1 \"Idea R.*\" -> runs/resume-test \(resumed at .*, 3 stages done\)$" "$T/resume.out" "the START line says it resumes after 3 stages"
+assert_grep "START  idea 1/1 \"Idea R.*\" -> runs/[^ ]*resume-test \(resumed at .*, 3 stages done\)$" "$T/resume.out" "the START line says it resumes after 3 stages"
 assert_not_grep 'researching facts done' "$T/resume.out" "the finished stages are not run again"
 assert_grep 'DONE   exported #1' "$T/resume.out" "the resumed run exports"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "1" "no second run folder"
@@ -343,6 +343,7 @@ PR="$REPO_DIR/pipeline/lib/protect.py"
 mkdir -p "$SANDBOX/exports/flashfx-1"; printf 'x' > "$SANDBOX/exports/flashfx-1/flashfx-1.mp4"
 python "$PR" snapshot --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$TM/pr" > "$T/snap.json"
 assert_true "protect.py snapshots the files of both channels" bash -c "python -c 'import json; d=json.load(open(\"$TM/pr/manifest.json\")); k=list(d[\"files\"]); import sys; sys.exit(0 if any(x.startswith(\"channels/flashfx/\") for x in k) and any(x.startswith(\"channels/second/\") for x in k) else 1)'"
+hooks_sha="$(cat "$SANDBOX/channels/second/library/hooks.txt" | sha1sum | cut -c1-12)"
 printf 'changed\n' >> "$SANDBOX/channels/second/library/hooks.txt"
 rm -f "$SANDBOX/channels/flashfx/ideas.txt"
 printf 'new\n' > "$SANDBOX/channels/second/library/profile/injected.md"
@@ -350,11 +351,11 @@ python "$PR" check --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$TM/pr" --rest
 assert_rc 1 "$rc" "protect.py reports a change in another channel's library"
 assert_file "$SANDBOX/channels/flashfx/ideas.txt" "a deleted ideas.txt is restored"
 assert_no_file "$SANDBOX/channels/second/library/profile/injected.md" "a file added to a channel's library is removed"
-assert_not_grep 'changed' "$SANDBOX/channels/second/library/hooks.txt" "a changed hooks file is restored"
+assert_eq "$(cat "$SANDBOX/channels/second/library/hooks.txt" | sha1sum | cut -c1-12)" "$hooks_sha" "a changed hooks file is restored"
 assert_grep 'channels/second/library/hooks.txt' "$T/chk.json" "the report names the file with its channel path"
 fake_claude_off
 # the fixer's paths: pipeline and the run's channel only
-out="$(env REELS_CHANNEL=second REELS_ROOT="$SANDBOX_M" bash -c 'source "'"$REPO_DIR"'/pipeline/lib/common.sh"; source "'"$REPO_DIR"'/pipeline/lib/config.sh"; source "'"$REPO_DIR"'/pipeline/lib/review.sh" 2>/dev/null; review_fixer_paths')"
+out="$(env REELS_CHANNEL=second REELS_ROOT="$SANDBOX_M" bash -c 'source "'"$REPO_DIR"'/pipeline/lib/common.sh"; source "'"$REPO_DIR"'/pipeline/lib/config.sh"; source "'"$REPO_DIR"'/pipeline/lib/review.sh" 2>/dev/null; review_fixer_paths' | tr -s ' ')"
 assert_eq "$out" "pipeline channels/second/motion-lib/candidates" "review_fixer_paths: pipeline and the run's channel's candidates folder"
 fi
 
@@ -366,6 +367,9 @@ new_fx() {  # new_fx <name> [old-gitignore]: a fixture folder with the NEW .giti
   python "$PT/m17-fixture.py" "$(mixed "$d")" >/dev/null || return 1
   if [ "${2:-new}" = new ]; then
     cp "$REPO_DIR/.gitignore" "$d/.gitignore"
+    # the legacy root rules stay until the move is done (as in the real flow, DECISIONS.md 350): the data still at the root stays ignored
+    printf '%s\n' 'library/voice/*' '!library/voice/README.txt' 'library/.hooks.index.json' 'styles/*/refs/' 'styles/*/analysis/' 'styles/sfx/**/*.wav' \
+      'motion-lib/.harness/' 'golden/*/golden.mp4' >> "$d/.gitignore"
     git -C "$d" add -A && git -C "$d" commit -q -m "new gitignore" || return 1
   fi
 }
@@ -401,7 +405,6 @@ assert_file "$FX/voicetests/a.wav" "the user's voicetests stay"
 assert_eq "$(git -C "$FX" status --porcelain | grep -v '^R ' | grep -v 'build/' | wc -l | tr -d ' ')" "0" "git status shows only renames (and build/)"
 assert_true "a file that was ignored is still ignored at its new path" git -C "$FX" check-ignore -q channels/flashfx/library/voice/engine.txt
 assert_true "so are the reference videos" git -C "$FX" check-ignore -q channels/flashfx/styles/paper-cards/refs/a.mp4
-assert_not_grep 'styles/paper-cards' "$FX/channels/flashfx/runs/2026-11-01_1000_done-idea/01-research/research.json" "x" 2>/dev/null
 pycheck "the rewritten run files name the channel paths in every form and no old path" "$FX/channels/flashfx/runs/2026-11-01_1000_done-idea/01-research/research.json" "$FX/channels/flashfx/runs/2026-11-02_1100_open-idea/01-research/research.json" "$FX/channels/flashfx/runs/2026-11-02_1100_open-idea/01-research/stage.log" <<'PYEOF'
 import json, sys
 a = json.load(open(sys.argv[1], encoding="utf-8"))
@@ -411,12 +414,19 @@ assert "/channels/flashfx/library/hooks.txt" in a["posix"], a
 b = json.load(open(sys.argv[2], encoding="utf-8"))
 assert "channels\\flashfx\\styles" in b["backslash"], b
 assert "channels\\flashfx\\logs" in open(sys.argv[3], encoding="utf-8").read()
-assert open(sys.argv[1].replace("research.json", "../../01-research/calls/001.out.json"), encoding="utf-8").read().strip() == '{"raw": "runs/2026-11-01_1000_done-idea"}'
+raw = sys.argv[1].replace("research.json", "calls/001.out.json")
+assert open(raw, encoding="utf-8").read().strip() == '{"raw": "runs/2026-11-01_1000_done-idea"}', "the raw model output must not be rewritten"
 print("ok")
 PYEOF
 assert_grep 'RUN$' "$FX/exports/1/1captions.txt" "the captions file keeps its sections"
 assert_grep '^channels/flashfx/runs/2026-11-01_1000_done-idea$' "$FX/exports/1/1captions.txt" "the RUN path of the captions file follows"
-assert_true "check-manifest --after passes on the migrated fixture" python "$PT/check-manifest.py" --after --root "$FX" --manifest "$FX/build/M18/move-manifest.tsv"
+python - "$FX/build/M18/move-manifest.tsv" "$TM/m18-only.tsv" <<'PYEND'
+import sys
+lines = open(sys.argv[1], encoding="utf-8").read().split("\n")
+keep = [lines[0]] + [l for l in lines[1:] if l.split("\t")[1:2] == ["M18"]]
+open(sys.argv[2], "w", encoding="utf-8", newline="\n").write("\n".join(keep) + "\n")
+PYEND
+assert_true "check-manifest --after passes on the migrated fixture (the M18 lines)" python "$PT/check-manifest.py" --after --root "$FX" --manifest "$TM/m18-only.tsv"
 sum1="$(treesum "$FX")"
 # a second run verifies
 bash "$MC" --ms M18 --root "$FX" > "$T/run2.out" 2>&1; rc=$?
@@ -495,7 +505,7 @@ assert_grep '\| exported [12]$' "$SANDBOX/channels/flashfx/logs/history.txt" "fl
 assert_grep '\| exported [12]$' "$SANDBOX/channels/second/logs/history.txt" "the second channel's history has its export"
 assert_not_grep 'gh in 60' "$SANDBOX/channels/second/logs/history.txt" "the histories do not mix"
 assert_not_grep 'uv in one' "$SANDBOX/channels/flashfx/logs/history.txt" "the histories do not mix (2)"
-assert_eq "$(ls "$SANDBOX/channels/flashfx/.locks" "$SANDBOX/channels/second/.locks" "$SANDBOX/.locks" 2>/dev/null | grep -c .)" "0" "no lock is left behind, in any channel or at the root"
+assert_eq "$(find "$SANDBOX/channels/flashfx/.locks" "$SANDBOX/channels/second/.locks" "$SANDBOX/.locks" -mindepth 1 2>/dev/null | wc -l | tr -d ' ')" "0" "no lock is left behind, in any channel or at the root"
 fi
 
 if want 8; then

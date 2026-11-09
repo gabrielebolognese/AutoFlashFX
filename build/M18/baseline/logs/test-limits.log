@@ -1,0 +1,102 @@
+
+== 1. every reset-time format, with the clock at Sat 2026-10-31 14:31 Europe/Rome ==
+PASS  time only: resets 3:45pm
+PASS  time only, no minutes: resets 3pm
+PASS  time only, 24h: resets 15:45
+PASS  time only with 'at': resets at 11:59pm
+PASS  a past time rolls to tomorrow (+1 day): resets 1pm
+PASS  a time one minute past rolls to tomorrow: resets 2:30pm
+PASS  weekday and time: resets Mon 12:00am
+PASS  full weekday name: resets Monday 9am
+PASS  today's weekday, past time: +7 days: resets Sat 2:00pm
+PASS  today's weekday, time still ahead: today: resets Sat 6pm
+PASS  date and time: resets Nov 3, 10am
+PASS  full month name, no comma: resets November 3 10:30am
+PASS  a past date rolls to next year: resets Oct 30, 10am
+PASS  zone in parentheses, same zone: resets 3pm (Europe/Rome)
+PASS  zone in parentheses, another zone: resets 3pm (America/New_York)
+PASS  UTC in parentheses: resets 3pm (UTC)
+PASS  an abbreviation maps to its zone: resets 3pm (PST)
+PASS  weekday in a zone whose DST ends inside the wait (Nov 1): resets Mon 12:00am (America/New_York)
+PASS  date in UTC: resets Nov 3, 10am (UTC)
+PASS  an unknown zone falls back to the default zone: resets 3pm (Mars/Olympus)
+PASS  an epoch after a |
+PASS  a 13-digit epoch is milliseconds
+PASS  a relative time (extra)
+
+== 2. kinds, detection, the unparseable case and no limit ==
+PASS  weekly kind
+PASS  session kind
+PASS  usage kind
+PASS  a limit with no reset time exits 2
+PASS  text without a limit exits 1
+PASS  plain text exits 1
+PASS  a limit split over stdin lines parses
+PASS  the target is the reset plus the 120 s margin
+PASS  the margin is a parameter
+PASS  left: hours and minutes
+PASS  left: minutes
+
+== 3. the error signature and the classifier ==
+PASS  the signature ignores paths, numbers and timestamps
+PASS  a different message gives a different signature
+PASS  the signature is 12 hex characters
+PASS  529 is transient (overloaded)
+PASS  ECONNRESET on stderr is transient
+PASS  exit 124 (timeout) is transient
+PASS  a limit in the JSON result
+PASS  a missing session is resume_failed
+PASS  not logged in is fatal
+PASS  a traceback is a code error
+PASS  the message is the last stderr line
+PASS  a good result is ok with its session id and structured flag
+PASS  retry-after is read
+PASS  FileNotFoundError is a code error (ENOTFOUND does not match inside it)
+PASS  a bare number 503 in a log is not an HTTP status
+PASS  a temporary file is not a temporary error
+PASS  an API error 503 is transient
+PASS  a DNS failure is transient
+PASS  a refused connection is transient
+PASS  a temporary failure is transient
+PASS  a limit printed by a stage script is a limit
+PASS  a KeyError traceback with timeout=600 in an echoed frame is a code error
+PASS  its message is the exception line
+PASS  the same traceback ending in TimeoutExpired (timed out) is transient
+PASS  a Node log line with setDefaultTimeout before a TypeError is a code error
+PASS  a navigation TimeoutError is transient
+PASS  Node stack frames (at Timeout._onTimeout) are not error messages
+PASS  an echoed source line that mentions ECONNRESET is not a network error
+PASS  the flaky fixture's fetch failed plus cause ECONNRESET stays transient
+PASS  curl timed out is transient
+PASS  a timeout setting echoed in a log line is not a timeout
+PASS  Claude Code's 'No response from API' result is transient
+PASS  the SDK's 'Connection error.' is transient
+PASS  'API Error: terminated' is transient
+PASS  Claude Code's 'Unable to connect to API (ConnectionRefused)' is a refused connection
+PASS  Claude Code's 'Unable to connect to API (FailedToOpenSocket)' is a network error
+PASS  Claude Code's 'Connection dropped (ECONNRESET)' is a connection reset
+PASS  Claude Code's 'Connection closed mid-response' is an interrupted stream
+PASS  Windows Python: ConnectionResetError WinError 10054 is a connection reset
+PASS  requests' ConnectionError wrapping a reset is a connection reset
+PASS  ConnectionAbortedError WinError 10053 is a connection reset
+PASS  ConnectionRefusedError WinError 10061 is a refused connection
+PASS  urllib3's RemoteDisconnected is a connection reset
+PASS  Chromium's net::ERR_CONNECTION_RESET is a network error
+PASS  Chromium's net::ERR_NAME_NOT_RESOLVED is a network error
+PASS  Chromium's net::ERR_INTERNET_DISCONNECTED is a network error
+PASS  Chromium's net::ERR_TIMED_OUT is a network error
+PASS  Chromium's net::ERR_CONNECTION_REFUSED is a network error
+PASS  Chromium's net::ERR_NETWORK_CHANGED is a network error
+PASS  gh's 'error connecting to' with its 'check your internet connection' line is a network error
+PASS  curl's 'Could not resolve host' is a network error
+PASS  curl's 'Failed to connect to' is a refused connection
+PASS  a plain 'connection' in a log line before a KeyError is a code error
+PASS  'error connecting to' without gh's internet line is a code error
+PASS  FileNotFoundError is still a code error with the new wordings
+PASS  the KeyError traceback is still a code error with the new wordings
+PASS  the CLI's 'Can't reach the API server' message is transient
+PASS  its message has the em dash turned into a comma
+PASS  no U+2014 in the message
+PASS  a stage's exception line with an em dash is cleaned the same way
+
+test-limits.sh: 94 passed, 0 failed

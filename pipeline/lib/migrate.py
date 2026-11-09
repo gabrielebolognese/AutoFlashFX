@@ -48,6 +48,11 @@ def out(text: str = "") -> None:
     print(text, flush=True)
 
 
+def die(message: str, code: int = 2):
+    print(message, flush=True)
+    raise SystemExit(code)
+
+
 def undash(text: str) -> str:
     return str(text).replace(chr(0x2014), ", ").replace(chr(0x2013), "-")
 
@@ -157,7 +162,7 @@ class Migration:
         a = self.a
         if a.manifest or a.no_prepare:
             if not os.path.exists(self.manifest_path):
-                raise SystemExit("migrate: no manifest at %s" % self.manifest_path)
+                die("migrate: no manifest at %s" % self.manifest_path)
             return
         tests = os.path.join(REPO, "pipeline", "tests")
         os.makedirs(self.build, exist_ok=True)
@@ -165,13 +170,13 @@ class Migration:
         r = subprocess.run([sys.executable, os.path.join(tests, "make-manifest.py"), "--root", self.root, "--out", target,
                             "--keys-out", os.path.join(self.build, "config-keys.tsv")], capture_output=True, text=True)
         if r.returncode != 0:
-            raise SystemExit("migrate: make-manifest.py failed: " + (r.stdout + r.stderr).strip())
+            die("migrate: make-manifest.py failed: " + (r.stdout + r.stderr).strip())
         out(r.stdout.strip())
         r = subprocess.run([sys.executable, os.path.join(tests, "check-manifest.py"), "--root", self.root, "--manifest", target, "--live"],
                            capture_output=True, text=True)
         out(r.stdout.strip())
         if r.returncode != 0:
-            raise SystemExit("migrate: the manifest cannot place every file (check-manifest.py): the build ends BLOCKED")
+            die("migrate: the manifest cannot place every file (check-manifest.py): the build ends BLOCKED")
         plan = a.plan or os.path.join(self.root, "build", "M17", "move-manifest.tsv")
         self.write_diff(plan, target)
 
@@ -212,7 +217,7 @@ class Migration:
     def load_rows(self) -> None:
         header, rows = ml.read_tsv(self.manifest_path)
         if header != ml.MANIFEST_COLUMNS:
-            raise SystemExit("migrate: the manifest's columns are %s" % header)
+            die("migrate: the manifest's columns are %s" % header)
         self.rows = [r for r in rows if r["ms"] == self.ms]
         self.moves = [(r["old"], r["new"]) for r in self.rows if r["scope"] == "top" and r["method"] in ("git-mv", "fs-mv", "rename-in-place")]
 
@@ -220,7 +225,7 @@ class Migration:
     def refuse(self) -> None:
         free = shutil.disk_usage(self.root).free / (1 << 30)
         if free < self.a.min_free_gb:
-            raise SystemExit("migrate: only %.1f GB free, need %s GB" % (free, self.a.min_free_gb))
+            die("migrate: only %.1f GB free, need %s GB" % (free, self.a.min_free_gb))
         if os.path.isdir(self.p(".git")):
             r = self.git("status", "--porcelain", "-z", "--untracked-files=all", check=False)
             dirty = []
@@ -232,7 +237,7 @@ class Migration:
                     continue
                 dirty.append(ent)
             if dirty:
-                raise SystemExit("migrate: uncommitted git changes outside build/ (commit or restore them first): " + "; ".join(x.strip() for x in dirty[:8]))
+                die("migrate: uncommitted git changes outside build/ (commit or restore them first): " + "; ".join(x.strip() for x in dirty[:8]))
 
     # ---- undo ---------------------------------------------------------------------------------------------------------
     def write_undo_script(self) -> None:
