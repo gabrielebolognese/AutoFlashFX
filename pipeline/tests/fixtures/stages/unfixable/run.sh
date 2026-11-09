@@ -6,7 +6,7 @@ set -u
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)"
 source "$LIB/common.sh"
 RUN_DIR="${1:?usage: run.sh <run_dir>}"
-KEY="$REELS_ROOT/library/keys/service.key"
+KEY="$REELS_LIBRARY/keys/service.key"
 echo "stage: reading the service key from library/keys/service.key"
 if [ ! -f "$KEY" ]; then
   echo "FileNotFoundError: library/keys/service.key is missing: this stage needs the API key file that only the user can create" >&2
