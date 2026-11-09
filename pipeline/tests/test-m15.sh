@@ -506,7 +506,7 @@ fi
 # ------------------------------------------------------------------------------------------------ 5. the library
 if want 5; then
   section "5. the library: the catalog, frame-match, lint and check"
-  python "$REPO_DIR/pipeline/lib/motion" catalog >"$W/cat.txt" 2>&1; rc=$?
+  env -u REELS_ROOT python "$REPO_DIR/pipeline/lib/motion" catalog >"$W/cat.txt" 2>&1; rc=$?
   assert_rc 0 $rc "the catalog matches the files ($(tail -n 1 "$W/cat.txt"))"
   python - <<'EOF' >"$W/cat2.txt" 2>&1
 import json, os

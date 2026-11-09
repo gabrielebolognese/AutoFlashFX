@@ -124,7 +124,7 @@ if want 2; then
   check="$(cd "$LIB" && hf_json check --json --timeout 90000 --samples 12)"
   assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("ok") else "false")')" "true" "npx hyperframes check --json passes on channels/flashfx/motion-lib/"
   assert_eq "$(printf '%s' "$check" | python -c 'import json, sys; d = json.load(sys.stdin); print("true" if d.get("browserSkipped") else "false")')" "false" "the browser audits ran"
-  assert_true "the catalog agrees with the component files" python "$MOTION" catalog
+  assert_true "the catalog agrees with the component files" env -u REELS_ROOT python "$MOTION" catalog
   CAT="$LIB/catalog.json"
   python - "$CAT" "$LIB" <<'EOF' >/tmp/m9-catalog.txt
 import json, os, sys
@@ -153,7 +153,7 @@ EOF
   assert_grep "^cues ok" /tmp/m9-catalog.txt "every sound event cue is a known cue type"
   assert_grep "^logo-spots ok" /tmp/m9-catalog.txt "every logo spot (tile, end card, DM avatar, kicker mark, table logos) takes an image path"
   # the logos keep their aspect ratio: measured in the harness with the brand files
-  python - "$REPO_DIR" <<'EOF' >/tmp/m9-aspect.txt
+  env -u REELS_ROOT python - "$REPO_DIR" <<'EOF' >/tmp/m9-aspect.txt
 import os, sys
 repo = sys.argv[1]
 sys.path.insert(0, os.path.join(repo, "pipeline", "lib"))
@@ -192,7 +192,7 @@ EOF
   assert_grep "^headline ok" /tmp/m9-aspect.txt "the kicker mark is an image"
   assert_grep 'object-fit: contain' "$LIB/assets/paper-cards.css" "logos are placed with object-fit contain (never stretched)"
   # stills: one per component (the gallery builds them)
-  python "$MOTION" stills >/tmp/m9-stills.txt 2>&1; rc=$?
+  env -u REELS_ROOT python "$MOTION" stills >/tmp/m9-stills.txt 2>&1; rc=$?
   assert_rc 0 $rc "the stills build"
   n_comp="$(json_get "$CAT" components | python -c 'import json, sys; print(len(json.load(sys.stdin)))')"
   n_still="$(python - "$CAT" "$LIB" <<'EOF'

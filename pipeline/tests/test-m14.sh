@@ -195,7 +195,7 @@ EOF
   assert_grep "^four-seconds ok" /tmp/m14-fm2.txt "every component was measured for at least 4 s"
   assert_grep "^icon-3d ok" /tmp/m14-fm2.txt "icon-3d passes frame-match"
   CAT="$LIB/catalog.json"
-  assert_true "the catalog agrees with the component files" python "$MOTION" catalog
+  assert_true "the catalog agrees with the component files" env -u REELS_ROOT python "$MOTION" catalog
   python - "$CAT" <<'EOF' >/tmp/m14-cat.txt
 import json, sys
 cat = json.load(open(sys.argv[1], encoding="utf-8-sig"))
@@ -241,7 +241,7 @@ fi
 # ------------------------------------------------------------------------------------------------ 3. icon-3d, the canvas layers
 if want 3; then
   section "3. icon-3d with WebGL and with its fallback; the edge and ambient layers out of every text zone"
-  python - "$REPO_DIR" <<'EOF' >/tmp/m14-i3.txt
+  env -u REELS_ROOT python - "$REPO_DIR" <<'EOF' >/tmp/m14-i3.txt
 import json, os, sys
 repo = sys.argv[1]
 sys.path.insert(0, os.path.join(repo, "pipeline", "lib"))
@@ -421,7 +421,7 @@ EOF
     assert_file channels/flashfx/golden/test-idea/energy.json "channels/flashfx/golden/test-idea/energy.json written"
     assert_file channels/flashfx/golden/test-idea/contact-sheet.png "the contact sheet exists"
     # the compiler mounts the canvas seeded and driven, and pc-motion.js travels with the project
-    python - "$REPO_DIR" <<'EOF' >/tmp/m14-host.txt
+    env -u REELS_ROOT python - "$REPO_DIR" <<'EOF' >/tmp/m14-host.txt
 import os, sys, re
 repo = sys.argv[1]
 idx = open(os.path.join(repo, "golden", "test-idea", "project", "index.html"), encoding="utf-8").read()

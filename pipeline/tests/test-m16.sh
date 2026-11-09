@@ -71,9 +71,9 @@ if want 1; then
   section "1. the nine new components: catalog, behavior in the browser, frame-match, lint and check"
   python pipeline/tests/m16-lib.py >"$W/lib.txt" 2>&1
   lines_to_asserts "components: " "$W/lib.txt"
-  python "$MOTION" catalog >"$W/catalog.txt" 2>&1; rc=$?
+  env -u REELS_ROOT python "$MOTION" catalog >"$W/catalog.txt" 2>&1; rc=$?
   assert_rc 0 $rc "catalog.json matches the component files ($(tail -n 1 "$W/catalog.txt"))"
-  python "$MOTION" frame-match --only "$NINE" >"$W/fm.txt" 2>&1; rc=$?
+  env -u REELS_ROOT python "$MOTION" frame-match --only "$NINE" >"$W/fm.txt" 2>&1; rc=$?
   assert_rc 0 $rc "frame-match: the nine pass ($(tail -n 1 "$W/fm.txt"))"
   for c in ${NINE//,/ }; do assert_grep "^$c: pass" "$W/fm.txt" "frame-match: $c passes (its main animation, the life checks, the strips)"; done
   python - <<'EOF' >"$W/fm2.txt" 2>&1
