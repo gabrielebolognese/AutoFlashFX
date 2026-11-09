@@ -399,15 +399,14 @@ assert_grep "PROBLEM test-a: new failing check: new breakage" "$T/fr/cmp2.txt" "
 assert_not_grep "PROBLEM test-b" "$T/fr/cmp2.txt" "  ... the known failure of test-b is not a problem"
 assert_true "run-fake.sh --list names every fake-only test file" bash -c "bash '$PT/run-fake.sh' --list | cut -f1 | tr '\n' ' ' | grep -q 'test-no-emdash test-limits test-m1 test-m2 test-m3 test-m4 test-m5 test-m6 test-m7 test-m8 test-m9 test-m10 test-m11 test-m12 test-m13 test-m14 test-m15 test-m16'"
 
-# the files M17 changed: only build/, pipeline/tests/ and the build's memory files
-START="$(grep '^MS_START_SHA=' "$REPO_DIR/build/state.env" 2>/dev/null | cut -d= -f2)"
-if [ -n "$START" ] && git -C "$REPO_DIR" cat-file -e "$START^{commit}" 2>/dev/null; then
-  bad="$({ git -C "$REPO_DIR" log --format='%H %s' "$START..HEAD" | grep -v -E ' (autofix\(|chore: snapshot runner-written)' | cut -d' ' -f1 | while read -r c; do git -C "$REPO_DIR" diff-tree --no-commit-id --name-only -r "$c"; done
-           git -C "$REPO_DIR" diff --name-only HEAD; git -C "$REPO_DIR" ls-files --others --exclude-standard; } | sort -u \
-          | grep -v -E '^(build/|pipeline/tests/|CLAUDE\.md$|PLAN\.md$|DECISIONS\.md$|library/\.hooks\.stats\.json$|library/hooks\.suggested\.txt$|motion-lib/gallery/frame-match\.(json|md)$)' || true)"
-  assert_eq "$bad" "" "git diff START..HEAD (and the working tree) lists only build/, pipeline/tests/, CLAUDE.md, PLAN.md, DECISIONS.md and the two runner-written files"
+# the files M17 changed: only build/, pipeline/tests/ and the build's memory files. M18 pinned the range: M17 began at e3e1bef and its
+# approval commit is 89fda33 (build/state.env's MS_START_SHA belongs to whichever milestone builds now, and M18 changes the engine)
+START="e3e1befe7c7a7d9e7a0374d405a081b9d7dcd6d2"; END="89fda33e33e69fa6223d4b3a9fb4802171ad9d44"
+if git -C "$REPO_DIR" cat-file -e "$START^{commit}" 2>/dev/null && git -C "$REPO_DIR" cat-file -e "$END^{commit}" 2>/dev/null; then
+  bad="$({ git -C "$REPO_DIR" log --format='%H %s' "$START..$END" | grep -v -E ' (autofix\(|chore: snapshot runner-written)' | cut -d' ' -f1 | while read -r c; do git -C "$REPO_DIR" diff-tree --no-commit-id --name-only -r "$c"; done; } | sort -u           | grep -v -E '^(build/|pipeline/tests/|CLAUDE\.md$|PLAN\.md$|DECISIONS\.md$|library/\.hooks\.stats\.json$|library/hooks\.suggested\.txt$|motion-lib/gallery/frame-match\.(json|md)$)' || true)"
+  assert_eq "$bad" "" "git log e3e1bef..89fda33 (M17's own commits) lists only build/, pipeline/tests/, CLAUDE.md, PLAN.md, DECISIONS.md and the two runner-written files"
 else
-  pass "no MS_START_SHA in build/state.env (not a build run): the file list is not checked"
+  pass "the M17 commits are not in this repository (a copy without history): the file list is not checked"
 fi
 assert_true "no em dash in any file" python "$PT/no_emdash.py"
 fi

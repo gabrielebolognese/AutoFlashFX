@@ -34,10 +34,10 @@ want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 VISUAL="$REPO_DIR/pipeline/lib/visual"
 REVIEW="$REPO_DIR/pipeline/lib/review"
 MOTION="$REPO_DIR/pipeline/lib/motion"
-LIB="$REPO_DIR/motion-lib"
+LIB="$REPO_DIR/channels/flashfx/motion-lib"
 HF="npx --prefix $REPO_DIR hyperframes"
 FROZEN="$REPO_DIR/pipeline/tests/fixtures/runs/test-idea"
-GOLDEN="$REPO_DIR/golden/test-idea"
+GOLDEN="$REPO_DIR/channels/flashfx/golden/test-idea"
 W="$REPO_DIR/build/M16/tmp/test"
 mkdir -p "$W"
 export PYTHONUTF8=1
@@ -190,7 +190,7 @@ fi
 if want 4; then
   section "4. the golden reel: rebuilt from the new plan, every energy target met, every scene at 80 percent"
   fresh=1
-  if [ -f "$GOLDEN/golden.mp4" ] && [ "${M16_RERENDER:-0}" != 1 ] && [ "$GOLDEN/golden.mp4" -nt "$GOLDEN/plan.json" ] && [ "$GOLDEN/golden.mp4" -nt "$REPO_DIR/motion-lib/assets/pc-motion.js" ] \
+  if [ -f "$GOLDEN/golden.mp4" ] && [ "${M16_RERENDER:-0}" != 1 ] && [ "$GOLDEN/golden.mp4" -nt "$GOLDEN/plan.json" ] && [ "$GOLDEN/golden.mp4" -nt "$REPO_DIR/channels/flashfx/motion-lib/assets/pc-motion.js" ] \
      && [ "$GOLDEN/golden.mp4" -nt "$LIB/compositions/video-card.html" ]; then fresh=0; fi
   if [ "$fresh" = 1 ]; then
     t0=$EPOCHSECONDS
@@ -255,17 +255,17 @@ if want 6; then
   section "6. the test idea end to end with the real models: research to export, energy loop included (2 to 4 hours)"
   export SANDBOX_ENERGY=on
   FAKES="$REPO_DIR/pipeline/tests/fakes"
-  SFX_DIR_REAL="$(mixed "$REPO_DIR/styles/sfx")"
+  SFX_DIR_REAL="$(mixed "$REPO_DIR/channels/flashfx/styles/sfx")"
   export REELS_SFX_DIR="$SFX_DIR_REAL" REELS_SFX_NO_BUILD=1
   ts_regex='^\[[0-9]{2}:[0-9]{2}\] '
   TEST_IDEA="$(tr -d '\r' < "$FROZEN/idea.txt")"
   sandbox_init --with-review
   fake_claude_off
-  printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
   started="$EPOCHSECONDS"
   ( cd "$SANDBOX" && env NO_COLOR=1 timeout "${M16_TIMEOUT:-18000}" bash "$SANDBOX/run.sh" --once ) > "$SANDBOX/real.out" 2>&1; rc=$?
   OUT="$SANDBOX/real.out"
-  RD="$(ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||' | head -n 1)"
+  RD="$(ls -d "$SANDBOX"/channels/flashfx/runs/*/ 2>/dev/null | sed 's|/$||' | head -n 1)"
   mins=$(( (EPOCHSECONDS - started) / 60 ))
   printf 'the real run took %s min, kept at %s\n' "$mins" "$RD"
   mkdir -p build/M16/real && cp -r "$RD/12-review" build/M16/real/12-review 2>/dev/null; cp "$OUT" build/M16/real/real.out; cp -r "$RD/09a-animations" build/M16/real/ 2>/dev/null

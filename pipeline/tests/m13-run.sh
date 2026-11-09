@@ -50,15 +50,15 @@ if [ "$MODE" = fake ]; then
 else
   sandbox_init --with-review
   fake_claude_off
-  export REELS_SFX_DIR="$(mixed "$REPO_DIR/styles/sfx")" REELS_SFX_NO_BUILD=1
+  export REELS_SFX_DIR="$(mixed "$REPO_DIR/channels/flashfx/styles/sfx")" REELS_SFX_NO_BUILD=1
   unset REELS_DUMMY
   TO="${M13_TIMEOUT:-43200}"; EVERY="${M13_SAMPLE_SECONDS:-20}"
 fi
-grep -v '^#' "$FIXTURES/ideas/three-ideas.txt" > "$SANDBOX/ideas.txt"
+grep -v '^#' "$FIXTURES/ideas/three-ideas.txt" > "$SANDBOX/channels/flashfx/ideas.txt"
 printf '%s\n' "$SANDBOX_M" > "$OUT/sandbox.txt"
 log "m13-run $MODE: sandbox $SANDBOX_M, 3 ideas, faults $FAULTS, time limit ${TO}s per run"
 
-STATUS="$SANDBOX/logs/status.txt"
+STATUS="$SANDBOX/channels/flashfx/logs/status.txt"
 (
   while [ ! -e "$OUT/.stop-sampler" ]; do
     # say() renames a new status.txt into place: a reader never sees it empty or half written, but may find it
@@ -90,10 +90,10 @@ run_runner() {  # run_runner <n> <timeout> [run.sh args]
 t0="$EPOCHSECONDS"
 run_runner 1 "$TO" --once; rc1=$?
 t1="$EPOCHSECONDS"
-kill_fired=0; [ -e "$SANDBOX/logs/.faults/kill-03-gate@2" ] && kill_fired=1
-limit_fired=0; [ -e "$SANDBOX/logs/.faults/limit-02-expansion@2" ] && limit_fired=1
-lock_left=0; [ -d "$SANDBOX/.locks/runner" ] && lock_left=1
-pid_left=0; ls "$SANDBOX"/runs/*/03-gate/.pid >/dev/null 2>&1 && pid_left=1
+kill_fired=0; [ -e "$SANDBOX/channels/flashfx/logs/.faults/kill-03-gate@2" ] && kill_fired=1
+limit_fired=0; [ -e "$SANDBOX/channels/flashfx/logs/.faults/limit-02-expansion@2" ] && limit_fired=1
+lock_left=0; [ -d "$SANDBOX/channels/flashfx/.locks/runner" ] && lock_left=1
+pid_left=0; ls "$SANDBOX"/channels/flashfx/runs/*/03-gate/.pid >/dev/null 2>&1 && pid_left=1
 log "run 1 ended with exit $rc1 after $((t1 - t0))s (limit fired $limit_fired, kill fired $kill_fired, runner lock left $lock_left, stage pid left $pid_left)"
 
 rc2=""; t2="$t1"

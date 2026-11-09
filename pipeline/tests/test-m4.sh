@@ -39,7 +39,7 @@ ts_regex='^\[[0-9]{2}:[0-9]{2}\] '
 LATER_DUMMIES="$(dummy_after 04-angle)"
 
 state_get() { python "$STATE_PY" get "$@"; }
-run_dirs() { ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||'; }
+run_dirs() { ls -d "$SANDBOX"/channels/flashfx/runs/*/ 2>/dev/null | sed 's|/$||'; }
 first_run() { run_dirs | head -n 1; }
 run_of() { printf '%s/%s' "$SANDBOX" "$(grep -o -E -m1 'runs/[^[:space:]]+' "$1")"; }  # the run folder named by a run's START line (ls sorts "<id>-2" before "<id>" here)
 
@@ -98,8 +98,8 @@ section "1. units: prompt.py, the screenshot tool, research.py, expansion.py, ga
 sandbox_init
 fake_claude_on
 export REELS_SLEEP_SCALE=0
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
-created="$(printf '%s' "$TEST_IDEA" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id m4unit01)"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
+created="$(printf '%s' "$TEST_IDEA" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id m4unit01)"
 RD="$(python -c 'import json, sys; print(json.loads(sys.argv[1])["run_dir"])' "$created")"
 
 # prompt.py
@@ -140,9 +140,9 @@ out="$(REELS_ASSETS_DIR="$ASSETS" bash pipeline/bin/screenshot "http://127.0.0.1
 assert_rc 2 $rc "screenshot: a bot wall is reported as blocked (exit 2)"
 assert_true "screenshot: blocked true in the result" grep -q '"blocked": true' <<<"$out"
 assert_eq "$(ls "$ASSETS"/*.png | wc -l | tr -d ' ')" "1" "screenshot: nothing saved for a blocked page"
-out="$(bash pipeline/bin/screenshot "http://127.0.0.1:$PORT/index.html" x --out-dir "$SANDBOX_M/library")"; rc=$?
+out="$(bash pipeline/bin/screenshot "http://127.0.0.1:$PORT/index.html" x --out-dir "$SANDBOX_M/channels/flashfx/library")"; rc=$?
 assert_rc 1 $rc "screenshot: a folder outside runs/ is refused"
-assert_no_file "$SANDBOX/library/01-x.png" "screenshot: nothing written outside runs/"
+assert_no_file "$SANDBOX/channels/flashfx/library/01-x.png" "screenshot: nothing written outside runs/"
 out="$(REELS_ASSETS_DIR="$ASSETS" bash pipeline/bin/screenshot "ftp://example.com/x" y)"; rc=$?
 assert_rc 1 $rc "screenshot: a non-http URL is refused"
 kill "$WEB_PID" 2>/dev/null; wait "$WEB_PID" 2>/dev/null
@@ -258,10 +258,10 @@ json.dump(g, open(sys.argv[2], "w", encoding="utf-8"))
 EOF
 res="$(python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$SANDBOX_M/dt.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01)"
 assert_true "gate: a different-topic verdict drops with the suggestion" grep -q '"decision": "drop", .*no angle keeps the core topic (P3 S1 C3 F ok H ok)' <<<"$res"
-python pipeline/lib/gate.py suggest --logs "$SANDBOX_M/logs" --idea "$TEST_IDEA" --suggestion "A reel about {something else} entirely" --source 03-gate >/dev/null
-assert_grep "^# 20[0-9-]+ [0-9:]+ \| from 03-gate \| the idea was: Claude Code" "$SANDBOX/logs/suggested-ideas.txt" "suggested-ideas.txt: the comment line"
-assert_grep "^\{A reel about \(something else\) entirely\}$" "$SANDBOX/logs/suggested-ideas.txt" "suggested-ideas.txt: the suggestion in braces, inner braces replaced"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "1" "suggested-ideas.txt: ideas.txt untouched"
+python pipeline/lib/gate.py suggest --logs "$SANDBOX_M/channels/flashfx/logs" --idea "$TEST_IDEA" --suggestion "A reel about {something else} entirely" --source 03-gate >/dev/null
+assert_grep "^# 20[0-9-]+ [0-9:]+ \| from 03-gate \| the idea was: Claude Code" "$SANDBOX/channels/flashfx/logs/suggested-ideas.txt" "suggested-ideas.txt: the comment line"
+assert_grep "^\{A reel about \(something else\) entirely\}$" "$SANDBOX/channels/flashfx/logs/suggested-ideas.txt" "suggested-ideas.txt: the suggestion in braces, inner braces replaced"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "1" "suggested-ideas.txt: ideas.txt untouched"
 rm -f "$RD/03-gate/gate-"*.json
 python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/03-gate.json" --round 1 --angles-done 0 --cap 2 --core-status verified --today 2026-11-01 >/dev/null
 python pipeline/lib/gate.py decide --run-dir "$RD" --model-out "$FAKE_M4/variants/03-gate.pass.json" --round 2 --angles-done 1 --cap 2 --core-status verified --today 2026-11-01 >/dev/null
@@ -316,7 +316,7 @@ fi
 if want 2; then
 section "2. the angle loop with the fake claude: S4 runs, the round counter reaches 2, then the idea is dropped"
 sandbox_init --with-pipeline
-rm -f "$SANDBOX/library/profile/account.md"   # M5 drafted the file; this section tests the flag for a missing one
+rm -f "$SANDBOX/channels/flashfx/library/profile/account.md"   # M5 drafted the file; this section tests the flag for a missing one
 fake_claude_on
 mkdir -p "$SANDBOX/fixtures"
 cp "$FAKE_M4"/*.json "$SANDBOX/fixtures/"
@@ -332,7 +332,7 @@ a["change"] = ("The share line now names the three banned defaults" + em + "so i
                + " and the identity is narrower: freelancers who ship client landing pages.")
 json.dump(a, open(path, "w", encoding="utf-8"), ensure_ascii=False)
 EOF
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/drop.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/drop.out"; RD="$(first_run)"
 assert_rc 0 $rc "the runner exits 0 after the drop"
@@ -348,8 +348,8 @@ assert_grep "${ts_regex}FLAG   needs review: library/profile/account.md is missi
 assert_eq "$(grep -c "FLAG   needs review: library/profile/account.md" "$OUT")" "1" "the missing account.md is flagged once, although S1, S2 and S4 all noticed it"
 assert_not_grep "GATE   passed" "$OUT" "no GATE passed line"
 assert_not_grep "${ts_regex}ERROR" "$OUT" "no ERROR line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok H ok\): " "$SANDBOX/logs/history.txt" "history: the drop with the scores"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| dropped: still failing after 2 angle rounds \(P3 S1 C3 F ok H ok\): " "$SANDBOX/channels/flashfx/logs/history.txt" "history: the drop with the scores"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone"
 assert_eq "$(state_get "$RD" rounds.angle)" "2" "state.json: rounds.angle reached 2"
 assert_eq "$(state_get "$RD" status)" "dropped" "state.json: dropped"
 assert_eq "$(state_get "$RD" stages.04-angle.status)" "done" "state.json: 04-angle ran"
@@ -370,8 +370,8 @@ assert_eq "$(grep -c '^8\. The skill.s SKILL.md tells Claude Code' "$RD/01-resea
 assert_grep "^   Added by 04-angle round 1\.$" "$RD/01-research/facts.md" "facts.md: the new claim says who added it"
 assert_eq "$(json_get "$RD/01-research/research.json" counts.claims)" "8" "research.json: 8 claims"
 assert_grep "^- facts.md#8: " "$RD/02-expansion/expansion.md" "expansion.md: the new claim is cited"
-assert_grep "^\[[0-9:]+\] INFO   S4: angle round 2/2, 0 new claims" "$SANDBOX/logs/runner.log" "INFO: the second angle round added nothing new"
-assert_grep "^\[[0-9:]+\] INFO   S4: angle round 1/2, 1 new claim, solution external \(.*\), expansion [0-9]+ chars: The share line now names" "$SANDBOX/logs/runner.log" "INFO: the first angle round added the new claim (and names the solution, M12)"
+assert_grep "^\[[0-9:]+\] INFO   S4: angle round 2/2, 0 new claims" "$SANDBOX/channels/flashfx/logs/runner.log" "INFO: the second angle round added nothing new"
+assert_grep "^\[[0-9:]+\] INFO   S4: angle round 1/2, 1 new claim, solution external \(.*\), expansion [0-9]+ chars: The share line now names" "$SANDBOX/channels/flashfx/logs/runner.log" "INFO: the first angle round added the new claim (and names the solution, M12)"
 assert_eq "$(json_get "$RD/04-angle/angle-1.json" change)" "The share line now names the three banned defaults, so it survives without the video, and the identity is narrower: freelancers who ship client landing pages." "angle-1.json: the em dashes the model wrote in \"change\" became commas before the file was written"
 no_emdash_in "angle.json, angle-1.json, angle-2.json and the second round's prompt hold no em dash" "$RD/04-angle/angle.json" "$RD/04-angle/angle-1.json" "$RD/04-angle/angle-2.json" "$RD/04-angle/prompt-angle-r2.md"
 # the model calls: S1, S2, S3, S4, S3, S4, S3; session A for the research model, a fresh session for every gate
@@ -405,12 +405,12 @@ assert_true "S1: the protected files are denied" grep -q 'Edit(ideas.txt)' <<<"$
 assert_eq "$(fake_field 1 schema)" "true" "S1: a JSON schema is passed"
 assert_true "every call is saved under calls/" test -f "$RD/03-gate/calls/003-gate-r3.json" -a -f "$RD/04-angle/calls/002-angle-r2-try1.json"
 assert_eq "$(state_get "$RD" sessions.A)" "$sidA" "state.json: sessions.A holds the session id"
-no_emdash_in "no em dash in the stage files" "$RD/01-research/facts.md" "$RD/02-expansion/expansion.md" "$RD/03-gate/gate.json" "$RD/04-angle/angle.json" "$SANDBOX/logs/history.txt"
+no_emdash_in "no em dash in the stage files" "$RD/01-research/facts.md" "$RD/02-expansion/expansion.md" "$RD/03-gate/gate.json" "$RD/04-angle/angle.json" "$SANDBOX/channels/flashfx/logs/history.txt"
 
 # the gate passes on round 2: the loop ends and the run continues to the export
 fake_claude_reset
 cp "$FAKE_M4/variants/03-gate.pass.json" "$SANDBOX/fixtures/03-gate.2.json"
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/pass.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/pass.out"; RD="$(run_dirs | sed -n 2p)"
 assert_rc 0 $rc "pass on round 2: the runner exits 0"
@@ -434,7 +434,7 @@ r["core_claim"] = {"text": "ffmpeg 8 has a --make-reel flag", "status": "false",
 json.dump(r, open(sys.argv[2], "w", encoding="utf-8"), ensure_ascii=False)
 EOF
 cp "$FAKE_M4/variants/03-gate.pass.json" "$SANDBOX/fixtures/03-gate.json"
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/false.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/false.out"; RD="$(run_dirs | sed -n 3p)"
 assert_rc 0 $rc "false core claim: the runner exits 0"
@@ -442,7 +442,7 @@ assert_grep "${ts_regex}DROP   idea \".*\" dropped: facts don't hold \(P3 S3 C3 
 assert_not_grep "${ts_regex}ANGLE" "$OUT" "false core claim: no angle round"
 assert_eq "$(state_get "$RD" stages.04-angle.status)" "skipped" "false core claim: 04-angle stayed skipped"
 assert_eq "$(json_get "$RD/03-gate/gate.json" F)" "fail" "false core claim: gate.json F fail"
-assert_grep "dropped: facts don't hold \(P3 S3 C3 F fail H ok\)" "$SANDBOX/logs/history.txt" "false core claim: the history line"
+assert_grep "dropped: facts don't hold \(P3 S3 C3 F fail H ok\)" "$SANDBOX/channels/flashfx/logs/history.txt" "false core claim: the history line"
 
 # the gate says only a different topic works: drop, and the suggestion goes to logs/suggested-ideas.txt
 fake_claude_reset
@@ -453,12 +453,12 @@ g = json.load(open(sys.argv[1], encoding="utf-8")); g["different_topic"] = True
 g["suggested_idea"] = "A reel about the three defaults every AI page shares, with the skill as one fix among others"
 json.dump(g, open(sys.argv[2], "w", encoding="utf-8"), ensure_ascii=False)
 EOF
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/topic.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/topic.out"
 assert_grep "${ts_regex}DROP   idea \".*\" dropped: no angle keeps the core topic \(P3 S1 C3 F ok H ok\): .*suggestion written to logs/suggested-ideas.txt\. Removed from ideas.txt$" "$OUT" "different topic: DROP with the reason"
-assert_grep "^\{A reel about the three defaults every AI page shares, with the skill as one fix among others\}$" "$SANDBOX/logs/suggested-ideas.txt" "different topic: the suggestion in logs/suggested-ideas.txt"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "different topic: nothing added to ideas.txt"
+assert_grep "^\{A reel about the three defaults every AI page shares, with the skill as one fix among others\}$" "$SANDBOX/channels/flashfx/logs/suggested-ideas.txt" "different topic: the suggestion in logs/suggested-ideas.txt"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "different topic: nothing added to ideas.txt"
 assert_not_grep "${ts_regex}ANGLE" "$OUT" "different topic: no angle round"
 
 # the gate fails F for wording on round 1 (the core claim verified, a statement of the expansion not in facts.md):
@@ -468,7 +468,7 @@ fake_claude_reset
 cp "$FAKE_M4/01-research.json" "$SANDBOX/fixtures/01-research.json"
 cp "$FAKE_M4/variants/03-gate.wording.json" "$SANDBOX/fixtures/03-gate.json"
 cp "$FAKE_M4/variants/03-gate.pass.json" "$SANDBOX/fixtures/03-gate.2.json"
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/wording.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/wording.out"; RD="$(run_of "$OUT")"
 assert_rc 0 $rc "wording repair: the runner exits 0"
@@ -489,8 +489,8 @@ assert_grep "one folder in ~/.claude/skills\" says more than claim 3" "$RD/04-an
 assert_grep "^Hint for a better angle: Fixture gate hint: reword the install sentence" "$RD/04-angle/prompt-angle-r1.md" "wording repair: the angle prompt carries the gate's hint"
 assert_grep "gate round 1: P3 S3 C3 F fail \(wording\) H ok, decision angle" "$RD/03-gate/prompt-gate-r2.md" "wording repair: the second gate round sees the first round's F kind"
 assert_eq "$(json_get "$RD/02-expansion/expansion.json" written_by)" "04-angle round 1" "wording repair: the expansion was rewritten by the angle round"
-assert_eq "$(grep -c '| exported [0-9]*$' "$SANDBOX/logs/history.txt")" "2" "wording repair: the history line says exported (the second export of this section)"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "wording repair: the idea left ideas.txt after the export, not after a drop"
+assert_eq "$(grep -c '| exported [0-9]*$' "$SANDBOX/channels/flashfx/logs/history.txt")" "2" "wording repair: the history line says exported (the second export of this section)"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "wording repair: the idea left ideas.txt after the export, not after a drop"
 no_emdash_in "wording repair: no em dash in the gate and angle files" "$RD/03-gate/gate-1.json" "$RD/03-gate/gate.json" "$RD/04-angle/angle-1.json" "$RD/04-angle/prompt-angle-r1.md"
 unset FAKE_CLAUDE_FIXTURES
 fake_claude_off
@@ -501,7 +501,7 @@ if want 3; then
 section "3. the test idea with the real models: research, expansion, gate (several minutes)"
 sandbox_init --with-pipeline
 fake_claude_off
-printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$TEST_IDEA" > "$SANDBOX/channels/flashfx/ideas.txt"
 started="$EPOCHSECONDS"
 run_once "$SANDBOX/real.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/real.out"; RD="$(first_run)"
@@ -564,9 +564,9 @@ cmds = [str((x.get("tool_input") or {}).get("command", "")) for x in (d.get("per
 mutating = (" -X", " --method", " -f", " -F", " --field", " --raw-field", " --input")
 bad = [c for c in cmds if c.startswith(("gh repo view", "gh release list", "gh release view", "gh api repos/")) and not any(m in c for m in mutating)]
 sys.exit(1 if bad else 0)' "$R/calls/001-research.json"
-no_emdash_in "no em dash in the stage files" "$R/facts.md" "$R/research.json" "$E/expansion.md" "$E/expansion.json" "$G/gate.json" "$SANDBOX/logs/runner.log" "$SANDBOX/logs/history.txt"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
-assert_grep "exported 1$" "$SANDBOX/logs/history.txt" "history: exported"
+no_emdash_in "no em dash in the stage files" "$R/facts.md" "$R/research.json" "$E/expansion.md" "$E/expansion.json" "$G/gate.json" "$SANDBOX/channels/flashfx/logs/runner.log" "$SANDBOX/channels/flashfx/logs/history.txt"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
+assert_grep "exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: exported"
 if [ -n "${M4_FREEZE:-}" ] && [ "$rc" = 0 ] && [ "$(json_get "$G/gate.json" pass)" = true ]; then
   FR="$FIXTURES/runs/test-idea"
   rm -rf "$FR"; mkdir -p "$FR"
@@ -616,8 +616,8 @@ if want 4; then
 section "4. a deliberately false idea with the real models: dropped with a reason, its block gone from ideas.txt"
 sandbox_init --with-pipeline
 fake_claude_off
-cp "$FIXTURES/ideas/false-idea.txt" "$SANDBOX/ideas.txt"
-FALSE_IDEA="$(python pipeline/lib/ideas.py first --file "$SANDBOX_M/ideas.txt" | python -c 'import json, sys; print(json.load(sys.stdin)["text"])')"
+cp "$FIXTURES/ideas/false-idea.txt" "$SANDBOX/channels/flashfx/ideas.txt"
+FALSE_IDEA="$(python pipeline/lib/ideas.py first --file "$SANDBOX_M/channels/flashfx/ideas.txt" | python -c 'import json, sys; print(json.load(sys.stdin)["text"])')"
 started="$EPOCHSECONDS"
 run_once "$SANDBOX/false-real.out" REELS_DUMMY="$LATER_DUMMIES"; rc=$?
 OUT="$SANDBOX/false-real.out"; RD="$(first_run)"
@@ -627,16 +627,16 @@ assert_rc 0 $rc "the runner exits 0 after the drop"
 assert_grep "${ts_regex}DROP   idea \"ffmpeg 8 added a \"--make-reel\" flag: one...\" dropped: (facts don't hold|still failing after [0-9] angle rounds?|no angle keeps the core topic) \(P[0-3] S[0-3] C[0-3] F (ok|fail)\): .+\. Removed from ideas.txt$" "$OUT" "DROP line with the scores and a reason"
 assert_grep "${ts_regex}DROP   .* dropped: facts don't hold \(P[0-3] S[0-3] C[0-3] F fail H (ok|fail)\): " "$OUT" "the drop is an F failure (the tool does not do what the idea assumes)"
 assert_not_grep "${ts_regex}(ERROR|BLOCK|DONE)" "$OUT" "no ERROR, BLOCK or DONE line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $(printf '%s' "$FALSE_IDEA" | sed 's/[][\.*^$()+?{}|]/\\&/g') \| (-|flashfx|external|method) \| dropped: .*\(P[0-3] S[0-3] C[0-3] F (ok|fail) H (ok|fail)\): " "$SANDBOX/logs/history.txt" "history: the drop line with the scores and the reason"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the false idea's block is gone"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $(printf '%s' "$FALSE_IDEA" | sed 's/[][\.*^$()+?{}|]/\\&/g') \| (-|flashfx|external|method) \| dropped: .*\(P[0-3] S[0-3] C[0-3] F (ok|fail) H (ok|fail)\): " "$SANDBOX/channels/flashfx/logs/history.txt" "history: the drop line with the scores and the reason"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the false idea's block is gone"
 assert_true "ideas.txt: nothing else was written (only the fixture's note text remains)" python -c 'import sys
 left = open(sys.argv[1], encoding="utf-8-sig").read()
-sys.exit(0 if "{" not in left and "}" not in left and "make-reel" not in left.split("A deliberately false idea", 1)[-1].replace("so the research must find the core claim false and the gate must drop the idea with the reason.", "") else 1)' "$SANDBOX_M/ideas.txt"
-assert_not_grep "protected files" "$SANDBOX/logs/runner.log" "the model touched no protected file"
+sys.exit(0 if "{" not in left and "}" not in left and "make-reel" not in left.split("A deliberately false idea", 1)[-1].replace("so the research must find the core claim false and the gate must drop the idea with the reason.", "") else 1)' "$SANDBOX_M/channels/flashfx/ideas.txt"
+assert_not_grep "protected files" "$SANDBOX/channels/flashfx/logs/runner.log" "the model touched no protected file"
 assert_eq "$(state_get "$RD" status)" "dropped" "state.json: dropped"
 assert_ne "$(json_get "$RD/01-research/research.json" core_claim.status)" "verified" "research.json: the core claim is not verified (status: $(json_get "$RD/01-research/research.json" core_claim.status))"
 assert_true "gate.json: F fail" test "$(json_get "$RD/03-gate/gate.json" F)" = fail
-no_emdash_in "no em dash in the files" "$RD/01-research/facts.md" "$RD/02-expansion/expansion.md" "$RD/03-gate/gate.json" "$SANDBOX/logs/history.txt" "$SANDBOX/logs/runner.log"
+no_emdash_in "no em dash in the files" "$RD/01-research/facts.md" "$RD/02-expansion/expansion.md" "$RD/03-gate/gate.json" "$SANDBOX/channels/flashfx/logs/history.txt" "$SANDBOX/channels/flashfx/logs/runner.log"
 fi
 
 test_summary

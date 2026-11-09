@@ -27,7 +27,7 @@ want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 VALIDATE="$REPO_DIR/pipeline/bin/validate-json"
 TOK="$REPO_DIR/pipeline/lib/tokens.py"
 MOTION="$REPO_DIR/pipeline/lib/motion"
-LIB="$REPO_DIR/motion-lib"
+LIB="$REPO_DIR/channels/flashfx/motion-lib"
 HF="npx --prefix $REPO_DIR hyperframes"
 
 json_get() {  # json_get <file> <dotted key> [default]
@@ -58,10 +58,10 @@ print("\n".join(bad)); sys.exit(1 if bad else 0)' "$@" >/tmp/emdash.txt; then pa
 if want 1; then
   section "1. tokens.json from style.md plus tweaks.md"
   sandbox_init
-  mkdir -p "$SANDBOX/styles/paper-cards"
-  cp "$REPO_DIR"/styles/paper-cards/style.md "$REPO_DIR"/styles/paper-cards/tweaks.md "$SANDBOX/styles/paper-cards/"
+  mkdir -p "$SANDBOX/channels/flashfx/styles/paper-cards"
+  cp "$REPO_DIR"/channels/flashfx/styles/paper-cards/style.md "$REPO_DIR"/channels/flashfx/styles/paper-cards/tweaks.md "$SANDBOX/channels/flashfx/styles/paper-cards/"
   # the scenario below starts from the six version 2 lines as proposals (the user accepted them on 2026-11-07, M14)
-  python - "$SANDBOX/styles/paper-cards/tweaks.md" <<'EOF'
+  python - "$SANDBOX/channels/flashfx/styles/paper-cards/tweaks.md" <<'EOF'
 import re, sys
 p = sys.argv[1]; s = open(p, encoding="utf-8").read()
 for title in ("Caption position", "Right side, captions", "Hook header", "Length", "Accent-filled cards", "3D"):
@@ -72,7 +72,7 @@ for title in ("Caption position", "Right side, captions", "Hook header", "Length
         s = s[:m.start()] + "- PROPOSED **" + title + ":**" + s[m.end():]
 open(p, "w", encoding="utf-8", newline="\n").write(s)
 EOF
-  SD="$SANDBOX_M/styles/paper-cards"; OUT="$SANDBOX_M/tokens.json"; CSS="$SANDBOX_M/tokens.css"
+  SD="$SANDBOX_M/channels/flashfx/styles/paper-cards"; OUT="$SANDBOX_M/tokens.json"; CSS="$SANDBOX_M/tokens.css"
   out="$(bash pipeline/bin/build-tokens --style-dir "$SD" --out "$OUT" --css "$CSS" 2>&1)"; rc=$?
   assert_rc 0 $rc "build-tokens builds in the sandbox"
   assert_grep "tokens rebuilt" <(printf '%s\n' "$out") "the first build reports a rebuild"
@@ -92,12 +92,12 @@ EOF
   assert_grep "c-paper: #F5EEE3" "$CSS" "tokens.css carries the paper color"
   out="$(bash pipeline/bin/build-tokens --style-dir "$SD" --out "$OUT" --css "$CSS" 2>&1)"
   assert_grep "up to date" <(printf '%s\n' "$out") "a rebuild with unchanged sources is a no-op"
-  printf '\n<!-- touched by test-m9 -->\n' >> "$SANDBOX/styles/paper-cards/tweaks.md"
+  printf '\n<!-- touched by test-m9 -->\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/tweaks.md"
   assert_false "the check sees the touched tweaks.md" bash pipeline/bin/build-tokens --check --style-dir "$SD" --out "$OUT"
   out="$(bash pipeline/bin/build-tokens --style-dir "$SD" --out "$OUT" --css "$CSS" 2>&1)"
   assert_grep "tokens rebuilt \(tweaks.md changed\)" <(printf '%s\n' "$out") "a touched tweaks.md triggers a rebuild"
   # accepting the PROPOSED caption position (removing the word) moves the captions and drops the exception
-  python - "$SANDBOX/styles/paper-cards/tweaks.md" <<'EOF'
+  python - "$SANDBOX/channels/flashfx/styles/paper-cards/tweaks.md" <<'EOF'
 import sys
 p = sys.argv[1]; s = open(p, encoding="utf-8").read()
 s = s.replace("- PROPOSED **Caption position:**", "- **Caption position:**")

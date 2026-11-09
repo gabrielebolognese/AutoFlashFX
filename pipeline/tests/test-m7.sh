@@ -69,9 +69,9 @@ jf() { python -c 'import json, sys; d = json.loads(sys.argv[1]); v = d.get(sys.a
 seed_run() {  # a run in the sandbox with S1 to S7 done from the frozen outputs (04-angle stays skipped); prints the run dir
   local raw id created rd st
   raw="$(tr -d '\r' < "$FROZEN/idea.txt")"
-  printf '{%s}\n' "$raw" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$raw" > "$SANDBOX/channels/flashfx/ideas.txt"
   id="$(printf '%s' "$raw" | python pipeline/lib/ideas.py id)"
-  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$id")"
+  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$id")"
   rd="$(jf "$created" run_dir)"
   for st in 01-research 02-expansion 03-gate 05-hooks 06-judge 07-script; do
     cp -r "$FROZEN/$st/." "$rd/$st/"
@@ -209,22 +209,22 @@ assert_eq "$(python -c 'import json,sys; d=json.loads(sys.argv[1]); print([r["se
 assert_eq "$(vo energy --wav "$WM/synth.wav" --from-ms 100 --to-ms 400 | cut -d. -f1)" "-14" "energy: the tone's level (a 9000 of 32768 sine is -14 dBFS RMS)"
 assert_true "energy: silence is far below -40 dB" python -c 'import sys; sys.exit(0 if float(sys.argv[1]) < -60 else 1)' "$(vo energy --wav "$WM/synth.wav" --from-ms 500 --to-ms 900)"
 # the preflight's voice check
-mkdir -p "$SANDBOX/library/voice"
-write_engine_file "$SANDBOX/library/voice/engine.txt" "$SYS_PY" >/dev/null   # the project's python has no kokoro
+mkdir -p "$SANDBOX/channels/flashfx/library/voice"
+write_engine_file "$SANDBOX/channels/flashfx/library/voice/engine.txt" "$SYS_PY" >/dev/null   # the project's python has no kokoro
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-bad.out" 2>&1; rc=$?
 assert_rc 3 $rc "preflight: an engine.txt whose interpreter cannot import kokoro is a systemic stop (exit 3)"
-assert_grep "cannot import kokoro" "$SANDBOX/logs/STOPPED.md" "preflight: STOPPED.md names the import failure"
-assert_grep "write library/voice/engine.txt as in BUILD_SPEC.md 2.5" "$SANDBOX/logs/STOPPED.md" "preflight: STOPPED.md gives the exact fix"
-printf 'engine = kokoro\npython = C:/nowhere/python.exe\n' > "$SANDBOX/library/voice/engine.txt"
+assert_grep "cannot import kokoro" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: STOPPED.md names the import failure"
+assert_grep "write library/voice/engine.txt as in BUILD_SPEC.md 2.5" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: STOPPED.md gives the exact fix"
+printf 'engine = kokoro\npython = C:/nowhere/python.exe\n' > "$SANDBOX/channels/flashfx/library/voice/engine.txt"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-missing.out" 2>&1; rc=$?
 assert_rc 3 $rc "preflight: an interpreter that does not exist is a systemic stop"
-assert_grep "C:/nowhere/python.exe does not exist" "$SANDBOX/logs/STOPPED.md" "preflight: the missing interpreter is named"
+assert_grep "C:/nowhere/python.exe does not exist" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "preflight: the missing interpreter is named"
 fake_voice_on
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-fake.out" 2>&1; rc=$?
 assert_rc 0 $rc "preflight: with the fake workers the import checks are skipped and the preflight passes"
 assert_grep "${ts_regex}WARN   preflight: REELS_TTS_WORKER is set" "$SANDBOX/preflight-fake.out" "preflight: and says a fake engine is in use"
 fake_voice_off
-rm -f "$SANDBOX/library/voice/engine.txt"
+rm -f "$SANDBOX/channels/flashfx/library/voice/engine.txt"
 ( cd "$SANDBOX" && NO_COLOR=1 REELS_TTS_WORKER=x REELS_WHISPER_WORKER=x bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight-none.out" 2>&1; rc=$?
 assert_grep "${ts_regex}WARN   preflight: library/voice/engine.txt is missing: the kokoro defaults" "$SANDBOX/preflight-none.out" "preflight: a missing engine.txt is a warning that names the defaults"
 fi
@@ -273,7 +273,7 @@ assert_eq "$(json_get "$S/voiceover.json" verdict.status) $(json_get "$S/voiceov
 for a in "generating voiceover (beat 3/12)" "tightening silences" "aligning words" "normalizing loudness"; do
   assert_grep "^activity: $(printf '%s' "$a" | sed 's/[()]/\\&/g')$" "$S/stage.log" "activity \"$a\" was published"
 done
-no_emdash_in "no em dash in the stage files" "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/stage.log" "$SANDBOX/logs/runner.log"
+no_emdash_in "no em dash in the stage files" "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/stage.log" "$SANDBOX/channels/flashfx/logs/runner.log"
 # the dummy stage's outputs against the schema
 python "$STATE_PY" stage-start "$RD" 08-voiceover >/dev/null 2>&1 || true
 ( cd "$SANDBOX" && REELS_DUMMY_SECONDS=0 bash "$REPO_DIR/pipeline/stages/08-voiceover/dummy.sh" "$RD" ) >/dev/null 2>&1
@@ -338,9 +338,9 @@ OUT="$SANDBOX/block.out"
 grep -E "$ts_regex(DONE|ERROR|BLOCK|FLAG|WARN)" "$OUT" | sed 's/^/    /'
 assert_rc 0 $rc "block path: the runner exits 0 (the idea is blocked, the loop goes on)"
 assert_grep "${ts_regex}BLOCK  idea \"Claude Code's frontend-design skill.*\" blocked at S8: voice: line b9 cannot be said clearly by af_bella \(WER 14.3%: .*\) after no respelling rule, rewritten by S7: .*\. Moved to logs/blocked.txt$" "$OUT" "block path: the BLOCK line names the line, the rate and the steps tried"
-assert_grep "blocked at S8" "$SANDBOX/logs/blocked.txt" "block path: logs/blocked.txt"
+assert_grep "blocked at S8" "$SANDBOX/channels/flashfx/logs/blocked.txt" "block path: logs/blocked.txt"
 assert_not_grep "${ts_regex}DONE" "$OUT" "block path: nothing exported"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "block path: the idea left ideas.txt"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "block path: the idea left ideas.txt"
 assert_eq "$(fake_calls)" "1" "block path: one model call (the rewrite), never another voice or engine"
 assert_true "block path: the trail shows only kokoro af_bella in every attempt" python -c '
 import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8"))
@@ -386,9 +386,9 @@ section "3. S8 on the frozen script with the real Kokoro and faster-whisper (a f
 fails_before_3="$FAIL_N"
 sandbox_init --with-pipeline
 fake_claude_off; fake_voice_off
-mkdir -p "$SANDBOX/library/voice"
-if [ -f "$REPO_DIR/library/voice/engine.txt" ]; then cp "$REPO_DIR/library/voice/engine.txt" "$SANDBOX/library/voice/"; fi
-eng="$(vo --root "$SANDBOX_M" engine)"
+mkdir -p "$SANDBOX/channels/flashfx/library/voice"
+if [ -f "$REPO_DIR/channels/flashfx/library/voice/engine.txt" ]; then cp "$REPO_DIR/channels/flashfx/library/voice/engine.txt" "$SANDBOX/channels/flashfx/library/voice/"; fi
+eng="$(vo --root "$SANDBOX_CH_M" engine)"
 printf '    engine config: %s (%s)\n' "$(jf "$eng" status)" "$(python -c 'import json,sys; e=json.loads(sys.argv[1])["engine"]; print(e["engine"], e["voice"], "via", e["python"])' "$eng")"
 ( cd "$SANDBOX" && NO_COLOR=1 bash "$REPO_DIR/pipeline/bin/preflight" ) > "$SANDBOX/preflight.out" 2>&1; rc=$?
 assert_rc 0 $rc "preflight: the voice interpreter imports kokoro and a whisper interpreter exists (the real import test)"
@@ -469,7 +469,7 @@ assert_true "the measured speed and pace are recorded (speed under 1x real time,
 import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8")); t = d["timing"]; p = d["pace"]
 sys.exit(0 if 0 < t["speed_x_realtime"] < 1.0 and 120 <= p["wpm"] <= 240 and d["engine"]["voice"] == "af_bella" else 1)' "$S/voiceover.json"
 # the total length against the estimate at the configured pace
-python - "$S/words.json" "$RD/07-script/script.json" "$REPO_DIR/config.json" <<'EOF'
+python - "$S/words.json" "$RD/07-script/script.json" "$(REELS_ROOT="$REPO_DIR" resolved_config)" <<'EOF'
 import json, re, sys
 w = json.load(open(sys.argv[1], encoding="utf-8")); s = json.load(open(sys.argv[2], encoding="utf-8")); c = json.load(open(sys.argv[3], encoding="utf-8"))
 words = sum(len([t for t in b["spoken"].split() if re.search(r"[A-Za-z0-9]", t)]) for b in s["beats"])
@@ -479,7 +479,7 @@ print(f"    total {got:.1f} s against {est:.1f} s expected at {wpm} wpm ({(got -
 sys.exit(0 if abs(got - est) / est <= 0.15 or w.get("flags") else 1)
 EOF
 assert_rc 0 $? "the total length is within 15 percent of the estimate at the configured pace (or the run carries a flag)"
-no_emdash_in "no em dash in the stage files" "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/stage.log" "$SANDBOX/logs/runner.log"
+no_emdash_in "no em dash in the stage files" "$S/words.json" "$S/words_hook2.json" "$S/voiceover.json" "$S/stage.log" "$SANDBOX/channels/flashfx/logs/runner.log"
 # The frozen 08-voiceover fixtures (PLAN.md M7; M9 and M10 render the golden reel against them) are the five outputs
 # of one run: words.json, words_hook2.json, voiceover.json, vo.wav and vo_hook2.wav. The wavs are ignored by git
 # (*.wav), so a fresh clone has only the JSON: when the section 3 run passed, the wavs are added whenever they are

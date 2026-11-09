@@ -1,0 +1,192 @@
+key	destination	moves_in	value	note
+version	engine	-	"0.1.0"	engine key: stays in config.json
+models.research	engine	-	{"model":"sonnet","effort":"high"}	engine key: stays in config.json
+models.gate	engine	-	{"model":"sonnet","effort":"medium"}	engine key: stays in config.json
+models.judge	engine	-	{"model":"sonnet","effort":"medium"}	engine key: stays in config.json
+models.script	engine	-	{"model":"sonnet","effort":"high"}	engine key: stays in config.json
+models.visual_director	engine	-	{"model":"opus","effort":"high"}	engine key: stays in config.json
+models.visual_director_fix	engine	-	{"model":"sonnet","effort":"high"}	engine key: stays in config.json
+models.builder	engine	-	{"model":"sonnet","effort":"high"}	engine key: stays in config.json
+models.qa	engine	-	{"model":"opus","effort":"medium"}	engine key: stays in config.json
+models.reviewer	engine	-	{"model":"sonnet","effort":"high"}	engine key: stays in config.json
+models.cut	engine	-	{"model":"sonnet","effort":"medium"}	engine key: stays in config.json
+models.checks	engine	-	{"model":"sonnet","effort":"medium"}	engine key: stays in config.json
+models.fixer	engine	-	{"model":"sonnet","effort":"medium"}	engine key: stays in config.json
+models.builder_escalation	engine	-	{"model":"opus","effort":"xhigh","important":{"model":"fa...	engine key: stays in config.json
+models.reviewer_escalation	engine	-	{"model":"opus","effort":"xhigh","important":{"model":"fa...	engine key: stays in config.json
+models.indexer	engine	-	{"model":"haiku","effort":"low"}	engine key: stays in config.json
+models.probe	engine	-	{"model":"haiku","effort":"low"}	engine key: stays in config.json
+models.visual_director_escalation	engine	-	{"model":"opus","effort":"xhigh","important":{"model":"fa...	engine key: stays in config.json
+models.limit_fallback	engine	-	{"model":"opus"}	engine key: stays in config.json
+tts.device	engine	-	"cpu"	engine key: stays in config.json
+tts.whisper_model	engine	-	"small"	engine key: stays in config.json
+tts.whisper_python	engine	-	"C:/Users/there/venvs/chatterbox/Scripts/python.exe"	engine key: stays in config.json
+tts.whisper_pad_s	engine	-	0.5	engine key: stays in config.json
+tts.wer_fail_pct	engine	-	3	engine key: stays in config.json
+tts.wer_flag_max_pct	engine	-	8	engine key: stays in config.json
+tts.overrun_pct	engine	-	15	engine key: stays in config.json
+tts.overrun_min_s	engine	-	0.4	engine key: stays in config.json
+tts.lead_s	engine	-	0.05	engine key: stays in config.json
+tts.tail_s	engine	-	0.2	engine key: stays in config.json
+research.tools	format	M20	"WebSearch WebFetch Read Bash"	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.allowed	format	M20	["WebSearch","WebFetch","Read","Bash(gh repo view *)","Ba...	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.denied	format	M20	["Bash(gh auth *)","Bash(gh gist *)","Bash(gh repo clone ...	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.max_assets	format	M20	6	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.screenshot_width	format	M20	1080	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.screenshot_height	format	M20	1920	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.expansion_chars	format	M20	[500,1500]	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+research.expansion_tries	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.shortlist	format	M20	24	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.per_family	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.fit_weight_other	format	M20	0.35	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.min_hooks	format	M20	12	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.max_hooks	format	M20	20	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.min_families	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.min_for_judge	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.spoken_max_words	format	M20	8	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.spoken_max_seconds	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.on_screen_max_words	format	M20	6	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.tries	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.brief_tokens	format	M20	[2000,3000]	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+hooks.brief_tries	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+judge.min_hookscore	format	M20	50	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+judge.min_survivors	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+judge.top_n	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.tones	format	M20	["warning","insider","contrarian","calm expert","confessi...	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.overshoot_pct	format	M20	25	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.cut_pct	format	M20	20	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.cut_range_pct	format	M20	[10,30]	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.cut_tries	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.detect_min_overall	format	M20	70	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.detect_min_check	format	M20	55	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.hook_max_s	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.beat_max_s	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.stake_max_s	format	M20	5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.abstract_run	format	M20	3	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.length_tolerance_pct	format	M20	15	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.card_max_words	format	M20	6	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+script.min_body_beats	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.min_distinct_components	format	M20	5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.max_same_in_a_row	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.title_max_words	format	M20	6	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.body_max_words	format	M20	14	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.breath_set_piece_lead_ms	format	M20	60	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.snap_tolerance_ms	format	M20	34	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.zone_tolerance_px	format	M20	24	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.max_cut_share	format	M20	0.34	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.director_tools	format	M20	"Read Glob"	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.build_fix_rounds	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.three_d_heavy_objects	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.hook2_max_s	format	M20	3.5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.hook2_hold_ms	format	M20	800	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.draft_quality	format	M20	"draft"	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.draft_crf	format	M20	20	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.energy_rules	format	M20	"error"	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.hero_motion_share	format	M20	0.7	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+visual.layers_share	format	M20	0.6	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+caps.angle_rounds	engine	-	2	engine key: stays in config.json
+caps.script_rounds	engine	-	3	engine key: stays in config.json
+caps.review_rounds_opus	engine	-	3	engine key: stays in config.json
+caps.review_rounds_fable	engine	-	2	engine key: stays in config.json
+caps.error_review_cycles	engine	-	3	engine key: stays in config.json
+caps.escalation_cycles	engine	-	1	engine key: stays in config.json
+caps.systemic_block_streak	engine	-	3	engine key: stays in config.json
+errors.transient_backoff_seconds	engine	-	[60,240,960]	engine key: stays in config.json
+errors.unparsed_limit_sleep_seconds	engine	-	1800	engine key: stays in config.json
+errors.probe_every_seconds	engine	-	1800	engine key: stays in config.json
+errors.repeated_signature_skip	engine	-	2	engine key: stays in config.json
+errors.log_tail_lines	engine	-	200	engine key: stays in config.json
+errors.classify_tail_lines	engine	-	40	engine key: stays in config.json
+errors.script_limit_retries	engine	-	2	engine key: stays in config.json
+timeouts.model_call_seconds	engine	-	3600	engine key: stays in config.json
+timeouts.research_seconds	engine	-	2700	engine key: stays in config.json
+timeouts.angle_seconds	engine	-	2700	engine key: stays in config.json
+timeouts.expansion_seconds	engine	-	900	engine key: stays in config.json
+timeouts.gate_seconds	engine	-	900	engine key: stays in config.json
+timeouts.screenshot_seconds	engine	-	60	engine key: stays in config.json
+timeouts.index_seconds	engine	-	600	engine key: stays in config.json
+timeouts.hooks_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.brief_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.judge_seconds	engine	-	900	engine key: stays in config.json
+timeouts.script_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.cut_seconds	engine	-	900	engine key: stays in config.json
+timeouts.checks_seconds	engine	-	900	engine key: stays in config.json
+timeouts.pick_seconds	engine	-	900	engine key: stays in config.json
+timeouts.transcribe_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.tts_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.align_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.loudness_seconds	engine	-	300	engine key: stays in config.json
+timeouts.profile_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.plan_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.build_seconds	engine	-	2400	engine key: stays in config.json
+timeouts.check_seconds	engine	-	900	engine key: stays in config.json
+timeouts.events_seconds	engine	-	900	engine key: stays in config.json
+timeouts.render_draft_seconds	engine	-	3600	engine key: stays in config.json
+timeouts.reviewer_seconds	engine	-	2400	engine key: stays in config.json
+timeouts.fixer_seconds	engine	-	2400	engine key: stays in config.json
+timeouts.verify_seconds	engine	-	900	engine key: stays in config.json
+timeouts.probe_seconds	engine	-	300	engine key: stays in config.json
+timeouts.sfx_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.mechanical_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.style_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.edit_review_seconds	engine	-	1800	engine key: stays in config.json
+timeouts.render_final_seconds	engine	-	5400	engine key: stays in config.json
+timeouts.render_hook2_seconds	engine	-	1200	engine key: stays in config.json
+timeouts.mux_seconds	engine	-	900	engine key: stays in config.json
+timeouts.caption_seconds	engine	-	900	engine key: stays in config.json
+review.reviewer_tools	engine	-	"Read Glob Grep WebSearch WebFetch"	a safety key of review: engine, resolved for every channel (protect.py, treeguard)
+review.fixer_tools	engine	-	"Read Glob Grep Edit Write Bash"	a safety key of review: engine, resolved for every channel (protect.py, treeguard)
+review.fixer_paths	engine	-	["pipeline","channels/{channel}/motion-lib/candidates"]	a safety key of review: engine, resolved for every channel (protect.py, treeguard)
+review.protected_paths	engine	-	["channels/*/ideas.txt","channels/*/library","channels/*/...	a safety key of review: engine, resolved for every channel (protect.py, treeguard)
+review.settle_ms	format	M20	600	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.emphasis_settle_ms	format	M20	150	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.zone_tolerance_px	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.caption_band_above_px	format	M20	180	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.caption_band_below_px	format	M20	80	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.min_font_px	format	M20	24	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.caption_min_size_share	format	M20	0.9	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.contrast_min	format	M20	4.5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.contrast_display_min	format	M20	2.7	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.emphasis_tolerance_ms	format	M20	80	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.avatar_min_px	format	M20	112	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.cadence_tolerance_pct	format	M20	20	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.palette_delta_e	format	M20	5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.palette_min_share_pct	format	M20	90	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.aac_peak_tolerance_db	format	M20	0.5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.wer_max_pct	format	M20	5	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.qa_tools	format	M20	"Read Glob"	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.energy_check	format	M20	true	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.energy_scene_share	format	M20	0.8	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.liveness	format	M20	true	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.min_edge_elements	format	M20	4	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+review.early_stop	format	M20	true	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+runner.poll_seconds	engine	-	120	engine key: stays in config.json
+runner.status_every_seconds	engine	-	300	engine key: stays in config.json
+runner.limit_margin_seconds	engine	-	120	engine key: stays in config.json
+runner.timezone	engine	-	"Europe/Rome"	engine key: stays in config.json
+runner.sleep_scale	engine	-	1	engine key: stays in config.json
+runner.lock_stale_seconds	engine	-	60	engine key: stays in config.json
+runner.lock_wait_seconds	engine	-	30	engine key: stays in config.json
+runner.min_free_gb	engine	-	10	engine key: stays in config.json
+paths.exports	engine	-	"exports"	exports/ is shared, at the root: resolved against REELS_ROOT
+paths.vendor	engine	-	"pipeline/vendor/ig-agent-skill"	an engine path (vendor, known issues, interpreters)
+paths.known_issues	engine	-	"pipeline/knowledge/known-issues.md"	an engine path (vendor, known issues, interpreters)
+paths.venv_python	engine	-	".venv-tts/Scripts/python.exe"	an engine path (vendor, known issues, interpreters)
+paths.kokoro_python	engine	-	"C:/Users/there/venvs/kokoro/Scripts/python.exe"	an engine path (vendor, known issues, interpreters)
+preflight.require	engine	-	[{"check":"command","name":"claude","fix":"npm install -g...	engine key: stays in config.json
+render.draft_resolution	engine	-	"540x960"	engine key: stays in config.json
+render.final_resolution	engine	-	"1080x1920"	engine key: stays in config.json
+render.fps	engine	-	30	engine key: stays in config.json
+render.quality	engine	-	"looks"	engine key: stays in config.json
+render.audio_bitrate_k	engine	-	160	engine key: stays in config.json
+render.audio_channels	engine	-	1	engine key: stays in config.json
+render.duration_tolerance_s	engine	-	0.2	engine key: stays in config.json
+render.loudness_tolerance_lu	engine	-	1.0	engine key: stays in config.json
+render.true_peak_tolerance_db	engine	-	0.5	engine key: stays in config.json
+render.hook2_max_s	engine	-	3.5	engine key: stays in config.json
+caption.first_line_max_chars	format	M20	125	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+caption.hashtags	format	M20	[3,5]	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+caption.body_chars	format	M20	[150,900]	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+caption.tries	format	M20	2	format-owned (problem-solution-reel): moves into format.json config; until then it stays here
+logs.rotate_mb	engine	-	50	engine key: stays in config.json
+logs.rotate_keep	engine	-	3	engine key: stays in config.json

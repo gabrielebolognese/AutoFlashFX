@@ -1,0 +1,16 @@
+make-manifest: 11 lines (11 top, 0 inner) -> C:\Users\there\OneDrive\Desktop\instagramReels\build\M18\move-manifest.tsv
+check-manifest: ok: 11 lines (11 top, 0 inner) cover 6741 files, 13061 engine files, 19802 in the inventory
+manifest-diff: 0 only in the plan, 0 only now, 4 with other counts
+migrate M18: 11 line(s) (10 moves)
+STEP git-mv   ideas.txt -> channels/flashfx/ideas.txt: git mv
+STEP git-mv   library -> channels/flashfx/library: git mv
+STEP git-mv   styles -> channels/flashfx/styles: git mv
+STEP git-mv   motion-lib -> channels/flashfx/motion-lib: git mv
+STEP git-mv   golden -> channels/flashfx/golden: git mv
+STEP fs-mv    logs/build-sfx-map -> channels/flashfx/logs/build-sfx-map: renamed
+STEP fs-mv    logs/index-hooks -> channels/flashfx/logs/index-hooks: renamed
+STEP fs-mv    logs/runner.log -> channels/flashfx/logs/runner.log: renamed
+STEP fs-mv    logs/status.txt -> channels/flashfx/logs/status.txt: renamed
+STEP fs-mv    logs/voice-profile -> channels/flashfx/logs/voice-profile: renamed
+STEP stays   voicetests
+migrate M18: verified (7259 files in the listing, 0 text file(s) rewritten)

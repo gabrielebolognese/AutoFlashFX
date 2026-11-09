@@ -4,7 +4,7 @@
     import paths
     paths.ch("library/hooks.txt")       -> <root>/channels/<id>/library/hooks.txt (REELS_CHANNEL; refuses another channel)
     paths.library(), paths.styles(), paths.motionlib(), paths.golden(), paths.runs(), paths.logs(), paths.locks(), paths.ideas()
-    paths.exports(), paths.export_path("flashfx-3")
+    paths.exports(), paths.export_path("<id>-3")
     paths.cfg_path(cfg, "paths.profile") -> the value of a resolved-config key, resolved against the channel folder
     paths.channel_ids(), paths.channel_json(id), paths.require_channel()
 

@@ -49,7 +49,7 @@ def out(text: str = "") -> None:
 
 
 def undash(text: str) -> str:
-    return str(text).replace("—", ", ").replace("–", "-")
+    return str(text).replace(chr(0x2014), ", ").replace(chr(0x2013), "-")
 
 
 class Migration:

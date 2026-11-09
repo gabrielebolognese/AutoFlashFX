@@ -40,7 +40,7 @@ LATER_DUMMIES="$(dummy_after 06-judge)"
 FAMILIES_RE='^(tools-listicle|how-to-system|mistake-warning|myth-contrarian|story-confession|transformation)$'
 
 state_get() { python "$STATE_PY" get "$@"; }
-run_dirs() { ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||'; }
+run_dirs() { ls -d "$SANDBOX"/channels/flashfx/runs/*/ 2>/dev/null | sed 's|/$||'; }
 first_run() { run_dirs | head -n 1; }
 run_once() {  # run_once <outfile> [env...]: the sandbox's own run.sh (REELS_REPO is the sandbox copy of the repo)
   local out="$1"; shift
@@ -97,9 +97,9 @@ EOF
 seed_run() {  # a run in the sandbox with S1 to S3 done from the frozen M4 outputs (04-angle stays skipped); prints the run dir
   local raw id created rd st
   raw="$(tr -d '\r' < "$FROZEN/idea.txt")"
-  printf '{%s}\n' "$raw" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$raw" > "$SANDBOX/channels/flashfx/ideas.txt"
   id="$(printf '%s' "$raw" | python pipeline/lib/ideas.py id)"
-  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$id")"
+  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$id")"
   rd="$(jf "$created" run_dir)"
   for st in 01-research 02-expansion 03-gate; do
     cp -r "$FROZEN/$st/." "$rd/$st/"
@@ -123,7 +123,7 @@ with open(os.path.join(d, "05-hooks.2.json"), "w", encoding="utf-8", newline="\n
     json.dump({"brief_markdown": body, "video_type": "default", "suggested_tones": ["insider", "calm expert", "warning"]}, f, ensure_ascii=False)
 EOF
   # (the parse output goes through a file: a `python -` script fed by a heredoc cannot also read a pipe)
-  python "$HOOKS_PY" parse --file "$SANDBOX/library/hooks.txt" > "$d/parsed.json"
+  python "$HOOKS_PY" parse --file "$SANDBOX/channels/flashfx/library/hooks.txt" > "$d/parsed.json"
   python - "$d" <<'EOF'
 import json, sys, os
 fams = ["tools-listicle", "how-to-system", "mistake-warning", "myth-contrarian", "story-confession", "transformation"]
@@ -211,31 +211,31 @@ assert_eq "$(fake_calls)" "1" "index-hooks: one batched call to the indexer"
 assert_eq "$(fake_field 1 role)" "indexer" "index-hooks: the call's role is indexer"
 assert_eq "$(fake_field 1 model)" "haiku" "index-hooks: the indexer model from config"
 assert_eq "$(fake_field 1 tools)" '[""]' "index-hooks: no tools"
-assert_file "$SANDBOX/library/.hooks.index.json" "index-hooks: library/.hooks.index.json written"
-assert_file "$SANDBOX/library/hooks.lint.txt" "index-hooks: library/hooks.lint.txt written"
-assert_file "$SANDBOX/library/.hooks.stats.json" "index-hooks: library/.hooks.stats.json created"
-n_lines="$(python "$HOOKS_PY" parse --file "$SANDBOX_M/library/hooks.txt" | python -c 'import json, sys; print(len({e["id"] for e in json.load(sys.stdin)}))')"
-assert_eq "$(json_get "$SANDBOX/library/.hooks.index.json" counts.total)" "$n_lines" "index-hooks: one entry per unique hook line of hooks.txt ($n_lines)"
-assert_eq "$(grep -c -E '^- id [0-9a-f]{10}: .' "$SANDBOX/logs/index-hooks/prompt-index.md")" "$n_lines" "index-hooks: the prompt lists every hook with its id"
-assert_eq "$(json_get "$SANDBOX/library/.hooks.index.json" counts.unclassified)" "0" "index-hooks: every hook classified from the answer"
+assert_file "$SANDBOX/channels/flashfx/library/.hooks.index.json" "index-hooks: library/.hooks.index.json written"
+assert_file "$SANDBOX/channels/flashfx/library/hooks.lint.txt" "index-hooks: library/hooks.lint.txt written"
+assert_file "$SANDBOX/channels/flashfx/library/.hooks.stats.json" "index-hooks: library/.hooks.stats.json created"
+n_lines="$(python "$HOOKS_PY" parse --file "$SANDBOX_M/channels/flashfx/library/hooks.txt" | python -c 'import json, sys; print(len({e["id"] for e in json.load(sys.stdin)}))')"
+assert_eq "$(json_get "$SANDBOX/channels/flashfx/library/.hooks.index.json" counts.total)" "$n_lines" "index-hooks: one entry per unique hook line of hooks.txt ($n_lines)"
+assert_eq "$(grep -c -E '^- id [0-9a-f]{10}: .' "$SANDBOX/channels/flashfx/logs/index-hooks/prompt-index.md")" "$n_lines" "index-hooks: the prompt lists every hook with its id"
+assert_eq "$(json_get "$SANDBOX/channels/flashfx/library/.hooks.index.json" counts.unclassified)" "0" "index-hooks: every hook classified from the answer"
 fake_claude_reset
 out="$(bash pipeline/bin/index-hooks 2>&1)"; rc=$?
 assert_rc 0 $rc "index-hooks: a second run exits 0"
 assert_eq "$(fake_calls)" "0" "index-hooks: a second run with no change makes no model call"
 assert_true "index-hooks: the second run says it is up to date" grep -q "up to date" <<<"$out"
-ls "$SANDBOX"/logs/index-hooks/calls/*.json >/dev/null 2>&1 && pass "index-hooks: the call files live under logs/index-hooks/calls/" || fail "index-hooks: no call files under logs/index-hooks/calls/"
+ls "$SANDBOX"/channels/flashfx/logs/index-hooks/calls/*.json >/dev/null 2>&1 && pass "index-hooks: the call files live under logs/index-hooks/calls/" || fail "index-hooks: no call files under logs/index-hooks/calls/"
 
 # the vendor formulas and the shortlist
 assert_eq "$(python "$HOOKS_PY" vendor --vendor "$VENDOR/hooks.json" | python -c 'import json, sys; d = json.load(sys.stdin); print(len(d), d[0]["id"], d[-1]["id"], all(h["family"] for h in d))')" "26 v01 v26 True" "vendor: 26 formulas v01 to v26, each with a family"
-sl="$(python "$HOOKS_PY" shortlist --index "$SANDBOX_M/library/.hooks.index.json" --stats "$SANDBOX_M/library/.hooks.stats.json" --vendor "$VENDOR/hooks.json" --n 24 --seed test-idea --out "$W/shortlist.json")"
+sl="$(python "$HOOKS_PY" shortlist --index "$SANDBOX_M/channels/flashfx/library/.hooks.index.json" --stats "$SANDBOX_M/channels/flashfx/library/.hooks.stats.json" --vendor "$VENDOR/hooks.json" --n 24 --seed test-idea --out "$W/shortlist.json")"
 assert_eq "$(jf "$sl" n)" "24" "shortlist: 24 templates"
 assert_true "shortlist: at least 3 families, library and vendor templates both present" python -c '
 import json, sys; s = json.loads(sys.argv[1]); sys.exit(0 if len(s["families"]) >= 3 and s["library"] > 0 and s["vendor"] > 0 else 1)' "$sl"
 assert_true "shortlist: no broken-blank template is offered" python -c '
 import json, sys
 idx = json.load(open(sys.argv[1], encoding="utf-8")); broken = {h["id"] for h in idx["hooks"] if h["broken_blank"]}
-sl = json.load(open(sys.argv[2], encoding="utf-8")); sys.exit(1 if any(c["template_id"] in broken for c in sl) else 0)' "$SANDBOX_M/library/.hooks.index.json" "$W/shortlist.json"
-python "$HOOKS_PY" shortlist --index "$SANDBOX_M/library/.hooks.index.json" --stats "$SANDBOX_M/library/.hooks.stats.json" --vendor "$VENDOR/hooks.json" --n 24 --seed test-idea --out "$W/shortlist2.json" >/dev/null
+sl = json.load(open(sys.argv[2], encoding="utf-8")); sys.exit(1 if any(c["template_id"] in broken for c in sl) else 0)' "$SANDBOX_M/channels/flashfx/library/.hooks.index.json" "$W/shortlist.json"
+python "$HOOKS_PY" shortlist --index "$SANDBOX_M/channels/flashfx/library/.hooks.index.json" --stats "$SANDBOX_M/channels/flashfx/library/.hooks.stats.json" --vendor "$VENDOR/hooks.json" --n 24 --seed test-idea --out "$W/shortlist2.json" >/dev/null
 assert_true "shortlist: the same seed gives the same shortlist" cmp -s "$W/shortlist.json" "$W/shortlist2.json"
 assert_true "templates-text: one line per template with the id, the family and the fit" test "$(python "$HOOKS_PY" templates-text --shortlist "$W/shortlist.json" | grep -c 'template_id `.*` | family .* | fits problem to solution: ')" = 24
 # stats weighting: a template that always wins is picked more often than one that never does
@@ -250,7 +250,7 @@ EOF
 read -r win_id lose_id < <(python -c 'import json; sl = json.load(open("'"$W/shortlist.json"'", encoding="utf-8")); print(sl[0]["template_id"], sl[1]["template_id"])')
 wins=0; loses=0
 for s in 1 2 3 4 5 6 7 8 9 10 11 12; do
-  python "$HOOKS_PY" shortlist --index "$SANDBOX_M/library/.hooks.index.json" --stats "$W/stats-biased.json" --vendor "$VENDOR/hooks.json" --n 10 --per-family 0 --seed "s$s" --out "$W/sl-$s.json" >/dev/null
+  python "$HOOKS_PY" shortlist --index "$SANDBOX_M/channels/flashfx/library/.hooks.index.json" --stats "$W/stats-biased.json" --vendor "$VENDOR/hooks.json" --n 10 --per-family 0 --seed "s$s" --out "$W/sl-$s.json" >/dev/null
   grep -q "\"$win_id\"" "$W/sl-$s.json" && wins=$((wins + 1))
   grep -q "\"$lose_id\"" "$W/sl-$s.json" && loses=$((loses + 1))
 done
@@ -263,7 +263,7 @@ assert_eq "$(python "$HOOKS_PY" limits --wpm 140 | python -c 'import json, sys; 
 assert_eq "$(python "$HOOKS_PY" limits --wpm 195 | python -c 'import json, sys; print(json.load(sys.stdin)["max_words"])')" "8" "limits: the cap never exceeds 8 words"
 
 # the hook checks
-chk_args=(--shortlist "$W/shortlist.json" --index "$SANDBOX_M/library/.hooks.index.json" --vendor "$VENDOR/hooks.json" --wpm 150 --idea-id test)
+chk_args=(--shortlist "$W/shortlist.json" --index "$SANDBOX_M/channels/flashfx/library/.hooks.index.json" --vendor "$VENDOR/hooks.json" --wpm 150 --idea-id test)
 res="$(python "$HOOKS_PY" check --answer "$FAKE_M5/05-hooks.1.json" --out "$W/hooks.json" "${chk_args[@]}")"
 assert_eq "$(jf "$res" ok)" "True" "check: the fixture answer passes every rule ($(jf "$res" kept) hooks)"
 assert_true "check: hooks.json validates against the stage schema" python pipeline/bin/validate-json pipeline/stages/05-hooks/schema.json "$W/hooks.json"
@@ -432,25 +432,25 @@ assert_grep "^- \*\*Pace:\*\* [0-9]+ words per minute, measured" "$W/voice-model
 assert_false "is-draft: a filled file is not a draft" python "$VP_PY" is-draft "$W/voice-model.md"
 python "$VP_PY" account --out "$W/account.md" >/dev/null
 assert_grep "^## Topics out" "$W/account.md" "account: the draft has the spec's sections"
-cp "$REPO_DIR/config.json" "$W/config-copy.json"
+cp "$REPO_DIR/channels/flashfx/channel.json" "$W/config-copy.json"
 python "$VP_PY" set-wpm --config "$W/config-copy.json" --wpm 177 >/dev/null
 assert_grep '"wpm": 177,' "$W/config-copy.json" "set-wpm: voice.wpm rewritten"
-assert_eq "$(diff "$REPO_DIR/config.json" "$W/config-copy.json" | grep -c '^[<>]')" "2" "set-wpm: only that one line changed"
+assert_eq "$(diff "$REPO_DIR/channels/flashfx/channel.json" "$W/config-copy.json" | grep -c '^[<>]')" "2" "set-wpm: only that one line changed"
 # build-voice-profile in the sandbox: no memo, the drafts are written, the pace is measured when a whisper interpreter exists
-mkdir -p "$SANDBOX/library/voice"
-if [ -f "$REPO_DIR/library/voice/engine.txt" ]; then cp "$REPO_DIR/library/voice/engine.txt" "$SANDBOX/library/voice/"; fi
-if [ -f "$REPO_DIR/library/voice/reference.wav" ]; then cp "$REPO_DIR/library/voice/reference.wav" "$SANDBOX/library/voice/"; fi
-rm -f "$SANDBOX/library/profile/voice.md" "$SANDBOX/library/profile/account.md"
+mkdir -p "$SANDBOX/channels/flashfx/library/voice"
+if [ -f "$REPO_DIR/channels/flashfx/library/voice/engine.txt" ]; then cp "$REPO_DIR/channels/flashfx/library/voice/engine.txt" "$SANDBOX/channels/flashfx/library/voice/"; fi
+if [ -f "$REPO_DIR/channels/flashfx/library/voice/reference.wav" ]; then cp "$REPO_DIR/channels/flashfx/library/voice/reference.wav" "$SANDBOX/channels/flashfx/library/voice/"; fi
+rm -f "$SANDBOX/channels/flashfx/library/profile/voice.md" "$SANDBOX/channels/flashfx/library/profile/account.md"
 out="$(bash pipeline/bin/build-voice-profile --no-model 2>&1)"; rc=$?
 assert_rc 0 $rc "build-voice-profile: exits 0 in the sandbox"
-assert_file "$SANDBOX/library/profile/voice.md" "build-voice-profile: voice.md written"
-assert_file "$SANDBOX/library/profile/account.md" "build-voice-profile: account.md written"
+assert_file "$SANDBOX/channels/flashfx/library/profile/voice.md" "build-voice-profile: voice.md written"
+assert_file "$SANDBOX/channels/flashfx/library/profile/account.md" "build-voice-profile: account.md written"
 assert_true "build-voice-profile: both files are drafts with placeholders" python -c '
-import sys; sys.exit(0 if all("[FILL IN" in open(p, encoding="utf-8").read() for p in sys.argv[1:]) else 1)' "$SANDBOX_M/library/profile/voice.md" "$SANDBOX_M/library/profile/account.md"
+import sys; sys.exit(0 if all("[FILL IN" in open(p, encoding="utf-8").read() for p in sys.argv[1:]) else 1)' "$SANDBOX_M/channels/flashfx/library/profile/voice.md" "$SANDBOX_M/channels/flashfx/library/profile/account.md"
 assert_true "build-voice-profile: the next step for the user is printed" grep -q "NEXT STEP" <<<"$out"
-if ls "$SANDBOX"/logs/voice-profile/*.words.json >/dev/null 2>&1; then
-  assert_grep "^- \*\*Pace:\*\* [0-9]+ words per minute, measured from library/voice/reference.wav" "$SANDBOX/library/profile/voice.md" "build-voice-profile: the pace measured from the reference recording"
-  assert_grep "^1\. \"" "$SANDBOX/library/profile/voice.md" "build-voice-profile: at least one verbatim excerpt"
+if ls "$SANDBOX"/channels/flashfx/logs/voice-profile/*.words.json >/dev/null 2>&1; then
+  assert_grep "^- \*\*Pace:\*\* [0-9]+ words per minute, measured from library/voice/reference.wav" "$SANDBOX/channels/flashfx/library/profile/voice.md" "build-voice-profile: the pace measured from the reference recording"
+  assert_grep "^1\. \"" "$SANDBOX/channels/flashfx/library/profile/voice.md" "build-voice-profile: at least one verbatim excerpt"
 else
   printf '    (no whisper interpreter on this PC: the pace was not measured, which the script reports)\n'
   assert_true "build-voice-profile: says why the pace was not measured" grep -q -i "not measured\|no interpreter\|no recording" <<<"$out"
@@ -460,7 +460,7 @@ assert_true "build-voice-profile: existing files are kept without --force" grep 
 assert_eq "$(fake_calls)" "0" "build-voice-profile: no model call without a memo"
 
 # session_call --seed-if-new: no stored session means the first call is the seeded one
-RD="$SANDBOX_M/runs/seed-test"
+RD="$SANDBOX_M/channels/flashfx/runs/seed-test"
 mkdir -p "$RD/01-research" "$RD/02-expansion" "$RD/03-gate" "$RD/05-hooks"
 cp "$FROZEN/01-research/facts.md" "$RD/01-research/"; cp "$FROZEN/02-expansion/expansion.md" "$RD/02-expansion/"; cp "$FROZEN/03-gate/gate.json" "$RD/03-gate/"
 printf '{"version": 1, "run_id": "seed-test", "idea": {"id": "x", "text": "the idea", "raw": "the idea"}, "status": "running", "stages": {}, "sessions": {}, "flags": [], "timing": {}}' > "$RD/state.json"
@@ -511,7 +511,7 @@ assert_grep "${ts_regex}STEP   judging hooks done \([0-9hms]+\) -> writing scrip
 assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the run continued to the (dummy) export"
 assert_not_grep "${ts_regex}ERROR" "$OUT" "no ERROR line"
 assert_not_grep "${ts_regex}BLOCK" "$OUT" "no BLOCK line"
-if python "$VP_PY" is-draft "$SANDBOX_M/library/profile/voice.md" 2>/dev/null; then
+if python "$VP_PY" is-draft "$SANDBOX_M/channels/flashfx/library/profile/voice.md" 2>/dev/null; then
   assert_grep "${ts_regex}FLAG   needs review: library/profile/voice.md is still a draft" "$OUT" "FLAG: the draft voice.md is a NEEDS REVIEW flag"
 fi
 H="$RD/05-hooks"; J="$RD/06-judge"
@@ -533,7 +533,7 @@ assert_true "judge.json: reasons, two complete rankings, 12 pairwise results, no
 import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8"))
 sys.exit(0 if d["reasons"] and len(d["rankings"]) == 2 and all(r["complete"] for r in d["rankings"]) and len(d["pairwise"]) == 12 and d["filtered_out"] == [] and d["regenerated"] is False else 1)' "$J/judge.json"
 assert_ne "$(json_get "$J/labels-1.json" order)" "$(json_get "$J/labels-2.json" order)" "the two ranking calls used different shuffles"
-ST="$SANDBOX/library/.hooks.stats.json"
+ST="$SANDBOX/channels/flashfx/library/.hooks.stats.json"
 assert_true "stats: every template of hooks.json was picked once and the winner's template won once" python -c '
 import json, sys
 hooks = json.load(open(sys.argv[1], encoding="utf-8"))["hooks"]; judge = json.load(open(sys.argv[2], encoding="utf-8")); st = json.load(open(sys.argv[3], encoding="utf-8"))["hooks"]
@@ -549,8 +549,8 @@ assert_eq "$(fake_field 3 resume)" "$sid" "the brief call resumes the hooks call
 assert_eq "$(fake_field 4 resume),$(fake_field 5 resume),$(fake_field 6 resume)" ",," "the three judge calls are fresh sessions"
 assert_eq "$(fake_field 4 model)" "$(json_get "$REPO_DIR/config.json" models.judge.model)" "the judge model from config"
 assert_eq "$(fake_field 2 tools),$(fake_field 4 tools)" '[""],[""]' "no tools for the hooks and judge calls"
-no_emdash_in "no em dash in the stage files" "$H/hooks.json" "$H/brief.md" "$J/judge.json" "$SANDBOX/logs/runner.log" "$ST"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
+no_emdash_in "no em dash in the stage files" "$H/hooks.json" "$H/brief.md" "$J/judge.json" "$SANDBOX/channels/flashfx/logs/runner.log" "$ST"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
 
 # the regeneration path: only 3 of 12 hooks pass hookscore, S5 regenerates once, the judge continues
 make_fake_fixtures "$SANDBOX/fixtures" "$FAKE_M5_REGEN"
@@ -590,9 +590,9 @@ started="$EPOCHSECONDS"
 out="$(bash pipeline/bin/index-hooks 2>&1)"; rc=$?
 printf '    %s (%ss)\n' "$(printf '%s' "$out" | tail -n 1)" "$((EPOCHSECONDS - started))"
 assert_rc 0 $rc "index-hooks exits 0 with the real indexer"
-IDX="$SANDBOX/library/.hooks.index.json"; LINT="$SANDBOX/library/hooks.lint.txt"
+IDX="$SANDBOX/channels/flashfx/library/.hooks.index.json"; LINT="$SANDBOX/channels/flashfx/library/hooks.lint.txt"
 assert_file "$IDX" "library/.hooks.index.json written"
-parsed="$(python "$HOOKS_PY" parse --file "$SANDBOX_M/library/hooks.txt")"
+parsed="$(python "$HOOKS_PY" parse --file "$SANDBOX_M/channels/flashfx/library/hooks.txt")"
 n_unique="$(printf '%s' "$parsed" | python -c 'import json, sys; print(len({e["id"] for e in json.load(sys.stdin)}))')"
 assert_eq "$(json_get "$IDX" counts.total)" "$n_unique" "one entry per unique hook line ($n_unique)"
 assert_true "every entry has id, family (one of the six), fits_problem_solution (boolean) and blanks" python -c '
@@ -621,7 +621,7 @@ assert_rc 0 $rc "a second run with no change exits 0"
 assert_eq "$(fake_calls)" "0" "a second run with no change makes no model call"
 assert_true "the second run says the index is up to date" grep -q "up to date" <<<"$out"
 fake_claude_off
-no_emdash_in "no em dash in the index and the stats" "$IDX" "$SANDBOX/library/.hooks.stats.json"
+no_emdash_in "no em dash in the index and the stats" "$IDX" "$SANDBOX/channels/flashfx/library/.hooks.stats.json"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -667,7 +667,7 @@ assert_true "judge.json: reasons, two rankings, the pairwise results" python -c 
 import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8")); sys.exit(0 if len(d["reasons"]) >= 1 and len(d["rankings"]) == 2 and len(d["pairwise"]) >= 6 and d["calls"] == 3 else 1)' "$J/judge.json"
 printf '    hookscore: %s passed of %s; filtered out: %s
 ' "$(json_len "$J/judge.json" candidates)" "$(json_len "$H/hooks.json" hooks)" "$(json_get "$J/judge.json" filtered_out | python -c 'import json, sys; print(", ".join(d["id"] + " (" + str(d["score"]) + ")" for d in json.load(sys.stdin)) or "none")')"
-ST="$SANDBOX/library/.hooks.stats.json"
+ST="$SANDBOX/channels/flashfx/library/.hooks.stats.json"
 assert_true "stats: the picks and the win are recorded" python -c '
 import json, sys
 hooks = json.load(open(sys.argv[1], encoding="utf-8"))["hooks"]; judge = json.load(open(sys.argv[2], encoding="utf-8")); st = json.load(open(sys.argv[3], encoding="utf-8"))["hooks"]
@@ -679,7 +679,7 @@ sid="$(python -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="
 assert_grep "^resume: $sid$" "$(ls "$H"/calls/*-brief-try1.meta | head -n 1)" "S5: the brief resumed the hooks call's session (session A)"
 assert_grep "^resume: $" "$J/calls/001-rank-1.meta" "S6: the first ranking ran in a fresh session"
 assert_grep "^resume: $" "$J/calls/002-rank-2.meta" "S6: the second ranking ran in a fresh session"
-no_emdash_in "no em dash in the stage files" "$H/hooks.json" "$H/brief.md" "$J/judge.json" "$SANDBOX/logs/runner.log" "$ST"
+no_emdash_in "no em dash in the stage files" "$H/hooks.json" "$H/brief.md" "$J/judge.json" "$SANDBOX/channels/flashfx/logs/runner.log" "$ST"
 if [ -n "${M5_FREEZE:-}" ] && [ "$rc" = 0 ]; then
   for st in 05-hooks 06-judge; do
     rm -rf "$FROZEN/$st"; mkdir -p "$FROZEN/$st/calls"

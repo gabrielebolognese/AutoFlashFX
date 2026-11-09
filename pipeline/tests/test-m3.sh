@@ -54,8 +54,8 @@ FIXER="$(python -c 'import json; print(json.load(open("config.json"))["models"][
 PROBE="$(python -c 'import json; print(json.load(open("config.json"))["models"]["probe"]["model"])')"
 
 state_get() { python "$STATE_PY" get "$@"; }
-run_dirs() { ls -d "$SANDBOX"/runs/*/ 2>/dev/null | sed 's|/$||'; }
-lock_pid() { cut -d' ' -f1 "$SANDBOX/.locks/runner/pid" 2>/dev/null; }
+run_dirs() { ls -d "$SANDBOX"/channels/flashfx/runs/*/ 2>/dev/null | sed 's|/$||'; }
+lock_pid() { cut -d' ' -f1 "$SANDBOX/channels/flashfx/.locks/runner/pid" 2>/dev/null; }
 
 run_once() {  # run_once <outfile> [env...]: the sandbox's own run.sh (so REELS_REPO is the sandbox repo)
   local out="$1"; shift
@@ -98,7 +98,7 @@ install_stage() {  # install_stage <fixture name> <stage key>: the fixture's fil
 }
 
 new_run() {  # new_run "<idea>" -> RD (the run dir, mixed path) and SD (its 10-build folder) with a prompt file
-  RD="$(printf '{%s}' "$1" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$(printf '%s' "$1" | sha1sum | cut -c1-12)" \
+  RD="$(printf '{%s}' "$1" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$(printf '%s' "$1" | sha1sum | cut -c1-12)" \
         | python -c 'import json, sys; print(json.load(sys.stdin)["run_dir"])')"
   SD="$RD/10-build"
   mkdir -p "$SD"
@@ -172,9 +172,9 @@ section "1. ai() units with the fake claude"
 sandbox_init
 fake_claude_on
 export REELS_SLEEP_SCALE=0
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 new_run "$IDEA_A"
-LOG="$SANDBOX/logs/runner.log"
+LOG="$SANDBOX/channels/flashfx/logs/runner.log"
 
 FAKE_CLAUDE_MODE=ok drive indexer --tools ""
 assert_rc 0 "$DRIVE_RC" "a plain call succeeds"
@@ -189,9 +189,9 @@ assert_grep "^class: ok$" "$SD/calls/001.meta" "the meta records the class"
 assert_eq "$(fake_field 1 model)" "haiku" "the fake saw --model haiku"
 assert_eq "$(fake_field 1 effort)" "low" "the fake saw --effort low"
 assert_eq "$(fake_field 1 tools)" '[""]' "--tools \"\" disables the tools"
-assert_true "the protected files are denied: Edit(ideas.txt)" grep -q 'Edit(ideas.txt)' <<<"$(fake_field 1 disallowed)"
-assert_true "the protected files are denied: Write(library/**)" grep -q 'Write(library/\*\*)' <<<"$(fake_field 1 disallowed)"
-assert_true "the protected files are denied: Edit(styles/**), Edit(exports/**)" grep -q 'Edit(styles/\*\*).*Edit(exports/\*\*)' <<<"$(fake_field 1 disallowed)"
+assert_true "the protected files are denied: Edit(channels/*/ideas.txt)" grep -q 'Edit(channels/\*/ideas.txt)' <<<"$(fake_field 1 disallowed)"
+assert_true "the protected files are denied: Write(channels/*/library/**)" grep -q 'Write(channels/\*/library/\*\*)' <<<"$(fake_field 1 disallowed)"
+assert_true "the protected files are denied: Edit(channels/*/styles/**), Edit(exports/**)" grep -q 'Edit(channels/\*/styles/\*\*).*Edit(exports/\*\*)' <<<"$(fake_field 1 disallowed)"
 assert_true ".env is denied to Read" grep -q 'Read(.env)' <<<"$(fake_field 1 disallowed)"
 assert_eq "$(fake_field 1 prompt_head)" "Reply with the single word ok." "the prompt arrives on stdin"
 assert_eq "$(fake_field 1 cwd)" "$(mixed "$REPO_DIR")" "the call runs in the repo root"
@@ -234,12 +234,12 @@ assert_rc 3 "$DRIVE_RC" "a session that no longer exists returns 3"
 assert_eq "$(state_get "$RD" sessions.A "cleared")" "" "the stored session is cleared"
 assert_grep '"resume_failed": true' "$SD/error.json" "error.json: resume_failed"
 
-before="$(cat "$SANDBOX/ideas.txt")"
+before="$(cat "$SANDBOX/channels/flashfx/ideas.txt")"
 rm -f "$SD/error.json"
-FAKE_CLAUDE_TAMPER_FILE="$SANDBOX_M/ideas.txt" FAKE_CLAUDE_MODE=tamper drive indexer --tools ""
+FAKE_CLAUDE_TAMPER_FILE="$SANDBOX_M/channels/flashfx/ideas.txt" FAKE_CLAUDE_MODE=tamper drive indexer --tools ""
 assert_rc 1 "$DRIVE_RC" "a call that changed a protected file is a code error"
-assert_eq "$(cat "$SANDBOX/ideas.txt")" "$before" "ideas.txt is restored from the snapshot"
-assert_true "the error names the protected file" grep -q "protected files (\[\"root/ideas.txt\"\])" <<<"$(field error)"
+assert_eq "$(cat "$SANDBOX/channels/flashfx/ideas.txt")" "$before" "ideas.txt is restored from the snapshot"
+assert_true "the error names the protected file" grep -q "protected files (\[\"channels/flashfx/ideas.txt\"\])" <<<"$(field error)"
 assert_no_file "$SD/calls/.protect" "the snapshot folder is removed"
 
 FAKE_CLAUDE_MODE=fatal drive indexer --tools ""
@@ -266,7 +266,7 @@ sandbox_init
 fake_claude_on
 export REELS_SLEEP_SCALE=0
 new_run "$IDEA_B"
-LOG="$SANDBOX/logs/runner.log"; LIMITS_LOG="$SANDBOX/logs/limits.log"
+LOG="$SANDBOX/channels/flashfx/logs/runner.log"; LIMITS_LOG="$SANDBOX/channels/flashfx/logs/limits.log"
 for fmt in time time-tz time-tz-ny weekday date epoch; do
   fake_claude_reset; : > "$LOG"; : > "$LIMITS_LOG"
   FAKE_CLAUDE_MODE="limit:$fmt" drive indexer --tools "" --resume "sess-$fmt"
@@ -307,7 +307,7 @@ assert_true "the probe files are named NNN-probe" ls "$SD/calls" | grep -q -- '-
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage aicall 10-build
-printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/limit.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FAKE_CLAUDE_MODE="limit:time+90"; rc=$?
 OUT="$SANDBOX/limit.out"
 assert_rc 0 $rc "the runner finishes the idea after a limit inside a stage"
@@ -316,7 +316,7 @@ assert_grep "${ts_regex}RESUME limit reset, continuing: building visuals$" "$OUT
 assert_grep "${ts_regex}STEP   building visuals done" "$OUT" "runner: the stage finishes after the wait"
 assert_grep "${ts_regex}DONE   exported #1" "$OUT" "runner: the idea is exported"
 exp="$(fmt_epoch $(( $(fake_field 1 limit_epoch) + 120 )))"
-assert_grep "\| waiting until $exp \(reset \+ 120 s\) \|" "$SANDBOX/logs/limits.log" "runner: limits.log has the target (reset + 120 s)"
+assert_grep "\| waiting until $exp \(reset \+ 120 s\) \|" "$SANDBOX/channels/flashfx/logs/limits.log" "runner: limits.log has the target (reset + 120 s)"
 assert_grep "model said: ok" "$(run_dirs | head -n 1)/10-build/stage.log" "runner: the stage got the answer after the retry"
 assert_not_grep "${ts_regex}(ERROR|BLOCK) " "$OUT" "runner: a limit is never an error"
 unset REELS_SLEEP_SCALE
@@ -329,7 +329,7 @@ sandbox_init
 fake_claude_on
 export REELS_SLEEP_SCALE=0
 new_run "$IDEA_C"
-LOG="$SANDBOX/logs/runner.log"
+LOG="$SANDBOX/channels/flashfx/logs/runner.log"
 FAKE_CLAUDE_MODE=transient:3 drive indexer --tools ""
 assert_rc 0 "$DRIVE_RC" "three transient failures, then success"
 assert_grep "${ts_regex}RETRY  temporary error \(overloaded\), retrying in 60s \(try 1/3\)$" "$LOG" "RETRY 1: 60 s"
@@ -379,7 +379,7 @@ section "4. a planted bug: the real Opus reviewer and Sonnet fixer (several minu
 fake_claude_off
 sandbox_init --with-pipeline
 install_stage buggy 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 head_before="$(git -C "$SANDBOX" rev-parse HEAD)"
 real_head_before="$(git -C "$REPO_DIR" rev-parse HEAD)"
 start=$EPOCHSECONDS
@@ -450,12 +450,12 @@ section "5. an unfixable error blocks the idea and the runner continues"
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n{%s}\n' "$IDEA_A" "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n{%s}\n' "$IDEA_A" "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 export FAKE_CLAUDE_REVIEW=no REELS_DUMMY="$(dummy_except 10-build)"
 runner_bg "$SANDBOX/block.out" --once
 OUT="$SANDBOX/block.out"
-if wait_for "BLOCK  idea" "$SANDBOX/logs/runner.log" 120; then
-  mkdir -p "$SANDBOX/library/keys" && printf 'the key\n' > "$SANDBOX/library/keys/service.key"   # the user fixes it before idea B
+if wait_for "BLOCK  idea" "$SANDBOX/channels/flashfx/logs/runner.log" 120; then
+  mkdir -p "$SANDBOX/channels/flashfx/library/keys" && printf 'the key\n' > "$SANDBOX/channels/flashfx/library/keys/service.key"   # the user fixes it before idea B
   pass "the first idea is blocked"
 else
   fail "no BLOCK line within 120 s"; cat "$OUT"
@@ -467,10 +467,10 @@ assert_grep "${ts_regex}BLOCK  idea \"Idea A: the gh CLI in 60 seconds, three ..
 assert_grep "${ts_regex}NEXT   idea 2/2 \"Idea B" "$OUT" "NEXT after the block"
 assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the next idea is exported once the key exists"
 assert_not_grep "${ts_regex}(FIXED|ESCAL|STOP) " "$OUT" "no fix, no escalation, no stop"
-assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: .* \| runs/" "$SANDBOX/logs/blocked.txt" "blocked.txt: the reason line"
-assert_grep "^\{$IDEA_A\}$" "$SANDBOX/logs/blocked.txt" "blocked.txt: the idea in braces"
-assert_grep "\| $IDEA_A \| (-|external) \| blocked: environment problem: " "$SANDBOX/logs/history.txt" "history: the blocked line (with the solution field, M12)"
-assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt is empty"
+assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: .* \| runs/" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the reason line"
+assert_grep "^\{$IDEA_A\}$" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the idea in braces"
+assert_grep "\| $IDEA_A \| (-|external) \| blocked: environment problem: " "$SANDBOX/channels/flashfx/logs/history.txt" "history: the blocked line (with the solution field, M12)"
+assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt is empty"
 RD="$(run_dirs | head -n 1)"
 assert_eq "$(state_get "$RD" status)" "blocked" "the run folder is kept with status blocked"
 assert_file "$RD/errors/E1.md" "E1.md kept"
@@ -483,7 +483,7 @@ assert_eq "$(fake_field 1 schema)" "True" "the reviewer answers with a JSON sche
 assert_eq "$(fake_field 1 cwd)" "$SANDBOX_M" "the reviewer runs in the repo root (the sandbox)"
 assert_true "the reviewer prompt holds the error report" grep -q "^# Role: reviewer" <<<"$(fake_field 1 prompt_head)"
 assert_grep "^## Known issues" "$RD/errors/E1.prompt.md" "the reviewer prompt includes known-issues.md"
-assert_no_file "$SANDBOX/logs/.block-streak" "the export reset the block streak"
+assert_no_file "$SANDBOX/channels/flashfx/logs/.block-streak" "the export reset the block streak"
 unset FAKE_CLAUDE_REVIEW REELS_DUMMY
 fi
 
@@ -493,7 +493,7 @@ section "6. the caps: the repeated-signature rule and the escalation, with fake 
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/channels/flashfx/ideas.txt"
 head_before="$(git -C "$SANDBOX" rev-parse HEAD)"
 run_once "$SANDBOX/escal.out" FAKE_CLAUDE_REVIEW=yes FAKE_CLAUDE_FIX=ok REELS_DUMMY="$(dummy_except 10-build)"; rc=$?
 OUT="$SANDBOX/escal.out"
@@ -526,14 +526,14 @@ assert_eq "$(state_get "$RD" errors.10-build.repeats)" "3" "state: the signature
 assert_eq "$(state_get "$RD" issues.fixed)" "2" "state: two issues fixed"
 assert_eq "$(state_get "$RD" issues.open)" "1" "state: one issue open"
 assert_grep "^Fix F2 applied" "$RD/10-build/restart-note.md" "the last restart note names F2"
-assert_file "$SANDBOX/logs/.block-streak" "the block streak file exists after a code-error block"
-assert_true "the streak counts 1" grep -q -E '^[0-9a-f]{12} 1 S10$' "$SANDBOX/logs/.block-streak"
+assert_file "$SANDBOX/channels/flashfx/logs/.block-streak" "the block streak file exists after a code-error block"
+assert_true "the streak counts 1" grep -q -E '^[0-9a-f]{12} 1 S10$' "$SANDBOX/channels/flashfx/logs/.block-streak"
 
 # failed verifications use up the three Opus cycles, then the escalation, then the block
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/verify.out" FAKE_CLAUDE_REVIEW=verify-fails FAKE_CLAUDE_FIX=ok REELS_DUMMY="$(dummy_except 10-build)"; rc=$?
 OUT="$SANDBOX/verify.out"
 RD="$(run_dirs | head -n 1)"
@@ -555,29 +555,29 @@ section "7. three identical blocks in a row stop the runner with STOPPED.md"
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n{%s}\n{%s}\n{%s}\n' "$IDEA_A" "$IDEA_B" "$IDEA_C" "$IDEA_D" > "$SANDBOX/ideas.txt"
+printf '{%s}\n{%s}\n{%s}\n{%s}\n' "$IDEA_A" "$IDEA_B" "$IDEA_C" "$IDEA_D" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/stop.out" FAKE_CLAUDE_REVIEW=no REELS_DUMMY="$(dummy_except 10-build)"; rc=$?
 OUT="$SANDBOX/stop.out"
 assert_rc 3 $rc "the runner stops with exit 3"
 assert_eq "$(grep -c -E "${ts_regex}BLOCK  " "$OUT")" "3" "three BLOCK lines"
 assert_grep "${ts_regex}STOP   systemic failure: the same error blocked 3 ideas in a row at S10: environment problem: .*\. See logs/STOPPED.md$" "$OUT" "STOP line"
 assert_not_grep "${ts_regex}START  idea 4/4" "$OUT" "the fourth idea is never started"
-assert_file "$SANDBOX/logs/STOPPED.md" "STOPPED.md written"
-assert_grep "^# Runner stopped: the same error blocked 3 ideas in a row at S10" "$SANDBOX/logs/STOPPED.md" "STOPPED.md title"
-assert_grep "^- the same error blocked 3 ideas in a row at S10: environment problem: fake reviewer: " "$SANDBOX/logs/STOPPED.md" "STOPPED.md diagnosis names the error"
-assert_grep "^1\. Read the reviewer's verdicts in runs/.*/fixes/F\*\.md" "$SANDBOX/logs/STOPPED.md" "STOPPED.md fix 1: the verdicts"
-assert_grep "^2\. Fix the cause yourself" "$SANDBOX/logs/STOPPED.md" "STOPPED.md fix 2: fix the cause"
-assert_grep "^3\. Re-add the blocked ideas: paste the braces from logs/blocked.txt" "$SANDBOX/logs/STOPPED.md" "STOPPED.md fix 3: re-add the ideas"
-assert_grep "^Then start the runner again: bash run.sh$" "$SANDBOX/logs/STOPPED.md" "STOPPED.md footer"
-assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/ideas.txt")" "1" "the fourth idea stays in ideas.txt"
-assert_eq "$(grep -c '^{' "$SANDBOX/logs/blocked.txt")" "3" "blocked.txt holds the three ideas"
-assert_no_file "$SANDBOX/logs/.block-streak" "the streak is cleared by the stop"
+assert_file "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md written"
+assert_grep "^# Runner stopped: the same error blocked 3 ideas in a row at S10" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md title"
+assert_grep "^- the same error blocked 3 ideas in a row at S10: environment problem: fake reviewer: " "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md diagnosis names the error"
+assert_grep "^1\. Read the reviewer's verdicts in runs/.*/fixes/F\*\.md" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md fix 1: the verdicts"
+assert_grep "^2\. Fix the cause yourself" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md fix 2: fix the cause"
+assert_grep "^3\. Re-add the blocked ideas: paste the braces from logs/blocked.txt" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md fix 3: re-add the ideas"
+assert_grep "^Then start the runner again: bash run.sh$" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md footer"
+assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "1" "the fourth idea stays in ideas.txt"
+assert_eq "$(grep -c '^{' "$SANDBOX/channels/flashfx/logs/blocked.txt")" "3" "blocked.txt holds the three ideas"
+assert_no_file "$SANDBOX/channels/flashfx/logs/.block-streak" "the streak is cleared by the stop"
 assert_eq "$(grep -c -E "${ts_regex}(ERROR) " "$OUT")" "3" "one ERROR per idea"
-assert_grep "^\[[0-9:]+\] STOP   systemic failure: the same error blocked 3 ideas" "$SANDBOX/logs/status.txt" "status.txt holds the STOP line"
+assert_grep "^\[[0-9:]+\] STOP   systemic failure: the same error blocked 3 ideas" "$SANDBOX/channels/flashfx/logs/status.txt" "status.txt holds the STOP line"
 status_out="$(cd "$SANDBOX" && bash "$SANDBOX/pipeline/bin/runner-status" 3)"
 assert_true "runner-status mentions STOPPED.md and the blocked ideas" grep -q "STOPPED: logs/STOPPED.md exists" <<<"$status_out"
 assert_true "runner-status counts the blocked ideas" grep -q "^blocked: 3 idea" <<<"$status_out"
-assert_eq "$(ls "$SANDBOX/runs" | wc -l | tr -d ' ')" "3" "three run folders kept"
+assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "3" "three run folders kept"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -592,35 +592,35 @@ assert_true "treeguard: a clean check exits 0" python "$TG" check --repo "$SANDB
 printf 'log line\n' >> "$SANDBOX/notes.txt"                            # grows during the call: left alone
 printf 'fixer edit\n' >> "$SANDBOX/run.sh"                             # the fixer edited the user's modified file: back to the user's version
 printf 'new\n' > "$SANDBOX/stray.txt"                                  # created by the fixer outside: deleted
-printf 'fixer edit\n' >> "$SANDBOX/styles/paper-cards/style.md"        # clean tracked file edited by the fixer: back to HEAD
+printf 'fixer edit\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/style.md"        # clean tracked file edited by the fixer: back to HEAD
 printf 'inside\n' >> "$SANDBOX/pipeline/knowledge/known-issues.md"     # inside the allowed paths: kept
 out="$(python "$TG" check --repo "$SANDBOX_M" --dir "$SANDBOX_M/.tg" --restore)"; rc=$?
 assert_rc 1 $rc "treeguard: changes outside the allowed paths are reported (exit 1)"
 assert_eq "$(paste -sd, "$SANDBOX/notes.txt")" "user work,log line" "treeguard: a pre-existing untracked file that grew during the call is left alone"
 assert_eq "$(tail -n 1 "$SANDBOX/run.sh")" "user edit" "treeguard: the user's own change to a tracked file survives, the fixer's edit on top of it is undone"
 assert_no_file "$SANDBOX/stray.txt" "treeguard: a file the fixer created outside is deleted"
-assert_eq "$(git -C "$SANDBOX" status --porcelain -- styles/paper-cards/style.md)" "" "treeguard: a clean tracked file edited by the fixer goes back to HEAD"
+assert_eq "$(git -C "$SANDBOX" status --porcelain -- channels/flashfx/styles/paper-cards/style.md)" "" "treeguard: a clean tracked file edited by the fixer goes back to HEAD"
 assert_grep "^inside$" "$SANDBOX/pipeline/knowledge/known-issues.md" "treeguard: changes inside pipeline/ are kept"
 assert_true "treeguard: the report names what was left alone" grep -q '"left": \["notes.txt"\]' <<<"$out"
 assert_true "treeguard: the report names what was put back" grep -q '"restored": \[' <<<"$out"
 PR="$REPO_DIR/pipeline/lib/protect.py"
-printf '{an idea}\n' > "$SANDBOX/ideas.txt"
+printf '{an idea}\n' > "$SANDBOX/channels/flashfx/ideas.txt"
 mkdir -p "$SANDBOX/exports/1"; printf 'reel\n' > "$SANDBOX/exports/1/1.mp4"
 python "$PR" snapshot --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr" >/dev/null
 assert_true "protect: a clean check exits 0" python "$PR" check --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr"
-printf '{another}\n' >> "$SANDBOX/ideas.txt"                           # the model appended an idea
-printf 'x\n' > "$SANDBOX/library/profile/new.txt"                      # the model created a profile file
-printf 'x\n' >> "$SANDBOX/styles/paper-cards/style.md"                 # the model edited the style
-rm -f "$SANDBOX/library/hooks.txt"                                     # the model deleted the hooks
+printf '{another}\n' >> "$SANDBOX/channels/flashfx/ideas.txt"                           # the model appended an idea
+printf 'x\n' > "$SANDBOX/channels/flashfx/library/profile/new.txt"                      # the model created a profile file
+printf 'x\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/style.md"                 # the model edited the style
+rm -f "$SANDBOX/channels/flashfx/library/hooks.txt"                                     # the model deleted the hooks
 printf 'bad\n' > "$SANDBOX/exports/1/extra.txt"                         # the model wrote into an export
 out="$(python "$PR" check --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr" --restore)"; rc=$?
 assert_rc 1 $rc "protect: changes to protected files are reported (exit 1)"
-assert_eq "$(cat "$SANDBOX/ideas.txt")" "{an idea}" "protect: ideas.txt is restored"
-assert_no_file "$SANDBOX/library/profile/new.txt" "protect: a new file under library/ is removed"
-assert_file "$SANDBOX/library/hooks.txt" "protect: a deleted library file is restored"
-assert_eq "$(git -C "$SANDBOX" status --porcelain -- styles/paper-cards/style.md)" "" "protect: style.md is restored"
+assert_eq "$(cat "$SANDBOX/channels/flashfx/ideas.txt")" "{an idea}" "protect: ideas.txt is restored"
+assert_no_file "$SANDBOX/channels/flashfx/library/profile/new.txt" "protect: a new file under library/ is removed"
+assert_file "$SANDBOX/channels/flashfx/library/hooks.txt" "protect: a deleted library file is restored"
+assert_eq "$(git -C "$SANDBOX" status --porcelain -- channels/flashfx/styles/paper-cards/style.md)" "" "protect: style.md is restored"
 assert_true "protect: the exports change is reported (not restored)" grep -q '"exports_changed": true' <<<"$out"
-assert_true "protect: the report names the changed files" grep -q '"changed": \["root/ideas.txt", "repo/styles/paper-cards/style.md"\]' <<<"$out"
+assert_true "protect: the report names the changed files" grep -q '"changed": \["channels/flashfx/ideas.txt", "channels/flashfx/styles/paper-cards/style.md"\]' <<<"$out"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -630,7 +630,7 @@ section "9. a failed stage script is classified: transient retries, a usage limi
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/flaky.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=reset FLAKY_FAILS=2; rc=$?
 OUT="$SANDBOX/flaky.out"
 RD="$(run_dirs | head -n 1)"
@@ -653,7 +653,7 @@ assert_eq "$(state_get "$RD" issues.fixed)" "0" "state: nothing fixed"
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/flaky4.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=reset FLAKY_FAILS=9 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/flaky4.out"
 RD="$(run_dirs | head -n 1)"
@@ -676,7 +676,7 @@ sys.exit(0 if tags == ["RETRY", "RETRY", "RETRY", "ERROR", "BLOCK"] else 1)' "$O
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/flakylimit.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit FLAKY_FAILS=1; rc=$?
 OUT="$SANDBOX/flakylimit.out"
 RD="$(run_dirs | head -n 1)"
@@ -688,7 +688,7 @@ assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the usage l
 assert_not_grep "${ts_regex}(ERROR|RETRY|BLOCK) " "$OUT" "a limit is never an error"
 assert_grep "${ts_regex}DONE   exported #1" "$OUT" "exported"
 assert_eq "$(fake_calls)" "0" "no reviewer call, no probe"
-assert_grep "\| session limit \| reset .* \| waiting until .* \(reset \+ 120 s\) \| \"You've hit your session limit" "$SANDBOX/logs/limits.log" "limits.log has the wait with the stage's message"
+assert_grep "\| session limit \| reset .* \| waiting until .* \(reset \+ 120 s\) \| \"You've hit your session limit" "$SANDBOX/channels/flashfx/logs/limits.log" "limits.log has the wait with the stage's message"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts"
 
 # a stage whose own model call failed (ai() wrote error.json) is not classified again: the log tail looks
@@ -696,7 +696,7 @@ assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage aicall 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 printf 'error:Boom happened in the model call\nreview:no\n' > "$SANDBOX/script.txt"
 run_once "$SANDBOX/aierr.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FAKE_CLAUDE_SCRIPT="$SANDBOX_M/script.txt" \
   AICALL_FAIL_NOTE="note: the fetch failed with ECONNRESET right after the model call"; rc=$?
@@ -716,7 +716,7 @@ assert_grep '"message": "Boom happened in the model call"' "$RD/10-build/error.j
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/limitloop.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/limitloop.out"
 RD="$(run_dirs | head -n 1)"
@@ -739,7 +739,7 @@ assert_grep "resets 3pm" "$RD/errors/E1.md" "E1.md shows the stage's limit line 
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/limitcap.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=limit-new FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/limitcap.out"
 RD="$(run_dirs | head -n 1)"
@@ -751,7 +751,7 @@ assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call"
 assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: " "$OUT" "BLOCK on the reviewer's verdict"
 assert_eq "$(event_tags "$OUT")" "LIMIT,RESUME,LIMIT,RESUME,ERROR,BLOCK" "the order is LIMIT, RESUME, LIMIT, RESUME, ERROR, BLOCK"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "3" "state: three attempts"
-assert_eq "$(grep -c "session limit | reset" "$SANDBOX/logs/limits.log")" "2" "limits.log has the two waits"
+assert_eq "$(grep -c "session limit | reset" "$SANDBOX/channels/flashfx/logs/limits.log")" "2" "limits.log has the two waits"
 
 # a log line that quotes a usage limit ("hit its usage limit, it resets weekly") before a real exception: the
 # unparsed limit gets its sleep and the probe (which answers at once), the rerun prints the same text, and that is
@@ -759,7 +759,7 @@ assert_eq "$(grep -c "session limit | reset" "$SANDBOX/logs/limits.log")" "2" "l
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_C" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_C" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/quoted.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=quoted-limit FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/quoted.out"
 RD="$(run_dirs | head -n 1)"
@@ -780,7 +780,7 @@ assert_grep "resets weekly" "$RD/errors/E1.md" "E1.md shows the quoted line to t
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/trace.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=traceback FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/trace.out"
 RD="$(run_dirs | head -n 1)"
@@ -799,7 +799,7 @@ assert_eq "$(state_get "$RD" errors.10-build.transient_tries 0)" "0" "state: no 
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage flaky 10-build
-printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/netdash.out" REELS_DUMMY="$(dummy_except 10-build)" REELS_SLEEP_SCALE=0 FLAKY_MODE=netdash FLAKY_FAILS=99 FAKE_CLAUDE_REVIEW=no; rc=$?
 OUT="$SANDBOX/netdash.out"
 RD="$(run_dirs | head -n 1)"
@@ -810,7 +810,7 @@ assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: environment pro
 assert_eq "$(event_tags "$OUT")" "RETRY,RETRY,RETRY,ERROR,BLOCK" "the order is RETRY, RETRY, RETRY, ERROR, BLOCK"
 assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call after the retries"
 assert_true "the stage really printed the em dash (stage.log holds U+2014)" python -c 'import sys; sys.exit(0 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 1)' "$RD/10-build/stage.log"
-for f in "$OUT" "$SANDBOX/logs/runner.log" "$SANDBOX/logs/status.txt" "$SANDBOX/logs/history.txt" "$SANDBOX/logs/blocked.txt" \
+for f in "$OUT" "$SANDBOX/channels/flashfx/logs/runner.log" "$SANDBOX/channels/flashfx/logs/status.txt" "$SANDBOX/channels/flashfx/logs/history.txt" "$SANDBOX/channels/flashfx/logs/blocked.txt" \
          "$RD/state.json" "$RD/errors/E1.msg" "$RD/fixes/F1.md" "$RD/fixes/F1.result.json"; do
   assert_true "no U+2014 in $(basename "$f")" python -c 'import sys; sys.exit(1 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 0)' "$f"
 done
@@ -820,7 +820,7 @@ line = next((l for l in open(sys.argv[1], "rb").read().split(b"\n") if l.startsw
 sys.exit(1 if (not line or bytes([0xE2, 0x80, 0x94]) in line) else 0)' "$RD/errors/E1.md"
 assert_grep "^- error: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your internet or DNS \(ENOTFOUND\)$" "$RD/errors/E1.md" "E1.md's error line reads the cleaned message"
 assert_true "E1.md still shows the stage's verbatim line to the reviewer (U+2014 in the log excerpt)" python -c 'import sys; sys.exit(0 if bytes([0xE2, 0x80, 0x94]) in open(sys.argv[1], "rb").read() else 1)' "$RD/errors/E1.md"
-assert_grep "blocked: environment problem: fake reviewer: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your int" "$SANDBOX/logs/history.txt" "history.txt has the cleaned reason"
+assert_grep "blocked: environment problem: fake reviewer: temporary error persisted after 3 retries \(network error\): exit 1: API Error: Can't reach the API server, check your int" "$SANDBOX/channels/flashfx/logs/history.txt" "history.txt has the cleaned reason"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -830,7 +830,7 @@ section "10. a runner killed during a review cycle: the restart resumes the cycl
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n' "$IDEA_A" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_A" > "$SANDBOX/channels/flashfx/ideas.txt"
 export REELS_DUMMY="$(dummy_except 10-build)"
 FAKE_CLAUDE_MODE=hang runner_bg "$SANDBOX/rkill1.out" --once
 if wait_for '"role": "reviewer"' "$FAKE_CLAUDE_LOG" 120; then
@@ -866,7 +866,7 @@ if wait_for '"role": "reviewer"' "$FAKE_CLAUDE_LOG" 120; then
   assert_no_file "$RD/errors/E1.pid" "the cycle's pid file is removed"
   assert_no_file "$RD/errors/E2.md" "no E2: the interrupted cycle kept its number"
   assert_grep '"outcome": "no_auto"' "$RD/fixes/F1.result.json" "F1.result.json holds the verdict"
-  assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: " "$SANDBOX/logs/blocked.txt" "blocked.txt has the idea"
+  assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: " "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt has the idea"
 else
   fail "the reviewer call never started (see $SANDBOX/rkill1.out)"; cat "$SANDBOX/rkill1.out"
   kill_tree "$(lock_pid)"; kill -9 $RUNNER_JOB 2>/dev/null
@@ -876,7 +876,7 @@ fi
 sandbox_init --with-pipeline
 fake_claude_on
 install_stage unfixable 10-build
-printf '{%s}\n' "$IDEA_B" > "$SANDBOX/ideas.txt"
+printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 # the reviewer outlives the restart: 90 s, since the restarted runner's preflight alone can take over 30 s on a busy
 # PC (M13: with 20 s the orphan had already finished when two real pipelines ran beside the test)
 FAKE_CLAUDE_DELAY=90 FAKE_CLAUDE_REVIEW=no runner_bg "$SANDBOX/rkill3.out" --once

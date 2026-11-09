@@ -33,7 +33,7 @@ want() { case " $SECTIONS " in *" $1 "*) return 0 ;; esac; return 1; }
 VALIDATE="$REPO_DIR/pipeline/bin/validate-json"
 VISUAL="$REPO_DIR/pipeline/lib/visual"
 REVIEW="$REPO_DIR/pipeline/lib/review"
-LIB="$REPO_DIR/motion-lib"
+LIB="$REPO_DIR/channels/flashfx/motion-lib"
 HF="npx --prefix $REPO_DIR hyperframes"
 FROZEN="$REPO_DIR/pipeline/tests/fixtures/runs/test-idea"
 W="$REPO_DIR/build/M15/tmp/test"

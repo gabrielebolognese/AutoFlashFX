@@ -188,9 +188,9 @@ python "$VALIDATE" "$MAP_SCHEMA" "$MAP" >/dev/null 2>&1; assert_rc 0 $? "sfx-map
 assert_eq "$(json_get "$MAP" counts.files)" "14" "14 audio files in the map (13 wav plus the broken mp3)"
 res="$(map_paths_match "$MAP" "$PACK_M")"; assert_rc 0 $? "every audio file is in the map or excluded with a reason ($res)"
 res="$(fields_present "$MAP")"; assert_rc 0 $? "every measured field is present for every mapped file ($res)"
-ls "$SANDBOX"/logs/build-sfx-map/calls/*classify*.json >/dev/null 2>&1 && pass "the call files live under logs/build-sfx-map/calls/" || fail "no call files under logs/build-sfx-map/calls/"
-assert_grep "^- id [0-9a-f]{10}: folder \"misc\", file \"mystery-tone.wav\"; duration" "$SANDBOX/logs/build-sfx-map/prompt-classify.md" "the prompt lists the unclear file with its folder, name and measurements"
-assert_eq "$(grep -c '^- id ' "$SANDBOX/logs/build-sfx-map/prompt-classify.md")" "2" "only the 2 unclear files went to the model"
+ls "$SANDBOX"/channels/flashfx/logs/build-sfx-map/calls/*classify*.json >/dev/null 2>&1 && pass "the call files live under logs/build-sfx-map/calls/" || fail "no call files under logs/build-sfx-map/calls/"
+assert_grep "^- id [0-9a-f]{10}: folder \"misc\", file \"mystery-tone.wav\"; duration" "$SANDBOX/channels/flashfx/logs/build-sfx-map/prompt-classify.md" "the prompt lists the unclear file with its folder, name and measurements"
+assert_eq "$(grep -c '^- id ' "$SANDBOX/channels/flashfx/logs/build-sfx-map/prompt-classify.md")" "2" "only the 2 unclear files went to the model"
 
 # classes and exclusions
 assert_eq "$(file_field "$MAP" whoosh/fast-whoosh.wav whoosh_speed)" "fast" "a 0.3 s noise swoosh is a fast whoosh"
@@ -357,7 +357,7 @@ fi
 if want 2; then
 section "2. the repo's map of styles/sfx/ (built with the real indexer model, committed): coverage, pools, previews, no-op rebuild"
 sandbox_init
-REAL_PACK="$REPO_DIR/styles/sfx"; REAL_PACK_M="$(mixed "$REAL_PACK")"; REAL_MAP="$REAL_PACK/sfx-map.json"
+REAL_PACK="$REPO_DIR/channels/flashfx/styles/sfx"; REAL_PACK_M="$(mixed "$REAL_PACK")"; REAL_MAP="$REAL_PACK/sfx-map.json"
 n_audio="$(python -c 'import sys; sys.path.insert(0, sys.argv[1]); from common import list_audio_files; print(len(list_audio_files(sys.argv[2])))' "$SFX_LIB" "$REAL_PACK_M")"
 if [ "$n_audio" = 0 ]; then
   printf 'NOTE: styles/sfx/ holds no audio files on this machine (the pack is not in git); section 2 checks only the committed map\n'

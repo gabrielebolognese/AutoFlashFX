@@ -1,0 +1,17 @@
+make-manifest: 11 lines (11 top, 0 inner) -> C:\Users\there\OneDrive\Desktop\instagramReels\build\M18\move-manifest.tsv
+check-manifest: ok: 11 lines (11 top, 0 inner) cover 6741 files, 13059 engine files, 19800 in the inventory
+manifest-diff: 0 only in the plan, 0 only now, 4 with other counts
+migrate M18 (dry run): 11 line(s) (10 moves)
+STEP git-mv   ideas.txt -> channels/flashfx/ideas.txt  (1 files, 139 bytes, sha256)
+STEP git-mv   library -> channels/flashfx/library  (43 files, 10755778 bytes, count-and-bytes)
+STEP git-mv   styles -> channels/flashfx/styles  (1167 files, 414231425 bytes, count-and-bytes)
+STEP git-mv   motion-lib -> channels/flashfx/motion-lib  (5409 files, 83493617 bytes, count-and-bytes)
+STEP git-mv   golden -> channels/flashfx/golden  (82 files, 42397434 bytes, count-and-bytes)
+STEP fs-mv    logs/build-sfx-map -> channels/flashfx/logs/build-sfx-map  (6 files, 154910 bytes, count-and-bytes)
+STEP fs-mv    logs/index-hooks -> channels/flashfx/logs/index-hooks  (13 files, 38753 bytes, count-and-bytes)
+STEP fs-mv    logs/runner.log -> channels/flashfx/logs/runner.log  (1 files, 5492 bytes, sha256)
+STEP fs-mv    logs/status.txt -> channels/flashfx/logs/status.txt  (1 files, 78 bytes, sha256)
+STEP fs-mv    logs/voice-profile -> channels/flashfx/logs/voice-profile  (4 files, 35376 bytes, count-and-bytes)
+STEP stays   voicetests
+DRY RUN: the checks that follow the moves: every new path with its checksum or count and bytes, no moved folder at its old path, the listing before and after differs only by the manifest, git status shows only renames, git check-ignore at the new path of every formerly ignored file, no old path left in a rewritten file
+DRY RUN: nothing changed

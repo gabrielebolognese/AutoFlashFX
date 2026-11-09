@@ -132,9 +132,9 @@ assert_rc 1 "$(python "$LOGCHECK" samples "$SANDBOX/samples.txt" >/dev/null; ech
   echo status:"$(cat "$REELS_LOGS/status.txt" 2>/dev/null)"
 ) > "$SANDBOX/rot.out" 2>&1
 assert_eq "$(grep -c '^rotate[1-5]:0$' "$SANDBOX/rot.out")/$(grep -c '^small:1$' "$SANDBOX/rot.out")" "5/1" "rotation: a log under the size stays, one over it rotates every time"
-assert_eq "$(ls "$SANDBOX"/logs/runner.log* | sed 's|.*/||' | paste -sd' ')" "runner.log runner.log.1 runner.log.2 runner.log.3" "rotation: runner.log plus 3 old files (logs.rotate_keep), the oldest deleted"
-assert_grep "^\[[0-9:]+\] INFO   logs/runner.log reached [0-9]+ bytes: the earlier lines are in logs/runner.log.1 \(up to 3 old files are kept\)$" "$SANDBOX/logs/runner.log" "rotation: the new log starts with the INFO line naming the old one"
-assert_grep "0{895}5$" "$SANDBOX/logs/runner.log.1" "rotation: runner.log.1 holds the latest lines before the rotation"
+assert_eq "$(ls "$SANDBOX"/channels/flashfx/logs/runner.log* | sed 's|.*/||' | paste -sd' ')" "runner.log runner.log.1 runner.log.2 runner.log.3" "rotation: runner.log plus 3 old files (logs.rotate_keep), the oldest deleted"
+assert_grep "^\[[0-9:]+\] INFO   logs/runner.log reached [0-9]+ bytes: the earlier lines are in logs/runner.log.1 \(up to 3 old files are kept\)$" "$SANDBOX/channels/flashfx/logs/runner.log" "rotation: the new log starts with the INFO line naming the old one"
+assert_grep "0{895}5$" "$SANDBOX/channels/flashfx/logs/runner.log.1" "rotation: runner.log.1 holds the latest lines before the rotation"
 assert_eq "$(grep '^status:' "$SANDBOX/rot.out")" "status:" "rotation: the INFO line does not replace status.txt"
 
 # the status line is written aside and renamed (never seen empty or half written), nothing left behind
@@ -143,12 +143,12 @@ assert_eq "$(grep '^status:' "$SANDBOX/rot.out")" "status:" "rotation: the INFO 
   source "$REPO_DIR/pipeline/lib/common.sh"; source "$REPO_DIR/pipeline/lib/log.sh"
   for n in $(seq 1 30); do say STEP "step $n done (1s) -> next"; done
 ) > /dev/null 2>&1
-assert_eq "$(sed 's/^\[[0-9:]*\] //' "$SANDBOX/logs/status.txt")" "STEP   step 30 done (1s) -> next" "status.txt holds the latest line"
-assert_eq "$(ls -a "$SANDBOX/logs" | grep -c '^\.status\.')" "0" "no .status.* file is left behind"
+assert_eq "$(sed 's/^\[[0-9:]*\] //' "$SANDBOX/channels/flashfx/logs/status.txt")" "STEP   step 30 done (1s) -> next" "status.txt holds the latest line"
+assert_eq "$(ls -a "$SANDBOX/channels/flashfx/logs" | grep -c '^\.status\.')" "0" "no .status.* file is left behind"
 
 # the fault injection by itself (ai.sh): the stage and the run ordinal, the once-only marker, the limit result
 sandbox_init
-RD1="$(printf 'idea one' | python pipeline/lib/state.py new --runs "$SANDBOX_M/runs" --id one 2>/dev/null | python -c 'import json, sys; print(json.load(sys.stdin)["run_dir"])')"
+RD1="$(printf 'idea one' | python pipeline/lib/state.py new --runs "$SANDBOX_M/channels/flashfx/runs" --id one 2>/dev/null | python -c 'import json, sys; print(json.load(sys.stdin)["run_dir"])')"
 mkdir -p "$RD1/02-expansion/calls"
 (
   export REELS_ROOT="$SANDBOX_M"; unset REELS_COMMON_LOADED
@@ -162,7 +162,7 @@ mkdir -p "$RD1/02-expansion/calls"
   REELS_FAULT="limit:02-expansion@1" ai_fault "$RD1/02-expansion" "$b.2" sid-1 >/dev/null 2>&1; echo "again:$?"
 ) > "$SANDBOX/fault.out" 2>&1
 assert_eq "$(paste -sd' ' "$SANDBOX/fault.out")" "other-stage:1 other-idea:1 bogus:1 fires:0 again:1" "REELS_FAULT: only its stage and its idea, an unknown kind ignored, once only"
-assert_file "$SANDBOX/logs/.faults/limit-02-expansion@1" "the fault's once-only marker in logs/.faults/"
+assert_file "$SANDBOX/channels/flashfx/logs/.faults/limit-02-expansion@1" "the fault's once-only marker in logs/.faults/"
 F="$RD1/02-expansion/calls/001-x.json"
 assert_eq "$(jq_py "$F" 'd["is_error"]')/$(jq_py "$F" 'd["session_id"]')" "true/sid-1" "the injected result: an error in the same session"
 cls="$(python pipeline/lib/errors.py classify --rc 1 --stdout "$F" --stderr "$RD1/02-expansion/calls/001-x.err" --tz Europe/Rome 2>/dev/null || true)"
@@ -172,7 +172,7 @@ assert_true "the injected result is classified as a usage limit with its reset t
 # were when this block was written (pipeline/tests/fixtures/profile/, placeholders and all): the user's filled profile
 # stays out of the tests (DECISIONS.md 305)
 sandbox_init
-P="$SANDBOX/library/profile"
+P="$SANDBOX/channels/flashfx/library/profile"
 cp "$REPO_DIR/pipeline/tests/fixtures/profile/voice.md" "$P/voice.md"
 cp "$REPO_DIR/pipeline/tests/fixtures/profile/account.md" "$P/account.md"
 python - "$P" <<'EOF'
@@ -205,7 +205,7 @@ assert_grep '^- \*\*Name:\*\* Gabriele$' "$P/voice.md" "voice.md: a field filled
 assert_grep '^- \*\*Pace:\*\* 195 words per minute, measured' "$P/voice.md" "voice.md: the measured pace survives a rebuild that measured nothing"
 assert_eq "$(section_of "$P/voice.md" "Verbatim excerpts of my real speech" | grep -c '^[0-9]\. "')" "5" "voice.md: the 5 verbatim excerpts survive"
 assert_grep "kept your hand-written parts of account.md: Brand; Content strategy" "$SANDBOX/vp.out" "the script names what it kept"
-assert_file "$SANDBOX/logs/voice-profile/account.md.before-$(date +%Y-%m-%d).md" "the previous account.md is copied into logs/voice-profile/"
+assert_file "$SANDBOX/channels/flashfx/logs/voice-profile/account.md.before-$(date +%Y-%m-%d).md" "the previous account.md is copied into logs/voice-profile/"
 cp "$P/voice.md" "$SANDBOX/voice.first.md"; cp "$P/account.md" "$SANDBOX/account.first.md"
 REELS_ROOT="$SANDBOX_M" bash pipeline/bin/build-voice-profile --force --no-model --quiet >/dev/null 2>&1
 assert_true "a second --force rebuild changes nothing (idempotent)" bash -c "cmp -s '$P/voice.md' '$SANDBOX/voice.first.md' && cmp -s '$P/account.md' '$SANDBOX/account.first.md'"
@@ -231,14 +231,14 @@ assert_grep '^- Brand kit: library/brand/' "$P/account.md" "a fresh account.md h
 
 # the doctor
 sandbox_init
-printf '[10:00] STEP   researching facts done (1s) -> expanding idea\n' > "$SANDBOX/logs/status.txt"
+printf '[10:00] STEP   researching facts done (1s) -> expanding idea\n' > "$SANDBOX/channels/flashfx/logs/status.txt"
 REELS_ROOT="$SANDBOX_M" bash pipeline/bin/doctor --quick > "$SANDBOX/doc.out" 2>&1; rc=$?
 assert_rc 0 $rc "doctor --quick exits 0 on a healthy sandbox ($(grep -c '^FAIL' "$SANDBOX/doc.out") FAIL lines)"
 for s in versions disk freshness runner "queue and logs"; do assert_grep "^== $s$" "$SANDBOX/doc.out" "doctor: the $s section"; done
 assert_grep '^OK    node packages as pinned in package.json: gsap [0-9.]+, hyperframes [0-9.]+, three [0-9.]+$' "$SANDBOX/doc.out" "doctor: the node packages against the pins"
 assert_grep '^OK    status \([0-9]+ min ago\): \[10:00\] STEP' "$SANDBOX/doc.out" "doctor: the last status, checked"
-printf 'not a status line\n' > "$SANDBOX/logs/status.txt"
-printf '# STOPPED\n\nsystemic failure: x\n' > "$SANDBOX/logs/STOPPED.md"
+printf 'not a status line\n' > "$SANDBOX/channels/flashfx/logs/status.txt"
+printf '# STOPPED\n\nsystemic failure: x\n' > "$SANDBOX/channels/flashfx/logs/STOPPED.md"
 REELS_ROOT="$SANDBOX_M" bash pipeline/bin/doctor --quick > "$SANDBOX/doc2.out" 2>&1; rc=$?
 assert_rc 1 $rc "doctor exits 1 on a broken status line and a STOPPED.md"
 assert_grep '^FAIL  logs/status.txt is not a valid status line' "$SANDBOX/doc2.out" "doctor: names the broken status line"
@@ -253,12 +253,12 @@ import json, sys
 p = sys.argv[1]; d = json.load(open(p, encoding="utf-8")); d.setdefault("logs", {})["rotate_keep"] = 50
 open(p, "w", encoding="utf-8", newline="\n").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
 EOF
-grep -v '^#' "$FIXTURES/ideas/three-ideas.txt" > "$SANDBOX/ideas.txt"
+grep -v '^#' "$FIXTURES/ideas/three-ideas.txt" > "$SANDBOX/channels/flashfx/ideas.txt"
 ( cd "$SANDBOX" && env NO_COLOR=1 REELS_DUMMY=all REELS_LOG_ROTATE_BYTES=6000 REELS_LOG_ROTATE_EVERY=2 timeout 900 bash "$SANDBOX/run.sh" --once ) > "$SANDBOX/rotrun.out" 2>&1; rc=$?
 assert_rc 0 $rc "the dummy run with a 6 KB rotation exits 0"
-nrot="$(ls "$SANDBOX"/logs/runner.log.[0-9]* 2>/dev/null | wc -l | tr -d ' ')"
+nrot="$(ls "$SANDBOX"/channels/flashfx/logs/runner.log.[0-9]* 2>/dev/null | wc -l | tr -d ' ')"
 assert_true "the live run rotated logs/runner.log at least twice ($nrot rotated files)" test "$nrot" -ge 2
-python "$LOGCHECK" story $(story_files "$SANDBOX/logs") --heartbeat 1 --no-gate-line > "$SANDBOX/rotstory.out" 2>&1; rc=$?
+python "$LOGCHECK" story $(story_files "$SANDBOX/channels/flashfx/logs") --heartbeat 1 --no-gate-line > "$SANDBOX/rotstory.out" 2>&1; rc=$?
 assert_rc 0 $rc "the rotated logs, read oldest first, tell one complete story ($(head -c 300 "$SANDBOX/rotstory.out"))"
 assert_grep '"exports": \[1, 2, 3\]' "$SANDBOX/rotstory.out" "the story across the rotated files has the exports 1, 2, 3"
 unset REELS_STATUS_EVERY
@@ -332,7 +332,7 @@ for i in d["ideas"]:
   assert_eq "$ok_files" "1" "$mode: every export has its N.mp4 and Ncaptions.txt$([ "$mode" = real ] && echo " and Nhook2.mp4")"
   assert_eq "$(grep -c . "$S/logs/history.txt")" "3" "$mode: history.txt has one line per idea"
   assert_eq "$(grep -c -E '\| (exported [0-9]+|dropped: .+|blocked: .+)$' "$S/logs/history.txt")" "3" "$mode: each history line says exported N, dropped or blocked with a reason"
-  assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "$mode: ideas.txt is empty"
+  assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "$mode: ideas.txt is empty"
   assert_no_file "$S/logs/STOPPED.md" "$mode: no logs/STOPPED.md"
   # status.txt at every sampled moment, and at the end
   python "$LOGCHECK" samples "$D/samples.txt" > "$D/samples.out" 2>&1; rc=$?

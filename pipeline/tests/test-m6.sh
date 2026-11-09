@@ -98,9 +98,9 @@ EOF
 seed_run() {  # a run in the sandbox with S1 to S6 done from the frozen outputs (04-angle stays skipped); prints the run dir
   local raw id created rd st
   raw="$(tr -d '\r' < "$FROZEN/idea.txt")"
-  printf '{%s}\n' "$raw" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$raw" > "$SANDBOX/channels/flashfx/ideas.txt"
   id="$(printf '%s' "$raw" | python pipeline/lib/ideas.py id)"
-  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$id")"
+  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$id")"
   rd="$(jf "$created" run_dir)"
   for st in 01-research 02-expansion 03-gate 05-hooks 06-judge; do
     cp -r "$FROZEN/$st/." "$rd/$st/"
@@ -140,7 +140,7 @@ sys.exit(0 if all(x in s for x in need) and not any(c.isdigit() for c in s) else
 assert_true "numbers: the pronunciation file is applied (FlashFX -> flash F X)" grep -q "flash F X shows" <<<"$sp"
 
 # the Length line of tweaks.md, and the tones
-lr="$(python "$SC" length-rule --tweaks "$REPO_DIR/styles/paper-cards/tweaks.md")"
+lr="$(python "$SC" length-rule --tweaks "$REPO_DIR/channels/flashfx/styles/paper-cards/tweaks.md")"
 assert_eq "$(jf "$lr" default),$(jf "$lr" list)" "[25, 40],[45, 75]" "length-rule: tweaks.md gives 25 to 40 s by default and 45 to 75 s for lists"
 printf -- '- PROPOSED **Length:** list and explainer videos 40 to 75s; everything else 25 to 40s.\n- **Other:** nothing\n' > "$SANDBOX/work/tweaks-proposed.md"
 assert_eq "$(python "$SC" length-rule --tweaks "$W/tweaks-proposed.md")" "{}" "length-rule: a PROPOSED Length line is ignored"
@@ -153,9 +153,9 @@ assert_eq "$(jf "$t" tones)" '["insider", "calm expert"]' "tones: unknown family
 
 # the plan from the frozen fixtures
 PLAN="$W/plan.json"
-res="$(python "$SC" setup --config "$REPO_DIR/config.json" --brief "$FROZEN/05-hooks/brief.md" --judge "$FROZEN/06-judge/judge.json" \
-  --expansion "$FROZEN/02-expansion/expansion.json" --voice "$REPO_DIR/library/profile/voice.md" --pronunciations "$W/pron.txt" \
-  --tweaks "$REPO_DIR/styles/paper-cards/tweaks.md" --style "$REPO_DIR/styles/paper-cards/style.md" --wpm 195 --rounds 3 --idea-id test --idea-text "idea" --out "$PLAN")"
+res="$(python "$SC" setup --config "$(REELS_ROOT="$REPO_DIR" resolved_config)" --brief "$FROZEN/05-hooks/brief.md" --judge "$FROZEN/06-judge/judge.json" \
+  --expansion "$FROZEN/02-expansion/expansion.json" --voice "$REPO_DIR/channels/flashfx/library/profile/voice.md" --pronunciations "$W/pron.txt" \
+  --tweaks "$REPO_DIR/channels/flashfx/styles/paper-cards/tweaks.md" --style "$REPO_DIR/channels/flashfx/styles/paper-cards/style.md" --wpm 195 --rounds 3 --idea-id test --idea-text "idea" --out "$PLAN")"
 assert_eq "$(jf "$res" ok)" "true" "setup: plan.json written"
 assert_eq "$(json_get "$PLAN" length_s),$(json_get "$PLAN" length_source),$(json_get "$PLAN" video_type)" "[25.0, 40.0],tweaks.md,default" "setup: the length range from tweaks.md for a default reel"
 assert_eq "$(json_get "$PLAN" final_words),$(json_get "$PLAN" write_words)" "[81, 130],[121, 143]" "setup: 81 to 130 words at 195 wpm, the writer aims at 121 to 143 before the cut"
@@ -358,8 +358,8 @@ assert_eq "$(fake_field 2 resume),$(fake_field 3 resume),$(fake_field 5 resume),
 assert_eq "$(state_get "$RD" sessions.D)" "$sidD" "state.json keeps session D"
 assert_eq "$(fake_field 1 model),$(fake_field 2 model),$(fake_field 3 model),$(fake_field 7 model)" "$(json_get "$REPO_DIR/config.json" models.script.model),$(json_get "$REPO_DIR/config.json" models.cut.model),$(json_get "$REPO_DIR/config.json" models.checks.model),$(json_get "$REPO_DIR/config.json" models.judge.model)" "the models from config (script, cut, checks, judge)"
 assert_eq "$(fake_field 1 tools),$(fake_field 2 tools),$(fake_field 7 tools)" '[""],[""],[""]' "no tools on any call"
-no_emdash_in "no em dash in the stage files" "$S/script.json" "$S/draft-a.r1.cut.json" "$S/draft-b.r1.cut.json" "$S/checks-a-r1.json" "$SANDBOX/logs/runner.log"
-assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
+no_emdash_in "no em dash in the stage files" "$S/script.json" "$S/draft-a.r1.cut.json" "$S/draft-b.r1.cut.json" "$S/checks-a-r1.json" "$SANDBOX/channels/flashfx/logs/runner.log"
+assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
 
 # S8's one-line rewrite through the stage script (session D resumed)
 fake_claude_reset
@@ -409,8 +409,8 @@ grep -E "$ts_regex(START|STEP|DONE|ERROR|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v
 assert_rc 0 $rc "block path: the runner exits 0 (the idea is blocked, the queue is empty)"
 assert_grep "${ts_regex}BLOCK  idea \"Claude Code's frontend-design skill.*\" blocked at S7: script still failing after 3 rounds: b5: the claim 'the skill names every tell' is not backed by facts.md" "$OUT" "block path: the BLOCK line with the hard failure"
 assert_not_grep "${ts_regex}(ERROR|DONE)" "$OUT" "block path: no ERROR and no export"
-assert_grep "blocked at S7" "$SANDBOX/logs/blocked.txt" "block path: logs/blocked.txt"
-assert_grep "| blocked: script still failing after 3 rounds" "$SANDBOX/logs/history.txt" "block path: the history line"
+assert_grep "blocked at S7" "$SANDBOX/channels/flashfx/logs/blocked.txt" "block path: logs/blocked.txt"
+assert_grep "| blocked: script still failing after 3 rounds" "$SANDBOX/channels/flashfx/logs/history.txt" "block path: the history line"
 S3="$RD3/07-script"
 assert_eq "$(json_get "$S3/result.json" stage)" "07-script" "block path: result.json"
 assert_no_file "$S3/script.json" "block path: no script.json"
@@ -480,7 +480,7 @@ assert_grep "^resume: $" "$S/calls/001-write-a.meta" "draft a started session D"
 sidD="$(sid_of "$S/calls/001-write-a.json")"
 assert_grep "^resume: $sidD$" "$(ls "$S"/calls/*-write-b.meta | head -n 1)" "draft b resumed session D"
 assert_grep "^resume: $" "$(ls "$S"/calls/*-pick.meta | head -n 1)" "the pick ran in a fresh session"
-no_emdash_in "no em dash in the stage files" "$S/script.json" "$S/draft-a.r1.cut.json" "$S/draft-b.r1.cut.json" "$S/checks-a-r1.json" "$S/pick.json" "$SANDBOX/logs/runner.log"
+no_emdash_in "no em dash in the stage files" "$S/script.json" "$S/draft-a.r1.cut.json" "$S/draft-b.r1.cut.json" "$S/checks-a-r1.json" "$S/pick.json" "$SANDBOX/channels/flashfx/logs/runner.log"
 if [ -n "${M6_FREEZE:-}" ] && [ "$rc" = 0 ] && [ -f "$S/script.json" ]; then
   rm -rf "$FROZEN/07-script"; mkdir -p "$FROZEN/07-script/calls"
   ( cd "$S" && find . -maxdepth 1 -type f \( -name '*.json' -o -name '*.md' \) ! -name 'prompt-*' ! -name 'error.json' ! -name 'result.json' -exec cp {} "$FROZEN/07-script/" \; )

@@ -1,7 +1,9 @@
 # pipeline/tests/lib.sh: the test harness shared by every test-m*.sh. Source it.
 #
 # Tests never touch the real queue, runs, exports or logs: sandbox_init creates a temporary state root and exports
-# REELS_ROOT so every script writes there. KEEP_SANDBOX=1 keeps the folder for inspection.
+# REELS_ROOT so every script writes there. KEEP_SANDBOX=1 keeps the folder for inspection. Since M18 the channel's data sits in
+# $SANDBOX/channels/flashfx/ (ideas.txt, library/, styles/, motion-lib/, golden/, runs/, logs/; SANDBOX_CH and SANDBOX_CH_M are that
+# folder), config.json, pipeline/, exports/ and the global .locks/ at $SANDBOX; REELS_CHANNEL=flashfx is exported.
 #
 #   sandbox_init [--with-pipeline] [--with-visual]
 #                                    new temporary root with config.json (voice.wpm set to SANDBOX_WPM when that is
@@ -43,6 +45,7 @@ SANDBOX_M=""
 export PYTHONUTF8=1
 export LANG="${LANG:-C.UTF-8}"
 unset REELS_ROOT REELS_COMMON_LOADED
+export REELS_CHANNEL="${TEST_CHANNEL:-flashfx}"   # M18: every script needs a channel (BUILD_SPEC.md 14.5); the tests run flashfx
 
 mixed() { if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s\n' "$1"; fi; }
 
@@ -68,21 +71,44 @@ sandbox_init() {
   sandbox_cleanup
   SANDBOX="$(mktemp -d)"
   SANDBOX_M="$(mixed "$SANDBOX")"
-  mkdir -p "$SANDBOX/library/profile" "$SANDBOX/logs"
+  # M18: the data of a channel lives in channels/<id>/ (BUILD_SPEC.md 14.3). The tests run the channel flashfx (TEST_CHANNEL changes it);
+  # SANDBOX_CH and SANDBOX_CH_M are its folder (POSIX and C:/ forms), REELS_CHANNEL is exported for every script
+  export REELS_CHANNEL="${TEST_CHANNEL:-flashfx}"
+  SANDBOX_CH="$SANDBOX/channels/$REELS_CHANNEL"
+  SANDBOX_CH_M="$SANDBOX_M/channels/$REELS_CHANNEL"
+  local CH="$SANDBOX_CH" REAL_CH="$REPO_DIR/channels/flashfx"
+  mkdir -p "$CH/library/profile" "$CH/logs"
   cp "$REPO_DIR/config.json" "$SANDBOX/config.json"
+  cp "$REAL_CH/channel.json" "$CH/channel.json"
+  python - "$CH/channel.json" "$REELS_CHANNEL" <<'PYEOF'
+import json, sys
+p, cid = sys.argv[1], sys.argv[2]
+d = json.load(open(p, encoding="utf-8"))
+d["id"] = cid
+open(p, "w", encoding="utf-8", newline="\n").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
+PYEOF
   # M16 (Motion and energy rules E8, E9): the milestones before it run their frozen low-energy plans and drafts and their editors that fail
   # the same way every round: the energy rules, the energy check, the liveness checks and the early stop are off in their sandboxes
   # (SANDBOX_ENERGY=on turns them on, as test-m16 does)
   if [ "${SANDBOX_ENERGY:-off}" != on ]; then
     python "$REPO_DIR/pipeline/tests/sandbox-config.py" "$SANDBOX_M/config.json"
   fi
-  # SANDBOX_WPM pins config voice.wpm in the sandbox (M5 and M6: their frozen fixtures and asserted numbers were
-  # made at the user's 195 wpm; since M7 the repo's voice.wpm is the reel voice's measured pace)
-  if [ -n "${SANDBOX_WPM:-}" ]; then python "$REPO_DIR/pipeline/lib/voiceprofile.py" set-wpm --config "$SANDBOX_M/config.json" --wpm "$SANDBOX_WPM" >/dev/null; fi
-  cp "$REPO_DIR/library/hooks.txt" "$SANDBOX/library/hooks.txt"
-  cp "$REPO_DIR"/library/profile/*.txt "$SANDBOX/library/profile/" 2>/dev/null || true
-  cp "$REPO_DIR"/library/profile/*.md "$SANDBOX/library/profile/" 2>/dev/null || true
-  : > "$SANDBOX/ideas.txt"
+  # SANDBOX_WPM pins voice.wpm in the sandbox's channel.json (M5 and M6: their frozen fixtures and asserted numbers were
+  # made at the user's 195 wpm; since M7 the channel's voice.wpm is the reel voice's measured pace)
+  if [ -n "${SANDBOX_WPM:-}" ]; then python "$REPO_DIR/pipeline/lib/voiceprofile.py" set-wpm --config "$SANDBOX_CH_M/channel.json" --wpm "$SANDBOX_WPM" >/dev/null; fi
+  cp "$REAL_CH/library/hooks.txt" "$CH/library/hooks.txt"
+  cp "$REAL_CH"/library/profile/*.txt "$CH/library/profile/" 2>/dev/null || true
+  cp "$REAL_CH"/library/profile/*.md "$CH/library/profile/" 2>/dev/null || true
+  : > "$CH/ideas.txt"
+  # what the hard preflight checks read in the channel folder (since M18 they are the channel's, not the repo's): the style files,
+  # tokens.json, the sound map, the motion library's catalog and the brand kit; and a candidates folder for the fixer
+  mkdir -p "$CH/styles/paper-cards" "$CH/styles/sfx" "$CH/motion-lib/candidates"
+  cp "$REAL_CH"/styles/paper-cards/*.md "$CH/styles/paper-cards/" 2>/dev/null || true
+  : > "$CH/motion-lib/candidates/.gitkeep"
+  cp "$REAL_CH/styles/paper-cards/tokens.json" "$CH/styles/paper-cards/tokens.json" 2>/dev/null || true
+  cp "$REAL_CH/styles/sfx/sfx-map.json" "$CH/styles/sfx/sfx-map.json" 2>/dev/null || true
+  cp "$REAL_CH/motion-lib/catalog.json" "$CH/motion-lib/catalog.json" 2>/dev/null || true
+  cp -r "$REAL_CH/library/brand" "$CH/library/brand" 2>/dev/null || true
   export REELS_ROOT="$SANDBOX_M"
   local with_pipeline=0 with_visual=0 with_review=0 a
   for a in "$@"; do
@@ -96,43 +122,40 @@ sandbox_init() {
     cp "$REPO_DIR/run.sh" "$SANDBOX/run.sh"
     mkdir -p "$SANDBOX/tools"; cp "$REPO_DIR"/tools/*.py "$SANDBOX/tools/" 2>/dev/null || true   # tools/voice.py: the voiceover's engine code (M7)
     cp "$REPO_DIR/.gitattributes" "$SANDBOX/.gitattributes" 2>/dev/null || true
-    mkdir -p "$SANDBOX/styles/paper-cards" "$SANDBOX/motion-lib/candidates"
-    cp "$REPO_DIR"/styles/paper-cards/*.md "$SANDBOX/styles/paper-cards/" 2>/dev/null || true
-    : > "$SANDBOX/motion-lib/candidates/.gitkeep"
-    # what the hard preflight checks of M10 read under the repo: tokens.json, the catalog, the brand kit, the Node package
-    cp "$REPO_DIR/styles/paper-cards/tokens.json" "$SANDBOX/styles/paper-cards/tokens.json" 2>/dev/null || true
-    cp "$REPO_DIR/motion-lib/catalog.json" "$SANDBOX/motion-lib/catalog.json" 2>/dev/null || true
-    cp -r "$REPO_DIR/library/brand" "$SANDBOX/library/brand" 2>/dev/null || true
     mkdir -p "$SANDBOX/node_modules/hyperframes"
     cp "$REPO_DIR/node_modules/hyperframes/package.json" "$SANDBOX/node_modules/hyperframes/package.json" 2>/dev/null || printf '{"name": "hyperframes", "version": "sandbox"}
 ' > "$SANDBOX/node_modules/hyperframes/package.json"
     if [ "$with_visual" = 1 ]; then
-      for d in compositions assets; do cp -r "$REPO_DIR/motion-lib/$d" "$SANDBOX/motion-lib/$d"; done
-      for f in catalog.json webgl.json hyperframes.json meta.json index.html; do cp "$REPO_DIR/motion-lib/$f" "$SANDBOX/motion-lib/$f" 2>/dev/null || true; done
-      mkdir -p "$SANDBOX/motion-lib/gallery"; cp -r "$REPO_DIR/motion-lib/gallery/stills" "$SANDBOX/motion-lib/gallery/stills" 2>/dev/null || true
-      mkdir -p "$SANDBOX/golden/test-idea"
-      for f in plan.json contact-sheet.png README.md; do cp "$REPO_DIR/golden/test-idea/$f" "$SANDBOX/golden/test-idea/$f" 2>/dev/null || true; done
+      for d in compositions assets; do cp -r "$REAL_CH/motion-lib/$d" "$CH/motion-lib/$d"; done
+      for f in catalog.json webgl.json hyperframes.json meta.json index.html; do cp "$REAL_CH/motion-lib/$f" "$CH/motion-lib/$f" 2>/dev/null || true; done
+      mkdir -p "$CH/motion-lib/gallery"; cp -r "$REAL_CH/motion-lib/gallery/stills" "$CH/motion-lib/gallery/stills" 2>/dev/null || true
+      mkdir -p "$CH/golden/test-idea"
+      for f in plan.json contact-sheet.png README.md; do cp "$REAL_CH/golden/test-idea/$f" "$CH/golden/test-idea/$f" 2>/dev/null || true; done
       export REELS_NODE_PREFIX="$(mixed "$REPO_DIR")"
     fi
     if [ "$with_review" = 1 ]; then
       # what the review stage reads (M11): the reference analysis summaries and a few look stills (the folder is not
       # in git: the real one is copied when it exists), tools/analyze_refs.py is already in tools/
       local v
-      for v in "$REPO_DIR"/styles/paper-cards/analysis/v*/; do
+      for v in "$REAL_CH"/styles/paper-cards/analysis/v*/; do
         [ -f "$v/summary.json" ] || continue
-        mkdir -p "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")"
-        cp "$v/summary.json" "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")/"
-        case "$(basename "$v")" in v01|v02) cp "$v"/full_*.png "$SANDBOX/styles/paper-cards/analysis/$(basename "$v")/" 2>/dev/null || true ;; esac
+        mkdir -p "$CH/styles/paper-cards/analysis/$(basename "$v")"
+        cp "$v/summary.json" "$CH/styles/paper-cards/analysis/$(basename "$v")/"
+        case "$(basename "$v")" in v01|v02) cp "$v"/full_*.png "$CH/styles/paper-cards/analysis/$(basename "$v")/" 2>/dev/null || true ;; esac
       done
-      cp "$REPO_DIR/styles/paper-cards/analysis/accent_share.txt" "$SANDBOX/styles/paper-cards/analysis/" 2>/dev/null || true
+      cp "$REAL_CH/styles/paper-cards/analysis/accent_share.txt" "$CH/styles/paper-cards/analysis/" 2>/dev/null || true
     fi
-    printf 'runs/
-exports/
+    printf 'exports/
 logs/
 .locks/
+.cache/
+channels/*/runs/
+channels/*/logs/
+channels/*/.locks/
+channels/*/.cache/
 __pycache__/
 *.pyc
-library/voice/
+channels/*/library/voice/
 ' > "$SANDBOX/.gitignore"
     git -C "$SANDBOX" init -q
     git -C "$SANDBOX" config user.name "test"
@@ -140,6 +163,13 @@ library/voice/
     git -C "$SANDBOX" add -A 2>/dev/null
     git -C "$SANDBOX" commit -q -m "sandbox" 2>/dev/null
   fi
+}
+
+resolved_config() {  # resolved_config: the resolved config (engine config.json + channel.json, BUILD_SPEC.md 14.4) of REELS_CHANNEL under REELS_ROOT as a
+                     # file; prints its path. For code that takes --config: the channel keys (voice, sfx, lengths, paths) are not in config.json any more
+  local out; out="$(mktemp -d)/config.resolved.json"
+  python "$REPO_DIR/pipeline/lib/config.py" resolve --out "$out" || return 1
+  mixed "$out"
 }
 
 FAKES_DIR="$TESTS_DIR/fakes"

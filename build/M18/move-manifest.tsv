@@ -1,0 +1,12 @@
+seq	ms	scope	method	old	new	git	files	bytes	sha256	check	reason
+1	M18	top	git-mv	ideas.txt	channels/flashfx/ideas.txt	tracked	1	139	5c05379c25ee9aad8f83ee1bed5f2545178a9e57f9f513d810a5791235ded717	sha256	the idea queue of the channel; tracked=1 untracked=0 ignored=0
+2	M18	top	git-mv	library	channels/flashfx/library	mixed	43	10755778		count-and-bytes	the curated library: hooks, profile, voice (engine.txt and the reference recordings, ignored), brand kit; carries its ignored files; tracked=35 untracked=0 ignored=8
+3	M18	top	git-mv	styles	channels/flashfx/styles	mixed	1167	414231425		count-and-bytes	the looks (paper-cards: style files tracked, refs and analysis ignored) and the sound pack (audio ignored) with its map; tracked=7 untracked=0 ignored=1160
+4	M18	top	git-mv	motion-lib	channels/flashfx/motion-lib	mixed	5409	83493617		count-and-bytes	the approved components, candidates, gallery; carries the ignored renders and caches; tracked=153 untracked=0 ignored=5256
+5	M18	top	git-mv	golden	channels/flashfx/golden	mixed	82	42397434		count-and-bytes	the golden videos: plan files tracked, renders ignored; tracked=55 untracked=0 ignored=27
+6	M18	top	fs-mv	logs/build-sfx-map	channels/flashfx/logs/build-sfx-map	ignored	6	154910		count-and-bytes	channel log or the log of a channel tool; tracked=0 untracked=0 ignored=6
+7	M18	top	fs-mv	logs/index-hooks	channels/flashfx/logs/index-hooks	ignored	13	38753		count-and-bytes	channel log or the log of a channel tool; tracked=0 untracked=0 ignored=13
+8	M18	top	fs-mv	logs/runner.log	channels/flashfx/logs/runner.log	ignored	1	5492	44ebaa562903292e0ff9c722953ce3df4131ebf2d373f28ba129865f8c91e27b	sha256	channel log or the log of a channel tool; tracked=0 untracked=0 ignored=1
+9	M18	top	fs-mv	logs/status.txt	channels/flashfx/logs/status.txt	ignored	1	78	ced3029dd9dee3543877a9e067dd1a811aeb72fe2bdc00203aa3aaf16a93ab35	sha256	channel log or the log of a channel tool; tracked=0 untracked=0 ignored=1
+10	M18	top	fs-mv	logs/voice-profile	channels/flashfx/logs/voice-profile	ignored	4	35376		count-and-bytes	channel log or the log of a channel tool; tracked=0 untracked=0 ignored=4
+11	M18	top	stays	voicetests	voicetests	ignored	14	11674333		count-and-bytes	the user's voice experiments: not channel data, not read by the pipeline, not tracked; tracked=0 untracked=0 ignored=14

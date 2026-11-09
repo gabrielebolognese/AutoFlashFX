@@ -57,9 +57,9 @@ jf() { python -c 'import json, sys; d = json.loads(sys.argv[1]); v = d.get(sys.a
 seed_run() {  # a run in the sandbox with S1 to S8 done from the frozen outputs (04-angle stays skipped); prints the run dir
   local raw id created rd st
   raw="$(tr -d '\r' < "$FROZEN/idea.txt")"
-  printf '{%s}\n' "$raw" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$raw" > "$SANDBOX/channels/flashfx/ideas.txt"
   id="$(printf '%s' "$raw" | python pipeline/lib/ideas.py id)"
-  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$id")"
+  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$id")"
   rd="$(jf "$created" run_dir)"
   for st in 01-research 02-expansion 03-gate 05-hooks 06-judge 07-script 08-voiceover; do
     cp -r "$FROZEN/$st/." "$rd/$st/"
@@ -235,11 +235,11 @@ EOF
   # the preflight's brand check: the repo passes; a sandbox with a broken brand.json stops with the fix
   assert_true "bash pipeline/bin/preflight passes in the repo (brand.json and every logo file present)" bash pipeline/bin/preflight
   sandbox_init --with-pipeline
-  printf '{"assets": [{"path": "library/brand/mark/missing.png", "use_on": "light", "width": 1, "height": 1}]}\n' > "$SANDBOX/library/brand/brand.json"
+  printf '{"assets": [{"path": "library/brand/mark/missing.png", "use_on": "light", "width": 1, "height": 1}]}\n' > "$SANDBOX/channels/flashfx/library/brand/brand.json"
   ( cd "$SANDBOX" && NO_COLOR=1 bash "$SANDBOX/pipeline/bin/preflight" ) >/tmp/m10-preflight.txt 2>&1; rc=$?
   assert_rc 3 $rc "a brand.json that lists a missing file stops the preflight (exit 3)"
-  assert_grep "brand.json lists files that do not exist" "$SANDBOX/logs/STOPPED.md" "STOPPED.md names the missing logo file"
-  assert_grep "git checkout -- library/brand" "$SANDBOX/logs/STOPPED.md" "STOPPED.md gives the exact fix"
+  assert_grep "brand.json lists files that do not exist" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md names the missing logo file"
+  assert_grep "git checkout -- library/brand" "$SANDBOX/channels/flashfx/logs/STOPPED.md" "STOPPED.md gives the exact fix"
   sandbox_cleanup
 fi
 
@@ -284,7 +284,7 @@ if want 2; then
   assert_eq "$(json_get "$RD/09a-animations/plan.json" hook2.lines | python -c 'import json, sys; print(len(json.load(sys.stdin)))')" "2" "hook 2's headline has its two lines"
   assert_grep '"breath"' "$RD/09a-animations/plan.json" "the hook's set piece is placed at the breath"
   no_emdash_in "no em dash in the stage files" "$RD/09a-animations/plan.json" "$RD/09b-text/plan.json" "$RD/09c-transitions/plan.json" "$RD/09c-transitions/merged.json" \
-    "$RD/10-build/events.json" "$RD/10-build/project/index.html" "$RD/09a-animations/prompt.md" "$RD/09b-text/prompt.md" "$RD/09c-transitions/prompt.md" "$SANDBOX/logs/runner.log"
+    "$RD/10-build/events.json" "$RD/10-build/project/index.html" "$RD/09a-animations/prompt.md" "$RD/09b-text/prompt.md" "$RD/09c-transitions/prompt.md" "$SANDBOX/channels/flashfx/logs/runner.log"
   FAKE_RD="$RD"
 
   # ---- the branding: a flashfx solution and an external one (the 9a stage alone), then the flashfx build
@@ -380,7 +380,7 @@ if want 2 || want 2r; then
   RD="$(seed_run)"
   run_stage 09a-animations "$RD" "$SANDBOX/9a-repair.out" && run_stage 09b-text "$RD" "$SANDBOX/9b-repair.out" && run_stage 09c-transitions "$RD" "$SANDBOX/9c-repair.out"; rc=$?
   assert_rc 0 $rc "repair loop: the three plan passes run"
-  python - "$SANDBOX/motion-lib/compositions/dark-chip.html" <<'EOF2'
+  python - "$SANDBOX/channels/flashfx/motion-lib/compositions/dark-chip.html" <<'EOF2'
 import sys
 p = sys.argv[1]
 s = open(p, encoding="utf-8").read()

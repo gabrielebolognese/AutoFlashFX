@@ -37,7 +37,7 @@ FROZEN="$FIXTURES/runs/test-idea"
 FAKES="$REPO_DIR/pipeline/tests/fakes"
 ts_regex='^\[[0-9]{2}:[0-9]{2}\] '
 LATER_DUMMIES="$(dummy_after 12-review)"
-SFX_DIR_REAL="$(mixed "$REPO_DIR/styles/sfx")"
+SFX_DIR_REAL="$(mixed "$REPO_DIR/channels/flashfx/styles/sfx")"
 export REELS_SFX_DIR="$SFX_DIR_REAL" REELS_SFX_NO_BUILD=1
 fake_whisper_on() { export REELS_WHISPER_PYTHON=python REELS_WHISPER_WORKER="$(mixed "$FAKES/whisper_worker.py")"; }
 fake_whisper_off() { unset REELS_WHISPER_PYTHON REELS_WHISPER_WORKER; }
@@ -58,9 +58,9 @@ jf() { python -c 'import json, sys; d = json.loads(sys.argv[1]); v = d.get(sys.a
 seed_run() {  # a run in the sandbox with S1 to S10 done from the frozen outputs, the projects rebuilt; prints the run dir
   local raw id created rd st
   raw="$(tr -d '\r' < "$FROZEN/idea.txt")"
-  printf '{%s}\n' "$raw" > "$SANDBOX/ideas.txt"
+  printf '{%s}\n' "$raw" > "$SANDBOX/channels/flashfx/ideas.txt"
   id="$(printf '%s' "$raw" | python pipeline/lib/ideas.py id)"
-  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/runs" --id "$id")"
+  created="$(printf '%s' "$raw" | python "$STATE_PY" new --runs "$SANDBOX_M/channels/flashfx/runs" --id "$id")"
   rd="$(jf "$created" run_dir)"
   for st in 01-research 02-expansion 03-gate 05-hooks 06-judge 07-script 08-voiceover 09a-animations 09b-text 09c-transitions 10-build; do
     cp -r "$FROZEN/$st/." "$rd/$st/"
@@ -98,7 +98,7 @@ check_cues() {  # check_cues <run_dir> <label>: the S11 invariants on cues.json 
   local rd="$1" lbl="$2" S="$1/11-sfx"
   assert_true "$lbl: cues.json validates against 11-sfx/schema.json" python "$VALIDATE" "$REPO_DIR/pipeline/stages/11-sfx/schema.json" "$S/cues.json"
   for f in sfx_stem.wav mix.wav draft_mixed.mp4 sound-map.txt; do assert_file "$S/$f" "$lbl: $f written"; done
-  python - "$rd" "$SANDBOX_M/config.json" "$SFX_DIR_REAL" <<'EOF' >/tmp/m11-cues.txt
+  python - "$rd" "$(resolved_config)" "$SFX_DIR_REAL" <<'EOF' >/tmp/m11-cues.txt
 import json, subprocess, sys
 rd, cfg_path, sfx_dir = sys.argv[1:4]
 cfg = json.load(open(cfg_path, encoding="utf-8-sig")); sx = cfg["sfx"]
@@ -210,7 +210,7 @@ if want 1; then
   check_cues "$RD" "S11"
   N_SOUNDS="$(grep '^count' /tmp/m11-cues.txt | cut -d' ' -f2)"
   assert_true "S11 placed 10 to 25 sounds on the 41 s reel ($N_SOUNDS)" test "$N_SOUNDS" -ge 10 -a "$N_SOUNDS" -le 25
-  USAGE="$SANDBOX/logs/sfx-usage.json"
+  USAGE="$SANDBOX/channels/flashfx/logs/sfx-usage.json"
   assert_file "$USAGE" "logs/sfx-usage.json written"
   assert_grep "\"run_id\": \"$(basename "$RD")\"" "$USAGE" "the usage log names this run"
   assert_grep '"transition_fast"' "$USAGE" "the usage log lists the files per cue type"
@@ -319,7 +319,7 @@ JSON
   assert_eq "$(json_get "$AU" sfx.pass)" "true" "the audio check reads S11's verification"
 
   # the planted faults, in a copy of the run: edited in the built project (what is on screen), not in the plan
-  RD2="$SANDBOX_M/runs/planted"
+  RD2="$SANDBOX_M/channels/flashfx/runs/planted"
   cp -r "$RD" "$RD2"; rm -rf "$RD2/12-review"
   python - "$RD2" <<'EOF'
 import html, json, re, sys
@@ -354,8 +354,8 @@ assert t2 != t
 open(c, "w", encoding="utf-8", newline="\n").write(t2)
 EOF
   mkdir -p "$RD2/10-build/project/assets/brand/mark" "$RD2/10-build/project/assets/brand/lockup"
-  cp "$REPO_DIR/library/brand/mark/mark-gradient.png" "$RD2/10-build/project/assets/brand/mark/"
-  cp "$REPO_DIR/library/brand/lockup/lockup-black.png" "$RD2/10-build/project/assets/brand/lockup/"
+  cp "$REPO_DIR/channels/flashfx/library/brand/mark/mark-gradient.png" "$RD2/10-build/project/assets/brand/mark/"
+  cp "$REPO_DIR/channels/flashfx/library/brand/lockup/lockup-black.png" "$RD2/10-build/project/assets/brand/lockup/"
   t0=$EPOCHSECONDS
   ( cd "$SANDBOX" && env NO_COLOR=1 python "$SANDBOX/pipeline/lib/review" mechanical --run-dir "$RD2" ) >"$SANDBOX/mech2.out" 2>&1; rc=$?
   printf '    (mechanical on the planted copy took %s s)\n' "$((EPOCHSECONDS - t0))"
@@ -420,10 +420,10 @@ EOF
   # the dummies
   for st in 11-sfx 12-review; do
     out="$(python "$STATE_PY" stages | cut -f1,4 | awk -F'\t' -v s="$st" '$1 == s {print $2}')"
-    rm -rf "$SANDBOX/runs/dummy-$st"; mkdir -p "$SANDBOX/runs/dummy-$st/$st"
-    printf '{"run_id":"d","idea":{"id":"i","text":"t","raw":"t"},"status":"running","stages":{},"flags":[],"rounds":{}}\n' > "$SANDBOX/runs/dummy-$st/state.json"
-    ( cd "$SANDBOX" && REELS_DUMMY_SECONDS=0 bash "$SANDBOX/pipeline/stages/$st/dummy.sh" "$SANDBOX_M/runs/dummy-$st" ) >/dev/null 2>&1
-    assert_true "the $st dummy's $out validates against the M11 schema" python "$VALIDATE" "$REPO_DIR/pipeline/stages/$st/schema.json" "$SANDBOX/runs/dummy-$st/$st/$out"
+    rm -rf "$SANDBOX/channels/flashfx/runs/dummy-$st"; mkdir -p "$SANDBOX/channels/flashfx/runs/dummy-$st/$st"
+    printf '{"run_id":"d","idea":{"id":"i","text":"t","raw":"t"},"status":"running","stages":{},"flags":[],"rounds":{}}\n' > "$SANDBOX/channels/flashfx/runs/dummy-$st/state.json"
+    ( cd "$SANDBOX" && REELS_DUMMY_SECONDS=0 bash "$SANDBOX/pipeline/stages/$st/dummy.sh" "$SANDBOX_M/channels/flashfx/runs/dummy-$st" ) >/dev/null 2>&1
+    assert_true "the $st dummy's $out validates against the M11 schema" python "$VALIDATE" "$REPO_DIR/pipeline/stages/$st/schema.json" "$SANDBOX/channels/flashfx/runs/dummy-$st/$st/$out"
   done
   fake_whisper_off
   sandbox_cleanup
@@ -464,7 +464,7 @@ if want 2; then
   assert_eq "$(python "$STATE_PY" get "$RD" rounds.review 0)" "0" "pass: no failed round counted"
   assert_grep "^# Role: qa" "$RD/12-review/prompt-r1.md" "pass: the prompt is the editor's"
   assert_grep "Scores \(1 to 5" "$RD/12-review/notes.md" "pass: notes.md written in prose"
-  no_emdash_in "pass: no em dash in the stage files" "$RD/11-sfx/cues.json" "$RD/11-sfx/sound-map.txt" "$RD/12-review/review.json" "$RD/12-review/prompt-r1.md" "$RD/12-review/notes.md" "$SANDBOX/logs/runner.log"
+  no_emdash_in "pass: no em dash in the stage files" "$RD/11-sfx/cues.json" "$RD/11-sfx/sound-map.txt" "$RD/12-review/review.json" "$RD/12-review/prompt-r1.md" "$RD/12-review/notes.md" "$SANDBOX/channels/flashfx/logs/runner.log"
 
   # ---- the planted [text] issue: the editor fails round 1 with two [text] issues, passes round 2
   fake_claude_reset

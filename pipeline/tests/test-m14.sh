@@ -33,10 +33,10 @@ VALIDATE="$REPO_DIR/pipeline/bin/validate-json"
 TOK="$REPO_DIR/pipeline/lib/tokens.py"
 MOTION="$REPO_DIR/pipeline/lib/motion"
 REVIEW="$REPO_DIR/pipeline/lib/review"
-LIB="$REPO_DIR/motion-lib"
+LIB="$REPO_DIR/channels/flashfx/motion-lib"
 HF="npx --prefix $REPO_DIR hyperframes"
-TOKENS="$REPO_DIR/styles/paper-cards/tokens.json"
-ENERGY_JSON="$REPO_DIR/styles/paper-cards/analysis/energy.json"
+TOKENS="$REPO_DIR/channels/flashfx/styles/paper-cards/tokens.json"
+ENERGY_JSON="$REPO_DIR/channels/flashfx/styles/paper-cards/analysis/energy.json"
 M13_REEL="$REPO_DIR/build/M13/rerun/1.mp4"
 BEFORE="$REPO_DIR/build/M14/golden-energy-before.json"
 
@@ -143,16 +143,16 @@ EOF
   assert_grep "m-zone-caption: [0-9]" "$CSS" "tokens.css exposes the text zones"
   assert_grep "m-safe-bottom: 1440;" "$CSS" "tokens.css exposes the safe edges for the hold's room"
   # the Energy override line
-  mkdir -p "$SANDBOX/styles/paper-cards"
-  cp styles/paper-cards/style.md styles/paper-cards/tweaks.md "$SANDBOX/styles/paper-cards/"
-  printf '\n- **Energy:** moving 45, middle 50, pixels 3.5, still 12, longest 1.5\n' >> "$SANDBOX/styles/paper-cards/tweaks.md"
-  bash pipeline/bin/build-tokens --style-dir "$SANDBOX_M/styles/paper-cards" --out "$SANDBOX_M/tokens.json" --css "$SANDBOX_M/tokens.css" >/dev/null 2>&1; rc=$?
+  mkdir -p "$SANDBOX/channels/flashfx/styles/paper-cards"
+  cp styles/paper-cards/style.md styles/paper-cards/tweaks.md "$SANDBOX/channels/flashfx/styles/paper-cards/"
+  printf '\n- **Energy:** moving 45, middle 50, pixels 3.5, still 12, longest 1.5\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/tweaks.md"
+  bash pipeline/bin/build-tokens --style-dir "$SANDBOX_M/channels/flashfx/styles/paper-cards" --out "$SANDBOX_M/tokens.json" --css "$SANDBOX_M/tokens.css" >/dev/null 2>&1; rc=$?
   assert_rc 0 $rc "a sandbox build with an Energy line in tweaks.md"
   assert_eq "$(json_get "$SANDBOX_M/tokens.json" energy.targets.moving_share_pct)" "45" "the Energy line overrides the moving share target"
   assert_eq "$(json_get "$SANDBOX_M/tokens.json" energy.targets.longest_still_s)" "1.5" "the Energy line overrides the longest still target"
   assert_eq "$(json_get "$SANDBOX_M/tokens.json" energy.calibration.source)" "spec" "without a calibration file the targets start from the spec's numbers"
   assert_true "the sandbox tokens validate" python "$VALIDATE" pipeline/lib/tokens.schema.json "$SANDBOX_M/tokens.json"
-  assert_true "the sandbox tokens verify against the sources" python "$TOK" verify --style-dir "$SANDBOX_M/styles/paper-cards" --tokens "$SANDBOX_M/tokens.json"
+  assert_true "the sandbox tokens verify against the sources" python "$TOK" verify --style-dir "$SANDBOX_M/channels/flashfx/styles/paper-cards" --tokens "$SANDBOX_M/tokens.json"
   sandbox_cleanup
 fi
 

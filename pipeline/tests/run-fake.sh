@@ -48,6 +48,8 @@ TESTS=(
   "test-m15||all"
   "test-m16|M16_SECTIONS=1 2 3 4 5 7|1 2 3 4 5 7"
   "test-m17|M17_SECTIONS=1 2 3 4|1 2 3 4"
+  "test-isolation||part 1"
+  "test-m18|M18_SECTIONS=1 2 3 4 5 6 7 9|1 2 3 4 5 6 7 9"
   "test-models||all"
 )
 

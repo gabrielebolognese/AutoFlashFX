@@ -1,0 +1,14 @@
+time	step	what	result
+2026-11-09 08:19:02	start	M18: 11 lines, 7259 files in the listing	ok
+2026-11-09 08:19:02	git-mv	ideas.txt -> channels/flashfx/ideas.txt	git mv
+2026-11-09 08:19:03	git-mv	library -> channels/flashfx/library	git mv
+2026-11-09 08:19:03	git-mv	styles -> channels/flashfx/styles	git mv
+2026-11-09 08:19:03	git-mv	motion-lib -> channels/flashfx/motion-lib	git mv
+2026-11-09 08:19:03	git-mv	golden -> channels/flashfx/golden	git mv
+2026-11-09 08:19:03	fs-mv	logs/build-sfx-map -> channels/flashfx/logs/build-sfx-map	renamed
+2026-11-09 08:19:03	fs-mv	logs/index-hooks -> channels/flashfx/logs/index-hooks	renamed
+2026-11-09 08:19:03	fs-mv	logs/runner.log -> channels/flashfx/logs/runner.log	renamed
+2026-11-09 08:19:03	fs-mv	logs/status.txt -> channels/flashfx/logs/status.txt	renamed
+2026-11-09 08:19:03	fs-mv	logs/voice-profile -> channels/flashfx/logs/voice-profile	renamed
+2026-11-09 08:19:03	stays	voicetests	ok
+2026-11-09 08:19:12	verified	M18: 7259 files, 0 rewritten	ok
