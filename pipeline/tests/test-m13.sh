@@ -234,7 +234,7 @@ sandbox_init
 printf '[10:00] STEP   researching facts done (1s) -> expanding idea\n' > "$SANDBOX/channels/flashfx/logs/status.txt"
 REELS_ROOT="$SANDBOX_M" bash pipeline/bin/doctor --quick > "$SANDBOX/doc.out" 2>&1; rc=$?
 assert_rc 0 $rc "doctor --quick exits 0 on a healthy sandbox ($(grep -c '^FAIL' "$SANDBOX/doc.out") FAIL lines)"
-for s in versions disk freshness runner "queue and logs"; do assert_grep "^== $s$" "$SANDBOX/doc.out" "doctor: the $s section"; done
+for s in versions disk "channel flashfx: freshness" "channel flashfx: runner" "channel flashfx: queue and logs"; do assert_grep "^== $s$" "$SANDBOX/doc.out" "doctor: the $s section"; done
 assert_grep '^OK    node packages as pinned in package.json: gsap [0-9.]+, hyperframes [0-9.]+, three [0-9.]+$' "$SANDBOX/doc.out" "doctor: the node packages against the pins"
 assert_grep '^OK    status \([0-9]+ min ago\): \[10:00\] STEP' "$SANDBOX/doc.out" "doctor: the last status, checked"
 printf 'not a status line\n' > "$SANDBOX/channels/flashfx/logs/status.txt"
