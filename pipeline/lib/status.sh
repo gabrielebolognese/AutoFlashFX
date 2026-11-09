@@ -78,6 +78,11 @@ runner_today_text() {
 runner_idle_line() {
   local now="$EPOCHSECONDS" idle_min every
   idle_min=$(( (now - IDLE_SINCE) / 60 ))
+  if [ -n "${QUOTA_TEXT:-}" ]; then   # M19: the daily quota is reached, the next idea waits for midnight in the channel's timezone
+    say IDLE "$QUOTA_TEXT"
+    LAST_HEARTBEAT="$now"
+    return 0
+  fi
   if [ "$POLL_SECONDS" -ge 60 ] 2>/dev/null; then every="$((POLL_SECONDS / 60)) min"; else every="${POLL_SECONDS} s"; fi
   say IDLE "no ideas in ideas.txt, checking every $every (idle $idle_min min) | $(runner_today_text)"
   LAST_HEARTBEAT="$now"
@@ -85,7 +90,7 @@ runner_idle_line() {
 
 runner_summary_line() {
   local took=$(( EPOCHSECONDS - SESSION_START ))
-  say IDLE "queue empty: this session $SESSION_EXPORTED exported, $SESSION_DROPPED dropped, $SESSION_BLOCKED blocked in $(fmt_dur "$took") | $(runner_today_text)"
+  say IDLE "queue $([ -n "${QUOTA_TEXT:-}" ] && echo "held by the quota" || echo empty): this session $SESSION_EXPORTED exported, $SESSION_DROPPED dropped, $SESSION_BLOCKED blocked in $(fmt_dur "$took") | $(runner_today_text)"
 }
 
 runner_check_new_ideas() {

@@ -39,7 +39,7 @@ import re
 import sys
 
 TAGS = {"REEL", "IDLE", "START", "STEP", "GATE", "ANGLE", "FLAG", "LIMIT", "RESUME", "RETRY", "ERROR", "FIXED",
-        "ESCAL", "DONE", "DROP", "BLOCK", "NEW", "NEXT", "STOP", "INFO", "WARN", "QUEUE", "READY"}
+        "ESCAL", "DONE", "DROP", "BLOCK", "NEW", "NEXT", "STOP", "INFO", "WARN", "QUEUE", "READY", "WAIT"}
 NOT_STATUS = {"QUEUE", "INFO"}   # say() never writes these into status.txt
 LINE_RE = re.compile(r"^\[(\d\d):(\d\d)\] ([A-Z]{2,6}) {1,5}(\S.*)$")
 EM_DASH, EN_DASH = "\u2014", "\u2013"
@@ -49,12 +49,14 @@ DUR_RE = r"(?:\d+h\d\dm|\d+m\d\ds|\d+s)"
 REEL_RE = re.compile(r'^#idea (\d+)/(\d+) "(.*)" \| (.+) \| minute (\d+) \| stage (' + DUR_RE + r') \| issues: (\d+) fixed, (\d+) open$')
 START_IDEA_RE = re.compile(r'^idea (\d+)/(\d+) "(.*)" -> runs/(\S+)( \(resumed at (.+), (\d+) stages? done\))?$')
 STEP_RE = re.compile(r"^(.+) done \((" + DUR_RE + r")\) -> (.+)$")
-DONE_RE = re.compile(r"^exported #(\d+) -> exports/(\d+)/ \((\d+ min|\d+s), (\d+) issues? fixed\)$")
+DONE_RE = re.compile(r"^exported (?P<id>[a-z][a-z0-9]*)-(?P<n>\d+) -> exports/(?P=id)-(?P<n2>\d+)/ \((?P<dur>\d+ min|\d+s), (?P<fixed>\d+) issues? fixed\)$")
+DONE_OLD_RE = re.compile(r"^exported #(?P<n>\d+) -> exports/(?P<n2>\d+)/ \((?P<dur>\d+ min|\d+s), (?P<fixed>\d+) issues? fixed\)$")   # before M19
 DROP_RE = re.compile(r'^idea "(.*)" dropped: (.+)\. Removed from ideas\.txt$')
 BLOCK_RE = re.compile(r'^idea "(.*)" blocked at (\S+): (.+)\. Moved to logs/blocked\.txt$')
 NEXT_RE = re.compile(r'^idea (\d+)/(\d+) "(.*)"$')
-SUMMARY_RE = re.compile(r"^queue empty: this session (\d+) exported, (\d+) dropped, (\d+) blocked in (" + DUR_RE +
+SUMMARY_RE = re.compile(r"^queue (?:empty|held by the quota): this session (\d+) exported, (\d+) dropped, (\d+) blocked in (" + DUR_RE +
                         r") \| today: (\d+) exported, (\d+) dropped(?:, (\d+) blocked)?$")
+QUOTA_IDLE_RE = re.compile(r"^quota (\d+)/(\d+) today, next idea after (\d\d:\d\d)$")
 IDLE_RE = re.compile(r"^no ideas in ideas\.txt, checking every (\d+ min|\d+ s) \(idle (\d+) min\) \| today: \d+ exported, \d+ dropped(?:, \d+ blocked)?$")
 LIMIT_RE = re.compile(r"^(\S+) limit hit, resuming at (\d\d:\d\d|\w{3} \d\d:\d\d) \(\+(\d+ min|\d+s) margin\)$")
 LIMIT_UNPARSED_RE = re.compile(r"^(\S+) limit hit but no reset time found")
@@ -349,18 +351,18 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
                 problem(i, "heartbeat activity %r is not in the activity table of spec section 7" % act)
             activities_seen.add(act)
         elif tag == "DONE":
-            dm = DONE_RE.match(text)
-            if not dm or dm.group(1) != dm.group(2):
+            dm = DONE_RE.match(text) or DONE_OLD_RE.match(text)
+            if not dm or dm.group("n") != dm.group("n2"):
                 problem(i, "DONE line not understood: %r" % text)
                 close_idea(i, "done")
                 continue
-            n = int(dm.group(1))
+            n = int(dm.group("n"))
             idea["export"] = n
             exports.append(n)
             done_fixed = idea["fixed"] + idea["rev_fixed"] + (1 if idea["rev_pending"] == "fixed" else 0)
-            if int(dm.group(4)) != done_fixed and not idea["resumed"]:
+            if int(dm.group("fixed")) != done_fixed and not idea["resumed"]:
                 problem(i, "DONE says %s issues fixed, the log has %d FIXED lines and %d recovered review rounds"
-                        % (dm.group(4), idea["fixed"], done_fixed - idea["fixed"]))
+                        % (dm.group("fixed"), idea["fixed"], done_fixed - idea["fixed"]))
             if idea["gate"] is None and not idea["resumed"] and gate_line:
                 problem(i, "idea %d was exported without a GATE line" % idea["k"])
             sess["exported"] += 1
@@ -403,7 +405,7 @@ def story(lines: list[str], allow_crash: bool = False, max_gap: int | None = Non
                 want = (sess["exported"], sess["dropped"], sess["blocked"])
                 if got != want:
                     problem(i, "summary says %d exported, %d dropped, %d blocked; this session's lines say %d, %d, %d" % (got + want))
-            elif IDLE_RE.match(text):
+            elif IDLE_RE.match(text) or QUOTA_IDLE_RE.match(text):
                 sess.setdefault("idle_lines", 0)
                 sess["idle_lines"] = sess.get("idle_lines", 0) + 1
             else:

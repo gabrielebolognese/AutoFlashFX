@@ -11,6 +11,8 @@ Mode selection:
                               last line the last mode repeats. The position is kept in FAKE_CLAUDE_STATE/script.n.
   FAKE_CLAUDE_MODE=<mode>     otherwise this mode for every call (default: auto)
   FAKE_CLAUDE_STATE=<dir>     counters (default: next to the log, else the system temp folder)
+  FAKE_CLAUDE_RECORD_DIR=<dir> every call writes its whole prompt to <dir>/<n>.prompt.txt and its arguments to <n>.argv.json (the
+                              recorder of test-isolation part 2)
   FAKE_CLAUDE_DELAY=<seconds> every answering call (ok, echo, review, fix, fixture, bad-json) sleeps this long after
                               it was logged, so a test can kill the runner while a reviewer is still working
   FAKE_CLAUDE_FIXTURES=<dir>  in auto mode, a prompt whose header has a "# Stage: <key>" line is answered with the
@@ -246,6 +248,14 @@ def main(argv: list[str]) -> int:
               "disallowed": opts["disallowed"], "add_dir": opts["add_dir"], "max_turns": opts.get("max-turns"),
               "prompt_len": len(prompt), "prompt_head": prompt[:200], "cwd": os.getcwd().replace("\\", "/"),
               "limit_epoch": None, "at": int(time.time())}
+
+    rec_dir = winpath(os.environ.get("FAKE_CLAUDE_RECORD_DIR", ""))
+    if rec_dir:  # the recorder of test-isolation part 2: the whole prompt and every argument of the call (paths of screenshots, add-dir)
+        os.makedirs(rec_dir, exist_ok=True)
+        with open(os.path.join(rec_dir, f"{n:04d}.prompt.txt"), "w", encoding="utf-8", newline="\n") as f:
+            f.write(prompt)
+        with open(os.path.join(rec_dir, f"{n:04d}.argv.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"argv": argv, "cwd": os.getcwd().replace("\\", "/"), "channel": os.environ.get("REELS_CHANNEL", "")}, f)
 
     def log() -> None:
         path = winpath(os.environ.get("FAKE_CLAUDE_LOG", ""))

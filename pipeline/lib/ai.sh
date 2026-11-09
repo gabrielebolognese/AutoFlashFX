@@ -74,6 +74,7 @@ _ai_lib="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 declare -F json_eval >/dev/null 2>&1 || source "$_ai_lib/state.sh"
 declare -F set_activity >/dev/null 2>&1 || source "$_ai_lib/status.sh"
 source "$_ai_lib/limits.sh"
+declare -F engine_log >/dev/null 2>&1 || source "$_ai_lib/heavy.sh"   # engine_log (M19)
 source "$_ai_lib/errors.sh"
 unset _ai_lib
 
@@ -296,6 +297,7 @@ sys.stdout.write(json.dumps(d, ensure_ascii=False, separators=(",", ":")))' "$sc
   local prompt="$prompt_file"
   local missing_tries=0
   while :; do
+    limit_shared_wait   # a limit another channel's runner hit: wait for the same reset, no call (M19, BUILD_SPEC.md 14.6)
     n="$(ai_next_number "$calls")"
     base="$calls/$n${name:+-$name}"
     local -a cmd=("${REELS_CLAUDE:-claude}" -p --model "$model" --effort "$effort" --output-format json

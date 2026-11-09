@@ -64,7 +64,7 @@ relay() {
   done
 }
 set -o pipefail
-"$REELS_PY" "$LIB/sfx/mixsfx.py" run --run-dir "$RUN_DIR" --stage-dir "$OUT" 2>&1 | relay
+heavy_run encode "S11 sound mix" -- "$REELS_PY" "$LIB/sfx/mixsfx.py" run --run-dir "$RUN_DIR" --stage-dir "$OUT" 2>&1 | relay
 rc=${PIPESTATUS[0]}
 set +o pipefail
 last_error() { local msg; msg="$(head -n 1 "$ERR_FILE" 2>/dev/null)"; printf '%s' "${msg:-${1:-the sound pass failed}}"; }

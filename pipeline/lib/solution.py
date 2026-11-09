@@ -116,7 +116,7 @@ def solution_type(run_dir: str) -> str:
 
 
 def block_text(sol: dict | None) -> str:
-    """The SOLUTION block's line of Ncaptions.txt (spec section 8): flashfx | external: name link | method."""
+    """The SOLUTION block's line of <id>-Ncaptions.txt (spec section 8): flashfx | external: name link | method."""
     if not sol:
         return "- (no solution decision: the run ended before S2 chose one, or it predates the solution choice)"
     stype = sol.get("type", "")

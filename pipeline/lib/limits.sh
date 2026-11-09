@@ -109,11 +109,49 @@ reels_wait_until() {  # reels_wait_until <epoch> [what] [activity prefix]
   done
 }
 
-limits_log() {
+limits_log() {  # the shared logs/limits.log at the root keeps every wait with its channel id (BUILD_SPEC.md 14.6, M19)
   local __text="$*"
   reels_undash __text   # the quoted limit message is external text
-  mkdir -p "$REELS_LOGS" 2>/dev/null || return 0
-  printf '%(%Y-%m-%d %H:%M:%S)T | %s\n' -1 "$__text" >> "$REELS_LOGS/limits.log"
+  mkdir -p "$REELS_GLOBAL_LOGS" 2>/dev/null || return 0
+  printf '%(%Y-%m-%d %H:%M:%S)T | %s | %s\n' -1 "${REELS_CHANNEL:--}" "$__text" >> "$REELS_GLOBAL_LOGS/limits.log"
+}
+
+limit_file() { printf '%s' "$REELS_GLOBAL_LOCKS/limit.json"; }
+
+limit_shared_target() {  # the target epoch in .locks/limit.json (0 when there is none)
+  local f t; f="$(limit_file)"
+  [ -f "$f" ] || { printf '0'; return; }
+  t="$(sed -n 's/.*"target": *\([0-9][0-9]*\).*/\1/p' "$f" 2>/dev/null | head -n 1)"
+  printf '%s' "${t:-0}"
+}
+
+limit_shared_write() {  # limit_shared_write <reset epoch> <target epoch> <kind>: every runner reads this before its next model call
+  local f tmp cur
+  f="$(limit_file)"
+  cur="$(limit_shared_target)"
+  [ "$2" -gt "$cur" ] 2>/dev/null || return 0
+  mkdir -p "$REELS_GLOBAL_LOCKS" 2>/dev/null || return 0
+  tmp="$f.$$.tmp"
+  printf '{"reset": %s, "target": %s, "kind": "%s", "channel": "%s", "written": %s}\n' "$1" "$2" "$3" "${REELS_CHANNEL:--}" "$EPOCHSECONDS" > "$tmp" && mv -f "$tmp" "$f"
+}
+
+limit_shared_wait() {  # before each model call: a limit another runner hit makes this one wait for the same time, with no call
+  local f target by kind now started when
+  f="$(limit_file)"; [ -f "$f" ] || return 0
+  now="$EPOCHSECONDS"
+  target="$(limit_shared_target)"
+  [ "$target" -gt "$now" ] 2>/dev/null || return 0
+  by="$(sed -n 's/.*"channel": *"\([^"]*\)".*/\1/p' "$f" | head -n 1)"
+  kind="$(sed -n 's/.*"kind": *"\([^"]*\)".*/\1/p' "$f" | head -n 1)"
+  started="$now"
+  printf -v when '%(%Y-%m-%d %H:%M:%S)T' "$target"
+  say LIMIT "${kind:-usage} limit hit by ${by:-another channel}, waiting for the same reset: resuming at $(fmt_clock "$target")"
+  limits_log "shared ${kind:-usage} limit | hit by ${by:-?} | waiting until $when (no model call)"
+  engine_log "shared limit wait: ${kind:-usage} limit hit by ${by:-?}, this channel waits until $when"
+  reels_wait_until "$target" "shared limit" "waiting for usage limit (hit by ${by:-another channel}) until $(fmt_clock "$target")"
+  limits_log "resumed after the shared ${kind:-usage} limit (waited $(fmt_dur $((EPOCHSECONDS - started))))"
+  say RESUME "limit reset, continuing"
+  if [ "$(limit_shared_target)" = "$target" ] && reels_fast_forward; then rm -f "$f"; fi   # a fast-forwarded wait did not pass the time
 }
 
 limit_margin() { printf '%s' "${REELS_LIMIT_MARGIN:-$(cfg runner.limit_margin_seconds 120)}"; }
@@ -134,11 +172,13 @@ limit_wait() {  # limit_wait <reset epoch> <kind> "<activity>" ["<message>"]
   target=$((reset + margin))
   started="$EPOCHSECONDS"
   if [ $((margin % 60)) -eq 0 ]; then margin_text="+$((margin / 60)) min margin"; else margin_text="+${margin}s margin"; fi
+  limit_shared_write "$reset" "$target" "$kind"
   say LIMIT "$kind limit hit, resuming at $(fmt_clock "$target") ($margin_text)"
   printf -v _reset_iso '%(%Y-%m-%d %H:%M)T' "$reset"
   printf -v _target_iso '%(%Y-%m-%d %H:%M:%S)T' "$target"
   limits_log "$kind limit | reset $_reset_iso | waiting until $_target_iso (reset + ${margin} s)${message:+ | \"$message\"}"
   reels_wait_until "$target" "$kind limit" "waiting for usage limit ($kind) until $(fmt_clock "$target")"
+  if [ "$(limit_shared_target)" = "$target" ]; then rm -f "$(limit_file)"; fi   # this wait is over: the shared file has done its work
   limits_log "resumed after the $kind limit (waited $(fmt_dur $((EPOCHSECONDS - started))))"
   say RESUME "limit reset, continuing: $activity"
   set_activity "$activity"

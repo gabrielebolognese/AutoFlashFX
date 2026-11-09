@@ -1,0 +1,1 @@
+# Words the voice says wrongly, one per line: written form | spoken form

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# new-channel: creates channels/<id>/ from a format's template and a platform's defaults (BUILD_SPEC.md 14.7).
+#   bash pipeline/bin/new-channel <id> --format <format> --platform <platform> [--name "Display Name"]
+# The channel starts disabled (channel.json enabled false) with files that say [FILL IN]; preflight --channel <id> lists what is
+# missing. A format or platform that does not exist yet is engine work. The code is pipeline/lib/newchannel.py.
+set -u
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+case "${1:-}" in -h|--help|"") sed -n '2,6p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; [ -n "${1:-}" ] && exit 0; exit 2 ;; esac
+exec "$REELS_PY" "$REELS_PIPELINE/lib/newchannel.py" "$@"

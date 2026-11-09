@@ -10,7 +10,7 @@ the search terms; pipeline/lib/caption.py composes and checks it (one ask, the k
 link, hashtags one word each and none generic, the solution rules of S7: no FlashFX mention unless the solution is
 flashfx, nothing implying the reel was made in FlashFX, no ad language), runs humanize.py on it and the vendor
 caption.py lint (no FAIL), and writes export.json: everything the runner's export step (pipeline/lib/export.py)
-renders into Ncaptions.txt and copies into exports/N/. The export itself (the number, the move in one step, the
+renders into <id>-Ncaptions.txt and copies into exports/<id>-N/. The export itself (the number, the move in one step, the
 idea's removal, the history line with the solution type) is the runner's, after this stage.
 
 ## Inputs
@@ -30,9 +30,9 @@ idea's removal, the history line with the solution type) is the runner's, after 
   rendered videos, relative to this folder), lint (caption.py's result), humanize, checks.
 - caption.txt (the caption and the hashtags, ready to paste), caption-data.json (what the prompt got),
   prompt-caption.md (and the retry prompt), calls/
-- the runner renders exports/N/Ncaptions.txt from export.json in the format of BUILD_SPEC.md section 8 (CAPTION,
+- the runner renders exports/<id>-N/<id>-Ncaptions.txt from export.json in the format of BUILD_SPEC.md section 8 (CAPTION,
   HASHTAGS, COMMENT KEYWORD, SOLUTION, HOOKS, NEEDS REVIEW only when flagged, FACTS AND SOURCES, RUN) and moves
-  N.mp4, Ncaptions.txt and Nhook2.mp4 into exports/N/
+  <id>-N.mp4, <id>-Ncaptions.txt and <id>-Nhook2.mp4 into exports/<id>-N/
 - stage.log: everything the stage printed (its `say` lines also reach the terminal through fd 3).
 
 ## Invariants

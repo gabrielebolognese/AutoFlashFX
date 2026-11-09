@@ -544,3 +544,17 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   channels/flashfx/ in their sandboxes (lib.sh SANDBOX_CH). Not in M18: export names (M19), format.json (M20). Earlier milestones touched: M1 to M17
   tests (paths), the config keys of M5 to M12 (moved to channel.json), M17's test-m17 (pinned commit range, recorded manifest after the move),
   preflight (M1), protect.py (M3), export.py and ideas.py (M2, a locks dir and the paths module). DECISIONS.md 344 to 354.
+
+## M19 Exports and channels side by side
+- Status: built (2026-11-09). Report for you: build/M19/report.md.
+- Test command: `bash pipeline/tests/test-m19.sh` (sections 1 to 8, about 40 minutes; `M19_SECTIONS="3 5"` for some; `M19_RECORD=1` rewrites build/M19/fingerprint/),
+  `ISOLATION_PARTS="1 2" bash pipeline/tests/test-isolation.sh` (both parts), `python pipeline/tests/m19-ytshorts.py selftest` (the youtube-shorts exporter, 86 checks),
+  `bash pipeline/tests/run-fake.sh --out build/M19/baseline --compare build/M17/baseline` (the baseline rule, about 7 hours).
+- Notes: exports are `exports/<id>-N/` (pipeline/lib/export.py, numbered per channel from exports/ and history.txt); platforms are pipeline/platforms/<platform>/
+  (platform.json, pipeline/lib/platform_lib.py; instagram-reels render.py, youtube-shorts exporter.py with every check of section 8); heavy.sh wraps S8, S10, S11, S12, S13
+  steps (`.locks/heavy.lock`, WAIT line, engine.log); `.locks/limit.json` and the root logs/limits.log (channel id) share usage limits; quota.py gives the daily quota IDLE
+  line; `bash pipeline/bin/new-channel` with pipeline/formats/problem-solution-reel/template/ and preflight's `fill_in` check; doctor and runner-status per channel;
+  test-isolation part 2. The real folder had no export, so its M19 migration is empty (the rehearsal fixture proves the renames, undo and kill recovery).
+  Earlier milestones touched: M2 (export.py, history.sh, runner.sh DONE line, status.sh), M3 (limits.sh, ai.sh, limits.log at the root), M8 to M13 stage scripts (heavy_run
+  around their heavy commands), M13 (logcheck.py: WAIT tag, quota IDLE, new DONE form; doctor), M17 (make-manifest.py: the history after M18), M18 (preflight, test files),
+  tests m2 m3 m4 m10 m11 m12 m13 m16 m18 (export names, root limits.log). DECISIONS.md 355 to 364.

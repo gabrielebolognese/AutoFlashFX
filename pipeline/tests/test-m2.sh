@@ -158,18 +158,18 @@ assert_rc 0 $rc "lock: with the default wait the writer goes through once the ho
 assert_true "lock: it waited for the holder (${waited%.*}s)" python -c 'import sys; sys.exit(0 if float(sys.argv[1]) >= 2.0 else 1)' "$waited"
 wait $holder 2>/dev/null
 
-assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS")" "1" "numbering: the first export is 1"
-mkdir -p "$SANDBOX/exports/3" "$SANDBOX/exports/7" "$SANDBOX/exports/notes"
-assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS")" "8" "numbering: highest existing number plus 1, other folders ignored"
+assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS" --channel flashfx --history "$SANDBOX_M/channels/flashfx/logs/history.txt")" "1" "numbering: the first export is 1"
+mkdir -p "$SANDBOX/exports/flashfx-3" "$SANDBOX/exports/flashfx-7" "$SANDBOX/exports/notes" "$SANDBOX/exports/other-9" "$SANDBOX/exports/8"
+assert_eq "$(python "$EXPORT_PY" next-number --exports "$EXPORTS" --channel flashfx --history "$SANDBOX_M/channels/flashfx/logs/history.txt")" "8" "numbering: highest number of this channel plus 1, other folders and other channels ignored"
 rm -rf "$SANDBOX/exports"
 for st in 13-render 14-export; do REELS_DUMMY_SECONDS=0 bash "$REPO_DIR/pipeline/stages/$st/dummy.sh" "$RD" >/dev/null 2>&1; done
 caps="$(python "$EXPORT_PY" render --run-dir "$RD" --number 7)"
 assert_eq "$(printf '%s\n' "$caps" | grep -E '^(CAPTION|HASHTAGS|COMMENT KEYWORD|SOLUTION|HOOKS|NEEDS REVIEW|FACTS AND SOURCES|RUN)$' | paste -sd,)" \
   "CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,NEEDS REVIEW,FACTS AND SOURCES,RUN" "captions: the sections of spec section 8, in order"
-assert_true "captions: HOOKS lines carry the export number" grep -q -F '7.mp4 uses: "Your AI site looks fake, one fix"' <<<"$caps"
-assert_true "captions: the hook 2 clip line" grep -q -F '7hook2.mp4 uses:' <<<"$caps"
+assert_true "captions: HOOKS lines carry the export name" grep -q -F 'flashfx-7.mp4 uses: "Your AI site looks fake, one fix"' <<<"$caps"
+assert_true "captions: the hook 2 clip line" grep -q -F 'flashfx-7hook2.mp4 uses:' <<<"$caps"
 assert_true "captions: NEEDS REVIEW lists the flag" grep -q -F '07-script: soft script check failed (detect 64)' <<<"$caps"
-assert_true "captions: the RUN section names the run folder" grep -q -F "runs/$(basename "$RD")" <<<"$caps"
+assert_true "captions: the RUN section names the run folder" grep -q -F "channels/flashfx/runs/$(basename "$RD")" <<<"$caps"
 assert_true "captions: the NEW deliverable line" grep -q -F 'NEW deliverable to create before posting' <<<"$caps"
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -190,10 +190,10 @@ assert_grep "${ts_regex}STEP   researching facts done \([0-9]+s\) -> expanding i
 assert_grep "${ts_regex}STEP   checking idea \(gate\) done \([0-9]+s\) -> picking hooks$" "$OUT" "STEP skips 04-angle when the gate passes"
 assert_grep "${ts_regex}STEP   writing caption done \([0-9]+s\) -> exporting #[0-9]+$" "$OUT" "STEP before the export (the activity exporting #N)"
 assert_eq "$(grep -c -E "${ts_regex}STEP " "$OUT")" "30" "15 STEP lines per idea (16 stages, angle skipped)"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/ \([0-9]+(s| min), 0 issues fixed\)$" "$OUT" "DONE line for export 1"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/ \([0-9]+(s| min), 0 issues fixed\)$" "$OUT" "DONE line for export 1"
 assert_grep "${ts_regex}NEXT   idea 2/2 \"Idea B: uv replaces pip, venv and pyenv ...\"$" "$OUT" "NEXT line keeps counting the ideas of the session"
 assert_grep "${ts_regex}START  idea 2/2 \"Idea B" "$OUT" "START line for the second idea"
-assert_grep "${ts_regex}DONE   exported #2 -> exports/2/" "$OUT" "DONE line for export 2"
+assert_grep "${ts_regex}DONE   exported flashfx-2 -> exports/flashfx-2/" "$OUT" "DONE line for export 2"
 assert_grep "${ts_regex}IDLE   queue empty: this session 2 exported, 0 dropped, 0 blocked in [0-9ms]+ \| today: [0-9]+ exported, [0-9]+ dropped" "$OUT" "summary line when the queue empties"
 assert_not_grep "resumed" "$OUT" "no resume in a clean run"
 assert_not_grep $'\x1b' "$OUT" "NO_COLOR output has no escape codes"
@@ -201,17 +201,17 @@ assert_eq "$(cat "$SANDBOX/channels/flashfx/logs/status.txt")" "$(tail -n 1 "$OU
 assert_eq "$(grep -c -E "${ts_regex}" "$SANDBOX/channels/flashfx/logs/runner.log")" "$(grep -c -E "${ts_regex}" "$OUT")" "runner.log has every terminal line"
 assert_true "runner.log has more than 40 lines" [ "$(grep -c -E "${ts_regex}" "$SANDBOX/channels/flashfx/logs/runner.log")" -gt 40 ]
 for n in 1 2; do
-  assert_file "$SANDBOX/exports/$n/$n.mp4" "exports/$n/$n.mp4"
-  assert_file "$SANDBOX/exports/$n/${n}captions.txt" "exports/$n/${n}captions.txt"
-  assert_file "$SANDBOX/exports/$n/${n}hook2.mp4" "exports/$n/${n}hook2.mp4"
+  assert_file "$SANDBOX/exports/flashfx-$n/flashfx-$n.mp4" "exports/flashfx-$n/flashfx-$n.mp4"
+  assert_file "$SANDBOX/exports/flashfx-$n/flashfx-${n}captions.txt" "exports/flashfx-$n/flashfx-${n}captions.txt"
+  assert_file "$SANDBOX/exports/flashfx-$n/flashfx-${n}hook2.mp4" "exports/flashfx-$n/flashfx-${n}hook2.mp4"
 done
-assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1,2" "exports/ holds exactly 1 and 2"
-assert_grep '^1\.mp4 uses: "' "$SANDBOX/exports/1/1captions.txt" "captions: HOOKS line with the number"
-assert_grep "^runs/$(ls "$SANDBOX/channels/flashfx/runs" | head -n 1)$" "$SANDBOX/exports/1/1captions.txt" "captions: RUN section names the first run"
+assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1,flashfx-2" "exports/ holds exactly flashfx-1 and flashfx-2"
+assert_grep '^flashfx-1\.mp4 uses: "' "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: HOOKS line with the number"
+assert_grep "^channels/flashfx/runs/$(ls "$SANDBOX/channels/flashfx/runs" | head -n 1)$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: RUN section names the first run"
 assert_eq "$(ls -d "$SANDBOX"/channels/flashfx/runs/*/export 2>/dev/null | wc -l | tr -d ' ')" "0" "the staging folders were moved, not copied"
 assert_eq "$(grep -c . "$SANDBOX/channels/flashfx/logs/history.txt")" "2" "two history lines"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| external \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | solution | exported 1"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| external \| exported 2$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the second idea with its accents"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| external \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | solution | exported 1"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| external \| exported flashfx-2$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the second idea with its accents"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt is empty afterwards"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "2" "two run folders"
 for d in $(run_dirs); do
@@ -276,13 +276,13 @@ if wait_for '[-]> picking hooks' "$SANDBOX/channels/flashfx/logs/runner.log" 90;
   assert_not_grep "researching facts done" "$OUT" "the earlier stages are skipped"
   assert_not_grep "expanding idea done" "$OUT" "the earlier stages are skipped (2)"
   assert_grep "${ts_regex}STEP   picking hooks done" "$OUT" "the killed stage runs again"
-  assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the resumed run exports #1"
+  assert_grep "${ts_regex}DONE   exported flashfx-1" "$OUT" "the resumed run exports #1"
   assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "1" "no second run folder was created"
   assert_eq "$(state_get "$RD" stages.01-research.attempts)" "1" "state.json: research ran once"
   assert_eq "$(state_get "$RD" stages.05-hooks.attempts)" "2" "state.json: hooks ran twice"
   assert_eq "$(state_get "$RD" timing.sessions)" "2" "state.json: two sessions"
-  assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "exactly one export"
-  assert_eq "$(grep -c "| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "one history line"
+  assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1" "exactly one export"
+  assert_eq "$(grep -c "| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "one history line"
 else
   fail "the runner never reached 05-hooks (see $SANDBOX/kill1.out)"; cat "$SANDBOX/kill1.out"
   kill -9 "$(lock_pid)" $RUNNER_JOB 2>/dev/null
@@ -296,8 +296,8 @@ run_once "$SANDBOX/crash1.out" REELS_CRASH_AT=assembled; rc=$?
 RD="$(run_dirs | head -n 1)"
 assert_true "the runner died at the planted point (exit $rc)" [ "$rc" -ne 0 ]
 assert_grep "planted crash after the export was assembled" "$SANDBOX/crash1.out" "the crash is announced"
-assert_file "$RD/export/1.mp4" "the export was assembled in runs/<id>/export/"
-assert_no_file "$SANDBOX/exports/1" "nothing moved into exports/ yet"
+assert_file "$RD/export/flashfx-1.mp4" "the export was assembled in runs/<id>/export/"
+assert_no_file "$SANDBOX/exports/flashfx-1" "nothing moved into exports/ yet"
 assert_eq "$(state_get "$RD" export.intent)" "1" "state.json records the intended number"
 assert_eq "$(state_get "$RD" export.number)" "" "state.json has no export number yet"
 assert_true "the exports lock is left behind" [ -d "$SANDBOX/.locks/exports" ]
@@ -305,25 +305,25 @@ run_once "$SANDBOX/crash1b.out"; rc=$?
 assert_rc 0 $rc "restart after the crash exits 0"
 assert_grep "removed a leftover exports lock" "$SANDBOX/crash1b.out" "the leftover exports lock is cleared at startup"
 assert_grep "resumed at exporting #[0-9]+, 15 stages done" "$SANDBOX/crash1b.out" "the restart resumes at the export"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$SANDBOX/crash1b.out" "the export completes as #1"
-assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "exactly one export after the crash"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$SANDBOX/crash1b.out" "the export completes as #1"
+assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1" "exactly one export after the crash"
 assert_no_file "$RD/export" "the staging folder is gone"
-assert_eq "$(grep -c "| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "one history line"
+assert_eq "$(grep -c "| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "one history line"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "the idea is removed once"
 
 printf '{%s}\n' "$IDEA_B" > "$SANDBOX/channels/flashfx/ideas.txt"
 run_once "$SANDBOX/crash2.out" REELS_CRASH_AT=moved; rc=$?
 RD2="$(run_dirs | tail -n 1)"
 assert_true "the runner died right after the move (exit $rc)" [ "$rc" -ne 0 ]
-assert_file "$SANDBOX/exports/2/2captions.txt" "exports/2 exists after the move"
+assert_file "$SANDBOX/exports/flashfx-2/flashfx-2captions.txt" "exports/2 exists after the move"
 assert_eq "$(state_get "$RD2" export.number)" "" "state.json does not know the number yet"
 assert_eq "$(state_get "$RD2" status)" "running" "the run is still unfinished"
-assert_eq "$(grep -c "| exported 2$" "$SANDBOX/channels/flashfx/logs/history.txt")" "0" "no history line yet"
+assert_eq "$(grep -c "| exported flashfx-2$" "$SANDBOX/channels/flashfx/logs/history.txt")" "0" "no history line yet"
 run_once "$SANDBOX/crash2b.out"; rc=$?
 assert_rc 0 $rc "restart after the second crash exits 0"
-assert_grep "${ts_regex}DONE   exported #2 -> exports/2/" "$SANDBOX/crash2b.out" "the moved export is recognized as #2"
-assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1,2" "no exports/3: no duplicate"
-assert_eq "$(grep -c "| exported 2$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "exactly one history line for #2"
+assert_grep "${ts_regex}DONE   exported flashfx-2 -> exports/flashfx-2/" "$SANDBOX/crash2b.out" "the moved export is recognized as #2"
+assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1,flashfx-2" "no exports/flashfx-3: no duplicate"
+assert_eq "$(grep -c "| exported flashfx-2$" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "exactly one history line for #2"
 assert_eq "$(state_get "$RD2" status)" "exported" "the run is finished"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "the idea is removed"
 
@@ -347,19 +347,19 @@ assert_grep "${ts_regex}ERROR  S10 building visuals: exit 1: Traceback \(planted
 assert_grep "${ts_regex}BLOCK  idea \"Idea B: uv replaces pip, venv and pyenv ...\" blocked at S10: environment problem: fake reviewer: exit 1: .*\. Moved to logs/blocked.txt$" "$OUT" "BLOCK line (the reviewer's verdict: only the user can fix it)"
 assert_grep "${ts_regex}NEXT   idea 3/3 \"Idea C" "$OUT" "NEXT after the block"
 assert_grep "${ts_regex}FLAG   needs review: dummy soft check failed in 07-script$" "$OUT" "FLAG line printed by the stage"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the third idea exports as #1: no gap for dropped or blocked ideas"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "the third idea exports as #1: no gap for dropped or blocked ideas"
 assert_grep "${ts_regex}IDLE   queue empty: this session 1 exported, 1 dropped, 1 blocked" "$OUT" "summary counts"
-assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "1" "only exports/1"
+assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1" "only exports/flashfx-1"
 assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_A \| external \| dropped: facts do not hold \(dummy 03-gate\)$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: dropped line"
 assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_B \| external \| blocked: environment problem: fake reviewer: exit 1" "$SANDBOX/channels/flashfx/logs/history.txt" "history: blocked line"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_C \| external \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: exported line"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $IDEA_C \| external \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: exported line"
 assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: fake reviewer: exit 1: .* \| runs/" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the reason line"
 assert_grep "^\{$IDEA_B\}$" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the idea in braces, ready to re-add"
 assert_eq "$(python "$REPO_DIR/pipeline/lib/ideas.py" count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt is empty"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "3" "the dropped and blocked run folders are kept"
 assert_eq "$(for d in $(run_dirs); do state_get "$d" status; done | paste -sd,)" "dropped,blocked,exported" "state.json statuses"
-assert_grep "^NEEDS REVIEW$" "$SANDBOX/exports/1/1captions.txt" "captions: NEEDS REVIEW section when flagged"
-assert_grep "^07-script: dummy soft check failed in 07-script$" "$SANDBOX/exports/1/1captions.txt" "captions: the flag text"
+assert_grep "^NEEDS REVIEW$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: NEEDS REVIEW section when flagged"
+assert_grep "^07-script: dummy soft check failed in 07-script$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: the flag text"
 assert_eq "$(state_get "$(run_dirs | sed -n 2p)" issues.open)" "1" "the code error counts as an open issue"
 assert_file "$(run_dirs | sed -n 2p)/10-build/stage.log" "the failed stage kept its log"
 assert_grep "planted failure" "$(run_dirs | sed -n 2p)/10-build/stage.log" "stage.log has the stage's own output"
@@ -389,7 +389,7 @@ if wait_for "IDLE   no ideas" "$OUT" 30; then
   assert_rc 1 $rc "a second runner refuses to start while one runs"
   assert_grep "another runner is already running \(pid $(lock_pid)\)" "$SANDBOX/second.out" "it names the running pid"
   CLAUDECODE=1 bash "$ADD_IDEA" "{$IDEA_C}" >/dev/null
-  if wait_for "DONE   exported #1" "$OUT" 120; then
+  if wait_for "DONE   exported flashfx-1" "$OUT" 120; then
     pass "an idea added while idle is processed"
   else
     fail "the idle runner did not process the added idea"
@@ -449,7 +449,7 @@ assert_rc 0 $rc "a later start with dummy stages resumes the kept run"
 assert_grep "removed logs/STOPPED.md" "$SANDBOX/stop2.out" "the successful start removes STOPPED.md"
 plural_stage="stages"; [ "$done_before_resume" = 1 ] && plural_stage="stage"
 assert_grep "resumed at $MISSING_ACTIVITY, $done_before_resume $plural_stage done" "$SANDBOX/stop2.out" "the kept run is resumed at the stage that was missing"
-assert_grep "${ts_regex}DONE   exported #1" "$SANDBOX/stop2.out" "and exported"
+assert_grep "${ts_regex}DONE   exported flashfx-1" "$SANDBOX/stop2.out" "and exported"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------

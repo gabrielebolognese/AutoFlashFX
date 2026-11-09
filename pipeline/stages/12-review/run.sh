@@ -76,25 +76,25 @@ last_error() { local msg; msg="$(head -n 1 "$ERR_FILE" 2>/dev/null)"; printf '%s
 
 say INFO "S12: review round $ROUND/$TOTAL of the draft"
 # 0. the energy check (Motion and energy rules E0 and E9): runs first, needs no model; its failing scenes go back to 9a with their numbers
-review_step "reviewing: energy check" "$REELS_PY" "$LIB/review" energy-check --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the energy check failed")"
+review_step "reviewing: energy check" heavy_run analyze "S12 energy-check" -- "$REELS_PY" "$LIB/review" energy-check --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the energy check failed")"
 energy_pass="$(json_field "$STEP_OUT" pass false)"; energy_n="$(json_field "$STEP_OUT" issues 0)"; energy_move="$(json_field "$STEP_OUT" moving_share_pct "?")"; energy_skipped="$(json_field "$STEP_OUT" skipped false)"
 energy_part=""
 [ "$energy_skipped" = true ] || energy_part="energy $([ "$energy_pass" = true ] && echo "ok (moving ${energy_move}%)" || echo "$energy_n issues (moving ${energy_move}%)"), "
 # 1. mechanical
-review_step "reviewing: mechanical checks" "$REELS_PY" "$LIB/review" mechanical --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the mechanical checks failed")"
+review_step "reviewing: mechanical checks" heavy_run render "S12 mechanical" -- "$REELS_PY" "$LIB/review" mechanical --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the mechanical checks failed")"
 mech_pass="$(json_field "$STEP_OUT" pass false)"; mech_n="$(json_field "$STEP_OUT" issues 0)"
 # 2. style
-review_step "reviewing: style check" "$REELS_PY" "$LIB/review" style --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the style check failed")"
+review_step "reviewing: style check" heavy_run analyze "S12 style" -- "$REELS_PY" "$LIB/review" style --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the style check failed")"
 style_pass="$(json_field "$STEP_OUT" pass false)"; style_n="$(json_field "$STEP_OUT" issues 0)"
 # 3. audio
-review_step "reviewing: audio check" "$REELS_PY" "$LIB/review" audio --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the audio check failed")"
+review_step "reviewing: audio check" heavy_run transcribe "S12 audio" -- "$REELS_PY" "$LIB/review" audio --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the audio check failed")"
 audio_pass="$(json_field "$STEP_OUT" pass false)"; audio_n="$(json_field "$STEP_OUT" issues 0)"; wer="$(json_field "$STEP_OUT" wer_pct "?")"
 say INFO "S12: code checks: ${energy_part}mechanical $([ "$mech_pass" = true ] && echo ok || echo "$mech_n issues"), style $([ "$style_pass" = true ] && echo ok || echo "$style_n issues"), audio $([ "$audio_pass" = true ] && echo ok || echo "$audio_n issues") (voice WER ${wer}%)"
 
 # 4. the edit review (a fresh qa session per round)
 ANSWER=""
 if [ "${REELS_REVIEW_SKIP_EDIT:-0}" != 1 ]; then
-  review_step "reviewing: edit review (round $ROUND/$TOTAL)" "$REELS_PY" "$LIB/review" filmstrips --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the filmstrips failed")"
+  review_step "reviewing: edit review (round $ROUND/$TOTAL)" heavy_run encode "S12 filmstrips" -- "$REELS_PY" "$LIB/review" filmstrips --run-dir "$RUN_DIR" --stage-dir "$OUT" || stage_fail "$(last_error "the filmstrips failed")"
   review_step "reviewing: edit review (round $ROUND/$TOTAL)" "$REELS_PY" "$LIB/review" prompt --run-dir "$RUN_DIR" --stage-dir "$OUT" --round "$ROUND" || stage_fail "$(last_error "the prompt digests failed")"
   DG="$OUT/digest"
   PROMPT="$OUT/prompt-r$ROUND.md"

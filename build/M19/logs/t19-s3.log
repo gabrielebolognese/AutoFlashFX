@@ -1,0 +1,46 @@
+
+== 3. the youtube-shorts exporter and the platform interface ==
+PASS  platform.json of instagram-reels validates against pipeline/schemas/platform.schema.json
+PASS  platform.json of youtube-shorts validates against pipeline/schemas/platform.schema.json
+PASS  a platform.json without its required keys fails the check
+PASS  the exporter's selftest (6 fixture inputs, the planted faults, the caption_max rule): RESULT: 86 passed, 0 failed
+PASS  the selftest has no FAIL line
+PASS  the selftest covers: an 1100-character description
+PASS  the selftest covers: 5 hashtags
+PASS  the selftest covers: 400-character
+PASS  the selftest covers: without a list
+PASS  the selftest covers: earlier description
+PASS  the fixture answer of the Part 1 input exists
+PASS  run.sh with a good answer exits 0
+PASS  14-export/export.json is written
+PASS  a good first answer: no NEEDS REVIEW
+PASS  a good first answer: exactly one model call
+PASS  the description is stored in the channel's logs/descriptions.jsonl
+PASS  a planted 'long' fault then a good answer: run.sh exits 0
+PASS  'long': the bad answer got exactly one rewrite (2 calls)
+PASS  'long': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'tags' fault then a good answer: run.sh exits 0
+PASS  'tags': the bad answer got exactly one rewrite (2 calls)
+PASS  'tags': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'paragraph' fault then a good answer: run.sh exits 0
+PASS  'paragraph': the bad answer got exactly one rewrite (2 calls)
+PASS  'paragraph': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'nolist' fault then a good answer: run.sh exits 0
+PASS  'nolist': the bad answer got exactly one rewrite (2 calls)
+PASS  'nolist': the rewrite passed, no NEEDS REVIEW
+PASS  the same description again: run.sh exits 0
+FAIL  a copy of an earlier description fails its check and goes out with NEEDS REVIEW after the rewrite also fails
+FAIL  the copy got one rewrite, then NEEDS REVIEW (2 calls) (expected '2', got '1')
+PASS  two failing answers: the export carries NEEDS REVIEW lines
+PASS  no title is longer than caption_max (100)
+PASS  export.py run on a youtube-shorts run exits 0 ()
+PASS  exports/shorts-1/shorts-1.mp4
+PASS  exports/shorts-1/shorts-1captions.txt
+PASS  no hook 2 clip for youtube-shorts
+FAIL  the captions file has the youtube-shorts sections of spec section 8 in order (expected 'STORY,TITLE,DESCRIPTION,PINNED COMMENT,UPLOAD STEPS,HOOKS,RUN', got 'STORY,TITLE,DESCRIPTION,PINNED COMMENT,UPLOAD STEPS,HOOKS,FACTS AND SOURCES,RUN')
+PASS  the HOOKS line carries the export name
+PASS  the RUN section is channels/<id>/runs/<run>
+PASS  no instagram section in it
+
+test-m19.sh: 38 passed, 3 failed
+finished

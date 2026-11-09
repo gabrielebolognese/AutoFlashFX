@@ -164,11 +164,19 @@ def build(root, inv=None):
             add("M19", "inner", "rewrite", cap, "exports/%s-%s/%s-%scaptions.txt" % (CH, n_, CH, n_),
                 "the HOOKS names (%s-%s.mp4 uses, %s-%shook2.mp4 uses), the RUN path and the EDITOR path follow the new names" % (CH, n_, CH, n_),
                 files=1, check="export-names")
+    hist_after = DEST + "/" + hist       # the history after M18 has moved it (M19 runs on the folder as M18 left it)
     if inv.exists(hist):
         text = ml.read_text(os.path.join(inv.root, hist)) or ""
         n_exported = len(re.findall(r"\| exported [0-9]+ *$", text, re.M))
         if n_exported:
             add("M19", "inner", "rewrite", hist, DEST + "/" + hist, "history lines: %d line(s) '| exported N' become '| exported %s-N'" % (n_exported, CH),
+                files=1, check="export-names")
+    elif inv.exists(hist_after):
+        text = ml.read_text(os.path.join(inv.root, hist_after)) or ""
+        n_exported = len(re.findall(r"\| exported [0-9]+ *$", text, re.M))
+        if n_exported:
+            add("M19", "top", "stays", hist_after, hist_after, "the channel's history stays where M18 put it; its export lines are rewritten below; tracked=0 untracked=0 ignored=1")
+            add("M19", "inner", "rewrite", hist_after, hist_after, "history lines: %d line(s) '| exported N' become '| exported %s-N'" % (n_exported, CH),
                 files=1, check="export-names")
     return lines
 

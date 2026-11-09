@@ -1,0 +1,15 @@
+{
+  "id": "instagram-reels",
+  "name": "Instagram Reels",
+  "video": { "width": 1080, "height": 1920, "fps": 30, "max_seconds": 90 },
+  "safe_zones": { "top_px": 250, "bottom_px": 480, "right_px": 160, "note": "the right rail and the caption area of the feed (BUILD_SPEC.md 5, the Motion and energy rules)" },
+  "hook2": true,
+  "hook2_max_seconds": 3.5,
+  "text_limits": { "caption_first_line_max": 125, "hashtags_min": 3, "hashtags_max": 5 },
+  "files": ["{id}-{n}.mp4", "{id}-{n}captions.txt", "{id}-{n}hook2.mp4"],
+  "captions_sections": ["CAPTION", "HASHTAGS", "COMMENT KEYWORD", "SOLUTION", "HOOKS", "NEEDS REVIEW", "FACTS AND SOURCES", "RUN", "EDITOR"],
+  "exporter": "render.py",
+  "stage": "14-export",
+  "manifest_required": ["caption", "hashtags", "keyword", "deliverable", "hooks", "files"],
+  "export_defaults": {}
+}

@@ -2777,3 +2777,63 @@ append; they do not rewrite earlier entries (add a dated correction instead).
     FlashFX names in shared stages are M20's (isolation-allowlist.txt lists the ones that exist), the shared limit file, heavy.sh and logs/engine.log are
     M19's (limits.log is still the channel's logs/limits.log), and `bash pipeline/bin/new-channel` is M19's. build-runner.sh's default .gitignore (written
     only when none exists) uses the channels/*/ rules.
+355. **The export names and the numbering (M19, BUILD_SPEC.md section 8).** export.py takes `--channel` (default REELS_CHANNEL) and `--history` (default the
+    channel's logs/history.txt). N = 1 + the highest number among the folders `exports/<id>-<number>` and the history lines `| exported <id>-<number>`, so a
+    deleted folder never gives its number back and another channel's folders, a plain-number folder and notes.txt are ignored. state.json keeps N as an integer
+    (`export.number`); the name is `<id>-N` everywhere else: the files `<id>-N.mp4`, `<id>-Ncaptions.txt`, `<id>-Nhook2.mp4` (only when the platform has the clip),
+    the history line `exported <id>-N`, and the DONE line `exported <id>-N -> exports/<id>-N/ (...)`. The activity in the heartbeat and the STEP line stays
+    `exporting #N` (a label for a person). logcheck.py accepts both DONE forms (old logs). The assembly folder runs/<run>/export/ keeps an input.json that a
+    platform's exporter put there for the step, which moves it to runs/<run>/export-input.json: it is not part of the export. The captions file's RUN section is
+    `channels/<id>/runs/<run>` (section 8); the recognition of an export after a crash reads the last path component, so old files still match.
+356. **The platform interface (M19).** pipeline/platforms/<platform>/platform.json (schema pipeline/schemas/platform.schema.json: video size and fps, safe zones, hook2
+    (and its length), text limits, the file names `{id}-{n}...`, the captions sections, `exporter`, optional `stage`, `manifest_required` (the keys export.json must
+    have), `export_defaults` (what channel.json `export` starts from)) and an exporter file that exposes `render_captions(manifest, channel_id, n, run_id)`.
+    pipeline/lib/platform_lib.py loads them (`list`, `show`, `check`, `settings`, `of`); export.py asks it for the channel's platform and calls the exporter. The
+    renderer of today's captions file moved out of export.py into pipeline/platforms/instagram-reels/render.py unchanged (the names and the RUN line apart);
+    its stage stays pipeline/stages/14-export. doctor checks every platform.json.
+357. **The youtube-shorts exporter (M19).** pipeline/platforms/youtube-shorts/: platform.json (1080x1920 at 30 fps, no hook 2, title at most 150 characters, description
+    at most 1000, 4 hashtags, pinned comment at most 200), input.schema.json (the file the format's adapter writes to runs/<run>/export/input.json), exporter.py
+    (`data`, `check`, `compose`, `record`, `render`), prompt.md, model.schema.json and run.sh (the stage: one rewrite in the same session with the exact failures, the
+    second answer is written with `--force` so every failed check becomes a NEEDS REVIEW line; the description goes to the channel's logs/descriptions.jsonl). Every
+    check of section 8 is in code and every one has its own message: a one line title without hashtags or links and, for a serial part, `<hook phrase> | <Story title>,
+    Part <N>` without "of M"; the description counts every character, has a one-sentence first line that is not the title, no paragraph over 200 characters, a list of 3
+    to 6 `- ` lines, exactly the channel's number of hashtags on the last line with the required ones, no links, no copy of an earlier description (first line, and at
+    most 30 percent shared word trigrams with each of the last 30); the pinned comment asks something and, on a serial part that is not final, says the next part is
+    coming. No format uses it before M23 (serial-story); pipeline/tests/m19-ytshorts.py builds the 6 fixture inputs and runs the selftest (86 checks).
+358. **heavy.sh (M19, 14.6).** `heavy_run <kind> <label> -- command...` holds `.locks/heavy.lock` (a directory made with mkdir, the mechanism of M1, with a `holder` file
+    `pid epoch channel kind label`, pid being the calling script's bash pid so `ps -p` finds it). Stale: the holder is gone, or the holder file is older than
+    config heavy.stale_seconds (6 h: a recycled pid), or the lock has no holder file after 20 s. A runner that waits prints one WAIT line ("WAIT heavy: scenarios S13
+    render holds it since 14:02"), sets its activity so the heartbeat shows the wait, and a wait over heavy.wait_log_seconds (600) writes a line to logs/engine.log.
+    A kind that is not in config heavy.kinds runs unlocked; a nested call runs at once (REELS_HELD_<lock>). Wrapped: S8 (tts), S10's build steps (render), S11 (encode),
+    S12's energy, mechanical, style, audio and filmstrips steps, S13 (render); the bin tools frame-match, gallery and webgl-test are not wrapped (a person starts
+    them by hand). S8's one-line rewrite call runs inside S8's heavy step, so a limit wait there would hold the lock: rare, noted in the report. `editor_run` is the
+    same mechanism on `.locks/editor.lock` (S15 uses it from M21). WAIT is a new tag (log.sh color, logcheck.py).
+359. **Limit sharing (M19, 14.6).** limit_wait writes `.locks/limit.json` {reset, target, kind, channel, written} (only when its target is later than the file's) and
+    removes it when its own wait is over; ai() calls `limit_shared_wait` before every attempt: a runner that finds a target in the future prints a LIMIT line naming the
+    channel that hit it, waits until the same time and makes no call. logs/limits.log moved to the root with the channel id (`date | <channel> | text`); the old
+    per-channel limits.log is gone (test-m3 and test-m13 read the root file). logs/engine.log (root) has the shared waits and the heavy waits over 10 minutes.
+360. **The daily quota (M19, 14.6).** pipeline/lib/quota.py reads channel.json daily_quota and timezone (else runner.timezone) and counts the `exported <id>-N` history lines
+    of today in that timezone (the history stamps are the machine's local time). The runner checks it only before it takes a NEW idea from the queue: an unfinished run
+    always continues. With the quota reached: `IDLE   quota 2/2 today, next idea after 00:00`, at the start of the wait and at every heartbeat; with --once the line, the
+    summary (`queue held by the quota: ...`) and exit 0, the idea stays queued. REELS_NOW or REELS_NOW_FILE moves the clock for the tests. runner-status and doctor show
+    today's exports against the quota.
+361. **new-channel (M19, 14.7).** pipeline/bin/new-channel with pipeline/lib/newchannel.py copies pipeline/formats/<format>/template/ into channels/<id>/ (files that say
+    [FILL IN]), makes an empty ideas.txt and writes channel.json with enabled false, the platform's export defaults and the channel-owned config of
+    template/channel.config.json (style, voice, sfx, lengths, paths: FlashFX's values). A format without a template folder or a platform without a valid platform.json
+    is refused with exit 2 ("engine work"). Preflight gained the `fill_in` check (files that still say [FILL IN]): a hard failure while the channel is disabled, a warning
+    once it is enabled (FlashFX's voice.md still has placeholders), so a new channel is listed incomplete and a working one is not stopped. The template folder is
+    problem-solution-reel's; M20 adds format.json next to it.
+362. **The M19 manifest and the real folder.** After M18 the history lives in channels/<id>/logs/, so make-manifest.py writes the history rewrite as a `stays` line for the
+    file plus an inner `rewrite` (check export-names) inside it; before M18 it is the old root path as before. The real folder had no export and no history line when M19
+    ran, so the executed manifest has no M19 line and the real run only records that (build/M19/real-migration.txt); the rehearsal fixture proves the renames, the undo,
+    the second run and the kill recovery. The gate of 14.13 (`check-manifest.py --after` on M18's manifest) differs only by the growth of runner.log and status.txt and
+    the bytes of motion-lib/ (the gallery and the text replacement of M18), which test-m19 section 2 allows.
+363. **test-isolation part 2 (M19, 14.5).** The recorder is the fake claude with FAKE_CLAUDE_RECORD_DIR (the whole prompt and every argument of each call). Two channels
+    alpha and beta are made from the sandbox's FlashFX with a canary word in the hooks, profile files, style files, brand kit, deliverables, ideas and channel.json brand.
+    The real stage scripts S1, S2, S3, S5, S6, S7 and S14 run on a run seeded from the frozen test run; the visual director, the builder and S12 are not driven (their
+    prompts are built from digests of a built project, which needs the engine): they join when the real channels exist (M23 to M27, 14.5). No canary of one channel is in
+    anything recorded for the other, the channel's own canary does reach its prompts, and with REELS_PATH_TRACE=1 a dummy run of alpha logs only paths inside the engine,
+    channels/alpha/ or exports/alpha-*/.
+364. **What M19 changed in the tests.** test-m2, m3, m4, m10, m11, m12, m13, m16, m18: the export names (`exports/flashfx-N/flashfx-N.mp4`, `exported flashfx-N`, the DONE
+    line, the RUN path `channels/flashfx/runs/...`), the numbering unit tests of test-m2 (a channel and a history), test-m3 and test-m13 read logs/limits.log at the root,
+    test-m18's fingerprint and two-channel checks. fakes/claude.py gained FAKE_CLAUDE_RECORD_DIR; lib/dummy.sh gained REELS_DUMMY_HEAVY and REELS_HEAVY_TRACE.

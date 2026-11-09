@@ -1,0 +1,152 @@
+{
+  "style": "paper-cards",
+  "voice": {
+    "wpm": 186,
+    "loudness_lufs": -14,
+    "true_peak_dbtp": -1.5
+  },
+  "sfx": {
+    "map": "styles/sfx/sfx-map.json",
+    "normalize_peak_dbfs": -12,
+    "base_gain_db": {
+      "transition_slow": -8,
+      "transition_fast": -8,
+      "attention": -12,
+      "hero_enter": -10,
+      "ui_click": -14,
+      "stamp": -8,
+      "number": -14,
+      "success": -10,
+      "typing": -16,
+      "negative": -10,
+      "hook_hit": -6,
+      "notification": -10
+    },
+    "max_per_10s": 4,
+    "min_spacing_ms": 250,
+    "min_db_under_voice": 8,
+    "attention_interval_s": [
+      8,
+      12
+    ],
+    "slow_transition_ms": 400,
+    "sync_tolerance_ms": 33,
+    "build": {
+      "pool_size": [
+        5,
+        8
+      ],
+      "min_pool": 3,
+      "min_confidence": 0.6,
+      "min_fit": 0.25,
+      "preview_gap_s": 1.0,
+      "whoosh": {
+        "fast_max_s": 0.35,
+        "fast_sharp_max_s": 0.6,
+        "sharp_attack_s": 0.08,
+        "slow_min_s": 0.8,
+        "swell_attack_s": 0.2,
+        "long_min_s": 1.5
+      },
+      "quality": {
+        "clip_runs": 10,
+        "min_snr_db": 30,
+        "min_snr_duration_s": 0.5,
+        "too_long_factor": 2,
+        "max_effective_s": 5,
+        "silent_dbfs": -60
+      },
+      "cue_windows": {
+        "transition_slow": [
+          0.4,
+          2.5
+        ],
+        "transition_fast": [
+          0.08,
+          0.8
+        ],
+        "attention": [
+          0.08,
+          0.7
+        ],
+        "hero_enter": [
+          0.03,
+          0.7
+        ],
+        "ui_click": [
+          0.01,
+          0.4
+        ],
+        "stamp": [
+          0.05,
+          1.0
+        ],
+        "number": [
+          0.01,
+          0.35
+        ],
+        "success": [
+          0.1,
+          1.8
+        ],
+        "typing": [
+          0.4,
+          30
+        ],
+        "negative": [
+          0.08,
+          1.8
+        ],
+        "hook_hit": [
+          0.2,
+          2.5
+        ],
+        "notification": [
+          0.15,
+          2.5
+        ]
+      }
+    },
+    "calm_beats": [
+      "stake",
+      "pain-payoff"
+    ],
+    "attention_gap_s": 6,
+    "attention_min_start_ms": 2000,
+    "series_gap_ms": 2000,
+    "fade_ms": 30,
+    "tail_guard_ms": 50,
+    "voice_window_ms": 600,
+    "voice_floor_under_peak_db": 12,
+    "verify_passes": 5,
+    "recent_reels": 2,
+    "max_shift_ms": 150,
+    "peak_search_ms": 500
+  },
+  "lengths": {
+    "default_s": [
+      25,
+      40
+    ],
+    "list_s": [
+      45,
+      75
+    ]
+  },
+  "paths": {
+    "ideas": "ideas.txt",
+    "runs": "runs",
+    "logs": "logs",
+    "locks": ".locks",
+    "library": "library",
+    "hooks": "library/hooks.txt",
+    "profile": "library/profile",
+    "voice_dir": "library/voice",
+    "styles": "styles",
+    "style_dir": "styles/paper-cards",
+    "tokens": "styles/paper-cards/tokens.json",
+    "sfx_dir": "styles/sfx",
+    "motion_lib": "motion-lib",
+    "golden": "golden"
+  }
+}

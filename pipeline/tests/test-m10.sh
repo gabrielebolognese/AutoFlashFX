@@ -270,7 +270,7 @@ if want 2; then
   assert_grep "${ts_regex}INFO   S10: draft.mp4 540x960 30.0 fps, [0-9.]+ s \(plan [0-9.]+ s\), silent, rendered in [0-9.]+ s$" "$OUT" "S10: the draft line"
   assert_grep "${ts_regex}INFO   S10: hook2.mp4 [0-9.]+ s \([0-9]+ ms planned\), rendered in [0-9.]+ s$" "$OUT" "S10: the hook 2 line"
   assert_grep "${ts_regex}STEP   building visuals done \([0-9hms]+\) -> adding sound effects$" "$OUT" "S10 done, the runner moves to S11"
-  assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the run continued to the (dummy) export"
+  assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "the run continued to the (dummy) export"
   assert_not_grep "${ts_regex}(ERROR|BLOCK|FLAG)" "$OUT" "no ERROR, BLOCK or FLAG line"
   assert_eq "$(fake_calls)" "3" "three model calls: one per director pass, none for the builder (the check passed at once)"
   for a in "planning animations" "validating plan"; do assert_grep "^activity: $a$" "$RD/09a-animations/stage.log" "activity \"$a\" was published by S9a"; done
@@ -421,7 +421,7 @@ if want 3; then
   grep -E "$ts_regex(START|STEP|DONE|ERROR|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v "root:" | sed 's/^/    /'
   printf '    (section 3 took %s s)\n' "$((EPOCHSECONDS - t0))"
   assert_rc 0 $rc "real: the runner exits 0"
-  assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "real: the run continued to the (dummy) export"
+  assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "real: the run continued to the (dummy) export"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "real: no ERROR or BLOCK line"
   assert_grep "${ts_regex}INFO   S9: animations planned: 11 scenes" "$OUT" "real: S9a planned 11 scenes"
   assert_grep "${ts_regex}INFO   S9: transitions planned: 10 transitions .*; the merged plan passes the validator" "$OUT" "real: S9c's merged plan passed the validator"

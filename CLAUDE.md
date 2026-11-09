@@ -5,9 +5,20 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
+- M19 Exports and channels side by side: done (2026-11-09): every export is `exports/<id>-N/` with `<id>-N.mp4`, `<id>-Ncaptions.txt` and (instagram-reels only)
+  `<id>-Nhook2.mp4`, N counted per channel from exports/ and the channel's history.txt (`exported <id>-N`); the DONE line is `exported <id>-N -> exports/<id>-N/ (...)`.
+  New: pipeline/platforms/<platform>/ (platform.json, schema pipeline/schemas/platform.schema.json; instagram-reels with render.py, youtube-shorts with exporter.py,
+  input.schema.json, prompt.md, run.sh: title, description and pinned comment with every check of spec section 8, one rewrite, NEEDS REVIEW, logs/descriptions.jsonl),
+  pipeline/lib/platform_lib.py, pipeline/lib/heavy.sh (`heavy_run <kind> <label> -- cmd`: the global `.locks/heavy.lock`, one WAIT line per wait, config `heavy`;
+  `editor_run` for the editor copy from M21; `engine_log` writes logs/engine.log), the shared `.locks/limit.json` (every runner waits for the same reset, no model call)
+  and the root logs/limits.log with the channel id, pipeline/lib/quota.py (channel.json daily_quota: `IDLE   quota 2/2 today, next idea after 00:00`),
+  `bash pipeline/bin/new-channel <id> --format problem-solution-reel --platform <platform> [--name "..."]` (template in pipeline/formats/problem-solution-reel/template/,
+  the channel starts disabled; preflight's `fill_in` check lists files that still say [FILL IN]), runner-status and doctor for every channel (quota, heavy lock, limit
+  file, platforms), test-isolation.sh part 2 (the canary test, recorder FAKE_CLAUDE_RECORD_DIR), `bash pipeline/tests/test-m19.sh`, build/M19/fingerprint/.
+  The real folder had no export yet, so the real export migration is empty (build/M19/real-migration.txt); the rehearsal covers the renames. DECISIONS.md 355 to 364.
+  Next: M20 formats and the timeline (format.json, the timeline stage), then M21 to M27.
 - M18 Channels: done (2026-11-09): FlashFX's data moved into channels/flashfx/ (verified, undo script kept in build/M18/), every path to
-  channel data goes through pipeline/lib/paths.sh and paths.py, `bash run.sh --channel <id>` (see "The channels" below). Next: M19 Exports and
-  channels side by side, then M20 to M27 (the rest of) the channels plan: the channels plan (BUILD_SPEC.md section 14, explained in
+  channel data goes through pipeline/lib/paths.sh and paths.py, `bash run.sh --channel <id>` (see "The channels" below). Next (after M19): M20 to M27, the rest of the channels plan: the channels plan (BUILD_SPEC.md section 14, explained in
   CHANNELS.md; the editable project is M21; M22 learning from feedback for every channel, 14.14; M23 to M27 the second channel
   `scenarios`, 14.10, from the user's documents in build/channel2/). The build is driven by `bash build-runner.sh` (a build/PAUSE
   file stops it between milestones; every milestone to M27 is specified, so no pause is needed); its log is build/build.log and its per-milestone reports are in build/M<n>/.
@@ -200,8 +211,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   voice, sfx, lengths, paths), `ideas.txt` (the idea queue, one idea per `{...}` block), `library/`, `styles/`, `motion-lib/`, `golden/`, `runs/`,
   `logs/`, `.locks/`, `.cache/` (the resolved config). Today one channel exists: `channels/flashfx/`. Everything below that names library/, styles/,
   motion-lib/, golden/, runs/, logs/ or ideas.txt means the same path inside the channel's folder.
-- `exports/`: finished reels of every channel (today `N/` with `N.mp4`, `Ncaptions.txt`, `Nhook2.mp4`; M19 renames them `<id>-N`). `logs/` and `.locks/` at
-  the root: only what is shared (limits.log, engine.log, editor files; the global locks) from M19 on.
+- `exports/`: finished reels of every channel, one folder `<id>-N/` each (`<id>-N.mp4`, `<id>-Ncaptions.txt`, `<id>-Nhook2.mp4` on instagram-reels; section 8). `logs/` and
+  `.locks/` at the root: only what is shared (limits.log with the channel id, engine.log, editor files; the global locks heavy.lock, limit.json, exports, editor.lock).
 - `library/` (in the channel): curated by the user: hooks.txt, profile/ (account.md, voice.md, deliverables.txt, pronunciations.txt),
   voice/ (reference.wav, reference_long.wav, engine.txt, memo.*), brand/ (FlashFX's brand kit). Derived by the pipeline, never edited by hand:
   .hooks.index.json and hooks.lint.txt (ignored by git), .hooks.stats.json (the judge's picks and wins; commit it
@@ -223,7 +234,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   instagram-agent-skill), knowledge/known-issues.md, tests/.
 - `runs/` (in the channel): one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
   its outputs, stage.log, .done and calls/ with every model call's raw output; errors/E<n>.md and fixes/F<n>.md
-  from the review and fix loop). `logs/` (in the channel): runner.log (rotated at 50 MB into runner.log.1 to .3), status.txt, history.txt, blocked.txt, limits.log,
+  from the review and fix loop). `logs/` (in the channel): runner.log (rotated at 50 MB into runner.log.1 to .3), status.txt, history.txt, blocked.txt,
   suggested-ideas.txt, sfx-usage.json, STOPPED.md.
 - `tools/analyze_refs.py`: reference video analyzer. `build/`, `build-runner.sh`: the automated build (temporary).
 
@@ -233,7 +244,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   serial-story, M23 to M27), later ones in 14.11.
 - Start one: `bash run.sh --channel flashfx [--once]` (or REELS_CHANNEL=flashfx). `bash run.sh` alone exits 2 and lists the channels; an unknown or
   disabled id exits 2 (`--allow-disabled` is for tests). One runner per channel; runners of different channels may run side by side (each in its own terminal).
-- Where a channel's files are: `channels/<id>/` (the folder map above). `exports/` is shared. Status per channel:
+- Where a channel's files are: `channels/<id>/` (the folder map above). `exports/` is shared (numbered per channel). Status per channel:
   `bash pipeline/bin/runner-status [--channel <id>]`, `bash pipeline/bin/doctor [--quick] [--channel <id>]`, `bash pipeline/bin/preflight --channel <id>`.
 - A channel's session never reads or edits another channel's folder: the paths module refuses it (exit 3), model calls may not write to any channel's
   ideas.txt, library/ or styles/ (config review.protected_paths), the fixer edits only pipeline/ and the run's channels/<id>/motion-lib/candidates/.
@@ -274,7 +285,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
 - **Reading the logs** (each channel's own, in `channels/<id>/logs/`): `logs/history.txt` has one line per finished idea (`date | idea | solution | exported N`,
   `dropped: reason` or `blocked: reason`; solution is flashfx, external, method, or `-` before S2 decided); `logs/blocked.txt` lists blocked ideas with the reason so they can be re-added;
   `logs/STOPPED.md` exists only after a systemic stop and contains the diagnosis and the exact fix;
-  `logs/limits.log` has every usage limit wait with its target time; `logs/suggested-ideas.txt` holds the ideas
+  the root `logs/limits.log` has every usage limit wait with its channel id and target time (M19); `logs/suggested-ideas.txt` holds the ideas
   the gate suggested instead of a dropped one (in braces, ready for add-idea.sh; never read by the runner).
 - **The gate (S3):** a dropped idea's history line carries the scores, for example `dropped: facts don't hold (P2
   S2 C2 F fail H ok): ...` or `dropped: still failing after 2 angle rounds (P3 S1 C3 F ok H ok): ...`. The model only scores;

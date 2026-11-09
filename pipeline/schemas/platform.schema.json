@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/schemas/platform.schema.json",
+  "title": "pipeline/platforms/<platform>/platform.json (BUILD_SPEC.md section 8 and 14.1)",
+  "type": "object",
+  "required": ["id", "name", "video", "safe_zones", "hook2", "text_limits", "files", "captions_sections", "exporter"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "video": {
+      "type": "object",
+      "required": ["width", "height", "fps", "max_seconds"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "fps": { "type": "number", "exclusiveMinimum": 0 },
+        "max_seconds": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "safe_zones": { "type": "object" },
+    "hook2": { "type": "boolean", "description": "whether the export has an alternate hook clip (instagram-reels only)" },
+    "hook2_max_seconds": { "type": "number", "exclusiveMinimum": 0 },
+    "text_limits": { "type": "object" },
+    "files": {
+      "type": "array",
+      "description": "the file names of one export, {id} and {n} filled in: the video, the captions file, the hook 2 clip when hook2 is true",
+      "items": { "type": "string", "pattern": "^[{]id[}]-[{]n[}]" },
+      "minItems": 2
+    },
+    "captions_sections": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "exporter": { "type": "string", "description": "the file next to platform.json that exposes render_captions(manifest, channel_id, n, run_id) -> str" },
+    "stage": { "type": "string", "description": "the stage folder of pipeline/stages that writes export.json (default: the exporter's own run.sh in the platform folder)" },
+    "export_defaults": { "type": "object", "description": "the channel.json `export` settings this platform starts with" }
+  },
+  "additionalProperties": true
+}

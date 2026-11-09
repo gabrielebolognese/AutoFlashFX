@@ -7,9 +7,9 @@
 # FlashFX mention unless the solution is flashfx, nothing implying the reel was made in FlashFX, no ad language),
 # humanize.py applied, the vendor caption.py lint with no FAIL. A caption that breaks a rule is asked again once in
 # the same session with the exact problems; the second answer is written anyway with a NEEDS REVIEW flag (a quality
-# loop, never an error). Outputs: export.json (primary: what the runner's export step renders into Ncaptions.txt and
+# loop, never an error). Outputs: export.json (primary: what the runner's export step renders into <id>-Ncaptions.txt and
 # copies), caption.txt, caption-data.json, prompt-caption*.md, calls/. The export itself (the number, the files, the
-# move into exports/N/, the history line) is the runner's step after this stage (pipeline/lib/export.py).
+# move into exports/<id>-N/, the history line) is the runner's step after this stage (pipeline/lib/export.py).
 #   bash pipeline/stages/14-export/run.sh <run_dir>                        (started by the runner)
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

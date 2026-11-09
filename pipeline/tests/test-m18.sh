@@ -269,7 +269,7 @@ printf '{Claude Code'"'"'s frontend-design skill: it makes websites built with A
 ( cd "$SANDBOX" && env NO_COLOR=1 REELS_DUMMY=all timeout 900 bash "$REPO_DIR/run.sh" --channel flashfx --once ) > "$T/dummy.out" 2>&1; rc=$?
 assert_rc 0 "$rc" "REELS_DUMMY=all bash run.sh --channel flashfx --once exits 0"
 tree "$SANDBOX/channels/flashfx/runs" > "$T/run-tree.txt"
-tree "$SANDBOX/exports" > "$T/exports-tree.txt"
+tree "$SANDBOX/exports" | sed -E 's/flashfx-([0-9]+)/\1/g' > "$T/exports-tree.txt"   # M19 renamed the exports: the names are normalized back
 if cmp -s "$T/run-tree.txt" "$REPO_DIR/build/M17/baseline/fingerprint-run.txt"; then pass "the run folder tree equals the baseline's ($(grep -c . "$T/run-tree.txt") entries, names normalized)"
 else fail "the run folder tree differs from the baseline: $(diff "$T/run-tree.txt" "$REPO_DIR/build/M17/baseline/fingerprint-run.txt" | head -n 6 | tr '\n' ' ')"; fi
 if cmp -s "$T/exports-tree.txt" "$REPO_DIR/build/M17/baseline/fingerprint-exports.txt"; then pass "the exports tree equals the baseline's (the export names change in M19)"
@@ -278,7 +278,7 @@ assert_no_file "$SANDBOX/runs" "no runs/ at the root of the state root"
 assert_no_file "$SANDBOX/ideas.txt" "no ideas.txt at the root of the state root"
 assert_file "$SANDBOX/channels/flashfx/logs/runner.log" "the runner log is in the channel's logs/"
 assert_file "$SANDBOX/channels/flashfx/logs/history.txt" "history.txt is in the channel's logs/"
-assert_grep '\| exported 1$' "$SANDBOX/channels/flashfx/logs/history.txt" "the history line says exported 1"
+assert_grep '\| exported flashfx-1$' "$SANDBOX/channels/flashfx/logs/history.txt" "the history line says exported flashfx-1"
 assert_grep "root: .* \| channel: flashfx \|" "$T/dummy.out" "the banner names the channel"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/.locks" 2>/dev/null | wc -l | tr -d ' ')" "0" "no lock is left behind"
 fi
@@ -302,7 +302,7 @@ assert_file "$RD/03-gate/.done" "the stages before it are done"
 assert_rc 0 "$rc" "the runner finishes the moved run"
 assert_grep "START  idea 1/1 \"Idea R.*\" -> runs/[^ ]*resume-test \(resumed at .*, 3 stages done\)$" "$T/resume.out" "the START line says it resumes after 3 stages"
 assert_not_grep 'researching facts done' "$T/resume.out" "the finished stages are not run again"
-assert_grep 'DONE   exported #1' "$T/resume.out" "the resumed run exports"
+assert_grep 'DONE   exported flashfx-1' "$T/resume.out" "the resumed run exports"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "1" "no second run folder"
 assert_eq "$(python "$STATE_PY" get "$RD" stages.01-research.attempts)" "1" "research ran once"
 unset REELS_DUMMY
@@ -418,8 +418,8 @@ raw = sys.argv[1].replace("research.json", "calls/001.out.json")
 assert open(raw, encoding="utf-8").read().strip() == '{"raw": "runs/2026-11-01_1000_done-idea"}', "the raw model output must not be rewritten"
 print("ok")
 PYEOF
-assert_grep 'RUN$' "$FX/exports/1/1captions.txt" "the captions file keeps its sections"
-assert_grep '^channels/flashfx/runs/2026-11-01_1000_done-idea$' "$FX/exports/1/1captions.txt" "the RUN path of the captions file follows"
+assert_grep 'RUN$' "$FX/exports/flashfx-1/flashfx-1captions.txt" "the captions file keeps its sections"
+assert_grep '^channels/flashfx/runs/2026-11-01_1000_done-idea$' "$FX/exports/flashfx-1/flashfx-1captions.txt" "the RUN path of the captions file follows"
 python - "$FX/build/M18/move-manifest.tsv" "$TM/m18-only.tsv" <<'PYEND'
 import sys
 lines = open(sys.argv[1], encoding="utf-8").read().split("\n")
@@ -496,13 +496,13 @@ assert_rc 0 "$rca" "the flashfx runner exits 0"
 assert_rc 0 "$rcb" "the second channel's runner exits 0"
 assert_eq "$(ls "$SANDBOX/channels/flashfx/runs" | wc -l | tr -d ' ')" "1" "flashfx has its run folder"
 assert_eq "$(ls "$SANDBOX/channels/second/runs" | wc -l | tr -d ' ')" "1" "the second channel has its run folder"
-assert_eq "$(ls "$SANDBOX/exports" | grep -c '^[0-9]*$')" "2" "two exports (numbered one after the other: the numbering lock is global)"
-assert_grep 'DONE   exported #[12]' "$T/par-a.out" "flashfx printed its DONE line"
-assert_grep 'DONE   exported #[12]' "$T/par-b.out" "the second channel printed its DONE line"
+assert_eq "$(ls "$SANDBOX/exports" | grep -c '^[a-z]*-[0-9]*$')" "2" "two exports (one per channel: flashfx-1 and second-1)"
+assert_grep 'DONE   exported flashfx-1' "$T/par-a.out" "flashfx printed its DONE line"
+assert_grep 'DONE   exported second-1' "$T/par-b.out" "the second channel printed its DONE line"
 assert_grep 'channel: flashfx' "$T/par-a.out" "each banner names its channel (flashfx)"
 assert_grep 'channel: second' "$T/par-b.out" "each banner names its channel (second)"
-assert_grep '\| exported [12]$' "$SANDBOX/channels/flashfx/logs/history.txt" "flashfx's history has its export"
-assert_grep '\| exported [12]$' "$SANDBOX/channels/second/logs/history.txt" "the second channel's history has its export"
+assert_grep '\| exported flashfx-1$' "$SANDBOX/channels/flashfx/logs/history.txt" "flashfx's history has its export"
+assert_grep '\| exported second-1$' "$SANDBOX/channels/second/logs/history.txt" "the second channel's history has its export"
 assert_not_grep 'gh in 60' "$SANDBOX/channels/second/logs/history.txt" "the histories do not mix"
 assert_not_grep 'uv in one' "$SANDBOX/channels/flashfx/logs/history.txt" "the histories do not mix (2)"
 assert_eq "$(find "$SANDBOX/channels/flashfx/.locks" "$SANDBOX/channels/second/.locks" "$SANDBOX/.locks" -mindepth 1 2>/dev/null | wc -l | tr -d ' ')" "0" "no lock is left behind, in any channel or at the root"

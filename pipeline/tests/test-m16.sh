@@ -271,9 +271,9 @@ if want 6; then
   mkdir -p build/M16/real && cp -r "$RD/12-review" build/M16/real/12-review 2>/dev/null; cp "$OUT" build/M16/real/real.out; cp -r "$RD/09a-animations" build/M16/real/ 2>/dev/null
   grep -E "$ts_regex(STEP|GATE|DROP|DONE|ERROR|FIXED|ESCAL|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v "root:" | sed 's/^/    /' | tail -n 80
   assert_rc 0 $rc "the runner exits 0"
-  assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "DONE: exported #1"
+  assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "DONE: exported flashfx-1"
   assert_not_grep "${ts_regex}(BLOCK|DROP|STOP)" "$OUT" "no BLOCK, DROP or STOP line"
-  assert_file "$SANDBOX/exports/1/1.mp4" "exports/1/1.mp4"
+  assert_file "$SANDBOX/exports/flashfx-1/flashfx-1.mp4" "exports/flashfx-1/flashfx-1.mp4"
   assert_file "$RD/12-review/energy.json" "12-review/energy.json: the energy check ran"
   python - "$RD" "$mins" <<'EOF' >"$W/real2.txt" 2>&1
 import glob, json, os, sys
@@ -296,7 +296,7 @@ say("time-per-reel-grows-by-at-most-20-percent", mins <= round(141 * 1.2), f"{mi
 EOF
   lines_to_asserts "real run: " "$W/real2.txt"
   grep -E "^   " "$W/real2.txt"
-  echo "   the captions file:"; sed 's/^/      /' "$SANDBOX/exports/1/1captions.txt" 2>/dev/null | head -n 40
+  echo "   the captions file:"; sed 's/^/      /' "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" 2>/dev/null | head -n 40
   sandbox_cleanup
 fi
 

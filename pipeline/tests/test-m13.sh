@@ -70,7 +70,7 @@ cat > "$L" <<'EOF'
 [10:29] FIXED  S3: a cause (commit abc1234), restarting stage
 [10:30] REEL   #idea 1/2 "first idea" | checking idea (gate) | minute 30 | stage 1m00s | issues: 1 fixed, 0 open
 [10:31] STEP   checking idea (gate) done (25m00s) -> exporting #1
-[10:31] DONE   exported #1 -> exports/1/ (31 min, 1 issue fixed)
+[10:31] DONE   exported flashfx-1 -> exports/flashfx-1/ (31 min, 1 issue fixed)
 [10:31] NEXT   idea 2/2 "second idea"
 [10:31] START  idea 2/2 "second idea" -> runs/r2
 [10:32] DROP   idea "second idea" dropped: facts don't hold (P2 S2 C2 F fail H ok): x. Removed from ideas.txt
@@ -102,11 +102,11 @@ broken "an em dash in a line" 's = s.replace("x. Removed", "x " + chr(0x2014) + 
 broken "a tag not padded to 6" 's = s.replace("[10:03] STEP   researching", "[10:03] STEP researching")' "not in the format|not padded"
 broken "an idea that never ends" 's = s[: s.index("[10:31] DONE")]' "ended inside idea 1"
 broken "a STOP line" 's = s.replace("[10:32] IDLE", "[10:32] STOP   systemic failure: x. See logs/STOPPED.md\n[10:32] IDLE")' "STOP line"
-broken "exports with a gap" 's = s.replace("[10:32] DROP   idea \"second idea\" dropped: facts don\x27t hold (P2 S2 C2 F fail H ok): x. Removed from ideas.txt", "[10:32] GATE   passed (P3 S3 C3 F ok H ok)\n[10:32] DONE   exported #3 -> exports/3/ (1 min, 0 issues fixed)").replace("1 exported, 1 dropped, 0 blocked in", "2 exported, 0 dropped, 0 blocked in")' "without gaps"
+broken "exports with a gap" 's = s.replace("[10:32] DROP   idea \"second idea\" dropped: facts don\x27t hold (P2 S2 C2 F fail H ok): x. Removed from ideas.txt", "[10:32] GATE   passed (P3 S3 C3 F ok H ok)\n[10:32] DONE   exported flashfx-3 -> exports/flashfx-3/ (1 min, 0 issues fixed)").replace("1 exported, 1 dropped, 0 blocked in", "2 exported, 0 dropped, 0 blocked in")' "without gaps"
 broken "a crash that the next session does not resume" 's = s[: s.index("[10:31] DONE")] + "[10:40] START  reels autopilot v0.1.0 (abc1234) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: 93 files\n[10:40] START  idea 1/2 \"second idea\" -> runs/r2\n[10:41] DROP   idea \"second idea\" dropped: x. Removed from ideas.txt\n[10:41] IDLE   queue empty: this session 0 exported, 1 dropped, 0 blocked in 1m00s | today: 0 exported, 1 dropped\n"' "did not resume r1 first" --allow-crash
 python -c 'import sys
 s = open(sys.argv[1], encoding="utf-8").read()
-s = s[: s.index("[10:31] DONE")] + "[10:40] START  reels autopilot v0.1.0 (abc1234) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: 93 files\n[10:40] START  idea 1/2 \"first idea\" -> runs/r1 (resumed at checking idea (gate), 2 stages done)\n[10:41] STEP   checking idea (gate) done (1m00s) -> exporting #1\n[10:41] DONE   exported #1 -> exports/1/ (41 min, 1 issue fixed)\n[10:41] IDLE   queue empty: this session 1 exported, 0 dropped, 0 blocked in 1m00s | today: 1 exported, 0 dropped\n"
+s = s[: s.index("[10:31] DONE")] + "[10:40] START  reels autopilot v0.1.0 (abc1234) | queue: 2 ideas | style: paper-cards | voice: kokoro af_bella | sfx map: 93 files\n[10:40] START  idea 1/2 \"first idea\" -> runs/r1 (resumed at checking idea (gate), 2 stages done)\n[10:41] STEP   checking idea (gate) done (1m00s) -> exporting #1\n[10:41] DONE   exported flashfx-1 -> exports/flashfx-1/ (41 min, 1 issue fixed)\n[10:41] IDLE   queue empty: this session 1 exported, 0 dropped, 0 blocked in 1m00s | today: 1 exported, 0 dropped\n"
 open(sys.argv[2], "w", encoding="utf-8", newline="\n").write(s)' "$L" "$SANDBOX/crash.log"
 assert_rc 0 "$(python "$LOGCHECK" story "$SANDBOX/crash.log" --allow-crash >/dev/null 2>&1; echo $?)" "logcheck --allow-crash: a crash resumed by the next session is a good story"
 assert_rc 1 "$(python "$LOGCHECK" story "$SANDBOX/crash.log" >/dev/null 2>&1; echo $?)" "logcheck without --allow-crash: the same crash is a problem"
@@ -288,8 +288,8 @@ check_multi() {  # check_multi <driver out dir> <fake|real>: the acceptance chec
   assert_grep "${ts_regex}INFO   S3 checking idea \(gate\): attempt 2 \(the previous one was interrupted\)$" "$S/channels/flashfx/logs/runner.log" "$mode: S3 runs again as attempt 2 after the interruption"
   assert_eq "$(jq_py "$D/story.json" '[(l["idea"], l["session"], l["kind"], l["resume_text"]) for l in d["limits"]]')" '[[2, 1, "session", "limit reset, continuing: expanding idea"]]' "$mode: one LIMIT (session limit) in the second idea, followed by its RESUME line"
   assert_grep "${ts_regex}LIMIT  session limit hit, resuming at [0-9]{2}:[0-9]{2} \(\+2 min margin\)$" "$S/channels/flashfx/logs/runner.log" "$mode: the LIMIT line names the time it resumes at (reset plus the margin)"
-  assert_grep "\| session limit \| reset 20[0-9-]+ [0-9:]+ \| waiting until 20[0-9-]+ [0-9:]+ \(reset \+ 120 s\) \|" "$S/channels/flashfx/logs/limits.log" "$mode: limits.log has the target time"
-  assert_grep "resumed after the session limit" "$S/channels/flashfx/logs/limits.log" "$mode: limits.log has the resume"
+  assert_grep "\| session limit \| reset 20[0-9-]+ [0-9:]+ \| waiting until 20[0-9-]+ [0-9:]+ \(reset \+ 120 s\) \|" "$S/logs/limits.log" "$mode: limits.log has the target time"
+  assert_grep "resumed after the session limit" "$S/logs/limits.log" "$mode: limits.log has the resume"
   RD2="$(jq_py "$D/story.json" 'd["sessions"][0]["ideas"][1]["run"]')"; RD2="$S/channels/flashfx/runs/$RD2"
   local fj next sid1 sid2
   fj="$(grep -l '"fault": "REELS_FAULT limit"' "$RD2"/02-expansion/calls/*.json 2>/dev/null | head -n 1)"
@@ -323,15 +323,15 @@ for i in d["ideas"]:
   # the outcomes on disk
   local nexp
   nexp="$(jq_py "$D/story.json" 'len(d["exports"])')"
-  assert_eq "$(ls "$S/exports" 2>/dev/null | sort -n | paste -sd' ')" "$(seq 1 "$nexp" 2>/dev/null | paste -sd' ')" "$mode: exports/ numbered 1 to $nexp without gaps"
+  assert_eq "$(ls "$S/exports" 2>/dev/null | sed 's/^flashfx-//' | sort -n | paste -sd' ')" "$(seq 1 "$nexp" 2>/dev/null | paste -sd' ')" "$mode: exports/ numbered 1 to $nexp without gaps"
   local n ok_files=1
   for n in $(seq 1 "$nexp"); do
-    [ -s "$S/exports/$n/$n.mp4" ] && [ -s "$S/exports/$n/${n}captions.txt" ] || ok_files=0
-    [ "$mode" = real ] && { [ -s "$S/exports/$n/${n}hook2.mp4" ] || ok_files=0; }
+    [ -s "$S/exports/flashfx-$n/flashfx-$n.mp4" ] && [ -s "$S/exports/flashfx-$n/flashfx-${n}captions.txt" ] || ok_files=0
+    [ "$mode" = real ] && { [ -s "$S/exports/flashfx-$n/flashfx-${n}hook2.mp4" ] || ok_files=0; }
   done
   assert_eq "$ok_files" "1" "$mode: every export has its N.mp4 and Ncaptions.txt$([ "$mode" = real ] && echo " and Nhook2.mp4")"
   assert_eq "$(grep -c . "$S/channels/flashfx/logs/history.txt")" "3" "$mode: history.txt has one line per idea"
-  assert_eq "$(grep -c -E '\| (exported [0-9]+|dropped: .+|blocked: .+)$' "$S/channels/flashfx/logs/history.txt")" "3" "$mode: each history line says exported N, dropped or blocked with a reason"
+  assert_eq "$(grep -c -E '\| (exported flashfx-[0-9]+|dropped: .+|blocked: .+)$' "$S/channels/flashfx/logs/history.txt")" "3" "$mode: each history line says exported N, dropped or blocked with a reason"
   assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "$mode: ideas.txt is empty"
   assert_no_file "$S/channels/flashfx/logs/STOPPED.md" "$mode: no logs/STOPPED.md"
   # status.txt at every sampled moment, and at the end
@@ -342,7 +342,7 @@ for i in d["ideas"]:
   assert_grep "${ts_regex}IDLE   no ideas in ideas.txt, checking every 2 s \(idle 0 min\) \| today: [0-9]+ exported, [0-9]+ dropped" "$D/run3.out" "$mode: the forever mode's IDLE line"
   assert_grep "${ts_regex}INFO   stopped by the user \(TERM\)$" "$D/run3.out" "$mode: the forever mode's stop line"
   assert_grep "${ts_regex}IDLE   queue empty: this session 0 exported, 0 dropped, 0 blocked in " "$D/run3.out" "$mode: the summary line on the empty queue"
-  no_emdash_in "$mode: no em dash in the exports and the logs" "$S/channels/flashfx/logs/runner.log" "$S/channels/flashfx/logs/history.txt" "$S/channels/flashfx/logs/limits.log" "$S/channels/flashfx/logs/status.txt" \
+  no_emdash_in "$mode: no em dash in the exports and the logs" "$S/channels/flashfx/logs/runner.log" "$S/channels/flashfx/logs/history.txt" "$S/logs/limits.log" "$S/channels/flashfx/logs/status.txt" \
     $(ls "$S"/exports/*/*captions.txt 2>/dev/null) $(ls "$S/channels/flashfx/logs/blocked.txt" 2>/dev/null) "$D/run1.out" "$D/run2.out" "$D/run3.out"
 }
 

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/platforms/youtube-shorts/model-output",
+  "title": "youtube-shorts exporter: the model's structured answer (BUILD_SPEC.md section 8); exporter.py compose checks it and writes export.json",
+  "type": "object",
+  "required": ["title", "description", "pinned_comment", "hashtags"],
+  "properties": {
+    "title": {"type": "string"},
+    "description": {"type": "string"},
+    "pinned_comment": {"type": "string"},
+    "hashtags": {"type": "array", "items": {"type": "string"}, "maxItems": 15}
+  }
+}

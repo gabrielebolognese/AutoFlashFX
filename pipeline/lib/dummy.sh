@@ -8,6 +8,8 @@
 #                                                    stage (exercises the validation path), then logs "done"
 #
 # Planted behaviors (each a comma list of stage keys, or "all"):
+#   REELS_DUMMY_HEAVY=08-voiceover,13-render   the stage's sleep runs inside heavy_run (the global heavy lock); with REELS_HEAVY_TRACE=<file>
+#                                 every such step appends "<epoch> start|end <channel> dummy <stage>" lines (test-m19 section 4)
 #   REELS_DUMMY_FAIL=10-build     exit 1 without outputs (a code error)
 #   REELS_DUMMY_DROP=03-gate      write result.json with a reason and exit 10 (drop the idea)
 #   REELS_DUMMY_BLOCK=07-script   write result.json with a reason and exit 20 (block the idea)
@@ -28,6 +30,18 @@ dummy_once_ok() {  # dummy_once_ok <kind> -> 0 when the planted behavior should 
   return 0
 }
 
+dummy_heavy_sleep() {  # the body of a heavy dummy step: REELS_HEAVY_TRACE (a file) gets "<epoch> start|end <channel> <label>" lines
+  local secs="$1"
+  heavy_trace start
+  sleep "$secs"
+  heavy_trace end
+}
+
+heavy_trace() {  # heavy_trace start|end: one line in REELS_HEAVY_TRACE
+  [ -n "${REELS_HEAVY_TRACE:-}" ] || return 0
+  printf '%s %s %s dummy %s\n' "$("$REELS_PY" -c 'import time; print("%.3f" % time.time())')" "$1" "${REELS_CHANNEL:--}" "$STAGE" >> "$REELS_HEAVY_TRACE"
+}
+
 dummy_begin() {
   RUN_DIR="$1"; STAGE="$2"; PRIMARY="$3"
   OUT="$RUN_DIR/$STAGE"
@@ -36,7 +50,12 @@ dummy_begin() {
   DUMMY_INVALID=0
   local secs="${REELS_DUMMY_SECONDS:-1}"
   echo "dummy $STAGE: start (pid $$, sleep ${secs}s)"
-  sleep "$secs"
+  if dummy_listed "${REELS_DUMMY_HEAVY:-}"; then   # a heavy dummy stage: its sleep runs inside heavy_run (M19: the tests of the heavy lock)
+    declare -F heavy_run >/dev/null 2>&1 || source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/heavy.sh"
+    heavy_run render "dummy $STAGE" -- dummy_heavy_sleep "$secs"
+  else
+    sleep "$secs"
+  fi
   if dummy_listed "${REELS_DUMMY_FAIL:-}" && dummy_once_ok fail; then
     echo "dummy $STAGE: planted failure (REELS_DUMMY_FAIL)" >&2
     echo "Traceback (planted): ValueError: dummy $STAGE failed on purpose" >&2

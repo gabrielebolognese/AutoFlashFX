@@ -452,7 +452,7 @@ if want 2; then
   assert_grep "${ts_regex}INFO   S12: code checks: mechanical ok, style ok, audio ok \(voice WER [0-9.]+%\)$" "$OUT" "pass: the three code checks pass"
   assert_grep "${ts_regex}INFO   S12: review round 1 passed \(scores stop 4, hierarchy 4, look 4, variety 4, sync 5, sound 4, generic 4, requirements 4, energy 5\)$" "$OUT" "pass: the round passes with the editor's scores"
   assert_grep "${ts_regex}STEP   reviewing: mechanical checks done \([0-9hms]+\) -> rendering final video$" "$OUT" "pass: S12 done, the runner moves to S13"
-  assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "pass: the run continued to the (dummy) export"
+  assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "pass: the run continued to the (dummy) export"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "pass: no ERROR or BLOCK line"
   assert_eq "$(fake_calls)" "1" "pass: one model call, the editor's"
   for a in "reviewing: mechanical checks" "reviewing: style check" "reviewing: audio check" "reviewing: edit review \(round 1/5\)"; do assert_grep "^activity: $a$" "$RD/12-review/stage.log" "activity \"$a\" was published by S12"; done
@@ -484,7 +484,7 @@ if want 2; then
   assert_grep "${ts_regex}STEP   building visuals done \([0-9hms]+\) -> adding sound effects$" "$OUT" "text loop: then the sounds"
   assert_grep "${ts_regex}INFO   S12: review round 2/5 of the draft$" "$OUT" "text loop: round 2"
   assert_grep "${ts_regex}INFO   S12: review round 2 passed" "$OUT" "text loop: round 2 passes"
-  assert_grep "${ts_regex}DONE   exported #[0-9]+ -> exports/[0-9]+/ \([0-9]+ min, 1 issue fixed\)" "$OUT" "text loop: the run continued to the (dummy) export, with the review counted as one issue fixed"
+  assert_grep "${ts_regex}DONE   exported flashfx-[0-9]+ -> exports/flashfx-[0-9]+/ \([0-9]+ min, 1 issue fixed\)" "$OUT" "text loop: the run continued to the (dummy) export, with the review counted as one issue fixed"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "text loop: no ERROR or BLOCK line"
   assert_eq "$(fake_calls)" "4" "text loop: four model calls: the editor twice, the director for 9b and 9c"
   assert_grep "^activity: fixing \[text\] issues \(round 2, sonnet\)$" "$RD/12-review/stage.log" "text loop: the activity \"fixing [text] issues (round 2, sonnet)\" was published"
@@ -529,7 +529,7 @@ if want 3; then
   for r in 1 2 3 4; do assert_grep "${ts_regex}WARN   S12: review round $r failed \(1 issues; scores .*sound 2.*\): back to 11-sfx, then every step after it runs again$" "$OUT" "cap: round $r fails and goes back to S11"; done
   assert_grep "${ts_regex}WARN   S12: review round 5 failed and the 5 rounds are used up: exporting with NEEDS REVIEW" "$OUT" "cap: round 5 ends the loop"
   assert_grep "${ts_regex}FLAG   needs review: edit review: still failing after 5 rounds \(3 main, 2 escalated on opus\); exported as it is. Scores: .*Open issues: \[sfx\]" "$OUT" "cap: the NEEDS REVIEW flag carries the scores and the notes"
-  assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "cap: the run still exports (the dummy export)"
+  assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "cap: the run still exports (the dummy export)"
   assert_not_grep "${ts_regex}(ERROR|BLOCK)" "$OUT" "cap: no ERROR or BLOCK line"
   assert_eq "$(fake_calls)" "5" "cap: five editor calls, one per round"
   for pair in "2, sonnet" "3, sonnet" "4, opus" "5, opus"; do assert_grep "^activity: fixing \[sfx\] issues \(round $pair\)$" "$RD/12-review/stage.log" "cap: the activity \"fixing [sfx] issues (round $pair)\" was published"; done

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/platforms/youtube-shorts/input.schema.json",
+  "title": "runs/<run>/export/input.json for the youtube-shorts exporter (BUILD_SPEC.md section 8); a single video omits `serial`",
+  "type": "object",
+  "required": ["run_id", "channel", "summary", "hook1", "script_lines", "beats"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "channel": {"type": "string", "pattern": "^[a-z][a-z0-9]{1,23}$", "description": "the channel id"},
+    "summary": {"type": "string", "minLength": 1, "description": "what the video is about, in the format's own words"},
+    "hook1": {"type": "string", "minLength": 1},
+    "script_lines": {"type": "array", "items": {"type": "string"}},
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "narration"],
+        "properties": {
+          "label": {"type": "string"},
+          "narration": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim"],
+        "properties": {
+          "claim": {"type": "string", "minLength": 1},
+          "url": {"type": "string"},
+          "checked": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "brand": {
+      "type": "object",
+      "properties": {
+        "display_name": {"type": "string"},
+        "handle": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "export": {
+      "type": "object",
+      "properties": {
+        "caption_max": {"type": "integer", "minimum": 20, "maximum": 150},
+        "description_max": {"type": "integer", "minimum": 100, "maximum": 5000},
+        "pinned_comment_max": {"type": "integer", "minimum": 20, "maximum": 500},
+        "hashtags": {"type": "integer", "minimum": 0, "maximum": 15},
+        "required_hashtags": {"type": "array", "items": {"type": "string", "pattern": "^#[A-Za-z0-9_]+$"}},
+        "pinned_comment": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "earlier_descriptions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "maxItems": 30,
+      "description": "the channel's last 30 descriptions (logs/descriptions.jsonl), newest last"
+    },
+    "serial": {
+      "type": "object",
+      "required": ["story_title", "part", "final"],
+      "properties": {
+        "story_title": {"type": "string", "minLength": 1},
+        "part": {"type": "integer", "minimum": 1},
+        "final": {"type": "boolean"},
+        "universe": {"type": "string"},
+        "earlier_titles": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "needs_review": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

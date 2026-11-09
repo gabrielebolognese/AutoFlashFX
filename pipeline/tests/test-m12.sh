@@ -16,7 +16,7 @@
 #      every ffprobe check, the captions file in the spec's format, the history line, the idea gone
 #   3. the honesty loop with the fake claude: a forced FlashFX solution fails H, S4 decides the skill, the gate passes
 #      on round 2 and the run reaches the export (dummy stages after S4), never a drop
-#   4. the test idea end to end with the real models and the real engine: exports/1/1.mp4, 1captions.txt, 1hook2.mp4
+#   4. the test idea end to end with the real models and the real engine: exports/flashfx-1/flashfx-1.mp4, 1captions.txt, 1hook2.mp4
 #   5. no em dash in the files M12 wrote
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
@@ -99,16 +99,16 @@ tags = t.split("\nHASHTAGS\n", 1)[1].split("\n", 1)[0]
 sys.stdout.write(body.rstrip() + "\n\n" + tags + "\n")' "$1"
 }
 check_export() {  # check_export <sandbox exports dir> <N> <run dir> <label>: the acceptance checks on exports/N
-  local E="$1" n="$2" rd="$3" lbl="$4" cap="$1/$2/${2}captions.txt" res first hook1
-  assert_file "$E/$n/$n.mp4" "$lbl: exports/$n/$n.mp4"
-  assert_file "$cap" "$lbl: exports/$n/${n}captions.txt"
-  assert_file "$E/$n/${n}hook2.mp4" "$lbl: exports/$n/${n}hook2.mp4"
-  res="$(python pipeline/lib/finalrender.py check --file "$E/$n/$n.mp4" --voice "$rd/08-voiceover/vo.wav" --config "$(resolved_config)")"
+  local E="$1" n="$2" rd="$3" lbl="$4" cap="$1/flashfx-$2/flashfx-${2}captions.txt" res first hook1
+  assert_file "$E/flashfx-$n/flashfx-$n.mp4" "$lbl: exports/flashfx-$n/flashfx-$n.mp4"
+  assert_file "$cap" "$lbl: exports/flashfx-$n/flashfx-${n}captions.txt"
+  assert_file "$E/flashfx-$n/flashfx-${n}hook2.mp4" "$lbl: exports/flashfx-$n/flashfx-${n}hook2.mp4"
+  res="$(python pipeline/lib/finalrender.py check --file "$E/flashfx-$n/flashfx-$n.mp4" --voice "$rd/08-voiceover/vo.wav" --config "$(resolved_config)")"
   assert_eq "$(jf "$res" pass)" "true" "$lbl: $n.mp4 passes every ffprobe and loudness check (1080x1920, 30 fps, h264 High, yuv420p, aac 48 kHz, the voice's length, -14 LUFS) [$(jf "$res" failing)]"
   python -c 'import json, sys
 d = json.loads(sys.argv[1])["checks"]
 print("   ", {k: d[k]["got"] for k in ("width", "height", "fps", "video_codec", "profile", "pix_fmt", "audio_codec", "sample_rate", "duration")}, "loudness", d["loudness"]["lufs"], "LUFS", d["loudness"]["true_peak_dbtp"], "dBTP")' "$res"
-  res="$(python pipeline/lib/finalrender.py check --file "$E/$n/${n}hook2.mp4" --hook2 --config "$(resolved_config)")"
+  res="$(python pipeline/lib/finalrender.py check --file "$E/flashfx-$n/flashfx-${n}hook2.mp4" --hook2 --config "$(resolved_config)")"
   assert_eq "$(jf "$res" pass)" "true" "$lbl: ${n}hook2.mp4 is 3.5 s or shorter with audio, 1080x1920, aac 48 kHz [$(jf "$res" failing)]"
   assert_eq "$(captions_sections "$cap")" "$(if grep -q '^NEEDS REVIEW$' "$cap"; then echo "CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,NEEDS REVIEW,FACTS AND SOURCES,RUN"; else echo "CAPTION,HASHTAGS,COMMENT KEYWORD,SOLUTION,HOOKS,FACTS AND SOURCES,RUN"; fi)" "$lbl: the captions file has the sections of spec section 8 in order, SOLUTION included"
   first="$(sed -n 2p "$cap")"
@@ -120,8 +120,8 @@ t = open(sys.argv[1], encoding="utf-8").read().split("\nHASHTAGS\n", 1)[1].split
 sys.exit(0 if 1 <= len(t) <= 5 and all(x.startswith("#") for x in t) else 1)' "$cap"
   assert_grep "^SOLUTION$" "$cap" "$lbl: the SOLUTION block"
   assert_grep "^(flashfx|external: .+|method.*)$" "$cap" "$lbl: the SOLUTION line reads flashfx, external: name link, or method"
-  assert_grep "^$n\.mp4 uses: \"" "$cap" "$lbl: HOOKS line with the number"
-  assert_grep "^runs/$(basename "$rd")$" "$cap" "$lbl: the RUN section names the run"
+  assert_grep "^flashfx-$n\.mp4 uses: \"" "$cap" "$lbl: HOOKS line with the number"
+  assert_grep "^channels/flashfx/runs/$(basename "$rd")$" "$cap" "$lbl: the RUN section names the run"
   caption_text "$cap" > "$SANDBOX/lint-$n.txt"
   python "$VENDOR/caption.py" "$SANDBOX_M/lint-$n.txt" --json > "$SANDBOX/lint-$n.json" 2>/dev/null || true
   assert_eq "$(python -c 'import json, sys; d = json.load(open(sys.argv[1], encoding="utf-8")); print(",".join(c["check"] for c in d["checks"] if c["status"] == "FAIL") or "none")' "$SANDBOX/lint-$n.json")" "none" "$lbl: the vendor caption.py lint reports no FAIL"
@@ -287,15 +287,15 @@ assert_eq "$(json_get "$FROZEN/07-script/script.json" solution.type none)" "none
 ( cd "$SANDBOX" && REELS_ROOT="$SANDBOX_M" bash -c '
 source pipeline/lib/common.sh; source pipeline/lib/log.sh; source pipeline/lib/history.sh
 rm -f "$REELS_LOGS/history.txt"
-history_add exported "Idea one" 1 "$(history_solution "'"$RD2"'")"
+history_add exported "Idea one" flashfx-1 "$(history_solution "'"$RD2"'")"
 history_add dropped "Idea two" "facts do not hold" "$(history_solution "'"$SANDBOX_M"'/runs/none")"
 history_add blocked "Idea three" "env" method
-history_add exported "Idea one" 1 external
+history_add exported "Idea one" flashfx-1 external
 history_counts > "$REELS_LOGS/.counts"' )
-assert_grep "^20[0-9-]+ [0-9:]+ \| Idea one \| method \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | solution | exported N (the run's solution.json type, last written as a method)"
+assert_grep "^20[0-9-]+ [0-9:]+ \| Idea one \| method \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | solution | exported N (the run's solution.json type, last written as a method)"
 assert_grep "^20[0-9-]+ [0-9:]+ \| Idea two \| - \| dropped: facts do not hold$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: - before S2 decided"
 assert_grep "^20[0-9-]+ [0-9:]+ \| Idea three \| method \| blocked: env$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the blocked line with the solution"
-assert_eq "$(grep -c "exported 1" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "history: an exported line is not repeated"
+assert_eq "$(grep -c "exported flashfx-1" "$SANDBOX/channels/flashfx/logs/history.txt")" "1" "history: an exported line is not repeated"
 assert_eq "$(cat "$SANDBOX/channels/flashfx/logs/.counts")" "1 1 1" "history_counts still counts with the new field"
 
 # the SOLUTION block (export.py render) and the dummies
@@ -459,7 +459,7 @@ assert_grep "${ts_regex}STEP   adding sound effects done \([0-9hms]+\) -> review
 assert_grep "${ts_regex}STEP   reviewing: mechanical checks done \([0-9hms]+\) -> rendering final video$" "$OUT" "STEP: the review hands over to the final render"
 assert_grep "${ts_regex}STEP   rendering final video done \([0-9hms]+\) -> writing caption$" "$OUT" "STEP: the render hands over to the caption"
 assert_grep "${ts_regex}STEP   writing caption done \([0-9hms]+\) -> exporting #1$" "$OUT" "STEP: the caption hands over to the export (the activity exporting #1)"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/ \([0-9]+ (min|s), 0 issues fixed\)$" "$OUT" "the DONE line"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/ \([0-9]+ (min|s), 0 issues fixed\)$" "$OUT" "the DONE line"
 assert_not_grep "${ts_regex}(ERROR|BLOCK|DROP)" "$OUT" "no ERROR, BLOCK or DROP line"
 assert_grep "${ts_regex}INFO   S13: the reel rendered at 1080x1920 in [0-9.]+ s" "$OUT" "S13: the render line"
 assert_grep "${ts_regex}INFO   S13: final.mp4 1080x1920 30.0 fps High yuv420p, aac 48000 Hz, [0-9.]+ s \(voice [0-9.]+ s\), -1[0-9.]+ LUFS, -[0-9.]+ dBTP: every check passes$" "$OUT" "S13: every check passes on final.mp4"
@@ -479,7 +479,7 @@ assert_true "render.json: the mix's loudness survived the AAC encode (-14 LUFS p
 l = json.load(open(sys.argv[1], encoding="utf-8"))["checks"]["reel"]["loudness"]
 sys.exit(0 if l["lufs"] is not None and abs(l["lufs"] + 14) <= 1.0 and l["true_peak_dbtp"] <= -1.0 else 1)' "$RD/13-render/render.json"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone after the export"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | external | exported 1"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: date | idea | external | exported 1"
 assert_true "the run folder is kept" test -d "$RD" -a -f "$RD/state.json"
 assert_eq "$(state_get "$RD" status)" "exported" "state.json: exported"
 assert_eq "$(state_get "$RD" export.number)" "1" "state.json: export number 1"
@@ -489,9 +489,9 @@ assert_eq "$(fake_field 1 tools)" '[""]' "the caption call has no tools"
 assert_grep "^# Stage: 14-export$" "$RD/14-export/prompt-caption.md" "the caption prompt header"
 assert_grep "^- Hook 1, the caption's first line \(fixed, do not rewrite it\): Why your Claude Code cards all look identical\.$" "$RD/14-export/prompt-caption.md" "the caption prompt carries hook 1"
 assert_grep "FlashFX is not mentioned anywhere in the caption" "$RD/14-export/prompt-caption.md" "the caption prompt carries the solution rule for an external solution"
-assert_grep "^NEEDS REVIEW$" "$SANDBOX/exports/1/1captions.txt" "captions: NEEDS REVIEW (the planted flag)"
-assert_grep "voice.md is still the draft profile \(planted by test-m12\)" "$SANDBOX/exports/1/1captions.txt" "captions: NEEDS REVIEW carries the flag's text"
-assert_grep "^- Install command: /plugin install frontend-design@claude-plugins-official.*: https://code.claude.com/docs/en/discover-plugins \(checked 2026-11-01\)$" "$SANDBOX/exports/1/1captions.txt" "captions: a cited fact with its URL and date"
+assert_grep "^NEEDS REVIEW$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: NEEDS REVIEW (the planted flag)"
+assert_grep "voice.md is still the draft profile \(planted by test-m12\)" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: NEEDS REVIEW carries the flag's text"
+assert_grep "^- Install command: /plugin install frontend-design@claude-plugins-official.*: https://code.claude.com/docs/en/discover-plugins \(checked 2026-11-01\)$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: a cited fact with its URL and date"
 no_emdash_in "no em dash in the stage files and the logs" "$RD/13-render/render.json" "$RD/14-export/export.json" "$RD/14-export/caption.txt" "$SANDBOX/channels/flashfx/logs/runner.log" "$SANDBOX/channels/flashfx/logs/history.txt"
 unset FAKE_CLAUDE_FIXTURES
 fake_claude_off
@@ -528,7 +528,7 @@ assert_grep "${ts_regex}ANGLE  gate failed \(H\): finding a better angle, round 
 assert_not_grep "${ts_regex}DROP" "$OUT" "an H failure never drops the idea"
 assert_grep "${ts_regex}INFO   S4: angle round 1/2, [0-9]+ new claims?, solution external \(the frontend-design skill" "$OUT" "S4: the solution decided again (external)"
 assert_grep "${ts_regex}GATE   passed \(P3 S3 C3 F ok H ok\) after 1 angle round$" "$OUT" "GATE: round 2 passes with H ok"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "the run reaches the export (dummy stages after S4)"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "the run reaches the export (dummy stages after S4)"
 assert_eq "$(event_tags "$OUT")" "STEP,STEP,ANGLE,STEP,STEP,GATE,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,STEP,DONE" "the event lines: one angle round, the pass, the dummy stages, the export"
 assert_eq "$(json_get "$RD/03-gate/gate-1.json" H)/$(json_get "$RD/03-gate/gate-1.json" decision)/$(json_get "$RD/03-gate/gate-1.json" solution_type)" "fail/angle/flashfx" "gate-1.json: H fail, decision angle, the flashfx solution"
 assert_eq "$(json_get "$RD/03-gate/gate-1.json" failing)" '["H"]' "gate-1.json: failing lists H alone"
@@ -545,8 +545,8 @@ assert_grep "^Scores: P3 S3 C3 F ok H fail\. Failing: H\.$" "$RD/04-angle/prompt
 assert_grep "gate round 1: P3 S3 C3 F ok H fail, decision angle" "$RD/03-gate/prompt-gate-r2.md" "the second gate round sees the first round's H"
 assert_eq "$(json_get "$RD/04-angle/angle.json" previous_H)/$(json_get "$RD/04-angle/angle.json" solution.type)" "fail/external" "angle.json records the H it repaired and the new solution"
 assert_true "angle.json validates" python "$VALIDATE" pipeline/stages/04-angle/schema.json "$RD/04-angle/angle.json"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the solution type external"
-assert_grep "^external: the frontend-design skill \(anthropics/skills\) https://github.com/anthropics/skills$" "$SANDBOX/exports/1/1captions.txt" "captions: the SOLUTION block from solution.json (the dummy export)"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| external \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the solution type external"
+assert_grep "^external: the frontend-design skill \(anthropics/skills\) https://github.com/anthropics/skills$" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "captions: the SOLUTION block from solution.json (the dummy export)"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone"
 calls="$(python -c 'import json, sys; print(",".join(json.loads(l)["stage"] for l in open(sys.argv[1], encoding="utf-8") if l.strip()))' "$FAKE_CLAUDE_LOG")"
 assert_eq "$calls" "01-research,02-expansion,03-gate,04-angle,03-gate" "the fake answered S1, S2, S3, S4, S3"
@@ -567,7 +567,7 @@ OUT="$SANDBOX/real.out"; RD="$(first_run)"
 printf 'the real run took %ss (%s), kept at %s\n' "$((EPOCHSECONDS - started))" "$(( (EPOCHSECONDS - started) / 60 )) min" "$RD"
 grep -E "$ts_regex(STEP|GATE|ANGLE|DROP|DONE|ERROR|FIXED|ESCAL|BLOCK|FLAG|WARN|INFO)" "$OUT" | grep -v "root:" | sed 's/^/    /'
 assert_rc 0 $rc "the runner exits 0"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/" "$OUT" "DONE: exported #1"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$OUT" "DONE: exported flashfx-1"
 assert_not_grep "${ts_regex}(BLOCK|DROP|STOP)" "$OUT" "no BLOCK, DROP or STOP line"
 assert_grep "${ts_regex}GATE   passed \(P[2-3] S[2-3] C[2-3] F ok H ok\)" "$OUT" "GATE passed with H ok"
 assert_true "research.json lists solution candidates" test "$(json_get "$RD/01-research/research.json" solution_candidates | python -c 'import json, sys; print(len(json.loads(sys.stdin.read() or "[]")))')" -ge 1
@@ -578,11 +578,11 @@ assert_eq "$(json_get "$RD/03-gate/gate.json" H)" "ok" "gate.json: H ok"
 assert_eq "$(json_get "$RD/07-script/script.json" solution.type)" "$sol" "script.json carries the solution"
 check_export "$SANDBOX/exports" 1 "$RD" "real run"
 assert_eq "$(python pipeline/lib/ideas.py count --file "$SANDBOX_M/channels/flashfx/ideas.txt")" "0" "ideas.txt: the idea is gone"
-assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| $sol \| exported 1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the exported line with the solution type"
+assert_grep "^20[0-9-]+ [0-9:]+ \| $TEST_IDEA \| $sol \| exported flashfx-1$" "$SANDBOX/channels/flashfx/logs/history.txt" "history: the exported line with the solution type"
 assert_true "the run folder is kept with every stage" test -d "$RD/13-render" -a -d "$RD/14-export" -a -f "$RD/state.json"
-no_emdash_in "no em dash in the exports and the logs" "$SANDBOX/exports/1/1captions.txt" "$SANDBOX/channels/flashfx/logs/runner.log" "$SANDBOX/channels/flashfx/logs/history.txt" "$RD/14-export/export.json" "$RD/13-render/render.json"
-echo "   the captions file:"; sed 's/^/      /' "$SANDBOX/exports/1/1captions.txt"
-if [ -n "${M12_FREEZE:-}" ] && [ "$rc" = 0 ] && [ -f "$SANDBOX/exports/1/1captions.txt" ]; then
+no_emdash_in "no em dash in the exports and the logs" "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" "$SANDBOX/channels/flashfx/logs/runner.log" "$SANDBOX/channels/flashfx/logs/history.txt" "$RD/14-export/export.json" "$RD/13-render/render.json"
+echo "   the captions file:"; sed 's/^/      /' "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt"
+if [ -n "${M12_FREEZE:-}" ] && [ "$rc" = 0 ] && [ -f "$SANDBOX/exports/flashfx-1/flashfx-1captions.txt" ]; then
   FR="$FROZEN"
   mkdir -p "$FR/13-render" "$FR/14-export" "$FR/02-expansion"
   cp "$RD/02-expansion/solution.json" "$FR/02-expansion/solution.json"

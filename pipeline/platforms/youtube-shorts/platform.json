@@ -1,0 +1,13 @@
+{
+  "id": "youtube-shorts",
+  "name": "YouTube Shorts",
+  "video": {"width": 1080, "height": 1920, "fps": 30, "max_seconds": 60},
+  "safe_zones": {"top": 250, "bottom": 480, "right": 130, "left": 60},
+  "hook2": false,
+  "text_limits": {"caption_max": 150, "description_max": 1000, "pinned_comment_max": 200, "hashtags": 4},
+  "files": ["{id}-{n}.mp4", "{id}-{n}captions.txt"],
+  "captions_sections": ["STORY", "TITLE", "DESCRIPTION", "PINNED COMMENT", "UPLOAD STEPS", "HOOKS", "NEEDS REVIEW", "FACTS AND SOURCES", "RUN", "EDITOR"],
+  "export_defaults": {"caption_max": 150, "description_max": 1000, "hashtags": 4, "required_hashtags": ["#shorts"], "pinned_comment": true},
+  "manifest_required": ["title", "description", "hooks", "files"],
+  "exporter": "exporter.py"
+}

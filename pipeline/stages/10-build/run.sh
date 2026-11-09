@@ -53,7 +53,7 @@ relay() {  # the Python's stdout: relay lines become runner actions, everything 
 build_step() {  # build_step <step> -> the Python's exit code (0 ok, 5 check errors, 2 render failure, 1 code error)
   local rc
   set -o pipefail
-  "$REELS_PY" "$LIB/visual" build --run-dir "$RUN_DIR" --stage-dir "$OUT" --step "$1" 2>&1 | relay
+  heavy_run render "S10 build" -- "$REELS_PY" "$LIB/visual" build --run-dir "$RUN_DIR" --stage-dir "$OUT" --step "$1" 2>&1 | relay
   rc=${PIPESTATUS[0]}
   set +o pipefail
   return $rc

@@ -1,0 +1,1 @@
+[FILL IN] One hook shape per line, in quotes, with __ where the topic goes. Example: "3 tools for beginners I use daily for __."

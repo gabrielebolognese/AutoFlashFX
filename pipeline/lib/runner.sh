@@ -681,14 +681,15 @@ runner_do_export() {  # -> 0 exported (state holds the number), 1 run ended, 2 s
   esac
 }
 
-runner_finalize() {  # the export is in exports/N: remove the idea, history line, DONE
-  local number="$1" fin elapsed
+runner_finalize() {  # the export is in exports/<id>-N: remove the idea, history line, DONE
+  local number="$1" fin elapsed name
+  name="$(export_name "$number")"
   set_activity "exporting #$number"
   runner_remove_idea
-  history_add exported "$IDEA_TEXT" "$number" "$(history_solution "$RUN_DIR")"
-  fin="$(state_finish "$RUN_DIR" exported "exported #$number" "" "$number")"
+  history_add exported "$IDEA_TEXT" "$name" "$(history_solution "$RUN_DIR")"
+  fin="$(state_finish "$RUN_DIR" exported "exported $name" "" "$number")"
   elapsed="$(json_field "$fin" elapsed 0)"
-  say DONE "exported #$number -> exports/$number/ ($(fmt_min "$elapsed"), $ISSUES_FIXED $(plural "$ISSUES_FIXED" issue) fixed)"
+  say DONE "exported $name -> exports/$name/ ($(fmt_min "$elapsed"), $ISSUES_FIXED $(plural "$ISSUES_FIXED" issue) fixed)"
   SESSION_EXPORTED=$((SESSION_EXPORTED + 1))
   rm -f "$REELS_LOGS/.block-streak"
   git -C "$REELS_REPO" rev-parse HEAD > "$REELS_LOGS/.last-good-sha" 2>/dev/null || true
@@ -696,14 +697,26 @@ runner_finalize() {  # the export is in exports/N: remove the idea, history line
 
 # ------------------------------------------------------------------ one run
 
+runner_quota_hold() {  # 0 and QUOTA_TEXT set when the daily quota is reached and an idea is waiting (BUILD_SPEC.md 14.6)
+  local q qa qe qr qn
+  QUOTA_TEXT=""
+  q="$("$REELS_PY" "$REELS_PIPELINE/lib/quota.py" status 2>/dev/null)" || return 1
+  eval "$(json_eval "$q" qa=quota qe=exported_today qr=reached qn=next_reset_clock)"
+  [ "${qr:-false}" = true ] || return 1
+  QUOTA_TEXT="quota $qe/$qa today, next idea after $qn"
+  return 0
+}
+
 runner_pick_run() {  # sets RUN_DIR and RESUMED; returns 1 when there is nothing to do
   local list first id raw created
+  QUOTA_TEXT=""
   if list="$(state_unfinished 2>/dev/null)"; then
     RUN_DIR="$(json_field "$list" 0.run_dir)"
     RESUMED=1
     return 0
   fi
   first="$(ideas_first 2>/dev/null)" || return 1
+  if runner_quota_hold; then return 1; fi   # M19: the channel has exported its daily_quota today (14.6)
   eval "$(json_eval "$first" id=id raw=raw)"
   if ! created="$(state_new "$id" "$raw")"; then
     say ERROR "cannot create a run folder under $REELS_RUNS; retrying at the next poll"

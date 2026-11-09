@@ -1,0 +1,2 @@
+# One deliverable per line: KEYWORD | what the viewer gets when they comment the keyword | link, or "to create"
+[FILL IN] KEYWORD | what the viewer gets | https://example.com

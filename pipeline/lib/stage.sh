@@ -36,6 +36,7 @@
 
 [ -n "${REELS_STAGE_LOADED:-}" ] && return 0
 REELS_STAGE_LOADED=1
+declare -F heavy_run >/dev/null 2>&1 || source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/heavy.sh"   # M19: heavy steps take turns across channels
 
 RUN_DIR=""; STAGE=""; OUT=""; RUN_ID=""; PRIMARY=""; IDEA_ID=""; IDEA_TEXT=""; TODAY=""; RESTART_NOTE=""
 

@@ -1,0 +1,39 @@
+
+== 1. the export names and the numbering ==
+PASS  numbering: the first export of a channel is 1
+PASS  numbering: this channel's highest folder plus 1; another channel's folders, a plain number and other names do not count
+PASS  numbering: the other channel counts its own folders
+PASS  numbering: the history line 'exported flashfx-9' counts after its folder was deleted
+PASS  numbering: the other channel's history counts for it only
+PASS  two dummy ideas of flashfx: the runner exits 0
+PASS  DONE line for flashfx-1
+PASS  DONE line for flashfx-2
+PASS  exports/flashfx-1/flashfx-1.mp4
+PASS  exports/flashfx-1/flashfx-1captions.txt
+PASS  exports/flashfx-1/flashfx-1hook2.mp4
+PASS  captions 1: the HOOKS line carries the new name
+PASS  captions 1: the hook 2 line carries the new name
+PASS  exports/flashfx-2/flashfx-2.mp4
+PASS  exports/flashfx-2/flashfx-2captions.txt
+PASS  exports/flashfx-2/flashfx-2hook2.mp4
+PASS  captions 2: the HOOKS line carries the new name
+PASS  captions 2: the hook 2 line carries the new name
+PASS  captions: the RUN path is channels/<id>/runs/<run>
+PASS  exports/ holds exactly flashfx-1 and flashfx-2
+PASS  history: exported flashfx-1
+PASS  history: exported flashfx-2
+PASS  the second channel's runner exits 0
+PASS  a second channel's first export is second-1 in the same exports/
+PASS  and its captions file is second-1captions.txt
+PASS  exports/ holds both channels
+PASS  the second channel's captions file names no other channel
+PASS  the second channel's history line
+PASS  the histories do not mix
+FAIL  after deleting exports/flashfx-2 the next number is 3 (from the channel's history) (expected '3', got '2')
+PASS  the third idea: the runner exits 0
+PASS  the next export is flashfx-3, not flashfx-2 again
+PASS  flashfx-2 stays deleted
+PASS  no lock is left behind
+
+test-m19.sh: 33 passed, 1 failed
+finished

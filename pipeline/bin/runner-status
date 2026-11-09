@@ -5,6 +5,7 @@
 #   bash pipeline/bin/runner-status [--channel <id>] [N]      N: lines of the log to show (default 20)
 set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
+source "$REELS_PIPELINE/lib/log.sh"; source "$REELS_PIPELINE/lib/config.sh"; source "$REELS_PIPELINE/lib/state.sh"; source "$REELS_PIPELINE/lib/limits.sh"
 n=20
 want="${REELS_CHANNEL:-}"
 while [ $# -gt 0 ]; do
@@ -18,7 +19,7 @@ while [ $# -gt 0 ]; do
 done
 
 channel_block() {  # channel_block <id> <lines>
-  local id="$1" lines="$2" pid="" st
+  local id="$1" lines="$2" pid="" st q qa qe qr qn
   reels_set_channel "$id" || return 1
   if [ -f "$REELS_LOCKS/runner/pid" ]; then read -r pid _ < "$REELS_LOCKS/runner/pid" || true; fi
   if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then
@@ -34,6 +35,11 @@ channel_block() {  # channel_block <id> <lines>
     echo "status: $st"
   else
     echo "status: no logs/status.txt yet (the runner has never started here)"
+  fi
+  q="$("$REELS_PY" "$REELS_PIPELINE/lib/quota.py" status 2>/dev/null)" || q=""
+  if [ -n "$q" ]; then
+    eval "$(json_eval "$q" qa=quota qe=exported_today qr=reached qn=next_reset_clock)"
+    if [ "${qa:-0}" -gt 0 ] 2>/dev/null; then echo "today: $qe of $qa exports (daily quota)$([ "${qr:-}" = true ] && echo ", reached: the next idea starts after $qn")"; else echo "today: $qe exports (no daily quota)"; fi
   fi
   [ -f "$REELS_LOGS/STOPPED.md" ] && echo "STOPPED: logs/STOPPED.md exists, read it for the diagnosis and the fix"
   [ -s "$REELS_LOGS/blocked.txt" ] && echo "blocked: $(grep -c '^#' "$REELS_LOGS/blocked.txt") idea(s) in logs/blocked.txt"
@@ -66,8 +72,18 @@ echo "global locks ($REELS_GLOBAL_LOCKS):"
 found=0
 for d in "$REELS_GLOBAL_LOCKS"/*/; do
   [ -d "$d" ] || continue
-  found=1; pid=""; { read -r pid _ < "${d}pid"; } 2>/dev/null
-  if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then echo "  $(basename "$d"): held by pid $pid"; else echo "  $(basename "$d"): stale (pid ${pid:-?} gone)"; fi
+  found=1; pid=""; extra=""
+  if [ -f "${d}holder" ]; then  # the heavy lock (M19): pid epoch channel kind label
+    read -r pid hep hch hkind hlabel < "${d}holder" 2>/dev/null || true
+    extra=" ($hch $hlabel)"
+  else
+    { read -r pid _ < "${d}pid"; } 2>/dev/null
+  fi
+  if [ -n "$pid" ] && ps -p "$pid" >/dev/null 2>&1; then echo "  $(basename "$d"): held by pid $pid$extra"; else echo "  $(basename "$d"): stale (pid ${pid:-?} gone)"; fi
 done
 [ "$found" = 1 ] || echo "  none held"
+if [ -f "$REELS_GLOBAL_LOCKS/limit.json" ]; then
+  t="$(limit_shared_target 2>/dev/null || echo 0)"
+  if [ "${t:-0}" -gt "$EPOCHSECONDS" ] 2>/dev/null; then echo "  limit.json: a usage limit holds every runner until $(date -d "@$t" '+%Y-%m-%d %H:%M' 2>/dev/null || echo "$t")"; else echo "  limit.json: the last limit is over"; fi
+fi
 exit 0

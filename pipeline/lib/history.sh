@@ -1,7 +1,7 @@
 # pipeline/lib/history.sh: logs/history.txt and logs/blocked.txt (BUILD_SPEC.md sections 2.1, 4.2, 4.3).
 # Source common.sh first.
 #
-#   history_add exported "<idea text>" <N> [solution]        "date | idea | solution | exported N"  (not repeated for the same N)
+#   history_add exported "<idea text>" <id>-N [solution]     "date | idea | solution | exported <id>-N"  (not repeated for the same name; M19)
 #   history_add dropped  "<idea text>" "<reason>" [solution] "date | idea | solution | dropped: reason"
 #   history_add blocked  "<idea text>" "<reason>" [solution] "date | idea | solution | blocked: reason"
 #     solution (M12, BUILD_SPEC.md 4.3) is the reel's solution type: flashfx, external or method, or "-" when the
@@ -28,8 +28,7 @@ history_add() {
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1
   case "$kind" in
     exported)
-      if [ -f "$file" ] && grep -q -F -- "| exported $detail" "$file" 2>/dev/null \
-         && grep -F -- "| exported $detail" "$file" | grep -q -F -- "| $idea |"; then
+      if [ -f "$file" ] && grep -F -- "| $idea |" "$file" 2>/dev/null | grep -q -E -- "[|] exported ${detail} *$"; then
         return 0  # already written (a restart after the export)
       fi
       line="$stamp | $idea | $solution | exported $detail" ;;
@@ -64,6 +63,6 @@ history_counts() {
   file="$(history_file)"
   if [ ! -f "$file" ]; then printf '0 0 0\n'; return 0; fi
   awk -v day="$day" 'index($0, day) == 1 {
-      if ($0 ~ /\| exported [0-9]+ *$/) e++; else if ($0 ~ /\| dropped: /) d++; else if ($0 ~ /\| blocked: /) b++ }
+      if ($0 ~ /\| exported ([a-z][a-z0-9]*-)?[0-9]+ *$/) e++; else if ($0 ~ /\| dropped: /) d++; else if ($0 ~ /\| blocked: /) b++ }
     END { printf "%d %d %d\n", e, d, b }' "$file"
 }

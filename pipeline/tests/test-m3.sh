@@ -266,7 +266,7 @@ sandbox_init
 fake_claude_on
 export REELS_SLEEP_SCALE=0
 new_run "$IDEA_B"
-LOG="$SANDBOX/channels/flashfx/logs/runner.log"; LIMITS_LOG="$SANDBOX/channels/flashfx/logs/limits.log"
+LOG="$SANDBOX/channels/flashfx/logs/runner.log"; LIMITS_LOG="$SANDBOX/logs/limits.log"
 for fmt in time time-tz time-tz-ny weekday date epoch; do
   fake_claude_reset; : > "$LOG"; : > "$LIMITS_LOG"
   FAKE_CLAUDE_MODE="limit:$fmt" drive indexer --tools "" --resume "sess-$fmt"
@@ -314,9 +314,9 @@ assert_rc 0 $rc "the runner finishes the idea after a limit inside a stage"
 assert_grep "${ts_regex}LIMIT  session limit hit, resuming at [0-9]{2}:[0-9]{2} \(\+2 min margin\)$" "$OUT" "runner: LIMIT line from inside the stage"
 assert_grep "${ts_regex}RESUME limit reset, continuing: building visuals$" "$OUT" "runner: RESUME names the stage's activity"
 assert_grep "${ts_regex}STEP   building visuals done" "$OUT" "runner: the stage finishes after the wait"
-assert_grep "${ts_regex}DONE   exported #1" "$OUT" "runner: the idea is exported"
+assert_grep "${ts_regex}DONE   exported flashfx-1" "$OUT" "runner: the idea is exported"
 exp="$(fmt_epoch $(( $(fake_field 1 limit_epoch) + 120 )))"
-assert_grep "\| waiting until $exp \(reset \+ 120 s\) \|" "$SANDBOX/channels/flashfx/logs/limits.log" "runner: limits.log has the target (reset + 120 s)"
+assert_grep "\| waiting until $exp \(reset \+ 120 s\) \|" "$SANDBOX/logs/limits.log" "runner: limits.log has the target (reset + 120 s)"
 assert_grep "model said: ok" "$(run_dirs | head -n 1)/10-build/stage.log" "runner: the stage got the answer after the retry"
 assert_not_grep "${ts_regex}(ERROR|BLOCK) " "$OUT" "runner: a limit is never an error"
 unset REELS_SLEEP_SCALE
@@ -392,7 +392,7 @@ assert_grep "${ts_regex}ERROR  S10 building visuals: exit 1: KeyError: 'beatz'$"
 assert_grep "${ts_regex}FIXED  S10: .* \(commit [0-9a-f]{7,}\), restarting stage$" "$OUT" "FIXED line with the cause and the commit"
 assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the fix$" "$OUT" "the stage restarts"
 assert_grep "${ts_regex}STEP   building visuals done" "$OUT" "the stage passes after the fix"
-assert_grep "${ts_regex}DONE   exported #1 -> exports/1/ \(.*, 1 issue fixed\)$" "$OUT" "DONE counts the fixed issue"
+assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/ \(.*, 1 issue fixed\)$" "$OUT" "DONE counts the fixed issue"
 assert_true "the ERROR comes before the FIXED, then the restart" python -c '
 import re, sys
 log = open(sys.argv[1], encoding="utf-8").read()
@@ -441,7 +441,7 @@ assert_file "$RD/errors/calls/001-E1-review.json" "the reviewer call is saved un
 assert_file "$RD/errors/calls/002-E1-fix.json" "the fixer call is saved under errors/calls/"
 assert_grep "^model: $(python -c 'import json; print(json.load(open("config.json"))["models"]["reviewer"]["model"])')$" "$RD/errors/calls/001-E1-review.meta" "the reviewer used the reviewer model"
 assert_grep "^model: $(python -c 'import json; print(json.load(open("config.json"))["models"]["fixer"]["model"])')$" "$RD/errors/calls/002-E1-fix.meta" "the fixer used the fixer model"
-assert_eq "$(ls "$SANDBOX/exports")" "1" "exports/1 exists"
+assert_eq "$(ls "$SANDBOX/exports")" "flashfx-1" "exports/flashfx-1 exists"
 fi
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -465,7 +465,7 @@ assert_rc 0 $rc "the runner continues past the block and exits 0 when the queue 
 assert_grep "${ts_regex}ERROR  S10 building visuals: $KEY_ERROR$" "$OUT" "ERROR line"
 assert_grep "${ts_regex}BLOCK  idea \"Idea A: the gh CLI in 60 seconds, three ...\" blocked at S10: environment problem: fake reviewer: .*Needs you: create library/keys/service.key with your API key \(fake reviewer\)\. Moved to logs/blocked.txt$" "$OUT" "BLOCK line with the class, the root cause and what the user must do"
 assert_grep "${ts_regex}NEXT   idea 2/2 \"Idea B" "$OUT" "NEXT after the block"
-assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the next idea is exported once the key exists"
+assert_grep "${ts_regex}DONE   exported flashfx-1" "$OUT" "the next idea is exported once the key exists"
 assert_not_grep "${ts_regex}(FIXED|ESCAL|STOP) " "$OUT" "no fix, no escalation, no stop"
 assert_grep "^# 20[0-9-]+ [0-9:]+ \| blocked at S10 \| environment problem: .* \| runs/" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the reason line"
 assert_grep "^\{$IDEA_A\}$" "$SANDBOX/channels/flashfx/logs/blocked.txt" "blocked.txt: the idea in braces"
@@ -605,14 +605,14 @@ assert_true "treeguard: the report names what was left alone" grep -q '"left": \
 assert_true "treeguard: the report names what was put back" grep -q '"restored": \[' <<<"$out"
 PR="$REPO_DIR/pipeline/lib/protect.py"
 printf '{an idea}\n' > "$SANDBOX/channels/flashfx/ideas.txt"
-mkdir -p "$SANDBOX/exports/1"; printf 'reel\n' > "$SANDBOX/exports/1/1.mp4"
+mkdir -p "$SANDBOX/exports/flashfx-1"; printf 'reel\n' > "$SANDBOX/exports/flashfx-1/flashfx-1.mp4"
 python "$PR" snapshot --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr" >/dev/null
 assert_true "protect: a clean check exits 0" python "$PR" check --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr"
 printf '{another}\n' >> "$SANDBOX/channels/flashfx/ideas.txt"                           # the model appended an idea
 printf 'x\n' > "$SANDBOX/channels/flashfx/library/profile/new.txt"                      # the model created a profile file
 printf 'x\n' >> "$SANDBOX/channels/flashfx/styles/paper-cards/style.md"                 # the model edited the style
 rm -f "$SANDBOX/channels/flashfx/library/hooks.txt"                                     # the model deleted the hooks
-printf 'bad\n' > "$SANDBOX/exports/1/extra.txt"                         # the model wrote into an export
+printf 'bad\n' > "$SANDBOX/exports/flashfx-1/extra.txt"                         # the model wrote into an export
 out="$(python "$PR" check --root "$SANDBOX_M" --repo "$SANDBOX_M" --dir "$SANDBOX_M/.pr" --restore)"; rc=$?
 assert_rc 1 $rc "protect: changes to protected files are reported (exit 1)"
 assert_eq "$(cat "$SANDBOX/channels/flashfx/ideas.txt")" "{an idea}" "protect: ideas.txt is restored"
@@ -642,7 +642,7 @@ assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the tempora
 assert_grep "${ts_regex}INFO   S10 building visuals: attempt 3 after the temporary error$" "$OUT" "the second rerun too"
 assert_not_grep "${ts_regex}(ERROR|BLOCK|FIXED|ESCAL) " "$OUT" "no ERROR: a temporary error is retried, not reviewed"
 assert_grep "${ts_regex}STEP   building visuals done" "$OUT" "the stage passes on the third attempt"
-assert_grep "${ts_regex}DONE   exported #1" "$OUT" "the idea is exported"
+assert_grep "${ts_regex}DONE   exported flashfx-1" "$OUT" "the idea is exported"
 assert_eq "$(fake_calls)" "0" "no model call at all: the reviewer was never asked"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "3" "state: three attempts of the stage"
 assert_eq "$(state_get "$RD" errors.10-build.transient_tries)" "0" "state: the transient counter is reset by the success"
@@ -686,9 +686,9 @@ assert_grep "${ts_regex}INFO   fast-forward: skipping the wait until " "$OUT" "t
 assert_grep "${ts_regex}RESUME limit reset, continuing: building visuals$" "$OUT" "RESUME names the stage's activity"
 assert_grep "${ts_regex}INFO   S10 building visuals: attempt 2 after the usage limit$" "$OUT" "the rerun is announced"
 assert_not_grep "${ts_regex}(ERROR|RETRY|BLOCK) " "$OUT" "a limit is never an error"
-assert_grep "${ts_regex}DONE   exported #1" "$OUT" "exported"
+assert_grep "${ts_regex}DONE   exported flashfx-1" "$OUT" "exported"
 assert_eq "$(fake_calls)" "0" "no reviewer call, no probe"
-assert_grep "\| session limit \| reset .* \| waiting until .* \(reset \+ 120 s\) \| \"You've hit your session limit" "$SANDBOX/channels/flashfx/logs/limits.log" "limits.log has the wait with the stage's message"
+assert_grep "\| session limit \| reset .* \| waiting until .* \(reset \+ 120 s\) \| \"You've hit your session limit" "$SANDBOX/logs/limits.log" "limits.log has the wait with the stage's message"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "2" "state: two attempts"
 
 # a stage whose own model call failed (ai() wrote error.json) is not classified again: the log tail looks
@@ -751,7 +751,7 @@ assert_eq "$(fake_roles)" "reviewer:$REVIEWER" "one reviewer call"
 assert_grep "${ts_regex}BLOCK  idea \"Idea B.*\" blocked at S10: " "$OUT" "BLOCK on the reviewer's verdict"
 assert_eq "$(event_tags "$OUT")" "LIMIT,RESUME,LIMIT,RESUME,ERROR,BLOCK" "the order is LIMIT, RESUME, LIMIT, RESUME, ERROR, BLOCK"
 assert_eq "$(state_get "$RD" stages.10-build.attempts)" "3" "state: three attempts"
-assert_eq "$(grep -c "session limit | reset" "$SANDBOX/channels/flashfx/logs/limits.log")" "2" "limits.log has the two waits"
+assert_eq "$(grep -c "session limit | reset" "$SANDBOX/logs/limits.log")" "2" "limits.log has the two waits"
 
 # a log line that quotes a usage limit ("hit its usage limit, it resets weekly") before a real exception: the
 # unparsed limit gets its sleep and the probe (which answers at once), the rerun prints the same text, and that is

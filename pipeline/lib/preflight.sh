@@ -87,6 +87,17 @@ preflight_run() {
         if [ "$in_channel" = "true" ]; then full="$(chpath "$path")"; else full="$REELS_REPO/$path"; fi
         if [ -e "$full" ]; then n_files=$((n_files + 1)); else problem="$path is missing ($full)"; fi
         ;;
+      fill_in)  # M19: a file that still says [FILL IN] is a template the user has not written yet (pipeline/bin/new-channel)
+        local fi_list=() fi_f
+        IFS=, read -r -a fi_list <<<"$name"
+        for fi_f in "${fi_list[@]}"; do
+          full="$(chpath "$fi_f")"
+          if [ -f "$full" ] && grep -q -F '[FILL IN]' "$full" 2>/dev/null; then problem="${problem:+$problem, }$fi_f still says [FILL IN]"; fi
+        done
+        # a channel that is switched on has been through its owner's hands: the markers that stay in it are a warning; a channel
+        # still disabled (new-channel makes it so) is incomplete: a hard failure that lists them
+        [ "$(cfg_channel_enabled)" = true ] && level="warn"
+        ;;
       disk)
         free_gb="$(preflight_free_gb "$REELS_ROOT")"
         if [ -n "$free_gb" ] && [ "$free_gb" -lt "${min_free_gb:-0}" ]; then

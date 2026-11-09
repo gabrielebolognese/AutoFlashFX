@@ -16,6 +16,8 @@ set -u
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/common.sh"
 source "$REELS_PIPELINE/lib/log.sh"
 source "$REELS_PIPELINE/lib/config.sh"
+source "$REELS_PIPELINE/lib/state.sh"
+source "$REELS_PIPELINE/lib/limits.sh"
 quick=0
 want="${REELS_CHANNEL:-}"
 while [ $# -gt 0 ]; do
@@ -232,12 +234,41 @@ if [ -f "$REELS_LOGS/STOPPED.md" ]; then
 else
   ok "no logs/STOPPED.md"
 fi
-if [ -s "$REELS_LOGS/limits.log" ]; then
-  ok "limits.log: $(grep -vc 'resumed after' "$REELS_LOGS/limits.log") limit $(plural 2 wait), the last: $(tail -n 1 "$REELS_LOGS/limits.log" | cut -c1-140)"
+mine="$(grep -F -- " | $REELS_CHANNEL | " "$REELS_GLOBAL_LOGS/limits.log" 2>/dev/null || true)"   # the shared limits.log names the channel (M19)
+if [ -n "$mine" ]; then
+  ok "limits.log: $(printf '%s
+' "$mine" | grep -vc 'resumed after') limit $(plural 2 wait) of this channel, the last: $(printf '%s
+' "$mine" | tail -n 1 | cut -c1-140)"
 else
-  ok "limits.log: no usage limit met yet"
+  ok "limits.log: no usage limit met yet by this channel"
 fi
+if q="$("$REELS_PY" "$REELS_PIPELINE/lib/quota.py" status 2>/dev/null)"; then
+  eval "$(json_eval "$q" qa=quota qe=exported_today qr=reached qn=next_reset_clock)"
+  if [ "${qa:-0}" -gt 0 ] 2>/dev/null; then ok "quota: $qe of $qa exports today$([ "${qr:-}" = true ] && echo " (reached, the next idea starts after $qn)")"; else ok "quota: none (daily_quota 0), $qe exported today"; fi
+fi
+if out="$("$REELS_PY" "$REELS_PIPELINE/lib/platform_lib.py" check "$("$REELS_PY" "$REELS_PIPELINE/lib/platform_lib.py" of "$REELS_CHANNEL" 2>/dev/null)" 2>&1)"; then ok "platform: $(printf '%s' "$out" | tail -n 1)"; else bad "platform: $(printf '%s' "$out" | head -n 1)"; fi
 }
+
+head1 "shared locks and logs (M19)"
+hl="$REELS_GLOBAL_LOCKS/heavy.lock"
+if [ -f "$hl/holder" ]; then
+  read -r hp hep hch hkind hlabel < "$hl/holder" 2>/dev/null || true
+  if [ -n "${hp:-}" ] && ps -p "$hp" >/dev/null 2>&1; then ok "heavy lock: held by $hch ($hlabel) since $(date -d "@$hep" '+%H:%M' 2>/dev/null || echo ?)"; else warn "heavy lock: stale (pid ${hp:-?} is gone); the next heavy step breaks it"; fi
+else
+  ok "heavy lock: free"
+fi
+if [ -f "$REELS_GLOBAL_LOCKS/limit.json" ]; then
+  t="$(limit_shared_target 2>/dev/null || echo 0)"
+  if [ "${t:-0}" -gt "$EPOCHSECONDS" ] 2>/dev/null; then warn "limit.json: a usage limit holds every runner until $(date -d "@$t" '+%Y-%m-%d %H:%M' 2>/dev/null || echo "$t")"; else ok "limit.json: the last limit is over"; fi
+else
+  ok "limit.json: no shared limit"
+fi
+[ -s "$REELS_GLOBAL_LOGS/engine.log" ] && ok "engine.log: $(wc -l < "$REELS_GLOBAL_LOGS/engine.log" | tr -d ' ') line(s), the last: $(tail -n 1 "$REELS_GLOBAL_LOGS/engine.log" | cut -c1-120)" || ok "engine.log: no global events yet"
+pl="$("$REELS_PY" "$REELS_PIPELINE/lib/platform_lib.py" list 2>/dev/null | tr '
+' ' ')"
+for pid in $pl; do
+  if out="$("$REELS_PY" "$REELS_PIPELINE/lib/platform_lib.py" check "$pid" 2>&1)"; then ok "platform $pid: valid"; else bad "platform $pid: $(printf '%s' "$out" | head -n 1)"; fi
+done
 
 ki="$REELS_PIPELINE/knowledge/known-issues.md"
 [ -f "$ki" ] && ok "known-issues.md: $(grep -c '^- ' "$ki") fix $(plural 2 line)"

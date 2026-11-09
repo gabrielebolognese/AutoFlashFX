@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
 # test-isolation.sh: channels never touch each other (BUILD_SPEC.md 14.5). No model call, no engine call.
-#   bash pipeline/tests/test-isolation.sh                    part 1 (the only part that exists in M18)
-#   ISOLATION_PARTS="1" bash pipeline/tests/test-isolation.sh
+#   bash pipeline/tests/test-isolation.sh                    part 1 (the default)
+#   ISOLATION_PARTS="1 2" bash pipeline/tests/test-isolation.sh    both parts (M19; part 2 takes a few minutes)
 #
 #   part 1 (static, M18): no literal path to library/, styles/, motion-lib/, golden/, ideas.txt, runs/, logs/ or exports/ in pipeline/, run.sh
 #          or tools/ outside paths.sh and paths.py (pipeline/tests/isolation_scan.py; the exceptions are one by one in
 #          pipeline/tests/isolation-allowlist.txt, each with its reason); paths.sh and paths.py give the same answers for every variable; the
 #          path module refuses (exit 3 and an ERROR line) a path inside another channel's folder and another channel's export folder, in
 #          bash and in Python; REELS_PATH_TRACE logs every path chpath resolves
-#   part 2 (the canary test: two fixture channels, every prompt recorded) arrives with M19.
+#   part 2 (canary, M19): two fixture channels in a temp REELS_ROOT, each with a unique canary word in every curated file (profile, voice.md,
+#          hooks.txt, the style files, the brand kit, ideas.txt, channel.json brand). For every model-calling stage that can reach its call
+#          from the frozen test run, the real stage runs against the recorder (the fake claude with FAKE_CLAUDE_RECORD_DIR: the whole prompt and
+#          every argument of the call); no canary of B is in anything recorded for A, and the reverse, and the canary of a channel does reach
+#          its own prompts. With REELS_PATH_TRACE=1 a dummy run of A logs only paths inside the engine, channels/A/ or exports/A-*/.
 set -u
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 PARTS="${ISOLATION_PARTS:-1}"
+FROZEN="$REPO_DIR/pipeline/tests/fixtures/runs/test-idea"
+STATE_PY="$REPO_DIR/pipeline/lib/state.py"
 want() { case " $PARTS " in *" $1 "*) return 0 ;; esac; return 1; }
 T="$(mktemp -d)"
 iso_cleanup() { rm -rf "$T" 2>/dev/null || { sleep 2; rm -rf "$T" 2>/dev/null; }; tests_cleanup; }
@@ -83,6 +89,102 @@ grep2 'beta' 'rc=2' "python: the list names the second channel too"
 env REELS_CHANNEL=alpha REELS_ROOT="$TM/root" REELS_PATH_TRACE=1 REELS_PATH_TRACE_FILE="$TM/trace.txt" bash -c 'source "'"$REPO_DIR"'/pipeline/lib/common.sh"; chpath library/a >/dev/null; chpath runs >/dev/null'
 env REELS_CHANNEL=alpha REELS_ROOT="$TM/root" REELS_PATH_TRACE=1 REELS_PATH_TRACE_FILE="$TM/trace.txt" python -c "import sys; sys.path.insert(0, '$RM/pipeline/lib'); import paths; paths.ch('styles')"
 assert_eq "$(grep -c "/channels/alpha/" "$T/trace.txt")" "3" "REELS_PATH_TRACE logs every path the module resolves (bash and Python)"
+fi
+
+if want 2; then
+section "part 2. the canary test: two channels, every prompt recorded"
+sandbox_init --with-pipeline
+fast_mode
+SM="$SANDBOX_M"
+RM="$(mixed "$REPO_DIR")"
+canary_channel() {  # canary_channel <id> <CANARY>: a channel made from the sandbox's flashfx, every curated file carrying its canary word
+  local id="$1" cw="$2" d="$SANDBOX/channels/$1" f
+  cp -r "$SANDBOX/channels/flashfx" "$d"
+  rm -rf "$d/.cache" "$d/runs" "$d/logs" "$d/.locks"; mkdir -p "$d/logs"
+  python - "$SM/channels/$id/channel.json" "$id" "$cw" <<'PYEOF'
+import json, sys
+p, cid, cw = sys.argv[1:4]
+d = json.load(open(p, encoding="utf-8"))
+d["id"] = cid; d["name"] = cid.capitalize(); d["brand"] = {"display_name": cid.capitalize() + "Brand", "canary": cw}
+open(p, "w", encoding="utf-8", newline="\n").write(json.dumps(d, indent=2) + "\n")
+PYEOF
+  printf '%s __ is the canary hook of %s.\n' "$cw" "$id" >> "$d/library/hooks.txt"
+  for f in library/profile/account.md library/profile/voice.md library/profile/pronunciations.txt styles/paper-cards/style.md styles/paper-cards/tweaks.md \
+           styles/paper-cards/vocabulary.md library/brand/BRAND.md; do
+    [ -f "$d/$f" ] && printf '\n%s canary line (%s)\n' "$cw" "$f" >> "$d/$f"
+  done
+  printf '%s | the canary deliverable of %s | https://example.com/%s\n' "$cw" "$id" "$id" >> "$d/library/profile/deliverables.txt"
+  if [ -f "$d/library/brand/brand.json" ]; then
+    python - "$SM/channels/$id/library/brand/brand.json" "$cw" <<'PYEOF'
+import json, sys
+p, cw = sys.argv[1:3]
+d = json.load(open(p, encoding="utf-8-sig")); d["canary"] = cw
+open(p, "w", encoding="utf-8", newline="\n").write(json.dumps(d, indent=2) + "\n")
+PYEOF
+  fi
+  : > "$d/ideas.txt"
+}
+canary_channel alpha CANARYALPHA
+canary_channel beta CANARYBETA
+IDEA="$(tr -d '\r' < "$FROZEN/idea.txt")"
+STAGES="$(python "$STATE_PY" stages | cut -f1)"
+seed_before() {  # seed_before <channel> <stage>: a run whose stages before <stage> are done from the frozen outputs; prints the run dir
+  local id="$1" target="$2" created rd st
+  printf '{%s}\n' "$IDEA" > "$SANDBOX/channels/$id/ideas.txt"
+  created="$(printf '%s' "$IDEA" | env REELS_CHANNEL="$id" python "$STATE_PY" new --runs "$SM/channels/$id/runs" --id "iso-$target" 2>/dev/null)"
+  rd="$(python -c 'import json, sys; print(json.loads(sys.argv[1])["run_dir"])' "$created")"
+  for st in $STAGES; do
+    [ "$st" = "$target" ] && break
+    if [ -d "$FROZEN/$st" ]; then
+      cp -r "$FROZEN/$st/." "$rd/$st/"
+      env REELS_CHANNEL="$id" python "$STATE_PY" stage-start "$rd" "$st" >/dev/null 2>&1
+      env REELS_CHANNEL="$id" python "$STATE_PY" stage-done "$rd" "$st" --schemas "$SANDBOX_M/pipeline/stages" >/dev/null 2>&1
+    fi
+  done
+  mkdir -p "$rd/13-render"; printf 'dummy\n' > "$rd/13-render/final.mp4"; printf 'dummy\n' > "$rd/13-render/hook2.mp4"
+  printf '%s' "$rd"
+}
+fake_claude_on
+export FAKE_CLAUDE_MODE=ok
+STAGE_LIST="01-research 02-expansion 03-gate 05-hooks 06-judge 07-script 14-export"
+for id in alpha beta; do
+  for st in $STAGE_LIST; do
+    rd="$(seed_before "$id" "$st")"
+    mkdir -p "$T/rec/$id/$st"
+    ( cd "$SANDBOX" && env REELS_CHANNEL="$id" REELS_ROOT="$SM" FAKE_CLAUDE_RECORD_DIR="$TM/rec/$id/$st" REELS_SLEEP_SCALE=0 timeout 600 \
+        bash "$SANDBOX/pipeline/stages/$st/run.sh" "$rd" ) > "$T/rec/$id/$st/stage.out" 2>&1
+    rm -rf "$rd"
+  done
+done
+fake_claude_off
+# what was recorded
+count_rec() { find "$T/rec/$1" -name '*.prompt.txt' 2>/dev/null | wc -l | tr -d ' '; }
+na="$(count_rec alpha)"; nb="$(count_rec beta)"
+assert_true "the recorder caught the prompts of channel alpha ($na) and beta ($nb): at least 5 each" test "$na" -ge 5 -a "$nb" -ge 5
+assert_eq "$na" "$nb" "both channels' stages reached the same number of model calls"
+stages_a="$(cd "$T/rec/alpha" && for s in *; do [ -n "$(find "$s" -name '*.prompt.txt' | head -n 1)" ] && echo "$s"; done | tr '\n' ' ')"
+echo "   stages that reached their model call: $stages_a"
+assert_true "S1, S2, S3, S5 and S7 are among them" bash -c "for s in 01-research 02-expansion 03-gate 05-hooks 07-script; do case ' $stages_a ' in *' \$s '*) ;; *) exit 1;; esac; done"
+cross() {  # cross <recorded channel> <other canary> <other id>: how many recorded files carry the other channel's canary or folder
+  grep -r -l -i -E "$2|channels/$3/|$3-[0-9]+" "$T/rec/$1" --include='*.prompt.txt' --include='*.argv.json' 2>/dev/null | wc -l | tr -d ' '
+}
+assert_eq "$(cross alpha CANARYBETA beta)" "0" "no canary, folder or export name of channel beta in anything recorded for alpha"
+assert_eq "$(cross beta CANARYALPHA alpha)" "0" "no canary, folder or export name of channel alpha in anything recorded for beta"
+own() { grep -r -l "$2" "$T/rec/$1" --include='*.prompt.txt' 2>/dev/null | wc -l | tr -d ' '; }
+assert_true "the canary of alpha does reach alpha's prompts ($(own alpha CANARYALPHA) of $na)" test "$(own alpha CANARYALPHA)" -ge 1
+assert_true "the canary of beta does reach beta's prompts ($(own beta CANARYBETA) of $nb)" test "$(own beta CANARYBETA)" -ge 1
+assert_eq "$(grep -r -l "CANARYALPHA" "$T/rec/beta" 2>/dev/null | wc -l | tr -d ' ')" "0" "alpha's canary is not in any file recorded for beta (stage output included)"
+# the path trace of a dummy run
+printf '{An idea for alpha: trace}\n' > "$SANDBOX/channels/alpha/ideas.txt"
+printf '{An idea for beta: trace}\n' > "$SANDBOX/channels/beta/ideas.txt"
+: > "$T/trace-alpha.txt"
+( cd "$SANDBOX" && env NO_COLOR=1 REELS_DUMMY=all REELS_DUMMY_SECONDS=0.1 REELS_PATH_TRACE=1 REELS_PATH_TRACE_FILE="$TM/trace-alpha.txt" timeout 1500 bash "$SANDBOX/run.sh" --channel alpha --once ) > "$T/trace-run.out" 2>&1; rc=$?
+assert_rc 0 "$rc" "the dummy run of alpha exits 0 with REELS_PATH_TRACE=1"
+assert_true "the trace logged paths ($(wc -l < "$T/trace-alpha.txt" | tr -d ' '))" test "$(wc -l < "$T/trace-alpha.txt" | tr -d ' ')" -gt 10
+outside="$(grep -v -E "^($SM/channels/alpha/|$SM/exports/alpha-|$RM/|$SM/pipeline/|$SM/exports$|$SM/channels/alpha$)" "$T/trace-alpha.txt" | head -n 5)"
+assert_eq "$outside" "" "every logged path is inside the engine, channels/alpha/ or exports/alpha-*/"
+assert_true "channel beta's folder was not touched by alpha's run" test ! -d "$SANDBOX/channels/beta/runs"
+assert_file "$SANDBOX/exports/alpha-1/alpha-1.mp4" "alpha's export is exports/alpha-1/"
 fi
 
 test_summary

@@ -45,7 +45,7 @@ reels_tag_color() {
   case "$1" in
     START|DONE|READY|PASS) printf '\033[32m' ;;
     ERROR|BLOCK|STOP|FAIL) printf '\033[31m' ;;
-    WARN|FLAG|LIMIT|RETRY|ESCAL|DROP) printf '\033[33m' ;;
+    WARN|FLAG|LIMIT|RETRY|ESCAL|DROP|WAIT) printf '\033[33m' ;;
     STEP|GATE|NEXT|NEW|RESUME|FIXED|ANGLE) printf '\033[36m' ;;
     REEL|IDLE) printf '\033[1m' ;;
     *) printf '\033[2m' ;;

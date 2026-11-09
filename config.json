@@ -325,6 +325,12 @@
     "lock_wait_seconds": 30,
     "min_free_gb": 10
   },
+  "heavy": {
+    "stale_seconds": 21600,
+    "poll_seconds": 2,
+    "wait_log_seconds": 600,
+    "kinds": ["tts", "transcribe", "render", "encode", "analyze", "frame-match", "capture"]
+  },
   "paths": {
     "exports": "exports",
     "vendor": "pipeline/vendor/ig-agent-skill",
@@ -437,6 +443,11 @@
         "path": "library/hooks.txt",
         "in_channel": true,
         "fix": "restore it: git checkout -- channels/{channel}/library/hooks.txt (one hook per line, __ marks the blank)"
+      },
+      {
+        "check": "fill_in",
+        "name": "library/hooks.txt,library/profile/account.md,library/profile/voice.md,library/profile/deliverables.txt,library/brand/brand.json,styles/paper-cards/style.md,styles/paper-cards/tweaks.md,styles/paper-cards/vocabulary.md",
+        "fix": "write the lines that still say [FILL IN] in channels/{channel}/ (a new channel from pipeline/bin/new-channel starts with them)"
       },
       {
         "check": "disk",
