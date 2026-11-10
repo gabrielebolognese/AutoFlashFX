@@ -40,7 +40,15 @@ Earlier milestones touched: M1 (preflight config), M2 (state, runner, test-m2), 
 
 ## Test result
 
-See the final lines of this report (written after the last run).
+- `test-m20.sh`: section 1 (formats, config, routes) and 2 (the timeline of the frozen run, planted faults, the timeline stage through the runner): 74 passed, 0 failed;
+  section 3 (footage-dummy end to end): 28 passed, 0 failed; sections 4, 5, 6, 8 (variant format order, the names check, the dummy fingerprint equals M19's plus timeline/,
+  no em dash): all PASS (the one failing line of the first run was a wrong assertion, removed). Section 7 (the earlier tests below) was run piece by piece because it is long.
+- Earlier tests run after the change: test-isolation both parts 37/0, test-no-emdash 1/0, test-m18 sections 1 2 58/0, test-m19 section 1 34/0, test-m4 sections 1 2 200 passed
+  and 2 failures that were the expected event counts (one more STEP for the timeline stage; the two lines are updated in test-m4.sh, test-m12.sh and test-m2.sh),
+  test-m5 sections 1 2 no FAIL (179 PASS lines when it was stopped by the batch's time limit near its end), test-m11 sections 1 to 3 was still running (no FAIL up to its
+  51st line) when I stopped waiting.
+- Not run: run-fake.sh (about 7 hours), test-m12 sections 2 and 3 (they render with HyperFrames; their event-count line was updated by hand and the real timeline stage now
+  runs inside them), test-m13, test-m10, test-m16.
 
 ## An incident worth knowing
 
