@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/timeline-render/render.json",
+  "title": "timeline-render render.json (M20): the footage family's render of timeline.json with ffmpeg",
+  "type": "object",
+  "required": ["pass", "files"],
+  "properties": {
+    "pass": {"type": "boolean"},
+    "files": {"type": "object", "required": ["reel"], "properties": {"reel": {"type": "string"}}},
+    "path": {"type": "string"},
+    "frames": {"type": "integer"},
+    "seconds": {"type": ["number", "null"]},
+    "width": {"type": ["integer", "null"]},
+    "height": {"type": ["integer", "null"]},
+    "fps": {"type": ["number", "null"]}
+  }
+}

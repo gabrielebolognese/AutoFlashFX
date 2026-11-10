@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/schemas/timeline.schema.json",
+  "title": "runs/<run>/timeline/timeline.json, version 1 (BUILD_SPEC.md 14.8, M20): the final video as layers in time",
+  "description": "Times: layers, markers and trims are in frames of settings.fps; audio events, caption chunks and words are in milliseconds (the unit of words.json and cues.json). Paths are relative to the run folder (base run), the channel folder (base channel) or absolute (base abs). The timeline is a record: nothing in it contradicts the plans, words.json, cues.json or the composition it came from (pipeline/lib/timeline/check.py).",
+  "type": "object",
+  "required": ["version", "settings", "sources", "layers", "captions", "audio", "markers", "provenance"],
+  "properties": {
+    "version": {"const": 1},
+    "format": {"type": "string"},
+    "channel": {"type": "string"},
+    "run": {"type": "string"},
+    "settings": {
+      "type": "object",
+      "required": ["width", "height", "fps", "duration_frames", "sample_rate", "background"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "fps": {
+          "type": "object",
+          "required": ["num", "den"],
+          "properties": {"num": {"type": "integer", "minimum": 1}, "den": {"type": "integer", "minimum": 1}},
+          "additionalProperties": false
+        },
+        "duration_frames": {"type": "integer", "minimum": 1},
+        "sample_rate": {"type": "integer", "minimum": 8000},
+        "background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "base", "kind"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "base": {"type": "string", "enum": ["run", "channel", "abs"]},
+          "kind": {"type": "string", "enum": ["video", "image", "audio", "composition"]},
+          "duration_s": {"type": ["number", "null"]},
+          "width": {"type": ["integer", "null"]},
+          "height": {"type": ["integer", "null"]},
+          "size": {"type": ["integer", "null"]},
+          "sha256": {"type": ["string", "null"]},
+          "role": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "layers": {
+      "type": "array",
+      "description": "bottom to top",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind", "start", "end"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "name": {"type": "string"},
+          "kind": {"type": "string", "enum": ["composition-scene", "footage", "still", "sprite", "text", "caption-burn"]},
+          "source": {
+            "type": ["object", "null"],
+            "required": ["id", "in", "out"],
+            "properties": {
+              "id": {"type": "string"},
+              "in": {"type": "number", "minimum": 0},
+              "out": {"type": "number", "minimum": 0}
+            },
+            "additionalProperties": false
+          },
+          "start": {"type": "integer", "minimum": 0},
+          "end": {"type": "integer", "minimum": 0},
+          "transform": {"type": "array", "items": {"type": "object", "required": ["frame"], "properties": {"frame": {"type": "integer", "minimum": 0}, "x": {"type": "number"}, "y": {"type": "number"}, "scale": {"type": "number"}, "rotation": {"type": "number"}}, "additionalProperties": false}},
+          "opacity": {"type": "array", "items": {"type": "object", "required": ["frame", "value"], "properties": {"frame": {"type": "integer", "minimum": 0}, "value": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false}},
+          "selector": {"type": "string", "description": "composition layers: the element's selector in the composition (S15's data-ed-layer)"},
+          "component": {"type": "string", "description": "composition layers: the component id in the channel's motion library"},
+          "scene": {"type": "string"},
+          "text": {"type": "string"},
+          "provenance": {"type": "string", "description": "the stage that produced the layer"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "captions": {
+      "type": "object",
+      "required": ["style", "chunks"],
+      "properties": {
+        "style": {"type": "string", "description": "the caption style id from the channel's style"},
+        "mode": {"type": "string"},
+        "chunks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "text", "start_ms", "end_ms", "words"],
+            "properties": {
+              "id": {"type": "string"},
+              "text": {"type": "string"},
+              "start_ms": {"type": "integer", "minimum": 0},
+              "end_ms": {"type": "integer", "minimum": 0},
+              "scene": {"type": "string"},
+              "words": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["text", "start_ms", "end_ms", "emphasis"],
+                  "properties": {
+                    "text": {"type": "string"},
+                    "start_ms": {"type": "integer", "minimum": 0},
+                    "end_ms": {"type": "integer", "minimum": 0},
+                    "emphasis": {"type": "boolean"}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "audio": {
+      "type": "object",
+      "required": ["voice", "sfx", "footage", "music"],
+      "properties": {
+        "voice": {
+          "type": ["object", "null"],
+          "required": ["source", "gain_db"],
+          "properties": {
+            "source": {"type": "string"},
+            "gain_db": {"type": "number"},
+            "start_ms": {"type": "integer", "minimum": 0},
+            "words": {
+              "type": "array",
+              "description": "the spoken words of words.json (the transcript of the voice), when the format has a voiceover",
+              "items": {
+                "type": "object",
+                "required": ["text", "start_ms", "end_ms"],
+                "properties": {"text": {"type": "string"}, "start_ms": {"type": "integer", "minimum": 0}, "end_ms": {"type": "integer", "minimum": 0}, "beat": {"type": "string"}},
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "sfx": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "source", "start_ms", "gain_db", "cue_type"],
+            "properties": {
+              "id": {"type": "string"},
+              "source": {"type": "string"},
+              "start_ms": {"type": "integer", "minimum": 0},
+              "trim_in_ms": {"type": "integer", "minimum": 0},
+              "trim_out_ms": {"type": ["integer", "null"], "minimum": 0},
+              "fade_in_ms": {"type": "integer", "minimum": 0},
+              "fade_out_ms": {"type": "integer", "minimum": 0},
+              "gain_db": {"type": "number"},
+              "cue_type": {"type": "string"},
+              "event": {"type": "string"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "footage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["layer", "source", "in_ms", "out_ms", "gain_db"],
+            "properties": {
+              "layer": {"type": "string"},
+              "source": {"type": "string"},
+              "in_ms": {"type": "integer", "minimum": 0},
+              "out_ms": {"type": "integer", "minimum": 0},
+              "start_ms": {"type": "integer", "minimum": 0},
+              "gain_db": {"type": "number"},
+              "fade_in_ms": {"type": "integer", "minimum": 0},
+              "fade_out_ms": {"type": "integer", "minimum": 0}
+            },
+            "additionalProperties": false
+          }
+        },
+        "music": {"type": "array", "maxItems": 0, "description": "reserved"},
+        "loudness": {
+          "type": "object",
+          "properties": {"target_lufs": {"type": "number"}, "true_peak_dbtp": {"type": "number"}},
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type", "duration_ms"],
+        "properties": {"from": {"type": "string"}, "to": {"type": "string"}, "type": {"type": "string"}, "duration_ms": {"type": "integer", "minimum": 0}},
+        "additionalProperties": false
+      }
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "frame", "label"],
+        "properties": {
+          "id": {"type": "string"},
+          "kind": {"type": "string", "enum": ["scene", "beat", "hook-end", "recap-end", "cliffhanger", "end-card", "keyword"]},
+          "frame": {"type": "integer", "minimum": 0},
+          "label": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["written_by"],
+      "properties": {
+        "written_by": {"type": "string"},
+        "render_source": {"type": "string", "description": "composition: the HyperFrames composition stays the render source; cut: the timeline is rendered by pipeline/lib/timeline/render_ffmpeg.py"},
+        "inputs": {"type": "object", "additionalProperties": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "render": {
+      "type": "object",
+      "description": "cut formats: how render_ffmpeg.py renders it",
+      "properties": {
+        "caption_font": {"type": "string"},
+        "caption_size": {"type": "integer"},
+        "caption_y": {"type": "integer"},
+        "crossfade_ms": {"type": "integer", "minimum": 0},
+        "loudness_lufs": {"type": "number"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

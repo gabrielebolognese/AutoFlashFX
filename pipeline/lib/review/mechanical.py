@@ -28,8 +28,8 @@ Rules, each issue tagged for the fix routing:
                 ask and is left out)                                                                         [text]
   text_size     (M15, E4) no graphic text under the caption size: the sizes the library bakes in are listed as
                 warnings (review.text_size_baked: error makes them issues)                                   [animation]
-  branding      the CTA has the FlashFX lockup (300 px or wider) and the DM card's avatar (112 px or wider); no
-                FlashFX logo outside the CTA unless the solution is flashfx; every logo file is in brand.json, drawn
+  branding      the CTA has the account's lockup (300 px or wider) and the DM card's avatar (112 px or wider); no
+                logo of the account outside the CTA unless the solution is its own product (config review.branding.own_solution_type); every logo file is in brand.json, drawn
                 with its aspect ratio locked, its use_on matching the luminance of the surface under it (the pixels behind
                 it, measured with the logo hidden) and readable against it (3:1), the bolt at least 64 px tall, clear
                 space of a quarter of the bolt's height                                                       [animation]
@@ -341,7 +341,8 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
     cta = ctx.cta_scene()
     cta_id = cta.get("id") if cta else None
     cta_time = int(cta["end_ms"]) - 300 if cta else None
-    flashfx = ctx.solution.get("type") == "flashfx"
+    own_solution = bool(ctx.own_solution) and ctx.solution.get("type") == ctx.own_solution   # the reel's solution is the account's own product
+    brand_name = ctx.brand_name
     hosts = rc.read_hosts(ctx.project)
     times = rc.check_times(ctx, hosts)
     check_ms = sorted(times)
@@ -718,10 +719,10 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
             info["clear_space_px"] = round(clear, 1)
             if intruders and first:
                 add(rc.issue("animation", "brand_clear_space", f"the logo {rel} ({im['instance']}) has {', '.join(intruders[:3])} inside its clear space ({clear:.0f} px)", im["scene"], im["instance"], T))
-        if im["scene"] != cta_id and not flashfx:
+        if im["scene"] != cta_id and not own_solution:
             branding["outside_cta"].append(info)
             if first:
-                add(rc.issue("animation", "brand_outside", f"the FlashFX logo {rel} shows in the body ({im['instance']}, scene {im['scene']}) although the reel's solution is {ctx.solution.get('type')}", im["scene"], im["instance"], T))
+                add(rc.issue("animation", "brand_outside", f"the {brand_name} logo {rel} shows in the body ({im['instance']}, scene {im['scene']}) although the reel's solution is {ctx.solution.get('type')}", im["scene"], im["instance"], T))
         if im["scene"] == cta_id and asset.get("type") == "lockup" and (branding["lockup"] is None or T == cta_time):
             branding["lockup"] = info
         if im["scene"] == cta_id and asset.get("type") == "avatar" and (branding["avatar"] is None or T == cta_time):
@@ -729,9 +730,9 @@ def run(ctx: rc.Ctx, out_path: str, sample_every_ms: int = 1000) -> dict:
         branding["logos"].append(info)
     if cta:
         if branding["lockup"] is None:
-            add(rc.issue("animation", "brand_cta", f"the CTA scene {cta_id} shows no FlashFX lockup (tweaks.md Branding: the end card carries it, {lockup_min:.0f} px or wider)", cta_id, "", cta_time))
+            add(rc.issue("animation", "brand_cta", f"the CTA scene {cta_id} shows no {brand_name} lockup (tweaks.md Branding: the end card carries it, {lockup_min:.0f} px or wider)", cta_id, "", cta_time))
         if branding["avatar"] is None:
-            add(rc.issue("animation", "brand_cta", f"the CTA scene {cta_id} shows no DM card with the FlashFX avatar (mark/avatar-dark.png, {avatar_min:.0f} px or wider)", cta_id, "", cta_time))
+            add(rc.issue("animation", "brand_cta", f"the CTA scene {cta_id} shows no DM card with the {brand_name} avatar (mark/avatar-dark.png, {avatar_min:.0f} px or wider)", cta_id, "", cta_time))
     else:
         add(rc.issue("animation", "brand_cta", "the plan has no CTA scene (no ask beat)", "", ""))
 

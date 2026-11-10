@@ -7,7 +7,7 @@
 #      230 px of the lower half, the fonts and sizes, overlaps and off-canvas, contrast, each emphasis within 80 ms
 #      of its word, the branding rules of tweaks.md)
 #   2. the style conformance check (review/style_check.py: tools/analyze_refs.py on draft_mixed.mp4 against
-#      styles/paper-cards/analysis: cadence, token colors, accent share, loudness)
+#      styles/<style>/analysis: cadence, token colors, accent share, loudness)
 #   3. the audio checks (review/audio_check.py: S11's verification, the voice transcribed from the mixed draft and
 #      compared with words.json, WER under 5 percent)
 #   4. the edit review: a fresh qa session (never the builder) reads the contact sheet, the 10 fps filmstrips of the
@@ -98,7 +98,15 @@ if [ "${REELS_REVIEW_SKIP_EDIT:-0}" != 1 ]; then
   review_step "reviewing: edit review (round $ROUND/$TOTAL)" "$REELS_PY" "$LIB/review" prompt --run-dir "$RUN_DIR" --stage-dir "$OUT" --round "$ROUND" || stage_fail "$(last_error "the prompt digests failed")"
   DG="$OUT/digest"
   PROMPT="$OUT/prompt-r$ROUND.md"
-  render_prompt "$HERE/prompt.md" "$PROMPT" "IDEA=$IDEA_TEXT" "@REQUIREMENTS=$DG/requirements.md" "@IMAGES=$DG/images.md" "@SCENES=$DG/scenes.md" \
+  # the rules that belong to the channel's format (its branding, M20: format.json stages[].prompts.rules) fill {{FORMAT_RULES}}
+  RULES_SRC="$("$REELS_PY" "$LIB/formats.py" prompt 12-review rules 2>/dev/null)"
+  RULES="$DG/format-rules.md"
+  if [ -n "$RULES_SRC" ]; then
+    render_prompt "$RULES_SRC" "$RULES" "BRAND=$("$REELS_PY" "$LIB/config.py" brand)" || stage_fail "cannot render the format's review rules $RULES_SRC"
+  else
+    : > "$RULES"
+  fi
+  render_prompt "$HERE/prompt.md" "$PROMPT" "IDEA=$IDEA_TEXT" "STYLE=$(cfg style)" "@FORMAT_RULES=$RULES" "@REQUIREMENTS=$DG/requirements.md" "@IMAGES=$DG/images.md" "@SCENES=$DG/scenes.md" \
     "@CHECKS=$DG/checks.md" "@HISTORY=$DG/history.md" "NOTE=$(stage_note_section)" || stage_fail "cannot render pipeline/stages/12-review/prompt.md"
   ai qa "$OUT" "$PROMPT" --schema "$HERE/model.schema.json" --tools "$(cfg review.qa_tools "Read Glob")" --timeout "$(cfg timeouts.edit_review_seconds 1800)" \
     --name "edit-r$ROUND" --activity "reviewing: edit review (round $ROUND/$TOTAL)" || stage_ai_failed

@@ -17,7 +17,7 @@ with NEEDS REVIEW. The runner never stops here.
 - 11-sfx/cues.json (S11's verification), draft_mixed.mp4, sound-map.txt
 - 08-voiceover/words.json (the spoken words, the intelligibility reference), 07-script/script.json, 02-expansion/expansion.json
   (the requirements: the problem, the share line, the keyword), 02-expansion/solution.json when it exists
-- styles/paper-cards/tokens.json and analysis/ (the reference numbers and stills; tokens.json pacing when the analysis
+- the style's tokens.json and analysis/ (the reference numbers and stills; tokens.json pacing when the analysis
   folder is missing), library/brand/brand.json, motion-lib/catalog.json, tools/analyze_refs.py
 - config review.* (thresholds), caps.review_rounds_opus and review_rounds_fable, models.qa, timeouts
 - state.json rounds.review (the rounds done so far)

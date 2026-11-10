@@ -13,6 +13,7 @@ Command line (LF output):
     config.py overrides [--channel ID]        the engine keys the channel overrides, one per line
     config.py set-channel KEY JSON            write config.<KEY> = JSON into the channel's channel.json (dotted key)
     config.py sources                         the files the resolved config is made of, one per line
+    config.py brand [KEY]                     channel.json brand.KEY (default display_name) of REELS_CHANNEL
 
 The safety keys of review (reviewer_tools, fixer_tools, fixer_paths, protected_paths) are engine keys: a channel
 value for them is ignored and validate reports it.
@@ -56,7 +57,12 @@ def deep_merge(base, over):
 
 
 def format_path(fmt: str) -> str:
-    return f"{REPO}/pipeline/formats/{fmt}/format.json"
+    """format.json of a format (pipeline/formats/, then the test-only pipeline/tests/formats/; formats.py knows the folders)."""
+    import formats
+    try:
+        return formats.path_of(fmt)
+    except formats.FormatError:
+        return f"{REPO}/pipeline/formats/{fmt}/format.json"
 
 
 def sources(channel: str | None = None) -> list[str]:
@@ -95,9 +101,28 @@ def load(channel: str | None = None) -> dict:
     chan = read_json(cj)
     fmt = chan.get("format", "")
     if fmt and os.path.isfile(format_path(fmt)):
-        cfg = deep_merge(cfg, strip_safety(read_json(format_path(fmt)).get("config", {}) or {}))
+        fdata = read_json(format_path(fmt))
+        cfg = deep_merge(cfg, strip_safety(fdata.get("config", {}) or {}))
+        # the files a channel of this format must have are preflight checks of the format (format.json required_files, M20): they run
+        # before the disk and shell checks of the engine, after its tool checks
+        extra = [copy.deepcopy(e) for e in fdata.get("required_files") or []]
+        req = (cfg.setdefault("preflight", {}).setdefault("require", []))
+        at = next((i for i, e in enumerate(req) if e.get("check") in ("disk", "shell")), len(req))
+        req[at:at] = extra
     cfg = deep_merge(cfg, strip_safety(chan.get("config", {}) or {}))
     return cfg
+
+
+def brand(key: str = "display_name", channel: str | None = None) -> str:
+    """channels/<id>/channel.json brand.<key> (display_name falls back to the channel's name, then its id)."""
+    cid = paths.channel_id() if channel is None else channel
+    if not cid or not os.path.isfile(paths.channel_json(cid)):
+        return ""
+    data = read_json(paths.channel_json(cid))
+    val = (data.get("brand") or {}).get(key)
+    if val is None and key == "display_name":
+        val = data.get("name") or cid
+    return str(val) if val is not None else ""
 
 
 def get(cfg: dict, key: str, default=None):
@@ -226,6 +251,9 @@ def main(argv: list[str]) -> int:
         return 0
     if cmd == "set-channel":
         print(set_channel_key(rest[0], json.loads(rest[1]), paths.require_channel()))
+        return 0
+    if cmd == "brand":
+        print(brand(rest[0] if rest else "display_name"))
         return 0
     if cmd == "sources":
         for s in sources():

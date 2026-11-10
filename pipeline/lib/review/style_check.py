@@ -1,7 +1,7 @@
 """pipeline/lib/review/style_check.py: the style conformance check of S12 (BUILD_SPEC.md S12, M11).
 
 tools/analyze_refs.py runs on the mixed draft (540x960) into 12-review/analysis/ and its numbers are compared with
-the reference analysis of styles/paper-cards/analysis (one summary.json per reference video; tokens.json's pacing
+the reference analysis of the style's analysis folder (one summary.json per reference video; tokens.json's pacing
 block when none is there):
   cadence   the hero zone's (the middle screen band's) visual-change gap median and gap maximum within the
             references' range, plus or minus 20 percent (config review.cadence_tolerance_pct)        [animation]

@@ -20,7 +20,7 @@
         "energy": {"type": "integer", "minimum": 1, "maximum": 5, "description": "does every scene keep moving, with inertia, depth and edges: content that plays inside its card, a hero that fills the middle, layers behind it, no stretch that stands still"}
       }
     },
-    "branding_natural": {"type": "boolean", "description": "the FlashFX branding (the DM card, the lockup, the brand slot) feels like a natural part of the reel, not like an ad"},
+    "branding_natural": {"type": "boolean", "description": "the account branding (the DM card, the lockup, the brand slot) feels like a natural part of the reel, not like an ad"},
     "branding_note": {"type": "string", "description": "when branding_natural is false: what feels like an ad"},
     "issues": {
       "type": "array",

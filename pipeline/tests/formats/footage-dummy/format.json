@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../schemas/format.schema.json",
+  "id": "footage-dummy",
+  "name": "Footage dummy (test only)",
+  "family": "footage",
+  "description": "Test-only footage format (BUILD_SPEC.md 14.7, M20): proves that the footage family runs through the same runner: ingest (dummy), cut (dummy: writes timeline.json from the fixture clips), render from the timeline (real, ffmpeg), export. S15 joins as the last stage in M21.",
+  "platforms": [
+    "instagram-reels"
+  ],
+  "stages": [
+    {
+      "id": "ingest",
+      "label": "IN",
+      "activity": "ingesting clips",
+      "output": "clips.json"
+    },
+    {
+      "id": "cut",
+      "label": "CUT",
+      "activity": "cutting clips",
+      "output": "cut.json"
+    },
+    {
+      "id": "timeline-render",
+      "label": "TR",
+      "activity": "rendering timeline",
+      "output": "render.json"
+    },
+    {
+      "id": "14-export",
+      "label": "S14",
+      "activity": "writing caption",
+      "output": "export.json"
+    }
+  ],
+  "required_files": [
+    {
+      "check": "file",
+      "path": "footage/clip1.mp4",
+      "in_channel": true,
+      "fix": "put the footage clips in channels/{channel}/footage/ (the template of footage-dummy copies the test clips there)"
+    }
+  ],
+  "template": "template",
+  "timeline": {
+    "builder": "cut"
+  },
+  "config": {
+    "footage": {
+      "clip_in_s": 0.2,
+      "clip_len_s": 1.5,
+      "crossfade_ms": 0
+    }
+  }
+}

@@ -70,22 +70,20 @@ def main(argv: list[str]) -> int:
     dest = f"{paths.channels_dir()}/{cid}"
     if os.path.exists(dest):
         die(f"channels/{cid} exists already")
-    fmt_dir = f"{paths.root()}/pipeline/formats/{a.format}" if os.path.isdir(f"{paths.root()}/pipeline/formats/{a.format}") else f"{REPO}/pipeline/formats/{a.format}"
-    template = f"{fmt_dir}/template"
+    import formats
+    try:
+        fmt = formats.load(a.format)
+    except formats.FormatError as exc:
+        die(f"{exc}; a new format is engine work, not a new channel (BUILD_SPEC.md 14.7)")
+    template = formats.template_dir(fmt)
     if not os.path.isdir(template):
         die(f"the format '{a.format}' has no template folder ({template}): a new format is engine work, not a new channel (BUILD_SPEC.md 14.7)")
     problems = platform_lib.problems(a.platform)
     if problems:
         die(f"the platform '{a.platform}' is not usable: {problems[0]}; a new platform is engine work, not a new channel (BUILD_SPEC.md 14.7)")
-    fj = f"{fmt_dir}/format.json"
-    if os.path.isfile(fj):
-        try:
-            with open(fj, encoding="utf-8-sig") as f:
-                supported = json.load(f).get("platforms")
-        except (OSError, ValueError):
-            supported = None
-        if supported and a.platform not in supported:
-            die(f"the format '{a.format}' supports {', '.join(supported)}, not '{a.platform}'")
+    supported = fmt.get("platforms")
+    if supported and a.platform not in supported:
+        die(f"the format '{a.format}' supports {', '.join(supported)}, not '{a.platform}'")
 
     name = a.name or cid.capitalize()
     shutil.copytree(template, dest, ignore=shutil.ignore_patterns("channel.config.json", "README.md"))
@@ -114,7 +112,7 @@ def main(argv: list[str]) -> int:
         print("fill in (each of these says [FILL IN]):")
         for t in todo:
             print(f"  channels/{cid}/{t}")
-    print("also made by tools or copied in: styles/paper-cards/tokens.json (bash pipeline/bin/build-tokens), styles/sfx/sfx-map.json "
+    print("also made by tools or copied in: styles/<style>/tokens.json (bash pipeline/bin/build-tokens), styles/sfx/sfx-map.json "
           "(bash pipeline/bin/build-sfx-map), motion-lib/catalog.json, library/voice/engine.txt (BUILD_SPEC.md 2.5), the brand assets in library/brand/")
     print(f"check: bash pipeline/bin/preflight --channel {cid}   (lists everything missing)")
     print(f"then set \"enabled\": true in channels/{cid}/channel.json and start it: bash run.sh --channel {cid}")

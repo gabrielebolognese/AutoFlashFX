@@ -78,7 +78,7 @@ def decide(ctx: rc.Ctx, round_n: int, mech: dict | None, style: dict | None, aud
         if n:
             model_issues.append(n)
     if answer is not None and not branding_natural:
-        model_issues.append({"tag": "animation", "text": "the FlashFX branding feels like an ad, not a natural part of the reel (the edit review): " + rc.undash(str((answer or {}).get("branding_note", "") or (answer or {}).get("summary", "")))[:200],
+        model_issues.append({"tag": "animation", "text": f"the {ctx.brand_name} branding feels like an ad, not a natural part of the reel (the edit review): " + rc.undash(str((answer or {}).get("branding_note", "") or (answer or {}).get("summary", "")))[:200],
                              "source": "model", "stage": "09a-animations", "kind": "branding_feel"})
     checks_pass = bool((mech or {}).get("pass")) and bool((style or {}).get("pass")) and bool((audio or {}).get("pass")) and (energy is None or bool(energy.get("pass")))
     low = [k for k in SCORE_KEYS if scores[k] < 4]

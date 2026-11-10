@@ -4,7 +4,7 @@
 #   history_add exported "<idea text>" <id>-N [solution]     "date | idea | solution | exported <id>-N"  (not repeated for the same name; M19)
 #   history_add dropped  "<idea text>" "<reason>" [solution] "date | idea | solution | dropped: reason"
 #   history_add blocked  "<idea text>" "<reason>" [solution] "date | idea | solution | blocked: reason"
-#     solution (M12, BUILD_SPEC.md 4.3) is the reel's solution type: flashfx, external or method, or "-" when the
+#     solution (M12, BUILD_SPEC.md 4.3) is the reel's solution type (one lowercase word, for example external or method), or "-" when the
 #     idea ended before S2 chose one (the default); S2 reads the recent lines to keep the balance target
 #   blocked_add "<raw idea>" <stage> "<reason>" <run_dir>   two lines in logs/blocked.txt: a comment with the date,
 #                                                     stage, reason and run folder, then the idea in braces, ready to
@@ -22,7 +22,7 @@ history_file() { printf '%s' "$REELS_LOGS/history.txt"; }
 history_add() {
   local kind="$1" idea="$2" detail="$3" solution="${4:--}" stamp line file
   reels_undash idea; reels_undash detail
-  case "$solution" in flashfx|external|method) ;; *) solution="-" ;; esac
+  case "$solution" in ""|*[!a-z0-9_-]*) solution="-" ;; esac
   file="$(history_file)"
   mkdir -p "$REELS_LOGS"
   printf -v stamp '%(%Y-%m-%d %H:%M)T' -1

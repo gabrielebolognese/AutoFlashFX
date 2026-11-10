@@ -14,12 +14,12 @@ scene by scene (the scene times from a merged plan):
   longest_still_s          the longest still stretch
 
 The targets live in tokens.json `energy.targets` (70 percent of the look references' median for the three lower
-bounds, the median rounded up to the next 5 percent and 0.5 s for the two upper bounds, or the spec's paper-cards
+bounds, the median rounded up to the next 5 percent and 0.5 s for the two upper bounds, or the spec's default style
 numbers when the style was not calibrated; pipeline/lib/tokens.py derives them); `calibrate` measures the style's reference videos (styles/<style>/refs/look and refs/motion) and writes
 styles/<style>/analysis/energy.json with every video's numbers and the medians.
 
   python pipeline/lib/review energy <video> [--plan merged.json] [--out energy.json] [--tokens tokens.json]
-  python pipeline/lib/review energy calibrate --refs styles/paper-cards/refs --out styles/paper-cards/analysis/energy.json
+  python pipeline/lib/review energy calibrate --refs <style>/refs --out <style>/analysis/energy.json
   energy.measure_frames(frames) also serves the gallery: `frames` is a uint8 array [n, 192, 108] of a component rendered
   alone (motion/gallery.py), measured with the same thresholds.
 """
@@ -43,7 +43,7 @@ TARGET_SHARE = 0.7            # the targets are 70 percent of the look reference
 # the measure, its direction (a lower bound rises with the energy, an upper bound falls) and its rounding
 MEASURES = [("moving_share_pct", "min", 0), ("middle_moving_share_pct", "min", 0), ("pixels_changing_pct", "min", 1),
             ("still_share_pct", "max", 0), ("longest_still_s", "max", 1)]
-# BUILD_SPEC.md E0, the paper-cards targets when the style has no calibration file
+# BUILD_SPEC.md E0, the default style's targets when the style has no calibration file
 SPEC_TARGETS = {"moving_share_pct": 42, "middle_moving_share_pct": 46, "pixels_changing_pct": 3.3, "still_share_pct": 15, "longest_still_s": 2}
 LABELS = {"moving_share_pct": "moving share", "middle_moving_share_pct": "middle band", "pixels_changing_pct": "pixels changing",
           "still_share_pct": "still stretches", "longest_still_s": "longest still"}

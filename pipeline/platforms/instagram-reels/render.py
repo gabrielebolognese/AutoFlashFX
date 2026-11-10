@@ -29,7 +29,7 @@ def render_captions(m: dict, channel_id: str, n: int, run_id: str) -> str:
              "COMMENT KEYWORD", keyword_line.rstrip()]
     if (m.get("deliverable_status") or "existing") == "new":
         lines.append(f"NEW deliverable to create before posting: {deliverable}")
-    # SOLUTION (M12, spec section 8): flashfx | external: name link | method (the stage's export.json carries it;
+    # SOLUTION (M12, spec section 8): the solution line the format's export stage wrote: its type, then name and link when it has them (the stage's export.json carries it;
     # a run without 02-expansion/solution.json says so)
     lines += ["", "SOLUTION", solution_lib.block_text(m.get("solution") if isinstance(m.get("solution"), dict) else None)]
     lines += ["", "HOOKS", f'{name}.mp4 uses: "{hooks.get("hook1", "")}"', f'{name}hook2.mp4 uses: "{hooks.get("hook2", "")}"']

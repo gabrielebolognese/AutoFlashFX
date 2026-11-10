@@ -12,7 +12,7 @@
   feedback     print the markdown notes a re-run stage puts in its prompt (empty when none): --stage 09b-text
   strip        one filmstrip: strip VIDEO START SECONDS OUT.png [--fps 10]
   energy       the energy meter (Motion and energy rules E0, review/energy.py): energy VIDEO [--plan merged.json] [--out energy.json]
-               [--tokens tokens.json]; `energy calibrate --refs styles/paper-cards/refs --out styles/paper-cards/analysis/energy.json`
+               [--tokens tokens.json]; `energy calibrate --refs <style>/refs --out <style>/analysis/energy.json`
                measures the style's reference videos; exit 0 when the video meets every target, 1 when not
 Progress lines for the stage script: "@@ACTIVITY text", "@@SAY TAG text", "@@FLAG text", "@@ERROR text".
 """
@@ -59,7 +59,7 @@ def main(argv: list[str]) -> int:
     e.add_argument("video", help="the video to measure, or `calibrate`")
     e.add_argument("--plan", default="", help="a merged plan: the scenes are measured one by one")
     e.add_argument("--out", default="", help="write the report as JSON")
-    e.add_argument("--tokens", default="", help="tokens.json with the energy targets (default: the spec's paper-cards targets)")
+    e.add_argument("--tokens", default="", help="tokens.json with the energy targets (default: the spec's default style targets)")
     e.add_argument("--targets", default="", help="a JSON file of targets (overrides --tokens)")
     e.add_argument("--refs", default="", help="calibrate: the style's refs folder (look/ and motion/)")
     e.add_argument("--index", default="", help="calibrate: analysis/index.md with the nicknames (default: next to --out)")

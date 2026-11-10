@@ -58,7 +58,7 @@ reels_config_refresh() {  # make REELS_CONFIG current: the resolved config of th
   fi
   res="$REELS_CHANNEL_ROOT/.cache/config.resolved.json"
   if [ ! -s "$res" ]; then stale=1; else
-    for src in "$REELS_CONFIG_ENGINE" "$REELS_CHANNEL_ROOT/channel.json" "$REELS_PIPELINE"/formats/*/format.json; do
+    for src in "$REELS_CONFIG_ENGINE" "$REELS_CHANNEL_ROOT/channel.json" "$REELS_PIPELINE"/formats/*/format.json "$REELS_PIPELINE"/tests/formats/*/format.json "${REELS_FORMATS_DIR:-/nonexistent}"/*/format.json; do
       [ -f "$src" ] && [ "$src" -nt "$res" ] && { stale=1; break; }
     done
   fi

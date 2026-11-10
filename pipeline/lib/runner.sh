@@ -59,14 +59,15 @@ STATE_RETRY_SECONDS=3           # the wait before the one retry of a failed stat
 
 runner_load_stages() {
   STAGE_KEYS=()
-  declare -g -A STAGE_LABEL=() STAGE_ACTIVITY=() STAGE_OUTPUT=()
-  local key label activity output initial
-  while IFS=$'\t' read -r key label activity output initial; do
+  declare -g -A STAGE_LABEL=() STAGE_ACTIVITY=() STAGE_OUTPUT=() STAGE_DIR=()
+  local key label activity output initial dir
+  while IFS=$'\t' read -r key label activity output initial dir; do
     [ -n "$key" ] || continue
     STAGE_KEYS+=("$key")
     STAGE_LABEL["$key"]="$label"
     STAGE_ACTIVITY["$key"]="$activity"
     STAGE_OUTPUT["$key"]="$output"
+    STAGE_DIR["$key"]="$dir"   # the stage folder from the channel's format (M20): its own stages/ first, then the library
   done < <(state_stages)
   [ ${#STAGE_KEYS[@]} -gt 0 ]
 }
@@ -185,12 +186,16 @@ runner_state() {  # runner_state <read|update> "<ok exit codes>" <state command.
 # ------------------------------------------------------------------ stages
 
 runner_stage_script() {  # prints the script to run for a stage: dummy.sh when REELS_DUMMY asks for it, else run.sh
-  local stage="$1" dir="$REELS_PIPELINE/stages/$1" num short
+  local stage="$1" dir="${STAGE_DIR[$1]:-$REELS_PIPELINE/stages/$1}" num short
   num="${stage%%-*}"; short="${num#0}"
   case ",${REELS_DUMMY:-}," in
-    *",all,"*|*",$stage,"*|*",$num,"*|*",$short,"*) printf '%s/dummy.sh' "$dir" ;;
-    *) printf '%s/run.sh' "$dir" ;;
+    *",all,"*|*",$stage,"*|*",$num,"*|*",$short,"*) printf '%s/dummy.sh' "$dir"; return 0 ;;
   esac
+  # a stage that only describes another stage's output is a dummy when that stage is (the timeline describes the final render, M20)
+  case "$stage:${REELS_DUMMY:-}," in
+    timeline:*13-render,*|timeline:*13,*|timeline:13,*|timeline:13-render,*) printf '%s/dummy.sh' "$dir"; return 0 ;;
+  esac
+  printf '%s/run.sh' "$dir"
 }
 
 runner_wait_child() {  # waits for CHILD_PID, ticking (heartbeat, NEW lines) meanwhile; returns its exit code

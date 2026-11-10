@@ -122,7 +122,7 @@ try=1; ok=false; result=""; errors="[]"; written=false
 while :; do
   force=()
   [ "$try" -ge "$tries" ] && force=(--force)
-  session_call A research "$OUT" "$prompt" --seed-if-new --schema "$HERE/model.schema.json" --tools "" \
+  session_call "$SESSION_KEY" research "$OUT" "$prompt" --seed-if-new --schema "$HERE/model.schema.json" --tools "" \
     --timeout "$(cfg timeouts.hooks_seconds 1200)" --name "$name_prefix-try$try" --activity "picking hooks" || stage_ai_failed
   result="$("$REELS_PY" "$LIB/hooks.py" check --answer "$AI_OUT" --out "$OUT/hooks.json" "${check_args[@]}" "${extra_args[@]}" "${force[@]}")" \
     || stage_fail "hooks.py check failed on $AI_OUT"
@@ -181,7 +181,7 @@ try=1; ok=false; bres=""; berrors="[]"
 while :; do
   force=()
   [ "$try" -ge "$btries" ] && force=(--force)
-  session_call A research "$OUT" "$prompt" --seed-if-new --schema "$HERE/brief.schema.json" --tools "" \
+  session_call "$SESSION_KEY" research "$OUT" "$prompt" --seed-if-new --schema "$HERE/brief.schema.json" --tools "" \
     --timeout "$(cfg timeouts.brief_seconds 1200)" --name "brief-try$try" --activity "picking hooks" || stage_ai_failed
   video_type="$(json_file_field "$AI_OUT" video_type default)"
   tones="$(json_file_field "$AI_OUT" suggested_tones '[]' | tr -d '[]"')"; reels_undash tones

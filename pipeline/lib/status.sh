@@ -33,7 +33,7 @@ get_activity() {
 runner_banner() {
   local version style primary fallback queue sfx_map sfx_count="not built" sha=""
   version="$(cfg version 0.0.0)"
-  style="$(cfg style paper-cards)"
+  style="$(cfg style -)"
   primary="$("$REELS_PY" "$REELS_PIPELINE/lib/voiceover.py" engine --brief 2>/dev/null)"; [ -n "$primary" ] || primary="unknown"
   fallback="none"  # one voice per reel, no fallback (BUILD_SPEC.md 2.5)
   queue="$(ideas_count 2>/dev/null || echo 0)"

@@ -42,7 +42,7 @@ render_prompt "$HERE/prompt.md" "$prompt" "IDEA=$IDEA_TEXT" "TODAY=$TODAY" "ACCO
   || stage_fail "cannot render pipeline/stages/01-research/prompt.md"
 
 research_call_args   # --tools, the --allow rules (read-only gh forms, the screenshot tool), the --deny rules (gh forms that write)
-session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
+session_call "$SESSION_KEY" research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
   --timeout "$(cfg timeouts.research_seconds 2700)" --name research --activity "researching facts" \
   || stage_ai_failed
 

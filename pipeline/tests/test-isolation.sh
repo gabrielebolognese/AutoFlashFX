@@ -44,6 +44,20 @@ assert_true "an allowlist entry lets exactly its line through" bash -c "! printf
 printf 'pipeline/lib/x.sh | REELS_ROOT/library |\n' > "$T/plant/pipeline/tests/isolation-allowlist.txt"
 assert_false "an allowlist entry without a reason is refused" python "$REPO_DIR/pipeline/tests/isolation_scan.py" --root "$TM/plant"
 
+# M20 (BUILD_SPEC.md 14.5, 14.12): no channel, brand or style name in a shared stage; the format's own stages may name them
+mkdir -p "$T/plantn/pipeline/stages/12-review" "$T/plantn/pipeline/stages/03-gate" "$T/plantn/pipeline/lib/review" "$T/plantn/pipeline/tests"
+printf 'You review a FlashFX reel in the paper-cards look.
+' > "$T/plantn/pipeline/stages/12-review/prompt.md"
+printf 'the FlashFX rules of the gate
+' > "$T/plantn/pipeline/stages/03-gate/prompt.md"
+printf '# the Gabryverse check
+' > "$T/plantn/pipeline/lib/review/x.py"
+: > "$T/plantn/pipeline/tests/isolation-allowlist.txt"
+out="$(python "$REPO_DIR/pipeline/tests/isolation_scan.py" --root "$TM/plantn" 2>&1)"; rc=$?
+assert_rc 1 "$rc" "a planted FlashFX name in a shared stage fails the scan"
+assert_true "the scan names the shared prompt and the review module, not the gate (a format's own stage)" bash -c "printf '%s' '$out' | grep -q '12-review/prompt.md:1' && printf '%s' '$out' | grep -q 'lib/review/x.py:1' && ! printf '%s' '$out' | grep -q '03-gate'"
+assert_true "the shared stages and engine files of the repo name no channel, brand or style" bash -c "python '$REPO_DIR/pipeline/tests/isolation_scan.py' | tail -n 1 | grep -q '0 violation(s) (0 of them names)'"
+
 # paths.sh and paths.py agree
 mkdir -p "$T/root/channels/alpha" "$T/root/channels/beta"
 for id in alpha beta; do printf '{"id": "%s", "name": "%s", "platform": "instagram-reels", "format": "problem-solution-reel"}\n' "$id" "$id" > "$T/root/channels/$id/channel.json"; done

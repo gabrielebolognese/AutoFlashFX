@@ -91,7 +91,7 @@ PYEOF
   # the same way every round: the energy rules, the energy check, the liveness checks and the early stop are off in their sandboxes
   # (SANDBOX_ENERGY=on turns them on, as test-m16 does)
   if [ "${SANDBOX_ENERGY:-off}" != on ]; then
-    python "$REPO_DIR/pipeline/tests/sandbox-config.py" "$SANDBOX_M/config.json"
+    python "$REPO_DIR/pipeline/tests/sandbox-config.py" "$SANDBOX_CH_M/channel.json"
   fi
   # SANDBOX_WPM pins voice.wpm in the sandbox's channel.json (M5 and M6: their frozen fixtures and asserted numbers were
   # made at the user's 195 wpm; since M7 the channel's voice.wpm is the reel voice's measured pace)

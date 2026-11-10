@@ -80,6 +80,8 @@ ACTIVITIES = [re.compile("^(?:" + a + ")$") for a in (
     r"reviewing: audio check", r"normalizing loudness",
     r"fixing (?:\[[a-z0-9_-]+\],? ?(?:and )?)+issues \(round \d+, \w+\)",
     r"rendering final video", r"rendering hook 2 clip", r"writing caption", r"exporting #\d+",
+    # M20: the timeline stage and the footage family's stages (BUILD_SPEC.md 14.7, 14.8)
+    r"building timeline", r"rendering timeline", r"ingesting clips", r"cutting clips",
     r"waiting for usage limit \([\w ]+\) until [\w: ]+ \((?:\d+h)?\d+m(?:\d+s)? left\)",
     r"waiting for usage limit \([\w ]+\), (?:no reset time given, probing every \d+ min|probe \d+ failed, next probe in \d+ min)",
     r"retrying after temporary error \(.+\), next try in \S+ \(try \d+/\d+\)",

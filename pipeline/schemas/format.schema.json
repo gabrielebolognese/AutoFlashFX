@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/schemas/format.schema.json",
+  "title": "pipeline/formats/<format>/format.json (BUILD_SPEC.md 14.7, M20): the stages of a format in order, its sessions, caps and reopen routes, its config block, the review rubric, the required channel files and the template folder",
+  "type": "object",
+  "required": ["id", "family", "platforms", "stages", "template"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "name": {"type": "string"},
+    "description": {"type": "string"},
+    "family": {"type": "string", "enum": ["generated", "footage"]},
+    "platforms": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}, "uniqueItems": true},
+    "session_groups": {
+      "type": "object",
+      "description": "model sessions shared by several stages: the group name maps to the stages that continue one session",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["stages"],
+        "properties": {
+          "description": {"type": "string"},
+          "stages": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "activity", "output"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "the stage key: also the name of the run's subfolder"},
+          "folder": {"type": "string", "description": "the stage folder when it differs from the id (the format's own stages/ first, then pipeline/stages/)"},
+          "label": {"type": "string", "description": "the short name in status lines (S13)"},
+          "activity": {"type": "string", "description": "the default activity text of the status line"},
+          "output": {"type": "string", "description": "the primary output file of the stage (the stage is done when it validates)"},
+          "initial": {"type": "string", "enum": ["pending", "skipped"]},
+          "session": {"type": "string", "description": "the session group the stage belongs to"},
+          "model_role": {"type": "string", "description": "the main models role of the stage (documentation; ai() takes the role from the call)"},
+          "caps": {"type": "array", "items": {"type": "string"}, "description": "the config caps keys the stage reads"},
+          "reopen": {"type": "array", "items": {"type": "string"}, "uniqueItems": true, "description": "the stages this stage may reopen through reopen.txt (the gate, the angle loop, the review)"},
+          "prompts": {"type": "object", "additionalProperties": {"type": "string"}, "description": "prompt overrides: name to a file under the format folder"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "rubric": {"type": "string", "description": "the review rubric file under the format folder"},
+        "note": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "required_files": {
+      "type": "array",
+      "description": "preflight entries (the shape of config preflight.require) for the files a channel of this format must have; a missing one is a systemic stop for that channel only",
+      "items": {
+        "type": "object",
+        "required": ["check"],
+        "properties": {
+          "check": {"type": "string", "enum": ["file", "brand", "fill_in", "voice", "command", "python_module", "shell", "disk"]},
+          "name": {"type": "string"},
+          "path": {"type": "string"},
+          "in_channel": {"type": "boolean"},
+          "level": {"type": "string", "enum": ["warn", "fail"]},
+          "min_version": {"type": "string"},
+          "min_free_gb": {"type": "number"},
+          "cmd": {"type": "string"},
+          "fix": {"type": "string"}
+        }
+      }
+    },
+    "template": {"type": "string", "description": "the folder under the format folder that new-channel copies"},
+    "config": {"type": "object", "description": "the format's block of the resolved config (BUILD_SPEC.md 14.4)"},
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "builder": {"type": "string", "enum": ["composition", "cut"], "description": "composition: the timeline stage describes the HyperFrames composition; cut: a stage of the format writes timeline.json itself"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

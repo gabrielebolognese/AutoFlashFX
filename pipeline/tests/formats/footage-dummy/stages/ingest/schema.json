@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ingest of footage-dummy: clips.json",
+  "type": "object",
+  "required": [
+    "written_by",
+    "clips"
+  ],
+  "properties": {
+    "written_by": {
+      "type": "string"
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "duration_s"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "duration_s": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

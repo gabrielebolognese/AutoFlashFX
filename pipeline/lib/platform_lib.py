@@ -5,7 +5,7 @@
     platform_lib.load("youtube-shorts")              -> the platform.json dict (raises PlatformError)
     platform_lib.problems("youtube-shorts")          -> the schema problems of platform.json (empty: valid)
     platform_lib.settings(cid)                       -> the platform's export_defaults with channel.json `export` laid over them
-    platform_lib.file_names("instagram-reels", "flashfx", 3)   -> ["flashfx-3.mp4", "flashfx-3captions.txt", "flashfx-3hook2.mp4"]
+    platform_lib.file_names("instagram-reels", "alpha", 3)   -> ["alpha-3.mp4", "alpha-3captions.txt", "alpha-3hook2.mp4"]
     platform_lib.exporter("instagram-reels")         -> the module of the platform's exporter (render_captions(manifest, id, n, run_id))
     platform_lib.of_channel(cid)                     -> the platform id of a channel (channel.json)
 

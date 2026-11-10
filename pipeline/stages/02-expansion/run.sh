@@ -50,7 +50,7 @@ try=1; ok=false; result=""; errors="[]"
 while :; do
   force=()
   [ "$try" -ge "$tries" ] && force=(--force)
-  session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" --tools "" \
+  session_call "$SESSION_KEY" research "$OUT" "$prompt" --schema "$HERE/model.schema.json" --tools "" \
     --timeout "$(cfg timeouts.expansion_seconds 900)" --name "expansion-$try" --activity "expanding idea" \
     || stage_ai_failed
   result="$("$REELS_PY" "$LIB/expansion.py" compose --run-dir "$RUN_DIR" --model-out "$AI_OUT" \

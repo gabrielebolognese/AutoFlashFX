@@ -6,6 +6,7 @@
 #   stage_begin <run_dir> <stage> <primary output>   sets RUN_DIR, STAGE, OUT (the stage folder), RUN_ID, PRIMARY,
 #                                                    IDEA_ID, IDEA_TEXT, TODAY (YYYY-MM-DD) and RESTART_NOTE (the
 #                                                    runner's note after an automatic fix, read and removed)
+#                                                    and SESSION_KEY (the stage's session group in the format, '' when it has none)
 #   stage_drop "<reason>" [<detail json>]            write result.json and exit 10 (the runner prints DROP, removes the
 #                                                    idea from ideas.txt and writes the history line with the reason)
 #   stage_block "<reason>"                           write result.json and exit 20 (the runner prints BLOCK)
@@ -38,7 +39,7 @@
 REELS_STAGE_LOADED=1
 declare -F heavy_run >/dev/null 2>&1 || source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/heavy.sh"   # M19: heavy steps take turns across channels
 
-RUN_DIR=""; STAGE=""; OUT=""; RUN_ID=""; PRIMARY=""; IDEA_ID=""; IDEA_TEXT=""; TODAY=""; RESTART_NOTE=""
+RUN_DIR=""; STAGE=""; OUT=""; RUN_ID=""; PRIMARY=""; IDEA_ID=""; IDEA_TEXT=""; TODAY=""; RESTART_NOTE=""; SESSION_KEY=""
 
 stage_begin() {
   RUN_DIR="$1"; STAGE="$2"; PRIMARY="$3"
@@ -49,6 +50,8 @@ stage_begin() {
   IDEA_TEXT="$(state_get "$RUN_DIR" idea.text "" 2>/dev/null)"
   printf -v TODAY '%(%Y-%m-%d)T' -1
   RESTART_NOTE="$(ai_restart_note "$OUT" 2>/dev/null || true)"
+  # the model session this stage belongs to comes from the channel's format (format.json session_groups, M20); a stage outside every group has none
+  SESSION_KEY="$("$REELS_PY" "$REELS_PIPELINE/lib/formats.py" session "$STAGE" 2>/dev/null)" || SESSION_KEY=""
   rm -f "$OUT/result.json" "$OUT/reopen.txt"
   printf '%s: start (pid %s, run %s, %s)\n' "$STAGE" "$$" "$RUN_ID" "$TODAY"
   if [ -n "$RESTART_NOTE" ]; then printf '%s: restart note from the runner:\n%s\n' "$STAGE" "$RESTART_NOTE"; fi

@@ -125,7 +125,7 @@ try=1; ok=false; result=""; errors="[]"; added_total=0; change=""
 while :; do
   force=()
   [ "$try" -ge "$tries" ] && force=(--force)
-  session_call A research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
+  session_call "$SESSION_KEY" research "$OUT" "$prompt" --schema "$HERE/model.schema.json" "${RESEARCH_CALL_ARGS[@]}" \
     --timeout "$(cfg timeouts.angle_seconds 2700)" --name "angle-r$n-try$try" \
     --activity "finding a better angle (round $n/$cap)" || stage_ai_failed
   change="$(json_file_field "$AI_OUT" change "")"

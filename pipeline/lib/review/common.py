@@ -28,7 +28,18 @@ REPO = mcommon.REPO
 FPS = 30
 TAGS = ("voice", "animation", "text", "transition", "sfx")
 TAG_STAGE = {"voice": "08-voiceover", "animation": "09a-animations", "text": "09b-text", "transition": "09c-transitions", "sfx": "11-sfx"}
-STAGE_ORDER = ["08-voiceover", "09a-animations", "09b-text", "09c-transitions", "10-build", "11-sfx", "12-review"]
+
+
+def _stage_order() -> list[str]:
+    """The stages a review round may reopen, in the format's order: the reopen routes of 12-review in format.json (M20)."""
+    import formats
+    fmt = formats.current()
+    keys = [s["id"] for s in formats.stage_entries(fmt)]
+    routes = formats.routes(fmt, "12-review")
+    return [k for k in keys if k in routes]
+
+
+STAGE_ORDER = _stage_order()
 CANVAS_W, CANVAS_H = 1080, 1920
 
 
@@ -88,6 +99,10 @@ class Ctx:
         self.run_dir = mixed(run_dir)
         self.stage_dir = mixed(stage_dir or os.path.join(self.run_dir, "12-review"))
         self.config = vcommon.load_config()
+        # the account's name and its own solution type come from the channel and the format (config review.branding), never from this code (M20)
+        import config as _cfgmod
+        self.brand_name = _cfgmod.brand() or "the account"
+        self.own_solution = str(cfg(self.config, "review.branding.own_solution_type", "") or "")
         self.toks = vcommon.tokens()
         self.brand = vcommon.brand_json()
         self.brand_index = vcommon.brand_index(self.brand)

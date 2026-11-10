@@ -9,10 +9,11 @@ OS when the holder exits), because two processes write state.json while a stage 
 round, set) and the runner's heartbeat (touch). Read-only commands (summary, get, unfinished) take no lock:
 os.replace keeps every read whole. export.py takes the same lock for its export record.
 
-Stage table (the single source of truth for the stage order, labels, default activity text and primary output):
+Stage table (M20: the channel's format, pipeline/formats/<format>/format.json, is the single source of truth for the stage order,
+labels, default activity text and primary output; shown for problem-solution-reel):
   key              label  activity                      output         initial status
   01-research      S1     researching facts             research.json  pending
-  ...              (see STAGES below)
+  ...              (see the format's stages)
 04-angle starts as "skipped": the gate reopens it only when an angle round is needed. A stage that wants other
 stages to run again after it writes their keys, one per line, to <run>/<stage>/reopen.txt: "stage-done" reopens
 them (status pending, .done removed, attempts back to 0 for the new round, the round counted in "reopened") in
@@ -24,8 +25,8 @@ marker <run>/<stage>/.done exists (both written by "stage-done"). "next" re-chec
 marker vanished runs again. Status values per stage: pending, running, done, failed, skipped.
 
 Usage:
-  state.py stages                                       the table, one line per stage: key, label, activity, output,
-                                                        initial status (tab separated)
+  state.py stages [--format ID]                         the table, one line per stage: key, label, activity, output,
+                                                        initial status, stage folder (tab separated)
   state.py new --runs DIR --id ID [--source NAME]       create a run for the idea text given on stdin; prints JSON
                                                         {run_dir, run_id}
   state.py unfinished --runs DIR                        JSON list of unfinished runs (status running), oldest first;
@@ -74,26 +75,36 @@ LOCK_WAIT_S = 30.0       # how long a writer waits for state.lock (REELS_STATE_L
 LOCK_POLL_S = 0.02
 LOCK_BUSY_ERRNOS = (errno.EACCES, errno.EAGAIN, errno.EDEADLOCK, errno.EPERM)
 
-# key, label, default activity, primary output, initial status
-STAGES = [
-    ("01-research", "S1", "researching facts", "research.json", "pending"),
-    ("02-expansion", "S2", "expanding idea", "expansion.json", "pending"),
-    ("03-gate", "S3", "checking idea (gate)", "gate.json", "pending"),
-    ("04-angle", "S4", "finding a better angle", "angle.json", "skipped"),
-    ("05-hooks", "S5", "picking hooks", "hooks.json", "pending"),
-    ("06-judge", "S6", "judging hooks", "judge.json", "pending"),
-    ("07-script", "S7", "writing script", "script.json", "pending"),
-    ("08-voiceover", "S8", "generating voiceover", "words.json", "pending"),
-    ("09a-animations", "S9a", "planning animations", "plan.json", "pending"),
-    ("09b-text", "S9b", "planning text", "plan.json", "pending"),
-    ("09c-transitions", "S9c", "planning transitions", "plan.json", "pending"),
-    ("10-build", "S10", "building visuals", "events.json", "pending"),
-    ("11-sfx", "S11", "adding sound effects", "cues.json", "pending"),
-    ("12-review", "S12", "reviewing: mechanical checks", "review.json", "pending"),
-    ("13-render", "S13", "rendering final video", "render.json", "pending"),
-    ("14-export", "S14", "writing caption", "export.json", "pending"),
-]
-STAGE_BY_KEY = {s[0]: s for s in STAGES}
+# The stage table comes from the channel's format (pipeline/formats/<format>/format.json, M20): key, label, default activity,
+# primary output, initial status. A run keeps its own copy of the order in state.json (stage_order), so a run made before a
+# format changed finishes with the stages it started with.
+import formats  # noqa: E402
+
+
+def format_of_run(run_dir: str | None = None) -> dict:
+    """The format of the run (state.json `format`), else the channel's, else the default format."""
+    if run_dir:
+        try:
+            with open(os.path.join(run_dir, "state.json"), encoding="utf-8-sig") as f:
+                fid = json.load(f).get("format") or ""
+            if fid:
+                return formats.load(fid)
+        except (OSError, ValueError, formats.FormatError):
+            pass
+    return formats.current()
+
+
+def stage_table(fmt: dict | None = None) -> list[tuple]:
+    return formats.stage_table(fmt or formats.current())
+
+
+def stage_row(key: str, fmt: dict | None = None) -> tuple:
+    for row in stage_table(fmt):
+        if row[0] == key:
+            return row
+    raise KeyError(key)
+
+
 ROUNDS = ("angle", "script", "review_opus", "review_fable")
 
 
@@ -260,8 +271,8 @@ def new_stage_record(initial: str) -> dict:
             "session_id": None, "exit_code": None, "error": None, "pid": None}
 
 
-def stage_info(key: str) -> dict:
-    _, label, activity, output, initial = STAGE_BY_KEY[key]
+def stage_info(key: str, run_dir: str | None = None) -> dict:
+    _, label, activity, output, initial = stage_row(key, format_of_run(run_dir))
     return {"stage": key, "label": label, "activity": activity, "output": output, "initial": initial}
 
 
@@ -290,7 +301,7 @@ def next_phase(state: dict, run_dir: str) -> dict:
     key = first_open_stage(state, run_dir)
     if key:
         rec = state["stages"][key]
-        info = stage_info(key)
+        info = stage_info(key, run_dir)
         info.update({"phase": "stage", "attempts": rec["attempts"], "stage_status": rec["status"],
                      "pid": rec.get("pid")})
         return info
@@ -352,8 +363,9 @@ def get_dotted(obj, key: str):
 # ---------------------------------------------------------------- commands
 
 def cmd_stages(args) -> int:
-    for key, label, activity, output, initial in STAGES:
-        print("\t".join((key, label, activity, output, initial)))
+    fmt = formats.load(args.format) if getattr(args, "format", "") else formats.current()
+    for key, label, activity, output, initial in formats.stage_table(fmt):
+        print("\t".join((key, label, activity, output, initial, formats.stage_dir(fmt, key))))
     return 0
 
 
@@ -383,7 +395,9 @@ def cmd_new(args) -> int:
         n += 1
     run_dir = os.path.join(runs, run_id).replace("\\", "/")
     os.makedirs(run_dir)
-    for key, *_ in STAGES:
+    fmt = formats.current()
+    table = formats.stage_table(fmt)
+    for key, *_ in table:
         os.makedirs(os.path.join(run_dir, key), exist_ok=True)
     os.makedirs(os.path.join(run_dir, "errors"), exist_ok=True)
     os.makedirs(os.path.join(run_dir, "fixes"), exist_ok=True)
@@ -395,8 +409,9 @@ def cmd_new(args) -> int:
         "created": now,
         "created_iso": iso(now),
         "timing": {"session_started": now, "accumulated": 0, "last_seen": now, "sessions": 1},
-        "stage_order": [s[0] for s in STAGES],
-        "stages": {s[0]: new_stage_record(s[4]) for s in STAGES},
+        "format": fmt["id"],
+        "stage_order": [s[0] for s in table],
+        "stages": {s[0]: new_stage_record(s[4]) for s in table},
         "current_stage": None,
         "flags": [],
         "issues": {"fixed": 0, "open": 0},
@@ -497,15 +512,18 @@ def cmd_stage_start(args) -> int:
     if os.path.exists(stale):
         os.remove(stale)
     save(args.run_dir, state)
-    out = stage_info(args.stage)
+    out = stage_info(args.stage, args.run_dir)
     out.update({"attempts": rec["attempts"], "started": now})
     emit(out)
     return 0
 
 
 def validate_output(schemas_dir: str, run_dir: str, stage: str) -> list[str]:
-    output = STAGE_BY_KEY[stage][3]
-    schema_path = os.path.join(schemas_dir, stage, "schema.json")
+    fmt = format_of_run(run_dir)
+    output = stage_row(stage, fmt)[3]
+    schema_path = os.path.join(formats.stage_dir(fmt, stage), "schema.json")
+    if not os.path.isfile(schema_path):
+        schema_path = os.path.join(schemas_dir, stage, "schema.json")
     out_path = os.path.join(run_dir, stage, output)
     if not os.path.isfile(schema_path):
         return [f"schema missing: {schema_path}"]
@@ -555,9 +573,16 @@ def apply_reopen_file(state: dict, run_dir: str, stage: str) -> list[str]:
     except OSError:
         wanted = []
     reopened = []
+    try:
+        routes = formats.routes(format_of_run(run_dir), stage)
+    except formats.FormatError:
+        routes = None   # a stage the format does not list (an old run): no route to check
     for key in wanted:
         if key not in state["stages"]:
             print(f"state.py: {stage}/reopen.txt names {key!r}, which is not a stage; ignored", file=sys.stderr)
+            continue
+        if routes is not None and key not in routes:
+            print(f"state.py: {stage}/reopen.txt names {key!r}, which is not one of the reopen routes of {stage} in the format; ignored", file=sys.stderr)
             continue
         # a stage may name itself (the review loop of M11 reopens 12-review with the steps it routes to): it is
         # marked done first, then pending again for the next round, in the same write
@@ -744,7 +769,7 @@ def main(argv=None) -> int:
         sp.set_defaults(func=func)
         return sp
 
-    add("stages", cmd_stages, run_dir=False)
+    sp = add("stages", cmd_stages, run_dir=False); sp.add_argument("--format", default="")
     sp = add("slug", cmd_slug, run_dir=False); sp.add_argument("text")
     sp = add("new", cmd_new, run_dir=False)
     sp.add_argument("--runs", required=True); sp.add_argument("--id", required=True)

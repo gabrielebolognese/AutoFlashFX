@@ -1,0 +1,3 @@
+# cut (footage-dummy, test only)
+
+Stage of the test-only footage format (BUILD_SPEC.md 14.7, M20). Primary output: cut.json (schema.json). Logic: ../../footage.py `cut`. No model.

@@ -74,7 +74,7 @@ def requirements_md(ctx: rc.Ctx) -> str:
              f"- The share line (identity plus takeaway): {rc.undash(exp.get('share_identity', ''))}; {rc.undash(exp.get('takeaway', ''))}",
              f"- The comment keyword: {ask.get('keyword', '(none)')} (the ask line: {rc.undash(ask.get('line', ''))})",
              f"- The hook (spoken): {rc.undash(hook.get('spoken', ''))}; on screen: {rc.undash(hook.get('on_screen', ''))}",
-             f"- The solution of this reel: {sol.get('type')}" + (f" ({sol.get('name')})" if sol.get("name") else "") + ". FlashFX branding is allowed only at the CTA (the DM card and the lockup) unless the solution is flashfx.",
+             f"- The solution of this reel: {sol.get('type')}" + (f" ({sol.get('name')})" if sol.get("name") else "") + f". {ctx.brand_name} branding is allowed only at the CTA (the DM card and the lockup) unless the solution is {ctx.own_solution}.",
              f"- Length: {ctx.duration_ms / 1000:.1f} s, {len(ctx.plan.get('scenes', []))} scenes, {len(ctx.cues.get('cues') or [])} sounds."]
     return "\n".join(lines) + "\n"
 
@@ -93,7 +93,7 @@ def images_md(ctx: rc.Ctx, strips: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def checks_md(mech: dict | None, style: dict | None, audio: dict | None, energy: dict | None = None) -> str:
+def checks_md(mech: dict | None, style: dict | None, audio: dict | None, energy: dict | None = None, brand_name: str = "the account") -> str:
     def part(name: str, rep: dict | None) -> str:
         if not rep:
             return f"- {name}: not run"
@@ -109,7 +109,7 @@ def checks_md(mech: dict | None, style: dict | None, audio: dict | None, energy:
     if mech and mech.get("branding"):
         b = mech["branding"]
         lk, av = b.get("lockup") or {}, b.get("avatar") or {}
-        lines.append(f"- branding measured: lockup {lk.get('file', 'none')} {lk.get('box', {}).get('w', 0)} px wide on a {lk.get('surface', '?')} surface; avatar {av.get('file', 'none')} {av.get('box', {}).get('w', 0)} px; FlashFX logos outside the CTA: {len(b.get('outside_cta', []))}")
+        lines.append(f"- branding measured: lockup {lk.get('file', 'none')} {lk.get('box', {}).get('w', 0)} px wide on a {lk.get('surface', '?')} surface; avatar {av.get('file', 'none')} {av.get('box', {}).get('w', 0)} px; {brand_name} logos outside the CTA: {len(b.get('outside_cta', []))}")
     return "\n".join(lines) + "\n"
 
 
@@ -129,7 +129,7 @@ def history_md(ctx: rc.Ctx, round_n: int) -> str:
 
 
 def digests(ctx: rc.Ctx, strips: dict, mech: dict | None, style: dict | None, audio: dict | None, round_n: int, energy: dict | None = None) -> dict:
-    return {"scenes": scenes_md(ctx), "requirements": requirements_md(ctx), "images": images_md(ctx, strips), "checks": checks_md(mech, style, audio, energy), "history": history_md(ctx, round_n)}
+    return {"scenes": scenes_md(ctx), "requirements": requirements_md(ctx), "images": images_md(ctx, strips), "checks": checks_md(mech, style, audio, energy, ctx.brand_name), "history": history_md(ctx, round_n)}
 
 
 def score_table(scores: dict) -> str:

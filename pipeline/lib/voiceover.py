@@ -442,7 +442,7 @@ def tts_text(spoken: str, entries: list[tuple[str, str]], respellings: dict | No
 
 def hotwords(texts: list[str], extra: list[str] | None = None, limit: int = 40) -> str:
     """The reel's names for faster-whisper's hotwords (M13, DECISIONS.md 283): the words with a capital that is not
-    just a sentence's first letter (Claude, MCP, CLAUDE.md, FlashFX, GitHub), in order, each once, plus extra words
+    just a sentence's first letter (Claude, MCP, CLAUDE.md, GitHub), in order, each once, plus extra words
     (the keys of pronunciations.txt). Whisper's small model does not know "Claude" and writes "clod" or "clawed" for
     a voice that says it right; a viewer who knows the topic hears the name, and so does whisper with the hint, while
     a word the voice really gets wrong still fails (the hint biases spelling, it does not invent sounds)."""
