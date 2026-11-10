@@ -164,7 +164,8 @@ assert_true "the recorder caught the prompts of channel alpha ($na) and beta ($n
 assert_eq "$na" "$nb" "both channels' stages reached the same number of model calls"
 stages_a="$(cd "$T/rec/alpha" && for s in *; do [ -n "$(find "$s" -name '*.prompt.txt' | head -n 1)" ] && echo "$s"; done | tr '\n' ' ')"
 echo "   stages that reached their model call: $stages_a"
-assert_true "S1, S2, S3, S5 and S7 are among them" bash -c "for s in 01-research 02-expansion 03-gate 05-hooks 07-script; do case ' $stages_a ' in *' \$s '*) ;; *) exit 1;; esac; done"
+missing_st=""; for s in 01-research 02-expansion 03-gate 05-hooks 07-script; do case " $stages_a " in *" $s "*) ;; *) missing_st="$missing_st $s" ;; esac; done
+assert_eq "$missing_st" "" "S1, S2, S3, S5 and S7 are among the stages that reached their model call"
 cross() {  # cross <recorded channel> <other canary> <other id>: how many recorded files carry the other channel's canary or folder
   grep -r -l -i -E "$2|channels/$3/|$3-[0-9]+" "$T/rec/$1" --include='*.prompt.txt' --include='*.argv.json' 2>/dev/null | wc -l | tr -d ' '
 }
@@ -183,7 +184,7 @@ assert_rc 0 "$rc" "the dummy run of alpha exits 0 with REELS_PATH_TRACE=1"
 assert_true "the trace logged paths ($(wc -l < "$T/trace-alpha.txt" | tr -d ' '))" test "$(wc -l < "$T/trace-alpha.txt" | tr -d ' ')" -gt 10
 outside="$(grep -v -E "^($SM/channels/alpha/|$SM/exports/alpha-|$RM/|$SM/pipeline/|$SM/exports$|$SM/channels/alpha$)" "$T/trace-alpha.txt" | head -n 5)"
 assert_eq "$outside" "" "every logged path is inside the engine, channels/alpha/ or exports/alpha-*/"
-assert_true "channel beta's folder was not touched by alpha's run" test ! -d "$SANDBOX/channels/beta/runs"
+assert_eq "$(ls "$SANDBOX/channels/beta/runs" 2>/dev/null | wc -l | tr -d ' ')" "0" "channel beta has no run: alpha's run did not touch its folder"
 assert_file "$SANDBOX/exports/alpha-1/alpha-1.mp4" "alpha's export is exports/alpha-1/"
 fi
 

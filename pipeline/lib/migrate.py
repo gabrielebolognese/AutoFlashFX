@@ -73,6 +73,7 @@ class Migration:
         self.dry = getattr(a, "dry_run", False)
         self.rows: list[dict] = []
         self.moves: list[tuple[str, str]] = []       # (old, new) of the top lines, in order
+        self.inner_moves: list[tuple[str, str]] = [] # (old, new) of the inner renames (M19: the file names inside an export folder), in order
         self.rewritten: list[str] = []               # the files (new paths) a rewrite changed
         self.done_moves = 0
 
@@ -112,6 +113,17 @@ class Migration:
                 if best is None or len(old) > len(best[0]):
                     best = (old, new)
         return path if best is None else best[1] + path[len(best[0]):]
+
+    def translate_all(self, path: str) -> str:
+        """Where a file of the before-listing is after every move: an inner rename of the file itself first, else its folder's move."""
+        for old, new in self.inner_moves:
+            if path == old:
+                return new
+        return self.translate(path)
+
+    def inner_back(self, old: str) -> str:
+        """Where an inner-renamed file has to go back to while its folder still has the new name: the old file name in the moved folder."""
+        return self.translate(old)
 
     def listing(self) -> dict[str, int]:
         inv = ml.Inventory(self.root)
@@ -220,6 +232,7 @@ class Migration:
             die("migrate: the manifest's columns are %s" % header)
         self.rows = [r for r in rows if r["ms"] == self.ms]
         self.moves = [(r["old"], r["new"]) for r in self.rows if r["scope"] == "top" and r["method"] in ("git-mv", "fs-mv", "rename-in-place")]
+        self.inner_moves = [(r["old"], r["new"]) for r in self.rows if r["scope"] == "inner" and r["method"] == "rename-in-place"]
 
     # ---- refusals -----------------------------------------------------------------------------------------------------
     def refuse(self) -> None:
@@ -244,6 +257,9 @@ class Migration:
         lines = ["#!/usr/bin/env bash", "# undo-migration.sh: the exact reverse of %s's moves (written by pipeline/lib/migrate.py before the first move)." % self.ms,
                  "# Safe to run twice: every step checks what is where. Restores the rewritten files from premigrate/ last.",
                  'cd "%s" || exit 1' % self.root.replace("\\", "/")]
+        for old, new in reversed(self.inner_moves):   # the file names inside a moved folder go back first, while the folder has its new name
+            back = self.inner_back(old)
+            lines.append('[ -e "%s" ] && [ ! -e "%s" ] && mv "%s" "%s"' % (new, back, new, back))
         for old, new in reversed(self.moves):
             row = next((r for r in self.rows if r["scope"] == "top" and r["old"] == old and r["new"] == new), None)
             how = "git mv" if row and row["method"] == "git-mv" else "mv"
@@ -263,9 +279,15 @@ class Migration:
                 for n in fn:
                     src = os.path.join(dp, n)
                     old_rel = ml.posix(os.path.relpath(src, self.pre_dir))
-                    cur = self.p(self.translate(old_rel))
+                    cur = self.p(self.translate_all(old_rel))
                     if os.path.isdir(os.path.dirname(cur)):
                         shutil.copy2(src, cur)
+        for old, new in reversed(self.inner_moves):   # inner renames back first (their folder still has the new name)
+            cur, back = self.p(new), self.p(self.inner_back(old))
+            if os.path.lexists(cur) and not os.path.lexists(back):
+                self.rename(cur, back)
+                out("  moved back %s -> %s" % (new, self.inner_back(old)))
+                self.log("undo-move", "%s -> %s" % (new, self.inner_back(old)))
         for old, new in reversed(self.moves):
             if os.path.lexists(self.p(new)) and not os.path.lexists(self.p(old)):
                 row = next((r for r in self.rows if r["scope"] == "top" and r["old"] == old and r["new"] == new), None)
@@ -357,10 +379,14 @@ class Migration:
                 continue
             # the copy sits under premigrate/ at the file's OLD relative path
             old_rel = rel
-            for new_prefix, old_prefix in sorted(inverse.items(), key=lambda kv: -len(kv[0])):
-                if rel == new_prefix or rel.startswith(new_prefix + "/"):
-                    old_rel = old_prefix + rel[len(new_prefix):]
-                    break
+            inner_inverse = {n_: o_ for o_, n_ in self.inner_moves}
+            if rel in inner_inverse:   # an inner-renamed file (the captions file): its old path, name and folder
+                old_rel = inner_inverse[rel]
+            else:
+                for new_prefix, old_prefix in sorted(inverse.items(), key=lambda kv: -len(kv[0])):
+                    if rel == new_prefix or rel.startswith(new_prefix + "/"):
+                        old_rel = old_prefix + rel[len(new_prefix):]
+                        break
             dest = os.path.join(self.pre_dir, old_rel)
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             if not os.path.exists(dest):
@@ -443,7 +469,7 @@ class Migration:
             after = self.listing()
             expect = {}
             for path, size in before.items():
-                expect[self.translate(path)] = size
+                expect[self.translate_all(path)] = size
             miss = sorted(set(expect) - set(after))
             extra = sorted(set(after) - set(expect))
             wrote = set(self.rewritten)

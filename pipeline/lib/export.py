@@ -47,6 +47,7 @@ from ideas import LockTimeout, QueueLock, winpath  # noqa: E402
 
 RENAME_TRIES = 8
 STAGE = "14-export"
+PATH_ARGS = "run_dir exports root history".split()   # the options that hold a folder or file path
 KEEP_IN_STAGING = ("input.json",)   # what a platform's exporter leaves in runs/<run>/export/ for this step
 HISTORY_LINE = r"\| exported %s-([0-9]+)\s*$"
 
@@ -304,7 +305,7 @@ def main(argv=None) -> int:
     if not args.channel:
         print("export.py: no channel: pass --channel <id> or set REELS_CHANNEL", file=sys.stderr)
         return 1
-    for attr in ("run_dir", "exports", "root", "history"):
+    for attr in PATH_ARGS:
         if getattr(args, attr, None):
             setattr(args, attr, winpath(getattr(args, attr)).replace("\\", "/"))
     try:

@@ -1,0 +1,19 @@
+
+== part 2. the canary test: two channels, every prompt recorded ==
+PASS  the recorder caught the prompts of channel alpha (14) and beta (14): at least 5 each
+PASS  both channels' stages reached the same number of model calls
+   stages that reached their model call: 01-research 02-expansion 03-gate 05-hooks 06-judge 07-script 14-export 
+FAIL  S1, S2, S3, S5 and S7 are among them
+PASS  no canary, folder or export name of channel beta in anything recorded for alpha
+PASS  no canary, folder or export name of channel alpha in anything recorded for beta
+PASS  the canary of alpha does reach alpha's prompts (5 of 14)
+PASS  the canary of beta does reach beta's prompts (5 of 14)
+PASS  alpha's canary is not in any file recorded for beta (stage output included)
+PASS  the dummy run of alpha exits 0 with REELS_PATH_TRACE=1
+PASS  the trace logged paths (16)
+PASS  every logged path is inside the engine, channels/alpha/ or exports/alpha-*/
+FAIL  channel beta's folder was not touched by alpha's run
+PASS  alpha's export is exports/alpha-1/
+
+test-isolation.sh: 11 passed, 2 failed
+finished

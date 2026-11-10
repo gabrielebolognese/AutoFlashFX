@@ -89,8 +89,8 @@ def main(argv: list[str]) -> int:
 
     name = a.name or cid.capitalize()
     shutil.copytree(template, dest, ignore=shutil.ignore_patterns("channel.config.json", "README.md"))
-    os.makedirs(f"{dest}/logs", exist_ok=True)
-    with open(f"{dest}/ideas.txt", "w", encoding="utf-8", newline="\n") as f:
+    os.makedirs(f"{dest}/{paths.LOGS_DIR}", exist_ok=True)
+    with open(f"{dest}/{paths.IDEAS_FILE}", "w", encoding="utf-8", newline="\n") as f:
         f.write("")
     config = {}
     cc = f"{template}/channel.config.json"

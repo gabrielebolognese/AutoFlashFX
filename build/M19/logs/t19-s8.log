@@ -1,0 +1,19 @@
+
+== 8. test-isolation (both parts), the dummy fingerprint, runner-status and doctor, no em dash ==
+FAIL  test-isolation.sh, both parts, passes (test-isolation.sh: 33 passed, 1 failed) (expected exit 0, got 1)
+PASS  REELS_DUMMY=all bash run.sh --channel flashfx --once exits 0
+PASS  the dummy fingerprint is recorded in build/M19/fingerprint/ (M19_RECORD)
+PASS  the run folder tree equals build/M19/fingerprint/ (106 entries)
+PASS  the exports tree equals build/M19/fingerprint/ (flashfx-1/ with flashfx-1.mp4, flashfx-1captions.txt, flashfx-1hook2.mp4)
+PASS  with the names normalized the exports tree is M17's baseline
+PASS  runner-status without arguments exits 0
+PASS  runner-status: one block per channel
+PASS  runner-status: today's exports (against the quota)
+PASS  doctor: the shared locks and logs
+PASS  doctor: the heavy lock
+PASS  doctor: the platforms
+PASS  doctor: every channel
+FAIL  no em dash in the files M19 added (expected '', got ' ')
+
+test-m19.sh: 12 passed, 2 failed
+finished

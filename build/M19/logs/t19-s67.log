@@ -1,0 +1,71 @@
+
+== 6. quota: daily_quota 1 makes the second idea wait with the IDLE line ==
+Python 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\__main__.py", line 6, in <module>
+    __pyrepl_interactive_console()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\main.py", line 59, in interactive_console
+    run_multiline_interactive_console(console)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\simple_interact.py", line 142, in run_multiline_interactive_console
+    statement = multiline_input(more_lines, ps1, ps2)
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\readline.py", line 389, in multiline_input
+    return reader.readline()
+           ~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\reader.py", line 744, in readline
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\historical_reader.py", line 306, in prepare
+    super().prepare()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\reader.py", line 584, in prepare
+    self.console.prepare()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\windows_console.py", line 321, in prepare
+    self.height, self.width = self.getheightwidth()
+                              ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\windows_console.py", line 365, in getheightwidth
+    raise WinError(GetLastError())
+OSError: [WinError 0] The operation completed successfully.
+PASS  the IDLE line says: quota 1/1 today, next idea after 00:00
+PASS  the first idea exported
+PASS  the second idea did not start while the quota was reached
+PASS  the second idea is still queued
+PASS  only flashfx-1 is in exports/
+PASS  runner-status shows today's exports against the quota
+PASS  after midnight (fast clock) the second idea runs and exports as flashfx-2
+PASS  --once with the quota reached exits 0
+PASS  and prints the quota line
+PASS  and starts no idea
+PASS  logcheck.py understands the quota IDLE line and the summary ({"sessions": 1, "ideas": 0, "outcomes": [], "exports": [], "limits": 0, "problems": []})
+
+== 7. new-channel ==
+PASS  new-channel creates the channel
+PASS  channels/demo/channel.json
+PASS  the channel starts disabled
+PASS  its platform is youtube-shorts
+PASS  the platform's defaults are in channel.json export
+PASS  an empty ideas.txt
+PASS  it prints what to fill in
+PASS  and the command that checks it
+PASS  a second new-channel with the same id exits 2
+PASS  a malformed id exits 2
+PASS  an unknown format exits 2 (engine work)
+PASS  and creates nothing
+PASS  an unknown platform exits 2 (engine work)
+PASS  preflight --channel demo fails: the channel is incomplete (exit 3)
+PASS  preflight wrote the channel's logs/STOPPED.md
+PASS  STOPPED.md lists the files that still say [FILL IN]
+PASS  and the files that are missing
+PASS  no other channel is stopped
+PASS  preflight --channel demo passes once the files are filled in ([00:15] READY  preflight ok: 8 tools, 2 python packages, 9 files, 124 GB free)
+PASS  the filled-in channel runs in dummy mode
+PASS  and exports demo-1
+PASS  exports/demo-1/demo-1.mp4
+
+test-m19.sh: 33 passed, 0 failed
+finished

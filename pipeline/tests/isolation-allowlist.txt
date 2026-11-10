@@ -41,3 +41,4 @@ pipeline/lib/runner.sh | REELS_LOCKS/exports | removes the lock folder the singl
 pipeline/lib/motion/__main__.py | ("golden"|cmd == "golden") | the name of the golden sub-command of the motion tools
 pipeline/lib/protect.py | manifest.get\("exports" | a key of the snapshot manifest: the listing of the exports folder
 pipeline/lib/voiceover.py | "runs": runs | a JSON field: the runs of silence found in a wav, not the runs/ folder
+pipeline/platforms/youtube-shorts/exporter.py | f"channels/\{channel_id\}/runs/\{run_id\}" | the RUN line of the captions file (spec section 8: channels/<id>/runs/<run>): text for the person who posts, no path is opened with it

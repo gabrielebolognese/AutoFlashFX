@@ -1,0 +1,12 @@
+== dry run
+make-manifest: 1 lines (1 top, 0 inner) -> C:\Users\there\OneDrive\Desktop\instagramReels\build\M19\move-manifest.tsv
+check-manifest: ok: 1 lines (1 top, 0 inner) cover 14 files, 20306 engine files, 20320 in the inventory
+manifest-diff: 0 only in the plan, 0 only now, 0 with other counts
+migrate: no line of M19 in the manifest: nothing to do
+exit 0
+== real run
+make-manifest: 1 lines (1 top, 0 inner) -> C:\Users\there\OneDrive\Desktop\instagramReels\build\M19\move-manifest.tsv
+check-manifest: ok: 1 lines (1 top, 0 inner) cover 14 files, 20307 engine files, 20321 in the inventory
+manifest-diff: 0 only in the plan, 0 only now, 0 with other counts
+migrate: no line of M19 in the manifest: nothing to do
+exit 0

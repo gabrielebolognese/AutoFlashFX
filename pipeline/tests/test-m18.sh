@@ -418,8 +418,8 @@ raw = sys.argv[1].replace("research.json", "calls/001.out.json")
 assert open(raw, encoding="utf-8").read().strip() == '{"raw": "runs/2026-11-01_1000_done-idea"}', "the raw model output must not be rewritten"
 print("ok")
 PYEOF
-assert_grep 'RUN$' "$FX/exports/flashfx-1/flashfx-1captions.txt" "the captions file keeps its sections"
-assert_grep '^channels/flashfx/runs/2026-11-01_1000_done-idea$' "$FX/exports/flashfx-1/flashfx-1captions.txt" "the RUN path of the captions file follows"
+assert_grep 'RUN$' "$FX/exports/1/1captions.txt" "the captions file keeps its sections"
+assert_grep '^channels/flashfx/runs/2026-11-01_1000_done-idea$' "$FX/exports/1/1captions.txt" "the RUN path of the captions file follows"
 python - "$FX/build/M18/move-manifest.tsv" "$TM/m18-only.tsv" <<'PYEND'
 import sys
 lines = open(sys.argv[1], encoding="utf-8").read().split("\n")

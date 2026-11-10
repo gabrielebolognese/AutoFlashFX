@@ -1,0 +1,58 @@
+
+== 2. the export migration: rehearsal fixture, undo, again; the real folder ==
+PASS  the rehearsal fixture builds and M18 runs on it
+PASS  the fixture has exports/1, exports/2 and a note
+PASS  the dry run exits 0
+PASS  the dry run says nothing changed
+PASS  the dry run lists the rename of exports/1
+PASS  the dry run lists the history rewrite
+PASS  the dry run changed nothing in the tree (checksums)
+PASS  the run exits 0
+PASS  the run ends verified
+PASS  the migration log ends verified
+PASS  the undo script is written
+PASS  exports/flashfx-1/flashfx-1.mp4
+PASS  exports/flashfx-1/flashfx-1captions.txt
+PASS  exports/flashfx-1/flashfx-1hook2.mp4
+PASS  project/ of export 1 keeps its name
+PASS  exports/1 is gone
+PASS  captions 1: the HOOKS line follows
+PASS  captions 1: the hook 2 line follows
+PASS  exports/flashfx-2/flashfx-2.mp4
+PASS  exports/flashfx-2/flashfx-2captions.txt
+PASS  exports/flashfx-2/flashfx-2hook2.mp4
+PASS  project/ of export 2 keeps its name
+PASS  exports/2 is gone
+PASS  captions 2: the HOOKS line follows
+PASS  captions 2: the hook 2 line follows
+PASS  exports/notes.txt (not an export folder) stays
+PASS  history: exported 1 became exported flashfx-1
+PASS  history: exported 2 became exported flashfx-2
+PASS  history: no old export line is left
+PASS  the next export after the migration is flashfx-3
+PASS  check-manifest.py --after passes on the migrated fixture (check-manifest --after: 14 line(s) checked, 0 problem(s))
+PASS  git status shows only renames (the exports are not tracked; the history is ignored)
+PASS  the undo exits 0
+PASS  the undo brings back an identical tree (checksums)
+PASS  exports/1/1captions.txt is back
+PASS  the run after the undo exits 0
+PASS  and ends verified again
+PASS  a third start only verifies
+PASS  and says so
+PASS  after the second undo the tree is identical again
+PASS  the planted kill ends the run after 1 move
+PASS  the folder is half moved (exports/flashfx-1 exists, exports/2 too)
+PASS  the next start exits 0
+PASS  the next start undoes the killed attempt first
+PASS  then migrates and verifies
+PASS  the real folder has no exports/N folder left
+PASS  no plain-number export folder in the real exports/
+PASS  build/M19/move-manifest.tsv exists (the real run's executed manifest)
+PASS  build/M19/manifest-diff.md exists
+PASS  build/M19/real-migration.txt: the output of the migration on the real folder
+PASS  the real run found no M19 line (the folder has no export yet) or verified them
+PASS  the gate of 14.13: check-manifest.py --after on M18's manifest (only the growth of the logs and the gallery differs)
+PASS  preflight --channel flashfx passes
+
+test-m19.sh: 53 passed, 0 failed
+finished

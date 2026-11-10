@@ -177,3 +177,50 @@ PASS  summary line first
 PASS  IDLE line with the poll interval, idle minutes and today's counts
 PASS  a second runner refuses to start while one runs
 PASS  it names the running pid
+PASS  an idea added while idle is processed
+PASS  NEW line names the source and the queue size
+PASS  START after NEW
+PASS  the summary line again when the queue empties again
+PASS  IDLE line with today's count updated
+PASS  IDLE repeats at the heartbeat cadence (got 5 lines)
+PASS  status.txt holds the latest line while idle
+PASS  SIGTERM stops the runner
+PASS  the stop is announced
+PASS  the runner lock is released on SIGTERM
+
+== 7. a stage that is not built yet, and runner-status ==
+PASS  every stage has a run.sh: the not-built-yet stop no longer applies (section skipped)
+
+== 8. state.json damaged mid-run: one retry, then the systemic stop with STOPPED.md ==
+PASS  the runner stops with exit 3 (a systemic stop, not a silent exit)
+PASS  WARN line: the failed state call is retried once, with state.py's message in short form
+PASS  ERROR line after the retry
+PASS  STOP line
+PASS  one ERROR line and one STOP line, no more
+PASS  the run neither goes on nor ends as blocked, dropped or exported
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder and the error in its diagnosis
+PASS  STOPPED.md fix 1: unlock the file and restart
+PASS  STOPPED.md fix 2: move the run folder out of runs/
+PASS  status.txt holds the STOP line
+PASS  the idea stays in ideas.txt
+PASS  no history line
+PASS  the runner lock is released
+PASS  runner-status: says the runner is not running
+PASS  runner-status: shows the STOP status line
+PASS  runner-status: mentions STOPPED.md
+PASS  an orphaned stage process is waited for instead of being started twice
+PASS  the stage is not started while the orphan lives
+PASS  the runner stops with exit 3
+PASS  the orphan's outputs are judged before the stage runs again
+PASS  WARN line: the stage start is retried once
+PASS  ERROR line: the stage start fails
+PASS  STOP line
+PASS  the stage never ran and the run did not end another way
+PASS  no stage.log: the stage was never started
+PASS  STOPPED.md written
+PASS  STOPPED.md names the run folder
+PASS  the idea stays in ideas.txt
+PASS  the runner lock is released
+
+test-m2.sh: 187 passed, 20 failed

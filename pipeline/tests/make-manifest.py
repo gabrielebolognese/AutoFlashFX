@@ -175,8 +175,7 @@ def build(root, inv=None):
         text = ml.read_text(os.path.join(inv.root, hist_after)) or ""
         n_exported = len(re.findall(r"\| exported [0-9]+ *$", text, re.M))
         if n_exported:
-            add("M19", "top", "stays", hist_after, hist_after, "the channel's history stays where M18 put it; its export lines are rewritten below; tracked=0 untracked=0 ignored=1")
-            add("M19", "inner", "rewrite", hist_after, hist_after, "history lines: %d line(s) '| exported N' become '| exported %s-N'" % (n_exported, CH),
+            add("M19", "inner", "rewrite", hist_after, hist_after, "the channel history, where M18 put it: %d line(s) '| exported N' become '| exported %s-N'" % (n_exported, CH),
                 files=1, check="export-names")
     return lines
 

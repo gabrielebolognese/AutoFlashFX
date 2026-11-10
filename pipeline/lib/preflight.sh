@@ -92,7 +92,7 @@ preflight_run() {
         IFS=, read -r -a fi_list <<<"$name"
         for fi_f in "${fi_list[@]}"; do
           full="$(chpath "$fi_f")"
-          if [ -f "$full" ] && grep -q -F '[FILL IN]' "$full" 2>/dev/null; then problem="${problem:+$problem, }$fi_f still says [FILL IN]"; fi
+          if [ -f "$full" ] && grep -q -E '^\[FILL IN\]|"\[FILL IN\]"' "$full" 2>/dev/null; then problem="${problem:+$problem, }$fi_f still says [FILL IN]"; fi
         done
         # a channel that is switched on has been through its owner's hands: the markers that stay in it are a warning; a channel
         # still disabled (new-channel makes it so) is incomplete: a hard failure that lists them

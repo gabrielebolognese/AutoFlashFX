@@ -1,0 +1,41 @@
+
+== part 1. the static check and the path module ==
+PASS  isolation_scan.py: no literal path to channel data outside the paths module (isolation_scan: 0 violation(s), 33 allowlist entries)
+PASS  every allowlist entry has a reason and is used
+PASS  a planted literal path fails the scan
+PASS  the scan names the shell file and the Python file
+PASS  an allowlist entry lets exactly its line through
+PASS  an allowlist entry without a reason is refused
+PASS  paths.sh and paths.py give the same answers with a channel
+PASS  paths.sh and paths.py give the same answers without a channel
+PASS  paths.sh puts the channel's files inside channels/alpha
+PASS  chpath: a path of the channel's own folder resolves
+PASS  bash: a path inside channels/beta is refused for channel alpha (exit 3, an ERROR line)
+PASS  bash: chpath refuses a relative path that leaves the channel folder
+PASS  bash: another channel's export folder is refused
+PASS  bash: the channel's own export folder is allowed
+PASS  python: paths.ch resolves inside the channel
+PASS  python: a path inside channels/beta is refused for alpha (exit 3, an ERROR line)
+PASS  python: a relative path that leaves the channel folder is refused
+PASS  python: another channel's export folder is refused
+PASS  python: with two channels and none chosen the module exits 2 and lists them
+PASS  python: the list names the second channel too
+PASS  REELS_PATH_TRACE logs every path the module resolves (bash and Python)
+
+== part 2. the canary test: two channels, every prompt recorded ==
+PASS  the recorder caught the prompts of channel alpha (14) and beta (14): at least 5 each
+PASS  both channels' stages reached the same number of model calls
+   stages that reached their model call: 01-research 02-expansion 03-gate 05-hooks 06-judge 07-script 14-export 
+PASS  S1, S2, S3, S5 and S7 are among the stages that reached their model call
+PASS  no canary, folder or export name of channel beta in anything recorded for alpha
+PASS  no canary, folder or export name of channel alpha in anything recorded for beta
+PASS  the canary of alpha does reach alpha's prompts (5 of 14)
+PASS  the canary of beta does reach beta's prompts (5 of 14)
+PASS  alpha's canary is not in any file recorded for beta (stage output included)
+PASS  the dummy run of alpha exits 0 with REELS_PATH_TRACE=1
+PASS  the trace logged paths (16)
+PASS  every logged path is inside the engine, channels/alpha/ or exports/alpha-*/
+PASS  channel beta has no run: alpha's run did not touch its folder
+PASS  alpha's export is exports/alpha-1/
+
+test-isolation.sh: 34 passed, 0 failed

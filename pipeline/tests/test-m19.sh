@@ -370,16 +370,17 @@ for t, kind, ch, label in ev:
 print("overlaps %d" % bad)
 PYEOF
 assert_grep '^overlaps 0$' "$T/overlap.txt" "no two heavy steps overlap (timestamps in the trace)"
-waits_a="$(grep -c "${ts_regex}WAIT   heavy: " "$T/hv-a.out")"; waits_b="$(grep -c "${ts_regex}WAIT   heavy: " "$T/hv-b.out")"
+waits_a="$(grep -c -E "${ts_regex}WAIT   heavy: " "$T/hv-a.out")"; waits_b="$(grep -c -E "${ts_regex}WAIT   heavy: " "$T/hv-b.out")"
 assert_true "a runner that had to wait printed WAIT lines ($waits_a and $waits_b): at least one wait happened" test $((waits_a + waits_b)) -ge 1
 assert_eq "$(grep -c "WAIT   heavy: " "$SANDBOX/channels/flashfx/logs/runner.log" | tr -d ' ')" "$waits_a" "the WAIT lines are in the channel's runner.log too"
-assert_grep "${ts_regex}WAIT   heavy: (flashfx|second) S?[A-Za-z0-9 ]*dummy [0-9a-z-]+ holds it since [0-9]{2}:[0-9]{2}$" "$T/hv-a.out $T/hv-b.out" "a WAIT line names the holder, its step and the time" || true
+cat "$T/hv-a.out" "$T/hv-b.out" > "$T/hv-ab.out"
+assert_grep "${ts_regex}WAIT   heavy: (flashfx|second) dummy [0-9a-z-]+ holds it since [0-9]{2}:[0-9]{2}$" "$T/hv-ab.out" "a WAIT line names the holder, its step and the time"
 assert_eq "$(ls "$SANDBOX/.locks" 2>/dev/null | wc -l | tr -d ' ')" "0" "no lock is left behind at the root"
 # a stale lock (its holder is gone) is broken at once
 mkdir -p "$SANDBOX/.locks/heavy.lock"; printf '999999 %s ghost render S13\n' "$(date +%s)" > "$SANDBOX/.locks/heavy.lock/holder"
 out="$(REELS_ROOT="$SANDBOX_M" REELS_CHANNEL=flashfx REELS_HEAVY_POLL=0.2 bash -c 'source "'"$REPO_DIR"'/pipeline/lib/common.sh"; source "$REELS_PIPELINE/lib/log.sh"; source "$REELS_PIPELINE/lib/config.sh"; source "$REELS_PIPELINE/lib/state.sh"; source "$REELS_PIPELINE/lib/heavy.sh"; heavy_run render "S13 render" -- echo ran' 2>&1)"
 assert_eq "$(printf '%s' "$out" | tail -n 1)" "ran" "a lock whose holder is gone does not block"
-assert_not_grep 'WAIT' "$SANDBOX/channels/flashfx/logs/runner.log" "and printed no WAIT line" || true
+assert_not_grep 'WAIT' <(printf '%s' "$out") "and printed no WAIT line"
 # the editor lock is the same mechanism under its own name
 mkdir -p "$SANDBOX/.locks/editor.lock"; printf '999999 %s ghost editor x\n' "$(date +%s)" > "$SANDBOX/.locks/editor.lock/holder"
 out="$(REELS_ROOT="$SANDBOX_M" REELS_CHANNEL=flashfx REELS_HEAVY_POLL=0.2 bash -c 'source "'"$REPO_DIR"'/pipeline/lib/common.sh"; source "$REELS_PIPELINE/lib/log.sh"; source "$REELS_PIPELINE/lib/config.sh"; source "$REELS_PIPELINE/lib/state.sh"; source "$REELS_PIPELINE/lib/heavy.sh"; editor_run "advance the editor copy" -- echo edited' 2>&1)"
@@ -396,7 +397,7 @@ add_channel second
 mkdir -p "$SANDBOX/channels/flashfx/runs/r1/01-research" "$SANDBOX/channels/second/runs/r1/01-research"
 printf 'hello\n' > "$T/p.md"
 drive() {  # drive <channel> <outfile>: one ai() call of that channel through the fake claude
-  ( cd "$SANDBOX" && env REELS_CHANNEL="$1" REELS_ROOT="$SANDBOX_M" REELS_LIMIT_MARGIN=3 bash "$REPO_DIR/pipeline/tests/ai-driver.sh" research "$SANDBOX_M/channels/$1/runs/r1/01-research" "$TM/p.md" --no-protect ) > "$2" 2>&1
+  ( cd "$SANDBOX" && env REELS_CHANNEL="$1" REELS_ROOT="$SANDBOX_M" REELS_LIMIT_MARGIN=12 bash "$REPO_DIR/pipeline/tests/ai-driver.sh" research "$SANDBOX_M/channels/$1/runs/r1/01-research" "$TM/p.md" --no-protect ) > "$2" 2>&1
 }
 # A hits a limit (the fake says it resets right now: epoch+0), waits for reset + 3 s margin and retries
 export FAKE_CLAUDE_MODE="limit:epoch+0"
@@ -415,7 +416,10 @@ wait "$pa"; rca=$?
 t1="$(date +%s)"
 assert_rc 0 "$rcb" "channel B's call goes through after the wait"
 assert_true "B waited for the same reset: it ended no earlier than A's target ($target)" test "$t1" -ge "$target"
-assert_grep 'limit hit by flashfx, waiting for the same reset' "$T/lim-b.out" "B printed a LIMIT line naming A" || true
+assert_grep 'limit hit by flashfx, waiting for the same reset' "$T/lim-b.out" "B printed a LIMIT line naming A"
+assert_true "B's call came at or after A's target" python -c 'import json, sys
+calls = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8") if l.strip()]
+sys.exit(0 if calls[-1]["at"] >= int(sys.argv[2]) - 1 else 1)' "$FAKE_CLAUDE_LOG" "$target"
 assert_grep "\| second \| shared .* limit \| hit by flashfx \|" "$SANDBOX/logs/limits.log" "the shared logs/limits.log has B's wait with its channel id"
 assert_grep "\| flashfx \| .*limit \| reset " "$SANDBOX/logs/limits.log" "and A's own wait with its channel id"
 assert_grep "shared .*limit wait: .* hit by flashfx" "$SANDBOX/logs/engine.log" "logs/engine.log has the shared wait"
@@ -466,8 +470,8 @@ printf '{Waits for tomorrow}\n' > "$SANDBOX/channels/flashfx/ideas.txt"
 run_ch flashfx "$T/q2.out" REELS_DUMMY=all REELS_DUMMY_SECONDS=0.2; rc=$?
 assert_rc 0 "$rc" "--once with the quota reached exits 0"
 assert_grep "${ts_regex}IDLE   quota 1/1 today, next idea after 00:00" "$T/q2.out" "and prints the quota line"
-assert_not_grep 'START' "$T/q2.out" "and starts nothing"
-python "$REPO_DIR/pipeline/lib/logcheck.py" "$SANDBOX/channels/flashfx/logs/runner.log" > "$T/lc.out" 2>&1; rc=$?
+assert_not_grep 'START  idea' "$T/q2.out" "and starts no idea"
+python "$REPO_DIR/pipeline/lib/logcheck.py" story "$SANDBOX/channels/flashfx/logs/runner.log" > "$T/lc.out" 2>&1; rc=$?
 assert_rc 0 "$rc" "logcheck.py understands the quota IDLE line and the summary ($(tail -n 1 "$T/lc.out" | cut -c1-100))"
 fi
 
@@ -480,7 +484,7 @@ fast_mode
 env REELS_ROOT="$SANDBOX_M" bash "$REPO_DIR/pipeline/bin/new-channel" demo --format problem-solution-reel --platform youtube-shorts --name "Demo Channel" > "$T/nc.out" 2>&1; rc=$?
 assert_rc 0 "$rc" "new-channel creates the channel"
 assert_file "$SANDBOX/channels/demo/channel.json" "channels/demo/channel.json"
-assert_eq "$(jget "$SANDBOX/channels/demo/channel.json" enabled)" "False" "the channel starts disabled"
+assert_eq "$(jget "$SANDBOX/channels/demo/channel.json" enabled)" "false" "the channel starts disabled"
 assert_eq "$(jget "$SANDBOX/channels/demo/channel.json" platform)" "youtube-shorts" "its platform is youtube-shorts"
 assert_eq "$(jget "$SANDBOX/channels/demo/channel.json" export.caption_max)" "150" "the platform's defaults are in channel.json export"
 assert_file "$SANDBOX/channels/demo/ideas.txt" "an empty ideas.txt"
@@ -567,7 +571,7 @@ for dp, dn, fn in os.walk(os.path.join(root, "pipeline", "formats")):
 bad = [f for f in files if os.path.isfile(os.path.join(root, f)) and b"\xe2\x80\x94" in open(os.path.join(root, f), "rb").read()]
 print("\n".join(bad))
 PYEOF
-assert_eq "$(cat "$T/emdash.txt" | tr '\n' ' ')" "" "no em dash in the files M19 added"
+assert_eq "$(grep -c . "$T/emdash.txt")" "0" "no em dash in the files M19 added"
 fi
 
 test_summary

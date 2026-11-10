@@ -862,6 +862,7 @@ runner_main() {
       continue
     fi
     if [ -z "$IDLE_SINCE" ]; then
+      [ -n "${QUOTA_TEXT:-}" ] && [ "$ONCE" = 1 ] && say IDLE "$QUOTA_TEXT"   # M19: with --once the quota line is still printed before the summary
       runner_summary_line
       [ "$ONCE" = 1 ] && return 0
       IDLE_SINCE="$EPOCHSECONDS"

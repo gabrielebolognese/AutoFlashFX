@@ -111,7 +111,7 @@ def check_before(root, manifest, inv_rows, live, strict):
 
     # inner lines sit inside a top line
     for r in inner:
-        if not any(inside(r["old"], t["old"]) for t in top):
+        if not any(inside(r["old"], t["old"]) for t in top) and not r["old"].startswith("channels/"):   # M19: after M18 a channel's own files are engine area
             problems.append("line %s (inner): %s is inside no top line" % (r["seq"], r["old"]))
 
     # coverage and totals, against the inventory
