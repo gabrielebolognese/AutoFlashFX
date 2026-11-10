@@ -558,3 +558,15 @@ acceptance test, the commits, and notes for later batches. Reviewers run every t
   Earlier milestones touched: M2 (export.py, history.sh, runner.sh DONE line, status.sh), M3 (limits.sh, ai.sh, limits.log at the root), M8 to M13 stage scripts (heavy_run
   around their heavy commands), M13 (logcheck.py: WAIT tag, quota IDLE, new DONE form; doctor), M17 (make-manifest.py: the history after M18), M18 (preflight, test files),
   tests m2 m3 m4 m10 m11 m12 m13 m16 m18 (export names, root limits.log). DECISIONS.md 355 to 364.
+
+## M20 Formats and the timeline
+- Status: built (2026-11-10). Report for you: build/M20/report.md.
+- Test command: `bash pipeline/tests/test-m20.sh` (sections 1 to 8, about 25 minutes; `M20_SECTIONS="1 2"` for some; `M20_RECORD=1` rewrites build/M20/fingerprint/),
+  `bash pipeline/tests/test-isolation.sh` (part 1 now includes the names check; `ISOLATION_PARTS="1 2"` for both), `python pipeline/lib/formats.py validate`,
+  `python pipeline/lib/timeline check --run-dir <run>`, `bash pipeline/tests/run-fake.sh --out build/M20/baseline --compare build/M19/baseline` (the baseline rule, about 7 hours; not run in the batch).
+- Notes: pipeline/formats/problem-solution-reel/format.json (stages incl. the new `timeline` stage between 13-render and 14-export, session group A, reopen routes, `config` block with
+  the keys that left config.json, `required_files`, `timeline.builder`), pipeline/lib/formats.py, pipeline/schemas/format.schema.json and timeline.schema.json,
+  pipeline/lib/timeline/ (compose.py, check.py, render_ffmpeg.py), pipeline/stages/timeline/ and timeline-render/, pipeline/tests/formats/footage-dummy/, prompts/12-review-rules.md,
+  isolation_scan.py's names check. Earlier milestones touched: M2 (state.py, runner.sh, stage.sh, history.sh, status.sh, test-m2), M1 (preflight config, common.sh), M4 (the session key of S1, S2, S4, S5),
+  M11 (12-review prompt, run.sh, model.schema.json, pipeline/lib/review/ brand text and stage order), M13 (logcheck.py activities), M18 (config.py, newchannel.py, lib.sh and sandbox-config.py, test-isolation),
+  M19 (new-channel). DECISIONS.md 365 to 370.

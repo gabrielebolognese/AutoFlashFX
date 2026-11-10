@@ -304,7 +304,7 @@ assert_true "the exports lock is left behind" [ -d "$SANDBOX/.locks/exports" ]
 run_once "$SANDBOX/crash1b.out"; rc=$?
 assert_rc 0 $rc "restart after the crash exits 0"
 assert_grep "removed a leftover exports lock" "$SANDBOX/crash1b.out" "the leftover exports lock is cleared at startup"
-assert_grep "resumed at exporting #[0-9]+, 15 stages done" "$SANDBOX/crash1b.out" "the restart resumes at the export"
+assert_grep "resumed at exporting #[0-9]+, 16 stages done" "$SANDBOX/crash1b.out" "the restart resumes at the export"
 assert_grep "${ts_regex}DONE   exported flashfx-1 -> exports/flashfx-1/" "$SANDBOX/crash1b.out" "the export completes as #1"
 assert_eq "$(ls "$SANDBOX/exports" | paste -sd,)" "flashfx-1" "exactly one export after the crash"
 assert_no_file "$RD/export" "the staging folder is gone"

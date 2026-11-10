@@ -33,6 +33,9 @@ export NO_COLOR=1
 export PYTHONUTF8=1
 ts_regex='^\[[0-9]{2}:[0-9]{2}\] '
 export REELS_SFX_DIR="$(mixed "$REPO_DIR/channels/flashfx/styles/sfx")" REELS_SFX_NO_BUILD=1
+# no section may reach the real model: a stage that fails goes to the error reviewer and its fixer (BUILD_SPEC.md 4.2), which here are the fake claude
+fake_claude_on
+export FAKE_CLAUDE_REVIEW=no
 
 jf() { python -c 'import json, sys; d = json.loads(sys.argv[1]); v = d.get(sys.argv[2], ""); print(json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict, bool)) else v)' "$1" "$2"; }
 jget() { python -c 'import json, sys
@@ -422,7 +425,6 @@ assert_rc 0 "$rc" "isolation_scan.py: no literal path and no channel, brand or s
 ISOLATION_PARTS=1 bash "$PT/test-isolation.sh" > "$T/iso1.out" 2>&1; rc=$?
 assert_rc 0 "$rc" "test-isolation.sh part 1 passes ($(tail -n 1 "$T/iso1.out"))"
 assert_eq "$(grep -c "FlashFX\|flashfx\|paper-cards" pipeline/stages/12-review/prompt.md pipeline/stages/12-review/model.schema.json pipeline/stages/12-review/run.sh | grep -v ':0' | wc -l | tr -d ' ')" "0" "12-review's prompt, schema and script name no FlashFX"
-assert_grep "FlashFX" pipeline/formats/problem-solution-reel/prompts/12-review-rules.md "the branding rules of the review live in the format's prompt overrides ({{BRAND}} is replaced at render time)" || true
 assert_grep "^\{\{BRAND\}\}|\{\{BRAND\}\}" pipeline/formats/problem-solution-reel/prompts/12-review-rules.md "the format's review rules use {{BRAND}} (the channel's display name), not a name of their own"
 assert_eq "$(python pipeline/lib/formats.py prompt 12-review rules | sed 's#.*/pipeline/#pipeline/#')" "pipeline/formats/problem-solution-reel/prompts/12-review-rules.md" "format.json names the review's rules file as a prompt override of 12-review"
 sandbox_init
@@ -460,7 +462,9 @@ assert_eq "$(grep '/timeline' "$T/fp-run.txt" | sed -E 's#^<ts>_[a-z0-9-]*/##' |
 if cmp -s "$T/fp-exports.txt" "$REPO_DIR/build/M19/fingerprint/fingerprint-exports.txt"; then pass "the exports tree equals build/M19/fingerprint/"
 else fail "the exports tree differs from build/M19/fingerprint/: $(diff "$T/fp-exports.txt" "$REPO_DIR/build/M19/fingerprint/fingerprint-exports.txt" | head -n 6 | tr '\n' ' ')"; fi
 assert_true "the dummy timeline.json validates against the timeline schema" python "$TL" validate "$(ls -d "$SANDBOX"/channels/flashfx/runs/*/ | head -n 1)timeline/timeline.json"
-assert_true "the whole terminal story is a valid story (the new activities are in the activity table)" bash -c "python '$REPO_DIR/pipeline/lib/logcheck.py' story '$SANDBOX/channels/flashfx/logs/runner.log' --no-gate-line --heartbeat 1 >/dev/null 2>&1 || python '$REPO_DIR/pipeline/lib/logcheck.py' story '$SANDBOX/channels/flashfx/logs/runner.log' --no-gate-line --heartbeat 1 2>&1 | head -n 5 | tee '$T/story.txt' | grep -q . && ! grep -q 'timeline' '$T/story.txt'"
+python "$REPO_DIR/pipeline/lib/logcheck.py" story "$SANDBOX/channels/flashfx/logs/runner.log" --no-gate-line --heartbeat 1 > "$T/story.txt" 2>&1; rc=$?
+assert_rc 0 "$rc" "the whole terminal story is a valid story: the new activities are in the activity table ($(head -c 200 "$T/story.txt" | tr '
+' ' '))"
 sandbox_cleanup
 fi
 
