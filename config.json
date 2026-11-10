@@ -97,128 +97,6 @@
     "lead_s": 0.05,
     "tail_s": 0.2
   },
-  "research": {
-    "tools": "WebSearch WebFetch Read Bash",
-    "allowed": [
-      "WebSearch",
-      "WebFetch",
-      "Read",
-      "Bash(gh repo view *)",
-      "Bash(gh release list *)",
-      "Bash(gh release view *)",
-      "Bash(gh api repos/*)",
-      "Bash(bash pipeline/bin/screenshot *)"
-    ],
-    "denied": [
-      "Bash(gh auth *)",
-      "Bash(gh gist *)",
-      "Bash(gh repo clone *)",
-      "Bash(gh release download *)",
-      "Bash(gh * create *)",
-      "Bash(gh * delete *)",
-      "Bash(gh * edit *)",
-      "Bash(gh * comment *)",
-      "Bash(gh * merge *)",
-      "Bash(gh * close *)",
-      "Bash(gh * reopen *)",
-      "Bash(gh * review *)",
-      "Bash(gh * fork *)",
-      "Bash(gh * sync *)",
-      "Bash(gh * transfer *)",
-      "Bash(gh * lock *)",
-      "Bash(gh * upload *)",
-      "Bash(gh * run *)",
-      "Bash(gh * rerun *)",
-      "Bash(gh * cancel *)",
-      "Bash(gh * set *)",
-      "Bash(gh * add *)",
-      "Bash(gh * archive *)",
-      "Bash(gh * rename *)",
-      "Bash(gh api* -X*)",
-      "Bash(gh api* --method*)",
-      "Bash(gh api* -f*)",
-      "Bash(gh api* -F*)",
-      "Bash(gh api* --field*)",
-      "Bash(gh api* --raw-field*)",
-      "Bash(gh api* --input*)"
-    ],
-    "max_assets": 6,
-    "screenshot_width": 1080,
-    "screenshot_height": 1920,
-    "expansion_chars": [
-      500,
-      1500
-    ],
-    "expansion_tries": 3
-  },
-  "hooks": {
-    "shortlist": 24,
-    "per_family": 2,
-    "fit_weight_other": 0.35,
-    "min_hooks": 12,
-    "max_hooks": 20,
-    "min_families": 3,
-    "min_for_judge": 4,
-    "spoken_max_words": 8,
-    "spoken_max_seconds": 3,
-    "on_screen_max_words": 6,
-    "tries": 3,
-    "brief_tokens": [
-      2000,
-      3000
-    ],
-    "brief_tries": 3
-  },
-  "judge": {
-    "min_hookscore": 50,
-    "min_survivors": 4,
-    "top_n": 4
-  },
-  "script": {
-    "tones": [
-      "warning",
-      "insider",
-      "contrarian",
-      "calm expert",
-      "confession"
-    ],
-    "overshoot_pct": 25,
-    "cut_pct": 20,
-    "cut_range_pct": [
-      10,
-      30
-    ],
-    "cut_tries": 2,
-    "detect_min_overall": 70,
-    "detect_min_check": 55,
-    "hook_max_s": 3,
-    "beat_max_s": 4,
-    "stake_max_s": 5,
-    "abstract_run": 3,
-    "length_tolerance_pct": 15,
-    "card_max_words": 6,
-    "min_body_beats": 2
-  },
-  "visual": {
-    "min_distinct_components": 5,
-    "max_same_in_a_row": 2,
-    "title_max_words": 6,
-    "body_max_words": 14,
-    "breath_set_piece_lead_ms": 60,
-    "snap_tolerance_ms": 34,
-    "zone_tolerance_px": 24,
-    "max_cut_share": 0.34,
-    "director_tools": "Read Glob",
-    "build_fix_rounds": 2,
-    "three_d_heavy_objects": 2,
-    "hook2_max_s": 3.5,
-    "hook2_hold_ms": 800,
-    "draft_quality": "draft",
-    "draft_crf": 20,
-    "energy_rules": "error",
-    "hero_motion_share": 0.7,
-    "layers_share": 0.6
-  },
   "caps": {
     "angle_rounds": 2,
     "script_rounds": 3,
@@ -291,29 +169,7 @@
       "channels/*/library",
       "channels/*/styles",
       "exports"
-    ],
-    "settle_ms": 600,
-    "emphasis_settle_ms": 150,
-    "zone_tolerance_px": 4,
-    "caption_band_above_px": 180,
-    "caption_band_below_px": 80,
-    "min_font_px": 24,
-    "caption_min_size_share": 0.9,
-    "contrast_min": 4.5,
-    "contrast_display_min": 2.7,
-    "emphasis_tolerance_ms": 80,
-    "avatar_min_px": 112,
-    "cadence_tolerance_pct": 20,
-    "palette_delta_e": 5,
-    "palette_min_share_pct": 90,
-    "aac_peak_tolerance_db": 0.5,
-    "wer_max_pct": 5,
-    "qa_tools": "Read Glob",
-    "energy_check": true,
-    "energy_scene_share": 0.8,
-    "liveness": true,
-    "min_edge_elements": 4,
-    "early_stop": true
+    ]
   },
   "runner": {
     "poll_seconds": 120,
@@ -389,65 +245,9 @@
         "fix": "bash pipeline/bin/setup-python (installs playwright and its Chromium; without it the research stage takes no screenshots)"
       },
       {
-        "check": "voice",
-        "fix": "write channels/{channel}/library/voice/engine.txt as in BUILD_SPEC.md 2.5 (engine = kokoro, python = <a Python 3.11 venv that imports kokoro>, voice = af_bella, lang = a, speed = 1.0, silence_threshold_db = -40, min_pause_s = 0.3, keep_pause_s = 0.1, breath_after_hook_s = 1.0); its interpreter must import kokoro (bash pipeline/bin/setup-venv --kokoro installs one at config paths.kokoro_python) and one interpreter must import faster_whisper (config tts.whisper_python, or bash pipeline/bin/setup-venv for .venv-tts)"
-      },
-      {
-        "check": "file",
-        "path": "styles/sfx/sfx-map.json",
-        "in_channel": true,
-        "level": "warn",
-        "fix": "bash pipeline/bin/build-sfx-map (measures channels/{channel}/styles/sfx/ and writes the sound effects map; without it the sound stage renders the voice alone and flags the reel NEEDS REVIEW)"
-      },
-      {
-        "check": "file",
-        "path": "styles/paper-cards/style.md",
-        "in_channel": true,
-        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/style.md"
-      },
-      {
-        "check": "file",
-        "path": "styles/paper-cards/tweaks.md",
-        "in_channel": true,
-        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/tweaks.md"
-      },
-      {
-        "check": "file",
-        "path": "styles/paper-cards/vocabulary.md",
-        "in_channel": true,
-        "fix": "restore it: git checkout -- channels/{channel}/styles/paper-cards/vocabulary.md"
-      },
-      {
-        "check": "file",
-        "path": "styles/paper-cards/tokens.json",
-        "in_channel": true,
-        "fix": "bash pipeline/bin/build-tokens (derives tokens.json from style.md plus tweaks.md; the visual stages read it)"
-      },
-      {
-        "check": "file",
-        "path": "motion-lib/catalog.json",
-        "in_channel": true,
-        "fix": "restore the motion library: git checkout -- channels/{channel}/motion-lib, then python pipeline/lib/motion catalog --write"
-      },
-      {
         "check": "file",
         "path": "node_modules/hyperframes/package.json",
         "fix": "bash pipeline/bin/setup-node (installs the pinned hyperframes, gsap and three packages and the render browser)"
-      },
-      {
-        "check": "brand",
-        "fix": "restore the brand kit: git checkout -- channels/{channel}/library/brand (brand.json and every logo file it lists; BUILD_SPEC.md 2.7)"
-      },
-      {
-        "check": "file",
-        "path": "library/hooks.txt",
-        "in_channel": true,
-        "fix": "restore it: git checkout -- channels/{channel}/library/hooks.txt (one hook per line, __ marks the blank)"
-      },
-      {
-        "check": "fill_in",
-        "name": "library/hooks.txt,library/profile/account.md,library/profile/voice.md,library/profile/deliverables.txt,library/brand/brand.json,styles/paper-cards/style.md,styles/paper-cards/tweaks.md,styles/paper-cards/vocabulary.md",
-        "fix": "write the lines that still say [FILL IN] in channels/{channel}/ (a new channel from pipeline/bin/new-channel starts with them)"
       },
       {
         "check": "disk",
@@ -473,18 +273,6 @@
     "loudness_tolerance_lu": 1.0,
     "true_peak_tolerance_db": 0.5,
     "hook2_max_s": 3.5
-  },
-  "caption": {
-    "first_line_max_chars": 125,
-    "hashtags": [
-      3,
-      5
-    ],
-    "body_chars": [
-      150,
-      900
-    ],
-    "tries": 2
   },
   "logs": {
     "rotate_mb": 50,

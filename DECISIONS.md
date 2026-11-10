@@ -2837,3 +2837,46 @@ append; they do not rewrite earlier entries (add a dated correction instead).
 364. **What M19 changed in the tests.** test-m2, m3, m4, m10, m11, m12, m13, m16, m18: the export names (`exports/flashfx-N/flashfx-N.mp4`, `exported flashfx-N`, the DONE
     line, the RUN path `channels/flashfx/runs/...`), the numbering unit tests of test-m2 (a channel and a history), test-m3 and test-m13 read logs/limits.log at the root,
     test-m18's fingerprint and two-channel checks. fakes/claude.py gained FAKE_CLAUDE_RECORD_DIR; lib/dummy.sh gained REELS_DUMMY_HEAVY and REELS_HEAVY_TRACE.
+365. **format.json and the stage table (M20, 14.7).** pipeline/formats/<format>/format.json (schema pipeline/schemas/format.schema.json, loaded by pipeline/lib/formats.py) is the
+    single source of the stage order, labels, activities, primary outputs, session groups, caps (the names of the config caps a stage reads), reopen routes and prompt
+    overrides. state.py builds its stage table from the channel's format (REELS_FORMAT, else problem-solution-reel, when no channel is set), `state.py stages` prints a sixth
+    column (the stage folder), the runner takes each stage's folder from it (STAGE_DIR), stage_begin sets SESSION_KEY from the stage's session group (S1, S2, S4 and S5 call
+    session_call "$SESSION_KEY"), and a new run stores `format` and `stage_order` in state.json: a run made before the format changed finishes with the stages it started with.
+    A stage's folder is the format's own stages/<folder> first, then the library pipeline/stages/<folder>. state.py enforces the routes: a reopen.txt may name only stages in the
+    writing stage's `reopen` list (03-gate: 04-angle; 04-angle: 03-gate; 12-review: 08-voiceover to 12-review); anything else is ignored with a line on stderr. The review's
+    STAGE_ORDER (review/common.py) is the format's 12-review routes. Formats are looked for in pipeline/formats/ and pipeline/tests/formats/ (REELS_FORMATS_DIR, one more folder
+    searched first, lets a test plant one).
+366. **The format keys moved out of config.json (M20, 14.4).** research, hooks, judge, script, visual, caption and review (without reviewer_tools, fixer_tools, fixer_paths and
+    protected_paths, which stay engine keys) are the `config` block of problem-solution-reel's format.json, values unchanged; config.json keeps no key of them and no channel
+    file check. The resolved config of flashfx equals the old one (build/M20/format-keys-before.json holds the old values; test-m20 compares), plus review.branding. The
+    channel-file checks of preflight (the voice engine, the sound map, the style files, tokens.json, the catalog, the brand kit, hooks.txt, fill_in) are the format's
+    `required_files`, in the shape of preflight.require entries: config.py puts them into the resolved config's preflight.require just before the disk and shell entries, so
+    preflight.sh is unchanged and a missing file stops that channel only (STOPPED.md in the channel's logs). The test sandboxes set the energy keys in the sandbox channel.json
+    (tests/sandbox-config.py), which is merged last.
+367. **The timeline (M20, 14.8).** pipeline/schemas/timeline.schema.json (version 1) and pipeline/lib/timeline/ (common.py, compose.py, check.py, render_ffmpeg.py, run as
+    `python pipeline/lib/timeline build|check|render|validate`). Units: frames for layers, markers and the timeline's length, milliseconds for words, caption chunks and sounds
+    (the units of words.json and cues.json). The stage `timeline` (pipeline/stages/timeline/, label TL, activity "building timeline") sits between 13-render and 14-export in
+    problem-solution-reel: compose.py writes one layer per host of 10-build/project/index.html (the paper canvas, every component instance with its selector `#<instance>` and
+    its component id, the caption host as caption-burn), the caption chunks of the plan, the voice with every word of words.json, every sound of cues.json (start at
+    reel_start_ms), the scene, beat, hook-end, end-card and keyword markers and the sources with size and sha256 (sound files of the pack are base channel, or abs when the pack is
+    outside the channel folder, as in the tests); check.py then compares it with the plans, words.json, cues.json, the composition and final.mp4 and any failure is a code error.
+    With REELS_DUMMY listing 13 or 13-render the timeline stage is a dummy too (it only describes the render). Old runs without the stage finish without it.
+368. **The footage family (M20, 14.7, 14.11).** A footage format writes timeline.json in its cut stage (format.json timeline.builder = cut) and renders it with the generic stage
+    timeline-render (pipeline/stages/timeline-render/, label TR, activity "rendering timeline": check.py first, then render_ffmpeg.py inside heavy_run encode): footage and still
+    layers cut to their source in and out and joined, a gap filled with the background, one drawtext per caption chunk (text in files, and the filter graph read with
+    -/filter_complex, which ffmpeg 9 wants instead of -filter_complex_script, so no quoting or Windows path reaches the command line), footage audio, voice and sounds placed with
+    adelay, mixed with amix and loudnorm to audio.loudness.target_lufs, AAC at the timeline's rate, H.264 High yuv420p, exactly settings.duration_frames. The test-only format
+    footage-dummy (pipeline/tests/formats/footage-dummy/: ingest, cut, timeline-render, 14-export; the clips are made by the test with ffmpeg because *.mp4 is not in git) proves it
+    through the same runner and the instagram-reels exporter. S15 joins as its last stage in M21.
+369. **FlashFX names left the shared stages (M20, 14.5, 14.12).** The branding rules of 12-review's prompt are the format's prompt override (format.json stages[].prompts.rules ->
+    pipeline/formats/problem-solution-reel/prompts/12-review-rules.md, with {{BRAND}} filled from channel.json brand.display_name by config.py brand; the stage fills
+    {{FORMAT_RULES}} and {{STYLE}}). pipeline/lib/review/ reads the brand name (Ctx.brand_name) and the own-solution type (config review.branding.own_solution_type: flashfx in the format)
+    instead of a literal; the rendered prompt and the issue texts are the same as before for flashfx. Other shared files lost their examples and defaults (history.sh accepts any one
+    lowercase word as the solution, status.sh has no default style). isolation_scan.py gained the names check (SHARED_DIRS and SHARED_FILES: no flashfx, paper-cards, gabryverse or
+    inkhead, any case, in the generic stages, the review, sound, voice and timeline packages, the runner, state, config and path modules, the platforms, the schemas, config.json and
+    run.sh); test-isolation part 1 runs it and plants a name to see it fail. The format's own stages (S1 to S7, S9, S10, S14, tokens, motion) may name them.
+370. **What M20 changed in the tests.** lib.sh and sandbox-config.py (the energy keys go into the sandbox channel.json), test-m2 (17 stages, 16 STEP lines per idea),
+    logcheck.py (the activities building timeline, rendering timeline, ingesting clips, cutting clips), test-isolation part 1 (the names check). test-m20 turns the fake claude
+    on in every section that runs the runner: a failed stage there goes to the error reviewer and its fixer, which must never reach the real model (a first run of section 3
+    without it did, and the fixer's commit swept the work in progress into the repository as `autofix(timeline-render)`; its two real findings, the timeline's sources never loaded
+    into the render and ffmpeg 9's -/filter_complex, are kept and are in known-issues.md).

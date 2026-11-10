@@ -5,6 +5,17 @@ script, voiceover, visuals written as code (HyperFrames motion graphics, never A
 render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choices are in DECISIONS.md.
 
 ## Build status
+- M20 Formats and the timeline: done (2026-11-10): `pipeline/formats/<format>/format.json` (schema pipeline/schemas/format.schema.json, loader pipeline/lib/formats.py) holds a format's
+  stages in order (folder, label, activity, output, session group, caps, reopen routes, prompt overrides), its `config` block, the required channel files (preflight rows) and the
+  template folder; state.py, the runner, the review's stage order, the session keys and new-channel read it, nothing keeps a stage list of its own. problem-solution-reel is today's S1 to S13, then the new
+  stage `timeline` (label TL), then S14; the keys research, hooks, judge, script, visual, caption and review (minus its four safety keys) moved from config.json into its format.json
+  `config` (values unchanged, build/M20/format-keys-before.json), and the channel file checks of preflight into its `required_files`. Every run ends its production with
+  runs/<id>/timeline/timeline.json (pipeline/schemas/timeline.schema.json, version 1; `python pipeline/lib/timeline build|check|render|validate`: compose.py describes the HyperFrames
+  composition, check.py compares it with the plans, words.json, cues.json, the composition and final.mp4, render_ffmpeg.py renders a footage format's timeline). The test-only format
+  footage-dummy (pipeline/tests/formats/footage-dummy/: ingest, cut, timeline-render, 14-export, with 3 clips the test makes) runs through the same runner. The FlashFX text of the shared
+  stages (12-review's prompt, pipeline/lib/review/) moved into problem-solution-reel's prompt overrides and config (`{{BRAND}}`, review.branding.own_solution_type), and
+  isolation_scan.py (test-isolation part 1) now fails on a channel, brand or style name in a shared stage. `bash pipeline/tests/test-m20.sh`, build/M20/fingerprint/. DECISIONS.md 365 to 370.
+  Next: M21 (the editable project, S15), then M22 to M27.
 - M19 Exports and channels side by side: done (2026-11-09): every export is `exports/<id>-N/` with `<id>-N.mp4`, `<id>-Ncaptions.txt` and (instagram-reels only)
   `<id>-Nhook2.mp4`, N counted per channel from exports/ and the channel's history.txt (`exported <id>-N`); the DONE line is `exported <id>-N -> exports/<id>-N/ (...)`.
   New: pipeline/platforms/<platform>/ (platform.json, schema pipeline/schemas/platform.schema.json; instagram-reels with render.py, youtube-shorts with exporter.py,
@@ -16,7 +27,7 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   the channel starts disabled; preflight's `fill_in` check lists files that still say [FILL IN]), runner-status and doctor for every channel (quota, heavy lock, limit
   file, platforms), test-isolation.sh part 2 (the canary test, recorder FAKE_CLAUDE_RECORD_DIR), `bash pipeline/tests/test-m19.sh`, build/M19/fingerprint/.
   The real folder had no export yet, so the real export migration is empty (build/M19/real-migration.txt); the rehearsal covers the renames. DECISIONS.md 355 to 364.
-  Next: M20 formats and the timeline (format.json, the timeline stage), then M21 to M27.
+  (Next after M19 was M20, above.)
 - M18 Channels: done (2026-11-09): FlashFX's data moved into channels/flashfx/ (verified, undo script kept in build/M18/), every path to
   channel data goes through pipeline/lib/paths.sh and paths.py, `bash run.sh --channel <id>` (see "The channels" below). Next (after M19): M20 to M27, the rest of the channels plan: the channels plan (BUILD_SPEC.md section 14, explained in
   CHANNELS.md; the editable project is M21; M22 learning from feedback for every channel, 14.14; M23 to M27 the second channel
@@ -229,8 +240,8 @@ render, export. The full spec is BUILD_SPEC.md; the build plan is PLAN.md; choic
   `pin: cue type: path`, kept on every rebuild).
 - `motion-lib/` (in the channel): approved HyperFrames components, candidates/, gallery/, assets/pc-motion.js (the motion grammar
   every component uses: M14). `golden/`: example reels for the visual director (energy.json: the golden's energy).
-- `pipeline/`: lib/ (bash and Python libraries, paths.sh and paths.py first), schemas/ (channel.schema.json), stages/ (one folder per stage: CONTRACT.md,
-  schema.json, dummy.sh, and from its milestone on run.sh and prompt.md), bin/ (scripts), vendor/ (MIT scripts from
+- `pipeline/`: lib/ (bash and Python libraries, paths.sh and paths.py first), schemas/ (channel.schema.json), stages/ (the stage library: one folder per stage: CONTRACT.md,
+  schema.json, dummy.sh, and from its milestone on run.sh and prompt.md), formats/ (one folder per format: format.json, prompts/, template/; M20), bin/ (scripts), vendor/ (MIT scripts from
   instagram-agent-skill), knowledge/known-issues.md, tests/.
 - `runs/` (in the channel): one working folder per idea (state.json, its lock file state.lock, idea.txt, one subfolder per stage with
   its outputs, stage.log, .done and calls/ with every model call's raw output; errors/E<n>.md and fixes/F<n>.md
