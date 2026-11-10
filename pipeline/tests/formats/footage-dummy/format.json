@@ -31,6 +31,13 @@
       "label": "S14",
       "activity": "writing caption",
       "output": "export.json"
+    },
+    {
+      "id": "s15-project",
+      "label": "S15",
+      "activity": "building editable project",
+      "output": "editor.json",
+      "initial": "pending"
     }
   ],
   "required_files": [

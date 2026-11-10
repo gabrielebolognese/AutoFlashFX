@@ -1,0 +1,2799 @@
+{
+ "audio": [
+  {
+   "duration": 1244,
+   "fadeOut": 0,
+   "gainDb": 0.0,
+   "name": "Voice",
+   "start": 0
+  },
+  {
+   "duration": 74,
+   "fadeOut": 1,
+   "gainDb": -5.98,
+   "name": "SFX hook_hit",
+   "start": 19
+  },
+  {
+   "duration": 75,
+   "fadeOut": 1,
+   "gainDb": -6.04,
+   "name": "SFX transition_slow",
+   "start": 91
+  },
+  {
+   "duration": 15,
+   "fadeOut": 1,
+   "gainDb": -8.0,
+   "name": "SFX transition_fast",
+   "start": 197
+  },
+  {
+   "duration": 14,
+   "fadeOut": 1,
+   "gainDb": -5.13,
+   "name": "SFX transition_fast",
+   "start": 337
+  },
+  {
+   "duration": 8,
+   "fadeOut": 1,
+   "gainDb": -8.0,
+   "name": "SFX transition_fast",
+   "start": 449
+  },
+  {
+   "duration": 28,
+   "fadeOut": 1,
+   "gainDb": -10.0,
+   "name": "SFX negative",
+   "start": 514
+  },
+  {
+   "duration": 13,
+   "fadeOut": 1,
+   "gainDb": -8.0,
+   "name": "SFX transition_fast",
+   "start": 563
+  },
+  {
+   "duration": 41,
+   "fadeOut": 1,
+   "gainDb": -10.0,
+   "name": "SFX success",
+   "start": 721
+  },
+  {
+   "duration": 41,
+   "fadeOut": 1,
+   "gainDb": -10.0,
+   "name": "SFX success",
+   "start": 741
+  },
+  {
+   "duration": 61,
+   "fadeOut": 1,
+   "gainDb": -8.0,
+   "name": "SFX transition_fast",
+   "start": 752
+  },
+  {
+   "duration": 42,
+   "fadeOut": 1,
+   "gainDb": -10.0,
+   "name": "SFX success",
+   "start": 761
+  },
+  {
+   "duration": 54,
+   "fadeOut": 1,
+   "gainDb": -9.9,
+   "name": "SFX success",
+   "start": 801
+  },
+  {
+   "duration": 125,
+   "fadeOut": 1,
+   "gainDb": -11.44,
+   "name": "SFX typing",
+   "start": 849
+  },
+  {
+   "duration": 37,
+   "fadeOut": 1,
+   "gainDb": -8.0,
+   "name": "SFX transition_fast",
+   "start": 870
+  },
+  {
+   "duration": 64,
+   "fadeOut": 1,
+   "gainDb": -10.0,
+   "name": "SFX success",
+   "start": 1044
+  },
+  {
+   "duration": 15,
+   "fadeOut": 1,
+   "gainDb": -7.5,
+   "name": "SFX transition_fast",
+   "start": 1126
+  },
+  {
+   "duration": 12,
+   "fadeOut": 1,
+   "gainDb": -9.99,
+   "name": "SFX notification",
+   "start": 1143
+  }
+ ],
+ "captionTracks": {
+  "cc1": {
+   "style": {
+    "anim": {
+     "in": {
+      "frames": 4,
+      "kind": "fade"
+     },
+     "out": {
+      "frames": 2,
+      "kind": "fade"
+     }
+    },
+    "highlight": {
+     "color": {
+      "a": 1,
+      "b": 0.1961,
+      "g": 0.3961,
+      "r": 0.8627
+     },
+     "inactiveColor": {
+      "a": 1,
+      "b": 0.0157,
+      "g": 0.0353,
+      "r": 0.0627
+     },
+     "mode": "none"
+    },
+    "maxLines": 1,
+    "maxWidth": 620.0,
+    "position": "custom",
+    "text": {
+     "align": "center",
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": false,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fill": {
+      "a": 1,
+      "b": 0.0157,
+      "g": 0.0353,
+      "r": 0.0627
+     },
+     "fontFamily": "Inter Tight",
+     "fontSize": 67.0,
+     "fontWeight": 800,
+     "italic": false,
+     "letterSpacing": -1.34,
+     "lineHeight": 1.0,
+     "shadow": {
+      "blur": 16,
+      "color": {
+       "a": 0.6,
+       "b": 0,
+       "g": 0,
+       "r": 0
+      },
+      "enabled": false,
+      "x": 0,
+      "y": 6
+     },
+     "stroke": {
+      "color": {
+       "a": 1,
+       "b": 0,
+       "g": 0,
+       "r": 0
+      },
+      "enabled": false,
+      "width": 0
+     },
+     "textCase": "none",
+     "verticalAnchor": "middle"
+    },
+    "x": 0,
+    "y": 372.0
+   }
+  }
+ },
+ "cues": [
+  {
+   "duration": 3,
+   "start": 104,
+   "styleOverride": null,
+   "text": "You"
+  },
+  {
+   "duration": 6,
+   "start": 107,
+   "styleOverride": null,
+   "text": "ship"
+  },
+  {
+   "duration": 11,
+   "start": 113,
+   "styleOverride": null,
+   "text": "Claude"
+  },
+  {
+   "duration": 6,
+   "start": 124,
+   "styleOverride": null,
+   "text": "Code"
+  },
+  {
+   "duration": 10,
+   "start": 130,
+   "styleOverride": null,
+   "text": "client"
+  },
+  {
+   "duration": 9,
+   "start": 140,
+   "styleOverride": null,
+   "text": "sites."
+  },
+  {
+   "duration": 8,
+   "start": 159,
+   "styleOverride": null,
+   "text": "Clients"
+  },
+  {
+   "duration": 9,
+   "start": 167,
+   "styleOverride": null,
+   "text": "spot"
+  },
+  {
+   "duration": 3,
+   "start": 176,
+   "styleOverride": null,
+   "text": "it"
+  },
+  {
+   "duration": 11,
+   "start": 179,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "instantly."
+  },
+  {
+   "duration": 11,
+   "start": 199,
+   "styleOverride": null,
+   "text": "Anthropic's"
+  },
+  {
+   "duration": 10,
+   "start": 210,
+   "styleOverride": null,
+   "text": "skill"
+  },
+  {
+   "duration": 10,
+   "start": 220,
+   "styleOverride": null,
+   "text": "file"
+  },
+  {
+   "duration": 11,
+   "start": 230,
+   "styleOverride": null,
+   "text": "names"
+  },
+  {
+   "duration": 5,
+   "start": 241,
+   "styleOverride": null,
+   "text": "it:"
+  },
+  {
+   "duration": 8,
+   "start": 251,
+   "styleOverride": null,
+   "text": "rounded"
+  },
+  {
+   "duration": 10,
+   "start": 259,
+   "styleOverride": null,
+   "text": "cards,"
+  },
+  {
+   "duration": 6,
+   "start": 282,
+   "styleOverride": null,
+   "text": "one"
+  },
+  {
+   "duration": 14,
+   "start": 288,
+   "styleOverride": null,
+   "text": "radius,"
+  },
+  {
+   "duration": 7,
+   "start": 308,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "same"
+  },
+  {
+   "duration": 8,
+   "start": 315,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "grey"
+  },
+  {
+   "duration": 11,
+   "start": 323,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "shadow."
+  },
+  {
+   "duration": 5,
+   "start": 342,
+   "styleOverride": null,
+   "text": "It's"
+  },
+  {
+   "duration": 4,
+   "start": 347,
+   "styleOverride": null,
+   "text": "not"
+  },
+  {
+   "duration": 3,
+   "start": 351,
+   "styleOverride": null,
+   "text": "your"
+  },
+  {
+   "duration": 9,
+   "start": 354,
+   "styleOverride": null,
+   "text": "fault."
+  },
+  {
+   "duration": 16,
+   "start": 370,
+   "styleOverride": null,
+   "text": "Anthropic"
+  },
+  {
+   "duration": 13,
+   "start": 386,
+   "styleOverride": null,
+   "text": "calls"
+  },
+  {
+   "duration": 6,
+   "start": 399,
+   "styleOverride": null,
+   "text": "it"
+  },
+  {
+   "duration": 24,
+   "start": 405,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "distributional"
+  },
+  {
+   "duration": 15,
+   "start": 429,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "convergence."
+  },
+  {
+   "duration": 5,
+   "start": 454,
+   "styleOverride": null,
+   "text": "Even"
+  },
+  {
+   "duration": 18,
+   "start": 459,
+   "styleOverride": null,
+   "text": "Anthropic's"
+  },
+  {
+   "duration": 16,
+   "start": 477,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "terracotta"
+  },
+  {
+   "duration": 5,
+   "start": 493,
+   "styleOverride": null,
+   "text": "on"
+  },
+  {
+   "duration": 8,
+   "start": 498,
+   "styleOverride": null,
+   "text": "cream"
+  },
+  {
+   "duration": 11,
+   "start": 506,
+   "styleOverride": null,
+   "text": "is"
+  },
+  {
+   "duration": 19,
+   "start": 517,
+   "styleOverride": null,
+   "text": "flagged"
+  },
+  {
+   "duration": 3,
+   "start": 536,
+   "styleOverride": null,
+   "text": "as"
+  },
+  {
+   "duration": 4,
+   "start": 539,
+   "styleOverride": null,
+   "text": "an"
+  },
+  {
+   "duration": 7,
+   "start": 543,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "AI"
+  },
+  {
+   "duration": 10,
+   "start": 550,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "look."
+  },
+  {
+   "duration": 5,
+   "start": 566,
+   "styleOverride": null,
+   "text": "One"
+  },
+  {
+   "duration": 16,
+   "start": 571,
+   "styleOverride": null,
+   "text": "accented"
+  },
+  {
+   "duration": 10,
+   "start": 587,
+   "styleOverride": null,
+   "text": "headline"
+  },
+  {
+   "duration": 12,
+   "start": 597,
+   "styleOverride": null,
+   "text": "word."
+  },
+  {
+   "duration": 3,
+   "start": 616,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "All"
+  },
+  {
+   "duration": 6,
+   "start": 619,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "caps"
+  },
+  {
+   "duration": 12,
+   "start": 625,
+   "styleOverride": null,
+   "text": "labels."
+  },
+  {
+   "duration": 4,
+   "start": 647,
+   "styleOverride": null,
+   "text": "Fake"
+  },
+  {
+   "duration": 8,
+   "start": 651,
+   "styleOverride": null,
+   "text": "one,"
+  },
+  {
+   "duration": 6,
+   "start": 662,
+   "styleOverride": null,
+   "text": "two,"
+  },
+  {
+   "duration": 8,
+   "start": 668,
+   "styleOverride": null,
+   "text": "three."
+  },
+  {
+   "duration": 3,
+   "start": 682,
+   "styleOverride": null,
+   "text": "With"
+  },
+  {
+   "duration": 3,
+   "start": 685,
+   "styleOverride": null,
+   "text": "it"
+  },
+  {
+   "duration": 6,
+   "start": 688,
+   "styleOverride": null,
+   "text": "on,"
+  },
+  {
+   "duration": 7,
+   "start": 705,
+   "styleOverride": null,
+   "text": "Claude"
+  },
+  {
+   "duration": 8,
+   "start": 712,
+   "styleOverride": null,
+   "text": "plans"
+  },
+  {
+   "duration": 8,
+   "start": 720,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "four"
+  },
+  {
+   "duration": 3,
+   "start": 728,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "to"
+  },
+  {
+   "duration": 7,
+   "start": 731,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "six"
+  },
+  {
+   "duration": 5,
+   "start": 738,
+   "styleOverride": null,
+   "text": "hex"
+  },
+  {
+   "duration": 14,
+   "start": 743,
+   "styleOverride": null,
+   "text": "colors,"
+  },
+  {
+   "duration": 8,
+   "start": 764,
+   "styleOverride": null,
+   "text": "reviews,"
+  },
+  {
+   "duration": 15,
+   "start": 772,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "then"
+  },
+  {
+   "duration": 11,
+   "start": 787,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "codes."
+  },
+  {
+   "duration": 11,
+   "start": 807,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "Anthropic"
+  },
+  {
+   "duration": 19,
+   "start": 818,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "verified."
+  },
+  {
+   "duration": 7,
+   "start": 837,
+   "styleOverride": null,
+   "text": "Over"
+  },
+  {
+   "duration": 5,
+   "start": 844,
+   "styleOverride": null,
+   "text": "a"
+  },
+  {
+   "duration": 7,
+   "start": 849,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "million"
+  },
+  {
+   "duration": 26,
+   "start": 856,
+   "styleOverride": null,
+   "text": "installs"
+  },
+  {
+   "duration": 3,
+   "start": 882,
+   "styleOverride": null,
+   "text": "as"
+  },
+  {
+   "duration": 3,
+   "start": 885,
+   "styleOverride": null,
+   "text": "of"
+  },
+  {
+   "duration": 9,
+   "start": 888,
+   "styleOverride": null,
+   "text": "November."
+  },
+  {
+   "duration": 6,
+   "start": 903,
+   "styleOverride": null,
+   "text": "Type"
+  },
+  {
+   "duration": 8,
+   "start": 909,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "slash"
+  },
+  {
+   "duration": 17,
+   "start": 917,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "plugin"
+  },
+  {
+   "duration": 11,
+   "start": 934,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "install"
+  },
+  {
+   "duration": 20,
+   "start": 945,
+   "styleOverride": null,
+   "text": "frontend"
+  },
+  {
+   "duration": 11,
+   "start": 965,
+   "styleOverride": null,
+   "text": "design"
+  },
+  {
+   "duration": 8,
+   "start": 976,
+   "styleOverride": null,
+   "text": "at"
+  },
+  {
+   "duration": 11,
+   "start": 984,
+   "styleOverride": null,
+   "text": "claude"
+  },
+  {
+   "duration": 11,
+   "start": 995,
+   "styleOverride": null,
+   "text": "plugins"
+  },
+  {
+   "duration": 14,
+   "start": 1006,
+   "styleOverride": null,
+   "text": "official."
+  },
+  {
+   "duration": 5,
+   "start": 1023,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "Pick"
+  },
+  {
+   "duration": 3,
+   "start": 1028,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "a"
+  },
+  {
+   "duration": 5,
+   "start": 1031,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "scope."
+  },
+  {
+   "duration": 3,
+   "start": 1042,
+   "styleOverride": null,
+   "text": "Then"
+  },
+  {
+   "duration": 2,
+   "start": 1045,
+   "styleOverride": null,
+   "text": "it"
+  },
+  {
+   "duration": 7,
+   "start": 1047,
+   "styleOverride": null,
+   "text": "turns"
+  },
+  {
+   "duration": 6,
+   "start": 1054,
+   "styleOverride": null,
+   "text": "on"
+  },
+  {
+   "duration": 6,
+   "start": 1060,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "by"
+  },
+  {
+   "duration": 12,
+   "start": 1066,
+   "styleOverride": {
+    "text": {
+     "background": {
+      "color": {
+       "a": 1,
+       "b": 0.1961,
+       "g": 0.3961,
+       "r": 0.8627
+      },
+      "enabled": true,
+      "mode": "block",
+      "paddingX": 22,
+      "paddingY": 8,
+      "radius": 6
+     },
+     "fontFamily": "Instrument Serif",
+     "fontWeight": 400,
+     "italic": true
+    }
+   },
+   "text": "itself"
+  },
+  {
+   "duration": 9,
+   "start": 1078,
+   "styleOverride": null,
+   "text": "when"
+  },
+  {
+   "duration": 3,
+   "start": 1087,
+   "styleOverride": null,
+   "text": "you"
+  },
+  {
+   "duration": 8,
+   "start": 1090,
+   "styleOverride": null,
+   "text": "ask"
+  },
+  {
+   "duration": 5,
+   "start": 1098,
+   "styleOverride": null,
+   "text": "for"
+  },
+  {
+   "duration": 14,
+   "start": 1103,
+   "styleOverride": null,
+   "text": "frontend"
+  },
+  {
+   "duration": 9,
+   "start": 1117,
+   "styleOverride": null,
+   "text": "work."
+  }
+ ],
+ "schemaVersion": 6,
+ "settings": {
+  "background": {
+   "a": 1,
+   "b": 0.8902,
+   "g": 0.9333,
+   "r": 0.9608
+  },
+  "fps": {
+   "den": 1,
+   "num": 30
+  },
+  "height": 960,
+  "sampleRate": 48000,
+  "width": 540
+ },
+ "solids": [
+  {
+   "cornerRadius": 0.0,
+   "duration": 1244,
+   "fill": {
+    "a": 1.0,
+    "b": 0.8902,
+    "g": 0.9333,
+    "r": 0.9608
+   },
+   "name": "S00 Paper",
+   "shape": "rect",
+   "size": {
+    "h": 1920.0,
+    "w": 1080.0
+   },
+   "start": 0
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 95,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S02 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 189.0
+   },
+   "start": 104
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 85,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 1 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 114
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 83,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 2 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 116
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 83,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 3 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 116
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 77,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 4 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 122
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 76,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 5 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 123
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 75,
+   "fill": {
+    "angle": 340.0,
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "radius": 1,
+    "stops": [
+     {
+      "at": 0.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.8863,
+       "g": 0.9216,
+       "r": 0.9647
+      }
+     },
+     {
+      "at": 1.0,
+      "color": {
+       "a": 1.0,
+       "b": 0.7961,
+       "g": 0.851,
+       "r": 0.9216
+      }
+     }
+    ],
+    "type": "linear"
+   },
+   "name": "S02 Thumbnail 6 placeholder",
+   "shape": "rect",
+   "size": {
+    "h": 288.0,
+    "w": 288.0
+   },
+   "start": 124
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 16,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S02 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 391.0
+   },
+   "start": 180
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 130,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S03 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 89.0
+   },
+   "start": 212
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 129,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9373,
+    "g": 0.9569,
+    "r": 0.9765
+   },
+   "name": "S03 Window chrome",
+   "shape": "roundedRect",
+   "size": {
+    "h": 36.0,
+    "w": 900.0
+   },
+   "start": 213
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 30,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S03 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 267.0
+   },
+   "start": 308
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 99,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S04 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 89.0
+   },
+   "start": 355
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 49,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S04 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 442.0
+   },
+   "start": 405
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 107,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S06 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 426.0
+   },
+   "start": 572
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 65,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S06 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 246.0
+   },
+   "start": 617
+  },
+  {
+   "cornerRadius": 27.5,
+   "duration": 35,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S06 Chip",
+   "shape": "roundedRect",
+   "size": {
+    "h": 55.0,
+    "w": 251.0
+   },
+   "start": 647
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 63,
+   "fill": {
+    "a": 1.0,
+    "b": 0.3608,
+    "g": 0.6118,
+    "r": 0.1569
+   },
+   "name": "S07 Tick 1",
+   "shadow": {
+    "blur": 12.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.3608,
+     "g": 0.6118,
+     "r": 0.1569
+    },
+    "spread": -3.0,
+    "x": 0.0,
+    "y": 6.0
+   },
+   "shape": "rect",
+   "size": {
+    "h": 60.0,
+    "w": 60.0
+   },
+   "start": 744,
+   "stroke": {
+    "align": "inside",
+    "color": {
+     "a": 1.0,
+     "b": 1.0,
+     "g": 1.0,
+     "r": 1.0
+    },
+    "width": 4.0
+   }
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 43,
+   "fill": {
+    "a": 1.0,
+    "b": 0.3608,
+    "g": 0.6118,
+    "r": 0.1569
+   },
+   "name": "S07 Tick 2",
+   "shadow": {
+    "blur": 12.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.3608,
+     "g": 0.6118,
+     "r": 0.1569
+    },
+    "spread": -3.0,
+    "x": 0.0,
+    "y": 6.0
+   },
+   "shape": "rect",
+   "size": {
+    "h": 60.0,
+    "w": 60.0
+   },
+   "start": 764,
+   "stroke": {
+    "align": "inside",
+    "color": {
+     "a": 1.0,
+     "b": 1.0,
+     "g": 1.0,
+     "r": 1.0
+    },
+    "width": 4.0
+   }
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 23,
+   "fill": {
+    "a": 1.0,
+    "b": 0.3608,
+    "g": 0.6118,
+    "r": 0.1569
+   },
+   "name": "S07 Tick 3",
+   "shadow": {
+    "blur": 12.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.3608,
+     "g": 0.6118,
+     "r": 0.1569
+    },
+    "spread": -3.0,
+    "x": 0.0,
+    "y": 6.0
+   },
+   "shape": "rect",
+   "size": {
+    "h": 60.0,
+    "w": 60.0
+   },
+   "start": 784,
+   "stroke": {
+    "align": "inside",
+    "color": {
+     "a": 1.0,
+     "b": 1.0,
+     "g": 1.0,
+     "r": 1.0
+    },
+    "width": 4.0
+   }
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 84,
+   "fill": {
+    "a": 1.0,
+    "b": 0.3608,
+    "g": 0.6118,
+    "r": 0.1569
+   },
+   "name": "S08 Check badge",
+   "shadow": {
+    "blur": 18.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.3608,
+     "g": 0.6118,
+     "r": 0.1569
+    },
+    "spread": -4.0,
+    "x": 0.0,
+    "y": 10.0
+   },
+   "shape": "rect",
+   "size": {
+    "h": 108.0,
+    "w": 108.0
+   },
+   "start": 819,
+   "stroke": {
+    "align": "inside",
+    "color": {
+     "a": 1.0,
+     "b": 1.0,
+     "g": 1.0,
+     "r": 1.0
+    },
+    "width": 6.0
+   }
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 84,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S08 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 89.0
+   },
+   "start": 819
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 83,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9373,
+    "g": 0.9569,
+    "r": 0.9765
+   },
+   "name": "S08 Window chrome",
+   "shape": "roundedRect",
+   "size": {
+    "h": 36.0,
+    "w": 900.0
+   },
+   "start": 820
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 42,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S08 Window body",
+   "shape": "rect",
+   "size": {
+    "h": 604.0,
+    "w": 900.0
+   },
+   "start": 824
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 54,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S08 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 89.0
+   },
+   "start": 849
+  },
+  {
+   "cornerRadius": 20.0,
+   "duration": 136,
+   "fill": {
+    "a": 1.0,
+    "b": 0.9686,
+    "g": 0.9804,
+    "r": 1.0
+   },
+   "name": "S09 Honesty label",
+   "shadow": {
+    "blur": 0.0,
+    "color": {
+     "a": 1.0,
+     "b": 0.7294,
+     "g": 0.7725,
+     "r": 0.8431
+    },
+    "spread": 1.0,
+    "x": 0.0,
+    "y": 0.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 40.0,
+    "w": 189.0
+   },
+   "start": 904
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 137,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0941,
+    "g": 0.1137,
+    "r": 0.1647
+   },
+   "name": "S09 Window chrome",
+   "shape": "roundedRect",
+   "size": {
+    "h": 72.0,
+    "w": 900.0
+   },
+   "start": 904
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 61,
+   "fill": {
+    "a": 1.0,
+    "b": 0.3608,
+    "g": 0.6118,
+    "r": 0.1569
+   },
+   "name": "S10 Check badge",
+   "shadow": {
+    "blur": 18.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.3608,
+     "g": 0.6118,
+     "r": 0.1569
+    },
+    "spread": -4.0,
+    "x": 0.0,
+    "y": 10.0
+   },
+   "shape": "rect",
+   "size": {
+    "h": 108.0,
+    "w": 108.0
+   },
+   "start": 1067,
+   "stroke": {
+    "align": "inside",
+    "color": {
+     "a": 1.0,
+     "b": 1.0,
+     "g": 1.0,
+     "r": 1.0
+    },
+    "width": 6.0
+   }
+  },
+  {
+   "cornerRadius": 0.0,
+   "duration": 104,
+   "fill": {
+    "a": 1.0,
+    "b": 0.0588,
+    "g": 0.0667,
+    "r": 0.1098
+   },
+   "name": "S11 Avatar",
+   "shape": "rect",
+   "size": {
+    "h": 120.0,
+    "w": 120.0
+   },
+   "start": 1140
+  },
+  {
+   "cornerRadius": 66.0,
+   "duration": 100,
+   "fill": {
+    "a": 1.0,
+    "b": 0.2157,
+    "g": 0.4314,
+    "r": 0.8902
+   },
+   "name": "S11 Keyword pill",
+   "shadow": {
+    "blur": 26.0,
+    "color": {
+     "a": 0.35,
+     "b": 0.1961,
+     "g": 0.3137,
+     "r": 0.5216
+    },
+    "spread": -8.0,
+    "x": 0.0,
+    "y": 18.0
+   },
+   "shape": "roundedRect",
+   "size": {
+    "h": 132.0,
+    "w": 528.0
+   },
+   "start": 1144
+  }
+ ],
+ "texts": [
+  {
+   "duration": 102,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 1: Why",
+   "size": 77.534,
+   "start": 2,
+   "text": "Why"
+  },
+  {
+   "duration": 102,
+   "family": "Space Grotesk",
+   "name": "S01 Kicker word 1: CLAUDE",
+   "size": 30.0,
+   "start": 2,
+   "text": "CLAUDE"
+  },
+  {
+   "duration": 99,
+   "family": "Space Grotesk",
+   "name": "S01 Kicker word 2: CODE",
+   "size": 30.0,
+   "start": 5,
+   "text": "CODE"
+  },
+  {
+   "duration": 98,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 2: your",
+   "size": 77.534,
+   "start": 6,
+   "text": "your"
+  },
+  {
+   "duration": 96,
+   "family": "Space Grotesk",
+   "name": "S01 Kicker word 3: SITES",
+   "size": 30.0,
+   "start": 8,
+   "text": "SITES"
+  },
+  {
+   "duration": 95,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 3: Claude",
+   "size": 77.534,
+   "start": 9,
+   "text": "Claude"
+  },
+  {
+   "duration": 86,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 4: Code",
+   "size": 77.534,
+   "start": 18,
+   "text": "Code"
+  },
+  {
+   "duration": 80,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 5: cards",
+   "size": 77.534,
+   "start": 24,
+   "text": "cards"
+  },
+  {
+   "duration": 67,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 6: all",
+   "size": 77.534,
+   "start": 37,
+   "text": "all"
+  },
+  {
+   "duration": 56,
+   "family": "Inter Tight",
+   "name": "S01 Headline word 7: look",
+   "size": 77.534,
+   "start": 48,
+   "text": "look"
+  },
+  {
+   "duration": 49,
+   "family": "Instrument Serif",
+   "name": "S01 Headline word 8: identical.",
+   "size": 86.838,
+   "start": 55,
+   "text": "identical."
+  },
+  {
+   "duration": 95,
+   "family": "Space Grotesk",
+   "name": "S02 Honesty label: ILLUSTRATIVE",
+   "size": 20.0,
+   "start": 104,
+   "text": "ILLUSTRATIVE"
+  },
+  {
+   "duration": 95,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 1 label: site",
+   "size": 26.0,
+   "start": 104,
+   "text": "site"
+  },
+  {
+   "duration": 94,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 2 label: site",
+   "size": 26.0,
+   "start": 105,
+   "text": "site"
+  },
+  {
+   "duration": 93,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 3 label: site",
+   "size": 26.0,
+   "start": 106,
+   "text": "site"
+  },
+  {
+   "duration": 88,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 4 label: site",
+   "size": 26.0,
+   "start": 111,
+   "text": "site"
+  },
+  {
+   "duration": 87,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 5 label: site",
+   "size": 26.0,
+   "start": 112,
+   "text": "site"
+  },
+  {
+   "duration": 86,
+   "family": "Inter Tight",
+   "name": "S02 Thumbnail 6 label: site",
+   "size": 26.0,
+   "start": 113,
+   "text": "site"
+  },
+  {
+   "duration": 19,
+   "family": "Inter Tight",
+   "name": "S02 Chip text: Clients spot it instantly",
+   "size": 28.0,
+   "start": 180,
+   "text": "Clients spot it instantly"
+  },
+  {
+   "duration": 130,
+   "family": "Space Grotesk",
+   "name": "S03 Honesty label: REAL",
+   "size": 20.0,
+   "start": 212,
+   "text": "REAL"
+  },
+  {
+   "duration": 129,
+   "family": "Space Grotesk",
+   "name": "S03 Window title: SKILL.md",
+   "size": 28.0,
+   "start": 213,
+   "text": "SKILL.md"
+  },
+  {
+   "duration": 34,
+   "family": "Inter Tight",
+   "name": "S03 Chip text: rgba(0,0,0,.1)",
+   "size": 28.0,
+   "start": 308,
+   "text": "rgba(0,0,0,.1)"
+  },
+  {
+   "duration": 100,
+   "family": "Inter Tight",
+   "name": "S04 Title: It's not your fault",
+   "size": 44.0,
+   "start": 354,
+   "text": "It's not your fault"
+  },
+  {
+   "duration": 99,
+   "family": "Space Grotesk",
+   "name": "S04 Honesty label: REAL",
+   "size": 20.0,
+   "start": 355,
+   "text": "REAL"
+  },
+  {
+   "duration": 49,
+   "family": "Inter Tight",
+   "name": "S04 Chip text: distributional convergence",
+   "size": 28.0,
+   "start": 405,
+   "text": "distributional convergence"
+  },
+  {
+   "duration": 101,
+   "family": "Inter Tight",
+   "name": "S05 Title: Even Anthropic's palette",
+   "size": 44.0,
+   "start": 465,
+   "text": "Even Anthropic's palette"
+  },
+  {
+   "duration": 88,
+   "family": "Inter Tight",
+   "name": "S05 Label: #D97757 on #F4F1EA",
+   "size": 30.0,
+   "start": 478,
+   "text": "#D97757 on #F4F1EA"
+  },
+  {
+   "duration": 107,
+   "family": "Inter Tight",
+   "name": "S06 Chip text: One accented headline word",
+   "size": 28.0,
+   "start": 572,
+   "text": "One accented headline word"
+  },
+  {
+   "duration": 105,
+   "family": "Inter Tight",
+   "name": "S06 Title: The tells it names",
+   "size": 44.0,
+   "start": 577,
+   "text": "The tells it names"
+  },
+  {
+   "duration": 65,
+   "family": "Inter Tight",
+   "name": "S06 Chip text: All-caps labels",
+   "size": 28.0,
+   "start": 617,
+   "text": "All-caps labels"
+  },
+  {
+   "duration": 35,
+   "family": "Inter Tight",
+   "name": "S06 Chip text: Fake 01, 02, 03",
+   "size": 28.0,
+   "start": 647,
+   "text": "Fake 01, 02, 03"
+  },
+  {
+   "duration": 125,
+   "family": "Inter Tight",
+   "name": "S07 Chip text: frontend-design on",
+   "size": 30.0,
+   "start": 682,
+   "text": "frontend-design on"
+  },
+  {
+   "duration": 101,
+   "family": "Inter Tight",
+   "name": "S07 Row 1 text: Plans 4 to 6 hex colors",
+   "size": 34.0,
+   "start": 706,
+   "text": "Plans 4 to 6 hex colors"
+  },
+  {
+   "duration": 101,
+   "family": "Inter Tight",
+   "name": "S07 Row 2 text: Reviews",
+   "size": 34.0,
+   "start": 706,
+   "text": "Reviews"
+  },
+  {
+   "duration": 101,
+   "family": "Inter Tight",
+   "name": "S07 Row 3 text: Then codes",
+   "size": 34.0,
+   "start": 706,
+   "text": "Then codes"
+  },
+  {
+   "duration": 84,
+   "family": "Space Grotesk",
+   "name": "S08 Honesty label: REAL",
+   "size": 20.0,
+   "start": 819,
+   "text": "REAL"
+  },
+  {
+   "duration": 83,
+   "family": "Space Grotesk",
+   "name": "S08 Window title: claude.com/plugins",
+   "size": 28.0,
+   "start": 820,
+   "text": "claude.com/plugins"
+  },
+  {
+   "duration": 54,
+   "family": "Space Grotesk",
+   "name": "S08 Honesty label: REAL",
+   "size": 20.0,
+   "start": 849,
+   "text": "REAL"
+  },
+  {
+   "duration": 54,
+   "family": "Inter Tight",
+   "name": "S08 Unit: installs",
+   "size": 44.0,
+   "start": 849,
+   "text": "installs"
+  },
+  {
+   "duration": 136,
+   "family": "Space Grotesk",
+   "name": "S09 Honesty label: ILLUSTRATIVE",
+   "size": 20.0,
+   "start": 904,
+   "text": "ILLUSTRATIVE"
+  },
+  {
+   "duration": 137,
+   "family": "Space Grotesk",
+   "name": "S09 Window title: Claude Code",
+   "size": 28.0,
+   "start": 904,
+   "text": "Claude Code"
+  },
+  {
+   "duration": 18,
+   "family": "Inter Tight",
+   "name": "S09 Chip text: Pick a scope",
+   "size": 30.0,
+   "start": 1024,
+   "text": "Pick a scope"
+  },
+  {
+   "duration": 89,
+   "family": "Inter Tight",
+   "name": "S10 Body text: Install once, then it runs automatically",
+   "size": 34.0,
+   "start": 1043,
+   "text": "Install once, then it runs automatically."
+  },
+  {
+   "duration": 89,
+   "family": "Inter Tight",
+   "name": "S10 Title: Turns on by itself",
+   "size": 44.0,
+   "start": 1043,
+   "text": "Turns on by itself"
+  },
+  {
+   "duration": 29,
+   "family": "Inter Tight",
+   "name": "S10 Chip text: you ask for frontend work",
+   "size": 30.0,
+   "start": 1103,
+   "text": "you ask for frontend work"
+  },
+  {
+   "duration": 106,
+   "family": "Inter Tight",
+   "name": "S11 Verb: Comment",
+   "size": 97.0,
+   "start": 1138,
+   "text": "Comment"
+  },
+  {
+   "duration": 104,
+   "family": "Space Grotesk",
+   "name": "S11 App label: INSTAGRAM",
+   "size": 28.0,
+   "start": 1140,
+   "text": "INSTAGRAM"
+  },
+  {
+   "duration": 104,
+   "family": "Inter Tight",
+   "name": "S11 Message: Here's the checklist. Ditch identical",
+   "size": 32.0,
+   "start": 1140,
+   "text": "Here's the checklist. Ditch identical\ncards."
+  },
+  {
+   "duration": 104,
+   "family": "Inter Tight",
+   "name": "S11 Sender name: FlashFX",
+   "size": 36.0,
+   "start": 1140,
+   "text": "FlashFX"
+  },
+  {
+   "duration": 104,
+   "family": "Space Grotesk",
+   "name": "S11 Time label: now",
+   "size": 28.0,
+   "start": 1140,
+   "text": "now"
+  },
+  {
+   "duration": 94,
+   "family": "Caveat",
+   "name": "S11 Line 1: below, I'll send the checklist",
+   "size": 58.0,
+   "start": 1150,
+   "text": "below, I'll send the checklist"
+  },
+  {
+   "duration": 94,
+   "family": "Caveat",
+   "name": "S11 Line 2: Ditch identical cards",
+   "size": 58.0,
+   "start": 1150,
+   "text": "Ditch identical cards"
+  }
+ ],
+ "tracks": [
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V1"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V2"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V3"
+  },
+  {
+   "clips": 28,
+   "hidden": false,
+   "kind": "video",
+   "name": "V4"
+  },
+  {
+   "clips": 20,
+   "hidden": false,
+   "kind": "video",
+   "name": "V5"
+  },
+  {
+   "clips": 30,
+   "hidden": false,
+   "kind": "video",
+   "name": "V6"
+  },
+  {
+   "clips": 43,
+   "hidden": false,
+   "kind": "video",
+   "name": "V7"
+  },
+  {
+   "clips": 21,
+   "hidden": false,
+   "kind": "video",
+   "name": "V8"
+  },
+  {
+   "clips": 17,
+   "hidden": false,
+   "kind": "video",
+   "name": "V9"
+  },
+  {
+   "clips": 24,
+   "hidden": false,
+   "kind": "video",
+   "name": "V10"
+  },
+  {
+   "clips": 11,
+   "hidden": false,
+   "kind": "video",
+   "name": "V11"
+  },
+  {
+   "clips": 9,
+   "hidden": false,
+   "kind": "video",
+   "name": "V12"
+  },
+  {
+   "clips": 17,
+   "hidden": false,
+   "kind": "video",
+   "name": "V13"
+  },
+  {
+   "clips": 6,
+   "hidden": false,
+   "kind": "video",
+   "name": "V14"
+  },
+  {
+   "clips": 5,
+   "hidden": false,
+   "kind": "video",
+   "name": "V15"
+  },
+  {
+   "clips": 5,
+   "hidden": false,
+   "kind": "video",
+   "name": "V16"
+  },
+  {
+   "clips": 3,
+   "hidden": false,
+   "kind": "video",
+   "name": "V17"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V18"
+  },
+  {
+   "clips": 2,
+   "hidden": false,
+   "kind": "video",
+   "name": "V19"
+  },
+  {
+   "clips": 2,
+   "hidden": false,
+   "kind": "video",
+   "name": "V20"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V21"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V22"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V23"
+  },
+  {
+   "clips": 2,
+   "hidden": false,
+   "kind": "video",
+   "name": "V24"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "video",
+   "name": "V25"
+  },
+  {
+   "clips": 100,
+   "hidden": false,
+   "kind": "caption",
+   "name": "Captions"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "audio",
+   "name": "Voice"
+  },
+  {
+   "clips": 12,
+   "hidden": false,
+   "kind": "audio",
+   "name": "SFX 1"
+  },
+  {
+   "clips": 3,
+   "hidden": false,
+   "kind": "audio",
+   "name": "SFX 2"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "audio",
+   "name": "SFX 3"
+  },
+  {
+   "clips": 1,
+   "hidden": false,
+   "kind": "audio",
+   "name": "SFX 4"
+  }
+ ]
+}

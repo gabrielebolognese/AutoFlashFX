@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instagramreels.local/stages/s15-project/editor.json",
+  "title": "s15-project editor.json: what S15 built (BUILD_SPEC.md S15, M21)",
+  "type": "object",
+  "required": ["written_by", "level", "native", "baked", "layers", "checks", "needs_review", "manifest"],
+  "properties": {
+    "written_by": {"type": "string"},
+    "level": {"enum": ["full", "minimal", "failed", "off"]},
+    "native": {"type": "integer", "minimum": 0},
+    "sprites": {"type": "integer", "minimum": 0},
+    "overlays": {"type": "integer", "minimum": 0},
+    "plates": {"type": "integer", "minimum": 0},
+    "baked_captions": {"type": "integer", "minimum": 0},
+    "baked": {"type": "integer", "minimum": 0},
+    "layers": {"type": "integer", "minimum": 0},
+    "captions_native": {"type": "boolean"},
+    "duration_frames": {"type": "integer"},
+    "seconds": {"type": "number"},
+    "checks": {"type": "array", "items": {"type": "object", "required": ["check"], "properties": {"check": {"type": "string"}, "ok": {"type": "boolean"}}}},
+    "needs_review": {"type": "array", "items": {"type": "string"}},
+    "gaps": {"type": "object"},
+    "downgrades": {"type": "object"},
+    "manifest": {"type": "object", "required": ["source", "hash", "schemaVersion"]}
+  }
+}

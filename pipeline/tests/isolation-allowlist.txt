@@ -42,3 +42,19 @@ pipeline/lib/motion/__main__.py | ("golden"|cmd == "golden") | the name of the g
 pipeline/lib/protect.py | manifest.get\("exports" | a key of the snapshot manifest: the listing of the exports folder
 pipeline/lib/voiceover.py | "runs": runs | a JSON field: the runs of silence found in a wav, not the runs/ folder
 pipeline/platforms/youtube-shorts/exporter.py | f"channels/\{channel_id\}/runs/\{run_id\}" | the RUN line of the captions file (spec section 8: channels/<id>/runs/<run>): text for the person who posts, no path is opened with it
+# ---- M21 (S15, the editable project): JSON field names, labels, and engine-level folders that are not channel data
+pipeline/lib/export.py | exports/\{name\}/project | the EDITOR section's label and the link text of the captions file: nothing is opened with it
+pipeline/lib/export.py | exports/<id>-N/project | the placeholder S15 wrote into OPEN.txt, replaced by the export's name: text only
+pipeline/lib/motion/annotations.py | "motion-lib", "compositions" | the checker walks every channel's component folder (a read-only lint, the channels folder is the engine's own input here)
+pipeline/lib/s15/__main__.py | os.path.join\((root|paths.REPO), "logs"\) | the channel's own logs folder (root is paths.channel_root()) and the engine's root logs/ for the editor gaps roll-up (engine-level)
+pipeline/lib/s15/__main__.py | os.path.join\(paths.REPO, "channels"\) | the roll-up of every channel's editor gaps into the root logs/editor-gaps-all.md: reads only the gaps json each channel wrote
+pipeline/lib/s15/*.py | \["runs"\] | a JSON field of layers.json: the visible runs of a layer (stretches of frames), not the runs/ folder
+pipeline/lib/s15/*.py | "runs": | a JSON field of layers.json: the visible runs of a layer, not the runs/ folder
+pipeline/lib/s15/mapper.py | lf\["(widths|styles|colors)"\] | CSS border widths, styles and colors of a layer, not the logs folder
+pipeline/lib/s15/mapper.py | "colors": colors | CSS border colors of a layer
+pipeline/lib/s15/gaps.py | "\*", "logs", "editor-gaps.json" | the roll-up reads each channel's editor-gaps.json (written by S15 for that channel)
+pipeline/lib/s15/run.py | exports/<id>-N/project | the placeholder written into OPEN.txt, replaced by the export step
+pipeline/lib/s15/run.py | "source": f"runs/ | meta.generator.source: a label naming the run for the person who opens the project
+pipeline/lib/s15/upgrade.py | os.path.join\(root, "logs"\) | the engine's root logs/ (editor-capabilities.json, editor-upgrade.json): global, not a channel's
+pipeline/lib/s15/writer.py | "fonts", "library" | the editor's own font library inside its stable copy (public/fonts/library): not a channel's library/
+pipeline/lib/s15/writer.py | == "library" else None | the font record's source label ("library" means the editor's font library, not a channel folder)
