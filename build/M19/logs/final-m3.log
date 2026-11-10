@@ -1,0 +1,450 @@
+
+== 1. ai() units with the fake claude ==
+PASS  a plain call succeeds
+PASS  AI_RESULT holds the result text
+PASS  AI_CLASS is ok
+PASS  AI_SESSION holds the session id
+PASS  the raw output is saved as calls/001.json
+PASS  calls/001.meta written
+PASS  the model comes from config (indexer -> haiku)
+PASS  the effort comes from config (indexer -> low)
+PASS  the meta records the class
+PASS  the fake saw --model haiku
+PASS  the fake saw --effort low
+PASS  --tools "" disables the tools
+PASS  the protected files are denied: Edit(channels/*/ideas.txt)
+PASS  the protected files are denied: Write(channels/*/library/**)
+PASS  the protected files are denied: Edit(channels/*/styles/**), Edit(exports/**)
+PASS  .env is denied to Read
+PASS  the prompt arrives on stdin
+PASS  the call runs in the repo root
+PASS  --tools passes a comma list
+PASS  the same tools are pre-approved with --allowedTools
+PASS  --add-dir is passed
+PASS  --max-turns is passed
+PASS  schema: an invalid structured output is retried once and the second answer is accepted
+PASS  schema: two calls
+PASS  schema: the retry resumes the session of the first answer
+PASS  schema: the retry prompt carries the validation errors
+PASS  schema: a WARN line names the retry
+PASS  schema: AI_OUT names the structured output file
+PASS  schema: the structured output is the valid one
+PASS  schema: still invalid after the retry is a code error
+PASS  schema: the error names the schema
+PASS  error.json written
+PASS  error.json: class error
+PASS  error.json: a signature
+PASS  --session stores the session id in state.json
+PASS  --session resumes the stored session
+PASS  a session that no longer exists returns 3
+PASS  the stored session is cleared
+PASS  error.json: resume_failed
+PASS  a call that changed a protected file is a code error
+PASS  ideas.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  the snapshot folder is removed
+PASS  not logged in is a code error
+PASS  AI_FATAL is set for a login problem
+PASS  error.json: fatal
+PASS  an error result is a code error
+PASS  AI_ERROR carries the message
+PASS  echo: the prompt arrived verbatim
+PASS  ai_restart_note prints the note
+PASS  ai_restart_note removes it
+
+== 2. usage limits through ai(), every format, fast-forward ==
+pipeline/tests/test-m3.sh: line 271: /tmp/tmp.5T97klzPj7/logs/limits.log: No such file or directory
+PASS  limit time: the call succeeds after the wait
+PASS  limit time: LIMIT line with the kind, the target and the margin
+PASS  limit time: fast-forward logs the wait instead of sleeping
+PASS  limit time: RESUME line
+PASS  limit time: limits.log has the right target (reset + 120 s)
+PASS  limit time: one retry
+PASS  limit time: the retry is the same call in the same session
+PASS  limit time-tz: the call succeeds after the wait
+PASS  limit time-tz: LIMIT line with the kind, the target and the margin
+PASS  limit time-tz: fast-forward logs the wait instead of sleeping
+PASS  limit time-tz: RESUME line
+PASS  limit time-tz: limits.log has the right target (reset + 120 s)
+PASS  limit time-tz: one retry
+PASS  limit time-tz: the retry is the same call in the same session
+PASS  limit time-tz-ny: the call succeeds after the wait
+PASS  limit time-tz-ny: LIMIT line with the kind, the target and the margin
+PASS  limit time-tz-ny: fast-forward logs the wait instead of sleeping
+PASS  limit time-tz-ny: RESUME line
+PASS  limit time-tz-ny: limits.log has the right target (reset + 120 s)
+PASS  limit time-tz-ny: one retry
+PASS  limit time-tz-ny: the retry is the same call in the same session
+PASS  limit weekday: the call succeeds after the wait
+PASS  limit weekday: LIMIT line with the kind, the target and the margin
+PASS  limit weekday: fast-forward logs the wait instead of sleeping
+PASS  limit weekday: RESUME line
+PASS  limit weekday: limits.log has the right target (reset + 120 s)
+PASS  limit weekday: one retry
+PASS  limit weekday: the retry is the same call in the same session
+PASS  limit date: the call succeeds after the wait
+FAIL  limit date: LIMIT line with the kind, the target and the margin (no match for '^\[[0-9]{2}:[0-9]{2}\] LIMIT  session limit hit, resuming at ([0-9]{2}:[0-9]{2}|[A-Z][a-z]{2} [0-9]{2}:[0-9]{2}|[A-Z][a-z]{2} [0-9]{1,2} [0-9]{2}:[0-9]{2}) \(\+2 min margin\)$' in /tmp/tmp.5T97klzPj7/channels/flashfx/logs/runner.log)
+PASS  limit date: fast-forward logs the wait instead of sleeping
+PASS  limit date: RESUME line
+PASS  limit date: limits.log has the right target (reset + 120 s)
+PASS  limit date: one retry
+PASS  limit date: the retry is the same call in the same session
+PASS  limit epoch: the call succeeds after the wait
+PASS  limit epoch: LIMIT line with the kind, the target and the margin
+FAIL  limit epoch: fast-forward logs the wait instead of sleeping (no match for '^\[[0-9]{2}:[0-9]{2}\] INFO   fast-forward: skipping the wait until ' in /tmp/tmp.5T97klzPj7/channels/flashfx/logs/runner.log)
+PASS  limit epoch: RESUME line
+PASS  limit epoch: limits.log has the right target (reset + 120 s)
+PASS  limit epoch: one retry
+PASS  limit epoch: the retry is the same call in the same session
+PASS  limit time+90: the call succeeds after the wait
+PASS  limit time+90: the target is the message's moment plus 120 s
+PASS  limit epoch+30: the call succeeds after the wait
+PASS  limit epoch+30: the target is the message's moment plus 120 s
+PASS  a limit on stderr is detected and the call retried
+PASS  limit on stderr: LIMIT line
+PASS  a limit on plain is detected and the call retried
+PASS  limit on plain: LIMIT line
+PASS  unparsed limit: the call succeeds once the probe answers
+PASS  unparsed limit: LIMIT line
+PASS  unparsed limit: the 30 min sleep
+PASS  unparsed limit: RESUME after the probe
+PASS  unparsed limit: limits.log line
+PASS  unparsed limit: the limit, the probe, the retry
+PASS  the probe uses the probe model from config
+PASS  the runner finishes the idea after a limit inside a stage
+PASS  runner: LIMIT line from inside the stage
+PASS  runner: RESUME names the stage's activity
+PASS  runner: the stage finishes after the wait
+PASS  runner: the idea is exported
+PASS  runner: limits.log has the target (reset + 120 s)
+PASS  runner: the stage got the answer after the retry
+PASS  runner: a limit is never an error
+
+== 3. transient errors: 60 s, 4 min, 16 min, then a code error ==
+PASS  three transient failures, then success
+PASS  RETRY 1: 60 s
+PASS  RETRY 2: 4 min
+PASS  RETRY 3: 16 min
+PASS  three scaled backoff waits
+PASS  four calls in all
+PASS  a fourth transient failure is a code error
+PASS  the error says the retries are used up
+PASS  no fifth call
+PASS  error.json: class error after the retries
+PASS  a network reset on stderr is transient
+PASS  RETRY names the reset
+PASS  a call killed by the timeout is retried
+PASS  RETRY names the timeout
+PASS  Claude Code's 'No response from API' is retried, then the call succeeds
+PASS  RETRY names the network error
+PASS  two calls: the failed one and the retry
+PASS  the CLI's network message at every try is a code error after the three retries
+PASS  AI_ERROR carries the message with a comma where the CLI had the em dash
+PASS  the CLI really answered with the em dash (the raw call file holds U+2014)
+PASS  no U+2014 in runner.log or error.json
+
+== 4. a planted bug: the real Opus reviewer and Sonnet fixer (several minutes) ==
+cp: -r not specified; omitting directory '/c/Users/there/OneDrive/Desktop/instagramReels/pipeline/tests/fixtures/stages/buggy/__pycache__'
+PASS  the runner exits 0 after fixing the planted bug (took 4 min)
+PASS  ERROR line with the stage, the activity and the traceback's last line
+PASS  FIXED line with the cause and the commit
+PASS  the stage restarts
+PASS  the stage passes after the fix
+PASS  DONE counts the fixed issue
+PASS  the ERROR comes before the FIXED, then the restart
+PASS  errors/E1.md written
+PASS  E1: the stage
+PASS  E1: the command
+PASS  E1: the exit code
+PASS  E1: the log section
+PASS  E1: the traceback is in the log lines
+PASS  E1: the input files section
+PASS  E1: lists the stage's input file with its size
+PASS  E1: the contract section
+PASS  E1: the contract text
+PASS  E1: the git diff section
+PASS  E1: the previous files section
+PASS  E1: no previous files
+PASS  fixes/F1.md written by the reviewer step
+PASS  F1: root cause
+PASS  F1: class
+PASS  F1: one of the four classes
+PASS  F1: changes
+PASS  F1: the change names the helper
+PASS  F1: the verify command
+PASS  F1: auto_apply yes
+PASS  F1.result.json written
+PASS  F1: outcome fixed
+PASS  the verify command ran (F1.verify.log)
+PASS  the fixer corrected the key in helper.py
+PASS  the wrong key is gone
+PASS  the autofix commit exists in the sandbox repo
+PASS  nothing left uncommitted in the sandbox repo
+PASS  the real repo got no commit
+PASS  known-issues.md gained one line (symptom -> fix)
+PASS  exactly one known-issues line for 10-build (the repo's own lines are copied in too)
+PASS  state: one review cycle
+PASS  state: one issue fixed
+PASS  state: no open issue
+PASS  state: two attempts of the stage
+PASS  state: the run is exported
+PASS  the restart note was written for the second attempt
+PASS  the restart note names the fix
+PASS  the reviewer call is saved under errors/calls/
+PASS  the fixer call is saved under errors/calls/
+PASS  the reviewer used the reviewer model
+PASS  the fixer used the fixer model
+PASS  exports/flashfx-1 exists
+
+== 5. an unfixable error blocks the idea and the runner continues ==
+PASS  the first idea is blocked
+PASS  the runner continues past the block and exits 0 when the queue is empty
+PASS  ERROR line
+PASS  BLOCK line with the class, the root cause and what the user must do
+PASS  NEXT after the block
+PASS  the next idea is exported once the key exists
+PASS  no fix, no escalation, no stop
+PASS  blocked.txt: the reason line
+PASS  blocked.txt: the idea in braces
+PASS  history: the blocked line (with the solution field, M12)
+PASS  ideas.txt is empty
+PASS  the run folder is kept with status blocked
+PASS  E1.md kept
+PASS  F1.md says auto_apply no
+PASS  F1.md carries the user action
+PASS  the cycle's outcome is no_auto
+PASS  one reviewer call, no fixer call
+PASS  the reviewer has read-only tools plus WebSearch and WebFetch
+PASS  the reviewer answers with a JSON schema
+PASS  the reviewer runs in the repo root (the sandbox)
+PASS  the reviewer prompt holds the error report
+PASS  the reviewer prompt includes known-issues.md
+PASS  the export reset the block streak
+
+== 6. the caps: the repeated-signature rule and the escalation, with fake fixes ==
+PASS  the runner exits 0 after blocking the idea
+PASS  three failures of the stage (the original, after the fix, after the escalated fix)
+PASS  two FIXED lines with commits
+PASS  ESCAL after one review: the repeated signature skips the remaining Opus cycles
+PASS  attempt 2 after the first fix
+PASS  attempt 3 after the escalated fix
+PASS  BLOCK after the escalation failed
+PASS  the order is ERROR, FIXED, ERROR, ESCAL, FIXED, ERROR, BLOCK
+PASS  reviewer, fixer, escalation reviewer, fixer, with the models from config
+PASS  the fixer's tools
+PASS  the fixer may edit pipeline/ and motion-lib/candidates/ only
+PASS  the fixer prompt is the fixer role
+PASS  E1.md
+PASS  E2.md
+PASS  E2 includes the previous error file
+PASS  E2 includes the previous fix file
+PASS  the escalation reviewer gets the escalation note
+PASS  two autofix commits
+PASS  two known-issues lines for 10-build (the repo's own lines are copied in too)
+PASS  state: one Opus cycle
+PASS  state: escalated
+PASS  state: the signature repeated three times
+PASS  state: two issues fixed
+PASS  state: one issue open
+PASS  the last restart note names F2
+PASS  the block streak file exists after a code-error block
+PASS  the streak counts 1
+PASS  the runner exits 0
+PASS  four failed cycles (three Opus, one escalation), each with a WARN
+PASS  ESCAL after the three Opus cycles
+PASS  BLOCK after the escalation
+PASS  the stage ran once: a failed verification does not restart it
+PASS  no FIXED line
+PASS  F1.verify.log exists
+PASS  F2.verify.log exists
+PASS  F3.verify.log exists
+PASS  F4.verify.log exists
+PASS  F4: outcome failed
+PASS  E4 carries the earlier verify logs
+PASS  no autofix commit when nothing verified
+
+== 7. three identical blocks in a row stop the runner with STOPPED.md ==
+PASS  the runner stops with exit 3
+PASS  three BLOCK lines
+PASS  STOP line
+PASS  the fourth idea is never started
+PASS  STOPPED.md written
+PASS  STOPPED.md title
+PASS  STOPPED.md diagnosis names the error
+PASS  STOPPED.md fix 1: the verdicts
+PASS  STOPPED.md fix 2: fix the cause
+PASS  STOPPED.md fix 3: re-add the ideas
+PASS  STOPPED.md footer
+PASS  the fourth idea stays in ideas.txt
+PASS  blocked.txt holds the three ideas
+PASS  the streak is cleared by the stop
+PASS  one ERROR per idea
+PASS  status.txt holds the STOP line
+PASS  runner-status mentions STOPPED.md and the blocked ideas
+PASS  runner-status counts the blocked ideas
+PASS  three run folders kept
+
+== 8. the guards: treeguard.py around the fixer, protect.py around every call ==
+PASS  treeguard: a clean check exits 0
+PASS  treeguard: changes outside the allowed paths are reported (exit 1)
+PASS  treeguard: a pre-existing untracked file that grew during the call is left alone
+PASS  treeguard: the user's own change to a tracked file survives, the fixer's edit on top of it is undone
+PASS  treeguard: a file the fixer created outside is deleted
+PASS  treeguard: a clean tracked file edited by the fixer goes back to HEAD
+PASS  treeguard: changes inside pipeline/ are kept
+PASS  treeguard: the report names what was left alone
+PASS  treeguard: the report names what was put back
+PASS  protect: a clean check exits 0
+PASS  protect: changes to protected files are reported (exit 1)
+PASS  protect: ideas.txt is restored
+PASS  protect: a new file under library/ is removed
+PASS  protect: a deleted library file is restored
+PASS  protect: style.md is restored
+PASS  protect: the exports change is reported (not restored)
+PASS  protect: the report names the changed files
+
+== 9. a failed stage script is classified: transient retries, a usage limit, then the code error ==
+PASS  the runner exports the idea after two temporary failures of the stage
+PASS  RETRY 1: 60 s
+PASS  RETRY 2: 4 min
+PASS  two scaled backoff waits (fast-forward)
+PASS  the first rerun is announced
+PASS  the second rerun too
+PASS  no ERROR: a temporary error is retried, not reviewed
+PASS  the stage passes on the third attempt
+PASS  the idea is exported
+PASS  no model call at all: the reviewer was never asked
+PASS  state: three attempts of the stage
+PASS  state: the transient counter is reset by the success
+PASS  state: no open issue
+PASS  state: nothing fixed
+PASS  the runner blocks the idea on the reviewer's verdict and exits 0
+PASS  three RETRY lines (60 s, 4 min, 16 min)
+PASS  RETRY 3: 16 min
+PASS  the fourth failure is a code error
+PASS  one ERROR line
+PASS  then the review loop: the reviewer's verdict blocks the idea
+PASS  one reviewer call, after the retries
+PASS  state: four attempts
+PASS  state: the counter is reset when the error goes to review
+PASS  E1.md names the persisted temporary error
+PASS  the order is RETRY, RETRY, RETRY, ERROR, BLOCK
+PASS  the runner exports the idea after the limit
+PASS  LIMIT line from the stage's message
+PASS  the wait until the reset plus the margin (fast-forward)
+PASS  RESUME names the stage's activity
+PASS  the rerun is announced
+PASS  a limit is never an error
+PASS  exported
+PASS  no reviewer call, no probe
+PASS  limits.log has the wait with the stage's message
+PASS  state: two attempts
+PASS  the runner blocks the idea and exits 0
+PASS  no RETRY: the model call's error was classified by ai() already (error.json)
+PASS  ERROR at once, with the last log line
+PASS  then the reviewer's block
+PASS  the stage's own call, then one reviewer call
+PASS  state: the stage ran once
+PASS  E1.md carries the model call's error.json
+PASS  error.json is this attempt's
+PASS  the runner ends on its own: the persisted limit message reaches the review and the block
+PASS  one LIMIT line: the first limit message gets its wait
+PASS  RESUME after the wait
+PASS  the rerun is announced
+PASS  the same message after its wait is a code error naming the persisted limit
+PASS  one ERROR line
+PASS  the reviewer's verdict blocks the idea
+PASS  one reviewer call, no probe (the reset time was parsed)
+PASS  the order is LIMIT, RESUME, ERROR, BLOCK
+PASS  state: two attempts
+PASS  state: the limit counter is reset when the error goes to review
+PASS  E1.md names the persisted limit message
+PASS  E1.md shows the stage's limit line to the reviewer
+PASS  the runner ends on its own after the capped waits
+PASS  two LIMIT lines: the cap errors.script_limit_retries
+PASS  the second rerun is announced
+PASS  the third limit message is a code error
+PASS  one reviewer call
+PASS  BLOCK on the reviewer's verdict
+PASS  the order is LIMIT, RESUME, LIMIT, RESUME, ERROR, BLOCK
+PASS  state: three attempts
+PASS  limits.log has the two waits
+FAIL  the runner ends on its own (expected exit 0, got 3)
+FAIL  one LIMIT line: the quoted limit is waited out once (expected '1', got '0')
+FAIL  an unparsed weekly limit enters the probe loop (no match for '^\[[0-9]{2}:[0-9]{2}\] LIMIT  weekly limit hit but no reset time found, probing every 30 min \(first probe in 30 min\)$' in /tmp/tmp.YmVhfSclyk/quoted.out)
+FAIL  the probe answered at once (no match for '^\[[0-9]{2}:[0-9]{2}\] RESUME limit is over \(probe 1 answered\), continuing: building visuals$' in /tmp/tmp.YmVhfSclyk/quoted.out)
+FAIL  the same quoted text after the probe is a code error (no match for '^\[[0-9]{2}:[0-9]{2}\] ERROR  S10 building visuals: usage limit message persisted after 1 wait \(the same message, and the probe model had answered at once\): exit 1: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 \(char 0\)$' in /tmp/tmp.YmVhfSclyk/quoted.out)
+PASS  no RETRY: the traceback is a code error, not a temporary error
+FAIL  the probe call, then one reviewer call (expected 'call:haiku,reviewer:sonnet', got '')
+FAIL  BLOCK on the reviewer's verdict (no match for '^\[[0-9]{2}:[0-9]{2}\] BLOCK  idea "Idea C.*" blocked at S10: ' in /tmp/tmp.YmVhfSclyk/quoted.out)
+FAIL  the order is LIMIT, RESUME, ERROR, BLOCK (expected 'LIMIT,RESUME,ERROR,BLOCK', got '')
+state.py: no state.json in 
+FAIL  state: two attempts (expected '2', got '')
+FAIL  E1.md shows the quoted line to the reviewer (no match for 'resets weekly' in /errors/E1.md)
+PASS  the runner ends on its own
+PASS  no RETRY and no LIMIT: an echoed source line is not an error message
+PASS  ERROR at once, with the exception line
+PASS  one reviewer call
+PASS  BLOCK on the reviewer's verdict
+PASS  the order is ERROR, BLOCK
+PASS  state: the stage ran once (no transient retry)
+PASS  state: no transient try
+PASS  the runner ends on its own
+PASS  three RETRY lines name the network error
+PASS  the ERROR line reads the message with a comma where the CLI had the em dash
+PASS  the BLOCK line too (the fake reviewer quotes the first 120 characters of the error line)
+PASS  the order is RETRY, RETRY, RETRY, ERROR, BLOCK
+PASS  one reviewer call after the retries
+PASS  the stage really printed the em dash (stage.log holds U+2014)
+PASS  no U+2014 in netdash.out
+PASS  no U+2014 in runner.log
+PASS  no U+2014 in status.txt
+PASS  no U+2014 in history.txt
+PASS  no U+2014 in blocked.txt
+PASS  no U+2014 in state.json
+PASS  no U+2014 in E1.msg
+PASS  no U+2014 in F1.md
+PASS  no U+2014 in F1.result.json
+PASS  no U+2014 in the error line of E1.md
+PASS  E1.md's error line reads the cleaned message
+PASS  E1.md still shows the stage's verbatim line to the reviewer (U+2014 in the log excerpt)
+PASS  history.txt has the cleaned reason
+
+== 10. a runner killed during a review cycle: the restart resumes the cycle, no Opus cycle lost ==
+pipeline/tests/test-m3.sh: line 90: 65305 Killed                  ( cd "$SANDBOX" && exec env NO_COLOR=1 bash "$SANDBOX/run.sh" "$@" ) > "$out" 2>&1
+PASS  the runner is dead after SIGKILL
+PASS  the review cycle child is dead too
+PASS  state: the stage had failed (under review) when killed
+PASS  state: the review loop was active
+PASS  state: cycle E1 was pending
+PASS  state: no cycle recorded yet
+PASS  the cycle's pid file is left behind by the kill
+PASS  the restarted runner blocks the idea on the reviewer's verdict and exits 0
+PASS  START says where it resumes
+PASS  the restart resumes cycle E1 as cycle 1/3 with the Opus reviewer
+PASS  no ESCAL before an Opus cycle, no second ERROR: the stage did not run again
+PASS  no 'after the fix' line: nothing was fixed
+PASS  BLOCK on the resumed cycle's verdict
+PASS  the hung reviewer call, then the resumed cycle's reviewer call, both with the Opus reviewer
+PASS  state: one Opus cycle in all
+PASS  state: the signature was counted once
+PASS  state: no escalation
+PASS  state: one open issue, not two
+PASS  state: the stage ran once
+PASS  state: nothing pending after the verdict
+PASS  the cycle's pid file is removed
+PASS  no E2: the interrupted cycle kept its number
+PASS  F1.result.json holds the verdict
+PASS  blocked.txt has the idea
+PASS  the review cycle child still runs after the runner died
+PASS  the restarted runner exits 0
+PASS  the orphaned cycle is adopted
+PASS  its verdict blocks the idea
+PASS  one reviewer call in all: the adopted cycle's
+PASS  state: one cycle
+PASS  state: one open issue
+PASS  no ESCAL, no second ERROR
+PASS  the adopted child has ended
+PASS  its pid file is removed
+
+test-m3.sh: 412 passed, 12 failed

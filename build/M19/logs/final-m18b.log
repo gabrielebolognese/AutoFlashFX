@@ -1,0 +1,219 @@
+
+== 1. channel.json and the resolved config ==
+PASS  channel.json of flashfx is valid against pipeline/schemas/channel.schema.json
+PASS  validate fails: an id with a capital and a hyphen
+PASS  validate fails: an id that is not the folder name
+PASS  validate fails: no platform
+PASS  validate fails: no format
+PASS  validate fails: a quota that is not a number
+PASS  validate fails: a channel path key nobody knows
+PASS  validate fails: a safety key of review overridden by the channel
+PASS  validate fails: a source folder that is not text
+PASS  config.json has none of the channel-owned keys and keeps the engine keys and the four safety keys
+PASS  channel.json holds style, voice, sfx, lengths and the 14 paths with their old values
+PASS  the resolved config merges engine and channel: objects key by key, arrays replace, safety keys untouched
+PASS  a channel cannot override a safety key: the resolved config ignores it
+PASS  overrides lists the engine keys the channel sets (models, runner), not the channel's own or the format's
+PASS  doctor prints every engine key the channel overrides
+PASS  cfg reads voice.wpm from channel.json (the resolved config)
+PASS  an edit of channel.json shows at the next cfg call (the resolved file is made again)
+PASS  an edit of config.json shows at the next cfg call too
+PASS  without a channel cfg reads the engine config.json
+
+== 2. the front door: run.sh, add-idea.sh, preflight, runner-status, doctor ==
+PASS  run.sh without a channel exits 2
+PASS  run.sh without a channel says so
+PASS  run.sh without a channel lists flashfx with platform, format and status
+PASS  the list shows a disabled channel as disabled
+PASS  nothing ran
+PASS  run.sh --channel with an unknown id exits 2
+PASS  an unknown id is named
+PASS  run.sh --channel with a malformed id exits 2
+PASS  run.sh --channel with a disabled channel exits 2
+PASS  the refusal says the channel is disabled
+PASS  the refusal names --allow-disabled
+PASS  --allow-disabled runs the disabled channel (an empty queue, --once: exit 0)
+PASS  and its banner names it
+PASS  REELS_CHANNEL with an unknown id exits 2 as well
+PASS  an unknown option still exits 1
+PASS  no failure lines in the listing
+PASS  a second runner of the same channel refuses (exit 1)
+PASS  the refusal says another runner is running
+PASS  the first runner's lock is untouched
+PASS  the other channel has no lock
+PASS  add-idea.sh --channel second: the script's own one-line answer
+PASS  the idea is in channels/second/ideas.txt
+PASS  and not in flashfx's queue
+PASS  add-idea.sh without a channel, with several channels, exits 2
+PASS  and lists them
+PASS  REELS_CHANNEL picks the channel too
+PASS  preflight without a channel exits 2 and lists them
+PASS  preflight --channel with an unknown id exits 2
+PASS  runner-status without arguments exits 0
+PASS  runner-status prints a block for flashfx
+PASS  runner-status prints a block for the second channel
+PASS  runner-status prints the global locks
+PASS  runner-status --channel prints that channel only
+PASS  doctor --channel checks that channel
+PASS  doctor --channel leaves the other channels out
+PASS  doctor checks the engine once
+PASS  doctor without a channel checks the engine once
+PASS  doctor without a channel goes through flashfx
+PASS  doctor without a channel goes through the second channel
+
+== 3. the dummy fingerprint of M17 inside channels/flashfx/runs/ ==
+PASS  REELS_DUMMY=all bash run.sh --channel flashfx --once exits 0
+PASS  the run folder tree equals the baseline's (106 entries, names normalized)
+PASS  the exports tree equals the baseline's (the export names change in M19)
+PASS  no runs/ at the root of the state root
+PASS  no ideas.txt at the root of the state root
+PASS  the runner log is in the channel's logs/
+PASS  history.txt is in the channel's logs/
+PASS  the history line says exported flashfx-1
+PASS  the banner names the channel
+PASS  no lock is left behind
+
+== 4. an unfinished run resumes at the same stage ==
+PASS  the planted run is interrupted in 04-angle
+PASS  the stages before it are done
+PASS  the runner finishes the moved run
+PASS  the START line says it resumes after 3 stages
+PASS  the finished stages are not run again
+PASS  the resumed run exports
+PASS  no second run folder
+PASS  research ran once
+
+== 5. a model edit of a protected file is refused; protect.py for every channel ==
+PASS  a model call that edits channels/flashfx/library/hooks.txt is a code error
+PASS  channels/flashfx/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/library/hooks.txt is a code error
+PASS  channels/second/library/hooks.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/flashfx/styles/paper-cards/style.md is a code error
+PASS  channels/flashfx/styles/paper-cards/style.md is restored from the snapshot
+PASS  the error names the protected file
+PASS  a model call that edits channels/second/ideas.txt is a code error
+PASS  channels/second/ideas.txt is restored from the snapshot
+PASS  the error names the protected file
+PASS  the call denies Edit on every channel's ideas.txt
+PASS  and Write on every channel's library
+PASS  and Edit on every channel's styles
+PASS  and on exports/
+PASS  protect.py snapshots the files of both channels
+PASS  protect.py reports a change in another channel's library
+PASS  a deleted ideas.txt is restored
+PASS  a file added to a channel's library is removed
+PASS  a changed hooks file is restored
+PASS  the report names the file with its channel path
+PASS  review_fixer_paths: pipeline and the run's channel's candidates folder
+
+== 6. migrate-channels on the rehearsal fixture ==
+PASS  the rehearsal fixture builds
+PASS  the dry run exits 0
+PASS  the dry run lists every M18 line of the manifest (17)
+PASS  the dry run says nothing changed
+PASS  the dry run changed nothing in the tree (checksums)
+PASS  the dry run writes manifest-diff.md
+PASS  the run exits 0
+PASS  the run ends verified
+PASS  the migration log has its final verified line
+PASS  the undo script is written
+PASS  a rewritten file was copied to premigrate/ first, at its old path
+PASS  library is gone from the old place
+PASS  styles is gone from the old place
+PASS  motion-lib is gone from the old place
+PASS  golden is gone from the old place
+PASS  runs is gone from the old place
+PASS  hooks.txt is in the channel
+PASS  the unfinished run moved with its channel
+PASS  history.txt moved
+PASS  the shared limits.log stays at the root
+PASS  the user's voicetests stay
+PASS  git status shows only renames (and build/)
+PASS  a file that was ignored is still ignored at its new path
+PASS  so are the reference videos
+PASS  the rewritten run files name the channel paths in every form and no old path
+PASS  the captions file keeps its sections
+PASS  the RUN path of the captions file follows
+PASS  check-manifest --after passes on the migrated fixture (the M18 lines)
+PASS  a second run exits 0
+PASS  a second run verifies and moves nothing
+PASS  a second run changed nothing
+PASS  the undo exits 0
+PASS  the undo checks the folder against the before-listing
+PASS  the undo brings back an identical tree (checksums)
+PASS  and git status is clean again
+PASS  the generated undo-migration.sh also brings back an identical tree
+PASS  the planted kill ends the run after 3 moves
+PASS  the folder is half moved (library is in the channel, runs is not)
+PASS  the next start exits 0
+PASS  the next start undoes the killed attempt first
+PASS  and checks the folder against that attempt's before-listing
+PASS  then migrates and verifies
+PASS  after kill, restart and undo the tree is identical again
+PASS  a live video runner refuses the migration (exit 5)
+PASS  and says what to do
+PASS  uncommitted changes outside build/ refuse the migration
+PASS  and say so
+PASS  a second fixture with the old .gitignore builds
+PASS  a failed check ends with exit 3
+PASS  the failed check is the git check-ignore one
+PASS  the run says BLOCKED with the reason
+PASS  it undid everything and checked the folder
+PASS  the folder is identical to before
+
+== 7. two channels' dummy runners at the same time ==
+PASS  the flashfx runner exits 0
+PASS  the second channel's runner exits 0
+PASS  flashfx has its run folder
+PASS  the second channel has its run folder
+PASS  two exports (one per channel: flashfx-1 and second-1)
+PASS  flashfx printed its DONE line
+PASS  the second channel printed its DONE line
+PASS  each banner names its channel (flashfx)
+PASS  each banner names its channel (second)
+PASS  flashfx's history has its export
+PASS  the second channel's history has its export
+PASS  the histories do not mix
+PASS  the histories do not mix (2)
+PASS  no lock is left behind, in any channel or at the root
+
+== 8. the real migration ==
+PASS  build/M18/dry-run.txt exists
+PASS  build/M18/move-manifest.tsv exists
+PASS  build/M18/manifest-diff.md exists
+PASS  build/M18/migration-log.tsv exists
+PASS  build/M18/undo-migration.sh exists
+PASS  build/M18/before-listing.tsv exists
+PASS  build/M18/migration-run.txt exists
+PASS  the migration's log ends verified
+PASS  the saved dry run says nothing changed
+PASS  check-manifest.py --after on the real folder: no missing path, no old path left, no other count differs
+PASS  the check right after the migration (build/M18/after-check.txt) had no problem
+PASS  library is not at the root any more
+PASS  styles is not at the root any more
+PASS  motion-lib is not at the root any more
+PASS  golden is not at the root any more
+PASS  ideas.txt is not at the root any more
+PASS  channels/flashfx/channel.json exists
+PASS  channels/flashfx/ideas.txt exists
+PASS  channels/flashfx/library/hooks.txt exists
+PASS  channels/flashfx/styles/paper-cards/style.md exists
+PASS  channels/flashfx/motion-lib/catalog.json exists
+PASS  channels/flashfx/golden/test-idea/plan.json exists
+PASS  channels/flashfx/logs/runner.log exists
+PASS  the files that were ignored are ignored at the new path (voice, refs, analysis, sfx audio, renders)
+PASS  git status of the real folder is clean (the moves are committed)
+PASS  the legacy root ignore rules are gone
+PASS  no tracked file outside build/ names an old root path of the moved data in a way code would build
+PASS  preflight --channel flashfx passes ([04:02] READY  preflight ok: 8 tools, 2 python packages, 9 files, 122 GB free)
+PASS  doctor --quick passes (doctor: 0 problems, 4 warnings)
+
+== 9. test-isolation part 1, the files M18 changed, no em dash ==
+PASS  test-isolation.sh part 1 passes (test-isolation.sh: 21 passed, 0 failed)
+PASS  no em dash in any file (test-no-emdash.sh: 1 passed, 0 failed)
+PASS  pipeline/bin/migrate-channels, paths.sh, paths.py, config.py and the channel schema exist
+PASS  the engine code M18 wrote names no channel id (14.5: the engine never hard-codes a channel)
+
+test-m18.sh: 199 passed, 0 failed

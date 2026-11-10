@@ -1,0 +1,246 @@
+
+== 1. the export names and the numbering ==
+PASS  numbering: the first export of a channel is 1
+PASS  numbering: this channel's highest folder plus 1; another channel's folders, a plain number and other names do not count
+PASS  numbering: the other channel counts its own folders
+PASS  numbering: the history line 'exported flashfx-9' counts after its folder was deleted
+PASS  numbering: the other channel's history counts for it only
+PASS  two dummy ideas of flashfx: the runner exits 0
+PASS  DONE line for flashfx-1
+PASS  DONE line for flashfx-2
+PASS  exports/flashfx-1/flashfx-1.mp4
+PASS  exports/flashfx-1/flashfx-1captions.txt
+PASS  exports/flashfx-1/flashfx-1hook2.mp4
+PASS  captions 1: the HOOKS line carries the new name
+PASS  captions 1: the hook 2 line carries the new name
+PASS  exports/flashfx-2/flashfx-2.mp4
+PASS  exports/flashfx-2/flashfx-2captions.txt
+PASS  exports/flashfx-2/flashfx-2hook2.mp4
+PASS  captions 2: the HOOKS line carries the new name
+PASS  captions 2: the hook 2 line carries the new name
+PASS  captions: the RUN path is channels/<id>/runs/<run>
+PASS  exports/ holds exactly flashfx-1 and flashfx-2
+PASS  history: exported flashfx-1
+PASS  history: exported flashfx-2
+PASS  the second channel's runner exits 0
+PASS  a second channel's first export is second-1 in the same exports/
+PASS  and its captions file is second-1captions.txt
+PASS  exports/ holds both channels
+PASS  the second channel's captions file names no other channel
+PASS  the second channel's history line
+PASS  the histories do not mix
+PASS  after deleting exports/flashfx-2 the next number is 3 (from the channel's history)
+PASS  the third idea: the runner exits 0
+PASS  the next export is flashfx-3, not flashfx-2 again
+PASS  flashfx-2 stays deleted
+PASS  no lock is left behind
+
+== 2. the export migration: rehearsal fixture, undo, again; the real folder ==
+PASS  the rehearsal fixture builds and M18 runs on it
+PASS  the fixture has exports/1, exports/2 and a note
+PASS  the dry run exits 0
+PASS  the dry run says nothing changed
+PASS  the dry run lists the rename of exports/1
+PASS  the dry run lists the history rewrite
+PASS  the dry run changed nothing in the tree (checksums)
+PASS  the run exits 0
+PASS  the run ends verified
+PASS  the migration log ends verified
+PASS  the undo script is written
+PASS  exports/flashfx-1/flashfx-1.mp4
+PASS  exports/flashfx-1/flashfx-1captions.txt
+PASS  exports/flashfx-1/flashfx-1hook2.mp4
+PASS  project/ of export 1 keeps its name
+PASS  exports/1 is gone
+PASS  captions 1: the HOOKS line follows
+PASS  captions 1: the hook 2 line follows
+PASS  exports/flashfx-2/flashfx-2.mp4
+PASS  exports/flashfx-2/flashfx-2captions.txt
+PASS  exports/flashfx-2/flashfx-2hook2.mp4
+PASS  project/ of export 2 keeps its name
+PASS  exports/2 is gone
+PASS  captions 2: the HOOKS line follows
+PASS  captions 2: the hook 2 line follows
+PASS  exports/notes.txt (not an export folder) stays
+PASS  history: exported 1 became exported flashfx-1
+PASS  history: exported 2 became exported flashfx-2
+PASS  history: no old export line is left
+PASS  the next export after the migration is flashfx-3
+PASS  check-manifest.py --after passes on the migrated fixture (check-manifest --after: 14 line(s) checked, 0 problem(s))
+PASS  git status shows only renames (the exports are not tracked; the history is ignored)
+PASS  the undo exits 0
+PASS  the undo brings back an identical tree (checksums)
+PASS  exports/1/1captions.txt is back
+PASS  the run after the undo exits 0
+PASS  and ends verified again
+PASS  a third start only verifies
+PASS  and says so
+PASS  after the second undo the tree is identical again
+PASS  the planted kill ends the run after 1 move
+PASS  the folder is half moved (exports/flashfx-1 exists, exports/2 too)
+PASS  the next start exits 0
+PASS  the next start undoes the killed attempt first
+PASS  then migrates and verifies
+PASS  the real folder has no exports/N folder left
+PASS  no plain-number export folder in the real exports/
+PASS  build/M19/move-manifest.tsv exists (the real run's executed manifest)
+PASS  build/M19/manifest-diff.md exists
+PASS  build/M19/real-migration.txt: the output of the migration on the real folder
+PASS  the real run found no M19 line (the folder has no export yet) or verified them
+PASS  the gate of 14.13: check-manifest.py --after on M18's manifest (only the growth of the logs and the gallery differs)
+PASS  preflight --channel flashfx passes
+
+== 3. the youtube-shorts exporter and the platform interface ==
+PASS  platform.json of instagram-reels validates against pipeline/schemas/platform.schema.json
+PASS  platform.json of youtube-shorts validates against pipeline/schemas/platform.schema.json
+PASS  a platform.json without its required keys fails the check
+PASS  the exporter's selftest (6 fixture inputs, the planted faults, the caption_max rule): RESULT: 86 passed, 0 failed
+PASS  the selftest has no FAIL line
+PASS  the selftest covers: an 1100-character description
+PASS  the selftest covers: 5 hashtags
+PASS  the selftest covers: 400-character
+PASS  the selftest covers: without a list
+PASS  the selftest covers: earlier description
+PASS  the fixture answer of the Part 1 input exists
+PASS  run.sh with a good answer exits 0
+PASS  14-export/export.json is written
+PASS  a good first answer: no NEEDS REVIEW
+PASS  a good first answer: exactly one model call
+PASS  the description is stored in the channel's logs/descriptions.jsonl
+PASS  a planted 'long' fault then a good answer: run.sh exits 0
+PASS  'long': the bad answer got exactly one rewrite (2 calls)
+PASS  'long': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'tags' fault then a good answer: run.sh exits 0
+PASS  'tags': the bad answer got exactly one rewrite (2 calls)
+PASS  'tags': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'paragraph' fault then a good answer: run.sh exits 0
+PASS  'paragraph': the bad answer got exactly one rewrite (2 calls)
+PASS  'paragraph': the rewrite passed, no NEEDS REVIEW
+PASS  a planted 'nolist' fault then a good answer: run.sh exits 0
+PASS  'nolist': the bad answer got exactly one rewrite (2 calls)
+PASS  'nolist': the rewrite passed, no NEEDS REVIEW
+PASS  the same description again: run.sh exits 0
+PASS  a copy of an earlier description fails its check and goes out with NEEDS REVIEW after the rewrite also fails
+PASS  the copy got one rewrite, then NEEDS REVIEW (2 calls)
+PASS  two failing answers: the export carries NEEDS REVIEW lines
+PASS  no title is longer than caption_max (100)
+PASS  export.py run on a youtube-shorts run exits 0 ()
+PASS  exports/shorts-1/shorts-1.mp4
+PASS  exports/shorts-1/shorts-1captions.txt
+PASS  no hook 2 clip for youtube-shorts
+PASS  the captions file has the youtube-shorts sections of spec section 8 in order
+PASS  the HOOKS line carries the export name
+PASS  the RUN section is channels/<id>/runs/<run>
+PASS  no instagram section in it
+
+== 4. the heavy lock: two channels' dummy runners never overlap a heavy step ==
+PASS  the flashfx runner exits 0
+PASS  the second channel's runner exits 0
+PASS  six heavy steps ran (three per channel)
+PASS  no two heavy steps overlap (timestamps in the trace)
+PASS  a runner that had to wait printed WAIT lines (0 and 1): at least one wait happened
+PASS  the WAIT lines are in the channel's runner.log too
+PASS  a WAIT line names the holder, its step and the time
+PASS  no lock is left behind at the root
+PASS  a lock whose holder is gone does not block
+PASS  and printed no WAIT line
+PASS  editor_run: the editor lock works like the heavy lock
+PASS  and is released
+
+== 5. limit sharing: a limit hit by one channel makes the other wait for the same reset, with no model call ==
+PASS  channel A's limit wrote .locks/limit.json
+PASS  limit.json names channel A and a target in the future
+PASS  channel B's call goes through after the wait
+PASS  B waited for the same reset: it ended no earlier than A's target (1794277280)
+PASS  B printed a LIMIT line naming A
+PASS  B's call came at or after A's target
+PASS  the shared logs/limits.log has B's wait with its channel id
+PASS  and A's own wait with its channel id
+PASS  logs/engine.log has the shared wait
+PASS  B made no model call while the limit was on (the log has A's limit call, then A's retry and B's one call)
+PASS  the limit file is removed once the wait is over
+
+== 6. quota: daily_quota 1 makes the second idea wait with the IDLE line ==
+Python 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\__main__.py", line 6, in <module>
+    __pyrepl_interactive_console()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\main.py", line 59, in interactive_console
+    run_multiline_interactive_console(console)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\simple_interact.py", line 142, in run_multiline_interactive_console
+    statement = multiline_input(more_lines, ps1, ps2)
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\readline.py", line 389, in multiline_input
+    return reader.readline()
+           ~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\reader.py", line 744, in readline
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\historical_reader.py", line 306, in prepare
+    super().prepare()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\reader.py", line 584, in prepare
+    self.console.prepare()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\windows_console.py", line 321, in prepare
+    self.height, self.width = self.getheightwidth()
+                              ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\there\AppData\Local\Programs\Python\Python313\Lib\_pyrepl\windows_console.py", line 365, in getheightwidth
+    raise WinError(GetLastError())
+OSError: [WinError 0] The operation completed successfully.
+PASS  the IDLE line says: quota 1/1 today, next idea after 00:00
+PASS  the first idea exported
+PASS  the second idea did not start while the quota was reached
+PASS  the second idea is still queued
+PASS  only flashfx-1 is in exports/
+PASS  runner-status shows today's exports against the quota
+PASS  after midnight (fast clock) the second idea runs and exports as flashfx-2
+PASS  --once with the quota reached exits 0
+PASS  and prints the quota line
+PASS  and starts no idea
+PASS  logcheck.py understands the quota IDLE line and the summary ({"sessions": 1, "ideas": 0, "outcomes": [], "exports": [], "limits": 0, "problems": []})
+
+== 7. new-channel ==
+PASS  new-channel creates the channel
+PASS  channels/demo/channel.json
+PASS  the channel starts disabled
+PASS  its platform is youtube-shorts
+PASS  the platform's defaults are in channel.json export
+PASS  an empty ideas.txt
+PASS  it prints what to fill in
+PASS  and the command that checks it
+PASS  a second new-channel with the same id exits 2
+PASS  a malformed id exits 2
+PASS  an unknown format exits 2 (engine work)
+PASS  and creates nothing
+PASS  an unknown platform exits 2 (engine work)
+PASS  preflight --channel demo fails: the channel is incomplete (exit 3)
+PASS  preflight wrote the channel's logs/STOPPED.md
+PASS  STOPPED.md lists the files that still say [FILL IN]
+PASS  and the files that are missing
+PASS  no other channel is stopped
+PASS  preflight --channel demo passes once the files are filled in ([03:29] READY  preflight ok: 8 tools, 2 python packages, 9 files, 122 GB free)
+PASS  the filled-in channel runs in dummy mode
+PASS  and exports demo-1
+PASS  exports/demo-1/demo-1.mp4
+
+== 8. test-isolation (both parts), the dummy fingerprint, runner-status and doctor, no em dash ==
+PASS  test-isolation.sh, both parts, passes (test-isolation.sh: 34 passed, 0 failed)
+PASS  REELS_DUMMY=all bash run.sh --channel flashfx --once exits 0
+PASS  the run folder tree equals build/M19/fingerprint/ (106 entries)
+PASS  the exports tree equals build/M19/fingerprint/ (flashfx-1/ with flashfx-1.mp4, flashfx-1captions.txt, flashfx-1hook2.mp4)
+PASS  with the names normalized the exports tree is M17's baseline
+PASS  runner-status without arguments exits 0
+PASS  runner-status: one block per channel
+PASS  runner-status: today's exports (against the quota)
+PASS  doctor: the shared locks and logs
+PASS  doctor: the heavy lock
+PASS  doctor: the platforms
+PASS  doctor: every channel
+PASS  no em dash in the files M19 added
+
+test-m19.sh: 197 passed, 0 failed

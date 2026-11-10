@@ -1,0 +1,117 @@
+
+== 9. a failed stage script is classified: transient retries, a usage limit, then the code error ==
+PASS  the runner exports the idea after two temporary failures of the stage
+PASS  RETRY 1: 60 s
+PASS  RETRY 2: 4 min
+PASS  two scaled backoff waits (fast-forward)
+PASS  the first rerun is announced
+PASS  the second rerun too
+PASS  no ERROR: a temporary error is retried, not reviewed
+PASS  the stage passes on the third attempt
+PASS  the idea is exported
+PASS  no model call at all: the reviewer was never asked
+PASS  state: three attempts of the stage
+PASS  state: the transient counter is reset by the success
+PASS  state: no open issue
+PASS  state: nothing fixed
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.gL8hUZkDZY
+PASS  the runner blocks the idea on the reviewer's verdict and exits 0
+PASS  three RETRY lines (60 s, 4 min, 16 min)
+PASS  RETRY 3: 16 min
+PASS  the fourth failure is a code error
+PASS  one ERROR line
+PASS  then the review loop: the reviewer's verdict blocks the idea
+PASS  one reviewer call, after the retries
+PASS  state: four attempts
+PASS  state: the counter is reset when the error goes to review
+PASS  E1.md names the persisted temporary error
+PASS  the order is RETRY, RETRY, RETRY, ERROR, BLOCK
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.vhWCuo3bqm
+PASS  the runner exports the idea after the limit
+PASS  LIMIT line from the stage's message
+PASS  the wait until the reset plus the margin (fast-forward)
+PASS  RESUME names the stage's activity
+PASS  the rerun is announced
+PASS  a limit is never an error
+PASS  exported
+PASS  no reviewer call, no probe
+PASS  limits.log has the wait with the stage's message
+PASS  state: two attempts
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.DeDP4XZdsl
+PASS  the runner blocks the idea and exits 0
+PASS  no RETRY: the model call's error was classified by ai() already (error.json)
+PASS  ERROR at once, with the last log line
+PASS  then the reviewer's block
+PASS  the stage's own call, then one reviewer call
+PASS  state: the stage ran once
+PASS  E1.md carries the model call's error.json
+PASS  error.json is this attempt's
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.vzuE2WbGbd
+PASS  the runner ends on its own: the persisted limit message reaches the review and the block
+PASS  one LIMIT line: the first limit message gets its wait
+PASS  RESUME after the wait
+PASS  the rerun is announced
+PASS  the same message after its wait is a code error naming the persisted limit
+PASS  one ERROR line
+PASS  the reviewer's verdict blocks the idea
+PASS  one reviewer call, no probe (the reset time was parsed)
+PASS  the order is LIMIT, RESUME, ERROR, BLOCK
+PASS  state: two attempts
+PASS  state: the limit counter is reset when the error goes to review
+PASS  E1.md names the persisted limit message
+PASS  E1.md shows the stage's limit line to the reviewer
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.UZODcbcooQ
+PASS  the runner ends on its own after the capped waits
+PASS  two LIMIT lines: the cap errors.script_limit_retries
+PASS  the second rerun is announced
+PASS  the third limit message is a code error
+PASS  one reviewer call
+PASS  BLOCK on the reviewer's verdict
+PASS  the order is LIMIT, RESUME, LIMIT, RESUME, ERROR, BLOCK
+PASS  state: three attempts
+PASS  limits.log has the two waits
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.5M7L8Nvh54
+PASS  the runner ends on its own
+PASS  one LIMIT line: the quoted limit is waited out once
+PASS  an unparsed weekly limit enters the probe loop
+PASS  the probe answered at once
+PASS  the same quoted text after the probe is a code error
+PASS  no RETRY: the traceback is a code error, not a temporary error
+PASS  the probe call, then one reviewer call
+PASS  BLOCK on the reviewer's verdict
+PASS  the order is LIMIT, RESUME, ERROR, BLOCK
+PASS  state: two attempts
+PASS  E1.md shows the quoted line to the reviewer
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.SpsfY6rOAP
+PASS  the runner ends on its own
+PASS  no RETRY and no LIMIT: an echoed source line is not an error message
+PASS  ERROR at once, with the exception line
+PASS  one reviewer call
+PASS  BLOCK on the reviewer's verdict
+PASS  the order is ERROR, BLOCK
+PASS  state: the stage ran once (no transient retry)
+PASS  state: no transient try
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.Eb44XMx7BT
+PASS  the runner ends on its own
+PASS  three RETRY lines name the network error
+PASS  the ERROR line reads the message with a comma where the CLI had the em dash
+PASS  the BLOCK line too (the fake reviewer quotes the first 120 characters of the error line)
+PASS  the order is RETRY, RETRY, RETRY, ERROR, BLOCK
+PASS  one reviewer call after the retries
+PASS  the stage really printed the em dash (stage.log holds U+2014)
+PASS  no U+2014 in netdash.out
+PASS  no U+2014 in runner.log
+PASS  no U+2014 in status.txt
+PASS  no U+2014 in history.txt
+PASS  no U+2014 in blocked.txt
+PASS  no U+2014 in state.json
+PASS  no U+2014 in E1.msg
+PASS  no U+2014 in F1.md
+PASS  no U+2014 in F1.result.json
+PASS  no U+2014 in the error line of E1.md
+PASS  E1.md's error line reads the cleaned message
+PASS  E1.md still shows the stage's verbatim line to the reviewer (U+2014 in the log excerpt)
+PASS  history.txt has the cleaned reason
+
+test-m3.sh: 104 passed, 0 failed
+sandbox kept: C:/Users/there/AppData/Local/Temp/tmp.CyG6thv15a
