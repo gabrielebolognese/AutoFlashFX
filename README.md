@@ -44,7 +44,7 @@ A reel that still fails review after the capped number of rounds is exported wit
 ### Channels, formats and platforms
 - `channels/<id>/` holds everything a channel owns: `channel.json`, the idea queue, the hook library, voice and account profile, brand kit, style, sound pack map and motion library. One channel exists today: `flashfx`.
 - `pipeline/bin/new-channel` creates a channel from a format's template; it starts disabled with `[FILL IN]` placeholders.
-- Two platform definitions in `pipeline/platforms/`: `instagram-reels` (which also exports an alternate hook clip) and `youtube-shorts` (title, description and pinned comment).
+- Two platform definitions in `pipeline/platforms/`: `instagram-reels` (which also exports an alternate hook clip) and `youtube-shorts` (title, description and pinned comment). The `problem-solution-reel` format lists only `instagram-reels` in its `format.json`, so `new-channel` refuses `youtube-shorts` for it today.
 - The engine refuses to read or write another channel's folder.
 
 ### Tooling
@@ -137,7 +137,7 @@ Posting is done by hand. Working files for each idea stay in `channels/<id>/runs
 | `bash pipeline/bin/runner-status [--channel <id>]` | Shows whether a runner is alive, its latest status line and the log tail |
 | `bash pipeline/bin/preflight --channel <id>` | Runs the startup checks alone |
 | `bash pipeline/bin/doctor [--quick] [--channel <id>]` | Read-only health report: versions, disk, voice environments, each channel's files and logs |
-| `bash pipeline/bin/new-channel <id> --format problem-solution-reel --platform <platform> [--name "..."]` | Creates a new, disabled channel from the format's template |
+| `bash pipeline/bin/new-channel <id> --format problem-solution-reel --platform instagram-reels [--name "..."]` | Creates a new, disabled channel from the format's template (the platform must be one the format lists) |
 | `bash pipeline/bin/index-hooks` | Rebuilds the hooks index after `hooks.txt` changed |
 | `bash pipeline/bin/build-voice-profile [--force]` | Rebuilds the voice and account profile files |
 | `bash pipeline/bin/build-sfx-map [--check]` | Measures the sound pack and writes the sound effects map |
