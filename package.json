@@ -5,8 +5,8 @@
   "description": "Node packages of the instagramReels pipeline: HyperFrames (renders), GSAP and Three.js (vendored into motion-lib/assets/vendor by pipeline/bin/setup-node). Pinned; upgrade by hand (DECISIONS.md 26).",
   "license": "UNLICENSED",
   "scripts": {
-    "check": "npx hyperframes check motion-lib",
-    "lint": "npx hyperframes lint motion-lib",
+    "check": "npx hyperframes check channels/flashfx/motion-lib",
+    "lint": "npx hyperframes lint channels/flashfx/motion-lib",
     "gallery": "bash pipeline/bin/gallery",
     "frame-match": "bash pipeline/bin/frame-match",
     "golden": "bash pipeline/bin/render-golden"
